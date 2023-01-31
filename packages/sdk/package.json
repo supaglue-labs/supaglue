@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/sdk",
-  "version": "0.0.2-12",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/supaglue-labs/supaglue-wip.git",

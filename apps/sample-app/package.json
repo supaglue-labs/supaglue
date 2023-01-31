@@ -1,6 +1,6 @@
 {
   "name": "sample-app",
-  "version": "0.0.2-12",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "prisma migrate deploy && prisma db seed && next dev",

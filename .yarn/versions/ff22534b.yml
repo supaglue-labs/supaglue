@@ -1,0 +1,7 @@
+undecided:
+  - supaglue
+  - api
+  - "@supaglue/cli"
+  - sample-app
+  - docs
+  - "@supaglue/nextjs"

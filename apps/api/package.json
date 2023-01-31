@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.0.2-12",
+  "version": "0.1.0",
   "private": true,
   "main": "./index.ts",
   "exports": "./index.ts",
