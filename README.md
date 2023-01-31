@@ -55,7 +55,7 @@ Continue on to the docs to go through an [integration tutorial](https://docs.sup
 
 ## Roadmap
 
-Check out our [roadmap](https://docs.supaglue.com/roadmap) to get informed on what we are currently working on, and what we have in mind for the next weeks, months and years.
+Check out our [roadmap](https://docs.supaglue.com/roadmap) to get informed on what we are currently working on, and what we have in mind for the next weeks, months, and quarters.
 
 ## Community
 
