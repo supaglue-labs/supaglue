@@ -1,4 +1,9 @@
 <p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/supaglue-labs/supaglue/main/docs/static/img/logo-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/supaglue-labs/supaglue/main/docs/static/img/logo-light.png">
+  <img alt="Supaglue" src="https://raw.githubusercontent.com/supaglue-labs/supaglue/main/docs/static/img/logo-light.png">
+</picture>
   <a href="#"><img src="https://github.com/supaglue-labs/supaglue/blob/0ff332393d79c221b460cba6b71714f817def2d3/docs/static/img/logo-light.png" alt="Supaglue" width="300px"></a>
 </p>
 
