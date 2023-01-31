@@ -10,7 +10,9 @@
   <a href="https://github.com/supaglue-labs/supaglue"><img title="github stars" src="https://img.shields.io/github/stars/supaglue-labs/supaglue?style=social"></a>
 </p>
 
+<p align="center">
 [Website](https://supaglue.com?ref=github-readme) • [Getting Started](https://docs.supaglue.com/docs/get-started?ref=github-readme) • [Docs](https://docs.supaglue.com?ref=github-readme) • [Slack](https://supagluecommunity.slack.com/) • [Twitter](https://twitter.com/supaglue_labs)
+</p>
 
 # Supaglue
 
