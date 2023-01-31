@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  [Website](https://supaglue.com?ref=github-readme) • [Getting Started](https://docs.supaglue.com/docs/get-started?ref=github-readme) • [Docs](https://docs.supaglue.com?ref=github-readme) • [Slack](https://supagluecommunity.slack.com/) • [Twitter](https://twitter.com/supaglue_labs)
+  <a href="https://supaglue.com?ref=github-readme" target="_blank">Website</a> • <a href="https://docs.supaglue.com/get-started?ref=github-readme" target="_blank">Getting Started</a> • <a href="https://docs.supaglue.com?ref=github-readme" target="_blank">Docs</a> • <a href="https://supagluecommunity.slack.com/" target="_blank">Slack</a> • <a href="https://twitter.com/supaglue_labs" target="_blank">Twitter</a>
 </p>
 
 # Supaglue
