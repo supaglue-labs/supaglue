@@ -68,7 +68,7 @@ Example:
 <SalesforceConnectButton mode="redirect" />
 ```
 
-Props: [link](https://github.com/supaglue-labs/supaglue/blob/0.2.0/packages/nextjs/src/components/SalesforceConnectButton/SalesforceConnectButton.tsx#L7)
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/0.1.0/packages/nextjs/src/components/SalesforceConnectButton/SalesforceConnectButton.tsx#L7)
 
 #### `<FieldMapping>`
 
@@ -82,7 +82,7 @@ Example:
 <FieldMapping syncConfigName="contact_sync" />
 ```
 
-Props: [link](https://github.com/supaglue-labs/supaglue/blob/0.2.0/packages/nextjs/src/components/FieldMapping/FieldMapping.tsx#L173)
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/0.1.0/packages/nextjs/src/components/FieldMapping/FieldMapping.tsx#L173)
 
 ...
 
@@ -116,7 +116,7 @@ Example:
 <Switch syncConfigName="contact_sync" />
 ```
 
-Props: [link](https://github.com/supaglue-labs/supaglue/blob/0.2.0/packages/nextjs/src/components/Switch/Switch.tsx#L19)
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/0.1.0/packages/nextjs/src/components/Switch/Switch.tsx#L19)
 
 #### `<SalesforceConnectCard/>` (preview only)
 

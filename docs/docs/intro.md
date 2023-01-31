@@ -77,4 +77,4 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 
 ## License
 
-[MIT License](https://github.com/supaglue-labs/supaglue/blob/0.2.0/LICENSE).
+[MIT License](https://github.com/supaglue-labs/supaglue/blob/0.1.0/LICENSE).
