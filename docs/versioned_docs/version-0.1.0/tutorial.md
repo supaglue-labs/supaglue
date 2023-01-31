@@ -135,7 +135,7 @@ Now that we've gone through the entire integration lifecycle, let's add some cus
 
 ### Customize Developer Config
 
-Let's add two fields, last name and title, to be synced. These will be avilable for our customer to map.
+Let's add two fields, last name and title, to be synced. These will be available for our customer to map.
 
 1. Modify the `contactSchema` in `apps/sample-app/supaglue-config/contact.ts`:
 
