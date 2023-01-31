@@ -69,9 +69,7 @@ We will use the CLI to deploy our syncs and the Apolla.io sample app to test how
    Syncs Created: 4, Updated: 0, Deleted: 0, No Change: 0
    ```
 
-### Embed a Supaglue React component
-
-To enable users to configure the integration we just deployed, embed a user-facing Supaglue React component into the sample app:
+### Authenticate your Salesforce instance
 
 1. Start the Apolla.io sample app:
 
@@ -79,7 +77,19 @@ To enable users to configure the integration we just deployed, embed a user-faci
    yarn dev
    ```
 
-1. Add an embeddable [`<Switch/>`](react-components/#switch) React component into `integrations/[type].tsx`. We can use this to toggle continuous syncs on and off on Apolla.io. Uncomment the block of code starting on line 103 of `integrations/[type].tsx` and add the `Switch` import:
+Wearing your customer hat, let's connect our Salesforce instance to Apolla.io.
+
+1. Navigate to Apolla.io ([http://localhost:3000](http://localhost:3000)) and login with user: `user1` and password: `password`
+
+1. Under "Integrations", click "Connect" to connect to your Salesforce instance
+
+1. Once connected, notice some of the embedded Supaglue React components that we've already integrated into Apolla.io
+
+### Embed a Supaglue React component
+
+Let's add an embeddable React component from scratch:
+
+1. Add the [`<Switch/>`](react-components/#switch) React component into `integrations/[type].tsx`. We can use this to toggle continuous syncs on and off on Apolla.io. Uncomment the block of code starting on line 103 of `integrations/[type].tsx` and add the `Switch` import:
 
    ```typescript
    // apps/sample-app/pages/integrations.tsx
@@ -97,15 +107,13 @@ To enable users to configure the integration we just deployed, embed a user-faci
    // ...
    ```
 
-### Customer configuration
+1. Return to Apolla.io, you should see the new switch component
 
-As a customer, let's connect our Salesforce instance to Apolla.io.
+### Triggering a Sync
 
-1. Navigate to Apolla.io ([http://localhost:3000](http://localhost:3000)) and login with user: `user1` and password: `password`
+Wearing your customer hat, let's trigger a Sync for Contacts.
 
-2. Under "Integrations", click "Connect" to connect to your Salesforce instance
-
-3. Using the `<FieldMapping/>` component that you embedded above, ensure the fields in your Salesforce object map to Apolla.io's object. It should look like the following:
+1. Under "Integrations", ensure the fields in your Salesforce object map to Apolla.io's object. It should look like the following:
 
    | Application field | Salesforce field |
    | ----------------- | ---------------- |
@@ -113,13 +121,13 @@ As a customer, let's connect our Salesforce instance to Apolla.io.
    | email             | Email            |
    | first name        | FirstName        |
 
-4. Click the "Run sync now" button. This runs the sync as a background task. Let's use the `syncs list` CLI command to check when it completes:
+1. Click the "Run sync now" button. This runs the sync as a background task. Let's use the `syncs list` CLI command to check when it completes:
 
    ```shell
    supaglue syncs list --customer-id user1
    ```
 
-5. Once the sync completes you can visit the "App Objects" tab to view the synced records.
+1. Once the sync completes you can visit the "App Objects" tab to view the synced records.
 
 ## Customize your integration
 
@@ -127,7 +135,7 @@ Now that we've gone through the entire integration lifecycle, let's add some cus
 
 ### Customize Developer Config
 
-Let's add two fields, last name and title, to be synced and accessible for our customer to map.
+Let's add two fields, last name and title, to be synced. These will be avilable for our customer to map.
 
 1. Modify the `contactSchema` in `apps/sample-app/supaglue-config/contact.ts`:
 

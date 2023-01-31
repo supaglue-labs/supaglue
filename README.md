@@ -14,7 +14,9 @@
   <a href="https://github.com/supaglue-labs/supaglue"><img title="github stars" src="https://img.shields.io/github/stars/supaglue-labs/supaglue?style=social"></a>
 </p>
 
-[Website](https://supaglue.com?ref=github-readme) • [Getting Started](https://docs.supaglue.com/docs/get-started?ref=github-readme) • [Docs](https://docs.supaglue.com?ref=github-readme) • [Slack](https://supagluecommunity.slack.com/) • [Twitter](https://twitter.com/supaglue_labs)
+<p align="center">
+  [Website](https://supaglue.com?ref=github-readme) • [Getting Started](https://docs.supaglue.com/docs/get-started?ref=github-readme) • [Docs](https://docs.supaglue.com?ref=github-readme) • [Slack](https://supagluecommunity.slack.com/) • [Twitter](https://twitter.com/supaglue_labs)
+</p>
 
 # Supaglue
 
@@ -49,11 +51,11 @@ cp .env.sample .env
 docker compose up
 ```
 
-Continue on to the docs to go through an [integration tutorial](https://docs.supaglue.com/get-started#tutorial).
+Continue on to the docs to go through an [integration tutorial](https://docs.supaglue.com/tutorial).
 
 ## Roadmap
 
-Check out our [roadmap](roadmap) to get informed on what we are currently working on, and what we have in mind for the next weeks, months and years.
+Check out our [roadmap](https://docs.supaglue.com/roadmap) to get informed on what we are currently working on, and what we have in mind for the next weeks, months and years.
 
 ## Community
 
@@ -65,7 +67,7 @@ For general help using Supaglue, please refer to our [documentation](https://doc
 
 ## Contributing
 
-Learn about ways to [contribute to Supaglue](contributing).
+Learn about ways to [contribute to Supaglue](https://docs.supaglue.com/contributing).
 
 ## License
 
