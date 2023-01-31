@@ -13,7 +13,7 @@ if [ "$WORKSPACE_NAME" = "api" ]; then
   # fetch the posthog api key from 1password and pass it as an arg
   # to the docker build
 
-  eval "$(op signin supergrain)"
+  eval "$(op signin supaglue)"
 
   POSTHOG_API_KEY=$(op get item dl4y3dryfib2huqpultgp7wlcq --fields credential)
 
@@ -34,6 +34,6 @@ docker buildx build \
 
 # add a tag for latest if not pre-release
 if [[ $VERSION != *"-"* ]]; then
-  docker tag "ghcr.io/supaglue-labs/${WORKSPACE_NAME}:${VERSION}" "ghcr.io/supaglue-labs/${WORKSPACE_NAME}:latest"
-  docker push "ghcr.io/supaglue-labs/${WORKSPACE_NAME}:latest"
+  docker tag "supaglue/${WORKSPACE_NAME}:${VERSION}" "supaglue/${WORKSPACE_NAME}:latest"
+  docker push "supaglue/${WORKSPACE_NAME}:latest"
 fi
