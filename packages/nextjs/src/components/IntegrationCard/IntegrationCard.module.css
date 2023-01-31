@@ -1,0 +1,22 @@
+.card {
+  border-radius: 0.5rem;
+  border-width: 1px;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.name {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.description {
+  font-size: 1rem;
+  line-height: 1.25rem;
+  text-align: center;
+}

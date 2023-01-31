@@ -1,0 +1,30 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "sample-app#build": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "pages/**/*",
+        "public/**/*",
+        "prisma/**/*",
+        "styles/**/*",
+        "components/**/*",
+        "assets/**/*",
+        "next.config.js",
+        "package.json",
+        "tsconfig.json"
+      ],
+      "outputs": [".next/**"]
+    },
+    "docs#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["build/**"]
+    },
+    "lint-staged": {}
+  },
+  "globalDependencies": [".env", "tsconfig.json", ".eslintrc.json", ".yarnrc.yml"]
+}

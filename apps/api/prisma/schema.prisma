@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("SUPAGLUE_DATABASE_URL")
+}
+
+model Integration {
+  id          String   @id @default(uuid())
+  customerId  String   @map("customer_id")
+  type        String
+  credentials Bytes
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([customerId, type])
+  @@map("integrations")
+}
+
+model DeveloperConfig {
+  id        String   @id @default(uuid())
+  config    Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("developer_configs")
+}
+
+model Sync {
+  id                                String    @id @default(uuid())
+  customerId                        String    @map("customer_id")
+  enabled                           Boolean
+  syncConfigName                    String    @map("sync_config_name")
+  fieldMapping                      Json?     @map("field_mapping")
+  salesforceAPIUsageLimitPercentage Int?      @map("salesforce_api_usage_limit_percentage")
+  SyncRun                           SyncRun[]
+
+  @@unique([customerId, syncConfigName])
+  @@map("syncs")
+}
+
+model SyncRun {
+  id              String    @id @default(uuid())
+  syncId          String    @map("sync_id")
+  startTimestamp  DateTime  @map("start_timestamp")
+  finishTimestamp DateTime? @map("finish_timestamp")
+  status          String
+  errorMessage    String?
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  sync Sync @relation(fields: [syncId], references: [id], onDelete: Cascade)
+
+  @@map("sync_runs")
+}

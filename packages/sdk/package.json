@@ -1,0 +1,26 @@
+{
+  "name": "@supaglue/sdk",
+  "version": "0.0.2-12",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/supaglue-labs/supaglue-wip.git",
+    "directory": "packages/sdk"
+  },
+  "main": "./src/index.ts",
+  "peerDependencies": {
+    "typescript": "^4.9.4"
+  },
+  "scripts": {
+    "build": "yarn run clean && yarn run -T tsc -p .",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "publish": "yarn dlx turbo run build --filter=@supaglue/sdk... && yarn npm publish",
+    "lint-staged": "lint-staged --no-stash --quiet"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "files": [
+    "dist"
+  ]
+}

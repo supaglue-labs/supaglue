@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    restart: on-failure
+    environment:
+      POSTGRES_DB: ${POSTGRES_DATABASE:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supaglue}
+
+  api:
+    image: supaglue/api:0.0.2-12
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=production
+      - SUPAGLUE_DATABASE_URL=${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}
+      - SUPAGLUE_API_SERVER_URL=${SUPAGLUE_API_SERVER_URL:-http://localhost:8080}
+      - SUPAGLUE_API_PORT=${SUPAGLUE_API_PORT:-8080}
+      - SUPAGLUE_API_ENCRYPTION_SECRET
+      - SUPAGLUE_PRETTY_LOGS=${SUPAGLUE_PRETTY_LOGS:-1}
+      - SUPAGLUE_DISABLE_ANALYTICS
+      - SUPAGLUE_DISABLE_ERROR_REPORTING
+      - SUPAGLUE_CORS_ORIGIN
+    working_dir: /app
+    restart: on-failure
+    command: /bin/sh -c "npx prisma migrate deploy && node ./index.js"
+
+  temporal:
+    image: slamdev/temporalite:0.3.0 # TODO: we should replace this with one hosted by us later
+    ports:
+      - 7233:7233
+      - 8233:8233
+    entrypoint: temporalite start -n default --ip 0.0.0.0 -f /data/temporal.db
+    restart: on-failure
+    volumes:
+      - temporalitedata:/data
+
+volumes:
+  pgdata:
+  temporalitedata:

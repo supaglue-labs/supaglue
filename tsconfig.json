@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "lib": ["es6"],
+    "jsx": "react-jsx"
+  },
+  "exclude": ["node_modules", "dist"]
+}

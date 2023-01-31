@@ -1,0 +1,45 @@
+.emptyContentReason {
+  font-style: italic;
+  padding-top: 1rem;
+}
+
+.form {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  width: 30rem;
+}
+
+.formHeaderRow {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.formColumnHeader {
+  text-decoration: underline;
+  width: 50%;
+}
+
+.fieldWrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.fieldName {
+  font-size: 1rem;
+}
+
+.fieldDropdown {
+  border: 1px solid rgba(239, 239, 239);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  width: 50%;
+}

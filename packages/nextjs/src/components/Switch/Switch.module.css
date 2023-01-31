@@ -1,0 +1,47 @@
+.switchWrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.switchRoot {
+  border: 2px transparent;
+  border-radius: 9999px;
+  height: 1.5625rem;
+  overflow: hidden;
+  padding: 0;
+  transition: background-color 100ms;
+  white-space: nowrap;
+  width: 2.625rem;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.switchRootOn {
+  composes: switchRoot;
+  background-color: hsl(226 58.6% 51.3%); /* radix indigo-9 */
+}
+
+.switchRootOff {
+  composes: switchRoot;
+  background-color: hsl(207 11.1% 85.9%); /* radix slate-7 */
+}
+
+.switchRoot:focus-visible {
+  box-shadow: 0 0 0 2px hsl(226 62.0% 17.0%); /* radix indigo-12 */
+}
+
+.switchThumb {
+  background-color: white;
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  display: block;
+  flex-shrink: 0;
+  height: 1.3125rem;
+  transform: translateX(0.125rem);
+  transition: transform 100ms;
+  width: 1.3125rem;
+}
+.switchThumb[data-state='checked'] {
+  transform: translateX(1.1875rem);
+}
