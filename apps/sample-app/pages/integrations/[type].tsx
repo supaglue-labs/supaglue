@@ -1,5 +1,5 @@
 import { FieldMapping, TriggerSyncButton, useSupaglueContext } from '@supaglue/nextjs';
-import { SupaglueApiProvider, useDeveloperConfig, useSalesforceIntegration } from '@supaglue/nextjs/src/hooks/api';
+import { useDeveloperConfig, useSalesforceIntegration } from '@supaglue/nextjs/src/hooks/api';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -15,9 +15,7 @@ export default function Integration() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="px-6 xl:pr-2 pb-16">
-        <SupaglueApiProvider>
-          <IntegrationPage />
-        </SupaglueApiProvider>
+        <IntegrationPage />
       </main>
     </>
   );

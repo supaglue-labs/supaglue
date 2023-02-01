@@ -2,8 +2,9 @@ import classNames from 'classnames';
 import { useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { SupaglueApiProvider, triggerSync, useSalesforceIntegration } from '../../hooks/api';
-import { SgCacheProvider, useSupaglueContext } from '../../provider';
+import { triggerSync, useSalesforceIntegration } from '../../hooks/api';
+import { SupaglueInternalProvider } from '../../providers';
+import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import { Button } from '../Button';
 
@@ -64,9 +65,7 @@ export const TriggerSyncButtonInternal = ({
 };
 
 export const TriggerSyncButton = (props: TriggerSyncButtonProps) => (
-  <SupaglueApiProvider>
-    <SgCacheProvider>
-      <TriggerSyncButtonInternal {...props} />
-    </SgCacheProvider>
-  </SupaglueApiProvider>
+  <SupaglueInternalProvider>
+    <TriggerSyncButtonInternal {...props} />
+  </SupaglueInternalProvider>
 );

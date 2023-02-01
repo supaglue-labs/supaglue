@@ -2,8 +2,9 @@
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { HTMLAttributes } from 'react';
-import { SupaglueApiProvider, useSalesforceIntegration } from '../../hooks/api';
-import { SgCacheProvider, useSupaglueContext } from '../../provider';
+import { useSalesforceIntegration } from '../../hooks/api';
+import { SupaglueInternalProvider } from '../../providers';
+import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import { Button } from '../Button';
 import styles from '../Button/styles';
@@ -52,9 +53,7 @@ const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) =>
 };
 
 export const SalesforceConnectButton = (props: SalesforceConnectButtonProps) => (
-  <SupaglueApiProvider>
-    <SgCacheProvider>
-      <SalesforceConnectButtonInternal {...props} />
-    </SgCacheProvider>
-  </SupaglueApiProvider>
+  <SupaglueInternalProvider>
+    <SalesforceConnectButtonInternal {...props} />
+  </SupaglueInternalProvider>
 );

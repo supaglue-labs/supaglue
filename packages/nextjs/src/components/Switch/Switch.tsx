@@ -4,8 +4,9 @@ import classnames from 'classnames';
 import { useId } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { SupaglueApiProvider, updateSync } from '../../hooks/api';
-import { SgCacheProvider, useSupaglueContext } from '../../provider';
+import { updateSync } from '../../hooks/api';
+import { SupaglueInternalProvider } from '../../providers';
+import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import { styles } from './styles';
 
@@ -84,9 +85,7 @@ const SwitchInternal = (props: SwitchProps) => {
 };
 
 export const Switch = (props: SwitchProps) => (
-  <SupaglueApiProvider>
-    <SgCacheProvider>
-      <SwitchInternal {...props} />
-    </SgCacheProvider>
-  </SupaglueApiProvider>
+  <SupaglueInternalProvider>
+    <SwitchInternal {...props} />
+  </SupaglueInternalProvider>
 );

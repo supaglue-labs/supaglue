@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import classNames from 'classnames';
-import { SupaglueApiProvider, useDeveloperConfig } from '../../hooks/api';
-import { SgCacheProvider } from '../../provider';
+import { useDeveloperConfig } from '../../hooks/api';
+import { SupaglueInternalProvider } from '../../providers';
 import { SupaglueAppearance } from '../../types';
 import { SalesforceConnectButton } from '../SalesforceConnectButton';
 import styles from './styles';
@@ -45,9 +45,7 @@ const IntegrationCardInternal = ({ name, description, configurationUrl, appearan
 };
 
 export const IntegrationCard = (props: IntegrationCardProps) => (
-  <SupaglueApiProvider>
-    <SgCacheProvider>
-      <IntegrationCardInternal {...props} />
-    </SgCacheProvider>
-  </SupaglueApiProvider>
+  <SupaglueInternalProvider>
+    <IntegrationCardInternal {...props} />
+  </SupaglueInternalProvider>
 );

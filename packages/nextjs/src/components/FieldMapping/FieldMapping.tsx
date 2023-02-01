@@ -4,9 +4,10 @@ import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { Select } from '..';
-import { SupaglueApiProvider, updateSync, useSalesforceIntegration } from '../../hooks/api';
+import { updateSync, useSalesforceIntegration } from '../../hooks/api';
 import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
-import { SgCacheProvider, useSupaglueContext } from '../../provider';
+import { SupaglueInternalProvider } from '../../providers';
+import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
 
@@ -191,9 +192,7 @@ export type FieldMappingProps = {
 };
 
 export const FieldMapping = ({ appearance, syncConfigName }: FieldMappingProps) => (
-  <SupaglueApiProvider>
-    <SgCacheProvider>
-      <FieldMappingInternal appearance={appearance} syncConfigName={syncConfigName} />
-    </SgCacheProvider>
-  </SupaglueApiProvider>
+  <SupaglueInternalProvider>
+    <FieldMappingInternal appearance={appearance} syncConfigName={syncConfigName} />
+  </SupaglueInternalProvider>
 );
