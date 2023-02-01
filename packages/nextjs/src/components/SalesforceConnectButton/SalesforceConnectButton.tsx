@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { HTMLAttributes } from 'react';
-import { SupaglueApiProvider, useSalesforceIntegration } from '../../hooks/api';
+import { SupaglueApiProviderInternal, useSalesforceIntegration } from '../../hooks/api';
 import { useSupaglueContext } from '../../provider';
 import { SupaglueAppearance } from '../../types';
 import styles from './SalesforceConnectButton.module.css';
@@ -50,7 +50,7 @@ const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) =>
 };
 
 export const SalesforceConnectButton = (props: SalesforceConnectButtonProps) => (
-  <SupaglueApiProvider>
+  <SupaglueApiProviderInternal>
     <SalesforceConnectButtonInternal {...props} />
-  </SupaglueApiProvider>
+  </SupaglueApiProviderInternal>
 );
