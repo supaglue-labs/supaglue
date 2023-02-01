@@ -9,15 +9,21 @@ slug: /
 
 Supaglue is a developer platform for integrating your application with your customer's Salesforce instance. It lets you authenticate with Salesforce, define integrations with code to sync SFDC sObjects, and expose customer-facing UI components in your application. Supaglue takes care of execution, fault-tolerance, and communicating with customer's Salesforce. Supaglue is open source and can be self-hosted.
 
+import ThemedImage from '@theme/ThemedImage';
+
+<ThemedImage
+  alt="Intro Diagram"
+  sources={{
+    light: ('/img/intro_diagram_light.png'),
+    dark: ('/img/intro_diagram_dark.png'),
+  }}
+/>
+
 :::caution
 
 Supaglue is in Public Alpha. There are currently many missing features, interfaces will likely change, and it is not production-ready yet.
 
 :::
-
-<p align="center">
-  <a href="#"><img src="/img/diagram2.png" alt="Supaglue" width="600px"/></a>
-</p>
 
 ## What it isn't
 
