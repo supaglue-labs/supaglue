@@ -14,7 +14,8 @@
     "build": "yarn run clean && yarn run -T tsc -p .",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "publish": "yarn dlx turbo run build --filter=@supaglue/sdk... && yarn npm publish",
-    "lint-staged": "lint-staged --no-stash --quiet"
+    "lint-staged": "run -T lint-staged --no-stash --quiet",
+    "lint": "run -T eslint"
   },
   "publishConfig": {
     "main": "./dist/index.js",
