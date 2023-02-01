@@ -98,12 +98,12 @@ const SyncConfiguration = () => {
             )}
           </div>
 
-          {/* <div className="px-3">
-            <div className="py-2">
-              <Switch syncConfigName={syncConfigName} />
-            </div>
+          {/*
+          <div className="px-3">
+            <div className="py-2"><Switch syncConfigName={syncConfigName} /></div>
             <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
-          </div> */}
+            </div>
+          */}
 
           <div className="flex flex-col gap-4">
             <FieldMapping syncConfigName={syncConfigName} key={syncConfigName} />
