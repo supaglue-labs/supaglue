@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { SupaglueApiProvider, useDeveloperConfig } from '../../hooks/api';
+import { SupaglueApiProviderInternal, useDeveloperConfig } from '../../hooks/api';
 import { SupaglueAppearance } from '../../types';
 import { SalesforceConnectButton } from '../SalesforceConnectButton';
 import styles from './IntegrationCard.module.css';
@@ -43,7 +43,7 @@ const IntegrationCardInternal = ({ name, description, configurationUrl, appearan
 };
 
 export const IntegrationCard = (props: IntegrationCardProps) => (
-  <SupaglueApiProvider>
+  <SupaglueApiProviderInternal>
     <IntegrationCardInternal {...props} />
-  </SupaglueApiProvider>
+  </SupaglueApiProviderInternal>
 );

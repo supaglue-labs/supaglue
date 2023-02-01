@@ -43,7 +43,7 @@ export async function triggerSync(url: string) {
   }
 }
 
-export const SupaglueApiProvider = ({ children }: { children: ReactNode }) => {
+export const SupaglueApiProviderInternal = ({ children }: { children: ReactNode }) => {
   const { apiUrl } = useSupaglueContext();
 
   return (

@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { useId } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { SupaglueApiProvider, updateSync } from '../../hooks/api';
+import { SupaglueApiProviderInternal, updateSync } from '../../hooks/api';
 import { useSupaglueContext } from '../../provider';
 import { SupaglueAppearance } from '../../types';
 import styles from './Switch.module.css';
@@ -86,7 +86,7 @@ const SwitchInternal = (props: SwitchProps) => {
 };
 
 export const Switch = (props: SwitchProps) => (
-  <SupaglueApiProvider>
+  <SupaglueApiProviderInternal>
     <SwitchInternal {...props} />
-  </SupaglueApiProvider>
+  </SupaglueApiProviderInternal>
 );
