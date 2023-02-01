@@ -6,7 +6,7 @@ import { SWRConfig } from 'swr';
 import { RequestType } from '../hooks/api';
 import { useSupaglueContext } from './supaglueProvider';
 
-export const SupaglueInternalProvider = ({ children }: { children: ReactNode }) => {
+export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) => {
   const { apiUrl } = useSupaglueContext();
 
   const cache = createCache({

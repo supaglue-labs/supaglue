@@ -6,7 +6,7 @@ import useSWRMutation from 'swr/mutation';
 import { Select } from '..';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
 import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
-import { SupaglueInternalProvider } from '../../providers';
+import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
@@ -192,7 +192,7 @@ export type FieldMappingProps = {
 };
 
 export const FieldMapping = ({ appearance, syncConfigName }: FieldMappingProps) => (
-  <SupaglueInternalProvider>
+  <SupaglueProviderInternal>
     <FieldMappingInternal appearance={appearance} syncConfigName={syncConfigName} />
-  </SupaglueInternalProvider>
+  </SupaglueProviderInternal>
 );
