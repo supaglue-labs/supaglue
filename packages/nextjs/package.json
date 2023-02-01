@@ -25,7 +25,8 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "publish": "yarn dlx turbo run build --filter=@supaglue/nextjs... && yarn npm publish",
     "dev": "tsc -p tsconfig.json --watch",
-    "lint-staged": "lint-staged --no-stash"
+    "lint-staged": "run -T lint-staged --no-stash --quiet",
+    "lint": "run -T eslint"
   },
   "publishConfig": {
     "main": "./dist/index.js",
@@ -46,7 +47,7 @@
   ],
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit src/globals.d.ts",
-    "**/*.{ts,ts,js}": [
+    "**/*.{ts,tsx,js}": [
       "eslint",
       "prettier --write"
     ]

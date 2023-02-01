@@ -7,7 +7,7 @@
     "build": "sh -c 'if [ \"$VERCEL_ENV\" = production ]; then yarn prisma migrate deploy; fi; next build'",
     "start": "next start",
     "lint": "next lint",
-    "lint-staged": "lint-staged --no-stash"
+    "lint-staged": "run -T lint-staged --no-stash --quiet"
   },
   "peerDependencies": {
     "prettier": "*"
@@ -60,7 +60,7 @@
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit next-env.d.ts",
-    "**/*.{ts,ts,js}": [
+    "**/*.{ts,tsx,js}": [
       "eslint",
       "prettier --write"
     ]

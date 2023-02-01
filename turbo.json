@@ -24,7 +24,16 @@
       "dependsOn": ["^build"],
       "outputs": ["build/**"]
     },
-    "lint-staged": {}
+    "lint-staged": {},
+    "lint": {
+      "inputs": ["**/*.{js,ts,tsx}"]
+    },
+    "test": {
+      "dependsOn": ["build"]
+    },
+    "test:watch": {
+      "cache": false
+    }
   },
-  "globalDependencies": [".env", "tsconfig.json", ".eslintrc.json", ".yarnrc.yml"]
+  "globalDependencies": ["**/.env.*local", "tsconfig.json", ".eslintrc.json", ".yarnrc.yml"]
 }
