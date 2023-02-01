@@ -3,7 +3,6 @@ import { COLORS } from '../../lib/styles';
 
 export default {
   button: css({
-    // This is needed to out-specify base tailwind button stylings which resets background to transparent.
     alignItems: 'center',
     borderRadius: '0.5rem',
     color: 'white',
