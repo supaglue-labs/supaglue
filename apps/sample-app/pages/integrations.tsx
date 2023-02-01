@@ -1,5 +1,4 @@
 import { IntegrationCard } from '@supaglue/nextjs';
-import { SupaglueApiProvider } from '@supaglue/nextjs/src/hooks/api';
 import Head from 'next/head';
 import { DrawerMenuButton } from '../components/DrawerMenuButton';
 
@@ -12,9 +11,7 @@ export default function Integrations() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="px-6 xl:pr-2 pb-16">
-        <SupaglueApiProvider>
-          <IntegrationsPage />
-        </SupaglueApiProvider>
+        <IntegrationsPage />
       </main>
     </>
   );
