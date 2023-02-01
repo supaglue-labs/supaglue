@@ -32,11 +32,6 @@ const IntegrationsPage = () => {
           name="Salesforce"
           description="Sync your Objects"
           configurationUrl={`${location}/salesforce`}
-          // appearance={{
-          //   elements: {
-          //     card: 'bg-blue-100 card',
-          //   },
-          // }}
         />
       </ul>
     </>
