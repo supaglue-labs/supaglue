@@ -1,8 +1,10 @@
+/** @jsxImportSource @emotion/react */
 import classNames from 'classnames';
 import { SupaglueApiProvider, useDeveloperConfig } from '../../hooks/api';
+import { SgCacheProvider } from '../../provider';
 import { SupaglueAppearance } from '../../types';
 import { SalesforceConnectButton } from '../SalesforceConnectButton';
-import styles from './IntegrationCard.module.css';
+import styles from './styles';
 
 export type IntegrationCardProps = {
   name: string;
@@ -14,6 +16,7 @@ export type IntegrationCardProps = {
       card?: string;
       name?: string;
       description?: string;
+      button?: string;
     };
   };
 };
@@ -23,18 +26,17 @@ const IntegrationCardInternal = ({ name, description, configurationUrl, appearan
 
   return developerConfig ? (
     <li>
-      <div className={classNames(appearance?.elements?.card, 'sg-integrationCard', styles.card)}>
-        <span className={classNames(appearance?.elements?.name, 'sg-integrationCard-name', styles.name)}>{name}</span>
+      <div css={styles.card} className={classNames(appearance?.elements?.card, 'sg-integrationCard')}>
+        <span css={styles.name} className={classNames(appearance?.elements?.name, 'sg-integrationCard-name')}>
+          {name}
+        </span>
         <span
-          className={classNames(
-            appearance?.elements?.description,
-            'sg-integrationCard-description',
-            styles.description
-          )}
+          css={styles.description}
+          className={classNames(appearance?.elements?.description, 'sg-integrationCard-description')}
         >
           {description}
         </span>
-        <SalesforceConnectButton configurationUrl={configurationUrl} />
+        <SalesforceConnectButton configurationUrl={configurationUrl} appearance={appearance} />
       </div>
     </li>
   ) : (
@@ -44,6 +46,8 @@ const IntegrationCardInternal = ({ name, description, configurationUrl, appearan
 
 export const IntegrationCard = (props: IntegrationCardProps) => (
   <SupaglueApiProvider>
-    <IntegrationCardInternal {...props} />
+    <SgCacheProvider>
+      <IntegrationCardInternal {...props} />
+    </SgCacheProvider>
   </SupaglueApiProvider>
 );

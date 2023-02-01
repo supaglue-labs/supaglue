@@ -1,9 +1,9 @@
+/** @jsxImportSource @emotion/react */
 import * as RadixSelect from '@radix-ui/react-select';
 import classnames from 'classnames';
 import React from 'react';
-import styles from './Select.module.css';
+import styles from './styles';
 
-// TODO: Make this overridable.
 export type SelectProps = {
   className: string;
   disabled?: boolean;
@@ -17,12 +17,16 @@ export type SelectProps = {
 const Select = ({ className, label, options, value, isLoading, disabled, ...props }: SelectProps) => (
   <RadixSelect.Root {...props} value={value} disabled={disabled || isLoading}>
     <RadixSelect.Trigger
-      className={classnames(className, styles.selectTrigger)}
+      css={styles.selectTrigger}
+      className={classnames('sg-selectTrigger', className)}
+      // Explicitly remove type attribute to prevent global css from resetting
+      // our styles
+      type={undefined}
       disabled={isLoading}
       aria-label={label}
     >
       {isLoading ? (
-        <p className={classnames(styles.selectLoading)}>Loading...</p>
+        <p css={styles.selectLoading}>Loading...</p>
       ) : (
         <>
           <RadixSelect.Value asChild>
@@ -42,8 +46,8 @@ const Select = ({ className, label, options, value, isLoading, disabled, ...prop
       )}
     </RadixSelect.Trigger>
     <RadixSelect.Portal>
-      <RadixSelect.Content className={styles.selectContent}>
-        <RadixSelect.Viewport className={styles.selectViewport}>
+      <RadixSelect.Content css={styles.selectContent}>
+        <RadixSelect.Viewport css={styles.selectViewport}>
           {options.map((option, idx) => (
             <RadixSelectItem key={idx} value={option}>
               {option}
@@ -61,7 +65,7 @@ export { Select };
 
 const RadixSelectItem = React.forwardRef(({ children, className, ...props }: any, forwardedRef) => {
   return (
-    <RadixSelect.Item className={classnames(styles.selectItem, className)} {...props} ref={forwardedRef}>
+    <RadixSelect.Item css={styles.selectItem} className={classnames(className)} {...props} ref={forwardedRef}>
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
     </RadixSelect.Item>
   );

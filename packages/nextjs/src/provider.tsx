@@ -1,3 +1,5 @@
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
 import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
 
 const SupaglueContext = createContext({
@@ -22,6 +24,18 @@ export const SupaglueProvider: FC<SupaglueProviderProps> = ({ children, customer
       {children}
     </SupaglueContext.Provider>
   );
+};
+
+type SgCacheProviderProps = {
+  children: ReactNode;
+};
+
+export const SgCacheProvider: FC<SgCacheProviderProps> = ({ children }) => {
+  const cache = createCache({
+    key: 'sg-internal',
+    prepend: true,
+  });
+  return <CacheProvider value={cache}>{children}</CacheProvider>;
 };
 
 export const useSupaglueContext = () => useContext(SupaglueContext);
