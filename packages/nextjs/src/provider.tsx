@@ -33,6 +33,7 @@ type SgCacheProviderProps = {
 export const SgCacheProvider: FC<SgCacheProviderProps> = ({ children }) => {
   const cache = createCache({
     key: 'sg-internal',
+    // Prepending allows developers to override css since Emotion styles are at the beginning
     prepend: true,
   });
   return <CacheProvider value={cache}>{children}</CacheProvider>;
