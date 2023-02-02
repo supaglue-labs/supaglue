@@ -25,7 +25,8 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "publish": "yarn dlx turbo run build --filter=@supaglue/nextjs... && yarn npm publish",
     "dev": "tsc -p tsconfig.json --watch",
-    "lint-staged": "lint-staged --no-stash"
+    "lint-staged": "run -T lint-staged --no-stash --quiet",
+    "lint": "run -T eslint"
   },
   "publishConfig": {
     "main": "./dist/index.js",
@@ -35,6 +36,9 @@
     }
   },
   "dependencies": {
+    "@emotion/cache": "^11.10.5",
+    "@emotion/react": "^11.10.5",
+    "@radix-ui/colors": "^0.1.8",
     "@radix-ui/react-select": "^1.2.0",
     "@radix-ui/react-switch": "^1.0.1",
     "axios": "^1.2.2",
@@ -46,7 +50,7 @@
   ],
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit src/globals.d.ts",
-    "**/*.{ts,ts,js}": [
+    "**/*.{ts,tsx,js}": [
       "eslint",
       "prettier --write"
     ]

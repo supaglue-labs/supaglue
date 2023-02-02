@@ -8,9 +8,6 @@
     "main": "./dist/index.js",
     "exports": "./dist/index.js"
   },
-  "peerDependencies": {
-    "typescript": "*"
-  },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
     "@types/async-retry": "^1",
@@ -20,12 +17,14 @@
     "@types/pg": "^8",
     "@types/uuid": "^9",
     "dotenv": "^16.0.3",
-    "tsx": "^3.12.2"
+    "tsx": "^3.12.2",
+    "typescript": "^4.9.4"
   },
   "scripts": {
     "start": "tsx watch --clear-screen=false ./index.ts",
     "build": "yarn dlx --package typescript tsc -p tsconfig.build.json",
-    "lint-staged": "lint-staged --no-stash --quiet"
+    "lint-staged": "run -T lint-staged --no-stash --quiet",
+    "lint": "run -T eslint"
   },
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
