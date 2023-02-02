@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
-import { COLORS } from '../../lib/styles';
+import { indigo, slate } from '@radix-ui/colors';
 import buttonStyles from '../Button/styles';
 
 const selectTrigger = css(buttonStyles.button, {
   backgroundColor: 'white',
-  color: COLORS.SLATE_12,
+  color: slate.slate12,
   display: 'inline-flex',
   fontSize: '1rem',
   fontWeight: 400,
@@ -15,10 +15,10 @@ const selectTrigger = css(buttonStyles.button, {
   padding: '0 1rem',
   width: '50%',
   ':hover': {
-    backgroundColor: COLORS.SLATE_1,
+    backgroundColor: slate.slate1,
   },
   ':disabled': {
-    backgroundColor: COLORS.SLATE_3,
+    backgroundColor: slate.slate3,
   },
   ':disabled svg': {
     opacity: 0,
@@ -43,10 +43,10 @@ const selectItem = css({
   position: 'relative',
   userSelect: 'none',
   '&[data-highlighted]': {
-    backgroundColor: COLORS.INDIGO_5,
+    backgroundColor: indigo.indigo5,
   },
   "&[data-state='checked']": {
-    backgroundColor: COLORS.INDIGO_6,
+    backgroundColor: indigo.indigo6,
   },
 });
 

@@ -3404,6 +3404,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/colors@npm:^0.1.8":
+  version: 0.1.8
+  resolution: "@radix-ui/colors@npm:0.1.8"
+  checksum: 35fb8e48b1333e0a800ee55ce554d29016c10d2cb23aa161c6476c32b8231ec78f0ae57535ad482aa35adf0b64c957d92da88ef7f3a3f4a2f8c06870208c7ed1
+  languageName: node
+  linkType: hard
+
 "@radix-ui/number@npm:1.0.0":
   version: 1.0.0
   resolution: "@radix-ui/number@npm:1.0.0"
@@ -3904,6 +3911,7 @@ __metadata:
   dependencies:
     "@emotion/cache": ^11.10.5
     "@emotion/react": ^11.10.5
+    "@radix-ui/colors": ^0.1.8
     "@radix-ui/react-select": ^1.2.0
     "@radix-ui/react-switch": ^1.0.1
     "@tsconfig/next": ^1.0.4

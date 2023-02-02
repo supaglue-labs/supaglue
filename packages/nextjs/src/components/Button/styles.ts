@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { COLORS } from '../../lib/styles';
+import { indigo, slate } from '@radix-ui/colors';
 
 export default {
   button: css({
@@ -13,15 +13,15 @@ export default {
     justifyContent: 'center',
     padding: '0.5rem 0.75rem',
     width: 'fit-content',
-    backgroundColor: COLORS.INDIGO_9,
+    backgroundColor: indigo.indigo9,
     ':hover': {
-      backgroundColor: COLORS.INDIGO_10,
+      backgroundColor: indigo.indigo10,
     },
     ':focus-visible': {
-      boxShadow: COLORS.INDIGO_12,
+      boxShadow: indigo.indigo12,
     },
     ':disabled': {
-      backgroundColor: COLORS.SLATE_8,
+      backgroundColor: slate.slate8,
     },
   }),
 };

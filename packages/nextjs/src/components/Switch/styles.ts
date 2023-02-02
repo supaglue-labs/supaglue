@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { COLORS } from '../../lib/styles';
+import { indigo, slate } from '@radix-ui/colors';
 
 const switchWrapper = css({
   alignItems: 'center',
@@ -19,21 +19,21 @@ const switchRoot = css({
   width: '2.625rem',
   WebkitTapHighlightColor: 'rgba(0, 0, 0, 0)',
   '&:focus-visible': {
-    boxShadow: `0 0 0 2px ${COLORS.INDIGO_12}`,
+    boxShadow: `0 0 0 2px ${indigo.indigo12}`,
   },
 });
 
 const switchRootOn = css([
   switchRoot,
   {
-    backgroundColor: COLORS.SLATE_9,
+    backgroundColor: slate.slate9,
   },
 ]);
 
 const switchRootOff = css([
   switchRoot,
   {
-    backgroundColor: COLORS.SLATE_7,
+    backgroundColor: slate.slate7,
   },
 ]);
 

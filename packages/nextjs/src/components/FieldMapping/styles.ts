@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { COLORS } from '../../lib/styles';
+import { gray } from '@radix-ui/colors';
 
 const emptyContentReason = css({
   fontStyle: 'italic',
@@ -40,7 +40,7 @@ const fieldName = css({
 });
 
 const fieldDropdown = css({
-  border: `1px solid ${COLORS.GRAY_12}`,
+  border: `1px solid ${gray.gray12}`,
   borderRadius: '0.5rem',
   cursor: 'pointer',
   padding: '0.25rem 0.5rem',
