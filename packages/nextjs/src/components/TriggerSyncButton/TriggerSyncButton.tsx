@@ -2,17 +2,18 @@ import classNames from 'classnames';
 import { useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { SupaglueApiProviderInternal, triggerSync, useSalesforceIntegration } from '../../hooks/api';
-import { useSupaglueContext } from '../../provider';
+import { triggerSync, useSalesforceIntegration } from '../../hooks/api';
+import { SupaglueProviderInternal } from '../../providers';
+import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import styles from './TriggerSyncButton.module.css';
+import { Button } from '../Button';
 
 export type TriggerSyncButtonProps = {
   syncConfigName: string;
   label?: string;
   appearance?: SupaglueAppearance & {
     elements?: {
-      buttonLabel?: string;
+      button?: string;
     };
   };
   onSuccess?: () => void;
@@ -53,19 +54,18 @@ export const TriggerSyncButtonInternal = ({
   };
 
   return integrationConnected ? (
-    <button
-      className={classNames('sg-buttonLabel', appearance?.elements?.buttonLabel, styles.button)}
+    <Button
+      className={classNames('sg-triggerSyncButton', appearance?.elements?.button)}
       disabled={isLoadingSync || syncingInProgress}
-      type="button"
       onClick={onClick}
     >
       {syncingInProgress ? 'Syncing...' : label || 'Run sync now'}
-    </button>
+    </Button>
   ) : null;
 };
 
 export const TriggerSyncButton = (props: TriggerSyncButtonProps) => (
-  <SupaglueApiProviderInternal>
+  <SupaglueProviderInternal>
     <TriggerSyncButtonInternal {...props} />
-  </SupaglueApiProviderInternal>
+  </SupaglueProviderInternal>
 );

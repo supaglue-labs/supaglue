@@ -1,13 +1,15 @@
+/** @jsxImportSource @emotion/react */
 import classNames from 'classnames';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { Select } from '..';
-import { SupaglueApiProviderInternal, updateSync, useSalesforceIntegration } from '../../hooks/api';
+import { updateSync, useSalesforceIntegration } from '../../hooks/api';
 import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
-import { useSupaglueContext } from '../../provider';
+import { SupaglueProviderInternal } from '../../providers';
+import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import styles from './FieldMapping.module.css';
+import styles from './styles';
 
 type Field = {
   name: string;
@@ -15,6 +17,14 @@ type Field = {
 };
 
 type FieldMapping = Record<string, string>;
+
+const EmptyContent = ({ className, children }: { className?: string; children: ReactNode }) => {
+  return (
+    <p css={styles.emptyContentReason} className={className}>
+      {children}
+    </p>
+  );
+};
 
 const FieldMappingInternal = ({ appearance, syncConfigName }: FieldMappingProps) => {
   const { customerId } = useSupaglueContext();
@@ -34,27 +44,25 @@ const FieldMappingInternal = ({ appearance, syncConfigName }: FieldMappingProps)
   }
 
   if (isLoadingDeveloperConfig || isLoadingSync || isLoadingIntegration) {
-    return <p className={styles.emptyContentReason}>Loading...</p>;
+    return <EmptyContent>Loading...</EmptyContent>;
   }
 
   if (!integration) {
-    return (
-      <p className={styles.emptyContentReason}>Not connected to Salesforce. Please connect to Salesforce first.</p>
-    );
+    return <EmptyContent>Not connected to Salesforce. Please connect to Salesforce first.</EmptyContent>;
   }
 
   if (!sync) {
-    return <p className={styles.emptyContentReason}>No sync found.</p>;
+    return <EmptyContent>No sync found.</EmptyContent>;
   }
 
   if (!developerConfig?.syncConfigs?.length) {
-    return <p className={styles.emptyContentReason}>No developer config found.</p>;
+    return <EmptyContent>No developer config found.</EmptyContent>;
   }
 
   const syncConfig = developerConfig.syncConfigs.find(({ name }) => name === syncConfigName);
 
   if (!syncConfig?.destination.schema.fields.length) {
-    return <p className={styles.emptyContentReason}>No fields to map.</p>;
+    return <EmptyContent>No fields to map.</EmptyContent>;
   }
 
   return <FieldCollection appearance={appearance} sync={sync} syncConfig={syncConfig} />;
@@ -117,15 +125,17 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
   };
 
   return (
-    <form className={classNames(appearance?.elements?.form, 'sg-form', styles.form)}>
-      <div className={classNames(appearance?.elements?.formHeaderRow, 'sg-formHeaderRow', styles.formHeaderRow)}>
+    <form css={styles.form} className={classNames(appearance?.elements?.form, 'sg-form')}>
+      <div css={styles.formHeaderRow} className={classNames(appearance?.elements?.formHeaderRow, 'sg-formHeaderRow')}>
         <div
-          className={classNames(appearance?.elements?.formColumnHeader, 'sg-formColumnHeader', styles.formColumnHeader)}
+          css={styles.formColumnHeader}
+          className={classNames(appearance?.elements?.formColumnHeader, 'sg-formColumnHeader')}
         >
           Application fields
         </div>
         <div
-          className={classNames(appearance?.elements?.formColumnHeader, 'sg-formColumnHeader', styles.formColumnHeader)}
+          css={styles.formColumnHeader}
+          className={classNames(appearance?.elements?.formColumnHeader, 'sg-formColumnHeader')}
         >
           Salesforce fields
         </div>
@@ -138,11 +148,15 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
         return (
           <div
             key={idx}
-            className={classNames(appearance?.elements?.fieldWrapper, 'sg-fieldWrapper', styles.fieldWrapper)}
+            css={styles.fieldWrapper}
+            className={classNames(appearance?.elements?.fieldWrapper, 'sg-fieldWrapper')}
           >
-            <p className={classNames(appearance?.elements?.fieldName, 'sg-fieldName', styles.fieldName)}>{label}</p>
+            <p css={styles.fieldName} className={classNames(appearance?.elements?.fieldName, 'sg-fieldName')}>
+              {label}
+            </p>
             <Select
-              className={classNames(appearance?.elements?.fieldDropdown, styles.fieldDropdown, 'sg-fieldDropdown')}
+              css={styles.fieldDropdown}
+              className={classNames(appearance?.elements?.fieldDropdown, 'sg-fieldDropdown')}
               disabled={!!upsertKey && name === upsertKey}
               label="Salesforce field name"
               onValueChange={async (value: string) => {
@@ -178,7 +192,7 @@ export type FieldMappingProps = {
 };
 
 export const FieldMapping = ({ appearance, syncConfigName }: FieldMappingProps) => (
-  <SupaglueApiProviderInternal>
+  <SupaglueProviderInternal>
     <FieldMappingInternal appearance={appearance} syncConfigName={syncConfigName} />
-  </SupaglueApiProviderInternal>
+  </SupaglueProviderInternal>
 );

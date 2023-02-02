@@ -1,16 +1,19 @@
+/** @jsxImportSource @emotion/react */
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { HTMLAttributes } from 'react';
-import { SupaglueApiProviderInternal, useSalesforceIntegration } from '../../hooks/api';
-import { useSupaglueContext } from '../../provider';
+import { useSalesforceIntegration } from '../../hooks/api';
+import { SupaglueProviderInternal } from '../../providers';
+import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import styles from './SalesforceConnectButton.module.css';
+import { Button } from '../Button';
+import styles from '../Button/styles';
 
 export type SalesforceConnectButtonProps = {
   configurationUrl: string;
   appearance?: SupaglueAppearance & {
     elements?: {
-      buttonLabel?: string;
+      button?: string;
     };
   };
 } & HTMLAttributes<HTMLButtonElement>;
@@ -39,18 +42,18 @@ const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) =>
   }
 
   return (
-    <button
-      className={classNames('sg-buttonLabel', props.appearance?.elements?.buttonLabel, styles.button)}
+    <Button
+      css={[styles.button, { width: '8rem' }]}
+      className={classNames('sg-salesforceConnectButton', props.appearance?.elements?.button)}
       onClick={onClick}
-      type="button"
     >
       {integrationConnected ? 'Configure' : 'Connect'}
-    </button>
+    </Button>
   );
 };
 
 export const SalesforceConnectButton = (props: SalesforceConnectButtonProps) => (
-  <SupaglueApiProviderInternal>
+  <SupaglueProviderInternal>
     <SalesforceConnectButtonInternal {...props} />
-  </SupaglueApiProviderInternal>
+  </SupaglueProviderInternal>
 );

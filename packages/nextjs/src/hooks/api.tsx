@@ -1,7 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { ReactNode } from 'react';
-import useSWR, { SWRConfig } from 'swr';
-import { useSupaglueContext } from '../provider';
+import useSWR from 'swr';
 
 export type RequestType = {
   path: string;
@@ -42,21 +40,3 @@ export async function triggerSync(url: string) {
     console.error('Error triggering sync:', err);
   }
 }
-
-export const SupaglueApiProviderInternal = ({ children }: { children: ReactNode }) => {
-  const { apiUrl } = useSupaglueContext();
-
-  return (
-    <SWRConfig
-      value={{
-        fetcher: async (config: RequestType) => {
-          const { method = 'GET', path } = config ?? {};
-          const res = await axios({ ...config, method, url: `${apiUrl}${path}` });
-          return res.data;
-        },
-      }}
-    >
-      {children}
-    </SWRConfig>
-  );
-};
