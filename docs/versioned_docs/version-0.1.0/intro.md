@@ -7,17 +7,7 @@ slug: /
 
 ## What is Supaglue?
 
-Supaglue is a developer platform for integrating your application with your customer's Salesforce instance. It lets you authenticate with Salesforce, define integrations with code to sync SFDC sObjects, and expose customer-facing UI components in your application. Supaglue takes care of execution, fault-tolerance, and communicating with customer's Salesforce. Supaglue is open source and can be self-hosted.
-
-import ThemedImage from '@theme/ThemedImage';
-
-<ThemedImage
-  alt="Intro Diagram"
-  sources={{
-    light: ('/img/intro_diagram_light.png'),
-    dark: ('/img/intro_diagram_dark.png'),
-  }}
-/>
+Supaglue is a developer platform for integrating your application with your customer's Salesforce instance. It lets you authenticate with Salesforce, define integrations with code to sync SFDC sObjects, and expose customer-facing UI components in your application. Supaglue takes care of execution, fault-tolerance, and communicating with customer's Salesforce. Supaglue is open source and can be self-hosted to run alongside your stack.
 
 :::caution
 
@@ -29,7 +19,7 @@ Supaglue is in Public Alpha. There are currently many missing features, interfac
 
 Supaglue is not a no-code tool. While there are no-code tools that also help companies integrate with their customers' Salesforce, we take a code-centric approach to integrations and are focused exclusively on developers.
 
-Supaglue is also not a unified API. Whereas unified APIs help developers efficiently integrate many different SaaS tools within a single category, we enable developers to build deep, highly-customized Salesforce integrations that could otherwise only be built in-house.
+Supaglue is also not a unified API for interacting with many CRMs. Whereas unified APIs help developers efficiently build integrations within a single category, we enable developers to build deeper Salesforce integrations that could otherwise only be built in-house.
 
 Notably, Supaglue is designed to be highly customizable and extensible on both the front-end and backend. Our goal is to give developers tools to ship most integration use cases quickly, without sacrificing the fine-grain control required for advanced use cases.
 
@@ -46,7 +36,17 @@ Notably, Supaglue is designed to be highly customizable and extensible on both t
 
 Supaglue is a set of open-source components to let developers build integrations in their applications with their customers' Salesforce using code, quickly and extensibly.
 
-- **Typescript sync configuration** to define declaratively [syncs](/concepts/sync)
+import ThemedImage from '@theme/ThemedImage';
+
+<ThemedImage
+  alt="Intro Diagram"
+  sources={{
+    light: ('/img/intro_diagram_light.png'),
+    dark: ('/img/intro_diagram_dark.png'),
+  }}
+/>
+
+- **Typescript configuration** to define [syncs](/concepts/sync) declaratively
 - **CLI** to publish configuration changes
 - **API** to accept requests from your application, Salesforce, and the CLI
 - **Workflow engine (Temporal)** to reliably execute [syncs](/concepts/sync)
