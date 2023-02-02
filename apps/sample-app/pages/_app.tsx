@@ -53,9 +53,9 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
           <div className="drawer-content bg-base-100">{children}</div>
           <div className="drawer-side">
             <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-            <aside className="bg-base-200 w-80">
-              <DrawerHeader name="Apolla"></DrawerHeader>
-              <div className="flex flex-col h-full justify-between">
+            <aside className="flex flex-col bg-base-200 w-80">
+              <DrawerHeader name="Apolla" />
+              <div className="flex flex-1 flex-col justify-between">
                 <ul className="mt-4 menu p-4 w-80 text-base-content">
                   {navigation.map((item) => (
                     <li key={item.name}>
