@@ -148,9 +148,8 @@ const config = {
       'posthog-docusaurus',
       {
         apiKey: 'phc_thv3N2dFQcJDh2vPz6FtGE9oKDiBSdYp5oKS1Cu9U8j',
-        appUrl: 'https://app.posthog.com', // optional
-        enableInDevelopment: false, // optional
-        // other options are passed to posthog-js init as is
+        enableInDevelopment: false,
+        enable: process.env.VERCEL_ENV === 'production',
       },
     ],
     [
