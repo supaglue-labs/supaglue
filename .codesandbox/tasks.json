@@ -1,0 +1,40 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Generating encryption secret",
+      "command": "echo \"SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)\" >> .env"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "Installing Dependencies": {
+      "name": "Installing Dependencies",
+      "command": "yarn install",
+      "restartOn": {
+        "files": ["yarn.lock", "**/package.json"], // File globs that trigger this task to restart
+        "branch": true // restart this task when creating a new branch/fork
+      }
+    },
+    "Install/update supaglue cli": {
+      "name": "Install/update supaglue cli",
+      "command": "npm install -g @supaglue/cli",
+      "runAtStart": true
+    },
+    "Start API": {
+      "name": "Start backend",
+      "command": "docker compose up",
+      "runAtStart": true
+    },
+    "Start sample app": {
+      "name": "Start sample app",
+      "command": "yarn workspace sample-app dev",
+      "runAtStart": true,
+      "preview": {
+        "port": 3000,
+        "prLink": "devtool"
+      }
+    }
+  }
+}
