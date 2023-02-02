@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml"><img title="CI Status" src="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://www.npmjs.com/package/@supaglue/cli" target="_blank"><img title="cli latest version" src="https://img.shields.io/npm/v/@supaglue/cli?label=%40supaglue%2Fcli"></a>
   <a href="https://www.npmjs.com/package/@supaglue/nextjs" target="_blank"><img title="nextjs latest version" src="https://img.shields.io/npm/v/@supaglue/nextjs?label=%40supaglue%2Fnextjs"></a>
   <a href="https://github.com/supaglue-labs/supaglue/issues"><img title="github issues" src="https://img.shields.io/github/issues/supaglue-labs/supaglue"></a>
