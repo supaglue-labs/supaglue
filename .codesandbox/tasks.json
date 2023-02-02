@@ -1,0 +1,41 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Installing Sample App Dependencies",
+      "command": "yarn workspaces focus sample-app"
+    },
+    {
+      "name": "Setup sample app config",
+      "command": "cp apps/sample-app/.env.sample apps/sample-app/.env"
+    },
+    {
+      "name": "Generating encryption secret",
+      "command": "echo \"SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)\" >> .env"
+    },
+    {
+      "name": "Starting backend services",
+      "command": "docker compose up --detach"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "Install Dependencies": {
+      "name": "Install Dependencies",
+      "command": "yarn install",
+      "restartOn": {
+        "files": ["yarn.lock", "**/package.json"] // File globs that trigger this task to restart
+      }
+    },
+    "Start sample app": {
+      "name": "Start sample app",
+      "command": "sleep 3s && yarn workspace sample-app dev",
+      "preview": {
+        "port": 3000,
+        "prLink": "devtool"
+      },
+      "runAtStart": true
+    }
+  }
+}
