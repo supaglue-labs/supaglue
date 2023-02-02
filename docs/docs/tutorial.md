@@ -37,12 +37,12 @@ We will use the CLI to deploy our syncs and the Apolla.io sample app to test how
 
 ### Deploy a Developer Config
 
-1. We've provided a sample Developer Config that sets up four [Syncs](concepts/sync) to sync sObjects from Salesforce, every 15 minutes, into Apolla.io using customer-defined field mappings. Contacts, Leads, and Accounts will be written to Postgres. Opportunities will [call a webhook](https://github.com/supaglue-labs/supaglue/blob/0.1.0/apps/sample-app/pages/api/_sync/index.ts). Take a look at the sample individual [Sync Config](concepts/developer_config#sync-config):
+1. We've provided a sample Developer Config that sets up four [Syncs](concepts/sync) to sync sObjects from Salesforce, every 15 minutes, into Apolla.io using customer-defined field mappings. Contacts, Leads, and Accounts will be written to Postgres. Opportunities will [call a webhook](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/pages/api/_sync/index.ts). Take a look at the sample individual [Sync Config](concepts/developer_config#sync-config):
 
-   - Contact ([contact.ts](https://github.com/supaglue-labs/supaglue/blob/0.1.0/apps/sample-app/supaglue-config/contact.ts)),
-   - Lead ([lead.ts](https://github.com/supaglue-labs/supaglue/blob/0.1.0/apps/sample-app/supaglue-config/lead.ts)),
-   - Opportunity ([opportunity.ts](https://github.com/supaglue-labs/supaglue/blob/0.1.0/apps/sample-app/supaglue-config/opportunity.ts)),
-   - Account ([account.ts](https://github.com/supaglue-labs/supaglue/blob/0.1.0/apps/sample-app/supaglue-config/account.ts))
+   - Contact ([contact.ts](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/supaglue-config/contact.ts)),
+   - Lead ([lead.ts](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/supaglue-config/lead.ts)),
+   - Opportunity ([opportunity.ts](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/supaglue-config/opportunity.ts)),
+   - Account ([account.ts](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/supaglue-config/account.ts))
 
 1. Deploy the sample Developer Config for the Apolla.io app using the [`apply`](cli/#commands) CLI command:
 
