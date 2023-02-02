@@ -13,7 +13,7 @@
   "scripts": {
     "build": "yarn run clean && yarn run -T tsc -p .",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "publish": "yarn dlx turbo run build --filter=@supaglue/sdk... && yarn npm publish",
+    "publish": "run -T turbo run build --filter=@supaglue/sdk... && yarn npm publish",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint"
   },
