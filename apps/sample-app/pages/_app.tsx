@@ -51,13 +51,12 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
         <div className="drawer drawer-mobile">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content bg-base-100">{children}</div>
-          <div className="flex flex-col justify-between bg-base-200">
-            <div className="drawer-side">
-              <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
-              <aside className="bg-base-200 w-80">
-                <DrawerHeader name="Apolla"></DrawerHeader>
-                <div className="h-4" />
-                <ul className="menu p-4 w-80 text-base-content">
+          <div className="drawer-side">
+            <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
+            <aside className="bg-base-200 w-80">
+              <DrawerHeader name="Apolla"></DrawerHeader>
+              <div className="flex flex-col h-full justify-between">
+                <ul className="mt-4 menu p-4 w-80 text-base-content">
                   {navigation.map((item) => (
                     <li key={item.name}>
                       <Link href={item.href} target={item.target}>
@@ -77,9 +76,9 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
                     </li>
                   ))}
                 </ul>
-              </aside>
-            </div>
-            <UserProfile desktop />
+                <UserProfile desktop />
+              </div>
+            </aside>
           </div>
         </div>
       </SWRConfig>
@@ -90,7 +89,7 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
 function UserProfile({ desktop }: { desktop?: boolean }) {
   const { data: session } = useSession();
   return (
-    <div className="flex flex-shrink-0 bg-base-300 p-4">
+    <div className="flex flex-shrink-0 bg-base-300 p-4 h-20">
       <div className="flex items-center gap-3">
         <Avatar aria-hidden="true">MX</Avatar>
         <div>
