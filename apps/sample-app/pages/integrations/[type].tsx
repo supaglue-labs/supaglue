@@ -80,6 +80,12 @@ const SyncConfiguration = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const getSwitch = () => {
+    // TUTORIAL: uncomment this
+    // return <Switch syncConfigName={syncConfigName} />;
+    return null;
+  };
+
   return (
     <>
       <PageTabs className="" tabs={pageTabs} disabled={false} />
@@ -98,12 +104,12 @@ const SyncConfiguration = () => {
             )}
           </div>
 
-          {/*
-          <div className="px-3">
-            <div className="py-2"><Switch syncConfigName={syncConfigName} /></div>
-            <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
+          {
+            <div className="px-3">
+              <div className="py-2">{getSwitch()}</div>
+              <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
             </div>
-          */}
+          }
 
           <div className="flex flex-col gap-4">
             <FieldMapping syncConfigName={syncConfigName} key={syncConfigName} />

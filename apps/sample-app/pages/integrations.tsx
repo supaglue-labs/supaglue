@@ -17,23 +17,25 @@ export default function Integrations() {
   );
 }
 
-const IntegrationsPage = () => {
+const getIntegrationsCard = () => {
   // TODO: more elegant way of getting the redirect url (needs to work for salesforce callback)
   const location = typeof window !== 'undefined' ? window.location.toString() : undefined;
 
+  // TUTORIAL: uncomment this
+  return (
+    <IntegrationCard name="Salesforce" description="Sync your Objects" configurationUrl={`${location}/salesforce`} />
+  );
+  return <div>Developers: please follow the tutorial to add the IntegrationCard.</div>;
+};
+
+const IntegrationsPage = () => {
   return (
     <>
       <header className="flex items-center gap-4">
         <DrawerMenuButton />
         <h1 className="text-4xl font-bold my-6">Integrations</h1>
       </header>
-      <ul className="flex list-none">
-        <IntegrationCard
-          name="Salesforce"
-          description="Sync your Objects"
-          configurationUrl={`${location}/salesforce`}
-        />
-      </ul>
+      <ul className="flex list-none">{getIntegrationsCard()}</ul>
     </>
   );
 };

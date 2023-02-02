@@ -12,8 +12,8 @@ Supaglue is a developer platform for integrating your application with your cust
 import ThemedImage from '@theme/ThemedImage';
 
 <ThemedImage
-  alt="Intro Diagram"
-  sources={{
+alt="Intro Diagram"
+sources={{
     light: ('/img/intro_diagram_light.png'),
     dark: ('/img/intro_diagram_dark.png'),
   }}
@@ -46,10 +46,10 @@ Notably, Supaglue is designed to be highly customizable and extensible on both t
 
 Supaglue is a set of open-source components to let developers build integrations in their applications with their customers' Salesforce using code, quickly and extensibly.
 
-- **Typescript sync configuration** to define declaratively [syncs](/concepts/sync)
+- **Typescript sync configuration** to define declaratively [syncs](/concepts#sync)
 - **CLI** to publish configuration changes
 - **API** to accept requests from your application, Salesforce, and the CLI
-- **Workflow engine (Temporal)** to reliably execute [syncs](/concepts/sync)
+- **Workflow engine (Temporal)** to reliably execute [syncs](/concepts#sync)
 - **Database** to store developer and customer configurations
 - **React components** to embed customer-facing UI into your application
 

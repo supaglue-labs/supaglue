@@ -6,9 +6,15 @@ sidebar_position: 8
 
 Integration as code for building full-stack integrations with your customers' SaaS platforms.
 
-<p align="center">
-  <a href="#"><img src="/img/arch.png" alt="Supaglue" width="900px"/></a>
-</p>
+import ThemedImage from '@theme/ThemedImage';
+
+<ThemedImage
+  alt="Architecture Diagram"
+  sources={{
+    light: ('/img/arch_diagram_light.png'),
+    dark: ('/img/arch_diagram_dark.png'),
+  }}
+/>
 
 Supaglue takes a **code-centric** approach, using Typescript as a declarative configuration language, to define how your application should integrate with SaaS platforms. Supaglue is a **full-stack** tool that comes with customizable customer-facing React components and backend systems. Finally, Supaglue is **extensible** using Typescript to configure high-level and low-level components of integrations.
 
