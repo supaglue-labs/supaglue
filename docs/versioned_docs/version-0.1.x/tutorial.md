@@ -20,9 +20,10 @@ For this tutorial, we've provided Salesforce Connected App credentials as part o
 
 :::
 
-1. `cd` into `/apps/sample-app` if you are not already there and start the sample app locally:
+1. Start the sample app locally if it's not already started:
 
    ```shell
+   cd apps/sample-app
    yarn dev
    ```
 
@@ -44,7 +45,7 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 
 :::
 
-1. Create `account.ts` inside the `/apps/sample-app/supaglue-config` directory. Paste in the following:
+1. Create `account.ts` inside the `apps/sample-app/supaglue-config` directory. Paste in the following:
 
    ```tsx title='apps/sample-app/supaglue-config/account.ts'
    import * as sdk from '@supaglue/sdk';
