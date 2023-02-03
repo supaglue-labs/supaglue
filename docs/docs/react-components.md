@@ -2,7 +2,7 @@
 sidebar_position: 6
 ---
 
-# React Components
+# React Components (Next.js SDK)
 
 :::caution
 

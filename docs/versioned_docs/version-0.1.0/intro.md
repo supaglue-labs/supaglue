@@ -21,8 +21,6 @@ Supaglue is not a no-code tool. While there are no-code tools that also help com
 
 Supaglue is also not a unified API for interacting with many CRMs. Whereas unified APIs help developers efficiently build integrations within a single category, we enable developers to build deeper Salesforce integrations that could otherwise only be built in-house.
 
-Notably, Supaglue is designed to be highly customizable and extensible on both the front-end and backend. Our goal is to give developers tools to ship most integration use cases quickly, without sacrificing the fine-grain control required for advanced use cases.
-
 ## Features
 
 - **Integration as code**: Use Typescript as declarative configuration to define syncs.
@@ -46,10 +44,10 @@ import ThemedImage from '@theme/ThemedImage';
   }}
 />
 
-- **Typescript configuration** to define [syncs](/concepts/sync) declaratively
+- **Typescript configuration** to define [syncs](/concepts#sync) declaratively
 - **CLI** to publish configuration changes
 - **API** to accept requests from your application, Salesforce, and the CLI
-- **Workflow engine (Temporal)** to reliably execute [syncs](/concepts/sync)
+- **Workflow engine (Temporal)** to reliably execute [syncs](/concepts#sync)
 - **Database** to store developer and customer configurations
 - **React components** to embed customer-facing UI into your application
 

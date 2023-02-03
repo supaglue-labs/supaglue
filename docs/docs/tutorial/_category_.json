@@ -1,0 +1,8 @@
+{
+    "label": "Tutorial (15 mins)",
+    "position": 3,
+    "link": {
+        "type": "generated-index",
+        "description": "Build your first Salesforce integration in 15 mins."
+    }
+}
