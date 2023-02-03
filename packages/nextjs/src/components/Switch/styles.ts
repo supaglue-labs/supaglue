@@ -52,9 +52,16 @@ const switchThumb = css({
   },
 });
 
+const switchDescription = css({
+  color: slate.slate11,
+  fontSize: '0.875rem',
+  padding: '0.5rem 0',
+});
+
 export const styles = {
   switchWrapper,
   switchRootOn,
   switchRootOff,
   switchThumb,
+  switchDescription,
 };

@@ -87,9 +87,8 @@ const SyncConfiguration = () => {
     // return (
     //   <div className="px-3">
     //     <div className="py-2">
-    //       <Switch syncConfigName={syncConfigName} />
+    //       <Switch includeSyncDescription syncConfigName={syncConfigName} />
     //     </div>
-    //     <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
     //   </div>
     // );
     return null;
