@@ -26,7 +26,6 @@ Not yet. We're planning to have a managed offering of Supaglue (which is how we 
 
 We're early and are working on documentation for self-hosting. Please reach out to us at hello@supaglue.com in the meantime and we can help you get set up.
 
-
 ### When are you going to be production-ready?
 
 We're still early in our journey (public alpha) but hope to be ready soon. Join our [Slack community](https://join.slack.com/t/supagluecommunity/shared_invite/zt-1o2hiozzl-ZRQswNzlT5W4sXwrQnVlDg) and/or sign up for our mailing list for updates!
@@ -37,4 +36,4 @@ Yes, absolutely. We're still building out the core platform but have other integ
 
 ### What kind of tracking/analytics do you collect?
 
-We collect anonymized session product usage data of our CLI to help us improve the developer experience. You can opt out of it at.
+We use PostHog to anonymized, session-level event data in our CLI and API to help us improve the developer experience. We use Sentry for error reporting. You can opt out of tracking by setting `SUPAGLUE_DISABLE_ERROR_REPORTING=true` and `SUPAGLUE_DISABLE_ANALYTICS=true` in your `.env` file and by exporting these variables in your shell environment where you run the CLI.
