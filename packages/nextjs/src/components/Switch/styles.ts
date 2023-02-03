@@ -59,11 +59,12 @@ const switchThumb = (theme: Theme) =>
     ...theme.elements?.switchThumb,
   });
 
-const switchDescription = css({
-  color: slate.slate11,
-  fontSize: '0.875rem',
-  padding: '0.5rem 0',
-});
+const switchDescription = (theme: Theme) =>
+  css({
+    color: theme.colors.textSecondary,
+    fontSize: '0.875rem',
+    padding: '0.5rem 0',
+  });
 
 export const styles = {
   switchWrapper,
