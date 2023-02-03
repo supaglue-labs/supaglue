@@ -10,6 +10,8 @@ Supaglue is in Public Alpha. There are currently many missing features, interfac
 
 :::
 
+## Config SDK
+
 Use **Supaglue's Config SDK**, a Typescript-based configuration language, to define [Developer Configs](/concepts#developer_config).
 
 ## Installation
@@ -193,4 +195,14 @@ sdk.config({
   strategy: 'full_refresh',
   defaultFieldMapping: contactMapping,
 });
+```
+
+## Integrations SDK
+
+Internally, Supaglue uses an evolving Integrations SDK that wraps Salesforce and [Destinations](/concepts#destination) so we can imperatively write business logic for Syncs, which then later get invoked by developers using the Config SDK above. In the future, we can expose the Integrations SDK to developers for you to define your own tailored business logic for Syncs. The rough shape of using it looks like:
+
+```typescript
+sg.internalIntegrations.postgres.query();
+sg.internalIntegrations.webhook.request();
+sg.customerIntegrations.salesforce.query();
 ```
