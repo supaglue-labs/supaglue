@@ -60,7 +60,7 @@ export default App;
 
 A button that links to the Salesforce sign-in page or displays the sign-in page modal. By default, it is a `<button/>` tag that "Connect", but is completely customizable by passing children.
 
-[screenshot here]
+![salesforce_connect_button](/img/react_components/salesforce_connect_button.png 'salesforce connect button')
 
 Example:
 
@@ -74,7 +74,7 @@ Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nex
 
 A card containing a list of your application fields that can be mapped to your customers' Salesforce fields.
 
-[screenshot here]
+![field_mapping](/img/react_components/field_mapping.png 'field mapping')
 
 Example:
 
@@ -90,7 +90,7 @@ Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nex
 
 A button that allows your customers to manually trigger a sync from Salesforce to your application.
 
-[screenshot here]
+![trigger_sync_button](/img/react_components/trigger_sync_button.png 'trigger_sync_button')
 
 ```jsx
 <TriggerSyncButton
@@ -108,7 +108,7 @@ Props: link
 
 A switch used to turn on/off syncs from Salesforce to your application.
 
-[screenshot here]
+![switch](/img/react_components/switch.png 'switch')
 
 Example:
 
@@ -122,7 +122,7 @@ Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nex
 
 A card container housing the `<SalesforceConnectButton/>` along with a header, description, and icon.
 
-[screenshot here]
+![integration_card](/img/react_components/integration_card.png 'integration_card')
 
 Example:
 
