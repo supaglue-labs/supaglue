@@ -53,7 +53,7 @@ type SalesforceCredentials = {
 };
 ```
 
-See the [Salesforce section](/integrations/salesforce) of the docs for references and example Developer Config.
+See the [Salesforce section](/config_sdk) of the docs for references and example Developer Config.
 
 ### Sync Config
 
