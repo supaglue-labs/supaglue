@@ -167,7 +167,9 @@ The sample app already contains some Supaglue embedded components, <`Integration
    // TUTORIAL: uncomment this
    // return (
    //   <div className="px-3">
-   //     <div className="py-2">{getSwitch()}</div>
+   //     <div className="py-2">
+   //       <Switch syncConfigName={syncConfigName} />
+   //     </div>
    //     <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
    //   </div>
    // );
