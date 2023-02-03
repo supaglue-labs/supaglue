@@ -6,9 +6,15 @@ sidebar_position: 1
 
 This section goes over the lifecycle of the developer and customer flow using Supaglue.
 
-<p align="center">
-  <a href="#"><img src="/img/flow.png" alt="Supaglue" width="600px"/></a>
-</p>
+import ThemedImage from '@theme/ThemedImage';
+
+<ThemedImage
+  alt="Workflow Diagram"
+  sources={{
+    light: ('/img/workflow_diagram_light.png'),
+    dark: ('/img/workflow_diagram_dark.png'),
+  }}
+/>
 
 1. A [Developer Config](developer_config) is authored by developers to define a set of [Sync Configs](developer_config#sync-config) each of which define the behavior of a [Sync](sync)
 2. Once a Developer Config is deployed to the [Supaglue Integration Service](architecture), the Syncs become available for customers to use
