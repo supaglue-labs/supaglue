@@ -25,7 +25,7 @@ const selectTrigger = (theme: Theme) => [
     ':disabled svg': {
       opacity: 0,
     },
-    ...theme.componentOverrides?.selectTrigger,
+    ...theme.elements?.selectTrigger,
   }),
 ];
 
@@ -35,7 +35,7 @@ const selectContent = (theme: Theme) =>
     backgroundColor: theme.colors.inputBackground,
     borderRadius: '0.375rem',
     boxShadow: '0px 10px 38px -10px rgba(22, 23, 24, 0.35), 0px 10px 20px -15px rgba(22, 23, 24, 0.2)',
-    ...theme.componentOverrides?.selectContent,
+    ...theme.elements?.selectContent,
   });
 
 const selectItem = (theme: Theme) =>
@@ -51,19 +51,19 @@ const selectItem = (theme: Theme) =>
     userSelect: 'none',
     '&[data-highlighted]': {
       backgroundColor: indigo.indigo5,
-      ...theme.componentOverrides?.selectItem?.highlighted,
+      ...theme.elements?.selectItem?.highlighted,
     },
     "&[data-state='checked']": {
       backgroundColor: indigo.indigo6,
-      ...theme.componentOverrides?.selectItem?.selected,
+      ...theme.elements?.selectItem?.selected,
     },
-    ...theme.componentOverrides?.selectItem,
+    ...theme.elements?.selectItem,
   });
 
 const selectViewport = (theme: Theme) =>
   css({
     padding: '0.375rem',
-    ...theme.componentOverrides?.selectViewport,
+    ...theme.elements?.selectViewport,
   });
 
 const selectLoading = (theme: Theme) =>
@@ -71,7 +71,7 @@ const selectLoading = (theme: Theme) =>
     fontStyle: 'italic',
     color: 'gray',
     fontSize: '14px',
-    ...theme.componentOverrides?.selectLoading,
+    ...theme.elements?.selectLoading,
   });
 
 export default {

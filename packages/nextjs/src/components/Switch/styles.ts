@@ -7,7 +7,7 @@ const switchWrapper = (theme: Theme) =>
     display: 'flex',
     flexDirection: 'row',
     gap: '0.5rem',
-    ...theme.componentOverrides?.switchWrapper,
+    ...theme.elements?.switchWrapper,
   });
 
 const _switchRoot = (theme: Theme) =>
@@ -30,7 +30,7 @@ const switchRootOn = (theme: Theme) => [
   _switchRoot,
   css({
     backgroundColor: theme.colors.primary.base,
-    ...theme.componentOverrides?.switchRootOn,
+    ...theme.elements?.switchRootOn,
   }),
 ];
 
@@ -38,7 +38,7 @@ const switchRootOff = (theme: Theme) => [
   _switchRoot,
   css({
     backgroundColor: slate.slate7,
-    ...theme.componentOverrides?.switchRootOff,
+    ...theme.elements?.switchRootOff,
   }),
 ];
 
@@ -56,7 +56,7 @@ const switchThumb = (theme: Theme) =>
     "&[data-state='checked']": {
       transform: 'translateX(1.1875rem)',
     },
-    ...theme.componentOverrides?.switchThumb,
+    ...theme.elements?.switchThumb,
   });
 
 export const styles = {

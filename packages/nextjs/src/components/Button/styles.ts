@@ -1,7 +1,7 @@
-import { css } from '@emotion/react';
+import { css, Theme } from '@emotion/react';
 
 export default {
-  button: (theme: any) =>
+  button: (theme: Theme) =>
     css({
       alignItems: 'center',
       borderRadius: '0.5rem',

@@ -5,7 +5,7 @@ const emptyContentReason = (theme: Theme) =>
   css({
     fontStyle: 'italic',
     paddingTop: '1rem',
-    ...theme.componentOverrides?.emptyContentReason,
+    ...theme.elements?.emptyContentReason,
   });
 
 const form = (theme: Theme) =>
@@ -17,7 +17,7 @@ const form = (theme: Theme) =>
     padding: '1rem',
     borderRadius: '0.5rem',
     width: '30rem',
-    ...theme.componentOverrides?.form,
+    ...theme.elements?.form,
   });
 
 const formHeaderRow = (theme: Theme) =>
@@ -25,7 +25,7 @@ const formHeaderRow = (theme: Theme) =>
     display: 'flex',
     flexDirection: 'row',
     gap: '1rem',
-    ...theme.componentOverrides?.formHeaderRow,
+    ...theme.elements?.formHeaderRow,
   });
 
 const formColumnHeader = (theme: Theme) =>
@@ -33,7 +33,7 @@ const formColumnHeader = (theme: Theme) =>
     textDecoration: 'underline',
     color: theme.colors.text,
     width: '50%',
-    ...theme.componentOverrides?.formColumnHeader,
+    ...theme.elements?.formColumnHeader,
   });
 
 const fieldWrapper = (theme: Theme) =>
@@ -43,14 +43,14 @@ const fieldWrapper = (theme: Theme) =>
     flexDirection: 'row',
     gap: '1rem',
     justifyContent: 'space-between',
-    ...theme.componentOverrides?.fieldWrapper,
+    ...theme.elements?.fieldWrapper,
   });
 
 const fieldName = (theme: Theme) =>
   css({
     fontSize: '1rem',
     color: theme.colors.text,
-    ...theme.componentOverrides?.fieldName,
+    ...theme.elements?.fieldName,
   });
 
 const fieldDropdown = (theme: Theme) =>
@@ -60,7 +60,7 @@ const fieldDropdown = (theme: Theme) =>
     cursor: 'pointer',
     padding: '0.25rem 0.5rem',
     width: '50%',
-    ...theme.componentOverrides?.fieldDropdown,
+    ...theme.elements?.fieldDropdown,
   });
 
 export default {

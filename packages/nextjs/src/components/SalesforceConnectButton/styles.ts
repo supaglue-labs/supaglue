@@ -6,7 +6,7 @@ export default {
     buttonStyles.button,
     css({
       width: '8rem',
-      ...theme.componentOverrides?.salesforceButton,
+      ...theme.elements?.salesforceButton,
     }),
   ],
 };

@@ -4,7 +4,7 @@ declare module '@emotion/react' {
   export interface Theme {
     colors: Colors;
     // TODO: Type this properly
-    componentOverrides?: Record<string, any>;
+    elements?: Record<string, any>;
   }
 
   export type Colors = {

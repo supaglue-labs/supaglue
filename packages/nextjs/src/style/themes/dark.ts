@@ -18,7 +18,7 @@ export const darkTheme: SgTheme = {
       darker: purple.purple12,
     },
   },
-  componentOverrides: {
+  elements: {
     selectTrigger: {
       ':hover': {
         backgroundColor: slateDark.slate8,
@@ -29,10 +29,10 @@ export const darkTheme: SgTheme = {
     },
     selectItem: {
       highlighted: {
-        backgroundColor: purple.purple12,
+        backgroundColor: purple.purple11,
       },
       selected: {
-        backgroundColor: purple.purple12,
+        backgroundColor: purple.purple11,
       },
     },
   },

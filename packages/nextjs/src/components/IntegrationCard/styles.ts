@@ -10,7 +10,7 @@ const card = (theme: Theme) =>
     alignItems: 'center',
     gap: '1rem',
     backgroundColor: theme.colors.background,
-    ...theme.componentOverrides?.card,
+    ...theme.elements?.card,
   });
 
 const cardName = (theme: Theme) =>
@@ -20,7 +20,7 @@ const cardName = (theme: Theme) =>
     fontWeight: '600',
     textAlign: 'center',
     color: theme.colors.text,
-    ...theme.componentOverrides?.cardName,
+    ...theme.elements?.cardName,
   });
 
 const cardDescription = (theme: Theme) =>
@@ -30,7 +30,7 @@ const cardDescription = (theme: Theme) =>
     textAlign: 'center',
     fontWeight: '400',
     color: theme.colors.textSecondary,
-    ...theme.componentOverrides?.cardDescription,
+    ...theme.elements?.cardDescription,
   });
 
 export default {
