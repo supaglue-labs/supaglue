@@ -21,8 +21,7 @@ export default {
         boxShadow: theme.colors.primary.darker,
       },
       ':disabled': {
-        cusor: 'not-allowed',
-        pointerEvents: 'none',
+        cursor: 'not-allowed',
         backgroundColor: theme.colors.disabled,
       },
     }),

@@ -1,6 +1,6 @@
-import { css } from '@emotion/react';
+import { css, Theme } from '@emotion/react';
 
-const card = (theme: any) =>
+const card = (theme: Theme) =>
   css({
     borderRadius: '0.5rem',
     borderWidth: '1px',
@@ -10,28 +10,31 @@ const card = (theme: any) =>
     alignItems: 'center',
     gap: '1rem',
     backgroundColor: theme.colors.background,
+    ...theme.componentOverrides?.card,
   });
 
-const name = (theme: any) =>
+const cardName = (theme: Theme) =>
   css({
     fontSize: '1.125rem',
     lineHeight: '1.75rem',
     fontWeight: '600',
     textAlign: 'center',
     color: theme.colors.text,
+    ...theme.componentOverrides?.cardName,
   });
 
-const description = (theme: any) =>
+const cardDescription = (theme: Theme) =>
   css({
     fontSize: '1rem',
     lineHeight: '1.25rem',
     textAlign: 'center',
     fontWeight: '400',
     color: theme.colors.textSecondary,
+    ...theme.componentOverrides?.cardDescription,
   });
 
 export default {
   card,
-  name,
-  description,
+  cardName,
+  cardDescription,
 };

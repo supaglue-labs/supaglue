@@ -125,6 +125,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
   };
 
   return (
+    // TODO: write form primitives
     <form css={styles.form} className={classNames(appearance?.elements?.form, 'sg-form')}>
       <div css={styles.formHeaderRow} className={classNames(appearance?.elements?.formHeaderRow, 'sg-formHeaderRow')}>
         <div

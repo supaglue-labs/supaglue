@@ -1,8 +1,8 @@
-import { css } from '@emotion/react';
+import { css, Theme } from '@emotion/react';
 import { indigo, slate } from '@radix-ui/colors';
 import buttonStyles from '../Button/styles';
 
-const selectTrigger = (theme: any) => [
+const selectTrigger = (theme: Theme) => [
   buttonStyles.button,
   css({
     backgroundColor: theme.colors.inputBackground,
@@ -29,41 +29,50 @@ const selectTrigger = (theme: any) => [
   }),
 ];
 
-const selectContent = (theme: any) =>
+const selectContent = (theme: Theme) =>
   css({
     overflow: 'hidden',
     backgroundColor: theme.colors.inputBackground,
     borderRadius: '0.375rem',
     boxShadow: '0px 10px 38px -10px rgba(22, 23, 24, 0.35), 0px 10px 20px -15px rgba(22, 23, 24, 0.2)',
+    ...theme.componentOverrides?.selectContent,
   });
 
-const selectItem = css({
-  fontSize: '1rem',
-  lineHeight: 1,
-  borderRadius: '0.25rem',
-  display: 'flex',
-  alignItems: 'center',
-  height: '1.5rem',
-  padding: '0 2rem 0 2rem',
-  position: 'relative',
-  userSelect: 'none',
-  '&[data-highlighted]': {
-    backgroundColor: indigo.indigo5,
-  },
-  "&[data-state='checked']": {
-    backgroundColor: indigo.indigo6,
-  },
-});
+const selectItem = (theme: Theme) =>
+  css({
+    fontSize: '1rem',
+    lineHeight: 1,
+    borderRadius: '0.25rem',
+    display: 'flex',
+    alignItems: 'center',
+    height: '1.5rem',
+    padding: '0 2rem 0 2rem',
+    position: 'relative',
+    userSelect: 'none',
+    '&[data-highlighted]': {
+      backgroundColor: indigo.indigo5,
+      ...theme.componentOverrides?.selectItem?.highlighted,
+    },
+    "&[data-state='checked']": {
+      backgroundColor: indigo.indigo6,
+      ...theme.componentOverrides?.selectItem?.selected,
+    },
+    ...theme.componentOverrides?.selectItem,
+  });
 
-const selectViewport = css({
-  padding: '0.375rem',
-});
+const selectViewport = (theme: Theme) =>
+  css({
+    padding: '0.375rem',
+    ...theme.componentOverrides?.selectViewport,
+  });
 
-const selectLoading = css({
-  fontStyle: 'italic',
-  color: 'gray',
-  fontSize: '14px',
-});
+const selectLoading = (theme: Theme) =>
+  css({
+    fontStyle: 'italic',
+    color: 'gray',
+    fontSize: '14px',
+    ...theme.componentOverrides?.selectLoading,
+  });
 
 export default {
   selectTrigger,

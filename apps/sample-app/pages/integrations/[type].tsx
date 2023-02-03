@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { PageTabs } from '../../components/PageTabs';
 import { useActiveTab } from '../../hooks';
 // TUTORIAL: Uncomment this
-// import { Switch } from '@supaglue/nextjs';
+import { Switch } from '@supaglue/nextjs';
 
 export default function Integration() {
   return (
@@ -84,14 +84,14 @@ const SyncConfiguration = () => {
 
   const getSwitch = (syncConfigName: string) => {
     // TUTORIAL: uncomment this
-    // return (
-    //   <div className="px-3">
-    //     <div className="py-2">
-    //       <Switch syncConfigName={syncConfigName} />
-    //     </div>
-    //     <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
-    //   </div>
-    // );
+    return (
+      <div className="px-3">
+        <div className="py-2">
+          <Switch syncConfigName={syncConfigName} />
+        </div>
+        <p className="text-sm primary">Fully refresh all updated contacts every 15 minutes.</p>
+      </div>
+    );
     return null;
   };
 
@@ -105,11 +105,6 @@ const SyncConfiguration = () => {
               syncConfigName={syncConfigName}
               onSuccess={() => showToast('Successfully started sync!')}
               onError={() => showToast('Error encountered.')}
-              appearance={{
-                elements: {
-                  button: 'bg-primary',
-                },
-              }}
             />
             {timeoutId && (
               <span className="absolute z-10 top-0 left-36 mt-5 block rounded bg-gray-600 py-1 px-2 text-xs text-white">

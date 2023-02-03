@@ -27,11 +27,11 @@ const IntegrationCardInternal = ({ name, description, configurationUrl, appearan
   return developerConfig ? (
     <li>
       <div css={styles.card} className={classNames(appearance?.elements?.card, 'sg-integrationCard')}>
-        <span css={styles.name} className={classNames(appearance?.elements?.name, 'sg-integrationCard-name')}>
+        <span css={styles.cardName} className={classNames(appearance?.elements?.name, 'sg-integrationCard-name')}>
           {name}
         </span>
         <span
-          css={styles.description}
+          css={styles.cardDescription}
           className={classNames(appearance?.elements?.description, 'sg-integrationCard-description')}
         >
           {description}

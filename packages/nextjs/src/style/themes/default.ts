@@ -1,5 +1,5 @@
 import { blackA, indigo, slate } from '@radix-ui/colors';
-import { SgTheme } from '../types/theme';
+import { SgTheme } from '../../types/theme';
 
 export const defaultTheme: SgTheme = {
   colors: {

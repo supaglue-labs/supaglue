@@ -1,12 +1,14 @@
-import { css } from '@emotion/react';
+import { css, Theme } from '@emotion/react';
 import { gray } from '@radix-ui/colors';
 
-const emptyContentReason = css({
-  fontStyle: 'italic',
-  paddingTop: '1rem',
-});
+const emptyContentReason = (theme: Theme) =>
+  css({
+    fontStyle: 'italic',
+    paddingTop: '1rem',
+    ...theme.componentOverrides?.emptyContentReason,
+  });
 
-const form = (theme: any) =>
+const form = (theme: Theme) =>
   css({
     backgroundColor: theme.colors.background,
     display: 'flex',
@@ -15,38 +17,51 @@ const form = (theme: any) =>
     padding: '1rem',
     borderRadius: '0.5rem',
     width: '30rem',
+    ...theme.componentOverrides?.form,
   });
 
-const formHeaderRow = css({
-  display: 'flex',
-  flexDirection: 'row',
-  gap: '1rem',
-});
+const formHeaderRow = (theme: Theme) =>
+  css({
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '1rem',
+    ...theme.componentOverrides?.formHeaderRow,
+  });
 
-const formColumnHeader = css({
-  textDecoration: 'underline',
-  width: '50%',
-});
+const formColumnHeader = (theme: Theme) =>
+  css({
+    textDecoration: 'underline',
+    color: theme.colors.text,
+    width: '50%',
+    ...theme.componentOverrides?.formColumnHeader,
+  });
 
-const fieldWrapper = css({
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'row',
-  gap: '1rem',
-  justifyContent: 'space-between',
-});
+const fieldWrapper = (theme: Theme) =>
+  css({
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '1rem',
+    justifyContent: 'space-between',
+    ...theme.componentOverrides?.fieldWrapper,
+  });
 
-const fieldName = css({
-  fontSize: '1rem',
-});
+const fieldName = (theme: Theme) =>
+  css({
+    fontSize: '1rem',
+    color: theme.colors.text,
+    ...theme.componentOverrides?.fieldName,
+  });
 
-const fieldDropdown = css({
-  border: `1px solid ${gray.gray12}`,
-  borderRadius: '0.5rem',
-  cursor: 'pointer',
-  padding: '0.25rem 0.5rem',
-  width: '50%',
-});
+const fieldDropdown = (theme: Theme) =>
+  css({
+    border: `1px solid ${gray.gray12}`,
+    borderRadius: '0.5rem',
+    cursor: 'pointer',
+    padding: '0.25rem 0.5rem',
+    width: '50%',
+    ...theme.componentOverrides?.fieldDropdown,
+  });
 
 export default {
   emptyContentReason,

@@ -4,11 +4,11 @@ import axios from 'axios';
 import { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
 import { RequestType } from '../hooks/api';
-import { darkTheme } from '../themes';
+import { defaultTheme } from '../style/themes';
 import { useSupaglueContext } from './supaglueProvider';
 
 export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) => {
-  const { apiUrl } = useSupaglueContext();
+  const { apiUrl, theme } = useSupaglueContext();
 
   const cache = createCache({
     key: 'sg-internal',
@@ -27,7 +27,7 @@ export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) 
       }}
     >
       <CacheProvider value={cache}>
-        <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
+        <ThemeProvider theme={theme ?? defaultTheme}>{children}</ThemeProvider>
       </CacheProvider>
     </SWRConfig>
   );

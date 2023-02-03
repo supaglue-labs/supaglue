@@ -1,11 +1,12 @@
-import { css } from '@emotion/react';
+import { css, Theme } from '@emotion/react';
 import buttonStyles from '../Button/styles';
 
 export default {
-  button: (theme: any) => [
+  salesforceButton: (theme: Theme) => [
     buttonStyles.button,
     css({
       width: '8rem',
+      ...theme.componentOverrides?.salesforceButton,
     }),
   ],
 };
