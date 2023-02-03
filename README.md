@@ -21,7 +21,7 @@
 
 # Supaglue
 
-Supaglue is a developer platform for integrating your application with your customer's CRM tools. It lets you define integration logic with code, expose customer-facing UI components in your application for configuring the integration, and monitor your integrations over time. Supaglue takes care of execution and communicating with customer's CRM. Supaglue is open source and can be self-hosted.
+Supaglue is a developer platform for integrating your application with your customer's Salesforce instance. It lets you authenticate with Salesforce, define integrations with code to sync SFDC sObjects, and expose customer-facing UI components in your application. Supaglue takes care of execution, fault-tolerance, and communicating with customer's Salesforce. Supaglue is open source and can be self-hosted to run alongside your stack.
 
 ## Status
 
@@ -34,12 +34,12 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 
 ## Features
 
-- **Prebuilt sync templates**: Use ready-made sync templates or customize them to your use case
-- **Managed syncs**: Let Supaglue execute syncs for you with fault-tolerance, retries, rate limits, and error handling
-- **Integration as code**: Use Typescript as declarative configuration to define syncs
-- **Embeddable UI components**: Customer-facing React components that let your customers configure syncs. Fully-functional and customizable
-- **Managed authentication**: Offload Oauth flows, storing secrets, and refreshing tokens to Supaglue
-- **Open source**: Self-host Supaglue and extend it. Don't worry about compliance
+- **Integration as code**: Use Typescript as declarative configuration to define syncs.
+- **Managed syncs**: Let Supaglue execute syncs for you with fault-tolerance, retries, rate limiting, and error handling.
+- **Managed OAuth**: Offload OAuth flows, storing & refreshing tokens to Supaglue
+- **Embeddable UI components**: Customer-facing React components that let your customers configure syncs. Fully-functional and customizable.
+- **Prebuilt sync templates**: Use ready-made sync templates or customize them to your use case.
+- **Open source**: Self-host Supaglue or extend it. Sensitive customer data never leaves your cloud.
 
 ## Get Started
 
