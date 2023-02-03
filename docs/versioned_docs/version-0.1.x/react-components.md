@@ -113,7 +113,7 @@ A switch used to turn on/off syncs from Salesforce to your application.
 Example:
 
 ```jsx
-<Switch syncConfigName="contact_sync" />
+<Switch includeSyncDescription syncConfigName="contact_sync" />
 ```
 
 Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nextjs/src/components/Switch/Switch.tsx#L19)
