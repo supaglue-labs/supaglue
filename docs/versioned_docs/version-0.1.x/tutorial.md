@@ -2,6 +2,8 @@
 sidebar_position: 3
 ---
 
+import BrowserWindow from '@site/src/components/BrowserWindow';
+
 # Tutorial
 
 **In under 15 minutes**, you'll build an integration that allows your customers to sync their Salesforce Account records to a sample Next.js application. We'll use the same sample application from the [Quickstart](/quickstart) for the tutorial.
@@ -179,36 +181,32 @@ The sample app already contains some Supaglue embedded components, <`Integration
 
 :::
 
-1. Embed [`<Switch/>`](react-components/#switch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
+1.  Embed [`<Switch/>`](react-components/#switch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
 
-   ```tsx title=apps/sample-app/pages/integrations/[type]
-   // TUTORIAL: Uncomment this
-   import { Switch } from '@supaglue/nextjs';
+    ```tsx title=apps/sample-app/pages/integrations/[type]
+    // TUTORIAL: Uncomment this
+    import { Switch } from '@supaglue/nextjs';
 
-   // ...
-   const getSwitch = (syncConfigName: string) => {
-    // TUTORIAL: uncomment this
-    return (
-      <div className="px-3">
+    // ...
+    const getSwitch = (syncConfigName: string) => {
+      // TUTORIAL: uncomment this
+      return (
         <div className="py-2">
           <Switch includeSyncDescription syncConfigName={syncConfigName} />
         </div>
-      </div>
-    );
-    // ...
-   ```
+      );
+    };
+    ```
 
-   This adds a switch that allows a customer to toggle the Contact sync we created on and off.
+    This adds a switch that allows a customer to toggle the Contact sync we created on and off.
 
-   import BrowserWindow from '@site/src/components/BrowserWindow';
-
-  <BrowserWindow url="http://localhost:3000/integrations/salesforce#Accounts">
+    <BrowserWindow url="http://localhost:3000/integrations/salesforce#Accounts">
 
     ![app_accounts_switch](/img/tutorial/app_accounts_switch.png 'salesforce accounts config')
 
-  </BrowserWindow>
+    </BrowserWindow>
 
-1. Turn the switch on. The Accounts Sync will now run as a background task every 15 minutes.
+1.  Turn the switch on. The Accounts Sync will now run as a background task every 15 minutes.
 
 ### Test the integration
 
@@ -319,7 +317,7 @@ Supaglue provides several React component customization options to change its lo
    />
    ```
 
-2. The [Salesforce Integration](http://localhost:3000/integrations/salesforce#Contacts) page should now have updated styling for the field mapping component.
+1. The [Salesforce Integration](http://localhost:3000/integrations/salesforce#Contacts) page should now have updated styling for the field mapping component.
 
    <BrowserWindow url="http://localhost:3000/salesforce#Contacts">
 

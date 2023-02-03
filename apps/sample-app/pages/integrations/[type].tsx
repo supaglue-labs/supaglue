@@ -85,10 +85,8 @@ const SyncConfiguration = () => {
   const getSwitch = (syncConfigName: string) => {
     // TUTORIAL: uncomment this
     // return (
-    //   <div className="px-3">
-    //     <div className="py-2">
-    //       <Switch includeSyncDescription syncConfigName={syncConfigName} />
-    //     </div>
+    //   <div className="py-2">
+    //     <Switch includeSyncDescription syncConfigName={syncConfigName} />
     //   </div>
     // );
     return null;
