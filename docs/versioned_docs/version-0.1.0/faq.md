@@ -8,7 +8,7 @@ sidebar_position: 10
 
 Supaglue is an embedded integrations solution built for developers. The core differentiators are that it's open-source, code-centric, and ships with customizable React components you can embed into your product.
 
-As a result, you can ship deep integrations with Supaglue quickly and deploy it on your own infrastructure, enabling seamless integration experiences for your customers.
+As a result, you can ship deeper integrations with Supaglue quickly and deploy it on your own infrastructure, enabling seamless integration experiences for your customers.
 
 ### Who should use this?
 
@@ -24,7 +24,7 @@ Not yet. We're planning to have a managed offering of Supaglue (which is how we 
 
 ### How do I self-host this?
 
-We're early and are working on documentation for self-hosting. Please reach out to us at hello@supaglue.com in the meantime and we can help you get set up.
+We're early and are working on documentation for self-hosting. Please reach out to us in [Slack](https://join.slack.com/t/supagluecommunity/shared_invite/zt-1o2hiozzl-ZRQswNzlT5W4sXwrQnVlDg) or at hello@supaglue.com in the meantime and we can help you get set up.
 
 ### When are you going to be production-ready?
 
