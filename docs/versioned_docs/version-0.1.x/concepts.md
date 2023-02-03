@@ -17,7 +17,7 @@ sources={{
 />
 
 1. A [Developer Config](#developer_config) is authored by developers to define a set of [Sync Configs](#sync-config) each of which define the behavior of a [Sync](#sync)
-2. Once a Developer Config is deployed to the [Supaglue Integration Service](/architecture), the Syncs become available for customers to use
+2. Once a Developer Config is deployed to the [Supaglue Integration Service](/architecture), the Sync(s) become available for customers to use
 3. Customers opt-in and use Syncs by saving [Sync Values](#sync-values) to the Supaglue Integration Service using [Supaglue React components](/react-components) which are embedded by developers into their applications
 4. The Supaglue Integration Service executes Syncs, using the customer-provided Sync Values during runtime, as a [Sync Run](#sync-run)
 5. A Sync Run operates on your customer's Salesforce and your application, moving data between the two systems
@@ -27,7 +27,7 @@ sources={{
 
 A Developer Config is a Typescript object that declaratively defines the behavior of a set of [Sync Configs](#sync-config). It also contains metadata about Salesforce as a data source.
 
-A Developer Config is authored by the developer and deployed to the Supaglue Integration Service backend which is responsible for executing the sync.
+A Developer Config is authored by the developer and deployed to the Supaglue Integration Service backend which is responsible for parsing it and ultimately executing Sync(s).
 
 ### Schema
 
@@ -53,7 +53,7 @@ type SalesforceCredentials = {
 };
 ```
 
-See the [Salesforce section](/config_sdk) of the docs for references and example Developer Config.
+See the [Config SDK](/config_sdk) for a reference and [example](/config_sdk#examples) Developer Config.
 
 ### Sync Config
 
@@ -61,7 +61,7 @@ A Sync Config is a Typescript object that declaratively defines the behavior of 
 
 1. The object type to sync from Salesforce (Contact/Lead/Account/Opportunity)
 2. How often it should sync
-3. Where it should deliver the records
+3. Where it should deliver the records (Webhook or Postgres)
 4. How field mappings between Salesforce and the developer's application should work (i.e. which fields are exposed, how they are displayed, and their default field mappings)
 5. Other operational configurations around retries, fetch strategies, and more
 

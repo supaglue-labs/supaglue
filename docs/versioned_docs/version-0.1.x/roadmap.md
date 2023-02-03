@@ -8,7 +8,7 @@ sidebar_position: 9
 
 Business today rely on dozens, sometimes hundreds of SaaS tools, to run their businesses. Modern SaaS products exist within a larger ecosystem, and supporting native integrations to other tools has become a table stakes requirement.
 
-Having built user-facing integrations ourselves, we know that building integrations can be painful and time-consuming. Our mission at Supaglue is to make building integrations fast, seamless, and maybe even fun!
+Having built user-facing integrations ourselves, we know that building integrations can be painful and time-consuming. Our mission at Supaglue is to make building integrations fast, seamless, and extensible.
 
 We aspire to let developers implement embedded SaaS integrations in their applications in 1-2 weeks rather than 4-12 weeks, using code, without having to worry about whether the tool will scale or support advanced customization as their use cases grow.
 
@@ -21,6 +21,7 @@ In the coming weeks we plan to ship:
 **Salesforce features:**
 
 - Bi-directional syncs
+- Real-time syncs
 - Incremental syncs
 - Support for custom objects and custom fields
 - Filters and transformations
@@ -30,13 +31,14 @@ In the coming weeks we plan to ship:
 - Developer logs and sync observability
 - Server and client authentication
 - Development environments
-- More customizable React components
+- Complete React components
+- Hooks for building your own React components
+- An imperative SDK for integrations
 
 ## Upcoming months / quarters
 
 We also want top share how we're thinking about the longer-term roadmap of Supaglue.
 
-- Batch and real-time syncs
 - Managed offering
 - Support for non-Salesforce integrations
 - Community-contributed integrations
