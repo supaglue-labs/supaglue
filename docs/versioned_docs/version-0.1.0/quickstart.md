@@ -13,6 +13,9 @@ called Apolla.io.
 # Clone our repo
 git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
 
+# Copy environment variables
+cp .env.sample .env
+
 # Start the Supaglue stack
 docker compose up
 ```
