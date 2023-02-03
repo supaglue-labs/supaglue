@@ -82,11 +82,13 @@ const SyncConfiguration = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getSwitch = () => {
+  const getSwitch = (syncConfigName: string) => {
     // TUTORIAL: uncomment this
     // return (
     //   <div className="px-3">
-    //     <div className="py-2">{getSwitch()}</div>
+    //     <div className="py-2">
+    //       <Switch syncConfigName={syncConfigName} />
+    //     </div>
     //     <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
     //   </div>
     // );
@@ -111,7 +113,7 @@ const SyncConfiguration = () => {
             )}
           </div>
 
-          <div>{getSwitch()}</div>
+          <div>{getSwitch(syncConfigName)}</div>
 
           <div className="flex flex-col gap-4">
             <FieldMapping syncConfigName={syncConfigName} key={syncConfigName} />
