@@ -12,14 +12,13 @@ You'll learn how to use Supaglue's SDKs and CLI to setup and deploy the integrat
 
 Be sure to have completed the [Quickstart](/quickstart).
 
-To complete this tutorial you will also need the following:
+:::info
 
-- [Developer Salesforce Account](https://developer.salesforce.com/)
-- [Salesforce Connected App](/references/setup_salesforce)
+For this tutorial, we've provided Salesforce Connected App credentials as part of the Sample App setup. Before deploying to production, please provide your own [Salesforce Connected App](/references/setup_salesforce) credentials.
 
-1. Replace the `SALESFORCE_KEY` and `SALESFORCE_SECRET` values in `.env` using your Developer Salesforce Account's Connected App tokens.
+:::
 
-1. Start the sample app locally:
+1. `cd` into `/apps/sample-app` and start the sample app locally:
 
    ```shell
    yarn dev
@@ -31,9 +30,11 @@ To complete this tutorial you will also need the following:
 
 In Supaglue, a [Developer Config](/concepts#developer-config) represents a set of Sync Configs. A [Sync Config](/concepts#sync-config) defines how to move one type of Salesforce object from your customers' Salesforce to your application. Once deployed to Supaglue's Integration Service, a Sync Config can be used by your customers as a [Sync](/concepts#sync) via embeddedable [Supaglue React components](/react-components).
 
-### Create Sync Config
+The developer config you deployed in the quickstart currently contains syncs for Contacts, Leads, and Opportunities. We will now add a sync for Accounts.
 
-To build a Salesforce integration, first use the Config SDK to create a Sync Config, which defines to move a Salesforce records between your customers' Salesforce and your application:
+### Create Sync Config for Accounts
+
+To build a Salesforce sync, we first use the Config SDK to create a Sync Config, which defines to move a Salesforce records between your customers' Salesforce and your application:
 
 :::info
 
@@ -41,7 +42,7 @@ For this tutorial, we've included a sample Developer Config in the `supaglue-con
 
 :::
 
-1. Create `supaglue-config/account.ts` and paste in the following:
+1. `cd` into `apps/sample-app` and create `supaglue-config/account.ts`. Paste in the following:
 
    ```tsx title='apps/sample-app/supaglue-config/account.ts'
    import * as sdk from '@supaglue/sdk';
@@ -163,7 +164,13 @@ The sample app already contains some Supaglue embedded components, <`Integration
 1. Embed [`<Switch/>`](react-components/#switch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
 
    ```tsx title=apps/sample-app/pages/integrations/[type].tsx:getSwitch()
-   // return <Switch syncConfigName={syncConfigName} />;
+   // TUTORIAL: uncomment this
+   // return (
+   //   <div className="px-3">
+   //     <div className="py-2">{getSwitch()}</div>
+   //     <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
+   //   </div>
+   // );
    ```
 
    This adds a switch that allows a customer to toggle the Contact sync we created on and off.
@@ -191,26 +198,26 @@ Finally, let's manually trigger our sync to make sure it works as expected.
 
    You should see that the Accounts sync is enabled from the switch, and that it was last run recently.
 
-    ```supaglue syncs list --customer-id user1
-    ℹ Info: Syncs for customer user1
-    ╔═══════════════╤═════════╤══════════════════════════╤══════════════════════════╗
-    ║ Sync Name     │ Enabled │ Last Run                 │ Next Run                 ║
-    ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-    ║ Contacts      │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
-    ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-    ║ Opportunities │ No      │ n/a                      │ n/a                      ║
-    ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-    ║ Accounts      │ Yes     │ 2023-02-03T08:08:34.344Z │ 2023-02-03T08:15:00.000Z ║
-    ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-    ║ Leads         │ No      │ n/a                      │ n/a                      ║
-    ╚═══════════════╧═════════╧══════════════════════════╧══════════════════════════╝
-    ```
+   ```supaglue syncs list --customer-id user1
+   ℹ Info: Syncs for customer user1
+   ╔═══════════════╤═════════╤══════════════════════════╤══════════════════════════╗
+   ║ Sync Name     │ Enabled │ Last Run                 │ Next Run                 ║
+   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Contacts      │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
+   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Opportunities │ No      │ n/a                      │ n/a                      ║
+   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Accounts      │ Yes     │ 2023-02-03T08:08:34.344Z │ 2023-02-03T08:15:00.000Z ║
+   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Leads         │ No      │ n/a                      │ n/a                      ║
+   ╚═══════════════╧═════════╧══════════════════════════╧══════════════════════════╝
+   ```
 
 1. Visit the "App Objects" tab to view the synced Accounts records, which is being populated by the Postgres table.
 
    <BrowserWindow url="http://localhost:3000/Accounts">
 
-    ![app_accounts_switch](/img/tutorial/app_filled_accounts.png 'salesforce accounts records')
+   ![app_accounts_switch](/img/tutorial/app_filled_accounts.png 'salesforce accounts records')
    </BrowserWindow>
 
 ## Customize integration
@@ -249,14 +256,14 @@ You may have realized that two of the columns in the sample app's Contacts table
 
    <BrowserWindow url="http://localhost:3000/integrations/salesforce#Contacts">
 
-    ![app_filled_contacts](/img/tutorial/app_contacts_config.png 'salesforce contacts records')
+   ![app_filled_contacts](/img/tutorial/app_contacts_config.png 'salesforce contacts records')
    </BrowserWindow>
 
 1. Click "Run sync now". Once the background sync completes, verify the newly synced fields now contain values on the "App Objects" page.
 
    <BrowserWindow url="http://localhost:3000/#Contacts">
 
-    ![app_filled_contacts](/img/tutorial/app_filled_contacts.png 'salesforce accounts records')
+   ![app_filled_contacts](/img/tutorial/app_filled_contacts.png 'salesforce accounts records')
    </BrowserWindow>
 
 ### Customize React components
@@ -265,7 +272,7 @@ Supaglue provides several React component customization options to change its lo
 
 1. In the sample app, locate the `<FieldMapping/>` component and add the following `appearance` prop to change the background of the form:
 
-   ```jsx title=apps/sample-app/src/pages/integrations/[type].tsx:109
+   ```jsx title=apps/sample-app/src/pages/integrations/[type].tsx
    <FieldMapping
      syncConfigName={syncConfigName}
      key={syncConfigName}
@@ -282,7 +289,7 @@ Supaglue provides several React component customization options to change its lo
 
    <BrowserWindow url="http://localhost:3000/salesforce#Contacts">
 
-    ![app_field_mapping_style](/img/tutorial/app_field_mapping_style.png 'salesforce contacts config styled')
+   ![app_field_mapping_style](/img/tutorial/app_field_mapping_style.png 'salesforce contacts config styled')
    </BrowserWindow>
 
 ## Next Steps
