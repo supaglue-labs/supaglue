@@ -157,23 +157,17 @@ Use your preferred styling method to replace these classes with your own:
 
 Stylesheets / CSS Modules Example:
 
-:::info
-
-For Stylesheets/CSS Modules users: Set classes as `!important`. This will change in the future.
-
-:::
-
 ```css
 /* FieldMapping.module.css */
 
 .primaryColor {
-  background-color: #e1e2e2 !important;
+  background-color: #e1e2e2;
 }
 
 .fieldName {
-  font-style: italic !important;
-  font-size: 0.875rem !important;
-  line-height: 1.25rem !important;
+  font-style: italic;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 ```
 
@@ -191,12 +185,6 @@ For Stylesheets/CSS Modules users: Set classes as `!important`. This will change
 ```
 
 Tailwind CSS Example:
-
-:::info
-
-For Tailwind CSS users: To customize components today you will need to set `important: true;` in your `tailwind.config.js` as per https://tailwindcss.com/docs/configuration#important. This will change in the future.
-
-:::
 
 ```jsx
 <FieldMapping
