@@ -26,7 +26,7 @@ const switchRoot = css({
 const switchRootOn = css([
   switchRoot,
   {
-    backgroundColor: slate.slate9,
+    backgroundColor: indigo.indigo9,
   },
 ]);
 
