@@ -11,8 +11,8 @@ sidebar_position: 2
 git clone git@github.com:supaglue-labs/supaglue.git
 cd supaglue
 
-# Copy our Salesforce Connected App's credentials or enter your own
-cp .env.sample .env
+# generate a encryption secret for credentials
+echo "SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)" >> .env
 
 # Run the Supaglue stack
 docker compose up

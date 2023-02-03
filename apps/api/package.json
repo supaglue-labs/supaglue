@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "tsx watch --clear-screen=false ./index.ts",
-    "build": "yarn dlx --package typescript tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint"
   },

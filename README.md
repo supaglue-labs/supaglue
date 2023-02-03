@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml"><img title="CI Status" src="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://www.npmjs.com/package/@supaglue/cli" target="_blank"><img title="cli latest version" src="https://img.shields.io/npm/v/@supaglue/cli?label=%40supaglue%2Fcli"></a>
   <a href="https://www.npmjs.com/package/@supaglue/nextjs" target="_blank"><img title="nextjs latest version" src="https://img.shields.io/npm/v/@supaglue/nextjs?label=%40supaglue%2Fnextjs"></a>
   <a href="https://github.com/supaglue-labs/supaglue/issues"><img title="github issues" src="https://img.shields.io/github/issues/supaglue-labs/supaglue"></a>
@@ -15,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://supaglue.com?ref=github-readme" target="_blank">Website</a> • <a href="https://docs.supaglue.com/get-started?ref=github-readme" target="_blank">Getting Started</a> • <a href="https://docs.supaglue.com?ref=github-readme" target="_blank">Docs</a> • <a href="https://supagluecommunity.slack.com/" target="_blank">Slack</a> • <a href="https://twitter.com/supaglue_labs" target="_blank">Twitter</a>
+  <a href="https://supaglue.com?ref=github-readme" target="_blank">Website</a> • <a href="https://docs.supaglue.com/get-started?ref=github-readme" target="_blank">Getting Started</a> • <a href="https://docs.supaglue.com?ref=github-readme" target="_blank">Docs</a> • <a href="https://join.slack.com/t/supagluecommunity/shared_invite/zt-1o2hiozzl-ZRQswNzlT5W4sXwrQnVlDg" target="_blank">Slack</a> • <a href="https://twitter.com/supaglue_labs" target="_blank">Twitter</a>
 </p>
 
 # Supaglue
