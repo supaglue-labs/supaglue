@@ -6,15 +6,16 @@ const emptyContentReason = css({
   paddingTop: '1rem',
 });
 
-const form = css({
-  backgroundColor: 'white',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.75rem',
-  padding: '1rem',
-  borderRadius: '0.5rem',
-  width: '30rem',
-});
+const form = (theme: any) =>
+  css({
+    backgroundColor: theme.colors.background,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    padding: '1rem',
+    borderRadius: '0.5rem',
+    width: '30rem',
+  });
 
 const formHeaderRow = css({
   display: 'flex',

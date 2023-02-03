@@ -1,9 +1,10 @@
 import createCache from '@emotion/cache';
-import { CacheProvider } from '@emotion/react';
+import { CacheProvider, ThemeProvider } from '@emotion/react';
 import axios from 'axios';
 import { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
 import { RequestType } from '../hooks/api';
+import { darkTheme } from '../themes';
 import { useSupaglueContext } from './supaglueProvider';
 
 export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) => {
@@ -25,7 +26,9 @@ export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) 
         },
       }}
     >
-      <CacheProvider value={cache}>{children}</CacheProvider>
+      <CacheProvider value={cache}>
+        <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>
+      </CacheProvider>
     </SWRConfig>
   );
 };

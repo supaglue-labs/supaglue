@@ -7,7 +7,7 @@ import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/supaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import { Button } from '../Button';
-import styles from '../Button/styles';
+import styles from './styles';
 
 export type SalesforceConnectButtonProps = {
   configurationUrl: string;
@@ -43,7 +43,7 @@ const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) =>
 
   return (
     <Button
-      css={[styles.button, { width: '8rem' }]}
+      css={styles.button}
       className={classNames('sg-salesforceConnectButton', props.appearance?.elements?.button)}
       onClick={onClick}
     >

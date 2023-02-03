@@ -1,4 +1,4 @@
-import { FieldMapping, TriggerSyncButton, useSupaglueContext } from '@supaglue/nextjs';
+import { FieldMapping, Switch, TriggerSyncButton, useSupaglueContext } from '@supaglue/nextjs';
 import { useDeveloperConfig, useSalesforceIntegration } from '@supaglue/nextjs/src/hooks/api';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -90,6 +90,11 @@ const SyncConfiguration = () => {
               syncConfigName={syncConfigName}
               onSuccess={() => showToast('Successfully started sync!')}
               onError={() => showToast('Error encountered.')}
+              appearance={{
+                elements: {
+                  button: 'bg-primary',
+                },
+              }}
             />
             {timeoutId && (
               <span className="absolute z-10 top-0 left-36 mt-5 block rounded bg-gray-600 py-1 px-2 text-xs text-white">
@@ -98,12 +103,12 @@ const SyncConfiguration = () => {
             )}
           </div>
 
-          {/*
           <div className="px-3">
-            <div className="py-2"><Switch syncConfigName={syncConfigName} /></div>
-            <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
+            <div className="py-2">
+              <Switch syncConfigName={syncConfigName} />
             </div>
-          */}
+            <p className="text-sm text-gray-500">Fully refresh all updated contacts every 15 minutes.</p>
+          </div>
 
           <div className="flex flex-col gap-4">
             <FieldMapping syncConfigName={syncConfigName} key={syncConfigName} />
