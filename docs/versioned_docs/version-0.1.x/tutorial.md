@@ -18,7 +18,7 @@ For this tutorial, we've provided Salesforce Connected App credentials as part o
 
 :::
 
-1. `cd` into `/apps/sample-app` and start the sample app locally:
+1. `cd` into `/apps/sample-app` if you are not already there and start the sample app locally:
 
    ```shell
    yarn dev
@@ -30,7 +30,7 @@ For this tutorial, we've provided Salesforce Connected App credentials as part o
 
 In Supaglue, a [Developer Config](/concepts#developer-config) represents a set of Sync Configs. A [Sync Config](/concepts#sync-config) defines how to move one type of Salesforce object from your customers' Salesforce to your application. Once deployed to Supaglue's Integration Service, a Sync Config can be used by your customers as a [Sync](/concepts#sync) via embeddedable [Supaglue React components](/react-components).
 
-The Developer Config you deployed in the Quickstart currently contains Syncs for Contacts, Leads, and Opportunities. We will now add a Sync for Accounts.
+The Developer Config you deployed in the [Quickstart](/quickstart) currently contains Syncs for Contacts, Leads, and Opportunities. We will now add a Sync for Accounts.
 
 ### Create Sync Config for Accounts
 
@@ -42,11 +42,32 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 
 :::
 
-1. `cd` into `apps/sample-app` and create `supaglue-config/account.ts`. Paste in the following:
+1. Create `account.ts` inside the `/apps/sample-app/supaglue-config` directory. Paste in the following:
 
    ```tsx title='apps/sample-app/supaglue-config/account.ts'
    import * as sdk from '@supaglue/sdk';
    import credentials from './postgres_credentials';
+
+   const accountsSchema = sdk.schema({
+     fields: [
+       {
+         name: 'salesforce_id',
+         label: 'id',
+       },
+       {
+         name: 'name',
+         label: 'name',
+       },
+     ],
+   });
+
+   const defaultFieldMapping = sdk.defaultFieldMapping(
+     [
+       { name: 'salesforce_id', field: 'Id' },
+       { name: 'name', field: 'Name' },
+     ],
+     'salesforce'
+   );
 
    const accountSyncConfig = sdk.salesforce.syncConfig({
      name: 'Accounts',
@@ -62,7 +83,7 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
        },
      }),
      strategy: 'full_refresh',
-     defaultFieldMapping: accountMapping,
+     defaultFieldMapping,
    });
 
    export default accountSyncConfig;
@@ -70,9 +91,7 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 
    The `syncConfig` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
 
-1. Now call the `schema` function to create a schema object.
-
-   The schema object exposes the specified Salesforce Account fields to your customers and lets them map them to fields in the sample app's Postgres database.
+1. The schema object exposes the specified Salesforce Account fields to your customers and lets them map them to fields in the sample app's Postgres database.
 
    ```tsx title='apps/sample-app/supaglue-config/account.ts'
    ...
@@ -92,14 +111,12 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
    ...
    ```
 
-1. Call the `defaultFieldMapping` function to create a defaultFieldMapping object.
-
-   This specifies the default field mapping values for the Salesforce Account object that would be used in the sample app absent any customer-provided overrides.
+1. The defaultFieldMapping object specifies the default field mapping values for the Salesforce Account object that would be used in the sample app absent any customer-provided overrides.
 
    ```tsx title='supaglue-config/account.ts'
    ...
 
-    const accountMapping = sdk.defaultFieldMapping(
+    const defaultFieldMapping = sdk.defaultFieldMapping(
       [
         { name: 'salesforce_id', field: 'Id' },
         { name: 'name', field: 'Name' },
@@ -113,6 +130,7 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 1. Finally, add the newly created Sync Config for Accounts to the existing Developer Config so it can be deployed with the existing sample Sync Configs:
 
    ```tsx title='supaglue-config/index.ts'
+   // TUTORIAL: uncomment this
    import accountSyncConfig from './account';
 
    // ...
@@ -136,19 +154,19 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 
    ```console
    ...
-   ╔═══════════════╤═════════╤════════╗
-   ║ Name          │ Action  │ Status ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Contacts      │ Created │ Live   ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Leads         │ Created │ Live   ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Opportunities │ Created │ Live   ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Accounts      │ Created │ Live   ║
-   ╚═══════════════╧═════════╧════════╝
+   ╔═══════════════╤═══════════╤════════╗
+   ║ Name          │ Action    │ Status ║
+   ╟───────────────┼───────────┼────────╢
+   ║ Contacts      │ No Change │ Live   ║
+   ╟───────────────┼───────────┼────────╢
+   ║ Leads         │ No Change │ Live   ║
+   ╟───────────────┼───────────┼────────╢
+   ║ Opportunities │ No Change │ Live   ║
+   ╟───────────────┼───────────┼────────╢
+   ║ Accounts      │ Created   │ Live   ║
+   ╚═══════════════╧═══════════╧════════╝
 
-   Syncs Created: 4, Updated: 0, Deleted: 0, No Change: 0
+   Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 3
    ```
 
 ### Embed Salesforce integration UI
@@ -163,26 +181,32 @@ The sample app already contains some Supaglue embedded components, <`Integration
 
 1. Embed [`<Switch/>`](react-components/#switch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
 
-   ```tsx title=apps/sample-app/pages/integrations/[type].tsx:getSwitch()
-   // TUTORIAL: uncomment this
-   return (
-     <div className="px-3">
-       <div className="py-2">
-         <Switch syncConfigName={syncConfigName} />
-       </div>
-       <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
-     </div>
-   );
+   ```tsx title=apps/sample-app/pages/integrations/[type]
+   // TUTORIAL: Uncomment this
+   import { Switch } from '@supaglue/nextjs';
+
+   // ...
+   const getSwitch = (syncConfigName: string) => {
+    // TUTORIAL: uncomment this
+    return (
+      <div className="px-3">
+        <div className="py-2">
+          <Switch includeSyncDescription syncConfigName={syncConfigName} />
+        </div>
+      </div>
+    );
+    // ...
    ```
 
    This adds a switch that allows a customer to toggle the Contact sync we created on and off.
 
-import BrowserWindow from '@site/src/components/BrowserWindow';
+   import BrowserWindow from '@site/src/components/BrowserWindow';
 
-<BrowserWindow url="http://localhost:3000/integrations/salesforce#Accounts">
+  <BrowserWindow url="http://localhost:3000/integrations/salesforce#Accounts">
 
-![app_accounts_switch](/img/tutorial/app_accounts_switch.png 'salesforce accounts config')
-</BrowserWindow>
+    ![app_accounts_switch](/img/tutorial/app_accounts_switch.png 'salesforce accounts config')
+
+  </BrowserWindow>
 
 1. Turn the switch on. The Accounts Sync will now run as a background task every 15 minutes.
 
@@ -224,7 +248,7 @@ Finally, let's manually trigger our sync to make sure it works as expected.
 
 ## Customize integration
 
-Supaglue lets your customize the fields and mappings you expose to your customers via React components, as well as the look-and-feel of the UI itself.
+Supaglue lets you customize the fields and mappings you expose to your customers via React components, as well as the look-and-feel of the UI itself.
 
 ### Customize Sync Config
 
@@ -236,6 +260,7 @@ You may have realized that two of the columns in the sample app's Contacts table
    const contactSchema = sdk.schema({
      fields: [
        // ...
+       // TUTORIAL: Uncomment this
        {
          name: 'last_name',
          label: 'last name',
@@ -254,7 +279,7 @@ You may have realized that two of the columns in the sample app's Contacts table
    supaglue apply supaglue-config/
    ```
 
-1. Refresh your sample app. On the "Salesforce Integration" page you should now see two newly configured fields:
+1. On the [Salesforce Integration](http://localhost:3000/integrations/salesforce#Contacts) page you should now see two newly configured fields:
 
    <BrowserWindow url="http://localhost:3000/integrations/salesforce#Contacts">
 
@@ -274,7 +299,7 @@ Supaglue provides several React component customization options to change its lo
 
 :::info
 
-[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework that is used to apply styles directly in your markup. The sample app comes with tailwind pre-installed.
+[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework that is used to apply styles directly in your markup. The sample app comes with Tailwind pre-installed.
 
 :::
 
@@ -284,6 +309,7 @@ Supaglue provides several React component customization options to change its lo
    <FieldMapping
      syncConfigName={syncConfigName}
      key={syncConfigName}
+     // TUTORIAL: uncomment this
      appearance={{
        elements: {
          form: 'bg-base-300',
@@ -293,7 +319,7 @@ Supaglue provides several React component customization options to change its lo
    />
    ```
 
-2. The sample app should reload with updated styling for the field mapping component.
+2. The [Salesforce Integration](http://localhost:3000/integrations/salesforce#Contacts) page should now have updated styling for the field mapping component.
 
    <BrowserWindow url="http://localhost:3000/salesforce#Contacts">
 
