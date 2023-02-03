@@ -166,11 +166,8 @@ The sample app already contains some Supaglue embedded components, <`Integration
    ```tsx title=apps/sample-app/pages/integrations/[type].tsx:getSwitch()
    // TUTORIAL: uncomment this
    return (
-     <div className="px-3">
-       <div className="py-2">
-         <Switch syncConfigName={syncConfigName} />
-       </div>
-       <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
+     <div className="py-2">
+       <Switch includeSyncDescription syncConfigName={syncConfigName} />
      </div>
    );
    ```
