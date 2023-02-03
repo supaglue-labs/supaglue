@@ -44,7 +44,7 @@ import ThemedImage from '@theme/ThemedImage';
   }}
 />
 
-- **Typescript configuration** to define [syncs](/concepts/sync) declaratively
+- **Typescript configuration** to define [syncs](/concepts#sync) declaratively
 - **CLI** to publish configuration changes
 - **API** to accept requests from your application, Salesforce, and the CLI
 - **Workflow engine (Temporal)** to reliably execute [syncs](/concepts#sync)
