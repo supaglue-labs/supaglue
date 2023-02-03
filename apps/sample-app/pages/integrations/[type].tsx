@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { PageTabs } from '../../components/PageTabs';
 import { useActiveTab } from '../../hooks';
+// TUTORIAL: Uncomment this
+// import { Switch } from '@supaglue/nextjs';
 
 export default function Integration() {
   return (
@@ -82,7 +84,12 @@ const SyncConfiguration = () => {
 
   const getSwitch = () => {
     // TUTORIAL: uncomment this
-    // return <Switch syncConfigName={syncConfigName} />;
+    // return (
+    //   <div className="px-3">
+    //     <div className="py-2">{getSwitch()}</div>
+    //     <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
+    //   </div>
+    // );
     return null;
   };
 
@@ -104,11 +111,7 @@ const SyncConfiguration = () => {
             )}
           </div>
 
-          {/* TUTOTIRAL: uncomment this */}
-          {/* <div className="px-3">
-            <div className="py-2">{getSwitch()}</div>
-            <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
-          </div> */}
+          <div>{getSwitch()}</div>
 
           <div className="flex flex-col gap-4">
             <FieldMapping syncConfigName={syncConfigName} key={syncConfigName} />
