@@ -17,7 +17,7 @@ type SupaglueProviderProps = {
 // TODO: ENG-103 implement authentication
 export const SupaglueProvider: FC<SupaglueProviderProps> = ({ children, customerId, apiUrl, ...rest }) => {
   const context = useMemo(
-    () => ({ apiUrl: apiUrl || process.env.NEXT_PUBLIC_SUPAGLUE_HOST || '', customerId }),
+    () => ({ apiUrl: apiUrl ?? process.env.NEXT_PUBLIC_SUPAGLUE_HOST ?? '', customerId }),
     [apiUrl, customerId]
   );
 
@@ -26,6 +26,7 @@ export const SupaglueProvider: FC<SupaglueProviderProps> = ({ children, customer
       <SWRConfig
         value={{
           fetcher: async (config: RequestType) => {
+            const { apiUrl } = context;
             const { method = 'GET', path } = config ?? {};
             const res = await axios({ ...config, method, url: `${apiUrl}${path}` });
             return res.data;
