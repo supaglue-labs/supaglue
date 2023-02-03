@@ -10,7 +10,7 @@ const SupaglueContext = createContext({
 
 type SupaglueProviderProps = {
   children: ReactNode;
-  apiUrl: string;
+  apiUrl?: string;
   customerId: string;
 };
 

@@ -48,7 +48,7 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 ```shell
 git clone git@github.com:supaglue-labs/supaglue.git
 cd supaglue
-cp .env.sample .env
+echo "SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)" >> .env
 docker compose up
 ```
 

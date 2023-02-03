@@ -14,7 +14,7 @@ We've provided a [sample Next.js app](https://github.com/supaglue-labs/supaglue/
 
    ```shell
    cd apps/sample-app
-   cp .env.sample .env
+   ./scripts/setup_env.sh
    yarn workspaces focus sample-app
    ```
 
