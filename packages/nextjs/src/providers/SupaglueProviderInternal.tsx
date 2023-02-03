@@ -4,7 +4,7 @@ import axios from 'axios';
 import { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
 import { RequestType } from '../hooks/api';
-import { useSupaglueContext } from './supaglueProvider';
+import { useSupaglueContext } from './SupaglueProvider';
 
 export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) => {
   const { apiUrl } = useSupaglueContext();

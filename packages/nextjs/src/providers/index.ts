@@ -1,2 +1,2 @@
-export * from './supaglueProvider';
-export * from './supaglueProviderInternal';
+export * from './SupaglueProvider';
+export * from './SupaglueProviderInternal';
