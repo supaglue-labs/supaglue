@@ -78,7 +78,7 @@ In this step, we will deploy Supaglue configuration to enable customers (i.e. `u
    Syncs Created: 3, Updated: 0, Deleted: 0, No Change: 0
    ```
 
-1. Navigate to the ([integrations page](http://localhost:3000/integrations)). You should now see a card that allows you to connect your Salesforce instance.
+1. Navigate to the [Integrations page](http://localhost:3000/integrations). You should now see a card that allows you to connect your Salesforce instance.
 
    <BrowserWindow url="http://localhost:3000/integrations">
 
@@ -98,10 +98,9 @@ In this step, we will sync Salesforce contacts into the sample application.
    ![salesforce_config](/img/quickstart/app_salesforce_config.png 'salesforce config sample app')
    </BrowserWindow>
 
-
 2. Click the "Run sync now" button to trigger an inbound sync from your Salesforce into the sample app.
 
-3. Navigate to the ([App Objects](http://localhost:3000/)) page and you will now see contacts from your Salesforce instance in a table! (You may have to refresh if you navigated to this page before the sync has completed.)
+3. Navigate to the [App Objects](http://localhost:3000/) page and you will now see contacts from your Salesforce instance in a table! (You may have to refresh if you navigated to this page before the sync has completed.)
 
    <BrowserWindow url="http://localhost:3000/integrations">
 
