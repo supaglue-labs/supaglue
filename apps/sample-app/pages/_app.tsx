@@ -41,7 +41,6 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
 
   return (
     <SupaglueProvider
-      apiUrl={process.env.NEXT_PUBLIC_API_SERVER_URL ?? 'http://localhost:8080'}
       customerId={customerId}
       // TUTORIAL: Uncomment this
       // theme={darkTheme}

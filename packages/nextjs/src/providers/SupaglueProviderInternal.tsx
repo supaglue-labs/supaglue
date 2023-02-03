@@ -3,9 +3,9 @@ import { CacheProvider, ThemeProvider } from '@emotion/react';
 import axios from 'axios';
 import { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
+import { useSupaglueContext } from '.';
 import { RequestType } from '../hooks/api';
 import { defaultTheme } from '../style/themes';
-import { useSupaglueContext } from './supaglueProvider';
 
 export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) => {
   const { apiUrl, theme } = useSupaglueContext();

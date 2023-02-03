@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/nextjs",
-  "version": "0.1.0",
+  "version": "0.1.1-1",
   "repository": {
     "type": "git",
     "url": "https://github.com/supaglue-labs/supaglue.git",
@@ -45,6 +45,7 @@
     "@types/react-dom": "18.0.9",
     "axios": "^1.2.2",
     "classnames": "^2.3.2",
+    "cronstrue": "^2.22.0",
     "eslint": "^8.33.0",
     "react-dom": "^18.2.0",
     "swr": "^2.0.0"

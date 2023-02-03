@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Quickstart
 
-In less than 5 minutes, you will use Supaglue to deploy a basic Salesforce integration that allows your customers to sync their Salesforce objects to a sample Next.js application.
+**In less than 5 minutes**, you will use Supaglue to deploy a basic Salesforce integration that allows your customers to sync their Salesforce objects to a sample Next.js application.
 
 ## Clone and start Supaglue
 
@@ -12,8 +12,8 @@ In less than 5 minutes, you will use Supaglue to deploy a basic Salesforce integ
 # Clone our repo
 git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
 
-# Copy environment variables
-cp .env.sample .env
+# Create an encryption secret for credentials
+echo "SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)" >> .env
 
 # Start the Supaglue stack
 docker compose up
@@ -31,7 +31,7 @@ In this step, we will set up the sample application.
 
    ```shell
    cd apps/sample-app
-   cp .env.sample .env
+   ./scripts/setup_env.sh
    yarn workspaces focus sample-app
    npm install -g @supaglue/cli
    ```
@@ -100,7 +100,7 @@ In this step, we will sync Salesforce contacts into the sample application.
 
 2. Click the "Run sync now" button to trigger an inbound sync from your Salesforce into the sample app.
 
-3. Navigate to the [App Objects](http://localhost:3000/) page and you will now see contacts from your Salesforce instance in a table! (You may have to refresh if you navigated to this page before the sync has completed.)
+3. Navigate to the [App Objects](http://localhost:3000/) page and you will now see contacts from your Salesforce instance in a table! (You may have to refresh a few times if you navigated to this page before the sync has completed.)
 
    <BrowserWindow url="http://localhost:3000/integrations">
 

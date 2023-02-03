@@ -3715,6 +3715,7 @@ __metadata:
     "@types/react-dom": ^18
     axios: ^1.2.2
     classnames: ^2.3.2
+    cronstrue: ^2.22.0
     eslint: ^8.33.0
     eslint-config-next: ^13.0.7
     next: ^13.1.1
@@ -6990,6 +6991,15 @@ __metadata:
   dependencies:
     luxon: ^3.2.1
   checksum: 60642d4710c6ba202b781be6c905d68a47ac69fe1b9eaba06a3f7e9950ba58adbb21ae260452b2801d80b2a1f04f142bb847157c5a707fa4b01a5d2c8842828e
+  languageName: node
+  linkType: hard
+
+"cronstrue@npm:^2.22.0":
+  version: 2.22.0
+  resolution: "cronstrue@npm:2.22.0"
+  bin:
+    cronstrue: bin/cli.js
+  checksum: 5017cccddee819c162d3b71c2a517c2468834f6454e9ce6a21016149848a69cf7f7433584c61dd1b92adea79ea461da291d32f48129c0a5ccef93019be93494f
   languageName: node
   linkType: hard
 

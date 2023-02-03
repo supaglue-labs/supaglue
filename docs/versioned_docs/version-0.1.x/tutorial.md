@@ -2,9 +2,9 @@
 sidebar_position: 3
 ---
 
-# Tutorial (15 minutes)
+# Tutorial
 
-In this tutorial, you'll build an integration that allows your customers to sync their Salesforce Account records to a sample Next.js application in under 15 minutes. We'll use the same sample application from the [Quickstart](/quickstart) for the tutorial.
+**In under 15 minutes**, you'll build an integration that allows your customers to sync their Salesforce Account records to a sample Next.js application. We'll use the same sample application from the [Quickstart](/quickstart) for the tutorial.
 
 You'll learn how to use Supaglue's SDKs and CLI to setup and deploy the integration (frontend and backend), and customize the UI you expose to your customers.
 
@@ -30,15 +30,15 @@ For this tutorial, we've provided Salesforce Connected App credentials as part o
 
 In Supaglue, a [Developer Config](/concepts#developer-config) represents a set of Sync Configs. A [Sync Config](/concepts#sync-config) defines how to move one type of Salesforce object from your customers' Salesforce to your application. Once deployed to Supaglue's Integration Service, a Sync Config can be used by your customers as a [Sync](/concepts#sync) via embeddedable [Supaglue React components](/react-components).
 
-The developer config you deployed in the quickstart currently contains syncs for Contacts, Leads, and Opportunities. We will now add a sync for Accounts.
+The Developer Config you deployed in the Quickstart currently contains Syncs for Contacts, Leads, and Opportunities. We will now add a Sync for Accounts.
 
 ### Create Sync Config for Accounts
 
-To build a Salesforce sync, we first use the Config SDK to create a Sync Config, which defines to move a Salesforce records between your customers' Salesforce and your application:
+To build a Salesforce Sync, we first use the [Config SDK](/config_sdk) to create a Sync Config, which defines how to move Salesforce records between your customers' Salesforce and your application:
 
 :::info
 
-For this tutorial, we've included a sample Developer Config in the `supaglue-config` directory, which lives in the sample app. The Config SDK was also installed as part of the sample app earlier for your convenience.
+For this tutorial, we've included a sample [Developer Config](/concepts#developer-config) in the `supaglue-config` directory, which lives in the sample app. The Config SDK was also installed as part of the sample app earlier for your convenience.
 
 :::
 
@@ -117,10 +117,10 @@ For this tutorial, we've included a sample Developer Config in the `supaglue-con
 
    // ...
    syncConfigs: [
-    // TUTORIAL: uncomment this
     contactSyncConfig,
     leadSyncConfig,
     opportunitySyncConfig,
+    // TUTORIAL: uncomment this
     accountSyncConfig
    ],
    // ...
@@ -153,7 +153,7 @@ For this tutorial, we've included a sample Developer Config in the `supaglue-con
 
 ### Embed Salesforce integration UI
 
-The last step is to embed a Supaglue React component in the sample app that customers can use to further configure the integration for their own Salesforce instances.
+Next, embed a Supaglue React component in the sample app that customers can use to further configure the integration for their own Salesforce instances.
 
 :::info
 
@@ -165,14 +165,14 @@ The sample app already contains some Supaglue embedded components, <`Integration
 
    ```tsx title=apps/sample-app/pages/integrations/[type].tsx:getSwitch()
    // TUTORIAL: uncomment this
-   // return (
-   //   <div className="px-3">
-   //     <div className="py-2">
-   //       <Switch syncConfigName={syncConfigName} />
-   //     </div>
-   //     <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
-   //   </div>
-   // );
+   return (
+     <div className="px-3">
+       <div className="py-2">
+         <Switch syncConfigName={syncConfigName} />
+       </div>
+       <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
+     </div>
+   );
    ```
 
    This adds a switch that allows a customer to toggle the Contact sync we created on and off.
@@ -184,7 +184,7 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 ![app_accounts_switch](/img/tutorial/app_accounts_switch.png 'salesforce accounts config')
 </BrowserWindow>
 
-1. Turn the switch on. The Accounts sync will now run as a background task every 15 minutes.
+1. Turn the switch on. The Accounts Sync will now run as a background task every 15 minutes.
 
 ### Test the integration
 
@@ -224,7 +224,7 @@ Finally, let's manually trigger our sync to make sure it works as expected.
 
 ## Customize integration
 
-Supaglue lets your customize the fields and mappings you expose to your customers via React components (backend), as well as the look-and-feel of the UI itself.
+Supaglue lets your customize the fields and mappings you expose to your customers via React components, as well as the look-and-feel of the UI itself.
 
 ### Customize Sync Config
 
@@ -251,7 +251,7 @@ You may have realized that two of the columns in the sample app's Contacts table
 1. Re-run the [`apply`](/cli#apply) CLI command to apply the latest changes:
 
    ```shell
-   supaglue apply supaglue-config
+   supaglue apply supaglue-config/
    ```
 
 1. Refresh your sample app. On the "Salesforce Integration" page you should now see two newly configured fields:

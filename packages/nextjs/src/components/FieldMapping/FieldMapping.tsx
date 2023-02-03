@@ -7,7 +7,7 @@ import { Select } from '..';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
 import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
 import { SupaglueProviderInternal } from '../../providers';
-import { useSupaglueContext } from '../../providers/supaglueProvider';
+import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
 

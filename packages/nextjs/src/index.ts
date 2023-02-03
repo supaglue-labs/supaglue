@@ -1,2 +1,2 @@
 export * from './components';
-export * from './providers/supaglueProvider';
+export * from './providers/SupaglueProvider';

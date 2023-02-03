@@ -2,7 +2,7 @@
 sidebar_position: 6
 ---
 
-# React Components (Next.js SDK)
+# React Components
 
 :::caution
 
@@ -14,7 +14,7 @@ Install **Supaglue's Next.js SDK** to use functional React components and hooks 
 
 ## Install @supaglue/nextjs
 
-Navigate to your application's root directory and install the @supaglue/nextjs package:
+Navigate to your application's root directory and install the `@supaglue/nextjs` package:
 
 ```shell
 yarn add @supaglue/nextjs
@@ -22,7 +22,7 @@ yarn add @supaglue/nextjs
 
 ## Set Environment Keys
 
-Set the following environment variables in the Supaglue `.env` file.
+Set the following environment variables in your `.env` file.
 
 ```shell
 NEXT_PUBLIC_SUPAGLUE_HOST=http://localhost:8080
@@ -118,7 +118,7 @@ Example:
 
 Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nextjs/src/components/Switch/Switch.tsx#L19)
 
-#### `<SalesforceConnectCard/>` (preview only)
+#### `<IntegrationCard/>`
 
 A card container housing the `<SalesforceConnectButton/>` along with a header, description, and icon.
 
@@ -157,23 +157,17 @@ Use your preferred styling method to replace these classes with your own:
 
 Stylesheets / CSS Modules Example:
 
-:::info
-
-For Stylesheets/CSS Modules users: Set classes as `!important`. This will change in the future.
-
-:::
-
 ```css
 /* FieldMapping.module.css */
 
 .primaryColor {
-  background-color: #e1e2e2 !important;
+  background-color: #e1e2e2;
 }
 
 .fieldName {
-  font-style: italic !important;
-  font-size: 0.875rem !important;
-  line-height: 1.25rem !important;
+  font-style: italic;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 ```
 
@@ -192,12 +186,6 @@ For Stylesheets/CSS Modules users: Set classes as `!important`. This will change
 
 Tailwind CSS Example:
 
-:::info
-
-For Tailwind CSS users: To customize components today you will need to set `important: true;` in your `tailwind.config.js` as per https://tailwindcss.com/docs/configuration#important. This will change in the future.
-
-:::
-
 ```jsx
 <FieldMapping
   syncConfigName={syncConfigName}
@@ -209,45 +197,4 @@ For Tailwind CSS users: To customize components today you will need to set `impo
     },
   }}
 />
-```
-
-## Hooks (preview only)
-
-#### `useSalesforceSignIn`
-
-Access the SignIn object inside your components
-
-```jsx
-import { useWorkflow } from '@supaglue/react';
-
-function Example() {
-  const { redirectUrl } = useSalesforceSignIn();
-
-  return <>{/* implement your own sign-in button */}</>;
-}
-
-export default Example;
-```
-
-#### `useSync`
-
-Access the Sync object inside your components
-
-Example:
-
-```jsx
-import { useSync } from '@supaglue/react';
-
-function Example() {
-  const { fieldMappings, name, isLoaded } = useSync();
-
-  if (!isLoaded) {
-    // implement your own loading state
-    return null;
-  }
-
-  return <>{/* implement your own field mapping ui */}</>;
-}
-
-export default Example;
 ```

@@ -7,6 +7,7 @@ import integration from './integration';
 import oauth from './oauth';
 import sync from './sync';
 
+// TODO: ENG-105 version and guard routes
 export default function initRoutes(app: Express): void {
   app.use('/developer_config', developerConfig);
   app.use('/integrations', integration);

@@ -14,7 +14,7 @@ Install **Supaglue's Next.js SDK** to use functional React components and hooks 
 
 ## Install @supaglue/nextjs
 
-Navigate to your application's root directory and install the @supaglue/nextjs package:
+Navigate to your application's root directory and install the `@supaglue/nextjs` package:
 
 ```shell
 yarn add @supaglue/nextjs
@@ -22,7 +22,7 @@ yarn add @supaglue/nextjs
 
 ## Set Environment Keys
 
-Set the following environment variables in the Supaglue `.env` file.
+Set the following environment variables in your `.env` file.
 
 ```shell
 NEXT_PUBLIC_SUPAGLUE_HOST=http://localhost:8080
