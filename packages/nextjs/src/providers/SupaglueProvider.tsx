@@ -11,6 +11,7 @@ type SupaglueProviderProps = {
   customerId: string;
 };
 
+// TODO: ENG-103 implement authentication
 export const SupaglueProvider: FC<SupaglueProviderProps> = ({ children, customerId, apiUrl, ...rest }) => {
   const context = useMemo(
     () => ({ apiUrl: apiUrl || process.env.NEXT_PUBLIC_SUPAGLUE_HOST || '', customerId }),

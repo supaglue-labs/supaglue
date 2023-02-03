@@ -118,7 +118,7 @@ Example:
 
 Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nextjs/src/components/Switch/Switch.tsx#L19)
 
-#### `<SalesforceConnectCard/>` (preview only)
+#### `<IntegrationCard/>`
 
 A card container housing the `<SalesforceConnectButton/>` along with a header, description, and icon.
 
@@ -209,45 +209,4 @@ For Tailwind CSS users: To customize components today you will need to set `impo
     },
   }}
 />
-```
-
-## Hooks (preview only)
-
-#### `useSalesforceSignIn`
-
-Access the SignIn object inside your components
-
-```jsx
-import { useWorkflow } from '@supaglue/react';
-
-function Example() {
-  const { redirectUrl } = useSalesforceSignIn();
-
-  return <>{/* implement your own sign-in button */}</>;
-}
-
-export default Example;
-```
-
-#### `useSync`
-
-Access the Sync object inside your components
-
-Example:
-
-```jsx
-import { useSync } from '@supaglue/react';
-
-function Example() {
-  const { fieldMappings, name, isLoaded } = useSync();
-
-  if (!isLoaded) {
-    // implement your own loading state
-    return null;
-  }
-
-  return <>{/* implement your own field mapping ui */}</>;
-}
-
-export default Example;
 ```
