@@ -10,7 +10,7 @@ You'll learn how to use Supaglue's SDKs and CLI to embed Salesforce OAuth for yo
 
 ## Before you begin
 
-Be sure to have completed the steps in [Get Started](/get-started).
+Be sure to have completed the steps in the [Quickstart](/quickstart).
 
 To complete this tutorial you will need the following:
 

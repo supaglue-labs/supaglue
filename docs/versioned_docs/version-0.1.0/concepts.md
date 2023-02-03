@@ -39,7 +39,7 @@ type DeveloperConfigSpec = {
 
 type SyncConfig = {
   name: string;
-  salesforceObject: 'Contact' | 'Lead' | 'Account';
+  salesforceObject: 'Contact' | 'Lead' | 'Account' | 'Opportunity';
   cronExpression: string;
   destination: Destination;
   strategy: 'full_refresh';

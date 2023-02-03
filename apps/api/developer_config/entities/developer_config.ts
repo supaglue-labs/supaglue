@@ -67,7 +67,7 @@ export type SalesforceCredentials = {
 
 export type SyncConfig = {
   name: string; // unique (e.g. ContactSync, LeadSync, AccountSync)
-  salesforceObject: 'Contact' | 'Lead' | 'Account';
+  salesforceObject: 'Contact' | 'Lead' | 'Account' | 'Opportunity';
   cronExpression: string; // Some valid cron string
   destination: Destination;
   // TODO: support incremental
