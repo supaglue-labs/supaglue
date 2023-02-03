@@ -10,7 +10,7 @@ const config = {
   // tagline: 'Dinosaurs are cool',
   url: 'https://docs.supaglue.com',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
 
@@ -33,14 +33,10 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          onlyIncludeVersions: ['0.1.0'],
-          lastVersion: '0.1.0',
+          lastVersion: '0.1.x',
           versions: {
-            current: {
-              label: '0.3.0 - wip',
-            },
-            '0.1.0': {
-              label: '0.1.0 - alpha',
+            '0.1.x': {
+              label: '0.1.x - alpha',
             },
           },
           sidebarPath: require.resolve('./sidebars.js'),
@@ -141,6 +137,13 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      algolia: {
+        appId: 'CJOFM1QP4P',
+        apiKey: 'bf8d1571a33851ba8bf7e70a0c57f28f',
+        indexName: 'supaglue',
+        contextualSearch: true,
+        searchPagePath: 'search',
+      },
     }),
 
   plugins: [
@@ -148,9 +151,8 @@ const config = {
       'posthog-docusaurus',
       {
         apiKey: 'phc_thv3N2dFQcJDh2vPz6FtGE9oKDiBSdYp5oKS1Cu9U8j',
-        appUrl: 'https://app.posthog.com', // optional
-        enableInDevelopment: false, // optional
-        // other options are passed to posthog-js init as is
+        enableInDevelopment: false,
+        enable: process.env.VERCEL_ENV === 'production',
       },
     ],
     [

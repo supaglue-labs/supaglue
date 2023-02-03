@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync } from '../../hooks/api';
 import { SupaglueProviderInternal } from '../../providers';
-import { useSupaglueContext } from '../../providers/supaglueProvider';
+import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import { styles } from './styles';
 
