@@ -12,8 +12,8 @@ sidebar_position: 2
 # Clone our repo
 git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
 
-# Copy environment variables
-cp .env.sample .env
+# Create an encryption secret for credentials
+echo "SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)" >> .env
 
 # Start the Supaglue stack
 docker compose up
