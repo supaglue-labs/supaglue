@@ -14,14 +14,15 @@ const contactSchema = sdk.schema({
       name: 'first_name',
       label: 'first name',
     },
-    {
-      name: 'last_name',
-      label: 'last name',
-    },
-    {
-      name: 'title',
-      label: 'title',
-    },
+    // TUTORIAL: Uncomment this
+    // {
+    //   name: 'last_name',
+    //   label: 'last name',
+    // },
+    // {
+    //   name: 'title',
+    //   label: 'title',
+    // },
   ],
 });
 

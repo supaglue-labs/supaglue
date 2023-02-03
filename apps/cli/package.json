@@ -49,7 +49,7 @@
   "scripts": {
     "build": "yarn run clean && yarn run -T tsc -p tsconfig.build.json",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
-    "publish": "yarn dlx turbo run build --filter=cli... && yarn npm publish",
+    "publish": "run -T turbo run build --filter=cli... && yarn npm publish",
     "lint-staged": "run -T lint-staged --no-stash",
     "lint": "run -T eslint"
   }

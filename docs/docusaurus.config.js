@@ -141,6 +141,13 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      algolia: {
+        appId: 'CJOFM1QP4P',
+        apiKey: 'bf8d1571a33851ba8bf7e70a0c57f28f',
+        indexName: 'supaglue',
+        contextualSearch: true,
+        searchPagePath: 'search',
+      },
     }),
 
   plugins: [
@@ -148,9 +155,8 @@ const config = {
       'posthog-docusaurus',
       {
         apiKey: 'phc_thv3N2dFQcJDh2vPz6FtGE9oKDiBSdYp5oKS1Cu9U8j',
-        appUrl: 'https://app.posthog.com', // optional
-        enableInDevelopment: false, // optional
-        // other options are passed to posthog-js init as is
+        enableInDevelopment: false,
+        enable: process.env.VERCEL_ENV === 'production',
       },
     ],
     [

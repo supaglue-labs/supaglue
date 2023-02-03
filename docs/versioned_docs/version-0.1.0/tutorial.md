@@ -2,55 +2,137 @@
 sidebar_position: 3
 ---
 
-# Tutorial
+# Tutorial (15 minutes)
 
-In this tutorial, you'll learn to deploy a basic Salesforce integration that syncs Salesforce Contacts, Accounts, Leads, and Opportunities to a sample application called Apolla.io.
+In this tutorial, you'll build an integration that allows your customers to sync their Salesforce Account records to a sample Next.js application in under 15 minutes. We'll use the same sample application from the [Quickstart](/quickstart) for the tutorial.
 
-You'll learn the basics of the Supaglue SDK and how to customize your integration and the UI components you expose to your end users.
+You'll learn how to use Supaglue's SDKs and CLI to setup and deploy the integration (frontend and backend), and customize the UI you expose to your customers.
 
-## Begin you begin
+## Before you begin
 
-To complete this tutorial you will need the following:
+Be sure to have completed the [Quickstart](/quickstart).
 
-- [Developer Salesforce Account](https://developer.salesforce.com/)
-- [Salesforce Connected App](references/setup_salesforce) set up for the developer Salesforce account
+:::info
 
-## Install CLI and sample app
+For this tutorial, we've provided Salesforce Connected App credentials as part of the Sample App setup. Before deploying to production, please provide your own [Salesforce Connected App](/references/setup_salesforce) credentials.
 
-We will use the CLI to deploy our syncs and the Apolla.io sample app to test how users can customize and interact with it.
+:::
 
-1. Install the [Supaglue CLI](cli):
-
-   ```shell
-   npm install -g @supaglue/cli
-   ```
-
-1. Install the Apolla.io sample integration app:
+1. `cd` into `/apps/sample-app` and start the sample app locally:
 
    ```shell
-   cd apps/sample-app
-   cp .env.sample .env
-   yarn workspaces focus sample-app
+   yarn dev
    ```
 
-## Deploy a Sync
+1. Open the sample app ([http://localhost:3000](http://localhost:3000)) and login with user: `user1` and password: `password`
 
-### Deploy a Developer Config
+## Deploy Developer Config
 
-1. We've provided a sample Developer Config that sets up four [Syncs](concepts/sync) to sync sObjects from Salesforce, every 15 minutes, into Apolla.io using customer-defined field mappings. Contacts, Leads, and Accounts will be written to Postgres. Opportunities will [call a webhook](https://github.com/supaglue-labs/supaglue/blob/0.1.0/apps/sample-app/pages/api/_sync/index.ts). Take a look at the sample individual [Sync Config](concepts/developer_config#sync-config):
+In Supaglue, a [Developer Config](/concepts#developer-config) represents a set of Sync Configs. A [Sync Config](/concepts#sync-config) defines how to move one type of Salesforce object from your customers' Salesforce to your application. Once deployed to Supaglue's Integration Service, a Sync Config can be used by your customers as a [Sync](/concepts#sync) via embeddedable [Supaglue React components](/react-components).
 
-   - Contact ([contact.ts](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/supaglue-config/contact.ts)),
-   - Lead ([lead.ts](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/supaglue-config/lead.ts)),
-   - Opportunity ([opportunity.ts](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/supaglue-config/opportunity.ts)),
-   - Account ([account.ts](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/supaglue-config/account.ts))
+The developer config you deployed in the quickstart currently contains syncs for Contacts, Leads, and Opportunities. We will now add a sync for Accounts.
 
-1. Deploy the sample Developer Config for the Apolla.io app using the [`apply`](cli/#commands) CLI command:
+### Create Sync Config for Accounts
+
+To build a Salesforce sync, we first use the Config SDK to create a Sync Config, which defines to move a Salesforce records between your customers' Salesforce and your application:
+
+:::info
+
+For this tutorial, we've included a sample Developer Config in the `supaglue-config` directory, which lives in the sample app. The Config SDK was also installed as part of the sample app earlier for your convenience.
+
+:::
+
+1. `cd` into `apps/sample-app` and create `supaglue-config/account.ts`. Paste in the following:
+
+   ```tsx title='apps/sample-app/supaglue-config/account.ts'
+   import * as sdk from '@supaglue/sdk';
+   import credentials from './postgres_credentials';
+
+   const accountSyncConfig = sdk.salesforce.syncConfig({
+     name: 'Accounts',
+     salesforceObject: 'Account',
+     cronExpression: '*/15 * * * *',
+     destination: sdk.destinations.postgres({
+       schema: accountsSchema,
+       config: {
+         credentials,
+         table: 'salesforce_accounts',
+         upsertKey: 'salesforce_id',
+         customerIdColumn: 'customer_id',
+       },
+     }),
+     strategy: 'full_refresh',
+     defaultFieldMapping: accountMapping,
+   });
+
+   export default accountSyncConfig;
+   ```
+
+   The `syncConfig` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
+
+1. Now call the `schema` function to create a schema object.
+
+   The schema object exposes the specified Salesforce Account fields to your customers and lets them map them to fields in the sample app's Postgres database.
+
+   ```tsx title='apps/sample-app/supaglue-config/account.ts'
+   ...
+
+    const accountsSchema = sdk.schema({
+      fields: [
+        {
+          name: 'salesforce_id',
+          label: 'id',
+        },
+        {
+          name: 'name',
+          label: 'name',
+        },
+      ],
+    });
+   ...
+   ```
+
+1. Call the `defaultFieldMapping` function to create a defaultFieldMapping object.
+
+   This specifies the default field mapping values for the Salesforce Account object that would be used in the sample app absent any customer-provided overrides.
+
+   ```tsx title='supaglue-config/account.ts'
+   ...
+
+    const accountMapping = sdk.defaultFieldMapping(
+      [
+        { name: 'salesforce_id', field: 'Id' },
+        { name: 'name', field: 'Name' },
+      ],
+      'salesforce'
+    );
+
+   ...
+   ```
+
+1. Finally, add the newly created Sync Config for Accounts to the existing Developer Config so it can be deployed with the existing sample Sync Configs:
+
+   ```tsx title='supaglue-config/index.ts'
+   import accountSyncConfig from './account';
+
+   // ...
+   syncConfigs: [
+    // TUTORIAL: uncomment this
+    contactSyncConfig,
+    leadSyncConfig,
+    opportunitySyncConfig,
+    accountSyncConfig
+   ],
+   // ...
+   ```
+
+1. Deploy the sample Developer Config using the CLI:
 
    ```shell
    supaglue apply supaglue-config/
    ```
 
-   You should see output like the following:
+   You should see the following output:
 
    ```console
    ...
@@ -69,77 +151,88 @@ We will use the CLI to deploy our syncs and the Apolla.io sample app to test how
    Syncs Created: 4, Updated: 0, Deleted: 0, No Change: 0
    ```
 
-### Authenticate your Salesforce instance
+### Embed Salesforce integration UI
 
-1. Start the Apolla.io sample app:
+The last step is to embed a Supaglue React component in the sample app that customers can use to further configure the integration for their own Salesforce instances.
 
-   ```shell
-   yarn dev
+:::info
+
+The sample app already contains some Supaglue embedded components, <`IntegrationCard/>`, `<FieldMapping/>` and `<TriggerSyncButton/>`, for your reference.
+
+:::
+
+1. Embed [`<Switch/>`](react-components/#switch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
+
+   ```tsx title=apps/sample-app/pages/integrations/[type].tsx:getSwitch()
+   // TUTORIAL: uncomment this
+   // return (
+   //   <div className="px-3">
+   //     <div className="py-2">
+   //       <Switch syncConfigName={syncConfigName} />
+   //     </div>
+   //     <p className="text-sm text-gray-600">Fully refresh all updated contacts every 15 minutes.</p>
+   //   </div>
+   // );
    ```
 
-Wearing your customer hat, let's connect our Salesforce instance to Apolla.io.
+   This adds a switch that allows a customer to toggle the Contact sync we created on and off.
 
-1. Navigate to Apolla.io ([http://localhost:3000](http://localhost:3000)) and login with user: `user1` and password: `password`
+import BrowserWindow from '@site/src/components/BrowserWindow';
 
-1. Under "Integrations", click "Connect" to connect to your Salesforce instance
+<BrowserWindow url="http://localhost:3000/integrations/salesforce#Accounts">
 
-1. Once connected, notice some of the embedded Supaglue React components that we've already integrated into Apolla.io
+![app_accounts_switch](/img/tutorial/app_accounts_switch.png 'salesforce accounts config')
+</BrowserWindow>
 
-### Embed a Supaglue React component
+1. Turn the switch on. The Accounts sync will now run as a background task every 15 minutes.
 
-Let's add an embeddable React component from scratch:
+### Test the integration
 
-1. Add the [`<Switch/>`](react-components/#switch) React component into `integrations/[type].tsx`. We can use this to toggle continuous syncs on and off on Apolla.io. Uncomment the block of code starting on line 103 of `integrations/[type].tsx` and add the `Switch` import:
+Finally, let's manually trigger our sync to make sure it works as expected.
 
-   ```typescript
-   // apps/sample-app/pages/integrations.tsx
-   import { Switch } from '@supaglue/nextjs';
+1. Click the "Run sync now" button. This triggers Supaglue to execute a [Sync Run](/concepts#sync-run) as a background task.
 
-   // ...
-
-   <div className="px-3">
-     <div className="py-2">
-       <Switch syncConfigName={syncConfigName} />
-     </div>
-     <p className="text-sm text-gray-600">Incrementally sync all updated contacts every 15 minutes.</p>
-   </div>;
-
-   // ...
-   ```
-
-1. Return to Apolla.io, you should see the new switch component
-
-### Triggering a Sync
-
-Wearing your customer hat, let's trigger a Sync for Contacts.
-
-1. Under "Integrations", ensure the fields in your Salesforce object map to Apolla.io's object. It should look like the following:
-
-   | Application field | Salesforce field |
-   | ----------------- | ---------------- |
-   | id                | Id               |
-   | email             | Email            |
-   | first name        | FirstName        |
-
-1. Click the "Run sync now" button. This runs the sync as a background task. Let's use the `syncs list` CLI command to check when it completes:
+1. Check the status of the Sync Run by running [`syncs list`](/cli#syncs-list) command to check when it completes:
 
    ```shell
    supaglue syncs list --customer-id user1
    ```
 
-1. Once the sync completes you can visit the "App Objects" tab to view the synced records.
+   You should see that the Accounts sync is enabled from the switch, and that it was last run recently.
 
-## Customize your integration
+   ```supaglue syncs list --customer-id user1
+   ℹ Info: Syncs for customer user1
+   ╔═══════════════╤═════════╤══════════════════════════╤══════════════════════════╗
+   ║ Sync Name     │ Enabled │ Last Run                 │ Next Run                 ║
+   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Contacts      │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
+   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Opportunities │ No      │ n/a                      │ n/a                      ║
+   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Accounts      │ Yes     │ 2023-02-03T08:08:34.344Z │ 2023-02-03T08:15:00.000Z ║
+   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Leads         │ No      │ n/a                      │ n/a                      ║
+   ╚═══════════════╧═════════╧══════════════════════════╧══════════════════════════╝
+   ```
 
-Now that we've gone through the entire integration lifecycle, let's add some customizations.
+1. Visit the "App Objects" tab to view the synced Accounts records, which is being populated by the Postgres table.
 
-### Customize Developer Config
+   <BrowserWindow url="http://localhost:3000/Accounts">
 
-Let's add two fields, last name and title, to be synced. These will be available for our customer to map.
+   ![app_accounts_switch](/img/tutorial/app_filled_accounts.png 'salesforce accounts records')
+   </BrowserWindow>
 
-1. Modify the `contactSchema` in `apps/sample-app/supaglue-config/contact.ts`:
+## Customize integration
 
-   ```typescript
+Supaglue lets your customize the fields and mappings you expose to your customers via React components (backend), as well as the look-and-feel of the UI itself.
+
+### Customize Sync Config
+
+You may have realized that two of the columns in the sample app's Contacts table are missing. Let's add two fields, last name and title, to be synced. These will be available for customers to map.
+
+1. Update the schema object to include the two missing fields:
+
+   ```tsx title=apps/sample-app/supaglue-config/contact.ts
    const contactSchema = sdk.schema({
      fields: [
        // ...
@@ -155,33 +248,39 @@ Let's add two fields, last name and title, to be synced. These will be available
    });
    ```
 
-1. Re-run the CLI command to apply the latest changes to production:
+1. Re-run the [`apply`](/cli#apply) CLI command to apply the latest changes:
 
    ```shell
    supaglue apply supaglue-config
    ```
 
-1. Go to Apolla.io ([http://localhost:3000/integrations](http://localhost:3000/integrations)). You should now see the two newly configured fields:
+1. Refresh your sample app. On the "Salesforce Integration" page you should now see two newly configured fields:
 
-   | Application field | Salesforce field |
-   | ----------------- | ---------------- |
-   | id                | Id               |
-   | email             | Email            |
-   | first name        | FirstName        |
-   | last name         | LastName         |
-   | title             | Title            |
+   <BrowserWindow url="http://localhost:3000/integrations/salesforce#Contacts">
 
-1. Click "Run sync now".
+   ![app_filled_contacts](/img/tutorial/app_contacts_config.png 'salesforce contacts records')
+   </BrowserWindow>
 
-1. Once the background sync completes, view the newly synced fields under the "App Objects" tab
+1. Click "Run sync now". Once the background sync completes, verify the newly synced fields now contain values on the "App Objects" page.
+
+   <BrowserWindow url="http://localhost:3000/#Contacts">
+
+   ![app_filled_contacts](/img/tutorial/app_filled_contacts.png 'salesforce accounts records')
+   </BrowserWindow>
 
 ### Customize React components
 
-Now let's customize the look-and-feel of one of the React components that we embedded in Apolla.io by adding an `appearance` prop into `<FieldMapping/>`.
+Supaglue provides several React component customization options to change its look-and-feel. Each exported component has an `appearance` prop that allows elements to be overridden with global css or Tailwind classes.
 
-1. In `apps/sample-app/src/pages/integrations/[type].tsx:109`, add the `appearance` prop below:
+:::info
 
-   ```jsx
+[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework that is used to apply styles directly in your markup. The sample app comes with tailwind pre-installed.
+
+:::
+
+1. In the sample app, locate the `<FieldMapping/>` component and add the following `appearance` prop to change the background of the form:
+
+   ```jsx title=apps/sample-app/src/pages/integrations/[type].tsx
    <FieldMapping
      syncConfigName={syncConfigName}
      key={syncConfigName}
@@ -194,10 +293,13 @@ Now let's customize the look-and-feel of one of the React components that we emb
    />
    ```
 
-2. Visit Apolla.io ([http://localhost:3000/integrations](http://localhost:3000/integrations)). Note how the `<FieldMapping/>` UI now looks different.
+2. The sample app should reload with updated styling for the field mapping component.
+
+   <BrowserWindow url="http://localhost:3000/salesforce#Contacts">
+
+   ![app_field_mapping_style](/img/tutorial/app_field_mapping_style.png 'salesforce contacts config styled')
+   </BrowserWindow>
 
 ## Next Steps
 
-You've successfully shipped your first Salesforce integration using Supaglue, complete with customizations. Congrats!
-
-Learn more about how Supaglue works in the Concepts section.
+Congrats! You've successfully shipped your first Salesforce integration using Supaglue, complete with customizations. Learn more about how Supaglue works in the Concepts section.
