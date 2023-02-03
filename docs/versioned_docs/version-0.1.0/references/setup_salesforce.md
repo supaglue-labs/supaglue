@@ -28,16 +28,16 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
 1. Under Callback URL, paste Supaglue's redirect URL:
 
-    ```
-    http://localhost:8080/oauth/callback
-    ```
+   ```
+   http://localhost:8080/oauth/callback
+   ```
 
 1. Select any scopes you'd like to use in your application. For the Supaglue sample application, you'll need to enable the following scopes: `id`, `api`, `refresh_token`
-    
-    <BrowserWindow url="acmecorp.my.salesforce.com/app/mgmt/forceconnectedapp/forceAppEdit.apexp">
 
-    ![sfdc_connected_app_oauth](/img/sfdc_connected_app_oauth.png 'sfdc connected app oauth')
-    </BrowserWindow>
+   <BrowserWindow url="acmecorp.my.salesforce.com/app/mgmt/forceconnectedapp/forceAppEdit.apexp">
+
+   ![sfdc_connected_app_oauth](/img/sfdc_connected_app_oauth.png 'sfdc connected app oauth')
+   </BrowserWindow>
 
 1. Press the Save button at the bottom of the page.
 
@@ -45,4 +45,10 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
 1. Navigate to Manage Connected Apps > API (Enable OAuth Settings) > Manage Consumer Details on your Salesforce App page.
 
-1. Copy the Consumer Key and Consumer Secret, and paste them into the `apps/sample-app/.env` file, overriding the default Salesforce credentials we've provided.
+1. Copy the Consumer Key and Consumer Secret, and paste them into the `apps/sample-app/.env` file as `SALESFORCE_KEY` and `SALESFORCE_SECRET`, overriding the default Salesforce credentials we've provided.
+
+1. Re-apply the Supaglue config to have it take effect in your app:
+
+   ```shell
+   supaglue apply supaglue-config/
+   ```

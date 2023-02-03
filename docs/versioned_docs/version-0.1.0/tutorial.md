@@ -268,7 +268,13 @@ You may have realized that two of the columns in the sample app's Contacts table
 
 ### Customize React components
 
-Supaglue provides several React component customization options to change its look-and-feel.
+Supaglue provides several React component customization options to change its look-and-feel. Each exported component has an `appearance` prop that allows elements to be overridden with global css or Tailwind classes.
+
+:::info
+
+[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework that is used to apply styles directly in your markup. The sample app comes with tailwind pre-installed.
+
+:::
 
 1. In the sample app, locate the `<FieldMapping/>` component and add the following `appearance` prop to change the background of the form:
 
