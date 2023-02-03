@@ -33,7 +33,7 @@ export type SwitchProps = {
 };
 
 const SwitchInternal = (props: SwitchProps) => {
-  const { appearance, disabled, includeSyncDescription = true, label, syncConfigName } = props;
+  const { appearance, disabled, includeSyncDescription, label, syncConfigName } = props;
   const { customerId, apiUrl } = useSupaglueContext();
 
   const { data: developerConfig } = useSWR<DeveloperConfig>({ path: '/developer_config' });
