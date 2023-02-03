@@ -1,4 +1,7 @@
+import axios from 'axios';
 import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
+import { SWRConfig } from 'swr';
+import { RequestType } from '../hooks/api';
 
 const SupaglueContext = createContext({
   customerId: '',
@@ -20,7 +23,17 @@ export const SupaglueProvider: FC<SupaglueProviderProps> = ({ children, customer
 
   return (
     <SupaglueContext.Provider value={context} {...rest}>
-      {children}
+      <SWRConfig
+        value={{
+          fetcher: async (config: RequestType) => {
+            const { method = 'GET', path } = config ?? {};
+            const res = await axios({ ...config, method, url: `${apiUrl}${path}` });
+            return res.data;
+          },
+        }}
+      >
+        {children}
+      </SWRConfig>
     </SupaglueContext.Provider>
   );
 };
