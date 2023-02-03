@@ -31,7 +31,7 @@ In this step, we will set up the sample application.
 
    ```shell
    cd apps/sample-app
-   cp .env.sample .env
+   ./scripts/setup_env.sh
    yarn workspaces focus sample-app
    npm install -g @supaglue/cli
    ```

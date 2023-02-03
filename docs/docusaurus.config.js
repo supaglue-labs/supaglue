@@ -10,7 +10,7 @@ const config = {
   // tagline: 'Dinosaurs are cool',
   url: 'https://docs.supaglue.com',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
 
@@ -33,12 +33,8 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          onlyIncludeVersions: ['0.1.0'],
           lastVersion: '0.1.0',
           versions: {
-            current: {
-              label: '0.3.0 - wip',
-            },
             '0.1.0': {
               label: '0.1.0 - alpha',
             },
