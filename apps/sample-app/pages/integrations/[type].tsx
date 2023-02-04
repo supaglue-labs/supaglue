@@ -82,6 +82,7 @@ const SyncConfiguration = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getSwitch = (syncConfigName: string) => {
     // TUTORIAL: uncomment this
     // return (

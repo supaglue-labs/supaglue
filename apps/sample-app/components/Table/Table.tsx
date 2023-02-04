@@ -23,17 +23,7 @@ type SortConfig = {
   initialSortState?: SortState;
 };
 
-const EmptyRow = ({
-  numColumns,
-  isError,
-  className,
-  message,
-}: {
-  numColumns: number;
-  isError: boolean;
-  className?: string;
-  message: string;
-}) => (
+const EmptyRow = ({ numColumns, isError, message }: { numColumns: number; isError: boolean; message: string }) => (
   <tr>
     <td
       colSpan={numColumns}
@@ -66,7 +56,7 @@ export interface TableProps {
   isLoading?: boolean;
   errorMessage?: string | ReactNode;
   emptyMessage?: string | ReactNode;
-  rows: any[];
+  rows: ReactNode[];
   numPlaceholderRows?: number;
   sortConfig?: SortConfig;
   pagination?: ReactNode;
