@@ -113,7 +113,17 @@ const SyncConfiguration = () => {
           <div>{getSwitch(syncConfigName)}</div>
 
           <div className="flex flex-col gap-4">
-            <FieldMapping syncConfigName={syncConfigName} key={syncConfigName} />
+            <FieldMapping
+              syncConfigName={syncConfigName}
+              key={syncConfigName}
+              // TUTORIAL: uncomment this
+              // appearance={{
+              //   elements: {
+              //     form: 'bg-base-300',
+              //     fieldName: 'italic text-sm',
+              //   },
+              // }}
+            />
           </div>
         </div>
       </>
