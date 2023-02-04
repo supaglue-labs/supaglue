@@ -82,7 +82,7 @@ function ContactsTable({
           <Pagination maxPageSize={MAX_PAGE_SIZE} setPageIndex={setPageIndex} pageIndex={pageIndex} count={userCount} />
         ) : undefined
       }
-      rows={users.map((user: any) => (
+      rows={users.map((user: SalesforceContact) => (
         <tr key={user.id}>
           <TableCell isStrong>{user.firstName}</TableCell>
           <TableCell isStrong>{user.lastName}</TableCell>
@@ -129,7 +129,7 @@ function AccountsTable({
           <Pagination maxPageSize={MAX_PAGE_SIZE} setPageIndex={setPageIndex} pageIndex={pageIndex} count={userCount} />
         ) : undefined
       }
-      rows={users.map((user: any) => (
+      rows={users.map((user: SalesforceAccount) => (
         <tr key={user.id}>
           <TableCell isStrong>{user.name}</TableCell>
           <TableCell>{user.salesforceId}</TableCell>
@@ -179,7 +179,7 @@ function OpportunitiesTable({
             />
           ) : undefined
         }
-        rows={users.map((user: any) => (
+        rows={users.map((user: SalesforceOpportunity) => (
           <tr key={user.id}>
             <TableCell isStrong>{user.name}</TableCell>
             <TableCell>{user.stage}</TableCell>
@@ -232,7 +232,7 @@ function LeadsTable({
           <Pagination maxPageSize={MAX_PAGE_SIZE} setPageIndex={setPageIndex} pageIndex={pageIndex} count={userCount} />
         ) : undefined
       }
-      rows={users.map((user: any) => (
+      rows={users.map((user: SalesforceLead) => (
         <tr key={user.id}>
           <TableCell isStrong>{user.firstName}</TableCell>
           <TableCell isStrong>{user.lastName}</TableCell>
