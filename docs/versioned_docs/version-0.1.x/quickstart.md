@@ -25,8 +25,6 @@ We've provided a [sample Next.js app](https://github.com/supaglue-labs/supaglue/
 
 In this step, we will set up the sample application.
 
-// TODO: Replace with script that also fetches SF creds
-
 1. Open a new terminal window and install the sample app (note: we've bundled it into our monorepo):
 
    ```shell
