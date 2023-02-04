@@ -9,7 +9,7 @@ WORKDIR /app
 
 # First install dependencies (as they change less often)
 COPY .gitignore .gitignore
-COPY .yarnrc.yml .yarnrc.yml
+COPY .yarnrc.build.yml .yarnrc.yml
 COPY .yarn .yarn
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
