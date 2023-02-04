@@ -19,6 +19,11 @@ const selectTrigger = css(buttonStyles.button, {
   },
   ':disabled': {
     backgroundColor: slate.slate3,
+    color: slate.slate11,
+  },
+  ':disabled:hover': {
+    backgroundColor: slate.slate3,
+    color: slate.slate11,
   },
   ':disabled svg': {
     opacity: 0,
@@ -60,10 +65,12 @@ const selectLoading = css({
   fontSize: '14px',
 });
 
-export default {
+const styles = {
   selectTrigger,
   selectContent,
   selectItem,
   selectViewport,
   selectLoading,
 };
+
+export default styles;

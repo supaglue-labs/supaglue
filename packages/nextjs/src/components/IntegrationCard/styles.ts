@@ -23,8 +23,17 @@ const description = css({
   textAlign: 'center',
 });
 
-export default {
+const buttonWrapper = css({
+  display: 'flex',
+  flexDirection: 'row',
+  gap: '1rem',
+});
+
+const styles = {
   card,
   name,
+  buttonWrapper,
   description,
 };
+
+export default styles;

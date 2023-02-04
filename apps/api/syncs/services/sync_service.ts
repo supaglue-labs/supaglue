@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, ScheduleOverlapPolicy } from '@temporalio/client';
 import { DeveloperConfig, SyncConfig } from '../../developer_config/entities';
 import { TEMPORAL_SYNC_TASKS_TASK_QUEUE } from '../../temporal';
@@ -189,6 +189,27 @@ export class SyncService {
 
       throw err;
     }
+  }
+
+  public async deleteSyncsForCustomer(transaction: Prisma.TransactionClient, customerId: string): Promise<void> {
+    const syncs = await transaction.sync.findMany({
+      where: { customerId },
+      select: { id: true, enabled: true },
+    });
+
+    // Pause all enabled syncs right away, as a precaution
+    await Promise.all(syncs.filter((sync) => sync.enabled).map((enabledSync) => this.pauseSync(enabledSync.id)));
+
+    // Then delete them
+    await Promise.all(
+      syncs.map((sync) => {
+        // TODO: This shouldn't be best-effort
+        const syncScheduleId = getSyncScheduleId(sync.id);
+        this.#temporalClient.schedule.getHandle(syncScheduleId).delete();
+      })
+    );
+
+    await transaction.sync.deleteMany({ where: { id: { in: syncs.map((sync) => sync.id) } } });
   }
 
   public async createSyncRun(syncId: string): Promise<SyncRun> {
