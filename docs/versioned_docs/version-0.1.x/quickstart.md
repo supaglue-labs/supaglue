@@ -85,20 +85,18 @@ In this step, we will deploy Supaglue configuration to enable customers (i.e. `u
 
 1. Click the "Connect" button and enter your Salesforce credentials to go through the OAuth flow. Note: these could be your Salesforce Developer or sandbox account login credentials.
 
-## Run a Salesforce sync
+   Upon successful login, you will be redirected to the [Salesforce Integrations page](http://localhost:3000/integrations/salesforce) .
 
-In this step, we will sync Salesforce contacts into the sample application.
-
-1. Click the "Configure" button to enter the configuration page for your syncs.
-
-   <BrowserWindow url="http://localhost:3000/integrations">
+   <BrowserWindow url="http://localhost:3000/integrations/salesforce">
 
    ![salesforce_config](/img/quickstart/app_salesforce_config.png 'salesforce config sample app')
    </BrowserWindow>
 
-2. Click the "Run sync now" button to trigger an inbound sync from your Salesforce into the sample app.
+## Run a Salesforce sync
 
-3. Navigate to the [App Objects](http://localhost:3000/) page and you will now see contacts from your Salesforce instance in a table! (You may have to refresh a few times if you navigated to this page before the sync has completed.)
+1. Click the "Run sync now" button to trigger an inbound sync from your Salesforce into the sample app.
+
+1. Navigate to the [App Objects](http://localhost:3000/) page and you will now see contacts from your Salesforce instance in a table! (You may have to refresh a few times if you navigated to this page before the sync has completed.)
 
    <BrowserWindow url="http://localhost:3000/integrations">
 
