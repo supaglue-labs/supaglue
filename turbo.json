@@ -35,5 +35,12 @@
       "cache": false
     }
   },
-  "globalDependencies": ["**/.env", "**/.env.*local", "tsconfig.json", ".eslintrc.json", ".yarnrc.yml"]
+  "globalDependencies": [
+    "**/.env",
+    "**/.env.*local",
+    "tsconfig.json",
+    ".eslintrc.json",
+    ".yarnrc.yml",
+    ".yarnrc.build.yml"
+  ]
 }
