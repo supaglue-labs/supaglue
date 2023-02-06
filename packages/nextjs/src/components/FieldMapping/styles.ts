@@ -47,7 +47,7 @@ const fieldDropdown = css({
   width: '50%',
 });
 
-export default {
+const styles = {
   emptyContentReason,
   form,
   formHeaderRow,
@@ -56,3 +56,5 @@ export default {
   fieldName,
   fieldDropdown,
 };
+
+export default styles;

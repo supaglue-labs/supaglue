@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import classNames from 'classnames';
-import { useDeveloperConfig } from '../../hooks/api';
-import { SupaglueProviderInternal } from '../../providers';
+import { SalesforceConnectButton, SalesforceDisconnectButton } from '..';
+import { useDeveloperConfig, useSalesforceIntegration } from '../../hooks/api';
+import { SupaglueProviderInternal, useSupaglueContext } from '../../providers';
 import { SupaglueAppearance } from '../../types';
-import { SalesforceConnectButton } from '../SalesforceConnectButton';
 import styles from './styles';
 
 export type IntegrationCardProps = {
@@ -22,9 +22,16 @@ export type IntegrationCardProps = {
 };
 
 const IntegrationCardInternal = ({ name, description, configurationUrl, appearance }: IntegrationCardProps) => {
+  const { customerId } = useSupaglueContext();
   const { data: developerConfig } = useDeveloperConfig();
+  const { data: integration, error } = useSalesforceIntegration(customerId);
+  const integrationConnected = integration && error?.response?.status !== 404;
 
-  return developerConfig ? (
+  if (!developerConfig) {
+    return <span>No developer config found</span>;
+  }
+
+  return (
     <li>
       <div css={styles.card} className={classNames(appearance?.elements?.card, 'sg-integrationCard')}>
         <span css={styles.name} className={classNames(appearance?.elements?.name, 'sg-integrationCard-name')}>
@@ -36,11 +43,12 @@ const IntegrationCardInternal = ({ name, description, configurationUrl, appearan
         >
           {description}
         </span>
-        <SalesforceConnectButton configurationUrl={configurationUrl} appearance={appearance} />
+        <div css={styles.buttonWrapper}>
+          {integrationConnected ? <SalesforceDisconnectButton integration={integration} /> : null}
+          <SalesforceConnectButton configurationUrl={configurationUrl} appearance={appearance} />
+        </div>
       </div>
     </li>
-  ) : (
-    <span>No developer config found</span>
   );
 };
 

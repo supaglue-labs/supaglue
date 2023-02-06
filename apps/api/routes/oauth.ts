@@ -19,7 +19,8 @@ router.get('/salesforce', async (req: Request<never, any, never, { state: string
     state,
   });
 
-  res.redirect(redirectUrl);
+  // Always prompt the user to enter their username and password when connecting
+  res.redirect(`${redirectUrl}&prompt=login`);
 });
 
 router.get('/callback', async (req: Request<never, any, never, { code: string; state: string }>, res: Response) => {

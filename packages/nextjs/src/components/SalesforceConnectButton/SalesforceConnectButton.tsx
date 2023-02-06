@@ -43,7 +43,7 @@ const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) =>
 
   return (
     <Button
-      css={[styles.button, { width: '8rem' }]}
+      css={styles.button}
       className={classNames('sg-salesforceConnectButton', props.appearance?.elements?.button)}
       onClick={onClick}
     >
