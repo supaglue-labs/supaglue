@@ -96,7 +96,7 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 
    - The `defaultFieldMapping` object specifies the default field mapping values for the Salesforce Account object that would be used in the sample app absent any customer-provided overrides.
 
-   - The `syncConfig` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
+   - The `syncConfig` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes. The frequency of the sync can be changed by modifying the `cronExpression`.
 
 1. Finally, add the newly created Sync Config for Accounts to the existing Developer Config so it can be deployed with the existing sample Sync Configs:
 
