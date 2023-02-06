@@ -20,17 +20,37 @@ export async function doSync({ syncId, syncRunId }: DoSyncArgs): Promise<void> {
   // Instantiate the SDK and then pass it around
   const sg = createSupaglue(sync.customerId);
 
-  return await doSyncImpl(sg, sync, syncConfig, syncRunId);
+  const lastSyncedTimestamp = await doSyncImpl(sg, sync, syncConfig, syncRunId);
+  if (!lastSyncedTimestamp) {
+    // No records to update, or writing to the destination failed
+    return;
+  }
+
+  await syncService.updateSync(
+    sync.id,
+    {
+      lastSyncedTimestamp: new Date(Date.parse(lastSyncedTimestamp)),
+    },
+    developerConfig
+  );
 }
 
-async function doSyncImpl(sg: Supaglue, sync: Sync, syncConfig: SyncConfig, syncRunId: string): Promise<void> {
+async function doSyncImpl(sg: Supaglue, sync: Sync, syncConfig: SyncConfig, syncRunId: string): Promise<string | void> {
   const fieldMapping = getMapping(sync, syncConfig);
 
   // Fetch external records
-  const records = await readRecordsFromSource(sg, syncConfig, fieldMapping);
+  const records = await readRecordsFromSource(sg, syncConfig, fieldMapping, sync.lastSyncedTimestamp);
+
+  if (!records.length) {
+    return;
+  }
+
+  const lastSyncedTimestamp = records[records.length - 1].SystemModstamp;
 
   // Write the internal records
   await writeRecordsToDestination(sg, { sync, syncConfig, fieldMapping, records, syncRunId });
+
+  return lastSyncedTimestamp;
 }
 
 function getMapping({ fieldMapping }: Sync, { destination, defaultFieldMapping }: SyncConfig): Record<string, string> {
@@ -49,14 +69,28 @@ function getMapping({ fieldMapping }: Sync, { destination, defaultFieldMapping }
 async function readRecordsFromSource(
   sg: Supaglue,
   syncConfig: SyncConfig,
-  mapping: Record<string, string>
+  mapping: Record<string, string>,
+  lastSyncedTimestamp?: Date
 ): Promise<Record<string, string>[]> {
   // Read from source
-  const salesforceFields = [...Object.values(mapping), 'SystemModstamp']; // TODO: Do not fetch SystemModstamp twice if already in mapping.
+  const salesforceFields = Object.values(mapping);
+  if (!salesforceFields.includes('SystemModstamp')) {
+    salesforceFields.push('SystemModstamp');
+  }
   const salesforceFieldsString = salesforceFields.join(', ');
 
-  // Fetching in ASC order for incremental sync in the future.
-  const soql = `SELECT ${salesforceFieldsString} FROM ${syncConfig.salesforceObject} ORDER BY SystemModstamp ASC`;
+  // Fetching in ASC order so that we can track the max updated timestamp
+  const whereClause =
+    syncConfig.strategy === 'full_refresh'
+      ? ''
+      : `WHERE SystemModstamp >= ${(lastSyncedTimestamp || new Date(0)).toISOString()}`;
+
+  const soql = `
+    SELECT ${salesforceFieldsString}
+    FROM ${syncConfig.salesforceObject}
+    ${whereClause}
+    ORDER BY SystemModstamp ASC
+  `;
 
   return await sg.customerIntegrations.salesforce.query(soql);
 }

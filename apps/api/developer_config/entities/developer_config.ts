@@ -65,13 +65,14 @@ export type SalesforceCredentials = {
   clientSecret: string;
 };
 
+export type SyncStrategy = 'full_refresh' | 'incremental';
+
 export type SyncConfig = {
   name: string; // unique (e.g. ContactSync, LeadSync, AccountSync)
   salesforceObject: 'Contact' | 'Lead' | 'Account' | 'Opportunity';
   cronExpression: string; // Some valid cron string
   destination: Destination;
-  // TODO: support incremental
-  strategy: 'full_refresh';
+  strategy: SyncStrategy;
   defaultFieldMapping?: FieldMapping[];
 };
 

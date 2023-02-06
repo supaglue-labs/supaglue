@@ -38,6 +38,7 @@ model Sync {
   syncConfigName                    String    @map("sync_config_name")
   fieldMapping                      Json?     @map("field_mapping")
   salesforceAPIUsageLimitPercentage Int?      @map("salesforce_api_usage_limit_percentage")
+  lastSyncedTimestamp               DateTime? @map("last_synced_timestamp")
   SyncRun                           SyncRun[]
 
   @@unique([customerId, syncConfigName])

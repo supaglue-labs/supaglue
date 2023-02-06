@@ -2,12 +2,13 @@ import { DefaultFieldMapping } from './defaultFieldMapping';
 import { RetryPolicy } from './retry_policy';
 import { Schema } from './schema';
 
+export type SyncStrategy = 'full_refresh' | 'incremental';
+
 export type BaseSyncConfigParams = {
   name: string;
   cronExpression?: string;
   destination: BaseDestination;
-  // TODO: Support incremental
-  strategy: 'full_refresh';
+  strategy: SyncStrategy;
   defaultFieldMapping?: DefaultFieldMapping;
 };
 
