@@ -65,7 +65,7 @@ const FieldMappingInternal = ({ appearance, syncConfigName }: FieldMappingProps)
     return <EmptyContent>No fields to map.</EmptyContent>;
   }
 
-  return <FieldCollection appearance={appearance} sync={sync} syncConfig={syncConfig} />;
+  return <FieldCollection appearance={appearance} key={syncConfigName} sync={sync} syncConfig={syncConfig} />;
 };
 
 type FieldCollectionProps = {

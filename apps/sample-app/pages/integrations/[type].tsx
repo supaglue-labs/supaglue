@@ -116,7 +116,6 @@ const SyncConfiguration = () => {
           <div className="flex flex-col gap-4">
             <FieldMapping
               syncConfigName={syncConfigName}
-              key={syncConfigName}
               // TUTORIAL: uncomment this
               // appearance={{
               //   elements: {
