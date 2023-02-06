@@ -9,28 +9,28 @@ Integration as code for building full-stack integrations with your customers' Sa
 import ThemedImage from '@theme/ThemedImage';
 
 <ThemedImage
-  alt="Architecture Diagram"
-  sources={{
+alt="Architecture Diagram"
+sources={{
     light: ('/img/arch_diagram_light.png'),
     dark: ('/img/arch_diagram_dark.png'),
   }}
 />
 
-Supaglue takes a **code-centric** approach, using Typescript as a declarative configuration language, to define how your application should integrate with SaaS platforms. Supaglue is a **full-stack** tool that comes with customizable customer-facing React components and backend systems. Finally, Supaglue is **extensible** using Typescript to configure high-level and low-level components of integrations.
+Supaglue takes a **code-centric** approach, using Typescript as a declarative configuration language, to define how your application should integrate with SaaS platforms. Supaglue is a **full-stack** tool that comes with backend and frontend components out-of-the-box. Finally, Supaglue is **customizable** using Typescript for configuring backend and frontend components.
 
 Supaglue consists of the following components:
 
-- **Typescript sync configuration** to declaratively define syncs
+- **Config SDK** to author [sync configuration](/concepts#developer-config) declaratively
 - **CLI** to publish sync configuration changes
-- **API** to accept requests from your application, Salesforce, and the CLI
-- **Workflow engine (Temporal)** to orchestrate and execute syncs
-- **Database** to store sync configurations
-- **React components** to embed customer-facing UI in your application
+- **API** to communicate an coordinate with your application, Salesforce, and Supaglue
+- **Workflow engine (Temporal)** to reliably execute [syncs](/concepts#sync)
+- **Database** to store developer and customer configurations and credentials
+- **React components (Nextjs SDK)** to embed customer-facing UI into your application
 
 With the tool you can:
 
 - Unblock yourself from frontend engineers and designers and implement entire integrations yourself
-- Not worry about the nuances of syncs including pagination, error handling, retries, timeouts, api rate limits
+- Not worry about the nuances of syncs including error handling, retries, timeouts, api rate limits
 - Offload the maintenance and scaling a fault-tolerant queue and horizontally scalable API
-- Utilize engineering best-practices using environments, versioning, testing
-- Skip working directly with complex and varied vendor APIs
+- Utilize engineering best-practices using code, versioning, testing
+- Skip dealing with complex and varied vendor APIs

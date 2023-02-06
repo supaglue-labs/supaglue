@@ -85,3 +85,7 @@
 .browserWindowBody > *:last-child {
   margin-bottom: 0;
 }
+
+.browserWindowBody img {
+  margin-bottom: -8px;
+}

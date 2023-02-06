@@ -68,7 +68,7 @@ Example:
 <SalesforceConnectButton mode="redirect" />
 ```
 
-Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nextjs/src/components/SalesforceConnectButton/SalesforceConnectButton.tsx#L7)
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.1-1/packages/nextjs/src/components/SalesforceConnectButton/SalesforceConnectButton.tsx#L7)
 
 #### `<FieldMapping>`
 
@@ -82,9 +82,7 @@ Example:
 <FieldMapping syncConfigName="contact_sync" />
 ```
 
-Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nextjs/src/components/FieldMapping/FieldMapping.tsx#L173)
-
-...
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.1-1/packages/nextjs/src/components/FieldMapping/FieldMapping.tsx#L173)
 
 #### `<TriggerSyncButton>`
 
@@ -100,9 +98,7 @@ A button that allows your customers to manually trigger a sync from Salesforce t
 />
 ```
 
-Props: link
-
-...
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.1-1/packages/nextjs/src/components/TriggerSyncButton/TriggerSyncButton.tsx#L11)
 
 #### `<Switch>`
 
@@ -116,7 +112,7 @@ Example:
 <Switch includeSyncDescription syncConfigName="contact_sync" />
 ```
 
-Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nextjs/src/components/Switch/Switch.tsx#L19)
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.1-1/packages/nextjs/src/components/Switch/Switch.tsx#L19)
 
 #### `<IntegrationCard/>`
 
@@ -127,12 +123,10 @@ A card container housing the `<SalesforceConnectButton/>` along with a header, d
 Example:
 
 ```jsx
-...
+<IntegrationCard name="Salesforce" description="Sync your objects" configurationUrl={`/salesforce/details`} />
 ```
 
-Props: link
-
-...
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.1-1/packages/nextjs/src/components/IntegrationCard/IntegrationCard.tsx#L9)
 
 ## Customizing Components
 
@@ -174,7 +168,6 @@ Stylesheets / CSS Modules Example:
 ```jsx
 <FieldMapping
   syncConfigName={syncConfigName}
-  key={syncConfigName}
   appearance={{
     elements: {
       form: styles.baseColor,
@@ -189,7 +182,6 @@ Tailwind CSS Example:
 ```jsx
 <FieldMapping
   syncConfigName={syncConfigName}
-  key={syncConfigName}
   appearance={{
     elements: {
       form: 'bg-base-300',

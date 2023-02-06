@@ -1,10 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../../lib/prismadb';
+import prisma, { SalesforceLead } from '../../../lib/prismadb';
 import { getCustomerIdFromRequest } from '../../../lib/util';
 
 const MAX_PER_PAGE = 10;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<{ users: any[]; count: number }>) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<{ users: SalesforceLead[]; count: number }>
+) {
   if (req.method !== 'GET') {
     throw new Error(`Invalid method: ${req.method}`);
   }

@@ -79,4 +79,4 @@ We are currently in Public Alpha. Watch releases of [this repo](https://github.c
 
 ## License
 
-[MIT License](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/LICENSE).
+[MIT License](https://github.com/supaglue-labs/supaglue/blob/v0.1.1-1/LICENSE).

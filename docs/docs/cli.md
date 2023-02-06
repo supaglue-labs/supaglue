@@ -4,9 +4,9 @@ sidebar_position: 7
 
 # CLI
 
-The `supaglue` command allows developers to operate on sync configurations and push them to Supaglue Integration Service.
+The `supaglue` command allows developers to operate on [Developer Config](/concepts#developer-config) and push them to Supaglue Integration Service.
 
-## Installation
+## Install
 
 ```shell
 npm install -g @supaglue/cli
@@ -24,7 +24,7 @@ supaglue --help
 
 #### apply
 
-`supaglue apply` is the main command used by developers to push sync configurations from their local development environments to the Supaglue Integration Service. Applying sync configurations will create, update, and remove live syncs running in the Supaglue Integration Service.
+`supaglue apply` is the main command used by developers to push Developer Config from their local development environments to the Supaglue Integration Service. Applying Developer Config will create, update, and remove [Syncs](/concepts#sync) running in the Supaglue Integration Service.
 
 Example:
 

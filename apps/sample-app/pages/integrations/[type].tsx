@@ -82,6 +82,7 @@ const SyncConfiguration = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getSwitch = (syncConfigName: string) => {
     // TUTORIAL: uncomment this
     // return (
@@ -113,7 +114,16 @@ const SyncConfiguration = () => {
           <div>{getSwitch(syncConfigName)}</div>
 
           <div className="flex flex-col gap-4">
-            <FieldMapping syncConfigName={syncConfigName} key={syncConfigName} />
+            <FieldMapping
+              syncConfigName={syncConfigName}
+              // TUTORIAL: uncomment this
+              // appearance={{
+              //   elements: {
+              //     form: 'bg-base-300',
+              //     fieldName: 'italic text-sm',
+              //   },
+              // }}
+            />
           </div>
         </div>
       </>

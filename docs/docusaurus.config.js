@@ -71,6 +71,7 @@ const config = {
           ⭐️
         </div>`,
       },
+      image: 'img/logo-opengraph.png',
       navbar: {
         logo: {
           alt: 'Supaglue',
@@ -113,7 +114,7 @@ const config = {
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/supaglue-labs',
+                href: 'https://twitter.com/supaglue_labs',
               },
             ],
           },
