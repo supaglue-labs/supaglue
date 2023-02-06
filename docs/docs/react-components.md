@@ -2,7 +2,7 @@
 sidebar_position: 6
 ---
 
-# React Components (Next.js SDK)
+# React Components
 
 :::caution
 
@@ -60,7 +60,7 @@ export default App;
 
 A button that links to the Salesforce sign-in page or displays the sign-in page modal. By default, it is a `<button/>` tag that "Connect", but is completely customizable by passing children.
 
-[screenshot here]
+![salesforce_connect_button](/img/react_components/salesforce_connect_button.png 'salesforce connect button')
 
 Example:
 
@@ -74,7 +74,7 @@ Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nex
 
 A card containing a list of your application fields that can be mapped to your customers' Salesforce fields.
 
-[screenshot here]
+![field_mapping](/img/react_components/field_mapping.png 'field mapping')
 
 Example:
 
@@ -90,7 +90,7 @@ Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nex
 
 A button that allows your customers to manually trigger a sync from Salesforce to your application.
 
-[screenshot here]
+![trigger_sync_button](/img/react_components/trigger_sync_button.png 'trigger_sync_button')
 
 ```jsx
 <TriggerSyncButton
@@ -108,21 +108,21 @@ Props: link
 
 A switch used to turn on/off syncs from Salesforce to your application.
 
-[screenshot here]
+![switch](/img/react_components/switch.png 'switch')
 
 Example:
 
 ```jsx
-<Switch syncConfigName="contact_sync" />
+<Switch includeSyncDescription syncConfigName="contact_sync" />
 ```
 
 Props: [link](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/packages/nextjs/src/components/Switch/Switch.tsx#L19)
 
-#### `<SalesforceConnectCard/>` (preview only)
+#### `<IntegrationCard/>`
 
 A card container housing the `<SalesforceConnectButton/>` along with a header, description, and icon.
 
-[screenshot here]
+![integration_card](/img/react_components/integration_card.png 'integration_card')
 
 Example:
 
@@ -157,30 +157,23 @@ Use your preferred styling method to replace these classes with your own:
 
 Stylesheets / CSS Modules Example:
 
-:::info
-
-For Stylesheets/CSS Modules users: Set classes as `!important`. This will change in the future.
-
-:::
-
 ```css
 /* FieldMapping.module.css */
 
 .primaryColor {
-  background-color: #e1e2e2 !important;
+  background-color: #e1e2e2;
 }
 
 .fieldName {
-  font-style: italic !important;
-  font-size: 0.875rem !important;
-  line-height: 1.25rem !important;
+  font-style: italic;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 ```
 
 ```jsx
 <FieldMapping
   syncConfigName={syncConfigName}
-  key={syncConfigName}
   appearance={{
     elements: {
       form: styles.baseColor,
@@ -192,16 +185,9 @@ For Stylesheets/CSS Modules users: Set classes as `!important`. This will change
 
 Tailwind CSS Example:
 
-:::info
-
-For Tailwind CSS users: To customize components today you will need to set `important: true;` in your `tailwind.config.js` as per https://tailwindcss.com/docs/configuration#important. This will change in the future.
-
-:::
-
 ```jsx
 <FieldMapping
   syncConfigName={syncConfigName}
-  key={syncConfigName}
   appearance={{
     elements: {
       form: 'bg-base-300',
@@ -209,45 +195,4 @@ For Tailwind CSS users: To customize components today you will need to set `impo
     },
   }}
 />
-```
-
-## Hooks (preview only)
-
-#### `useSalesforceSignIn`
-
-Access the SignIn object inside your components
-
-```jsx
-import { useWorkflow } from '@supaglue/react';
-
-function Example() {
-  const { redirectUrl } = useSalesforceSignIn();
-
-  return <>{/* implement your own sign-in button */}</>;
-}
-
-export default Example;
-```
-
-#### `useSync`
-
-Access the Sync object inside your components
-
-Example:
-
-```jsx
-import { useSync } from '@supaglue/react';
-
-function Example() {
-  const { fieldMappings, name, isLoaded } = useSync();
-
-  if (!isLoaded) {
-    // implement your own loading state
-    return null;
-  }
-
-  return <>{/* implement your own field mapping ui */}</>;
-}
-
-export default Example;
 ```

@@ -1,4 +1,8 @@
-# Salesforce (Config SDK)
+---
+sidebar_position: 5
+---
+
+# Config SDK (Salesforce)
 
 :::caution
 
