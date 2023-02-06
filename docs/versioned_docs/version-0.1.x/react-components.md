@@ -174,7 +174,6 @@ Stylesheets / CSS Modules Example:
 ```jsx
 <FieldMapping
   syncConfigName={syncConfigName}
-  key={syncConfigName}
   appearance={{
     elements: {
       form: styles.baseColor,
@@ -189,7 +188,6 @@ Tailwind CSS Example:
 ```jsx
 <FieldMapping
   syncConfigName={syncConfigName}
-  key={syncConfigName}
   appearance={{
     elements: {
       form: 'bg-base-300',
