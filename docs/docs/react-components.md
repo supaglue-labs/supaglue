@@ -84,8 +84,6 @@ Example:
 
 Props: [link](https://github.com/supaglue-labs/supaglue/blob/main/packages/nextjs/src/components/FieldMapping/FieldMapping.tsx#L173)
 
-...
-
 #### `<TriggerSyncButton>`
 
 A button that allows your customers to manually trigger a sync from Salesforce to your application.
@@ -100,9 +98,7 @@ A button that allows your customers to manually trigger a sync from Salesforce t
 />
 ```
 
-Props: link
-
-...
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/main/packages/nextjs/src/components/TriggerSyncButton/TriggerSyncButton.tsx#L11)
 
 #### `<Switch>`
 
@@ -127,12 +123,10 @@ A card container housing the `<SalesforceConnectButton/>` along with a header, d
 Example:
 
 ```jsx
-...
+<IntegrationCard name="Salesforce" description="Sync your objects" configurationUrl={`/salesforce/details`} />
 ```
 
-Props: link
-
-...
+Props: [link](https://github.com/supaglue-labs/supaglue/blob/main/packages/nextjs/src/components/IntegrationCard/IntegrationCard.tsx#L9)
 
 ## Customizing Components
 
