@@ -71,6 +71,7 @@ const config = {
           ⭐️
         </div>`,
       },
+      image: 'img/logo-opengraph.png',
       navbar: {
         logo: {
           alt: 'Supaglue',
