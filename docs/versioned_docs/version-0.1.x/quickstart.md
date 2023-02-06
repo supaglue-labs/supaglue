@@ -21,13 +21,13 @@ docker compose up
 
 ## Install sample app
 
-We've provided a [sample Next.js app](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/). The sample app represents your own application where you would like your customers to connect their Salesforce instance.
+We've provided a [sample Next.js app](https://github.com/supaglue-labs/supaglue/blob/v0.1.1/apps/sample-app/). The sample app represents your own application where you would like your customers to connect their Salesforce instance.
 
 In this step, we will set up the sample application.
 
 1. Open a new terminal window and install the sample app (note: we've bundled it into our monorepo):
 
-   NOTE: for your convenience, [setup_env.sh](https://github.com/supaglue-labs/supaglue/blob/v0.1.0/apps/sample-app/scripts/setup_env.sh) helps you get started quickly by using our Salesforce Connected App credentials. You can also [set up](/references/setup_salesforce) or use your own Connected App credentials by changing the credentials in `.env`.
+   NOTE: for your convenience, [setup_env.sh](https://github.com/supaglue-labs/supaglue/blob/v0.1.1/apps/sample-app/scripts/setup_env.sh) helps you get started quickly by using our Salesforce Connected App credentials. You can also [set up](/references/setup_salesforce) or use your own Connected App credentials by changing the credentials in `.env`.
 
    ```shell
    cd apps/sample-app
