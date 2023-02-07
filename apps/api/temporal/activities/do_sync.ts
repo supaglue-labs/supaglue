@@ -1,6 +1,12 @@
+import { ApplicationFailure } from '@temporalio/common';
 import { getDependencyContainer } from '../../dependency_container';
-import { PostgresDestination, SyncConfig, WebhookDestination } from '../../developer_config/entities';
-import { Sync } from '../../syncs/entities';
+import {
+  InboundSyncConfig,
+  PostgresDestination,
+  SyncConfig,
+  WebhookDestination,
+} from '../../developer_config/entities';
+import { InboundSync, Sync } from '../../syncs/entities';
 import { createSupaglue, Supaglue } from '../sdk';
 
 type DoSyncArgs = {
@@ -14,8 +20,19 @@ export async function doSync({ syncId, syncRunId }: DoSyncArgs): Promise<void> {
   // TODO: Simplify
   // Get sync and developer config
   const sync = await syncService.getSyncById(syncId);
+
+  // TODO: remove this when we support outbound sync too
+  if (sync.type !== 'inbound') {
+    throw ApplicationFailure.nonRetryable('We only support inbound syncs right now');
+  }
+
   const developerConfig = await developerConfigService.getDeveloperConfig();
   const syncConfig = developerConfig.getSyncConfig(sync.syncConfigName);
+
+  // TODO: remove this when we support outbound sync too
+  if (syncConfig.type !== 'inbound') {
+    throw ApplicationFailure.nonRetryable('We only support inbound sync configs right now');
+  }
 
   // Instantiate the SDK and then pass it around
   const sg = createSupaglue(sync.customerId);
@@ -23,7 +40,12 @@ export async function doSync({ syncId, syncRunId }: DoSyncArgs): Promise<void> {
   return await doSyncImpl(sg, sync, syncConfig, syncRunId);
 }
 
-async function doSyncImpl(sg: Supaglue, sync: Sync, syncConfig: SyncConfig, syncRunId: string): Promise<void> {
+async function doSyncImpl(
+  sg: Supaglue,
+  sync: InboundSync,
+  syncConfig: InboundSyncConfig,
+  syncRunId: string
+): Promise<void> {
   const fieldMapping = getMapping(sync, syncConfig);
 
   // Fetch external records
@@ -33,7 +55,10 @@ async function doSyncImpl(sg: Supaglue, sync: Sync, syncConfig: SyncConfig, sync
   await writeRecordsToDestination(sg, { sync, syncConfig, fieldMapping, records, syncRunId });
 }
 
-function getMapping({ fieldMapping }: Sync, { destination, defaultFieldMapping }: SyncConfig): Record<string, string> {
+function getMapping(
+  { fieldMapping }: Sync,
+  { destination, defaultFieldMapping }: InboundSyncConfig
+): Record<string, string> {
   return destination.schema.fields.reduce((mapping: Record<string, string>, { name }) => {
     if (name in mapping) {
       return mapping;
@@ -86,7 +111,7 @@ async function writeRecordsToDestination(
     syncRunId,
   }: {
     sync: Sync;
-    syncConfig: SyncConfig;
+    syncConfig: InboundSyncConfig;
     fieldMapping: Record<string, string>;
     records: Record<string, unknown>[];
     syncRunId: string;

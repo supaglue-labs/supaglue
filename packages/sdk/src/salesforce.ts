@@ -76,7 +76,10 @@ export class DeveloperConfig {
   toJSON() {
     return {
       salesforceCredentials: this.salesforceCredentials.toJSON(),
-      syncConfigs: this.syncConfigs.map((syncConfig) => syncConfig.toJSON()),
+      syncConfigs: this.syncConfigs.map((syncConfig) => ({
+        type: 'inbound', // TODO: support outbound sync too
+        ...syncConfig.toJSON(),
+      })),
     };
   }
 }

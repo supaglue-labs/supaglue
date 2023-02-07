@@ -73,7 +73,19 @@ export class SalesforceCustomerIntegration extends BaseCustomerIntegration {
           }
 
           // TODO: For client-side errors, we should bail immediately and fail the sync instead of retrying.
-          return await this.#connection().bulk2.query(soql);
+          const thing = await this.#connection().bulk2.query(soql);
+
+          // TODO: Remove this testing thing
+          await this.#connection().sobject('Contact').upsert(
+            {
+              FirstName: 'Albert321',
+              LastName: 'Albert321',
+              Email: 'albert123@unknowndomain.com',
+            },
+            'Email'
+          );
+
+          return thing;
         },
         {
           retries: 5,
