@@ -87,13 +87,19 @@ router.get(
       never,
       any,
       never,
-      { syncConfigName?: string; customerId?: string; status?: SyncRunStatus; page?: number; count?: number }
+      { syncConfigName?: string; customerId?: string; status?: SyncRunStatus; page?: string; count?: string }
     >,
     res: Response<{ logs: (SyncRun & { sync: Partial<Sync> })[] }>
   ) => {
-    const { syncConfigName, customerId, status, page = 0, count = 10 } = req.query;
+    const { syncConfigName, customerId, status, page = '0', count = '10' } = req.query;
 
-    const logs = await syncService.getSyncRunLogs({ syncConfigName, customerId, status, page, count });
+    const logs = await syncService.getSyncRunLogs({
+      syncConfigName,
+      customerId,
+      status,
+      page: parseInt(page, 10),
+      count: parseInt(count, 10),
+    });
 
     return res.status(200).send({ logs });
   },

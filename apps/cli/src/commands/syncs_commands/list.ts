@@ -26,7 +26,9 @@ export function builder(yargs: Argv) {
   });
 }
 
-type ListHandlerArgs = BaseArgs;
+type ListHandlerArgs = BaseArgs & {
+  customerId: string;
+};
 
 export const handler = async (args: ArgumentsCamelCase<ListHandlerArgs>) => {
   let syncs;
@@ -57,8 +59,7 @@ export const handler = async (args: ArgumentsCamelCase<ListHandlerArgs>) => {
   }
 
   logger.info(`Syncs for customer ${args.customerId}`);
-  // eslint-disable-next-line no-console
-  console.log(
+  logger.log(
     table([
       ['Sync Name', 'Enabled', 'Last Run', 'Next Run'],
       ...syncs.map((s: any) => {
