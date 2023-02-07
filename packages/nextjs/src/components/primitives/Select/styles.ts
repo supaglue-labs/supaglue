@@ -1,10 +1,11 @@
-import { css, Theme } from '@emotion/react';
+import { css } from '@emotion/react';
 import { indigo, slate } from '@radix-ui/colors';
-import buttonStyles from '../Button/styles';
+import { _applyTheme } from '../../../style/internal';
+import { SgTheme } from '../../../style/types/theme';
 
-const selectTrigger = (theme: Theme) => [
-  buttonStyles.button,
+const selectTrigger = _applyTheme((theme: SgTheme) =>
   css({
+    alignItems: 'center',
     backgroundColor: theme.colors.inputBackground,
     color: theme.colors.inputText,
     display: 'inline-flex',
@@ -25,20 +26,21 @@ const selectTrigger = (theme: Theme) => [
     ':disabled svg': {
       opacity: 0,
     },
-    ...theme.elements?.selectTrigger,
-  }),
-];
+    ...theme.elementOverrides?.selectTrigger,
+  })
+);
 
-const selectContent = (theme: Theme) =>
+const selectContent = _applyTheme((theme: SgTheme) =>
   css({
     overflow: 'hidden',
     backgroundColor: theme.colors.inputBackground,
     borderRadius: '0.375rem',
     boxShadow: '0px 10px 38px -10px rgba(22, 23, 24, 0.35), 0px 10px 20px -15px rgba(22, 23, 24, 0.2)',
-    ...theme.elements?.selectContent,
-  });
+    ...theme.elementOverrides?.selectContent,
+  })
+);
 
-const selectItem = (theme: Theme) =>
+const selectItem = _applyTheme((theme: SgTheme) =>
   css({
     fontSize: '1rem',
     lineHeight: 1,
@@ -51,33 +53,38 @@ const selectItem = (theme: Theme) =>
     userSelect: 'none',
     '&[data-highlighted]': {
       backgroundColor: indigo.indigo5,
-      ...theme.elements?.selectItem?.highlighted,
+      ...theme.elementOverrides?.selectItem?.highlighted,
     },
     "&[data-state='checked']": {
       backgroundColor: indigo.indigo6,
-      ...theme.elements?.selectItem?.selected,
+      ...theme.elementOverrides?.selectItem?.selected,
     },
-    ...theme.elements?.selectItem,
-  });
+    ...theme.elementOverrides?.selectItem,
+  })
+);
 
-const selectViewport = (theme: Theme) =>
+const selectViewport = _applyTheme((theme: SgTheme) =>
   css({
     padding: '0.375rem',
-    ...theme.elements?.selectViewport,
-  });
+    ...theme.elementOverrides?.selectViewport,
+  })
+);
 
-const selectLoading = (theme: Theme) =>
+const selectLoading = _applyTheme((theme: SgTheme) =>
   css({
     fontStyle: 'italic',
     color: 'gray',
     fontSize: '14px',
-    ...theme.elements?.selectLoading,
-  });
+    ...theme.elementOverrides?.selectLoading,
+  })
+);
 
-export default {
+const styles = {
   selectTrigger,
   selectContent,
   selectItem,
   selectViewport,
   selectLoading,
 };
+
+export default styles;

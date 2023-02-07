@@ -2,7 +2,7 @@ import axios from 'axios';
 import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
 import { SWRConfig } from 'swr';
 import { RequestType } from '../hooks/api';
-import { SgTheme } from '../types/theme';
+import { SgTheme } from '../style/types/theme';
 
 type SupaglueContextType = {
   apiUrl: string;

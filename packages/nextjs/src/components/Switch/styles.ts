@@ -1,16 +1,19 @@
-import { css, Theme } from '@emotion/react';
+import { css } from '@emotion/react';
 import { indigo, slate } from '@radix-ui/colors';
+import { _applyTheme } from '../../style/internal';
+import { SgTheme } from '../../style/types/theme';
 
-const switchWrapper = (theme: Theme) =>
+const switchWrapper = _applyTheme((theme: SgTheme) =>
   css({
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
     gap: '0.5rem',
-    ...theme.elements?.switchWrapper,
-  });
+    ...theme.elementOverrides?.switchWrapper,
+  })
+);
 
-const _switchRoot = (theme: Theme) =>
+const _switchRoot = _applyTheme(() =>
   css({
     border: '2px transparent',
     borderRadius: '9999px',
@@ -24,25 +27,26 @@ const _switchRoot = (theme: Theme) =>
     '&:focus-visible': {
       boxShadow: `0 0 0 2px ${indigo.indigo12}`,
     },
-  });
+  })
+);
 
-const switchRootOn = (theme: Theme) => [
+const switchRootOn = _applyTheme((theme: SgTheme) => [
   _switchRoot,
   css({
-    backgroundColor: theme.colors.primary.base,
-    ...theme.elements?.switchRootOn,
+    backgroundColor: theme.colors.colorPalettes.primary.base,
+    ...theme.elementOverrides?.switchRootOn,
   }),
-];
+]);
 
-const switchRootOff = (theme: Theme) => [
+const switchRootOff = _applyTheme((theme: SgTheme) => [
   _switchRoot,
   css({
     backgroundColor: slate.slate7,
-    ...theme.elements?.switchRootOff,
+    ...theme.elementOverrides?.switchRootOff,
   }),
-];
+]);
 
-const switchThumb = (theme: Theme) =>
+const switchThumb = _applyTheme((theme: SgTheme) =>
   css({
     backgroundColor: 'white',
     borderRadius: '9999px',
@@ -56,15 +60,17 @@ const switchThumb = (theme: Theme) =>
     "&[data-state='checked']": {
       transform: 'translateX(1.1875rem)',
     },
-    ...theme.elements?.switchThumb,
-  });
+    ...theme.elementOverrides?.switchThumb,
+  })
+);
 
-const switchDescription = (theme: Theme) =>
+const switchDescription = _applyTheme((theme: SgTheme) =>
   css({
     color: theme.colors.textSecondary,
     fontSize: '0.875rem',
     padding: '0.5rem 0',
-  });
+  })
+);
 
 export const styles = {
   switchWrapper,

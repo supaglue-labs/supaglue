@@ -6,8 +6,7 @@ import { useSalesforceIntegration } from '../../hooks/api';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import { Button } from '../Button';
-import styles from './styles';
+import { Button } from '../primitives/Button';
 
 export type SalesforceConnectButtonProps = {
   configurationUrl: string;
@@ -42,11 +41,7 @@ const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) =>
   }
 
   return (
-    <Button
-      css={styles.salesforceButton}
-      className={classNames('sg-salesforceConnectButton', props.appearance?.elements?.button)}
-      onClick={onClick}
-    >
+    <Button className={classNames('sg-salesforceConnectButton', props.appearance?.elements?.button)} onClick={onClick}>
       {integrationConnected ? 'Configure' : 'Connect'}
     </Button>
   );

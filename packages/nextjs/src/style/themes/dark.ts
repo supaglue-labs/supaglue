@@ -1,5 +1,5 @@
 import { purple, slateDark } from '@radix-ui/colors';
-import { SgTheme } from '../../types/theme';
+import { SgTheme } from '../types/theme';
 import { defaultTheme } from './default';
 
 export const darkTheme: SgTheme = {
@@ -11,14 +11,17 @@ export const darkTheme: SgTheme = {
     text: slateDark.slate11,
     textSecondary: slateDark.slate10,
     inputText: slateDark.slate11,
-    textOnPrimaryBackground: slateDark.slate1,
-    primary: {
-      base: purple.purple9,
-      dark: purple.purple10,
-      darker: purple.purple12,
+    colorPalettes: {
+      ...defaultTheme.colors.colorPalettes,
+      primary: {
+        base: purple.purple9,
+        dark: purple.purple10,
+        darker: purple.purple12,
+        textOnBackground: 'white',
+      },
     },
   },
-  elements: {
+  elementOverrides: {
     selectTrigger: {
       ':hover': {
         backgroundColor: slateDark.slate8,

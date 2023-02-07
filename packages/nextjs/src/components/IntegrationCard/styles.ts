@@ -1,6 +1,9 @@
-import { css, Theme } from '@emotion/react';
+import { css } from '@emotion/react';
+import { _applyTheme } from '../../style/internal';
+import { SgTheme } from '../../style/types/theme';
 
-const card = (theme: Theme) =>
+// TODO: Move most of these over to Card primitive
+const card = _applyTheme((theme: SgTheme) =>
   css({
     borderRadius: '0.5rem',
     borderWidth: '1px',
@@ -10,31 +13,46 @@ const card = (theme: Theme) =>
     alignItems: 'center',
     gap: '1rem',
     backgroundColor: theme.colors.background,
-    ...theme.elements?.card,
-  });
+    ...theme.elementOverrides?.card,
+  })
+);
 
-const cardName = (theme: Theme) =>
+const cardName = _applyTheme((theme: SgTheme) =>
   css({
     fontSize: '1.125rem',
     lineHeight: '1.75rem',
     fontWeight: '600',
     textAlign: 'center',
     color: theme.colors.text,
-    ...theme.elements?.cardName,
-  });
+    ...theme.elementOverrides?.cardName,
+  })
+);
 
-const cardDescription = (theme: Theme) =>
+const cardDescription = _applyTheme((theme: SgTheme) =>
   css({
     fontSize: '1rem',
     lineHeight: '1.25rem',
     textAlign: 'center',
     fontWeight: '400',
     color: theme.colors.textSecondary,
-    ...theme.elements?.cardDescription,
-  });
+    ...theme.elementOverrides?.cardDescription,
+  })
+);
 
-export default {
+const buttonWrapper = _applyTheme((theme: SgTheme) =>
+  css({
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '1rem',
+    ...theme.elementOverrides?.buttonWrapper,
+  })
+);
+
+const styles = {
+  buttonWrapper,
   card,
   cardName,
   cardDescription,
 };
+
+export default styles;

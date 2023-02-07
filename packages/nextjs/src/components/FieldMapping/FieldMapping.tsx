@@ -3,12 +3,12 @@ import classNames from 'classnames';
 import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { Select } from '..';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
 import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
+import { Select } from '../primitives';
 import styles from './styles';
 
 type Field = {

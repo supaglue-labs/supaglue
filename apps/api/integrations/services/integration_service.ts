@@ -22,7 +22,10 @@ export class IntegrationService {
     this.#syncService = syncService;
   }
 
-  public async getById(id: string): Promise<SafeIntegration> {
+  public async getById(id: string, unsafe?: false): Promise<SafeIntegration>;
+  public async getById(id: string, unsafe?: true): Promise<UnsafeIntegration>;
+  public async getById(id: string, unsafe?: undefined): Promise<SafeIntegration>;
+  public async getById(id: string, unsafe = false): Promise<SafeIntegration | UnsafeIntegration> {
     const integration = await this.#prisma.integration.findUnique({
       where: {
         id,
@@ -31,6 +34,10 @@ export class IntegrationService {
     if (!integration) {
       throw new Error(`Can't find integration with id: ${id}`);
     }
+    if (unsafe) {
+      return fromModelToUnsafeIntegration(integration);
+    }
+
     return fromModelToSafeIntegration(integration);
   }
 
@@ -83,5 +90,15 @@ export class IntegrationService {
     }
 
     return fromModelToSafeIntegration(integration);
+  }
+
+  public async delete(integrationId: string): Promise<void> {
+    return await this.#prisma.$transaction(async (tx) => {
+      const integration = await tx.integration.findUniqueOrThrow({ where: { id: integrationId } });
+      await Promise.all([
+        this.#syncService.deleteSyncsForCustomer(tx, integration.customerId),
+        tx.integration.delete({ where: { id: integration.id } }),
+      ]);
+    });
   }
 }

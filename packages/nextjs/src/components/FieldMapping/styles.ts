@@ -1,14 +1,17 @@
-import { css, Theme } from '@emotion/react';
+import { css } from '@emotion/react';
 import { gray } from '@radix-ui/colors';
+import { _applyTheme } from '../../style/internal';
+import { SgTheme } from '../../style/types/theme';
 
-const emptyContentReason = (theme: Theme) =>
+const emptyContentReason = _applyTheme((theme: SgTheme) =>
   css({
     fontStyle: 'italic',
     paddingTop: '1rem',
-    ...theme.elements?.emptyContentReason,
-  });
+    ...theme.elementOverrides?.emptyContentReason,
+  })
+);
 
-const form = (theme: Theme) =>
+const form = _applyTheme((theme: SgTheme) =>
   css({
     backgroundColor: theme.colors.background,
     display: 'flex',
@@ -17,53 +20,59 @@ const form = (theme: Theme) =>
     padding: '1rem',
     borderRadius: '0.5rem',
     width: '30rem',
-    ...theme.elements?.form,
-  });
+    ...theme.elementOverrides?.form,
+  })
+);
 
-const formHeaderRow = (theme: Theme) =>
+const formHeaderRow = _applyTheme((theme: SgTheme) =>
   css({
     display: 'flex',
     flexDirection: 'row',
     gap: '1rem',
-    ...theme.elements?.formHeaderRow,
-  });
+    ...theme.elementOverrides?.formHeaderRow,
+  })
+);
 
-const formColumnHeader = (theme: Theme) =>
+const formColumnHeader = _applyTheme((theme: SgTheme) =>
   css({
     textDecoration: 'underline',
     color: theme.colors.text,
     width: '50%',
-    ...theme.elements?.formColumnHeader,
-  });
+    ...theme.elementOverrides?.formColumnHeader,
+  })
+);
 
-const fieldWrapper = (theme: Theme) =>
+const fieldWrapper = _applyTheme((theme: SgTheme) =>
   css({
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
     gap: '1rem',
     justifyContent: 'space-between',
-    ...theme.elements?.fieldWrapper,
-  });
+    ...theme.elementOverrides?.fieldWrapper,
+  })
+);
 
-const fieldName = (theme: Theme) =>
+const fieldName = _applyTheme((theme: SgTheme) =>
   css({
     fontSize: '1rem',
     color: theme.colors.text,
-    ...theme.elements?.fieldName,
-  });
+    ...theme.elementOverrides?.fieldName,
+  })
+);
 
-const fieldDropdown = (theme: Theme) =>
+const fieldDropdown = _applyTheme((theme: SgTheme) =>
   css({
     border: `1px solid ${gray.gray12}`,
     borderRadius: '0.5rem',
     cursor: 'pointer',
     padding: '0.25rem 0.5rem',
     width: '50%',
-    ...theme.elements?.fieldDropdown,
-  });
+    ...theme.elementOverrides?.fieldDropdown,
+  })
+);
 
-export default {
+const styles = {
   emptyContentReason,
   form,
   formHeaderRow,
@@ -72,3 +81,5 @@ export default {
   fieldName,
   fieldDropdown,
 };
+
+export default styles;
