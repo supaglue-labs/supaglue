@@ -3,7 +3,15 @@ import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, ScheduleOverlapP
 import { DeveloperConfig, SyncConfig } from '../../developer_config/entities';
 import { TEMPORAL_SYNC_TASKS_TASK_QUEUE } from '../../temporal';
 import { getRunSyncWorkflowId, runSync } from '../../temporal/workflows';
-import { fromModelToSyncRun, Sync, SyncCreateParams, SyncRun, SyncUpdateParams } from '../entities';
+import {
+  fromModelToSyncRun,
+  fromModelToSyncRunWithSyncData,
+  Sync,
+  SyncCreateParams,
+  SyncRun,
+  SyncRunStatus,
+  SyncUpdateParams,
+} from '../entities';
 import { getSyncId } from '../util';
 
 export class SyncService {
@@ -222,9 +230,32 @@ export class SyncService {
   public async finishSyncRun(syncRunId: string, errorMessage?: string): Promise<SyncRun> {
     const model = await this.#prisma.syncRun.update({
       where: { id: syncRunId },
-      data: { finishTimestamp: new Date(), status: errorMessage ? 'error' : 'success' },
+      data: { finishTimestamp: new Date(), status: errorMessage ? 'error' : 'success', errorMessage },
     });
     return fromModelToSyncRun(model);
+  }
+
+  public async getSyncRunLogs({
+    syncConfigName,
+    customerId,
+    status,
+    page,
+    count,
+  }: {
+    syncConfigName?: string;
+    customerId?: string;
+    status?: SyncRunStatus;
+    page: number;
+    count: number;
+  }): Promise<(SyncRun & { sync: Partial<Sync> })[]> {
+    const models = await this.#prisma.syncRun.findMany({
+      where: { status, sync: customerId || syncConfigName ? { is: { customerId, syncConfigName } } : undefined },
+      orderBy: { startTimestamp: 'desc' },
+      skip: page * count,
+      take: count,
+      include: { sync: { select: { syncConfigName: true, customerId: true } } },
+    });
+    return models.map(fromModelToSyncRunWithSyncData);
   }
 }
 
