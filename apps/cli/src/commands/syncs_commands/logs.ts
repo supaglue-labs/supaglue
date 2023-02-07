@@ -5,11 +5,12 @@
  *
  */
 
-import { table } from 'table';
 import { ArgumentsCamelCase, Argv } from 'yargs';
 import type { BaseArgs } from '../../cli';
 import { axiosInstance } from '../../lib/axios';
 import * as logger from '../../lib/logger';
+
+const MAX_PAGE_SIZE = 100;
 
 export const command = 'logs';
 
@@ -44,15 +45,13 @@ type LogsHandlerArgs = BaseArgs & {
   limit?: number;
 };
 
-export const handler = async (args: ArgumentsCamelCase<LogsHandlerArgs>) => {
-  const logs = [];
-  const { limit = 0, customerId, status, syncConfigName } = args;
-  const MAX_PAGE_SIZE = 100;
-
+// async generator function to get all logs
+async function* getLogs({ limit = 0, customerId, status, syncConfigName, url }: LogsHandlerArgs) {
   let page = 0;
-  while (limit === 0 || logs.length < limit) {
-    const count: number = limit === 0 ? MAX_PAGE_SIZE : Math.min(limit - logs.length, MAX_PAGE_SIZE);
-    const res = await axiosInstance.get(`${args.url}/syncs/run_logs`, {
+  let logsCount = 0;
+  while (limit === 0 || logsCount < limit) {
+    const count: number = limit === 0 ? MAX_PAGE_SIZE : Math.min(limit - logsCount, MAX_PAGE_SIZE);
+    const res = await axiosInstance.get(`${url}/syncs/run_logs`, {
       params: {
         customerId,
         status,
@@ -66,27 +65,30 @@ export const handler = async (args: ArgumentsCamelCase<LogsHandlerArgs>) => {
       break;
     }
 
-    logs.push(...res.data.logs);
+    yield res.data.logs;
     page += 1;
+    logsCount += res.data.logs.length;
   }
+}
 
-  if (logs.length === 0) {
-    logger.warn(`No logs found`);
-    return;
+export const handler = async ({
+  limit = 0,
+  customerId,
+  status,
+  syncConfigName,
+  url,
+}: ArgumentsCamelCase<LogsHandlerArgs>) => {
+  for await (const logs of getLogs({ limit, customerId, status, syncConfigName, url })) {
+    logs.forEach((log: any) =>
+      logger.log(
+        JSON.stringify({
+          timestamp: log.startTimestamp,
+          syncName: log.sync.syncConfigName,
+          customerId: log.sync.customerId,
+          status: log.result.status,
+          errorMessage: log.result.errorMessage,
+        })
+      )
+    );
   }
-
-  logger.log(
-    table([
-      ['Timestamp', 'Sync Name', 'Customer Id', 'Status', 'Message'],
-      ...logs.map((s: any) => {
-        return [
-          s.startTimestamp,
-          s.sync.syncConfigName,
-          s.sync.customerId,
-          s.result.status,
-          s.result.errorMessage ?? 'N/A',
-        ];
-      }),
-    ])
-  );
 };
