@@ -77,6 +77,7 @@ export class DeveloperConfigService {
             // TODO: Make this idempotent in case developer config needs to be updated again
             this.#syncService.createSync(
               {
+                type: 'inbound',
                 syncConfigName,
                 customerId,
                 enabled: false,
