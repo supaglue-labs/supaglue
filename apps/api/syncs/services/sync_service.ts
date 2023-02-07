@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, ScheduleOverlapPolicy } from '@temporalio/client';
 import { DeveloperConfig, SyncConfig } from '../../developer_config/entities';
+import { logger } from '../../logger';
 import { TEMPORAL_SYNC_TASKS_TASK_QUEUE } from '../../temporal';
 import { getRunSyncWorkflowId, runSync } from '../../temporal/workflows';
 import {
@@ -31,10 +32,13 @@ export class SyncService {
     })) as Sync;
   }
 
-  public async getSyncByCustomerIdAndSyncConfigName(
-    customerId: string,
-    syncConfigName: string
-  ): Promise<Sync | undefined> {
+  public async getSyncByCustomerIdAndSyncConfigName({
+    customerId,
+    syncConfigName,
+  }: {
+    customerId: string;
+    syncConfigName: string;
+  }): Promise<Sync | undefined> {
     const model = await this.#prisma.sync.findUnique({
       where: {
         id: getSyncId({ syncConfigName, customerId }),
@@ -191,6 +195,31 @@ export class SyncService {
       await this.#temporalClient.schedule.getHandle(syncScheduleId).pause(note);
     } catch (err: unknown) {
       if (err instanceof ScheduleNotFoundError) {
+        logger.warn(`Tried to pause sync ${syncId} but schedule ${syncScheduleId} was not found`);
+        return;
+      }
+
+      throw err;
+    }
+  }
+
+  public async resumeSync({ syncId, note }: { syncId: string; note?: string }): Promise<void> {
+    await this.#prisma.sync.update({
+      data: {
+        enabled: true,
+      },
+      where: {
+        id: syncId,
+      },
+    });
+
+    // TODO: This shouldn't be best-effort
+    const syncScheduleId = getSyncScheduleId(syncId);
+    try {
+      await this.#temporalClient.schedule.getHandle(syncScheduleId).unpause(note);
+    } catch (err: unknown) {
+      if (err instanceof ScheduleNotFoundError) {
+        logger.warn(`Tried to resume sync ${syncId} but schedule ${syncScheduleId} was not found`);
         // swallow
         return;
       }

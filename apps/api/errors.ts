@@ -18,3 +18,10 @@ export class NotFoundError extends HTTPError {
     super(message);
   }
 }
+
+export class BadRequestError extends HTTPError {
+  code = 400;
+  constructor(message: string) {
+    super(message);
+  }
+}
