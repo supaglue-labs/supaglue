@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { gray } from '@radix-ui/colors';
 import { _applyTheme } from '../../style/internal';
 import { SgTheme } from '../../style/types/theme';
 
@@ -61,17 +60,6 @@ const fieldName = _applyTheme((theme: SgTheme) =>
   })
 );
 
-const fieldDropdown = _applyTheme((theme: SgTheme) =>
-  css({
-    border: `1px solid ${gray.gray12}`,
-    borderRadius: '0.5rem',
-    cursor: 'pointer',
-    padding: '0.25rem 0.5rem',
-    width: '50%',
-    ...theme.elementOverrides?.fieldDropdown,
-  })
-);
-
 const styles = {
   emptyContentReason,
   form,
@@ -79,7 +67,6 @@ const styles = {
   formColumnHeader,
   fieldWrapper,
   fieldName,
-  fieldDropdown,
 };
 
 export default styles;

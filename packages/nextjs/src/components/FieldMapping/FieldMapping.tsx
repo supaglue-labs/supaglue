@@ -156,7 +156,6 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
               {label}
             </p>
             <Select
-              css={styles.fieldDropdown}
               className={classNames(appearance?.elements?.fieldDropdown, 'sg-fieldDropdown')}
               disabled={!!upsertKey && name === upsertKey}
               label="Salesforce field name"

@@ -15,15 +15,20 @@ const selectTrigger = _applyTheme((theme: SgTheme) =>
     height: '2.25rem',
     justifyContent: 'space-between',
     lineHeight: 1,
-    padding: '0 1rem',
     width: '50%',
+    border: `1px solid ${slate.slate9}`,
+    borderRadius: '0.5rem',
+    cursor: 'pointer',
+    padding: '0.25rem 0.5rem',
     ':hover': {
       backgroundColor: slate.slate1,
     },
     ':disabled': {
+      cursor: 'not-allowed',
       backgroundColor: slate.slate3,
     },
     ':disabled svg': {
+      cursor: 'not-allowed',
       opacity: 0,
     },
     ...theme.elementOverrides?.selectTrigger,
@@ -51,6 +56,7 @@ const selectItem = _applyTheme((theme: SgTheme) =>
     padding: '0 2rem 0 2rem',
     position: 'relative',
     userSelect: 'none',
+    color: theme.colors.text,
     '&[data-highlighted]': {
       backgroundColor: indigo.indigo5,
       ...theme.elementOverrides?.selectItem?.highlighted,
