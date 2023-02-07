@@ -15,10 +15,14 @@ type VariantNameToKeyMap<V> = {
 
 export type DefaultVariants = Record<string, string>;
 
+// Styles will be applied in the following order:
+// 1. Base stylings
+// 2. Variant-specific stylings (with defaults, if unspecified)
+// 3. Element-specific overrides specified in the theme
 export type CreateVariantsConfig<V> = {
   base?: StyleRule;
-  variants: V;
   defaultVariants?: DefaultVariants;
+  variants: V;
   elementOverrides?: Record<string, any>;
 };
 
