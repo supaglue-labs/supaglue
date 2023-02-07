@@ -79,7 +79,7 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
                     </li>
                   ))}
                 </ul>
-                <UserProfile />
+                <UserProfile desktop />
               </div>
             </aside>
           </div>
@@ -89,7 +89,7 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
-function UserProfile() {
+function UserProfile({ desktop }: { desktop?: boolean }) {
   const { data: session } = useSession();
   return (
     <div className="flex flex-shrink-0 bg-base-300 p-4 h-20">
