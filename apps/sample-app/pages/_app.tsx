@@ -3,7 +3,7 @@ import '../styles/globals.css';
 import { ArrowTopRightOnSquareIcon, BookOpenIcon, HomeIcon, UsersIcon } from '@heroicons/react/24/outline';
 import { SupaglueProvider } from '@supaglue/nextjs';
 // TUTORIAL: Uncomment this
-// import { darkTheme } from '@supaglue/nextjs/src/style/themes';
+// import { darkTheme } from '@supaglue/nextjs';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Link from 'next/link';

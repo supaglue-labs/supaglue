@@ -282,7 +282,7 @@ Suppose you want to implement dark mode on your application. The sample app come
 
    ```tsx title=apps/sample-app/pages/_app.tsx
    // TUTORIAL: Uncomment this
-   import { darkTheme } from '@supaglue/nextjs/src/style/themes';
+   import { darkTheme } from '@supaglue/nextjs';
    // ...
     <SupaglueProvider
       customerId={customerId}
