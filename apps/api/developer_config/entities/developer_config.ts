@@ -84,8 +84,6 @@ type BaseSyncConfig = {
   // TODO: support incremental
   strategy: 'full_refresh';
 
-  schema: Schema;
-
   defaultFieldMapping?: FieldMapping[];
 };
 
