@@ -1,5 +1,5 @@
 /*
- * List the sync configs from the server:
+ * Get a log of sync runs from the server:
  *
  *  $ supaglue syncs logs --customer-id 1 --status error
  *

@@ -97,8 +97,8 @@ router.get(
       syncConfigName,
       customerId,
       status,
-      page: parseInt(page),
-      count: parseInt(count),
+      page: parseInt(page, 10),
+      count: parseInt(count, 10),
     });
 
     return res.status(200).send({ logs });
