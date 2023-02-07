@@ -13,6 +13,6 @@ export const describe = 'manage sync configurations on the server';
 
 export function builder(yargs: Argv) {
   yargs
-    .commandDir('sync-configs', { extensions: process.env.DEV_CLI ? ['ts'] : ['js'] })
+    .commandDir('sync-configs_commands', { extensions: process.env.DEV_CLI ? ['ts'] : ['js'] })
     .demandCommand(1, 'You must specify a subcommand');
 }
