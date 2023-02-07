@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { getDependencyContainer } from '../dependency_container';
 import { errorMiddleware as posthogErrorMiddleware, middleware as posthogMiddleware } from '../lib/posthog';
-import { Sync, SyncCreateParams } from '../syncs/entities';
+import { Sync, SyncCreateParams, SyncRun, SyncRunStatus } from '../syncs/entities';
 
 const { syncService, developerConfigService } = getDependencyContainer();
 
@@ -77,6 +77,27 @@ router.post(
     return res.status(200).send();
   },
   posthogErrorMiddleware('Manually Trigger Sync')
+);
+
+router.get(
+  '/run_logs',
+  posthogMiddleware('Get Sync Run Logs'),
+  async (
+    req: Request<
+      never,
+      any,
+      never,
+      { syncConfigName?: string; customerId?: string; status?: SyncRunStatus; page?: number; count?: number }
+    >,
+    res: Response<{ logs: (SyncRun & { sync: Partial<Sync> })[] }>
+  ) => {
+    const { syncConfigName, customerId, status, page = 0, count = 10 } = req.query;
+
+    const logs = await syncService.getSyncRunLogs({ syncConfigName, customerId, status, page, count });
+
+    return res.status(200).send({ logs });
+  },
+  posthogErrorMiddleware('Get Sync Run Logs')
 );
 
 export default router;

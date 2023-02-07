@@ -1,5 +1,7 @@
-import { ActivityFailure, ApplicationFailure, proxyActivities } from '@temporalio/workflow';
+import { ActivityFailure, ApplicationFailure, LoggerSinks, proxyActivities, proxySinks } from '@temporalio/workflow';
 import type * as activities from '../activities';
+
+const { defaultWorkerLogger: logger } = proxySinks<LoggerSinks>();
 
 export function getRunSyncWorkflowId(syncId: string): string {
   return `run-sync-${syncId}`;
@@ -30,9 +32,15 @@ export async function runSync({ syncId }: RunSyncArgs): Promise<void> {
       err.cause instanceof ApplicationFailure &&
       err.cause.nonRetryable
     ) {
-      await finishSyncRun({ syncRunId, errorMessage: err.message });
-      await pauseSync({ syncId, note: err.message });
-      return;
+      const errorMessage =
+        err.cause.failure?.message ??
+        err.failure?.cause?.message ??
+        err.failure?.message ??
+        err.message ??
+        'Unknown error';
+      await finishSyncRun({ syncRunId, errorMessage });
+      await pauseSync({ syncId, note: errorMessage });
+      logger.error(`Sync run ${syncRunId} failed: ${errorMessage}`, { syncId });
     }
     throw err;
   }
