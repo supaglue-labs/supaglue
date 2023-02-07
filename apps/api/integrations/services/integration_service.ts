@@ -79,6 +79,7 @@ export class IntegrationService {
         developerConfig.getSyncConfigs().map((syncConfig) =>
           this.#syncService.createSync(
             {
+              type: 'inbound',
               customerId,
               syncConfigName: syncConfig.name,
               enabled: false,
