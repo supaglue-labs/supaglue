@@ -22,7 +22,7 @@ type RetryPolicy = {
   retries?: number;
 };
 
-type PostgresInternalIntegration = BaseInternalIntegration & {
+export type PostgresInternalIntegration = BaseInternalIntegration & {
   type: 'postgres';
   config: {
     credentials: {

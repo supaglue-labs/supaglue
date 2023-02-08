@@ -1,5 +1,5 @@
 import * as sdk from '@supaglue/sdk';
-import credentials from './postgres_credentials';
+import credentials from '../postgres_credentials';
 
 const leadsSchema = sdk.schema({
   fields: [
