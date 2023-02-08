@@ -2,6 +2,7 @@ import { developerConfig, DeveloperConfigParams } from './salesforce';
 
 export * from './defaultFieldMapping';
 export * as destinations from './destinations';
+export * as internalIntegrations from './internalIntegrations';
 export * from './retry_policy';
 export * as salesforce from './salesforce';
 export * from './schema';

@@ -1,4 +1,4 @@
-import { PostgresCredentials, PostgresInternalIntegration } from '../base';
+import { PostgresInternalIntegration } from '../internalIntegrations';
 
 export type PostgresDestination = PostgresInternalIntegration & {
   config: {
@@ -11,8 +11,4 @@ export function postgres(params: Omit<PostgresDestination, 'type'>): PostgresDes
     type: 'postgres',
     ...params,
   };
-}
-
-export function postgresCredentials(params: PostgresCredentials): PostgresCredentials {
-  return params;
 }

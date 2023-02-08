@@ -1,4 +1,4 @@
-import { WebhookInternalIntegration } from '../base';
+import { WebhookInternalIntegration } from '../internalIntegrations';
 
 export type WebhookDestination = WebhookInternalIntegration;
 

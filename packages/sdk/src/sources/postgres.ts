@@ -1,6 +1,4 @@
-import { PostgresCredentials, PostgresInternalIntegration } from '../base';
-
-// TODO: These types need to be merged with sdk.destinations.postgresCredentials
+import { PostgresInternalIntegration } from '../internalIntegrations';
 
 export type PostgresSource = PostgresInternalIntegration;
 
@@ -9,8 +7,4 @@ export function postgres(params: Omit<PostgresSource, 'type'>): PostgresSource {
     type: 'postgres',
     ...params,
   };
-}
-
-export function postgresCredentials(params: PostgresCredentials): PostgresCredentials {
-  return params;
 }
