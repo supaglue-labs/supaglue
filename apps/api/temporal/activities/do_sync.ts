@@ -2,11 +2,13 @@ import { ApplicationFailure } from '@temporalio/common';
 import { getDependencyContainer } from '../../dependency_container';
 import {
   InboundSyncConfig,
+  OutboundSyncConfig,
   PostgresDestination,
+  PostgresSource,
   SyncConfig,
   WebhookDestination,
 } from '../../developer_config/entities';
-import { InboundSync, Sync } from '../../syncs/entities';
+import { InboundSync, OutboundSync, Sync } from '../../syncs/entities';
 import { createSupaglue, Supaglue } from '../sdk';
 
 type DoSyncArgs = {
@@ -20,11 +22,6 @@ export async function doSync({ syncId, syncRunId }: DoSyncArgs): Promise<void> {
   // TODO: Simplify
   // Get sync and developer config
   const sync = await syncService.getSyncById(syncId);
-
-  // TODO: remove this when we support outbound sync too
-  if (sync.type !== 'inbound') {
-    throw ApplicationFailure.nonRetryable('We only support inbound syncs right now');
-  }
 
   const developerConfig = await developerConfigService.getDeveloperConfig();
   const syncConfig = developerConfig.getSyncConfig(sync.syncConfigName);
@@ -40,7 +37,21 @@ export async function doSync({ syncId, syncRunId }: DoSyncArgs): Promise<void> {
   return await doSyncImpl(sg, sync, syncConfig, syncRunId);
 }
 
-async function doSyncImpl(
+async function doSyncImpl(sg: Supaglue, sync: Sync, syncConfig: SyncConfig, syncRunId: string): Promise<void> {
+  // TODO: Do we need `type` on both `Sync` and `SyncConfig`? We should consider
+  // only having it on `SyncConfig` for consistency.
+  if (sync.type === 'inbound' && syncConfig.type === 'inbound') {
+    return doInboundSync(sg, sync, syncConfig, syncRunId);
+  }
+
+  if (sync.type === 'outbound' && syncConfig.type === 'outbound') {
+    return doOutboundSync(sg, sync, syncConfig, syncRunId);
+  }
+
+  throw ApplicationFailure.nonRetryable('Sync and SyncConfig types do not match');
+}
+
+async function doInboundSync(
   sg: Supaglue,
   sync: InboundSync,
   syncConfig: InboundSyncConfig,
@@ -49,17 +60,32 @@ async function doSyncImpl(
   const fieldMapping = getMapping(sync, syncConfig);
 
   // Fetch external records
-  const records = await readRecordsFromSource(sg, syncConfig, fieldMapping);
+  const records = await readRecordsFromCustomerIntegration(sg, syncConfig, fieldMapping);
 
   // Write the internal records
-  await writeRecordsToDestination(sg, { sync, syncConfig, fieldMapping, records, syncRunId });
+  await writeRecordsToInternalIntegration(sg, { sync, syncConfig, fieldMapping, records, syncRunId });
 }
 
-function getMapping(
-  { fieldMapping }: Sync,
-  { destination, defaultFieldMapping }: InboundSyncConfig
-): Record<string, string> {
-  return destination.schema.fields.reduce((mapping: Record<string, string>, { name }) => {
+async function doOutboundSync(
+  sg: Supaglue,
+  sync: OutboundSync,
+  syncConfig: OutboundSyncConfig,
+  syncRunId: string
+): Promise<void> {
+  const fieldMapping = getMapping(sync, syncConfig);
+
+  // Fetch internal records
+  const records = await readRecordsFromInternalIntegration(sg, syncConfig);
+
+  // Write the external records
+  await writeRecordsToCustomerIntegration(sg, { sync, syncConfig, fieldMapping, records, syncRunId });
+}
+
+function getMapping({ fieldMapping }: Sync, syncConfig: SyncConfig): Record<string, string> {
+  const schema = syncConfig.type === 'inbound' ? syncConfig.destination.schema : syncConfig.source.schema;
+  const { defaultFieldMapping } = syncConfig;
+
+  return schema.fields.reduce((mapping: Record<string, string>, { name }) => {
     if (name in mapping) {
       return mapping;
     }
@@ -71,9 +97,9 @@ function getMapping(
   }, fieldMapping ?? {});
 }
 
-async function readRecordsFromSource(
+async function readRecordsFromCustomerIntegration(
   sg: Supaglue,
-  syncConfig: SyncConfig,
+  syncConfig: InboundSyncConfig,
   mapping: Record<string, string>
 ): Promise<Record<string, string>[]> {
   // Read from source
@@ -86,22 +112,22 @@ async function readRecordsFromSource(
   return await sg.customerIntegrations.salesforce.query(soql);
 }
 
-function applyMapping(
+function mapCustomerToInternalRecords(
   mapping: Record<string, string>,
-  externalRecords: Record<string, unknown>[]
+  customerRecords: Record<string, unknown>[]
 ): Record<string, unknown>[] {
-  return externalRecords.map((externalRecord) => {
-    const record: Record<string, unknown> = {};
+  return customerRecords.map((customerRecord) => {
+    const internalRecord: Record<string, unknown> = {};
 
-    Object.entries(mapping).forEach(([appField, externalField]) => {
-      record[appField] = externalRecord[externalField];
+    Object.entries(mapping).forEach(([internalField, customerField]) => {
+      internalRecord[internalField] = customerRecord[customerField];
     });
 
-    return record;
+    return internalRecord;
   });
 }
 
-async function writeRecordsToDestination(
+async function writeRecordsToInternalIntegration(
   sg: Supaglue,
   {
     syncConfig,
@@ -120,8 +146,8 @@ async function writeRecordsToDestination(
   const { destination } = syncConfig;
 
   // Apply mapping
-  const mappedRecords = applyMapping(fieldMapping, records);
-  if (!mappedRecords.length) {
+  const internalRecords = mapCustomerToInternalRecords(fieldMapping, records);
+  if (!internalRecords.length) {
     throw new Error('No records to write');
   }
 
@@ -129,7 +155,7 @@ async function writeRecordsToDestination(
     return await writeRecordsToPostgres(sg, {
       destination,
       fieldMapping,
-      mappedRecords,
+      internalRecords: internalRecords,
       customerId: sync.customerId,
     });
   }
@@ -140,7 +166,7 @@ async function writeRecordsToDestination(
     syncId: sync.id,
     syncRunId,
     customerId: sync.customerId,
-    mappedRecords,
+    mappedRecords: internalRecords,
   });
 }
 
@@ -149,12 +175,12 @@ async function writeRecordsToPostgres(
   {
     destination,
     fieldMapping,
-    mappedRecords,
+    internalRecords,
     customerId,
   }: {
     destination: PostgresDestination;
     fieldMapping: Record<string, string>;
-    mappedRecords: Record<string, unknown>[];
+    internalRecords: Record<string, unknown>[];
     customerId: string;
   }
 ): Promise<void> {
@@ -176,7 +202,7 @@ async function writeRecordsToPostgres(
     .join(', ');
 
   // TODO: Do this in batches
-  for (const mappedRecord of mappedRecords) {
+  for (const mappedRecord of internalRecords) {
     const values = dbFields.map((field) => mappedRecord[field] ?? '');
 
     // TODO: Do we want to deal with updated_at and created_at?
@@ -218,4 +244,75 @@ async function writeRecordsToWebhook(
   for (const record of mappedRecords) {
     sg.internalIntegrations.webhook.request(destination, syncConfigName, syncId, syncRunId, customerId, record);
   }
+}
+
+async function readRecordsFromInternalIntegration(
+  sg: Supaglue,
+  { source }: OutboundSyncConfig
+): Promise<Record<string, string>[]> {
+  if (source.type === 'postgres') {
+    return await readRecordsFromInternalPostgres(sg, source);
+  }
+
+  throw new Error(`Unsupported internal source: ${source.type}`);
+}
+
+async function readRecordsFromInternalPostgres(
+  sg: Supaglue,
+  postgres: PostgresSource
+): Promise<Record<string, string>[]> {
+  // Read from source
+  const dbFields = postgres.schema.fields.map((field) => field.name);
+  const dbFieldsString = dbFields.join(', ');
+
+  const sql = `SELECT
+  ${dbFieldsString}
+FROM ${postgres.config.table}
+WHERE ${postgres.config.customerIdColumn} = '${sg.customerId}'`;
+
+  return await sg.internalIntegrations.postgres.query(postgres, sql);
+}
+
+function mapInternalToCustomerRecords(
+  mapping: Record<string, string>,
+  internalRecords: Record<string, unknown>[]
+): Record<string, unknown>[] {
+  return internalRecords.map((internalRecord) => {
+    const customerRecord: Record<string, unknown> = {};
+
+    Object.entries(mapping).forEach(([appField, customerField]) => {
+      customerRecord[customerField] = internalRecord[appField];
+    });
+
+    return customerRecord;
+  });
+}
+
+async function writeRecordsToCustomerIntegration(
+  sg: Supaglue,
+  {
+    syncConfig,
+    sync,
+    fieldMapping,
+    records,
+    syncRunId,
+  }: {
+    sync: Sync;
+    syncConfig: OutboundSyncConfig;
+    fieldMapping: Record<string, string>;
+    records: Record<string, unknown>[];
+    syncRunId: string;
+  }
+): Promise<void> {
+  // Apply mapping
+  const customerRecords = mapInternalToCustomerRecords(fieldMapping, records);
+  if (!customerRecords.length) {
+    throw new Error('No records to write');
+  }
+
+  // TODO: Validate / throw error?
+  // Apply mapping to upsert key
+  const salesforceUpsertKey = fieldMapping[syncConfig.salesforceUpsertKey];
+
+  await sg.customerIntegrations.salesforce.upsert(syncConfig.salesforceObject, salesforceUpsertKey, customerRecords);
 }

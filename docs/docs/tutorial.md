@@ -102,15 +102,16 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 
    ```tsx title='supaglue-config/index.ts'
    // TUTORIAL: uncomment this
-   import accountSyncConfig from './account';
+   import accountInboundSyncConfig from './inbound/account';
 
    // ...
    syncConfigs: [
-    contactSyncConfig,
-    leadSyncConfig,
-    opportunitySyncConfig,
+    contactOutboundSyncConfig,
+    contactInboundSyncConfig,
+    leadInboundSyncConfig,
+    opportunityInboundSyncConfig,
     // TUTORIAL: uncomment this
-    accountSyncConfig
+    accountInboundSyncConfig
    ],
    // ...
    ```

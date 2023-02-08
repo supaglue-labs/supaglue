@@ -34,6 +34,17 @@ export class SalesforceCustomerIntegration extends BaseCustomerIntegration {
     return this.#connectionInstance;
   }
 
+  public async upsert(salesforceObject: string, upsertKey: string, records: Record<string, unknown>[]): Promise<void> {
+    await this.#connect();
+
+    await this.#connection().bulk2.loadAndWaitForResults({
+      object: salesforceObject,
+      operation: 'upsert',
+      externalIdFieldName: upsertKey,
+      input: records,
+    });
+  }
+
   public async query(soql: string): Promise<jsforce.Record[]> {
     await this.#connect();
 

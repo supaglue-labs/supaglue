@@ -1,5 +1,6 @@
 import { BaseSyncConfig } from './base';
 import { Destination } from './destinations';
+import { Source } from './sources';
 
 export type SalesforceCredentials = {
   loginUrl: string;
@@ -22,7 +23,7 @@ type OutboundSyncConfig = BaseSyncConfig & {
   // TODO: We will want to abstract this better when we support beyond Salesforce
   salesforceUpsertKey: string;
 
-  source: string; // TODO
+  source: Source;
 };
 
 type SyncConfig = InboundSyncConfig | OutboundSyncConfig;

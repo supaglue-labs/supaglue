@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { SALESFORCE } from '../../constants';
 import { NotFoundError } from '../../errors';
 import { SyncService } from '../../syncs/services';
-import { DeveloperConfig, DeveloperConfigSpec, fromModelToDeveloperConfig } from '../entities';
+import { DeveloperConfig, DeveloperConfigSpec, fromModelToDeveloperConfig, SyncConfig } from '../entities';
 
 const DEVELOPER_CONFIG_ID = '1';
 
@@ -62,7 +62,7 @@ export class DeveloperConfigService {
     oldConfig: DeveloperConfig | undefined,
     newConfig: DeveloperConfig
   ): Promise<void> {
-    const syncConfigsToBackfill = this.getNewSyncConfigNames(oldConfig, newConfig);
+    const syncConfigsToBackfill = this.getNewSyncConfigs(oldConfig, newConfig);
     // get customers with valid integrations
     const integrationModels = await this.#prisma.integration.findMany({
       where: {
@@ -73,12 +73,12 @@ export class DeveloperConfigService {
     await Promise.all(
       customerIds.map((customerId) =>
         Promise.all(
-          syncConfigsToBackfill.map((syncConfigName) => {
+          syncConfigsToBackfill.map(({ name, type }) => {
             // TODO: Make this idempotent in case developer config needs to be updated again
             this.#syncService.createSync(
               {
-                type: 'inbound',
-                syncConfigName,
+                type,
+                syncConfigName: name,
                 customerId,
                 enabled: false,
               },
@@ -90,9 +90,8 @@ export class DeveloperConfigService {
     );
   }
 
-  private getNewSyncConfigNames(oldConfig: DeveloperConfig | undefined, newConfig: DeveloperConfig): string[] {
+  private getNewSyncConfigs(oldConfig: DeveloperConfig | undefined, newConfig: DeveloperConfig): SyncConfig[] {
     const oldSyncConfigNames = oldConfig ? oldConfig.getSyncConfigs().map(({ name }) => name) : [];
-    const newSyncConfigNames = newConfig.getSyncConfigs().map(({ name }) => name);
-    return newSyncConfigNames.filter((x) => !oldSyncConfigNames.includes(x));
+    return newConfig.getSyncConfigs().filter((syncConfig) => !oldSyncConfigNames.includes(syncConfig.name));
   }
 }

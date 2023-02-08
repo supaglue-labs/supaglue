@@ -1,7 +1,7 @@
 import { ApplicationFailure } from '@temporalio/client';
 import retry from 'async-retry';
 import pg from 'pg';
-import { PostgresDestination } from '../../../developer_config/entities';
+import { PostgresInternalIntegration as PostgresInternalIntegrationConfig } from '../../../developer_config/entities';
 import { BaseInternalIntegration } from './base';
 
 export class PostgresInternalIntegration extends BaseInternalIntegration {
@@ -10,21 +10,25 @@ export class PostgresInternalIntegration extends BaseInternalIntegration {
   }
 
   public async query(
-    destination: PostgresDestination, // TODO: shouldn't need to pass this in at query time
+    // TODO: shouldn't need to pass this in at query time
+    postgres: PostgresInternalIntegrationConfig,
     sql: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     values?: any[]
-  ): Promise<void> {
+    // TODO: Come up with better type for return value
+  ): Promise<Record<string, string>[]> {
     // TODO: We should consider defining internalIntegrations separately
     // from SyncConfig so that this can be reused.
-    const pool = new pg.Pool(destination.config.credentials);
+    const pool = new pg.Pool(postgres.config.credentials);
     try {
-      await retry(async () => {
-        await pool.query(sql, values);
-      }, destination.retryPolicy);
+      return await retry(async () => {
+        const { rows } = await pool.query(sql, values);
+        return rows;
+      }, postgres.retryPolicy);
     } catch (err: unknown) {
       throw ApplicationFailure.nonRetryable(err instanceof Error ? err.message : '', 'sync_destination_error');
+    } finally {
+      await pool.end(); // TODO: should not be ending on every query
     }
-    await pool.end(); // TODO: should not be ending on every query
   }
 }
