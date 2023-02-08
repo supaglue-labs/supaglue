@@ -126,17 +126,17 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   return (
     // TODO: write form primitives
-    <form css={styles.form} className={classNames(appearance?.elements?.form, 'sg-form')}>
-      <div css={styles.formHeaderRow} className={classNames(appearance?.elements?.formHeaderRow, 'sg-formHeaderRow')}>
+    <form css={styles.form} className={classNames('sg-form', appearance?.elements?.form)}>
+      <div css={styles.formHeaderRow} className={classNames('sg-formHeaderRow', appearance?.elements?.formHeaderRow)}>
         <div
           css={styles.formColumnHeader}
-          className={classNames(appearance?.elements?.formColumnHeader, 'sg-formColumnHeader')}
+          className={classNames('sg-formColumnHeader', appearance?.elements?.formColumnHeader)}
         >
           Application fields
         </div>
         <div
           css={styles.formColumnHeader}
-          className={classNames(appearance?.elements?.formColumnHeader, 'sg-formColumnHeader')}
+          className={classNames('sg-formColumnHeader', appearance?.elements?.formColumnHeader)}
         >
           Salesforce fields
         </div>
@@ -150,9 +150,9 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
           <div
             key={idx}
             css={styles.fieldWrapper}
-            className={classNames(appearance?.elements?.fieldWrapper, 'sg-fieldWrapper')}
+            className={classNames('sg-fieldWrapper', appearance?.elements?.fieldWrapper)}
           >
-            <p css={styles.fieldName} className={classNames(appearance?.elements?.fieldName, 'sg-fieldName')}>
+            <p css={styles.fieldName} className={classNames('sg-fieldName', appearance?.elements?.fieldName)}>
               {label}
             </p>
             <Select
