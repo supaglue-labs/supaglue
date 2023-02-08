@@ -9,21 +9,24 @@ import { useActiveTab } from '../../hooks';
 // import { Switch } from '@supaglue/nextjs';
 
 export default function Integration() {
+  const router = useRouter();
+  const type = router.query.type as string;
+  const typeCaps = type ? type.charAt(0).toUpperCase() + type.slice(1) : '';
   return (
     <>
       <Head>
-        <title>Supaglue</title>
+        <title>Apolla.io - Integrations - {typeCaps}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="px-6 xl:pr-2 pb-16">
-        <IntegrationPage />
+        <IntegrationPage type={typeCaps} />
       </main>
     </>
   );
 }
 
-const IntegrationPage = () => {
+const IntegrationPage = ({ type }: { type: string }) => {
   const router = useRouter();
   const { customerId } = useSupaglueContext();
   const { data: integration, isLoading, error } = useSalesforceIntegration(customerId);
@@ -46,7 +49,7 @@ const IntegrationPage = () => {
   return (
     <>
       <header>
-        <h1 className="text-4xl font-bold my-6">Salesforce Integration</h1>
+        <h1 className="text-4xl font-bold my-6">{type} Integration</h1>
       </header>
       {integrationConnected && developerConfig && <SyncConfiguration />}
     </>
