@@ -2,23 +2,31 @@ import axios from 'axios';
 import { createContext, FC, ReactNode, useContext, useMemo } from 'react';
 import { SWRConfig } from 'swr';
 import { RequestType } from '../hooks/api';
+import { SgTheme } from '../style/types/theme';
 
-const SupaglueContext = createContext({
+type SupaglueContextType = {
+  apiUrl: string;
+  customerId: string;
+  theme?: SgTheme;
+};
+
+const SupaglueContext = createContext<SupaglueContextType>({
   customerId: '',
   apiUrl: '',
+  theme: undefined,
 });
 
 type SupaglueProviderProps = {
   children: ReactNode;
   apiUrl?: string;
   customerId: string;
+  theme?: SgTheme;
 };
 
-// TODO: ENG-103 implement authentication
-export const SupaglueProvider: FC<SupaglueProviderProps> = ({ children, customerId, apiUrl, ...rest }) => {
+export const SupaglueProvider: FC<SupaglueProviderProps> = ({ children, customerId, apiUrl, theme, ...rest }) => {
   const context = useMemo(
-    () => ({ apiUrl: apiUrl ?? process.env.NEXT_PUBLIC_SUPAGLUE_HOST ?? '', customerId }),
-    [apiUrl, customerId]
+    () => ({ apiUrl: apiUrl ?? process.env.NEXT_PUBLIC_SUPAGLUE_HOST ?? '', customerId, theme }),
+    [apiUrl, customerId, theme]
   );
 
   return (

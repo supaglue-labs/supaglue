@@ -1,51 +1,64 @@
 import { css } from '@emotion/react';
-import { gray } from '@radix-ui/colors';
+import { _applyTheme } from '../../style/internal';
+import { SgTheme } from '../../style/types/theme';
 
-const emptyContentReason = css({
-  fontStyle: 'italic',
-  paddingTop: '1rem',
-});
+const emptyContentReason = _applyTheme((theme: SgTheme) =>
+  css({
+    fontStyle: 'italic',
+    paddingTop: '1rem',
+    ...theme.elementOverrides?.emptyContentReason,
+  })
+);
 
-const form = css({
-  backgroundColor: 'white',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.75rem',
-  padding: '1rem',
-  borderRadius: '0.5rem',
-  width: '30rem',
-});
+const form = _applyTheme((theme: SgTheme) =>
+  css({
+    backgroundColor: theme.colors.background,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    padding: '1rem',
+    borderRadius: '0.5rem',
+    width: '30rem',
+    ...theme.elementOverrides?.form,
+  })
+);
 
-const formHeaderRow = css({
-  display: 'flex',
-  flexDirection: 'row',
-  gap: '1rem',
-});
+const formHeaderRow = _applyTheme((theme: SgTheme) =>
+  css({
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '1rem',
+    ...theme.elementOverrides?.formHeaderRow,
+  })
+);
 
-const formColumnHeader = css({
-  textDecoration: 'underline',
-  width: '50%',
-});
+const formColumnHeader = _applyTheme((theme: SgTheme) =>
+  css({
+    textDecoration: 'underline',
+    color: theme.colors.text,
+    width: '50%',
+    ...theme.elementOverrides?.formColumnHeader,
+  })
+);
 
-const fieldWrapper = css({
-  alignItems: 'center',
-  display: 'flex',
-  flexDirection: 'row',
-  gap: '1rem',
-  justifyContent: 'space-between',
-});
+const fieldWrapper = _applyTheme((theme: SgTheme) =>
+  css({
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '1rem',
+    justifyContent: 'space-between',
+    ...theme.elementOverrides?.fieldWrapper,
+  })
+);
 
-const fieldName = css({
-  fontSize: '1rem',
-});
-
-const fieldDropdown = css({
-  border: `1px solid ${gray.gray12}`,
-  borderRadius: '0.5rem',
-  cursor: 'pointer',
-  padding: '0.25rem 0.5rem',
-  width: '50%',
-});
+const fieldName = _applyTheme((theme: SgTheme) =>
+  css({
+    fontSize: '1rem',
+    color: theme.colors.text,
+    ...theme.elementOverrides?.fieldName,
+  })
+);
 
 const styles = {
   emptyContentReason,
@@ -54,7 +67,6 @@ const styles = {
   formColumnHeader,
   fieldWrapper,
   fieldName,
-  fieldDropdown,
 };
 
 export default styles;

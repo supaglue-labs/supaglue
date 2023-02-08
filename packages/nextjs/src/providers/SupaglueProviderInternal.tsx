@@ -1,13 +1,14 @@
 import createCache from '@emotion/cache';
-import { CacheProvider } from '@emotion/react';
+import { CacheProvider, ThemeProvider } from '@emotion/react';
 import axios from 'axios';
 import { ReactNode } from 'react';
 import { SWRConfig } from 'swr';
+import { useSupaglueContext } from '.';
 import { RequestType } from '../hooks/api';
-import { useSupaglueContext } from './SupaglueProvider';
+import { defaultTheme } from '../style/themes';
 
 export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) => {
-  const { apiUrl } = useSupaglueContext();
+  const { apiUrl, theme } = useSupaglueContext();
 
   const cache = createCache({
     key: 'sg-internal',
@@ -25,7 +26,9 @@ export const SupaglueProviderInternal = ({ children }: { children: ReactNode }) 
         },
       }}
     >
-      <CacheProvider value={cache}>{children}</CacheProvider>
+      <CacheProvider value={cache}>
+        <ThemeProvider theme={theme ?? defaultTheme}>{children}</ThemeProvider>
+      </CacheProvider>
     </SWRConfig>
   );
 };

@@ -6,7 +6,7 @@ import { triggerSync, useSalesforceIntegration } from '../../hooks/api';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import { Button } from '../Button';
+import { Button } from '../primitives/Button';
 
 export type TriggerSyncButtonProps = {
   syncConfigName: string;
