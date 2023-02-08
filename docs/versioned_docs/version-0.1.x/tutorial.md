@@ -72,7 +72,7 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
      'salesforce'
    );
 
-   const accountSyncConfig = sdk.salesforce.inboundSyncConfig({
+   const accountSyncConfig = sdk.salesforce.syncConfig({
      name: 'Accounts',
      salesforceObject: 'Account',
      cronExpression: '*/15 * * * *',
