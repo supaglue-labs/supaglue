@@ -3,12 +3,12 @@ import classNames from 'classnames';
 import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { Select } from '..';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
 import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
+import { Select } from '../primitives';
 import styles from './styles';
 
 type Field = {
@@ -125,6 +125,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
   };
 
   return (
+    // TODO: write form primitives
     <form css={styles.form} className={classNames(appearance?.elements?.form, 'sg-form')}>
       <div css={styles.formHeaderRow} className={classNames(appearance?.elements?.formHeaderRow, 'sg-formHeaderRow')}>
         <div
@@ -155,7 +156,6 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
               {label}
             </p>
             <Select
-              css={styles.fieldDropdown}
               className={classNames(appearance?.elements?.fieldDropdown, 'sg-fieldDropdown')}
               disabled={!!upsertKey && name === upsertKey}
               label="Salesforce field name"

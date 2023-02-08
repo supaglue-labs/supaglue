@@ -4,9 +4,9 @@ import classNames from 'classnames';
 import { HTMLAttributes, useState } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { SupaglueProviderInternal, useSupaglueContext } from '../../providers';
+import { DANGER } from '../../style/types/theme';
 import { SupaglueAppearance } from '../../types';
-import { Button } from '../Button';
-import styles from '../Button/styles';
+import { Button } from '../primitives/Button';
 
 async function deleteIntegration(url: string) {
   try {
@@ -51,7 +51,7 @@ const SalesforceDisconnectButtonInternal = (props: SalesforceDisconnectButtonPro
 
   return (
     <Button
-      css={[styles.destructiveButton]}
+      variantParams={{ colorScheme: DANGER }}
       className={classNames('sg-salesforceDisconnectButton', props.appearance?.elements?.button)}
       disabled={isDisconnecting}
       onClick={onClick}

@@ -2,6 +2,8 @@ import '../styles/globals.css';
 
 import { ArrowTopRightOnSquareIcon, BookOpenIcon, HomeIcon, UsersIcon } from '@heroicons/react/24/outline';
 import { SupaglueProvider } from '@supaglue/nextjs';
+// TUTORIAL: Uncomment this
+// import { darkTheme } from '@supaglue/nextjs/src/style/themes';
 import { SessionProvider, signIn, signOut, useSession } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Link from 'next/link';
@@ -38,7 +40,11 @@ function AppWrapper({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <SupaglueProvider customerId={customerId}>
+    <SupaglueProvider
+      customerId={customerId}
+      // TUTORIAL: Uncomment this
+      // theme={darkTheme}
+    >
       <SWRConfig
         value={{
           fetcher: (resource, init) => fetch(resource, init).then((res) => res.json()),
