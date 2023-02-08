@@ -26,11 +26,6 @@ export async function doSync({ syncId, syncRunId }: DoSyncArgs): Promise<void> {
   const developerConfig = await developerConfigService.getDeveloperConfig();
   const syncConfig = developerConfig.getSyncConfig(sync.syncConfigName);
 
-  // TODO: remove this when we support outbound sync too
-  if (syncConfig.type !== 'inbound') {
-    throw ApplicationFailure.nonRetryable('We only support inbound sync configs right now');
-  }
-
   // Instantiate the SDK and then pass it around
   const sg = createSupaglue(sync.customerId);
 
