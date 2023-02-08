@@ -8,5 +8,5 @@ export * from './schema';
 
 export function config(params: DeveloperConfigParams) {
   // eslint-disable-next-line no-console
-  return console.log(JSON.stringify(developerConfig(params).toJSON()));
+  return console.log(JSON.stringify(developerConfig(params)));
 }

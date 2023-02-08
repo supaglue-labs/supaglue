@@ -1,82 +1,51 @@
-import { BaseSyncConfig, BaseSyncConfigParams } from './base';
+import { BaseSyncConfig } from './base';
+import { Destination } from './destinations';
 
-export type SalesforceCredentialsParams = {
+export type SalesforceCredentials = {
   loginUrl: string;
   clientId: string;
   clientSecret: string;
 };
 
-export function salesforceCredentials(params: SalesforceCredentialsParams) {
-  return new SalesforceCredentials(params);
+export function salesforceCredentials(params: SalesforceCredentials) {
+  return params;
 }
 
-export class SalesforceCredentials {
-  loginUrl: string;
-  clientId: string;
-  clientSecret: string;
-
-  constructor({ loginUrl, clientId, clientSecret }: SalesforceCredentialsParams) {
-    this.loginUrl = loginUrl;
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-  }
-
-  toJSON() {
-    return {
-      loginUrl: this.loginUrl,
-      clientId: this.clientId,
-      clientSecret: this.clientSecret,
-    };
-  }
-}
-
-type SyncConfigParams = BaseSyncConfigParams & {
-  salesforceObject: string;
+type InboundSyncConfig = BaseSyncConfig & {
+  type: 'inbound';
+  destination: Destination;
 };
 
-export function syncConfig(params: SyncConfigParams) {
-  return new SalesforceSyncConfig(params);
+type OutboundSyncConfig = BaseSyncConfig & {
+  type: 'outbound';
+
+  // TODO: We will want to abstract this better when we support beyond Salesforce
+  salesforceUpsertKey: string;
+
+  source: string; // TODO
+};
+
+type SyncConfig = InboundSyncConfig | OutboundSyncConfig;
+
+export function inboundSyncConfig(params: Omit<InboundSyncConfig, 'type'>): InboundSyncConfig {
+  return {
+    type: 'inbound',
+    ...params,
+  };
 }
 
-export class SalesforceSyncConfig extends BaseSyncConfig {
-  salesforceObject: string;
-
-  constructor(params: SyncConfigParams) {
-    super(params);
-    const { salesforceObject } = params;
-    this.salesforceObject = salesforceObject;
-  }
-
-  toJSON() {
-    return {
-      ...super.toJSON(),
-      salesforceObject: this.salesforceObject,
-    };
-  }
+export function outboundSyncConfig(params: Omit<OutboundSyncConfig, 'type'>): OutboundSyncConfig {
+  return {
+    type: 'outbound',
+    ...params,
+  };
 }
 
 export type DeveloperConfigParams = {
-  syncConfigs: SalesforceSyncConfig[];
+  syncConfigs: SyncConfig[];
   salesforceCredentials: SalesforceCredentials;
 };
 
 export function developerConfig(params: DeveloperConfigParams) {
-  return new DeveloperConfig(params);
-}
-
-export class DeveloperConfig {
-  syncConfigs: SalesforceSyncConfig[];
-  salesforceCredentials: SalesforceCredentials;
-
-  constructor({ syncConfigs, salesforceCredentials }: DeveloperConfigParams) {
-    this.salesforceCredentials = salesforceCredentials;
-    this.syncConfigs = syncConfigs;
-  }
-
-  toJSON() {
-    return {
-      salesforceCredentials: this.salesforceCredentials.toJSON(),
-      syncConfigs: this.syncConfigs.map((syncConfig) => syncConfig.toJSON()),
-    };
-  }
+  return params;
 }

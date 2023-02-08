@@ -5,23 +5,10 @@ type Field = {
   required?: boolean;
 };
 
-type SchemaParams = {
+export type Schema = {
   fields: Field[];
 };
 
-export function schema(params: SchemaParams) {
-  return new Schema(params);
-}
-
-export class Schema {
-  fields: Field[];
-  constructor({ fields }: SchemaParams) {
-    this.fields = fields;
-  }
-
-  toJSON() {
-    return {
-      fields: this.fields,
-    };
-  }
+export function schema(params: Schema): Schema {
+  return params;
 }

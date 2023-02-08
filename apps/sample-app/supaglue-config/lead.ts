@@ -21,18 +21,15 @@ const leadsSchema = sdk.schema({
     { name: 'status' },
   ],
 });
-const leadMapping = sdk.defaultFieldMapping(
-  [
-    { name: 'salesforce_id', field: 'Id' },
-    { name: 'company', field: 'Company' },
-    { name: 'status', field: 'Status' },
-    { name: 'first_name', field: 'FirstName' },
-    { name: 'last_name', field: 'LastName' },
-  ],
-  'salesforce'
-);
+const leadMapping = sdk.defaultFieldMapping([
+  { name: 'salesforce_id', field: 'Id' },
+  { name: 'company', field: 'Company' },
+  { name: 'status', field: 'Status' },
+  { name: 'first_name', field: 'FirstName' },
+  { name: 'last_name', field: 'LastName' },
+]);
 
-const leadSyncConfig = sdk.salesforce.syncConfig({
+const leadSyncConfig = sdk.salesforce.inboundSyncConfig({
   name: 'Leads',
   salesforceObject: 'Lead',
   cronExpression: '*/15 * * * *',

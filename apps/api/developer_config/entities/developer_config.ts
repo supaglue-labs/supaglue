@@ -9,23 +9,20 @@ export type Schema = {
   fields: Field[];
 };
 
+type BaseInternalIntegration = {
+  schema: Schema;
+
+  // TODO: Need to properly figure out where to put this abstraction when we spend more time on
+  // IntegrationSDK and retries/rate limits.
+  retryPolicy?: RetryPolicy;
+};
+
 type RetryPolicy = {
   // TODO: more customization
   retries?: number;
 };
 
-type BaseDestination = {
-  schema: Schema;
-  // TODO: This retry policy may only be relevant for call-based destinations,
-  // so we may want to move this out from `BaseDestinationParams` later.
-  // Also, it's not clear at what level the retry policy is configured at.
-  // For example, for Postgres destination, we write records one by one.
-  // Does the retry policy apply to any individual record or to some
-  // larger group of records?
-  retryPolicy?: RetryPolicy;
-};
-
-export type PostgresDestination = BaseDestination & {
+type PostgresInternalIntegration = BaseInternalIntegration & {
   type: 'postgres';
   config: {
     credentials: {
@@ -36,14 +33,12 @@ export type PostgresDestination = BaseDestination & {
       password: string;
     };
     table: string;
-    upsertKey: string;
     customerIdColumn: string;
   };
 };
 
 type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-
-export type WebhookDestination = BaseDestination & {
+type WebhookInternalIntegration = BaseInternalIntegration & {
   type: 'webhook';
   config: {
     url: string;
@@ -52,7 +47,19 @@ export type WebhookDestination = BaseDestination & {
   };
 };
 
+export type PostgresDestination = PostgresInternalIntegration & {
+  config: {
+    upsertKey: string;
+  };
+};
+
+export type WebhookDestination = WebhookInternalIntegration;
+
 export type Destination = PostgresDestination | WebhookDestination;
+
+export type PostgresSource = PostgresInternalIntegration;
+
+export type Source = PostgresSource;
 
 export type FieldMapping = {
   name: string;
@@ -65,15 +72,37 @@ export type SalesforceCredentials = {
   clientSecret: string;
 };
 
-export type SyncConfig = {
+type BaseSyncConfig = {
   name: string; // unique (e.g. ContactSync, LeadSync, AccountSync)
+
+  // TODO: We will want to allow customer to choose for outbound down the road
   salesforceObject: 'Contact' | 'Lead' | 'Account' | 'Opportunity';
-  cronExpression: string; // Some valid cron string
-  destination: Destination;
+
+  // some valid cron string
+  // TODO: we'll want to allow triggered sync runs down the line
+  cronExpression: string;
+
   // TODO: support incremental
   strategy: 'full_refresh';
+
   defaultFieldMapping?: FieldMapping[];
 };
+
+export type InboundSyncConfig = BaseSyncConfig & {
+  type: 'inbound';
+  destination: Destination;
+};
+
+export type OutboundSyncConfig = BaseSyncConfig & {
+  type: 'outbound';
+
+  // TODO: We will want to abstract this better when we support beyond Salesforce
+  salesforceUpsertKey: string;
+
+  source: Source;
+};
+
+export type SyncConfig = InboundSyncConfig | OutboundSyncConfig;
 
 export type DeveloperConfigSpec = {
   syncConfigs: SyncConfig[];

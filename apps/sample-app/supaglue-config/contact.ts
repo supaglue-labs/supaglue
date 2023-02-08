@@ -26,18 +26,15 @@ const contactSchema = sdk.schema({
   ],
 });
 
-const contactMapping = sdk.defaultFieldMapping(
-  [
-    { name: 'salesforce_id', field: 'Id' },
-    { name: 'email', field: 'Email' },
-    { name: 'first_name', field: 'FirstName' },
-    { name: 'last_name', field: 'LastName' },
-    { name: 'title', field: 'Title' },
-  ],
-  'salesforce'
-);
+const contactMapping = sdk.defaultFieldMapping([
+  { name: 'salesforce_id', field: 'Id' },
+  { name: 'email', field: 'Email' },
+  { name: 'first_name', field: 'FirstName' },
+  { name: 'last_name', field: 'LastName' },
+  { name: 'title', field: 'Title' },
+]);
 
-const contactSyncConfig = sdk.salesforce.syncConfig({
+const contactSyncConfig = sdk.salesforce.inboundSyncConfig({
   name: 'Contacts',
   salesforceObject: 'Contact',
   cronExpression: '*/15 * * * *',
