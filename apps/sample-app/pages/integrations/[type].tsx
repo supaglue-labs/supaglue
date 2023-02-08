@@ -119,7 +119,7 @@ const SyncConfiguration = () => {
               // TUTORIAL: uncomment this
               // appearance={{
               //   elements: {
-              //     form: 'bg-base-300',
+              //     form: 'bg-base-100',
               //     fieldName: 'italic text-sm',
               //   },
               // }}
