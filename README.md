@@ -34,6 +34,8 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 
 ## Features
 
+![supaglue-demo](https://raw.githubusercontent.com/supaglue-labs/supaglue/main/docs/static/img/short_supaglue_gif.gif)
+
 - **Integration as code**: Use Typescript as declarative configuration to define syncs.
 - **Managed syncs**: Let Supaglue execute syncs for you with fault-tolerance, retries, rate limiting, and error handling.
 - **Managed OAuth**: Offload OAuth flows, storing & refreshing tokens to Supaglue

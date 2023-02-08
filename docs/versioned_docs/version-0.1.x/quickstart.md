@@ -6,6 +6,8 @@ sidebar_position: 2
 
 **In less than 5 minutes**, you will use Supaglue to deploy a basic Salesforce integration that allows your customers to sync their Salesforce objects to a sample Next.js application.
 
+![supaglue-demo](/img/supaglue_gif.gif)
+
 ## Clone and start Supaglue
 
 ```shell
