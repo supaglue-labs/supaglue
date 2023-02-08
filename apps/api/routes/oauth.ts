@@ -17,10 +17,10 @@ router.get('/salesforce', async (req: Request<never, any, never, { state: string
   const redirectUrl = oauth2.getAuthorizationUrl({
     scope: 'api id refresh_token',
     state,
+    prompt: 'login', // Always prompt the user to enter their username and password
   });
 
-  // Always prompt the user to enter their username and password when connecting
-  res.redirect(`${redirectUrl}&prompt=login`);
+  res.redirect(redirectUrl);
 });
 
 router.get('/callback', async (req: Request<never, any, never, { code: string; state: string }>, res: Response) => {
