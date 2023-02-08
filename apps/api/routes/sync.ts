@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { getDependencyContainer } from '../dependency_container';
+import { BadRequestError, NotFoundError } from '../errors';
 import { errorMiddleware as posthogErrorMiddleware, middleware as posthogMiddleware } from '../lib/posthog';
 import { Sync, SyncCreateParams, SyncRun, SyncRunStatus } from '../syncs/entities';
 
@@ -17,7 +18,7 @@ router.get(
     const { customerId, syncConfigName } = req.query;
 
     if (syncConfigName) {
-      const sync = await syncService.getSyncByCustomerIdAndSyncConfigName(customerId, syncConfigName);
+      const sync = await syncService.getSyncByCustomerIdAndSyncConfigName({ customerId, syncConfigName });
 
       return res.status(200).send(sync);
     } else if (req.query.customerId) {
@@ -87,17 +88,44 @@ router.get(
       never,
       any,
       never,
-      { syncConfigName?: string; customerId?: string; status?: SyncRunStatus; page?: number; count?: number }
+      { syncConfigName?: string; customerId?: string; status?: SyncRunStatus; page?: string; count?: string }
     >,
     res: Response<{ logs: (SyncRun & { sync: Partial<Sync> })[] }>
   ) => {
-    const { syncConfigName, customerId, status, page = 0, count = 10 } = req.query;
+    const { syncConfigName, customerId, status, page = '0', count = '10' } = req.query;
 
-    const logs = await syncService.getSyncRunLogs({ syncConfigName, customerId, status, page, count });
+    const logs = await syncService.getSyncRunLogs({
+      syncConfigName,
+      customerId,
+      status,
+      page: parseInt(page, 10),
+      count: parseInt(count, 10),
+    });
 
     return res.status(200).send({ logs });
   },
   posthogErrorMiddleware('Get Sync Run Logs')
+);
+
+router.post(
+  '/_start',
+  posthogMiddleware('Resume Sync'),
+  async (req: Request<never, any, { syncConfigName: string; customerId: string }>, res: Response) => {
+    const { syncConfigName, customerId } = req.body;
+    if (!syncConfigName || !customerId) {
+      throw new BadRequestError('Missing `syncConfigName` or `customerId`');
+    }
+
+    const sync = await syncService.getSyncByCustomerIdAndSyncConfigName({ syncConfigName, customerId });
+    if (!sync) {
+      throw new NotFoundError('Sync not found');
+    }
+
+    const { id: syncId } = sync;
+    await syncService.resumeSync({ syncId, note: 'Resumed by admin' });
+
+    return res.status(200).send();
+  }
 );
 
 export default router;

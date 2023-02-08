@@ -34,6 +34,7 @@ model DeveloperConfig {
 model Sync {
   id                                String    @id @default(uuid())
   customerId                        String    @map("customer_id")
+  type                              String
   enabled                           Boolean
   syncConfigName                    String    @map("sync_config_name")
   fieldMapping                      Json?     @map("field_mapping")
