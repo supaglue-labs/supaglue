@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { indigo, slate } from '@radix-ui/colors';
-import { _applyTheme } from '../../../style/internal';
-import { SgTheme } from '../../../style/types/theme';
+import { _applyTheme } from '../../style/internal';
+import { SgTheme } from '../../style/types/theme';
 
 const selectTrigger = _applyTheme((theme: SgTheme) =>
   css({

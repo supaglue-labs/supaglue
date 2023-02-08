@@ -1,4 +1,4 @@
 export * from './Button';
+export * from './Card';
 export * from './Select';
-
-// TODO: Add primitives for Switch, Card, etc.
+export * from './Switch';

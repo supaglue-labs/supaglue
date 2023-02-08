@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { HTMLAttributes } from 'react';
 import { useSalesforceIntegration } from '../../hooks/api';
+import { Button } from '../../primitives/Button';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import { Button } from '../primitives/Button';
 
 export type SalesforceConnectButtonProps = {
   configurationUrl: string;
@@ -41,7 +40,7 @@ const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) =>
   }
 
   return (
-    <Button className={classNames('sg-salesforceConnectButton', props.appearance?.elements?.button)} onClick={onClick}>
+    <Button className="sg-salesforceConnectButton" appearance={props.appearance} onClick={onClick}>
       {integrationConnected ? 'Configure' : 'Connect'}
     </Button>
   );

@@ -150,18 +150,18 @@ The sample app already contains some Supaglue embedded components, <`Integration
 
 :::
 
-1.  Embed [`<Switch/>`](react-components/#switch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
+1.  Embed [`<SwitchSwitch/>`](react-components/#syncswitch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
 
     ```tsx title=apps/sample-app/pages/integrations/[type]
     // TUTORIAL: Uncomment this
-    import { Switch } from '@supaglue/nextjs';
+    import { SyncSwitch } from '@supaglue/nextjs';
 
     // ...
     const getSwitch = (syncConfigName: string) => {
       // TUTORIAL: uncomment this
       return (
         <div className="py-2">
-          <Switch includeSyncDescription syncConfigName={syncConfigName} />
+          <SyncSwitch includeSyncDescription syncConfigName={syncConfigName} />
         </div>
       );
     };

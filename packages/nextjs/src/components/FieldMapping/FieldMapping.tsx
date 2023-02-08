@@ -5,10 +5,10 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
 import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
+import { Select, SelectElements } from '../../primitives';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import { Select } from '../primitives';
 import styles from './styles';
 
 type Field = {
@@ -156,7 +156,8 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
               {label}
             </p>
             <Select
-              className={classNames(appearance?.elements?.fieldDropdown, 'sg-fieldDropdown')}
+              className="sg-fieldDropdown"
+              appearance={appearance}
               disabled={!!upsertKey && name === upsertKey}
               label="Salesforce field name"
               onValueChange={async (value: string) => {
@@ -173,8 +174,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
   );
 };
 
-type Elements = {
-  fieldDropdown?: string;
+type Elements = SelectElements & {
   fieldDropdownOption?: string;
   fieldMapperRow?: string;
   fieldName?: string;

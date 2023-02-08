@@ -2,6 +2,7 @@
 import classNames from 'classnames';
 import { SalesforceConnectButton, SalesforceDisconnectButton } from '..';
 import { useDeveloperConfig, useSalesforceIntegration } from '../../hooks/api';
+import { Card } from '../../primitives';
 import { SupaglueProviderInternal, useSupaglueContext } from '../../providers';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
@@ -16,6 +17,7 @@ export type IntegrationCardProps = {
       card?: string;
       name?: string;
       description?: string;
+      buttonWrapper?: string;
       button?: string;
     };
   };
@@ -32,23 +34,24 @@ const IntegrationCardInternal = ({ name, description, configurationUrl, appearan
   }
 
   return (
-    <li>
-      <div css={styles.card} className={classNames(appearance?.elements?.card, 'sg-integrationCard')}>
-        <span css={styles.cardName} className={classNames(appearance?.elements?.name, 'sg-integrationCard-name')}>
-          {name}
-        </span>
-        <span
-          css={styles.cardDescription}
-          className={classNames(appearance?.elements?.description, 'sg-integrationCard-description')}
-        >
-          {description}
-        </span>
-        <div css={styles.buttonWrapper}>
-          {integrationConnected ? <SalesforceDisconnectButton integration={integration} /> : null}
-          <SalesforceConnectButton configurationUrl={configurationUrl} appearance={appearance} />
-        </div>
+    <Card className="sg-integrationCard" appearance={appearance}>
+      <span css={styles.cardName} className={classNames('sg-integrationCard-name', appearance?.elements?.name)}>
+        {name}
+      </span>
+      <span
+        css={styles.cardDescription}
+        className={classNames('sg-integrationCard-description', appearance?.elements?.description)}
+      >
+        {description}
+      </span>
+      <div
+        css={styles.buttonWrapper}
+        className={classNames('sg-integrationCard-buttonWrapper', appearance?.elements?.buttonWrapper)}
+      >
+        {integrationConnected ? <SalesforceDisconnectButton integration={integration} /> : null}
+        <SalesforceConnectButton configurationUrl={configurationUrl} appearance={appearance} />
       </div>
-    </li>
+    </Card>
   );
 };
 

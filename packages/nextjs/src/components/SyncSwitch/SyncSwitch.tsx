@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import * as RadixSwitch from '@radix-ui/react-switch';
 import classnames from 'classnames';
 import cronstrue from 'cronstrue';
 import { useId } from 'react';
@@ -7,6 +6,7 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync } from '../../hooks/api';
 import { DeveloperConfig } from '../../lib/types';
+import { Switch } from '../../primitives/Switch';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
@@ -21,7 +21,7 @@ type Elements = {
   switchWrapper?: string;
 };
 
-export type SwitchProps = {
+export type SyncSwitchProps = {
   appearance?: SupaglueAppearance & {
     elements: Elements;
   };
@@ -32,7 +32,7 @@ export type SwitchProps = {
   syncConfigName: string;
 };
 
-const SwitchInternal = (props: SwitchProps) => {
+const SyncSwitchInternal = (props: SyncSwitchProps) => {
   const { appearance, disabled, includeSyncDescription, label, syncConfigName } = props;
   const { customerId, apiUrl } = useSupaglueContext();
 
@@ -54,8 +54,15 @@ const SwitchInternal = (props: SwitchProps) => {
 
   const { trigger: triggerUpdateSync } = useSWRMutation(`${apiUrl}/syncs/${sync?.id}`, updateSync);
 
+  const onCheckedChange = async (checked: boolean) => {
+    const result = await triggerUpdateSync({ enabled: checked });
+    if (result?.data) {
+      mutate({ ...result.data });
+    }
+  };
+
   return (
-    <div>
+    <>
       <div
         css={styles.switchWrapper}
         className={classnames(props.className, 'sg-switchWrapper', appearance?.elements?.switchWrapper)}
@@ -64,30 +71,13 @@ const SwitchInternal = (props: SwitchProps) => {
           {label || `Sync ${syncConfigName}`}
         </label>
 
-        <RadixSwitch.Root
-          id={inputId}
-          css={syncEnabled ? styles.switchRootOn : styles.switchRootOff}
-          checked={syncEnabled}
-          className={classnames(
-            'sg-switchRoot',
-            syncEnabled ? appearance?.elements?.switchOn : appearance?.elements?.switchOff
-          )}
-          disabled={disabled || isLoadingSync}
-          // Explicitly remove type attribute to prevent global css from resetting
-          // our styles
-          type={undefined}
-          onCheckedChange={async (checked: boolean) => {
-            const result = await triggerUpdateSync({ enabled: checked });
-            if (result?.data) {
-              mutate({ ...result.data });
-            }
-          }}
-        >
-          <RadixSwitch.Thumb
-            css={styles.switchThumb}
-            className={classnames('sg-switchThumb', appearance?.elements?.switchThumb)}
-          />
-        </RadixSwitch.Root>
+        <Switch
+          disabled={disabled}
+          isLoading={isLoadingSync}
+          toggled={syncEnabled}
+          appearance={appearance}
+          onCheckedChange={onCheckedChange}
+        />
       </div>
 
       {includeSyncDescription && syncConfig && (
@@ -101,12 +91,12 @@ const SwitchInternal = (props: SwitchProps) => {
           .
         </p>
       )}
-    </div>
+    </>
   );
 };
 
-export const Switch = (props: SwitchProps) => (
+export const SyncSwitch = (props: SyncSwitchProps) => (
   <SupaglueProviderInternal>
-    <SwitchInternal {...props} />
+    <SyncSwitchInternal {...props} />
   </SupaglueProviderInternal>
 );
