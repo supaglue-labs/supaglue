@@ -3,6 +3,7 @@ import jsforce from 'jsforce';
 import { getDependencyContainer } from '../dependency_container';
 import { IntegrationCreateParams, SafeIntegration } from '../integrations/entities';
 import { errorMiddleware as posthogErrorMiddleware, middleware as posthogMiddleware } from '../lib/posthog';
+import { logger } from '../logger';
 
 const { integrationService, developerConfigService } = getDependencyContainer();
 
@@ -56,9 +57,14 @@ router.delete(
       ...developerConfig.getSalesforceCredentials(),
       redirectUri: `${process.env.SUPAGLUE_API_SERVER_URL}/oauth/callback`,
     });
+
     const connection = new jsforce.Connection({ oauth2, loginUrl: oauth2.loginUrl, refreshToken });
-    // TODO: Handle case when user is already logged-out
-    await connection.logoutByOAuth2(true);
+
+    try {
+      await connection.logoutByOAuth2(/* revoke */ true);
+    } catch (err) {
+      logger.warn(`Error logging out of salesforce when deleting integration ${integration.id}: ${err}`);
+    }
 
     // Then delete the integration and all associated syncs
     await integrationService.delete(req.params.integrationId);
