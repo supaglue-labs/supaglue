@@ -37,15 +37,8 @@ type PostgresInternalIntegration = BaseInternalIntegration & {
   };
 };
 
-export type PostgresDestination = PostgresInternalIntegration & {
-  config: {
-    upsertKey: string;
-  };
-};
-
 type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-
-export type WebhookDestination = BaseInternalIntegration & {
+type WebhookInternalIntegration = BaseInternalIntegration & {
   type: 'webhook';
   config: {
     url: string;
@@ -53,6 +46,14 @@ export type WebhookDestination = BaseInternalIntegration & {
     headers?: string | string[]; // Authorization header etc.
   };
 };
+
+export type PostgresDestination = PostgresInternalIntegration & {
+  config: {
+    upsertKey: string;
+  };
+};
+
+export type WebhookDestination = WebhookInternalIntegration;
 
 export type Destination = PostgresDestination | WebhookDestination;
 

@@ -23,18 +23,15 @@ const opportunitiesSchema = sdk.schema({
   ],
 });
 
-const opportunityMapping = sdk.defaultFieldMapping(
-  [
-    { name: 'salesforce_id', field: 'Id' },
-    { name: 'name', field: 'Name' },
-    { name: 'salesforce_account_id', field: 'AccountId' },
-    { name: 'close_date', field: 'CloseDate' },
-    { name: 'stage', field: 'StageName' },
-  ],
-  'salesforce'
-);
+const opportunityMapping = sdk.defaultFieldMapping([
+  { name: 'salesforce_id', field: 'Id' },
+  { name: 'name', field: 'Name' },
+  { name: 'salesforce_account_id', field: 'AccountId' },
+  { name: 'close_date', field: 'CloseDate' },
+  { name: 'stage', field: 'StageName' },
+]);
 
-const opportunitySyncConfig = sdk.salesforce.syncConfig({
+const opportunitySyncConfig = sdk.salesforce.inboundSyncConfig({
   name: 'Opportunities',
   salesforceObject: 'Opportunity',
   cronExpression: '*/15 * * * *',
