@@ -318,16 +318,17 @@ async function writeRecordsToCustomerIntegration(
   await sg.customerIntegrations.salesforce.upsert(salesforceObject, salesforceUpsertKey, customerRecords);
 }
 
-// TODO: This should be generalized. Pending discussion on types / SDK.
 function getSalesforceObject(salesforce: SalesforceCustomerIntegration, sync: Sync): string {
   switch (salesforce.objectConfig.type) {
     case 'specified':
       return salesforce.objectConfig.object;
-    case 'selectable':
-      if (!sync.salesforceObject) {
+    case 'selectable': {
+      const object = sync.type === 'inbound' ? sync.source?.object : sync.destination?.object;
+      if (!object) {
         // TODO: Make this more generalizable
         throw new Error('Salesforce object requested by SyncConfig but not provided by Sync');
       }
-      return sync.salesforceObject;
+      return object;
+    }
   }
 }

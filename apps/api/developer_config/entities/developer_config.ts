@@ -292,7 +292,6 @@ export type InboundSyncConfig = BaseSyncConfig & {
 
 export type OutboundSyncConfig = BaseSyncConfig & {
   type: 'outbound';
-
   source: InternalSource;
   destination: CustomerDestination;
 };
