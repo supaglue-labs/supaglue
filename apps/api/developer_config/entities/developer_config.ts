@@ -55,11 +55,11 @@ export type PostgresDestination = PostgresInternalIntegration & {
 
 export type WebhookDestination = WebhookInternalIntegration;
 
-export type Destination = PostgresDestination | WebhookDestination;
+export type InternalDestination = PostgresDestination | WebhookDestination;
 
 export type PostgresSource = PostgresInternalIntegration;
 
-export type Source = PostgresSource;
+export type InternalSource = PostgresSource;
 
 export type FieldMapping = {
   name: string;
@@ -72,11 +72,39 @@ export type SalesforceCredentials = {
   clientSecret: string;
 };
 
+type SalesforceObject = 'Contact' | 'Lead' | 'Account' | 'Opportunity';
+
+type SpecifiedSalesforceObjectConfig = {
+  type: 'specified';
+  object: SalesforceObject;
+};
+
+type SelectableSalesforceObjectConfig = {
+  type: 'selectable';
+  objectChoices: SalesforceObject[];
+};
+
+export type SalesforceObjectConfig = SpecifiedSalesforceObjectConfig | SelectableSalesforceObjectConfig;
+
+type BaseCustomerIntegration = object;
+
+type SalesforceCustomerIntegration = BaseCustomerIntegration & {
+  type: 'salesforce';
+  objectConfig: SalesforceObjectConfig;
+};
+
+type SalesforceSource = SalesforceCustomerIntegration;
+
+type CustomerSource = SalesforceSource;
+
+type SalesforceDestination = SalesforceCustomerIntegration & {
+  upsertKey: string; // ext_id
+};
+
+type CustomerDestination = SalesforceDestination;
+
 type BaseSyncConfig = {
   name: string; // unique (e.g. ContactSync, LeadSync, AccountSync)
-
-  // TODO: We will want to allow customer to choose for outbound down the road
-  salesforceObject: 'Contact' | 'Lead' | 'Account' | 'Opportunity';
 
   // some valid cron string
   // TODO: we'll want to allow triggered sync runs down the line
@@ -90,16 +118,15 @@ type BaseSyncConfig = {
 
 export type InboundSyncConfig = BaseSyncConfig & {
   type: 'inbound';
-  destination: Destination;
+  source: CustomerSource;
+  destination: InternalDestination;
 };
 
 export type OutboundSyncConfig = BaseSyncConfig & {
   type: 'outbound';
 
-  // TODO: We will want to abstract this better when we support beyond Salesforce
-  salesforceUpsertKey: string;
-
-  source: Source;
+  source: InternalSource;
+  destination: CustomerDestination;
 };
 
 export type SyncConfig = InboundSyncConfig | OutboundSyncConfig;
