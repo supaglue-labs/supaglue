@@ -9,7 +9,13 @@ import { Pagination } from '../components/Pagination';
 import { Table } from '../components/Table';
 import { TableCell } from '../components/Table/TableCell';
 import { useActiveTab } from '../hooks';
-import prisma, { SalesforceAccount, SalesforceContact, SalesforceLead, SalesforceOpportunity } from '../lib/prismadb';
+import prisma, {
+  SalesforceAccount,
+  SalesforceContact,
+  SalesforceLead,
+  SalesforceObject,
+  SalesforceOpportunity,
+} from '../lib/prismadb';
 import authOptions from './api/auth/[...nextauth]';
 
 const MAX_PAGE_SIZE = 10;
@@ -245,7 +251,58 @@ function LeadsTable({
   );
 }
 
-const pageTabs = ['Contacts', 'Leads', 'Accounts', 'Opportunities'];
+function ObjectsTable({
+  initialUsers,
+  initialTotalUsers,
+}: {
+  initialUsers: SalesforceObject[];
+  initialTotalUsers: number;
+}) {
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const {
+    data: { users = [], count },
+    error,
+    isLoading,
+  } = useSWR(`/api/objects?page=${pageIndex}`, {
+    fallback: { '/api/objects?page=0': { users: initialUsers, count: initialTotalUsers } },
+    keepPreviousData: true,
+  });
+  const userCount = count || initialTotalUsers;
+  const cols = [{ name: 'Object' }, { name: 'Salesforce ID' }];
+
+  return (
+    <>
+      <Table
+        columns={cols}
+        emptyMessage="No records found."
+        errorMessage={error?.message}
+        isError={!!error}
+        numPlaceholderRows={10}
+        isLoading={isLoading}
+        className={{ 'border-b-0 sm:rounded-b-none': !!userCount }}
+        pagination={
+          userCount ? (
+            <Pagination
+              maxPageSize={MAX_PAGE_SIZE}
+              setPageIndex={setPageIndex}
+              pageIndex={pageIndex}
+              count={userCount}
+            />
+          ) : undefined
+        }
+        rows={users.map((user: SalesforceObject) => (
+          <tr key={user.id}>
+            <TableCell>{user.object?.toString()}</TableCell>
+            <TableCell>{user.salesforceId}</TableCell>
+          </tr>
+        ))}
+      />
+    </>
+  );
+}
+
+const pageTabs = ['Contacts', 'Leads', 'Accounts', 'Opportunities', 'Objects'];
 
 export default function Users({ contacts, count }: PageProps) {
   const activeTab = useActiveTab(pageTabs[0]);
@@ -267,6 +324,7 @@ export default function Users({ contacts, count }: PageProps) {
         {activeTab === 'Leads' && <LeadsTable initialUsers={[]} initialTotalUsers={0} />}
         {activeTab === 'Accounts' && <AccountsTable initialUsers={[]} initialTotalUsers={0} />}
         {activeTab === 'Opportunities' && <OpportunitiesTable initialUsers={[]} initialTotalUsers={0} />}
+        {activeTab === 'Objects' && <ObjectsTable initialUsers={[]} initialTotalUsers={0} />}
       </main>
     </>
   );

@@ -73,6 +73,18 @@ model SalesforceCreds {
   @@map("salesforce_creds")
 }
 
+model SalesforceObject {
+  id           Int      @id @default(autoincrement())
+  customerId   String   @map("customer_id") @db.VarChar(255)
+  salesforceId String?  @map("salesforce_id") @db.VarChar(255)
+  object       Json
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@unique([customerId, salesforceId])
+  @@map("salesforce_objects")
+}
+
 model SalesforceContact {
   id           Int      @id @default(autoincrement())
   email        String   @db.VarChar(255)
