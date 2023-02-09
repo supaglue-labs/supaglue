@@ -44,7 +44,7 @@ sources={{
   }}
 />
 
-- **Config SDK** to define author [syncs](/concepts#developer-config) declaratively
+- **Config SDK** to define [syncs](/concepts#developer-config) declaratively
 - **CLI** to publish sync configuration changes
 - **API** to communicate an coordinate with your application, Salesforce, and Supaglue
 - **Workflow engine (Temporal)** to reliably execute [syncs](/concepts#sync)
@@ -53,16 +53,11 @@ sources={{
 
 ## Use cases
 
-:::info
+Supaglue can be used by B2B SaaS companies to provide customer-facing Salesforce integrations as part of their products.
 
-Supaglue's current feature set is limited to syncing Salesforce sObjects to your application.
-
-:::
-
-Supaglue can be used by marketing/sales automation and sales enablement tools that provide customer-facing Salesforce integrations as part of their products.
-
-- Sync Salesforce Contacts into your Postgres applications database, where your customers customize field mappings using a UI component
-- Consume Salesforce Opportunities records via a webhook, transform the payload, and call multiple backend systems before writing it to a data store
+- Sync Salesforce standard objects into your application's Postgres database, where your customers customize field mappings using a UI component
+- Sync your application objects in Postgres to your customer's Salesforce instance as standard objects
+- Consume Salesforce standard objects via a webhook, transform the payload, and call multiple backend systems before writing it to a data store
 
 ## Roadmap & Vision
 
