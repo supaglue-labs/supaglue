@@ -19,7 +19,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 20
+          fetch-depth: 0
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
@@ -35,10 +35,10 @@ jobs:
         run: yarn install
 
       - name: Lint
-        run: yarn lint "--filter=[main...HEAD]"
+        run: yarn lint "--filter=[origin/main...HEAD]"
 
       - name: Build
-        run: yarn build "--filter=[main...HEAD]"
+        run: yarn build "--filter=[origin/main...HEAD]"
 
       - name: Test
-        run: yarn test "--filter=[main...HEAD]"
+        run: yarn test "--filter=[origin/main...HEAD]"
