@@ -6,7 +6,7 @@ import { SupaglueProviderInternal } from '../../providers';
 import { SupaglueAppearance } from '../../types';
 import { styles } from './styles';
 
-type Elements = {
+export type SwitchElements = {
   switchOn?: string;
   switchOff?: string;
   switchThumb?: string;
@@ -14,7 +14,7 @@ type Elements = {
 
 export type SwitchProps = {
   appearance?: SupaglueAppearance & {
-    elements: Elements;
+    elements?: SwitchElements;
   };
   disabled?: boolean;
   toggled: boolean;

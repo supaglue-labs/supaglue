@@ -70,7 +70,7 @@ const FieldMappingInternal = ({ appearance, syncConfigName }: FieldMappingProps)
 
 type FieldCollectionProps = {
   appearance?: SupaglueAppearance & {
-    elements?: Elements;
+    elements?: FieldMappingElements;
   };
   syncConfig: SyncConfig;
   sync: {
@@ -174,7 +174,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
   );
 };
 
-type Elements = SelectElements & {
+export type FieldMappingElements = SelectElements & {
   fieldDropdownOption?: string;
   fieldMapperRow?: string;
   fieldName?: string;
@@ -186,7 +186,7 @@ type Elements = SelectElements & {
 
 export type FieldMappingProps = {
   appearance?: SupaglueAppearance & {
-    elements?: Elements;
+    elements?: FieldMappingElements;
   };
   syncConfigName: string;
 };
