@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/** @jsxImportSource @emotion/react */
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { triggerSync, useSalesforceIntegration } from '../../hooks/api';
@@ -6,6 +7,9 @@ import { Button } from '../../primitives/Button';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
+import styles from './styles';
+
+const TOAST_TIMEOUT_MS = 2000;
 
 export type TriggerSyncButtonProps = {
   syncConfigName: string;
@@ -15,15 +19,13 @@ export type TriggerSyncButtonProps = {
       button?: string;
     };
   };
-  onSuccess?: () => void;
-  onError?: () => void;
+  showToast?: boolean;
 };
 
 export const TriggerSyncButtonInternal = ({
   label,
   syncConfigName,
-  onSuccess,
-  onError,
+  showToast = true,
   appearance,
 }: TriggerSyncButtonProps) => {
   // TODO: Need a way to know if there's already a sync in process
@@ -38,29 +40,63 @@ export const TriggerSyncButtonInternal = ({
 
   const { trigger } = useSWRMutation(`${apiUrl}/syncs/${sync?.id}/_trigger`, triggerSync);
 
+  const [timeoutId, setTimeoutId] = useState<number | undefined>();
+  const [toastMessage, setToastMessage] = useState<string | undefined>();
+
+  const setToast = (message: string) => {
+    if (timeoutId) {
+      window.clearTimeout(timeoutId);
+    }
+    setToastMessage(message);
+    setTimeoutId(
+      window.setTimeout(() => {
+        setTimeoutId(undefined);
+      }, TOAST_TIMEOUT_MS)
+    );
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onClick = async () => {
     setSyncingInProgress(true);
 
     const result = await trigger();
 
     setSyncingInProgress(false);
-    if (result?.status === 200 && onSuccess) {
-      onSuccess();
+    if (!showToast) {
+      return;
     }
-    if (result?.status !== 200 && onError) {
-      onError();
+    if (result?.status === 200) {
+      setToast('Successfully started sync!');
+    }
+    if (result?.status !== 200) {
+      setToast('Error encountered.');
     }
   };
 
   return integrationConnected ? (
-    <Button
-      className="sg-triggerSyncButton"
-      appearance={appearance}
-      disabled={isLoadingSync || syncingInProgress}
-      onClick={onClick}
-    >
-      {syncingInProgress ? 'Syncing...' : label || 'Run sync now'}
-    </Button>
+    <div style={{ position: 'relative' }}>
+      <Button
+        className="sg-triggerSyncButton"
+        appearance={appearance}
+        disabled={isLoadingSync || syncingInProgress}
+        onClick={onClick}
+      >
+        {syncingInProgress ? 'Syncing...' : label || 'Run sync now'}
+      </Button>
+      {timeoutId && (
+        <span className="sg-triggerSyncButton-toast" css={styles.toast}>
+          {toastMessage}
+        </span>
+      )}
+    </div>
   ) : null;
 };
 

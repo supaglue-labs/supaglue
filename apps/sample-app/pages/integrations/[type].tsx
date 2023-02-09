@@ -2,7 +2,7 @@ import { FieldMapping, TriggerSyncButton, useSupaglueContext } from '@supaglue/n
 import { useDeveloperConfig, useSalesforceIntegration } from '@supaglue/nextjs/src/hooks/api';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { PageTabs } from '../../components/PageTabs';
 import { useActiveTab } from '../../hooks';
 // TUTORIAL: Uncomment this
@@ -61,30 +61,6 @@ const pageTabs = ['Contacts', 'Leads', 'Accounts', 'Opportunities'];
 const SyncConfiguration = () => {
   const syncConfigName = useActiveTab(pageTabs[0]);
 
-  const [timeoutId, setTimeoutId] = useState<number | undefined>();
-  const [toastMessage, setToastMessage] = useState<string | undefined>();
-
-  const showToast = (message: string) => {
-    if (timeoutId) {
-      window.clearTimeout(timeoutId);
-    }
-    setToastMessage(message);
-    setTimeoutId(
-      window.setTimeout(() => {
-        setTimeoutId(undefined);
-      }, 2000)
-    );
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutId) {
-        window.clearTimeout(timeoutId);
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getSwitch = (syncConfigName: string) => {
     // TUTORIAL: uncomment this
@@ -101,17 +77,8 @@ const SyncConfiguration = () => {
       <PageTabs className="" tabs={pageTabs} disabled={false} />
       <>
         <div className="flex flex-col gap-4">
-          <div className="relative pt-3 px-3">
-            <TriggerSyncButton
-              syncConfigName={syncConfigName}
-              onSuccess={() => showToast('Successfully started sync!')}
-              onError={() => showToast('Error encountered.')}
-            />
-            {timeoutId && (
-              <span className="absolute z-10 top-0 left-36 mt-5 block rounded bg-gray-600 py-1 px-2 text-xs text-white">
-                {toastMessage}
-              </span>
-            )}
+          <div className="pt-3 px-3">
+            <TriggerSyncButton syncConfigName={syncConfigName} />
           </div>
 
           <div>{getSwitch(syncConfigName)}</div>
