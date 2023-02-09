@@ -11,7 +11,10 @@ const router: Router = Router({ mergeParams: true });
 router.get(
   '/',
   posthogMiddleware('Get Fields'),
-  async (req: Request<never, any, never, { customerId: string; syncConfigName: string }>, res: Response<string[]>) => {
+  async (
+    req: Request<never, any, never, { customerId: string; syncConfigName: string }>,
+    res: Response<{ label: string; name: string }[]>
+  ) => {
     const { customerId, syncConfigName } = req.query;
     const developerConfig = await developerConfigService.getDeveloperConfig();
     const { salesforceObject } = developerConfig.getSyncConfig(syncConfigName);
@@ -25,7 +28,8 @@ router.get(
     const connection = new jsforce.Connection({ oauth2, instanceUrl, refreshToken });
     const result = await connection.sobject(salesforceObject).describe$();
 
-    const fields = result.fields.map((field) => field.name);
+    const fields = result.fields.map((field) => ({ label: field.label, name: field.name }));
+
     fields.sort();
 
     return res.status(200).send(fields);
