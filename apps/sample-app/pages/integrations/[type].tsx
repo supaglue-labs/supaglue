@@ -77,7 +77,7 @@ const SyncConfiguration = () => {
       <PageTabs className="" tabs={pageTabs} disabled={false} />
       <>
         <div className="flex flex-col gap-4">
-          <div className="relative pt-3 px-3">
+          <div className="pt-3 px-3">
             <TriggerSyncButton syncConfigName={syncConfigName} />
           </div>
 
