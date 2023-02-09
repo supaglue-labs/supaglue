@@ -39,7 +39,7 @@ type DeveloperConfigSpec = {
 
 type SyncConfig = {
   name: string;
-  salesforceObject: 'Contact' | 'Lead' | 'Account' | 'Opportunity';
+  salesforceObject: 'Contact' | 'Lead' | 'Account' | 'Opportunity' | ...;
   cronExpression: string;
   destination: Destination;
   strategy: 'full_refresh';
@@ -59,7 +59,7 @@ See the [Config SDK](/config_sdk) for a reference and [example](/config_sdk#exam
 
 A Sync Config is a Typescript object that declaratively defines the behavior of one [Sync](#sync). One Sync Config defines the following:
 
-1. The object type to sync from Salesforce (Contact/Lead/Account/Opportunity)
+1. The standard object type to sync from Salesforce
 2. How often it should sync
 3. Where it should deliver the records (Webhook or Postgres)
 4. How field mappings between Salesforce and the developer's application should work (i.e. which fields are exposed, how they are displayed, and their default field mappings)
