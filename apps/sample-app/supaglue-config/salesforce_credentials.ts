@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config({ path: `${__dirname}/../.env` });
 
-const credentials = sdk.salesforce.salesforceCredentials({
+const credentials = sdk.customer.common.salesforce.credentials({
   loginUrl: process.env.SALESFORCE_URL ?? '',
   clientId: process.env.SALESFORCE_KEY ?? '',
   clientSecret: process.env.SALESFORCE_SECRET ?? '',

@@ -1,4 +1,4 @@
-import { PostgresInternalIntegration } from '../internalIntegrations';
+import { PostgresInternalIntegration } from '../base';
 
 export type PostgresDestination = PostgresInternalIntegration & {
   config: {

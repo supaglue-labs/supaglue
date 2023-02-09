@@ -1,5 +1,5 @@
-import { RetryPolicy } from '../retry_policy';
-import { Schema } from '../schema';
+import { RetryPolicy } from '../../retry_policy';
+import { Schema } from '../../schema';
 
 export type BaseInternalIntegration = {
   schema: Schema;

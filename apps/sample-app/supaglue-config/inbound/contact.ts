@@ -27,11 +27,13 @@ const contactSchema = sdk.schema({
   ],
 });
 
-const contactSyncConfig = sdk.salesforce.inboundSyncConfig({
+const contactSyncConfig = sdk.syncConfigs.inbound({
   name: 'Contacts',
-  salesforceObject: 'Contact',
+  source: sdk.customer.sources.salesforce({
+    objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Contact'),
+  }),
   cronExpression: '*/15 * * * *',
-  destination: sdk.destinations.postgres({
+  destination: sdk.internal.destinations.postgres({
     schema: contactSchema,
     config: {
       credentials,

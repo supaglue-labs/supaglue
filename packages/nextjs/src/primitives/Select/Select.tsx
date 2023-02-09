@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as RadixSelect from '@radix-ui/react-select';
-import { default as classNames, default as classnames } from 'classnames';
-import React from 'react';
+import classnames from 'classnames';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
 
@@ -13,12 +12,13 @@ export type SelectElements = {
   selectLoading?: string;
 };
 
+export type SelectOption = { disabled?: boolean; label?: string; name: string };
+
 export type SelectProps = {
-  className?: string;
   disabled?: boolean;
   label: string;
   onValueChange: (value: string) => Promise<void>;
-  options: string[];
+  options: SelectOption[];
   value: string;
   isLoading?: boolean;
   appearance?: SupaglueAppearance & {
@@ -26,7 +26,7 @@ export type SelectProps = {
   };
 };
 
-const Select = ({ className, appearance, label, options, value, isLoading, disabled, ...props }: SelectProps) => (
+const Select = ({ appearance, label, options, value, isLoading, disabled, ...props }: SelectProps) => (
   <RadixSelect.Root {...props} value={value} disabled={disabled || isLoading}>
     <RadixSelect.Trigger
       css={styles.selectTrigger}
@@ -38,13 +38,13 @@ const Select = ({ className, appearance, label, options, value, isLoading, disab
       aria-label={label}
     >
       {isLoading ? (
-        <p css={styles.selectLoading} className={classNames('sg-selectLoading', appearance?.elements?.selectLoading)}>
+        <p css={styles.selectLoading} className={classnames('sg-selectLoading', appearance?.elements?.selectLoading)}>
           Loading...
         </p>
       ) : (
         <>
           <RadixSelect.Value asChild>
-            <span>{value}</span>
+            <span>{options.find((option) => option.name === value)?.label || value}</span>
           </RadixSelect.Value>
           <RadixSelect.Icon>
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,20 +62,18 @@ const Select = ({ className, appearance, label, options, value, isLoading, disab
     <RadixSelect.Portal>
       <RadixSelect.Content
         css={styles.selectContent}
-        className={classNames('sg-selectContent', appearance?.elements?.selectContent)}
+        className={classnames('sg-selectContent', appearance?.elements?.selectContent)}
       >
         <RadixSelect.Viewport
           css={styles.selectViewport}
-          className={classNames('sg-selectViewport', appearance?.elements?.selectViewport)}
+          className={classnames('sg-selectViewport', appearance?.elements?.selectViewport)}
         >
           {options.map((option, idx) => (
             <RadixSelectItem
+              className={classnames('sg-selectItem', appearance?.elements?.selectItem)}
               key={idx}
-              value={option}
-              className={classNames('sg-selectItem', appearance?.elements?.selectItem)}
-            >
-              {option}
-            </RadixSelectItem>
+              {...option}
+            />
           ))}
         </RadixSelect.Viewport>
       </RadixSelect.Content>
@@ -87,12 +85,10 @@ Select.displayName = 'Select';
 
 export { Select };
 
-const RadixSelectItem = React.forwardRef(({ children, className, ...props }: any, forwardedRef) => {
-  return (
-    <RadixSelect.Item css={styles.selectItem} className={className} {...props} ref={forwardedRef}>
-      <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
-    </RadixSelect.Item>
-  );
-});
+const RadixSelectItem = ({ disabled, name, label }: SelectOption & { className?: string }) => (
+  <RadixSelect.Item css={styles.selectItem} disabled={disabled} value={name}>
+    <RadixSelect.ItemText>{label || name}</RadixSelect.ItemText>
+  </RadixSelect.Item>
+);
 
 RadixSelectItem.displayName = 'RadixSelectItem';

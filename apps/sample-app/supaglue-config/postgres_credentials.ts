@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config({ path: `${__dirname}/../.env` });
 
-const credentials = sdk.internalIntegrations.postgresCredentials({
+const credentials = sdk.internal.common.postgres.credentials({
   host: 'postgres',
   port: 5432,
   database: 'sample_app',

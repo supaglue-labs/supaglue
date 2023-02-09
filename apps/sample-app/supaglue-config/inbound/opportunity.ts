@@ -31,11 +31,13 @@ const opportunityMapping = sdk.defaultFieldMapping([
   { name: 'stage', field: 'StageName' },
 ]);
 
-const opportunitySyncConfig = sdk.salesforce.inboundSyncConfig({
+const opportunitySyncConfig = sdk.syncConfigs.inbound({
   name: 'Opportunities',
-  salesforceObject: 'Opportunity',
+  source: sdk.customer.sources.salesforce({
+    objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Opportunity'),
+  }),
   cronExpression: '*/15 * * * *',
-  destination: sdk.destinations.webhook({
+  destination: sdk.internal.destinations.webhook({
     schema: opportunitiesSchema,
     config: {
       url: 'http://host.docker.internal:3000/api/_sync',
