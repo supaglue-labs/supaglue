@@ -16,6 +16,11 @@ type Field = {
   value: string;
 };
 
+type SalesforceField = {
+  name: string;
+  label: string;
+};
+
 type FieldMapping = Record<string, string>;
 
 const EmptyContent = ({ className, children }: { className?: string; children: ReactNode }) => {
@@ -142,34 +147,31 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
         </div>
       </div>
 
-      {syncConfig.destination.schema.fields.map(({ name }, idx) => {
-        const label =
-          syncConfig.destination.schema.fields.find(({ name: fieldName }) => fieldName === name)?.label ?? name;
+      {syncConfig.destination.schema.fields.map(({ label, name }, idx) => (
+        <div
+          key={idx}
+          css={styles.fieldWrapper}
+          className={classNames(appearance?.elements?.fieldWrapper, 'sg-fieldWrapper')}
+        >
+          <p css={styles.fieldName} className={classNames('sg-fieldName', appearance?.elements?.fieldName)}>
+            {label ?? name}
+          </p>
 
-        return (
-          <div
-            key={idx}
-            css={styles.fieldWrapper}
-            className={classNames('sg-fieldWrapper', appearance?.elements?.fieldWrapper)}
-          >
-            <p css={styles.fieldName} className={classNames('sg-fieldName', appearance?.elements?.fieldName)}>
-              {label}
-            </p>
-            <Select
-              className="sg-fieldDropdown"
-              appearance={appearance}
-              disabled={!!upsertKey && name === upsertKey}
-              label="Salesforce field name"
-              onValueChange={async (value: string) => {
-                await onUpdateField({ name, value });
-              }}
-              options={fields ?? []}
-              value={fieldMapping[name]}
-              isLoading={isLoadingFields}
-            />
-          </div>
-        );
-      })}
+          <Select
+            appearance={appearance}
+            disabled={!!upsertKey && name === upsertKey}
+            label="Salesforce field name"
+            onValueChange={async (value: string) => {
+              await onUpdateField({ name, value });
+            }}
+            options={
+              fields ? fields.sort((a: SalesforceField, b: SalesforceField) => a.label.localeCompare(b.label)) : []
+            }
+            value={fieldMapping[name]}
+            isLoading={isLoadingFields}
+          />
+        </div>
+      ))}
     </form>
   );
 };
