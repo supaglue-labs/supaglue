@@ -1,4 +1,5 @@
 import * as sdk from '@supaglue/sdk';
+import { contactMapping } from '../common/contact';
 import credentials from '../postgres_credentials';
 
 const contactSchema = sdk.schema({
@@ -25,14 +26,6 @@ const contactSchema = sdk.schema({
     // },
   ],
 });
-
-const contactMapping = sdk.defaultFieldMapping([
-  { name: 'salesforce_id', field: 'Id' },
-  { name: 'email', field: 'Email' },
-  { name: 'first_name', field: 'FirstName' },
-  { name: 'last_name', field: 'LastName' },
-  { name: 'title', field: 'Title' },
-]);
 
 const contactSyncConfig = sdk.salesforce.inboundSyncConfig({
   name: 'Contacts',
