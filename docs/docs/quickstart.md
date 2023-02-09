@@ -93,7 +93,7 @@ In this step, we will deploy Supaglue configuration to enable customers (i.e. `u
 
    <BrowserWindow url="http://localhost:3000/integrations/salesforce">
 
-   ![salesforce_config](/img/quickstart/app_salesforce_config.png 'salesforce config sample app')
+   ![salesforce_config](/img/quickstart/app_sync_config_card.png 'salesforce config sample app')
    </BrowserWindow>
 
 ## Run a Salesforce sync
