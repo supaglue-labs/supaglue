@@ -1,5 +1,5 @@
-import { _createVariants } from '../../../style/internal/createVariants';
-import { DANGER, PRIMARY, SgTheme } from '../../../style/types/theme';
+import { _createVariants } from '../../style/internal/createVariants';
+import { DANGER, PRIMARY, SgTheme } from '../../style/types/theme';
 
 export type ButtonVariantParams = {
   colorScheme: typeof PRIMARY | typeof DANGER;

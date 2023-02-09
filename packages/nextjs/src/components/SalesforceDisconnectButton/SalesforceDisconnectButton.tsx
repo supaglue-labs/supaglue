@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import axios from 'axios';
-import classNames from 'classnames';
 import { HTMLAttributes, useState } from 'react';
 import useSWRMutation from 'swr/mutation';
+import { Button } from '../../primitives/Button';
 import { SupaglueProviderInternal, useSupaglueContext } from '../../providers';
 import { DANGER } from '../../style/types/theme';
 import { SupaglueAppearance } from '../../types';
-import { Button } from '../primitives/Button';
 
 async function deleteIntegration(url: string) {
   try {
@@ -52,7 +51,8 @@ const SalesforceDisconnectButtonInternal = (props: SalesforceDisconnectButtonPro
   return (
     <Button
       variantParams={{ colorScheme: DANGER }}
-      className={classNames('sg-salesforceDisconnectButton', props.appearance?.elements?.button)}
+      className="sg-salesforceDisconnectButton"
+      appearance={props.appearance}
       disabled={isDisconnecting}
       onClick={onClick}
     >

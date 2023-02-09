@@ -100,7 +100,7 @@ A button that allows your customers to manually trigger a sync from Salesforce t
 
 Props: [link](https://github.com/supaglue-labs/supaglue/blob/main/packages/nextjs/src/components/TriggerSyncButton/TriggerSyncButton.tsx#L11)
 
-#### `<Switch>`
+#### `<SyncSwitch>`
 
 A switch used to turn on/off syncs from Salesforce to your application.
 
@@ -109,7 +109,7 @@ A switch used to turn on/off syncs from Salesforce to your application.
 Example:
 
 ```jsx
-<Switch includeSyncDescription syncConfigName="contact_sync" />
+<SyncSwitch includeSyncDescription syncConfigName="Contacts" />
 ```
 
 Props: [link](https://github.com/supaglue-labs/supaglue/blob/main/packages/nextjs/src/components/Switch/Switch.tsx#L19)

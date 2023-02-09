@@ -5,10 +5,10 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
 import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
+import { Select, SelectElements } from '../../primitives';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import { Select } from '../primitives';
 import styles from './styles';
 
 type Field = {
@@ -126,17 +126,17 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   return (
     // TODO: write form primitives
-    <form css={styles.form} className={classNames(appearance?.elements?.form, 'sg-form')}>
-      <div css={styles.formHeaderRow} className={classNames(appearance?.elements?.formHeaderRow, 'sg-formHeaderRow')}>
+    <form css={styles.form} className={classNames('sg-form', appearance?.elements?.form)}>
+      <div css={styles.formHeaderRow} className={classNames('sg-formHeaderRow', appearance?.elements?.formHeaderRow)}>
         <div
           css={styles.formColumnHeader}
-          className={classNames(appearance?.elements?.formColumnHeader, 'sg-formColumnHeader')}
+          className={classNames('sg-formColumnHeader', appearance?.elements?.formColumnHeader)}
         >
           Application fields
         </div>
         <div
           css={styles.formColumnHeader}
-          className={classNames(appearance?.elements?.formColumnHeader, 'sg-formColumnHeader')}
+          className={classNames('sg-formColumnHeader', appearance?.elements?.formColumnHeader)}
         >
           Salesforce fields
         </div>
@@ -150,13 +150,14 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
           <div
             key={idx}
             css={styles.fieldWrapper}
-            className={classNames(appearance?.elements?.fieldWrapper, 'sg-fieldWrapper')}
+            className={classNames('sg-fieldWrapper', appearance?.elements?.fieldWrapper)}
           >
-            <p css={styles.fieldName} className={classNames(appearance?.elements?.fieldName, 'sg-fieldName')}>
+            <p css={styles.fieldName} className={classNames('sg-fieldName', appearance?.elements?.fieldName)}>
               {label}
             </p>
             <Select
-              className={classNames(appearance?.elements?.fieldDropdown, 'sg-fieldDropdown')}
+              className="sg-fieldDropdown"
+              appearance={appearance}
               disabled={!!upsertKey && name === upsertKey}
               label="Salesforce field name"
               onValueChange={async (value: string) => {
@@ -173,8 +174,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
   );
 };
 
-type Elements = {
-  fieldDropdown?: string;
+type Elements = SelectElements & {
   fieldDropdownOption?: string;
   fieldMapperRow?: string;
   fieldName?: string;

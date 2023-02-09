@@ -1,12 +1,11 @@
-import classNames from 'classnames';
 import { useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { triggerSync, useSalesforceIntegration } from '../../hooks/api';
+import { Button } from '../../primitives/Button';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import { Button } from '../primitives/Button';
 
 export type TriggerSyncButtonProps = {
   syncConfigName: string;
@@ -55,7 +54,8 @@ export const TriggerSyncButtonInternal = ({
 
   return integrationConnected ? (
     <Button
-      className={classNames('sg-triggerSyncButton', appearance?.elements?.button)}
+      className="sg-triggerSyncButton"
+      appearance={appearance}
       disabled={isLoadingSync || syncingInProgress}
       onClick={onClick}
     >
