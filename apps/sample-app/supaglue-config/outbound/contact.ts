@@ -30,7 +30,7 @@ const contactSchema = sdk.schema({
 const contactSyncConfig = sdk.syncConfigs.outbound({
   name: 'ContactsOutbound',
   destination: sdk.customer.destinations.salesforce({
-    objectConfig: sdk.customer.specifiedSalesforceObjectConfig('Contact'),
+    objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Contact'),
     upsertKey: 'salesforce_id',
   }),
   cronExpression: '*/15 * * * *',

@@ -34,7 +34,7 @@ const opportunityMapping = sdk.defaultFieldMapping([
 const opportunitySyncConfig = sdk.syncConfigs.inbound({
   name: 'Opportunities',
   source: sdk.customer.sources.salesforce({
-    objectConfig: sdk.customer.specifiedSalesforceObjectConfig('Opportunity'),
+    objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Opportunity'),
   }),
   cronExpression: '*/15 * * * *',
   destination: sdk.internal.destinations.webhook({

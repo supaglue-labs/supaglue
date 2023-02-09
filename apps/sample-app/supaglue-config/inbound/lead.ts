@@ -32,7 +32,7 @@ const leadMapping = sdk.defaultFieldMapping([
 const leadSyncConfig = sdk.syncConfigs.inbound({
   name: 'Leads',
   source: sdk.customer.sources.salesforce({
-    objectConfig: sdk.customer.specifiedSalesforceObjectConfig('Lead'),
+    objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Lead'),
   }),
   cronExpression: '*/15 * * * *',
   destination: sdk.internal.destinations.postgres({

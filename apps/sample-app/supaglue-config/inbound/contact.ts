@@ -30,7 +30,7 @@ const contactSchema = sdk.schema({
 const contactSyncConfig = sdk.syncConfigs.inbound({
   name: 'Contacts',
   source: sdk.customer.sources.salesforce({
-    objectConfig: sdk.customer.specifiedSalesforceObjectConfig('Contact'),
+    objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Contact'),
   }),
   cronExpression: '*/15 * * * *',
   destination: sdk.internal.destinations.postgres({

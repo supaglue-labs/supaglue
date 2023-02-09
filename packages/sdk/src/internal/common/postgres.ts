@@ -6,6 +6,6 @@ export type PostgresCredentials = {
   password: string;
 };
 
-export function postgresCredentials(params: PostgresCredentials): PostgresCredentials {
+export function credentials(params: PostgresCredentials): PostgresCredentials {
   return params;
 }

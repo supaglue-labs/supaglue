@@ -1,4 +1,4 @@
-import { PostgresCredentials } from '../common';
+import { PostgresCredentials } from '../common/postgres';
 import { BaseInternalIntegration } from './base';
 
 export type PostgresInternalIntegration = BaseInternalIntegration & {

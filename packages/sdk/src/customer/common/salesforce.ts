@@ -12,14 +12,14 @@ type SelectableSalesforceObjectConfig = {
 
 export type SalesforceObjectConfig = SpecifiedSalesforceObjectConfig | SelectableSalesforceObjectConfig;
 
-export function specifiedSalesforceObjectConfig(object: SalesforceObject): SpecifiedSalesforceObjectConfig {
+export function specifiedObjectConfig(object: SalesforceObject): SpecifiedSalesforceObjectConfig {
   return {
     type: 'specified',
     object,
   };
 }
 
-export function selectableSalesforceObjectConfig(objectChoices: SalesforceObject[]): SelectableSalesforceObjectConfig {
+export function selectableObjectConfig(objectChoices: SalesforceObject[]): SelectableSalesforceObjectConfig {
   return {
     type: 'selectable',
     objectChoices,
@@ -32,6 +32,6 @@ export type SalesforceCredentials = {
   clientSecret: string;
 };
 
-export function salesforceCredentials(params: SalesforceCredentials) {
+export function credentials(params: SalesforceCredentials) {
   return params;
 }
