@@ -1,4 +1,4 @@
-import { SalesforceCredentials } from './customer';
+import { SalesforceCredentials } from './customer/common/salesforce';
 import { SyncConfig } from './sync_config';
 
 export type DeveloperConfigParams = {

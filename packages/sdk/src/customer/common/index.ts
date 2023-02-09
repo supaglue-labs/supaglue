@@ -1,1 +1,1 @@
-export * from './salesforce';
+export * as salesforce from './salesforce';

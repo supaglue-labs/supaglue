@@ -1,4 +1,4 @@
-import { SalesforceObjectConfig } from '../common';
+import { SalesforceObjectConfig } from '../common/salesforce';
 import { BaseCustomerIntegration } from './base';
 
 export type SalesforceCustomerIntegration = BaseCustomerIntegration & {
