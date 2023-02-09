@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import useSWR from 'swr';
 import {
   FieldMapping,
@@ -12,6 +13,7 @@ import { DeveloperConfig } from '../../lib';
 import { Card, CardElements, EmptyContent } from '../../primitives';
 import { SupaglueProviderInternal, useSupaglueContext } from '../../providers';
 import { SupaglueAppearance } from '../../types';
+import styles from './styles';
 
 export type SupaglueConfigCardProps = {
   syncConfigName: string;
@@ -54,7 +56,7 @@ const SyncConfigCardInternal = ({ syncConfigName, appearance }: SupaglueConfigCa
   }
 
   return (
-    <Card appearance={appearance}>
+    <Card css={styles.card} appearance={appearance}>
       <TriggerSyncButton syncConfigName={syncConfigName} appearance={appearance} />
       <SyncSwitch includeSyncDescription syncConfigName={syncConfigName} appearance={appearance} />
       <FieldMapping syncConfigName={syncConfigName} appearance={appearance} />
