@@ -83,7 +83,7 @@ export const handler = async ({
       logger.log(
         JSON.stringify({
           timestamp: log.startTimestamp,
-          syncName: log.sync.syncConfigName,
+          syncConfigName: log.sync.syncConfigName,
           customerId: log.sync.customerId,
           status: log.result.status,
           errorMessage: log.result.errorMessage,
