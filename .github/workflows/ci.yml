@@ -35,10 +35,10 @@ jobs:
         run: yarn install
 
       - name: Lint
-        run: yarn lint
+        run: yarn lint "--filter=[main...HEAD]"
 
       - name: Build
-        run: yarn build
+        run: yarn build "--filter=[main...HEAD]"
 
       - name: Test
-        run: yarn test
+        run: yarn test "--filter=[main...HEAD]"
