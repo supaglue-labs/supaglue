@@ -242,11 +242,14 @@ type SalesforceObject =
   | 'WorkTypeGroup'
   | 'WorkTypeGroupMember';
 
+// Developer specifies the Salesforce sObject
 type SpecifiedSalesforceObjectConfig = {
   type: 'specified';
   object: SalesforceObject;
 };
 
+// Developer expects the customer to choose from a list of
+// Salesforce sObject choices.
 type SelectableSalesforceObjectConfig = {
   type: 'selectable';
   objectChoices: SalesforceObject[];
