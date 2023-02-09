@@ -32,14 +32,19 @@ model DeveloperConfig {
 }
 
 model Sync {
-  id                                String    @id @default(uuid())
-  customerId                        String    @map("customer_id")
-  type                              String
-  enabled                           Boolean
-  syncConfigName                    String    @map("sync_config_name")
-  fieldMapping                      Json?     @map("field_mapping")
-  salesforceAPIUsageLimitPercentage Int?      @map("salesforce_api_usage_limit_percentage")
-  SyncRun                           SyncRun[]
+  id             String    @id @default(uuid())
+  customerId     String    @map("customer_id")
+  type           String
+  enabled        Boolean
+  syncConfigName String    @map("sync_config_name")
+  fieldMapping   Json?     @map("field_mapping")
+  // TODO: We might want to consider storing source/destination/etc.
+  // fields in a single JSONB column down the road instead for simplicity,
+  // since we're unlikely to index by these anyway. Also, these properties
+  // might diverge a lot for type=inbound vs type=outbound down the line.
+  source         Json?     @map("source")
+  destination    Json?     @map("destination")
+  SyncRun        SyncRun[]
 
   @@unique([customerId, syncConfigName])
   @@map("syncs")

@@ -256,20 +256,20 @@ export type SalesforceObjectConfig = SpecifiedSalesforceObjectConfig | Selectabl
 
 type BaseCustomerIntegration = object;
 
-type SalesforceCustomerIntegration = BaseCustomerIntegration & {
+export type SalesforceCustomerIntegration = BaseCustomerIntegration & {
   type: 'salesforce';
   objectConfig: SalesforceObjectConfig;
 };
 
-type SalesforceSource = SalesforceCustomerIntegration;
+export type SalesforceSource = SalesforceCustomerIntegration;
 
-type CustomerSource = SalesforceSource;
+export type CustomerSource = SalesforceSource;
 
-type SalesforceDestination = SalesforceCustomerIntegration & {
+export type SalesforceDestination = SalesforceCustomerIntegration & {
   upsertKey: string; // ext_id
 };
 
-type CustomerDestination = SalesforceDestination;
+export type CustomerDestination = SalesforceDestination;
 
 type BaseSyncConfig = {
   name: string; // unique (e.g. ContactSync, LeadSync, AccountSync)
@@ -292,7 +292,6 @@ export type InboundSyncConfig = BaseSyncConfig & {
 
 export type OutboundSyncConfig = BaseSyncConfig & {
   type: 'outbound';
-
   source: InternalSource;
   destination: CustomerDestination;
 };

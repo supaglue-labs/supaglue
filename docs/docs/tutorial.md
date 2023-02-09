@@ -72,7 +72,7 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
    const accountSyncConfig = sdk.syncConfigs.inbound({
      name: 'Accounts',
      source: sdk.customer.sources.salesforce({
-       objectConfig: sdk.customer.specifiedSalesforceObjectConfig('Account'),
+       objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Account'),
      }),
      cronExpression: '*/15 * * * *',
      destination: sdk.internal.destinations.postgres({
