@@ -5,6 +5,7 @@ import {
   OutboundSyncConfig,
   PostgresDestination,
   PostgresSource,
+  SalesforceCustomerIntegration,
   SyncConfig,
   WebhookDestination,
 } from '../../developer_config/entities';
@@ -55,7 +56,7 @@ async function doInboundSync(
   const fieldMapping = getMapping(sync, syncConfig);
 
   // Fetch external records
-  const records = await readRecordsFromCustomerIntegration(sg, syncConfig, fieldMapping);
+  const records = await readRecordsFromCustomerIntegration(sg, syncConfig, sync, fieldMapping);
 
   // Write the internal records
   await writeRecordsToInternalIntegration(sg, { sync, syncConfig, fieldMapping, records, syncRunId });
@@ -95,18 +96,17 @@ function getMapping({ fieldMapping }: Sync, syncConfig: SyncConfig): Record<stri
 async function readRecordsFromCustomerIntegration(
   sg: Supaglue,
   syncConfig: InboundSyncConfig,
+  sync: InboundSync,
   mapping: Record<string, string>
 ): Promise<Record<string, string>[]> {
   // Read from source
   const salesforceFields = [...Object.values(mapping), 'SystemModstamp']; // TODO: Do not fetch SystemModstamp twice if already in mapping.
   const salesforceFieldsString = salesforceFields.join(', ');
 
-  if (syncConfig.source.objectConfig.type !== 'specified') {
-    throw new Error('Only specified salesforce object config type supported currently');
-  }
+  const salesforceObject = getSalesforceObject(syncConfig.source, sync);
 
   // Fetching in ASC order for incremental sync in the future.
-  const soql = `SELECT ${salesforceFieldsString} FROM ${syncConfig.source.objectConfig.object} ORDER BY SystemModstamp ASC`;
+  const soql = `SELECT ${salesforceFieldsString} FROM ${salesforceObject} ORDER BY SystemModstamp ASC`;
 
   return await sg.customerIntegrations.salesforce.query(soql);
 }
@@ -313,14 +313,21 @@ async function writeRecordsToCustomerIntegration(
   // Apply mapping to upsert key
   const salesforceUpsertKey = fieldMapping[syncConfig.destination.upsertKey];
 
-  // TODO:
-  if (syncConfig.destination.objectConfig.type !== 'specified') {
-    throw new Error('Only specified salesforce object config type supported currently');
-  }
+  const salesforceObject = getSalesforceObject(syncConfig.destination, sync);
 
-  await sg.customerIntegrations.salesforce.upsert(
-    syncConfig.destination.objectConfig.object,
-    salesforceUpsertKey,
-    customerRecords
-  );
+  await sg.customerIntegrations.salesforce.upsert(salesforceObject, salesforceUpsertKey, customerRecords);
+}
+
+// TODO: This should be generalized. Pending discussion on types / SDK.
+function getSalesforceObject(salesforce: SalesforceCustomerIntegration, sync: Sync): string {
+  switch (salesforce.objectConfig.type) {
+    case 'specified':
+      return salesforce.objectConfig.object;
+    case 'selectable':
+      if (!sync.salesforceObject) {
+        // TODO: Make this more generalizable
+        throw new Error('Salesforce object requested by SyncConfig but not provided by Sync');
+      }
+      return sync.salesforceObject;
+  }
 }

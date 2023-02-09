@@ -37,6 +37,9 @@ export class SalesforceCustomerIntegration extends BaseCustomerIntegration {
   public async upsert(salesforceObject: string, upsertKey: string, records: Record<string, unknown>[]): Promise<void> {
     await this.#connect();
 
+    // TODO: Need to check the response. Resolved Promise doesn't necessarily mean that
+    // records were successfully uploaded. Need to parse the response for errors
+    // record-by-record.
     await this.#connection().bulk2.loadAndWaitForResults({
       object: salesforceObject,
       operation: 'upsert',
