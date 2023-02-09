@@ -4,4 +4,4 @@ import { WebhookDestination } from './webhook';
 export * from './postgres';
 export * from './webhook';
 
-export type Destination = PostgresDestination | WebhookDestination;
+export type InternalDestination = PostgresDestination | WebhookDestination;

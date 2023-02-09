@@ -17,7 +17,20 @@ router.get(
   ) => {
     const { customerId, syncConfigName } = req.query;
     const developerConfig = await developerConfigService.getDeveloperConfig();
-    const { salesforceObject } = developerConfig.getSyncConfig(syncConfigName);
+    const syncConfig = developerConfig.getSyncConfig(syncConfigName);
+
+    // TODO: Support grabbing fields for other syncs
+
+    if (syncConfig.type !== 'inbound') {
+      throw new Error('Fields only supported for inbound syncs for now');
+    }
+
+    if (syncConfig.source.objectConfig.type !== 'specified') {
+      throw new Error('Fields only supported for salesforce specified object for now');
+    }
+
+    const salesforceObject = syncConfig.source.objectConfig.object;
+
     const integration = await integrationService.getByCustomerIdAndType(customerId, SALESFORCE, true);
 
     const oauth2 = new jsforce.OAuth2({

@@ -2,4 +2,4 @@ import { PostgresSource } from './postgres';
 
 export * from './postgres';
 
-export type Source = PostgresSource;
+export type InternalSource = PostgresSource;

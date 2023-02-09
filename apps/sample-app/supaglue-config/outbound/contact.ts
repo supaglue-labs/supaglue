@@ -27,11 +27,14 @@ const contactSchema = sdk.schema({
   ],
 });
 
-const contactSyncConfig = sdk.salesforce.outboundSyncConfig({
+const contactSyncConfig = sdk.syncConfigs.outbound({
   name: 'ContactsOutbound',
-  salesforceObject: 'Contact',
+  destination: sdk.customer.destinations.salesforce({
+    objectConfig: sdk.customer.specifiedSalesforceObjectConfig('Contact'),
+    upsertKey: 'salesforce_id',
+  }),
   cronExpression: '*/15 * * * *',
-  source: sdk.sources.postgres({
+  source: sdk.internal.sources.postgres({
     schema: contactSchema,
     config: {
       credentials,
@@ -44,7 +47,6 @@ const contactSyncConfig = sdk.salesforce.outboundSyncConfig({
   }),
   strategy: 'full_refresh',
   defaultFieldMapping: contactMapping,
-  salesforceUpsertKey: 'salesforce_id', // TODO
 });
 
 export default contactSyncConfig;

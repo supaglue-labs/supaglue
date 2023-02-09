@@ -45,11 +45,11 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 
 :::
 
-1. Create `account.ts` inside the `apps/sample-app/supaglue-config` directory. Paste in the following:
+1. Create `account.ts` inside the `apps/sample-app/supaglue-config/inbound` directory. Paste in the following:
 
    ```tsx title='apps/sample-app/supaglue-config/account.ts'
    import * as sdk from '@supaglue/sdk';
-   import credentials from './postgres_credentials';
+   import credentials from '../postgres_credentials';
 
    const accountsSchema = sdk.schema({
      fields: [
@@ -64,19 +64,18 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
      ],
    });
 
-   const defaultFieldMapping = sdk.defaultFieldMapping(
-     [
-       { name: 'salesforce_id', field: 'Id' },
-       { name: 'name', field: 'Name' },
-     ],
-     'salesforce'
-   );
+   const defaultFieldMapping = sdk.defaultFieldMapping([
+     { name: 'salesforce_id', field: 'Id' },
+     { name: 'name', field: 'Name' },
+   ]);
 
-   const accountSyncConfig = sdk.salesforce.inboundSyncConfig({
+   const accountSyncConfig = sdk.syncConfigs.inbound({
      name: 'Accounts',
-     salesforceObject: 'Account',
+     source: sdk.customer.sources.salesforce({
+       objectConfig: sdk.customer.specifiedSalesforceObjectConfig('Account'),
+     }),
      cronExpression: '*/15 * * * *',
-     destination: sdk.destinations.postgres({
+     destination: sdk.internal.destinations.postgres({
        schema: accountsSchema,
        config: {
          credentials,
@@ -92,7 +91,7 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
    export default accountSyncConfig;
    ```
 
-   The `syncConfig` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
+   The `inbound` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
 
    The schema object exposes the specified Salesforce Account fields to your customers and lets them map them to fields in the sample app's Postgres database.
 

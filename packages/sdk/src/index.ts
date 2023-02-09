@@ -1,14 +1,13 @@
-import { developerConfig, DeveloperConfigParams } from './salesforce';
+import { developerConfig, DeveloperConfigParams as DeveloperConfig } from './developer_config';
 
-export * from './defaultFieldMapping';
-export * as destinations from './destinations';
-export * as internalIntegrations from './internalIntegrations';
+export * as customer from './customer';
+export * from './field_mapping';
+export * as internal from './internal';
 export * from './retry_policy';
-export * as salesforce from './salesforce';
 export * from './schema';
-export * as sources from './sources';
+export * as syncConfigs from './sync_config';
 
-export function config(params: DeveloperConfigParams) {
+export function config(params: DeveloperConfig) {
   // eslint-disable-next-line no-console
   return console.log(JSON.stringify(developerConfig(params)));
 }

@@ -29,11 +29,13 @@ const leadMapping = sdk.defaultFieldMapping([
   { name: 'last_name', field: 'LastName' },
 ]);
 
-const leadSyncConfig = sdk.salesforce.inboundSyncConfig({
+const leadSyncConfig = sdk.syncConfigs.inbound({
   name: 'Leads',
-  salesforceObject: 'Lead',
+  source: sdk.customer.sources.salesforce({
+    objectConfig: sdk.customer.specifiedSalesforceObjectConfig('Lead'),
+  }),
   cronExpression: '*/15 * * * *',
-  destination: sdk.destinations.postgres({
+  destination: sdk.internal.destinations.postgres({
     schema: leadsSchema,
     config: {
       credentials,

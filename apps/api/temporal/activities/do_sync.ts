@@ -101,8 +101,12 @@ async function readRecordsFromCustomerIntegration(
   const salesforceFields = [...Object.values(mapping), 'SystemModstamp']; // TODO: Do not fetch SystemModstamp twice if already in mapping.
   const salesforceFieldsString = salesforceFields.join(', ');
 
+  if (syncConfig.source.objectConfig.type !== 'specified') {
+    throw new Error('Only specified salesforce object config type supported currently');
+  }
+
   // Fetching in ASC order for incremental sync in the future.
-  const soql = `SELECT ${salesforceFieldsString} FROM ${syncConfig.salesforceObject} ORDER BY SystemModstamp ASC`;
+  const soql = `SELECT ${salesforceFieldsString} FROM ${syncConfig.source.objectConfig.object} ORDER BY SystemModstamp ASC`;
 
   return await sg.customerIntegrations.salesforce.query(soql);
 }
@@ -307,7 +311,16 @@ async function writeRecordsToCustomerIntegration(
 
   // TODO: Validate / throw error?
   // Apply mapping to upsert key
-  const salesforceUpsertKey = fieldMapping[syncConfig.salesforceUpsertKey];
+  const salesforceUpsertKey = fieldMapping[syncConfig.destination.upsertKey];
 
-  await sg.customerIntegrations.salesforce.upsert(syncConfig.salesforceObject, salesforceUpsertKey, customerRecords);
+  // TODO:
+  if (syncConfig.destination.objectConfig.type !== 'specified') {
+    throw new Error('Only specified salesforce object config type supported currently');
+  }
+
+  await sg.customerIntegrations.salesforce.upsert(
+    syncConfig.destination.objectConfig.object,
+    salesforceUpsertKey,
+    customerRecords
+  );
 }
