@@ -140,43 +140,6 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
    Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 3
    ```
 
-### Embed Salesforce integration UI
-
-Next, embed a Supaglue React component in the sample app that customers can use to further configure the integration for their own Salesforce instances.
-
-:::info
-
-The sample app already contains some Supaglue embedded components, <`IntegrationCard/>`, `<FieldMapping/>` and `<TriggerSyncButton/>`, for your reference.
-
-:::
-
-1.  Embed [`<SwitchSwitch/>`](react-components/#syncswitch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
-
-    ```tsx title=apps/sample-app/pages/integrations/[type]
-    // TUTORIAL: Uncomment this
-    import { SyncSwitch } from '@supaglue/nextjs';
-
-    // ...
-    const getSwitch = (syncConfigName: string) => {
-      // TUTORIAL: uncomment this
-      return (
-        <div className="py-2">
-          <SyncSwitch includeSyncDescription syncConfigName={syncConfigName} />
-        </div>
-      );
-    };
-    ```
-
-    This adds a switch that allows a customer to toggle the Contact sync we created on and off.
-
-    <BrowserWindow url="http://localhost:3000/integrations/salesforce#Accounts">
-
-    ![app_accounts_switch](/img/tutorial/app_accounts_switch.png 'salesforce accounts config')
-
-    </BrowserWindow>
-
-1.  Turn the switch on. The Accounts Sync will now run as a background task every 15 minutes.
-
 ### Test the integration
 
 Finally, let's manually trigger our sync to make sure it works as expected.
@@ -223,7 +186,7 @@ You may have realized that two of the columns in the sample app's Contacts table
 
 1. Update the schema object to include the two missing fields:
 
-   ```tsx title=apps/sample-app/supaglue-config/contact.ts
+   ```tsx title=apps/sample-app/supaglue-config/inbound/contact.ts
    const contactSchema = sdk.schema({
      fields: [
        // ...
@@ -250,7 +213,7 @@ You may have realized that two of the columns in the sample app's Contacts table
 
    <BrowserWindow url="http://localhost:3000/integrations/salesforce#Contacts">
 
-   ![app_filled_contacts](/img/tutorial/app_contacts_config.png 'salesforce contacts records')
+   ![app_filled_contacts](/img/tutorial/app_contacts_config_card.png 'salesforce contacts records')
    </BrowserWindow>
 
 1. Click "Run sync now". Once the background sync completes, verify the newly synced fields now contain values on the "App Objects" page.
@@ -311,9 +274,8 @@ Supaglue provides several React component customization options to change its lo
 1. In the sample app, locate the `<FieldMapping/>` component and add the following `appearance` prop to change the background of the form:
 
    ```jsx title=apps/sample-app/src/pages/integrations/[type].tsx
-   <FieldMapping
+   <SyncConfigCard
      syncConfigName={syncConfigName}
-     key={syncConfigName}
      // TUTORIAL: uncomment this
      appearance={{
        elements: {

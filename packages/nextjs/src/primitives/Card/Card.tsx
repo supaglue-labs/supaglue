@@ -4,13 +4,15 @@ import { ReactNode } from 'react';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
 
+export type CardElements = {
+  card?: string;
+};
+
 export interface CardProps {
   children: ReactNode;
   className?: string;
   appearance?: SupaglueAppearance & {
-    elements?: {
-      card?: string;
-    };
+    elements?: CardElements;
   };
 }
 

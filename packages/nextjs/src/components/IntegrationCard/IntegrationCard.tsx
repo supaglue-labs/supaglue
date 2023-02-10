@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import classNames from 'classnames';
-import { SalesforceConnectButton, SalesforceDisconnectButton } from '..';
+import { SalesforceConnectButton, SalesforceDisconnectButton } from '../../elements';
 import { useDeveloperConfig, useSalesforceIntegration } from '../../hooks/api';
 import { Card } from '../../primitives';
 import { SupaglueProviderInternal, useSupaglueContext } from '../../providers';

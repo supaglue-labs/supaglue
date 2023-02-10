@@ -11,6 +11,11 @@ import styles from './styles';
 
 const TOAST_TIMEOUT_MS = 2000;
 
+export type TriggerSyncButtonElements = {
+  button?: string;
+  toast?: string;
+};
+
 export type TriggerSyncButtonProps = {
   syncConfigName: string;
   label?: string;

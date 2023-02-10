@@ -6,24 +6,21 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync } from '../../hooks/api';
 import { DeveloperConfig } from '../../lib/types';
-import { Switch } from '../../primitives/Switch';
+import { Switch, SwitchElements } from '../../primitives/Switch';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
-import { styles } from './styles';
+import styles from './styles';
 
-type Elements = {
+export type SyncSwitchElements = SwitchElements & {
   switchDescription?: string;
   switchLabel?: string;
-  switchOn?: string;
-  switchOff?: string;
-  switchThumb?: string;
   switchWrapper?: string;
 };
 
 export type SyncSwitchProps = {
   appearance?: SupaglueAppearance & {
-    elements: Elements;
+    elements?: SyncSwitchElements;
   };
   className?: string;
   disabled?: boolean;
@@ -67,7 +64,11 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
         css={styles.switchWrapper}
         className={classnames(props.className, 'sg-switchWrapper', appearance?.elements?.switchWrapper)}
       >
-        <label className={classnames('sg-switchLabel', appearance?.elements?.switchLabel)} htmlFor={inputId}>
+        <label
+          css={styles.switchlabel}
+          className={classnames('sg-switchLabel', appearance?.elements?.switchLabel)}
+          htmlFor={inputId}
+        >
           {label || `Sync ${syncConfigName}`}
         </label>
 
