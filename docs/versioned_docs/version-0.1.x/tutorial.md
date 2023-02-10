@@ -152,7 +152,7 @@ The sample app already contains some Supaglue embedded components, <`Integration
 
 1.  Embed [`<Switch/>`](react-components/#switch) into `integrations/[type].tsx` in the sample app by uncommenting the code inside of `getSwitch()`:
 
-    ```tsx title=apps/sample-app/pages/integrations/[type]
+    ```tsx title=apps/sample-app/pages/integrations/[type].tsx
     // TUTORIAL: Uncomment this
     import { Switch } from '@supaglue/nextjs';
 

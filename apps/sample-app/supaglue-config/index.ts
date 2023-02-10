@@ -1,6 +1,6 @@
 import * as sdk from '@supaglue/sdk';
 // TUTORIAL: uncomment this
-// import accountInboundSyncConfig from './inbound/account';
+import accountInboundSyncConfig from './inbound/account';
 import contactInboundSyncConfig from './inbound/contact';
 import leadInboundSyncConfig from './inbound/lead';
 import opportunityInboundSyncConfig from './inbound/opportunity';
@@ -14,7 +14,7 @@ sdk.config({
     leadInboundSyncConfig,
     opportunityInboundSyncConfig,
     // TUTORIAL: uncomment this
-    // accountInboundSyncConfig,
+    accountInboundSyncConfig,
   ],
   salesforceCredentials: credentials,
 });
