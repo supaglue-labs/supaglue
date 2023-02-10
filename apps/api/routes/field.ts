@@ -8,6 +8,11 @@ const { integrationService, developerConfigService } = getDependencyContainer();
 
 const router: Router = Router({ mergeParams: true });
 
+type SObjectField = {
+  name: string;
+  label: string;
+};
+
 router.get(
   '/',
   posthogMiddleware('Get Fields'),
@@ -42,8 +47,7 @@ router.get(
     const result = await connection.sobject(salesforceObject).describe$();
 
     const fields = result.fields.map((field) => ({ label: field.label, name: field.name }));
-
-    fields.sort();
+    fields.sort((a: SObjectField, b: SObjectField) => a.label.localeCompare(b.label));
 
     return res.status(200).send(fields);
   },

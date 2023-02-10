@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { getDependencyContainer } from '../dependency_container';
 import { BadRequestError, NotFoundError } from '../errors';
 import { errorMiddleware as posthogErrorMiddleware, middleware as posthogMiddleware } from '../lib/posthog';
-import { Sync, SyncCreateParams, SyncRun, SyncRunStatus } from '../syncs/entities';
+import { Sync, SyncCreateParams, SyncRun, SyncRunStatus, SyncUpdateParams } from '../syncs/entities';
 
 const { syncService, developerConfigService } = getDependencyContainer();
 
@@ -58,7 +58,7 @@ router.post(
 router.put(
   '/:syncId',
   posthogMiddleware('Update Sync'),
-  async (req: Request<{ syncId: string }, any, SyncCreateParams>, res: Response<Sync>) => {
+  async (req: Request<{ syncId: string }, any, SyncUpdateParams>, res: Response<Sync>) => {
     // TODO: Validate that `req.params.syncId` is equal to `req.body.id`.
     const developerConfig = await developerConfigService.getDeveloperConfig();
     const sync = await syncService.updateSync(req.params.syncId, req.body, developerConfig);

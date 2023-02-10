@@ -1,27 +1,29 @@
 /** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
 import classNames from 'classnames';
 import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
-import { DeveloperConfig, PostgresDestination, SyncConfig } from '../../lib/types';
+import {
+  CustomerFieldMapping,
+  DeveloperConfig,
+  Field,
+  PostgresDestination,
+  SyncConfig,
+  SyncUpdateParams,
+} from '../../lib/types';
 import { Select, SelectElements } from '../../primitives';
+import { XIcon } from '../../primitives/icons';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
 
-type Field = {
+type MappedField = {
   name: string;
   value: string;
 };
-
-type SalesforceField = {
-  name: string;
-  label: string;
-};
-
-type FieldMapping = Record<string, string>;
 
 const EmptyContent = ({ className, children }: { className?: string; children: ReactNode }) => {
   return (
@@ -74,29 +76,30 @@ const FieldMappingInternal = ({ appearance, syncConfigName }: FieldMappingProps)
 };
 
 type FieldCollectionProps = {
-  appearance?: SupaglueAppearance & {
-    elements?: FieldMappingElements;
-  };
+  appearance?: FieldMappingAppearance;
   syncConfig: SyncConfig;
   sync: {
     id: string;
     customerId: string;
     enabled: boolean;
-    fieldMapping?: FieldMapping;
+    fieldMapping?: CustomerFieldMapping;
     name: string;
     syncConfigName: string;
+    customProperties?: Field[];
   };
 };
 
 const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps) => {
-  const initialFieldMapping = syncConfig.destination.schema.fields.reduce<FieldMapping>((mapping, { name }) => {
-    mapping[name] =
-      sync.fieldMapping?.[name] ||
-      syncConfig.defaultFieldMapping?.find((mapping) => mapping.name === name)?.field ||
-      '';
-    return mapping;
-  }, {});
-  const [fieldMapping, setFieldMapping] = useState<FieldMapping>(initialFieldMapping);
+  // Use the customer-defined field mapping if it exists, or else the default one supplied by the developer
+  const initialFieldMapping =
+    sync.fieldMapping ??
+    syncConfig.destination.schema.fields.reduce<CustomerFieldMapping>((mapping, { name }) => {
+      mapping[name] = syncConfig.defaultFieldMapping?.find((entry) => entry.name === name)?.field || '';
+      return mapping;
+    }, {});
+  const [fieldMapping, setFieldMapping] = useState<CustomerFieldMapping>(initialFieldMapping);
+
+  const [isCreatingCustomProperty, setIsCreatingCustomProperty] = useState(false);
 
   const { apiUrl, customerId } = useSupaglueContext();
 
@@ -107,31 +110,75 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
   const { mutate } = useSWR({
     path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
-  const { trigger: triggerUpdateSync } = useSWRMutation(`${apiUrl}/syncs/${sync.id}`, updateSync);
+  const { trigger: callUpdateSync } = useSWRMutation(`${apiUrl}/syncs/${sync.id}`, updateSync);
 
   const { upsertKey } = (syncConfig.destination as PostgresDestination).config;
 
-  const onUpdateField = async (field: Field) => {
-    const updatedFieldMapping = {
-      ...fieldMapping,
-      [field.name]: field.value,
-    };
-
-    const result = await triggerUpdateSync({
-      id: sync.id,
-      fieldMapping: updatedFieldMapping,
-    });
+  const onUpdateSync = async (params: SyncUpdateParams, onSuccess?: () => void) => {
+    const result = await callUpdateSync(params);
 
     if (result?.data) {
       // Update the cache and state
       mutate({ ...result.data });
-      setFieldMapping(updatedFieldMapping);
+      if (onSuccess) {
+        onSuccess();
+      }
     }
+  };
+
+  const onUpdateMappedField = async (field: MappedField) => {
+    const updatedFieldMapping: CustomerFieldMapping = {
+      ...fieldMapping,
+      [field.name]: field.value,
+    };
+
+    await onUpdateSync(
+      {
+        id: sync.id,
+        fieldMapping: updatedFieldMapping,
+      },
+      () => setFieldMapping(updatedFieldMapping)
+    );
+  };
+
+  const applicationFields = [...syncConfig.destination.schema.fields, ...(sync.customProperties || [])];
+  const customPropertyNames = new Set((sync.customProperties || []).map((field) => field.name));
+
+  const onCreateCustomProperty = async (name: string) => {
+    name = name.trim();
+
+    // Prevent duplicate field names
+    if (name === '' || applicationFields.map((field) => field.name).includes(name)) {
+      // TODO: Show error
+      return;
+    }
+
+    await onUpdateSync(
+      {
+        id: sync.id,
+        customProperties: [...(sync.customProperties || []), { name, label: name }],
+      },
+      () => setIsCreatingCustomProperty(false)
+    );
+  };
+
+  const onRemoveCustomProperty = async (name: string) => {
+    const updatedFieldMapping: CustomerFieldMapping = { ...fieldMapping };
+    delete fieldMapping[name];
+
+    await onUpdateSync(
+      {
+        id: sync.id,
+        customProperties: (sync.customProperties || []).filter((field) => field.name !== name),
+        fieldMapping: updatedFieldMapping,
+      },
+      () => setFieldMapping(updatedFieldMapping)
+    );
   };
 
   return (
     // TODO: write form primitives
-    <form css={styles.form} className={classNames('sg-form', appearance?.elements?.form)}>
+    <div css={styles.form} className={classNames('sg-form', appearance?.elements?.form)}>
       <div css={styles.formHeaderRow} className={classNames('sg-formHeaderRow', appearance?.elements?.formHeaderRow)}>
         <div
           css={styles.formColumnHeader}
@@ -147,7 +194,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
         </div>
       </div>
 
-      {syncConfig.destination.schema.fields.map(({ label, name }, idx) => (
+      {applicationFields.map(({ label, name }, idx) => (
         <div
           key={idx}
           css={styles.fieldWrapper}
@@ -162,21 +209,96 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
             disabled={!!upsertKey && name === upsertKey}
             label="Salesforce field name"
             onValueChange={async (value: string) => {
-              await onUpdateField({ name, value });
+              await onUpdateMappedField({ name, value });
             }}
-            options={
-              fields ? fields.sort((a: SalesforceField, b: SalesforceField) => a.label.localeCompare(b.label)) : []
-            }
+            options={fields ?? []}
             value={fieldMapping[name]}
             isLoading={isLoadingFields}
           />
+
+          {customPropertyNames.has(name) && (
+            <XIcon
+              onClick={() => onRemoveCustomProperty(name)}
+              css={css({ position: 'absolute', right: '-1.75rem' })}
+            />
+          )}
         </div>
       ))}
-    </form>
+
+      {isCreatingCustomProperty && (
+        <NewCustomPropertyForm
+          appearance={appearance}
+          onCancel={() => setIsCreatingCustomProperty(false)}
+          onCreateCustomProperty={onCreateCustomProperty}
+        />
+      )}
+
+      <AddCustomPropertyButton
+        appearance={appearance}
+        disabled={isCreatingCustomProperty}
+        onClick={() => setIsCreatingCustomProperty(true)}
+      />
+    </div>
   );
 };
 
+const NewCustomPropertyForm = ({
+  appearance,
+  onCancel,
+  onCreateCustomProperty,
+}: {
+  appearance?: FieldMappingAppearance;
+  onCancel: () => void;
+  onCreateCustomProperty: (name: string) => void;
+}) => (
+  <form
+    onSubmit={(e) => {
+      e.preventDefault();
+      // @ts-expect-error: Figure out how to type this
+      onCreateCustomProperty(e.target[0].value);
+    }}
+    css={styles.fieldWrapper}
+    className={classNames(appearance?.elements?.fieldWrapper, 'sg-fieldWrapper')}
+  >
+    <input
+      css={styles.newCustomPropertyInput}
+      className={classNames(appearance?.elements?.newCustomPropertyInput, 'sg-newCustomPropertyInput')}
+      onBlur={(e) => onCreateCustomProperty(e.target.value)}
+      defaultValue=""
+      type="text"
+    />
+    <input css={styles.customPropertySubmitInput} type="submit" />
+    <XIcon
+      className={classNames(appearance?.elements?.deleteCustomPropertyButton, 'sg-deleteCustomPropertyButton')}
+      onClick={onCancel}
+      css={css({
+        marginRight: 'auto',
+      })}
+    />
+  </form>
+);
+
+const AddCustomPropertyButton = ({
+  appearance,
+  ...props
+}: {
+  appearance?: FieldMappingAppearance;
+  disabled?: boolean;
+  onClick: () => void;
+}) => (
+  <button
+    className={classNames(appearance?.elements?.addCustomPropertyButton, 'sg-addCustomPropertyButton')}
+    css={styles.addCustomPropertyButton}
+    {...props}
+    type={undefined}
+  >
+    + Add custom property
+  </button>
+);
+
 export type FieldMappingElements = SelectElements & {
+  addCustomPropertyButton?: string;
+  deleteCustomPropertyButton?: string;
   fieldDropdownOption?: string;
   fieldMapperRow?: string;
   fieldName?: string;
@@ -184,12 +306,15 @@ export type FieldMappingElements = SelectElements & {
   form?: string;
   formColumnHeader?: string;
   formHeaderRow?: string;
+  newCustomPropertyInput?: string;
+};
+
+type FieldMappingAppearance = SupaglueAppearance & {
+  elements?: FieldMappingElements;
 };
 
 export type FieldMappingProps = {
-  appearance?: SupaglueAppearance & {
-    elements?: FieldMappingElements;
-  };
+  appearance?: FieldMappingAppearance;
   syncConfigName: string;
 };
 
