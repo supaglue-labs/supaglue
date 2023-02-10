@@ -1,26 +1,26 @@
 import { SyncConfig } from '../../../developer_config/entities';
 import { Sync } from '../../../syncs/entities';
-import { PostgresDestinationInternalIntegration, PostgresSourceInternalIntegration } from './postgres';
-import { WebhookDestinationInternalIntegration } from './webhook';
+import { DestinationPostgresInternalIntegration, SourcePostgresInternalIntegration } from './postgres';
+import { DestinationWebhookInternalIntegration } from './webhook';
 
 export type InternalIntegrations = {
   sources: {
-    postgres: PostgresSourceInternalIntegration;
+    postgres: SourcePostgresInternalIntegration;
   };
   destinations: {
-    postgres: PostgresDestinationInternalIntegration;
-    webhook: WebhookDestinationInternalIntegration;
+    postgres: DestinationPostgresInternalIntegration;
+    webhook: DestinationWebhookInternalIntegration;
   };
 };
 
 export const createInternalIntegrations = (sync: Sync, syncConfig: SyncConfig, syncRunId: string) => {
   return {
     sources: {
-      postgres: new PostgresSourceInternalIntegration(sync, syncConfig, syncRunId),
+      postgres: new SourcePostgresInternalIntegration(sync, syncConfig, syncRunId),
     },
     destinations: {
-      postgres: new PostgresDestinationInternalIntegration(sync, syncConfig, syncRunId),
-      webhook: new WebhookDestinationInternalIntegration(sync, syncConfig, syncRunId),
+      postgres: new DestinationPostgresInternalIntegration(sync, syncConfig, syncRunId),
+      webhook: new DestinationWebhookInternalIntegration(sync, syncConfig, syncRunId),
     },
   };
 };

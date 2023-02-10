@@ -6,7 +6,7 @@ import { Sync } from '../../../syncs/entities';
 import { getMapping, getSalesforceObject, mapInternalToCustomerRecords } from '../../lib';
 import { BaseCustomerIntegration } from './base';
 
-class SalesforceCustomerIntegration extends BaseCustomerIntegration {
+class CustomerSalesforceIntegration extends BaseCustomerIntegration {
   #connectionInstance: jsforce.Connection | null = null;
 
   public constructor(...args: ConstructorParameters<typeof BaseCustomerIntegration>) {
@@ -105,13 +105,14 @@ class SalesforceCustomerIntegration extends BaseCustomerIntegration {
   }
 }
 
-export class SalesforceCustomerSourceIntegration extends SalesforceCustomerIntegration {
-  public async bulkReadObjectType() {
+export class CustomerSalesforceSourceIntegration extends CustomerSalesforceIntegration {
+  public async bulkReadSObject() {
     const { sync, syncConfig } = this;
     const fieldMapping = getMapping(sync, syncConfig);
     const salesforceFields = [...Object.values(fieldMapping), 'SystemModstamp']; // TODO: Do not fetch SystemModstamp twice if already in mapping.
     const salesforceFieldsString = salesforceFields.join(', ');
 
+    // TODO: make the class take in a generic for SyncConfig instead of asserting
     const salesforceObject = getSalesforceObject(syncConfig.source as SalesforceSource, sync);
 
     // Fetching in ASC order for incremental sync in the future.
@@ -121,7 +122,7 @@ export class SalesforceCustomerSourceIntegration extends SalesforceCustomerInteg
   }
 }
 
-export class SalesforceCustomerDestinationIntegration extends SalesforceCustomerIntegration {
+export class CustomerSalesforceDestinationIntegration extends CustomerSalesforceIntegration {
   public async upsertAllRecords(records: any[]) {
     const { sync, syncConfig } = this;
     const fieldMapping = getMapping(sync, syncConfig);
@@ -129,6 +130,7 @@ export class SalesforceCustomerDestinationIntegration extends SalesforceCustomer
     if (!customerRecords.length) {
       throw new Error('No records to write');
     }
+    // TODO: make the class take in a generic for SyncConfig instead of asserting
     const destination = syncConfig.destination as SalesforceDestination;
     // TODO: Validate / throw error?
     // Apply mapping to upsert key
@@ -141,6 +143,6 @@ export class SalesforceCustomerDestinationIntegration extends SalesforceCustomer
 }
 
 export const createSourceSalesforce = (sync: Sync, syncConfig: SyncConfig, syncRunId: string) =>
-  new SalesforceCustomerSourceIntegration(sync, syncConfig, syncRunId);
+  new CustomerSalesforceSourceIntegration(sync, syncConfig, syncRunId);
 export const createDestinationSalesforce = (sync: Sync, syncConfig: SyncConfig, syncRunId: string) =>
-  new SalesforceCustomerDestinationIntegration(sync, syncConfig, syncRunId);
+  new CustomerSalesforceDestinationIntegration(sync, syncConfig, syncRunId);

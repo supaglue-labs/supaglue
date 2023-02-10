@@ -3,16 +3,16 @@ import { Sync } from '../../../syncs/entities';
 import {
   createDestinationSalesforce,
   createSourceSalesforce,
-  SalesforceCustomerDestinationIntegration,
-  SalesforceCustomerSourceIntegration,
+  CustomerSalesforceDestinationIntegration,
+  CustomerSalesforceSourceIntegration,
 } from './salesforce';
 
 export type CustomerIntegrations = {
   sources: {
-    salesforce: SalesforceCustomerSourceIntegration;
+    salesforce: CustomerSalesforceSourceIntegration;
   };
   destinations: {
-    salesforce: SalesforceCustomerDestinationIntegration;
+    salesforce: CustomerSalesforceDestinationIntegration;
   };
 };
 
@@ -27,4 +27,4 @@ export const createCustomerIntegrations = (sync: Sync, syncConfig: SyncConfig, s
   };
 };
 
-export { SalesforceCustomerDestinationIntegration, SalesforceCustomerSourceIntegration } from './salesforce';
+export { CustomerSalesforceDestinationIntegration, CustomerSalesforceSourceIntegration } from './salesforce';

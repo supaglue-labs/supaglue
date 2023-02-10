@@ -57,7 +57,7 @@ class WebhookInternalIntegration extends BaseInternalIntegration {
   }
 }
 
-export class WebhookDestinationInternalIntegration extends WebhookInternalIntegration {
+export class DestinationWebhookInternalIntegration extends WebhookInternalIntegration {
   public async sendRequests(records: any[]) {
     const { sync, syncConfig, syncRunId } = this;
     const fieldMapping = getMapping(sync, syncConfig);
@@ -66,8 +66,8 @@ export class WebhookDestinationInternalIntegration extends WebhookInternalIntegr
       throw new Error('No records to write');
     }
     for (const record of internalRecords) {
-      this.request(
-        syncConfig.destination as WebhookDestination,
+      await this.request(
+        syncConfig.destination as WebhookDestination, // TODO: make the class take in a generic for SyncConfig instead of asserting
         syncConfig.name,
         sync.id,
         syncRunId,

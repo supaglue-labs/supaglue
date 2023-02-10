@@ -24,7 +24,7 @@ export async function doSync({ syncId, syncRunId }: DoSyncArgs): Promise<void> {
   // only having it on `SyncConfig` for consistency.
 
   if (sync.type === 'inbound' && syncConfig.type === 'inbound') {
-    const records = await sg.customerIntegrations.sources.salesforce.bulkReadObjectType();
+    const records = await sg.customerIntegrations.sources.salesforce.bulkReadSObject();
 
     if (syncConfig.destination.type === 'postgres') {
       await sg.internalIntegrations.destinations.postgres.insertRecords(records);

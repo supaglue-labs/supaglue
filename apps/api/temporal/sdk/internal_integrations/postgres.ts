@@ -38,7 +38,7 @@ class PostgresInternalIntegration extends BaseInternalIntegration {
   }
 }
 
-export class PostgresSourceInternalIntegration extends PostgresInternalIntegration {
+export class SourcePostgresInternalIntegration extends PostgresInternalIntegration {
   public async readAllObjectType() {
     const source = this.syncConfig.source as PostgresSource;
 
@@ -54,7 +54,7 @@ export class PostgresSourceInternalIntegration extends PostgresInternalIntegrati
   }
 }
 
-export class PostgresDestinationInternalIntegration extends PostgresInternalIntegration {
+export class DestinationPostgresInternalIntegration extends PostgresInternalIntegration {
   public async insertRecords(records: any[]) {
     const { sync, syncConfig } = this;
 
@@ -63,6 +63,8 @@ export class PostgresDestinationInternalIntegration extends PostgresInternalInte
     if (!internalRecords.length) {
       throw new Error('No records to write');
     }
+
+    // TODO: make the class take in a generic for SyncConfig instead of asserting
     const destination = syncConfig.destination as PostgresDestination;
 
     // TODO: What do we do if there are columns missing in the source?
