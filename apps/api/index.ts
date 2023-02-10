@@ -15,6 +15,9 @@ import initRoutes from './routes';
 import { TEMPORAL_SYNC_TASKS_TASK_QUEUE } from './temporal';
 import * as activities from './temporal/activities';
 
+// Uncomment if you want to test pubsub
+// import { subscribe } from './salesforce_pubsub/client';
+
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
 
@@ -143,7 +146,12 @@ const server = app.listen(port, (): void => {
     connection,
   });
 
-  await worker.run();
+  // Uncomment if you want to test pubsub
+  // try {
+  //   await subscribe({ customerId: 'user1', topicName: '/data/ContactChangeEvent' });
+  // } catch (e) {
+  //   logger.error(e, 'Could not subscribe to topic');
+  // }
 
   // set up terminus here since we need the worker
   createTerminus(server, {
@@ -164,4 +172,7 @@ const server = app.listen(port, (): void => {
     useExit0: true,
     logger: (message, error) => logger.error(error, message),
   });
+
+  // must come last since it blocks
+  await worker.run();
 })();

@@ -1,6 +1,6 @@
 # Development
 
-###
+## Prerequisites
 
 If you are working on making changes to Supaglue you can use the `docker-compose.override.yml` file to mount your local filesystem into the docker containers and develop with hot-reloading:
 
@@ -14,7 +14,14 @@ Also, install dependencies:
 yarn install
 ```
 
-### Serving the docs locally
+## Generating grpc clients
+
+```shell
+brew install bufbuild/buf/buf
+yarn gen:grpc
+```
+
+## Serving the docs locally
 
 ```shell
 yarn workspace docs start
