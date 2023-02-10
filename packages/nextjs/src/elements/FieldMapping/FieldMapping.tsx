@@ -10,7 +10,6 @@ import {
   DeveloperConfig,
   Field,
   PostgresDestination,
-  SObjectField,
   SyncConfig,
   SyncUpdateParams,
 } from '../../lib/types';
@@ -91,13 +90,13 @@ type FieldCollectionProps = {
 };
 
 const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps) => {
-  const initialFieldMapping = syncConfig.destination.schema.fields.reduce<CustomerFieldMapping>((mapping, { name }) => {
-    mapping[name] =
-      sync.fieldMapping?.[name] ||
-      syncConfig.defaultFieldMapping?.find((mapping) => mapping.name === name)?.field ||
-      '';
-    return mapping;
-  }, {});
+  // Use the customer-defined field mapping if it exists, or else the default one supplied by the developer
+  const initialFieldMapping =
+    sync.fieldMapping ??
+    syncConfig.destination.schema.fields.reduce<CustomerFieldMapping>((mapping, { name }) => {
+      mapping[name] = syncConfig.defaultFieldMapping?.find((entry) => entry.name === name)?.field || '';
+      return mapping;
+    }, {});
   const [fieldMapping, setFieldMapping] = useState<CustomerFieldMapping>(initialFieldMapping);
 
   const [isCreatingCustomProperty, setIsCreatingCustomProperty] = useState(false);
@@ -212,7 +211,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
             onValueChange={async (value: string) => {
               await onUpdateMappedField({ name, value });
             }}
-            options={fields ? fields.sort((a: SObjectField, b: SObjectField) => a.label.localeCompare(b.label)) : []}
+            options={fields ?? []}
             value={fieldMapping[name]}
             isLoading={isLoadingFields}
           />
