@@ -34,6 +34,7 @@ export type PostgresInternalIntegration = BaseInternalIntegration & {
     };
     table: string;
     customerIdColumn: string;
+    customPropertiesColumn?: string; // NOTE: This must be a jsonb column on the same table
   };
 };
 

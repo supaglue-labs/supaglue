@@ -7,5 +7,6 @@ export type PostgresInternalIntegration = BaseInternalIntegration & {
     credentials: PostgresCredentials;
     table: string;
     customerIdColumn: string;
+    customPropertiesColumn?: string;
   };
 };
