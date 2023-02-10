@@ -1,4 +1,4 @@
-import { SalesforceSource } from './salesforce';
+import { SalesforceSource } from '@supaglue/types';
 
 export * from './salesforce';
 
