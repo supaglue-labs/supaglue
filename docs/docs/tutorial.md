@@ -10,6 +10,8 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 
 You'll learn how to use Supaglue's SDKs and CLI to setup and deploy the integration (frontend and backend), and customize the UI you expose to your customers.
 
+<iframe width="640" height="400" src="https://www.loom.com/embed/7f1385c598874448b171a010de325593" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
 ## Before you begin
 
 Be sure to have completed the [Quickstart](./quickstart).
