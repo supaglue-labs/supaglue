@@ -60,13 +60,22 @@ function ContactsTable({
     keepPreviousData: true,
   });
   const userCount = count || initialTotalUsers;
-  const cols = [
+  let cols = [
     { name: 'First Name' },
     { name: 'Last Name' },
     { name: 'Title' },
     { name: 'Email' },
     { name: 'Salesforce ID' },
   ];
+
+  // Display custom properties in the table
+  // Right now there's no way to consume custom properties outside of the integration config page,
+  // so just look at the first record returned to see if there are any custom properties on it
+  let extraFields: string[] = [];
+  if (users.length && users[0].extraAttributes) {
+    extraFields = Object.keys(users[0].extraAttributes);
+    cols = [...cols, ...extraFields.map((attr) => ({ name: attr }))];
+  }
 
   return (
     <Table
@@ -89,6 +98,9 @@ function ContactsTable({
           <TableCell>{user.title}</TableCell>
           <TableCell>{user.email}</TableCell>
           <TableCell>{user.salesforceId}</TableCell>
+          {extraFields.map((field: string, idx) => (
+            <TableCell key={idx}>{(user.extraAttributes as Record<string, any>)[field]}</TableCell>
+          ))}
         </tr>
       ))}
     />

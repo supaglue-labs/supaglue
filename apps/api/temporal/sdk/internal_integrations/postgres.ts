@@ -69,11 +69,21 @@ export class DestinationPostgresInternalIntegration extends PostgresInternalInte
 
     // TODO: What do we do if there are columns missing in the source?
     // TODO: Check that there are actually columns to sync over
-    const { upsertKey } = destination.config;
-    const dbFields = Object.keys(fieldMapping);
+    const { customPropertiesColumn, upsertKey } = destination.config;
+
+    const normalizedFields = destination.schema.fields.map((field) => field.name);
+    const dbFields = Object.keys(fieldMapping).filter((field) => normalizedFields.includes(field));
+    const customFields = Object.keys(fieldMapping).filter((field) => !normalizedFields.includes(field));
+
+    const hasCustomFields = !!customPropertiesColumn && customFields.length;
+    if (hasCustomFields) {
+      dbFields.push(customPropertiesColumn);
+    }
+
     const dbFieldsWithoutPrimaryKey = dbFields.filter((field) => field !== upsertKey);
     const dbFieldsString = dbFields.map((field) => `"${field}"`).join(', ');
     const dbFieldsWithoutPrimaryKeyString = dbFieldsWithoutPrimaryKey.map((field) => `"${field}"`).join(', ');
+
     const dbFieldsIndexesString = dbFields.map((_, idx) => `$${idx + 1}`).join(', ');
     const dbFieldsIndexesWithoutPrimaryKeyString = dbFields
       .map((field, index) => {
@@ -86,7 +96,15 @@ export class DestinationPostgresInternalIntegration extends PostgresInternalInte
 
     // TODO: Do this in batches
     for (const mappedRecord of internalRecords) {
-      const values = dbFields.map((field) => mappedRecord[field] ?? '');
+      const values = normalizedFields.map((field) => mappedRecord[field] ?? '');
+
+      if (hasCustomFields) {
+        const customPropertiesMapping: Record<string, any> = {};
+        customFields.forEach((field) => {
+          customPropertiesMapping[field] = mappedRecord[field] ?? '';
+        });
+        values.push(customPropertiesMapping);
+      }
 
       // TODO: Do we want to deal with updated_at and created_at?
       await this.query(
