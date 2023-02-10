@@ -47,55 +47,55 @@ For this tutorial, we've included a sample [Developer Config](./concepts#develop
 
 1. Create `account.ts` inside the `apps/sample-app/supaglue-config/inbound` directory. Paste in the following:
 
-   ```tsx title='apps/sample-app/supaglue-config/account.ts'
-   import * as sdk from '@supaglue/sdk';
-   import credentials from '../postgres_credentials';
+  ```tsx title='apps/sample-app/supaglue-config/inbound/account.ts'
+  import * as sdk from '@supaglue/sdk';
+  import credentials from '../postgres_credentials';
 
-   const accountsSchema = sdk.schema({
-     fields: [
-       {
-         name: 'salesforce_id',
-         label: 'id',
-       },
-       {
-         name: 'name',
-         label: 'name',
-       },
-     ],
-   });
+  const accountsSchema = sdk.schema({
+    fields: [
+      {
+        name: 'salesforce_id',
+        label: 'id',
+      },
+      {
+        name: 'name',
+        label: 'name',
+      },
+    ],
+  });
 
-   const defaultFieldMapping = sdk.defaultFieldMapping([
-     { name: 'salesforce_id', field: 'Id' },
-     { name: 'name', field: 'Name' },
-   ]);
+  const defaultFieldMapping = sdk.defaultFieldMapping([
+    { name: 'salesforce_id', field: 'Id' },
+    { name: 'name', field: 'Name' },
+  ]);
 
-   const accountSyncConfig = sdk.syncConfigs.inbound({
-     name: 'Accounts',
-     source: sdk.customer.sources.salesforce({
-       objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Account'),
-     }),
-     cronExpression: '*/15 * * * *',
-     destination: sdk.internal.destinations.postgres({
-       schema: accountsSchema,
-       config: {
-         credentials,
-         table: 'salesforce_accounts',
-         upsertKey: 'salesforce_id',
-         customerIdColumn: 'customer_id',
-       },
-     }),
-     strategy: 'full_refresh',
-     defaultFieldMapping,
-   });
+  const accountSyncConfig = sdk.syncConfigs.inbound({
+    name: 'Accounts',
+    source: sdk.customer.sources.salesforce({
+      objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Account'),
+    }),
+    cronExpression: '*/15 * * * *',
+    destination: sdk.internal.destinations.postgres({
+      schema: accountsSchema,
+      config: {
+        credentials,
+        table: 'salesforce_accounts',
+        upsertKey: 'salesforce_id',
+        customerIdColumn: 'customer_id',
+      },
+    }),
+    strategy: 'full_refresh',
+    defaultFieldMapping,
+  });
 
-   export default accountSyncConfig;
-   ```
+  export default accountSyncConfig;
+  ```
 
-   The `inbound` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
+  The `inbound` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
 
-   The schema object exposes the specified Salesforce Account fields to your customers and lets them map them to fields in the sample app's Postgres database.
+  The schema object exposes the specified Salesforce Account fields to your customers and lets them map them to fields in the sample app's Postgres database.
 
-   The defaultFieldMapping object specifies the default field mapping values for the Salesforce Account object that would be used in the sample app absent any customer-provided overrides.
+  The defaultFieldMapping object specifies the default field mapping values for the Salesforce Account object that would be used in the sample app absent any customer-provided overrides.
 
 1. Finally, add the newly created Sync Config for Accounts to the existing Developer Config so it can be deployed with the existing sample Sync Configs:
 
@@ -123,22 +123,24 @@ For this tutorial, we've included a sample [Developer Config](./concepts#develop
 
    You should see the following output:
 
-   ```console
-   ...
-   ╔═══════════════╤═══════════╤════════╗
-   ║ Name          │ Action    │ Status ║
-   ╟───────────────┼───────────┼────────╢
-   ║ Contacts      │ No Change │ Live   ║
-   ╟───────────────┼───────────┼────────╢
-   ║ Leads         │ No Change │ Live   ║
-   ╟───────────────┼───────────┼────────╢
-   ║ Opportunities │ No Change │ Live   ║
-   ╟───────────────┼───────────┼────────╢
-   ║ Accounts      │ Created   │ Live   ║
-   ╚═══════════════╧═══════════╧════════╝
+  ```console
+  ...
+  ╔══════════════════╤═══════════╤════════╗
+  ║ Name             │ Action    │ Status ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ ContactsOutbound │ No Change │ Live   ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ Contacts         │ No Change │ Live   ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ Leads            │ No Change │ Live   ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ Opportunities    │ No Change │ Live   ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ Accounts         │ Created   │ Live   ║
+  ╚══════════════════╧═══════════╧════════╝
 
-   Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 3
-   ```
+  Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 4
+  ```
 
 ### Test the integration
 
@@ -156,17 +158,19 @@ Finally, let's manually trigger our sync to make sure it works as expected.
 
    ```supaglue syncs list --customer-id user1
    ℹ Info: Syncs for customer user1
-   ╔═══════════════╤═════════╤══════════════════════════╤══════════════════════════╗
-   ║ Sync Name     │ Enabled │ Last Run                 │ Next Run                 ║
-   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ Contacts      │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
-   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ Opportunities │ No      │ n/a                      │ n/a                      ║
-   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ Accounts      │ Yes     │ 2023-02-03T08:08:34.344Z │ 2023-02-03T08:15:00.000Z ║
-   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ Leads         │ No      │ n/a                      │ n/a                      ║
-   ╚═══════════════╧═════════╧══════════════════════════╧══════════════════════════╝
+   ╔══════════════════╤═════════╤══════════════════════════╤══════════════════════════╗
+   ║ Sync Name        │ Enabled │ Last Run                 │ Next Run                 ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ ContactsOutbound │ No      │ n/a                      │ n/a                      ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Contacts         │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Opportunities    │ No      │ n/a                      │ n/a                      ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Accounts         │ Yes     │ 2023-02-03T08:08:34.344Z │ 2023-02-03T08:15:00.000Z ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Leads            │ No      │ n/a                      │ n/a                      ║
+   ╚══════════════════╧═════════╧══════════════════════════╧══════════════════════════╝
    ```
 
 1. Visit the "App Objects" tab to view the synced Accounts records, which is being populated by the Postgres table.

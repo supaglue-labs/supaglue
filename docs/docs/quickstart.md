@@ -67,17 +67,19 @@ In this step, we will deploy Supaglue configuration to enable customers (i.e. `u
 
    ```console
    ...
-   ╔═══════════════╤═════════╤════════╗
-   ║ Name          │ Action  │ Status ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Contacts      │ Created │ Live   ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Leads         │ Created │ Live   ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Opportunities │ Created │ Live   ║
-   ╚═══════════════╧═════════╧════════╝
+   ╔══════════════════╤═════════╤════════╗
+   ║ Name             │ Action  │ Status ║
+   ╟──────────────────┼─────────┼────────╢
+   ║ ContactsOutbound │ Created │ Live   ║
+   ╟──────────────────┼─────────┼────────╢
+   ║ Contacts         │ Created │ Live   ║
+   ╟──────────────────┼─────────┼────────╢
+   ║ Leads            │ Created │ Live   ║
+   ╟──────────────────┼─────────┼────────╢
+   ║ Opportunities    │ Created │ Live   ║
+   ╚══════════════════╧═════════╧════════╝
 
-   Syncs Created: 3, Updated: 0, Deleted: 0, No Change: 0
+   Syncs Created: 4, Updated: 0, Deleted: 0, No Change: 0
    ```
 
 1. Navigate to the [Integrations page](http://localhost:3000/integrations). You should now see a card that allows you to connect your Salesforce instance.

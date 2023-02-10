@@ -47,22 +47,35 @@ class SalesforceCredentials {
 }
 ```
 
-#### `salesforce.syncConfig(params: SyncConfigParams)`
+#### `syncConfigs.inbound(params: Params)` or `syncConfigs.outbound(params: Params)`
 
-One [Sync Config](./concepts#developer-config).
+One [Sync Config](./concepts#sync-config).
 
 ```typescript
-type SyncConfigParams = {
-  salesforceObject: string;
+type Params = {
+  type: 'inbound';
   name: string;
-  cronExpression?: string;
-  destination: BaseDestination;
+  cronExpression: string;
   strategy: 'full_refresh';
   defaultFieldMapping?: DefaultFieldMapping;
+  source: CustomerSource;
+  destination: InternalDestination;
 };
 ```
 
-#### `schema(params: SchemaParams)`
+```typescript
+type Params = {
+  type: 'outbound';
+  name: string;
+  cronExpression: string;
+  strategy: 'full_refresh';
+  defaultFieldMapping?: DefaultFieldMapping;
+  source: InternalSource;
+  destination: CustomerDestination;
+};
+```
+
+#### `schema(params: Params)`
 
 A schema for a customer-facing field mapping.
 
@@ -79,29 +92,29 @@ type Field = {
 };
 ```
 
-#### `destinations.postgres(params: PostgresDestinationParams)`
+#### `internal.destinations.postgres(params: Params)`
 
 A Postgres [Destination](./concepts#destination).
 
 ```typescript
-type PostgresDestinationParams = {
+type Params = {
   schema: Schema;
   retryPolicy?: RetryPolicy;
   config: {
     credentials: PostgresCredentials;
     table: string;
-    upsertKey: string;
     customerIdColumn: string;
+    upsertKey: string;
   };
 };
 ```
 
-#### `destinations.webhook(params: WebhookDestinationParams)`
+#### `internal.destinations.webhook(params: Params)`
 
 A webhook [Destination](./concepts#destination).
 
 ```typescript
-type WebhookDestinationParams = {
+type Params = {
   schema: Schema;
   retryPolicy?: RetryPolicy;
   config: {
@@ -109,6 +122,33 @@ type WebhookDestinationParams = {
     requestType: HttpRequestType;
     headers?: string | string[];
   };
+};
+```
+
+#### `internal.sources.postgres(params: Params)`
+
+A Postgres [Destination](./concepts#destination).
+
+```typescript
+type Params = {
+  schema: Schema;
+  retryPolicy?: RetryPolicy;
+  config: {
+    credentials: PostgresCredentials;
+    table: string;
+    customerIdColumn: string;
+  };
+};
+```
+
+#### `customer.destinations.salesforce(params: Params)`
+
+A Postgres [Destination](./concepts#destination).
+
+```typescript
+type Params = {
+  objectConfig: SalesforceObjectConfig;
+  upsertKey: string;
 };
 ```
 
@@ -136,7 +176,7 @@ type Mapping = {
 import * as sdk from '@supaglue/sdk';
 
 // credentials to write into your application's Postgres
-const credentials = sdk.destinations.postgresCredentials({
+const credentials = sdk.internal.common.postgres.credentials({
   host: 'postgres',
   port: 5432,
   database: 'sample_app',
@@ -174,11 +214,13 @@ const contactMapping = sdk.defaultFieldMapping(
 );
 
 // export this Sync Config
-sdk.config({
+sdk.syncConfigs.inbound({
   name: 'Contacts',
-  salesforceObject: 'Contact',
+  source: sdk.customer.sources.salesforce({
+    objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Contact'),
+  }),
   cronExpression: '* * * * *',
-  destination: sdk.destinations.postgres({
+  destination: sdk.internal.destinations.postgres({
     schema: contactSchema,
     config: {
       credentials,
