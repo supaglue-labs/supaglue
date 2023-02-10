@@ -1,6 +1,4 @@
-import { WebhookInternalIntegration } from '../base';
-
-export type WebhookDestination = WebhookInternalIntegration;
+import { WebhookDestination } from '@supaglue/types';
 
 export function webhook(params: Omit<WebhookDestination, 'type'>): WebhookDestination {
   return {

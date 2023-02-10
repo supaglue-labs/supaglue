@@ -1,5 +1,3 @@
-import { ApplicationFailure } from '@temporalio/common';
-import { getDependencyContainer } from '../../dependency_container';
 import {
   InboundSyncConfig,
   OutboundSyncConfig,
@@ -8,7 +6,9 @@ import {
   SalesforceCustomerIntegration,
   SyncConfig,
   WebhookDestination,
-} from '../../developer_config/entities';
+} from '@supaglue/types';
+import { ApplicationFailure } from '@temporalio/common';
+import { getDependencyContainer } from '../../dependency_container';
 import { InboundSync, OutboundSync, Sync } from '../../syncs/entities';
 import { createSupaglue, Supaglue } from '../sdk';
 

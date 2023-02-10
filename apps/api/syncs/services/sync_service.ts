@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { SyncConfig } from '@supaglue/types';
 import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, ScheduleOverlapPolicy } from '@temporalio/client';
-import { DeveloperConfig, SyncConfig } from '../../developer_config/entities';
+import { DeveloperConfig } from '../../developer_config/entities';
 import { logger } from '../../logger';
 import { TEMPORAL_SYNC_TASKS_TASK_QUEUE } from '../../temporal';
 import { getRunSyncWorkflowId, runSync } from '../../temporal/workflows';

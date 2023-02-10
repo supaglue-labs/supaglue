@@ -1,7 +1,7 @@
+import { PostgresInternalIntegration as PostgresInternalIntegrationConfig } from '@supaglue/types';
 import { ApplicationFailure } from '@temporalio/client';
 import retry from 'async-retry';
 import pg from 'pg';
-import { PostgresInternalIntegration as PostgresInternalIntegrationConfig } from '../../../developer_config/entities';
 import { BaseInternalIntegration } from './base';
 
 export class PostgresInternalIntegration extends BaseInternalIntegration {

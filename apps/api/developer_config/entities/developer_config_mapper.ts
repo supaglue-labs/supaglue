@@ -1,5 +1,6 @@
 import { DeveloperConfig as DeveloperConfigModel } from '@prisma/client';
-import { DeveloperConfig, DeveloperConfigSpec } from '.';
+import { DeveloperConfigSpec } from '@supaglue/types';
+import { DeveloperConfig } from '.';
 
 export const fromModelToDeveloperConfig = (model: DeveloperConfigModel): DeveloperConfig => {
   const spec = model.config as DeveloperConfigSpec;

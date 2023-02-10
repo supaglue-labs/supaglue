@@ -1,7 +1,4 @@
-type RetryPolicyParams = {
-  // TODO: Allow more customization
-  retries?: number;
-};
+import { RetryPolicy as RetryPolicyParams } from '@supaglue/types';
 
 export function retryPolicy(params: RetryPolicyParams) {
   return new RetryPolicy(params);
