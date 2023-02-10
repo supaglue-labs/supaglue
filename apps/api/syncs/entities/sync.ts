@@ -194,6 +194,8 @@ type BaseSyncUpdateParams = {
   enabled: boolean;
   syncConfigName: string;
   fieldMapping?: Record<string, string>;
+  // Customer-defined fields that are not included in the developer's destination schema
+  customProperties?: Record<string, string>[];
 };
 
 type BaseSyncCreateParams = BaseSyncUpdateParams & {
