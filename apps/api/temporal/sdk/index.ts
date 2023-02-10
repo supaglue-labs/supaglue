@@ -1,5 +1,7 @@
+import { SyncConfig } from '../../developer_config/entities';
+import { Sync } from '../../syncs/entities';
 import { createCustomerIntegrations, CustomerIntegrations } from './customer_integrations';
-import { internalIntegrations, InternalIntegrations } from './internal_integrations';
+import { createInternalIntegrations, InternalIntegrations } from './internal_integrations';
 
 export type Supaglue = {
   customerId: string;
@@ -7,10 +9,10 @@ export type Supaglue = {
   internalIntegrations: InternalIntegrations;
 };
 
-export const createSupaglue = (customerId: string): Supaglue => {
+export const createSupaglue = (sync: Sync, syncConfig: SyncConfig, syncRunId: string): Supaglue => {
   return {
-    customerId,
-    customerIntegrations: createCustomerIntegrations(customerId),
-    internalIntegrations,
+    customerId: sync.customerId,
+    customerIntegrations: createCustomerIntegrations(sync, syncConfig, syncRunId),
+    internalIntegrations: createInternalIntegrations(sync, syncConfig, syncRunId),
   };
 };

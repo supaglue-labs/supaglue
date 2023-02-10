@@ -2,9 +2,10 @@ import { ApplicationFailure } from '@temporalio/client';
 import retry from 'async-retry';
 import axios from 'axios';
 import { WebhookDestination } from '../../../developer_config/entities';
+import { getMapping, mapCustomerToInternalRecords } from '../../lib';
 import { BaseInternalIntegration } from './base';
 
-export class WebhookInternalIntegration extends BaseInternalIntegration {
+class WebhookInternalIntegration extends BaseInternalIntegration {
   public constructor(...args: ConstructorParameters<typeof BaseInternalIntegration>) {
     super(...args);
   }
@@ -52,6 +53,27 @@ export class WebhookInternalIntegration extends BaseInternalIntegration {
       }, destination.retryPolicy);
     } catch (err: unknown) {
       throw ApplicationFailure.nonRetryable(err instanceof Error ? err.message : '', 'sync_destination_error');
+    }
+  }
+}
+
+export class WebhookDestinationInternalIntegration extends WebhookInternalIntegration {
+  public async sendRequests(records: any[]) {
+    const { sync, syncConfig, syncRunId } = this;
+    const fieldMapping = getMapping(sync, syncConfig);
+    const internalRecords = mapCustomerToInternalRecords(fieldMapping, records);
+    if (!internalRecords.length) {
+      throw new Error('No records to write');
+    }
+    for (const record of internalRecords) {
+      this.request(
+        syncConfig.destination as WebhookDestination,
+        syncConfig.name,
+        sync.id,
+        syncRunId,
+        sync.customerId,
+        record
+      );
     }
   }
 }
