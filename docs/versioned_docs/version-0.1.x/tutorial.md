@@ -6,17 +6,17 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 
 # Tutorial
 
-**In under 15 minutes**, you'll build an integration that allows your customers to sync their Salesforce Account records to a sample Next.js application. We'll use the same sample application from the [Quickstart](/quickstart) for the tutorial.
+**In under 15 minutes**, you'll build an integration that allows your customers to sync their Salesforce Account records to a sample Next.js application. We'll use the same sample application from the [Quickstart](./quickstart) for the tutorial.
 
 You'll learn how to use Supaglue's SDKs and CLI to setup and deploy the integration (frontend and backend), and customize the UI you expose to your customers.
 
 ## Before you begin
 
-Be sure to have completed the [Quickstart](/quickstart).
+Be sure to have completed the [Quickstart](./quickstart).
 
 :::info
 
-For this tutorial, we've provided Salesforce Connected App credentials as part of the Sample App setup. Before deploying to production, please provide your own [Salesforce Connected App](/references/setup_salesforce) credentials.
+For this tutorial, we've provided Salesforce Connected App credentials as part of the Sample App setup. Before deploying to production, please provide your own [Salesforce Connected App](./references/setup_salesforce) credentials.
 
 :::
 
@@ -31,17 +31,17 @@ For this tutorial, we've provided Salesforce Connected App credentials as part o
 
 ## Deploy Developer Config
 
-In Supaglue, a [Developer Config](/concepts#developer-config) represents a set of Sync Configs. A [Sync Config](/concepts#sync-config) defines how to move one type of Salesforce object from your customers' Salesforce to your application. Once deployed to Supaglue's Integration Service, a Sync Config can be used by your customers as a [Sync](/concepts#sync) via embeddedable [Supaglue React components](/react-components).
+In Supaglue, a [Developer Config](./concepts#developer-config) represents a set of Sync Configs. A [Sync Config](./concepts#sync-config) defines how to move one type of Salesforce object from your customers' Salesforce to your application. Once deployed to Supaglue's Integration Service, a Sync Config can be used by your customers as a [Sync](./concepts#sync) via embeddedable [Supaglue React components](./react-components).
 
-The Developer Config you deployed in the [Quickstart](/quickstart) currently contains Syncs for Contacts, Leads, and Opportunities. We will now add a Sync for Accounts.
+The Developer Config you deployed in the [Quickstart](./quickstart) currently contains Syncs for Contacts, Leads, and Opportunities. We will now add a Sync for Accounts.
 
 ### Create Sync Config for Accounts
 
-To build a Salesforce Sync, we first use the [Config SDK](/config_sdk) to create a Sync Config, which defines how to move Salesforce records between your customers' Salesforce and your application:
+To build a Salesforce Sync, we first use the [Config SDK](./config_sdk) to create a Sync Config, which defines how to move Salesforce records between your customers' Salesforce and your application:
 
 :::info
 
-For this tutorial, we've included a sample [Developer Config](/concepts#developer-config) in the `supaglue-config` directory, which lives in the sample app. The Config SDK was also installed as part of the sample app earlier for your convenience.
+For this tutorial, we've included a sample [Developer Config](./concepts#developer-config) in the `supaglue-config` directory, which lives in the sample app. The Config SDK was also installed as part of the sample app earlier for your convenience.
 
 :::
 
@@ -181,9 +181,9 @@ The sample app already contains some Supaglue embedded components, <`Integration
 
 Finally, let's manually trigger our sync to make sure it works as expected.
 
-1. Click the "Run sync now" button. This triggers Supaglue to execute a [Sync Run](/concepts#sync-run) as a background task.
+1. Click the "Run sync now" button. This triggers Supaglue to execute a [Sync Run](./concepts#sync-run) as a background task.
 
-1. Check the status of the Sync Run by running [`syncs list`](/cli#syncs-list) command to check when it completes:
+1. Check the status of the Sync Run by running [`syncs list`](./cli#syncs-list) command to check when it completes:
 
    ```shell
    supaglue syncs list --customer-id user1
@@ -240,7 +240,7 @@ You may have realized that two of the columns in the sample app's Contacts table
    });
    ```
 
-1. Re-run the [`apply`](/cli#apply) CLI command to apply the latest changes:
+1. Re-run the [`apply`](./cli#apply) CLI command to apply the latest changes:
 
    ```shell
    supaglue apply supaglue-config/
