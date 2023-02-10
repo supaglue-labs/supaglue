@@ -1,9 +1,12 @@
 import { ApplicationFailure } from '@temporalio/client';
 import retry from 'async-retry';
 import * as jsforce from 'jsforce';
+import { SalesforceDestination, SalesforceSource, SyncConfig } from '../../../developer_config/entities';
+import { Sync } from '../../../syncs/entities';
+import { getMapping, getSalesforceObject, mapInternalToCustomerRecords } from '../../lib';
 import { BaseCustomerIntegration } from './base';
 
-export class SalesforceCustomerIntegration extends BaseCustomerIntegration {
+class CustomerSalesforceIntegration extends BaseCustomerIntegration {
   #connectionInstance: jsforce.Connection | null = null;
 
   public constructor(...args: ConstructorParameters<typeof BaseCustomerIntegration>) {
@@ -102,4 +105,44 @@ export class SalesforceCustomerIntegration extends BaseCustomerIntegration {
   }
 }
 
-export const createSalesforce = (customerId: string) => new SalesforceCustomerIntegration(customerId);
+export class CustomerSalesforceSourceIntegration extends CustomerSalesforceIntegration {
+  public async bulkReadSObject() {
+    const { sync, syncConfig } = this;
+    const fieldMapping = getMapping(sync, syncConfig);
+    const salesforceFields = [...Object.values(fieldMapping), 'SystemModstamp']; // TODO: Do not fetch SystemModstamp twice if already in mapping.
+    const salesforceFieldsString = salesforceFields.join(', ');
+
+    // TODO: make the class take in a generic for SyncConfig instead of asserting
+    const salesforceObject = getSalesforceObject(syncConfig.source as SalesforceSource, sync);
+
+    // Fetching in ASC order for incremental sync in the future.
+    const soql = `SELECT ${salesforceFieldsString} FROM ${salesforceObject} ORDER BY SystemModstamp ASC`;
+
+    return await this.query(soql);
+  }
+}
+
+export class CustomerSalesforceDestinationIntegration extends CustomerSalesforceIntegration {
+  public async upsertAllRecords(records: any[]) {
+    const { sync, syncConfig } = this;
+    const fieldMapping = getMapping(sync, syncConfig);
+    const customerRecords = mapInternalToCustomerRecords(fieldMapping, records);
+    if (!customerRecords.length) {
+      throw new Error('No records to write');
+    }
+    // TODO: make the class take in a generic for SyncConfig instead of asserting
+    const destination = syncConfig.destination as SalesforceDestination;
+    // TODO: Validate / throw error?
+    // Apply mapping to upsert key
+    const salesforceUpsertKey = fieldMapping[destination.upsertKey];
+
+    const salesforceObject = getSalesforceObject(destination, sync);
+
+    await this.upsert(salesforceObject, salesforceUpsertKey, customerRecords);
+  }
+}
+
+export const createSourceSalesforce = (sync: Sync, syncConfig: SyncConfig, syncRunId: string) =>
+  new CustomerSalesforceSourceIntegration(sync, syncConfig, syncRunId);
+export const createDestinationSalesforce = (sync: Sync, syncConfig: SyncConfig, syncRunId: string) =>
+  new CustomerSalesforceDestinationIntegration(sync, syncConfig, syncRunId);
