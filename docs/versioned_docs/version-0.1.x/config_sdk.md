@@ -10,7 +10,7 @@ Supaglue is in Public Alpha. There are currently many missing features, interfac
 
 :::
 
-Use **Supaglue's Config SDK**, a Typescript-based configuration language, to define [Developer Configs](/concepts#developer_config).
+Use **Supaglue's Config SDK**, a Typescript-based configuration language, to define [Developer Configs](./concepts#developer_config).
 
 ## Installation
 
@@ -32,7 +32,7 @@ sdk.config(/* ... */);
 
 #### `config(params: DeveloperConfigParams)`
 
-Entry-point for creating a Supaglue [Developer Config](/concepts#developer_config): a set of [Sync Configs](/concepts#sync-config) and Salesforce credentials metadata.
+Entry-point for creating a Supaglue [Developer Config](./concepts#developer_config): a set of [Sync Configs](./concepts#sync-config) and Salesforce credentials metadata.
 
 ```typescript
 type DeveloperConfigParams = {
@@ -49,7 +49,7 @@ class SalesforceCredentials {
 
 #### `salesforce.syncConfig(params: SyncConfigParams)`
 
-One [Sync Config](/concepts#developer_config).
+One [Sync Config](./concepts#developer_config).
 
 ```typescript
 type SyncConfigParams = {
@@ -81,7 +81,7 @@ type Field = {
 
 #### `destinations.postgres(params: PostgresDestinationParams)`
 
-A Postgres [Destination](/concepts#destination).
+A Postgres [Destination](./concepts#destination).
 
 ```typescript
 type PostgresDestinationParams = {
@@ -98,7 +98,7 @@ type PostgresDestinationParams = {
 
 #### `destinations.webhook(params: WebhookDestinationParams)`
 
-A webhook [Destination](/concepts#destination).
+A webhook [Destination](./concepts#destination).
 
 ```typescript
 type WebhookDestinationParams = {

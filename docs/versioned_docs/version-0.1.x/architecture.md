@@ -20,10 +20,10 @@ Supaglue takes a **code-centric** approach, using Typescript as a declarative co
 
 Supaglue consists of the following components:
 
-- **Config SDK** to author [sync configuration](/concepts#developer-config) declaratively
+- **Config SDK** to author [sync configuration](./concepts#developer-config) declaratively
 - **CLI** to publish sync configuration changes
 - **API** to communicate an coordinate with your application, Salesforce, and Supaglue
-- **Workflow engine (Temporal)** to reliably execute [syncs](/concepts#sync)
+- **Workflow engine (Temporal)** to reliably execute [syncs](./concepts#sync)
 - **Database** to store developer and customer configurations and credentials
 - **React components (Nextjs SDK)** to embed customer-facing UI into your application
 
