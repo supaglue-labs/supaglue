@@ -27,15 +27,15 @@ export async function doSync({ syncId, syncRunId }: DoSyncArgs): Promise<void> {
     const records = await sg.customerIntegrations.sources.salesforce.bulkReadSObject();
 
     if (syncConfig.destination.type === 'postgres') {
-      await sg.internalIntegrations.destinations.postgres.insertRecords(records);
-    } else {
-      await sg.internalIntegrations.destinations.webhook.sendRequests(records);
+      return await sg.internalIntegrations.destinations.postgres.insertRecords(records);
     }
+
+    return await sg.internalIntegrations.destinations.webhook.sendRequests(records);
   }
 
   if (sync.type === 'outbound' && syncConfig.type === 'outbound') {
     const records = await sg.internalIntegrations.sources.postgres.readAllObjectType();
-    await sg.customerIntegrations.destinations.salesforce.upsertAllRecords(records);
+    return await sg.customerIntegrations.destinations.salesforce.upsertAllRecords(records);
   }
 
   throw ApplicationFailure.nonRetryable('Sync and SyncConfig types do not match');
