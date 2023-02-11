@@ -40,6 +40,7 @@ const contactSyncConfig = sdk.syncConfigs.inbound({
       table: 'salesforce_contacts',
       upsertKey: 'salesforce_id',
       customerIdColumn: 'customer_id',
+      customPropertiesColumn: 'extra_attributes',
     },
     retryPolicy: sdk.retryPolicy({
       retries: 2,
