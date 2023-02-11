@@ -41,14 +41,30 @@ class PostgresInternalIntegration extends BaseInternalIntegration {
 export class SourcePostgresInternalIntegration extends PostgresInternalIntegration {
   public async readAllObjectType() {
     const source = this.syncConfig.source as PostgresSource;
+    const { customProperties } = this.sync;
 
     const dbFields = source.schema.fields.map((field) => field.name);
+
+    const { customPropertiesEnabled } = this.syncConfig;
+    const { customPropertiesColumn } = source.config;
+    if (customPropertiesEnabled && !customPropertiesColumn) {
+      throw new Error('Unable to sync custom properties without a customPropertiesColumn specified');
+    }
+
+    if (customPropertiesEnabled && customProperties?.length) {
+      customProperties.forEach((field) => {
+        dbFields.push(`${customPropertiesColumn}::jsonb->'${field.name}' AS "${field.name}"`);
+      });
+    }
+
     const dbFieldsString = dbFields.join(', ');
 
-    const sql = `SELECT
-    ${dbFieldsString}
-  FROM ${source.config.table}
-  WHERE ${source.config.customerIdColumn} = '${this.sync.customerId}'`;
+    const sql = `
+      SELECT
+        ${dbFieldsString}
+      FROM ${source.config.table}
+      WHERE ${source.config.customerIdColumn} = '${this.sync.customerId}'
+    `;
 
     return await this.query(source, sql);
   }
@@ -72,15 +88,15 @@ export class DestinationPostgresInternalIntegration extends PostgresInternalInte
     const { customPropertiesColumn, upsertKey } = destination.config;
 
     const normalizedFields = destination.schema.fields.map((field) => field.name);
-    const customFields = Object.keys(fieldMapping).filter((field) => !normalizedFields.includes(field));
+    const customProperties = Object.keys(fieldMapping).filter((field) => !normalizedFields.includes(field));
 
-    const customFieldsEnabled = !!syncConfig.customPropertiesEnabled;
-    if (customFieldsEnabled && !customPropertiesColumn) {
+    const { customPropertiesEnabled } = syncConfig;
+    if (customPropertiesEnabled && !customPropertiesColumn) {
       throw new Error('Unable to sync custom properties without a customPropertiesColumn specified');
     }
-    const hasCustomFields = customFieldsEnabled && customFields.length;
+    const hasCustomProperties = customPropertiesEnabled && customProperties.length;
 
-    const dbFields = hasCustomFields ? [...normalizedFields, customPropertiesColumn] : normalizedFields;
+    const dbFields = hasCustomProperties ? [...normalizedFields, customPropertiesColumn] : normalizedFields;
 
     const dbFieldsWithoutPrimaryKey = dbFields.filter((field) => field !== upsertKey);
     const dbFieldsString = dbFields.map((field) => `"${field}"`).join(', ');
@@ -100,9 +116,9 @@ export class DestinationPostgresInternalIntegration extends PostgresInternalInte
     for (const mappedRecord of internalRecords) {
       const values = normalizedFields.map((field) => mappedRecord[field] ?? '');
 
-      if (hasCustomFields) {
+      if (hasCustomProperties) {
         const customPropertiesMapping: Record<string, any> = {};
-        customFields.forEach((field) => {
+        customProperties.forEach((field) => {
           customPropertiesMapping[field] = mappedRecord[field] ?? '';
         });
         values.push(customPropertiesMapping);

@@ -2,6 +2,7 @@ import { SalesforceDestination, SalesforceSource, Sync, SyncConfig } from '@supa
 import { ApplicationFailure } from '@temporalio/client';
 import retry from 'async-retry';
 import * as jsforce from 'jsforce';
+import { logger } from '../../../logger';
 import { getMapping, getSalesforceObject, mapInternalToCustomerRecords } from '../../lib';
 import { BaseCustomerIntegration } from './base';
 
@@ -39,15 +40,20 @@ class CustomerSalesforceIntegration extends BaseCustomerIntegration {
   public async upsert(salesforceObject: string, upsertKey: string, records: Record<string, unknown>[]): Promise<void> {
     await this.#connect();
 
-    // TODO: Need to check the response. Resolved Promise doesn't necessarily mean that
-    // records were successfully uploaded. Need to parse the response for errors
-    // record-by-record.
-    await this.#connection().bulk2.loadAndWaitForResults({
+    const result = await this.#connection().bulk2.loadAndWaitForResults({
       object: salesforceObject,
       operation: 'upsert',
       externalIdFieldName: upsertKey,
       input: records,
+      pollTimeout: 10000,
     });
+
+    const { successfulResults, failedResults } = result;
+    logger.info(`Successfully uploaded ${successfulResults.length} of ${records.length} records to salesforce`);
+
+    if (failedResults.length) {
+      logger.error(`Error uploading ${failedResults.length} records to salesforce: ${JSON.stringify(failedResults)}`);
+    }
   }
 
   public async query(soql: string): Promise<jsforce.Record[]> {

@@ -1,7 +1,7 @@
 /*
  * Resume a customer's sync:
  *
- *  $ supaglue syncs logs --customer-id 1 --sync-config-name Contacts
+ *  $ supaglue syncs resume --customer-id 1 --sync-config-name Contacts
  *
  */
 
