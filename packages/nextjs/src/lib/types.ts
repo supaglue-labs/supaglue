@@ -32,7 +32,6 @@ export type SyncConfig = {
   // TODO: support incremental
   strategy: 'full_refresh';
   defaultFieldMapping?: FieldMapping[];
-  customProperties?: Field[];
 };
 
 type BaseDestination = {
@@ -51,6 +50,7 @@ export type PostgresDestination = BaseDestination & {
     };
     table: string;
     upsertKey: string;
+    customPropertiesColumn?: string;
   };
 };
 

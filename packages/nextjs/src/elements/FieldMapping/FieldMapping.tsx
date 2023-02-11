@@ -141,6 +141,12 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
     );
   };
 
+  // TODO: Add flag to enable/disable custom properties
+  // For now, just check to see if there's a column configured for custom properties
+  const destinationConfig = syncConfig.destination.config;
+  const customPropertiesEnabled =
+    'customPropertiesColumn' in destinationConfig && !!destinationConfig.customPropertiesColumn;
+
   const applicationFields = [...syncConfig.destination.schema.fields, ...(sync.customProperties || [])];
   const customPropertyNames = new Set((sync.customProperties || []).map((field) => field.name));
 
@@ -233,11 +239,13 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
         />
       )}
 
-      <AddCustomPropertyButton
-        appearance={appearance}
-        disabled={isCreatingCustomProperty}
-        onClick={() => setIsCreatingCustomProperty(true)}
-      />
+      {customPropertiesEnabled && (
+        <AddCustomPropertyButton
+          appearance={appearance}
+          disabled={isCreatingCustomProperty}
+          onClick={() => setIsCreatingCustomProperty(true)}
+        />
+      )}
     </div>
   );
 };
