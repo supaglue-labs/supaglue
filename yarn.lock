@@ -3743,10 +3743,10 @@ __metadata:
     next: ^13.1.1
     react-dom: ^18.2.0
     swr: ^2.0.0
+    typescript: ^4.9.4
     typescript-plugin-css-modules: ^4.1.1
   peerDependencies:
     react: ^18.2.0
-    typescript: ^4.9.4
   languageName: unknown
   linkType: soft
 
@@ -3755,7 +3755,7 @@ __metadata:
   resolution: "@supaglue/sdk@workspace:packages/sdk"
   dependencies:
     "@supaglue/types": "workspace:*"
-  peerDependencies:
+    "@tsconfig/node18": ^1.0.1
     typescript: ^4.9.4
   languageName: unknown
   linkType: soft
@@ -3764,6 +3764,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/types@workspace:packages/types"
   dependencies:
+    "@tsconfig/node18": ^1.0.1
     typescript: ^4.9.4
   languageName: unknown
   linkType: soft

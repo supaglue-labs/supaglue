@@ -7,7 +7,8 @@
     "directory": "packages/sdk"
   },
   "main": "./src/index.ts",
-  "peerDependencies": {
+  "devDependencies": {
+    "@tsconfig/node18": "^1.0.1",
     "typescript": "^4.9.4"
   },
   "dependencies": {
