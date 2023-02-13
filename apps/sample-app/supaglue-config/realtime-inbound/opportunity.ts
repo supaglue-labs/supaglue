@@ -31,12 +31,11 @@ const opportunityMapping = sdk.defaultFieldMapping([
   { name: 'stage', field: 'StageName' },
 ]);
 
-const opportunitySyncConfig = sdk.syncConfigs.inbound({
+const opportunitySyncConfig = sdk.syncConfigs.realtimeInbound({
   name: 'Opportunities',
   source: sdk.customer.sources.salesforce({
     objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Opportunity'),
   }),
-  cronExpression: '*/15 * * * *',
   destination: sdk.internal.destinations.webhook({
     schema: opportunitiesSchema,
     config: {
@@ -44,7 +43,6 @@ const opportunitySyncConfig = sdk.syncConfigs.inbound({
       requestType: 'POST',
     },
   }),
-  strategy: 'full_refresh',
   defaultFieldMapping: opportunityMapping,
 });
 

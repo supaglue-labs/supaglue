@@ -2,7 +2,11 @@ import { SalesforceCustomerIntegration, SyncConfig } from '@supaglue/types';
 import { Sync } from '../../syncs/entities';
 
 export function getMapping({ fieldMapping }: Sync, syncConfig: SyncConfig): Record<string, string> {
-  const schema = syncConfig.type === 'inbound' ? syncConfig.destination.schema : syncConfig.source.schema;
+  const schema =
+    syncConfig.type === 'inbound' || syncConfig.type === 'realtime_inbound'
+      ? syncConfig.destination.schema
+      : syncConfig.source.schema;
+
   const { defaultFieldMapping } = syncConfig;
 
   return schema.fields.reduce((mapping: Record<string, string>, { name }) => {
@@ -51,7 +55,8 @@ export function getSalesforceObject(salesforce: SalesforceCustomerIntegration, s
     case 'specified':
       return salesforce.objectConfig.object;
     case 'selectable': {
-      const object = sync.type === 'inbound' ? sync.source?.object : sync.destination?.object;
+      const object =
+        sync.type === 'inbound' || sync.type === 'realtime_inbound' ? sync.source?.object : sync.destination?.object;
       if (!object) {
         // TODO: Make this more generalizable
         throw new Error('Salesforce object requested by SyncConfig but not provided by Sync');

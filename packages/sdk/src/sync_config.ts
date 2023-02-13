@@ -1,4 +1,4 @@
-import { InboundSyncConfig, OutboundSyncConfig } from '@supaglue/types';
+import { InboundSyncConfig, OutboundSyncConfig, RealtimeInboundSyncConfig } from '@supaglue/types';
 
 export function inbound(params: Omit<InboundSyncConfig, 'type'>): InboundSyncConfig {
   return {
@@ -10,6 +10,13 @@ export function inbound(params: Omit<InboundSyncConfig, 'type'>): InboundSyncCon
 export function outbound(params: Omit<OutboundSyncConfig, 'type'>): OutboundSyncConfig {
   return {
     type: 'outbound',
+    ...params,
+  };
+}
+
+export function realtimeInbound(params: Omit<RealtimeInboundSyncConfig, 'type'>): RealtimeInboundSyncConfig {
+  return {
+    type: 'realtime_inbound',
     ...params,
   };
 }
