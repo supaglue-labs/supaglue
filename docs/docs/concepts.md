@@ -37,12 +37,14 @@ type DeveloperConfigParams = {
   salesforceCredentials: SalesforceCredentials;
 };
 
-type SyncConfig = {
+type BaseSyncConfig = {
   name: string;
   cronExpression: string;
   strategy: 'full_refresh';
   defaultFieldMapping?: FieldMapping[];
 };
+
+type BaseRealtimeSyncConfig = Omit<BaseSyncConfig, 'cronExpression' | 'strategy'>;
 
 type InboundSyncConfig = BaseSyncConfig & {
   type: 'inbound';
@@ -56,7 +58,13 @@ type OutboundSyncConfig = BaseSyncConfig & {
   destination: CustomerDestination;
 };
 
-export type SyncConfig = InboundSyncConfig | OutboundSyncConfig;
+type RealtimeInboundSyncConfig = BaseRealtimeSyncConfig & {
+  type: 'realtime_inbound';
+  source: CustomerSource;
+  destination: InternalDestination;
+};
+
+export type SyncConfig = InboundSyncConfig | OutboundSyncConfig | RealtimeInboundSyncConfig;
 
 type SalesforceCredentials = {
   loginUrl: string;

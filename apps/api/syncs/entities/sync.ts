@@ -47,6 +47,11 @@ export type OutboundSyncUpdateParams = BaseSyncUpdateParams & OutboundSyncCore;
 export type OutboundSyncCreateParams = BaseSyncCreateParams & OutboundSyncCore;
 export type OutboundSync = BaseSync & OutboundSyncCore;
 
-export type SyncUpdateParams = InboundSyncUpdateParams | OutboundSyncUpdateParams;
-export type SyncCreateParams = InboundSyncCreateParams | OutboundSyncCreateParams;
-export type Sync = InboundSync | OutboundSync;
+type RealtimeInboundSyncCore = { type: 'realtime_inbound'; source?: CustomerSourceParams };
+export type RealtimeInboundSyncUpdateParams = BaseSyncUpdateParams & RealtimeInboundSyncCore;
+export type RealtimeInboundSyncCreateParams = BaseSyncCreateParams & RealtimeInboundSyncCore;
+export type RealtimeInboundSync = BaseSync & RealtimeInboundSyncCore;
+
+export type SyncUpdateParams = InboundSyncUpdateParams | OutboundSyncUpdateParams | RealtimeInboundSyncUpdateParams;
+export type SyncCreateParams = InboundSyncCreateParams | OutboundSyncCreateParams | RealtimeInboundSyncCreateParams;
+export type Sync = InboundSync | OutboundSync | RealtimeInboundSync;

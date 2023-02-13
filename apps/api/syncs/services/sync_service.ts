@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { SyncConfig } from '@supaglue/types';
+import { RealtimeInboundSyncConfig, SyncConfig } from '@supaglue/types';
 import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, ScheduleOverlapPolicy } from '@temporalio/client';
 import { DeveloperConfig } from '../../developer_config/entities';
 import { logger } from '../../logger';
@@ -92,7 +92,11 @@ export class SyncService {
     // create a background Temporal workflow to create this schedule, or
     // 2. Get rid of Sync entity in DB and treat Temporal sync workflow schedule as SOT, or
     // 3. Spin up a Temporal workflow to both create the Sync DB record AND create the Temporal schedule.
-    await this.updateTemporalSyncSchedule(sync, syncConfig);
+    if (syncConfig.type === 'inbound' || syncConfig.type === 'outbound') {
+      await this.updateTemporalSyncSchedule(sync, syncConfig);
+    } else if (syncConfig.type === 'realtime_inbound') {
+      // TODO: set up the realtime inbound sync
+    }
 
     return sync;
   }
@@ -118,12 +122,19 @@ export class SyncService {
     // create a background Temporal workflow to create this schedule, or
     // 2. Get rid of Sync entity in DB and treat Temporal sync workflow schedule as SOT, or
     // 3. Spin up a Temporal workflow to both create the Sync DB record AND create the Temporal schedule.
-    await this.updateTemporalSyncSchedule(sync, syncConfig);
+    if (syncConfig.type === 'inbound' || syncConfig.type === 'outbound') {
+      await this.updateTemporalSyncSchedule(sync, syncConfig);
+    } else if (syncConfig.type === 'realtime_inbound') {
+      // TODO: set up the realtime inbound sync
+    }
 
     return sync;
   }
 
-  private async updateTemporalSyncSchedule(sync: Sync, syncConfig: SyncConfig): Promise<void> {
+  private async updateTemporalSyncSchedule(
+    sync: Sync,
+    syncConfig: Exclude<SyncConfig, RealtimeInboundSyncConfig>
+  ): Promise<void> {
     const syncScheduleId = getSyncScheduleId(sync.id);
 
     try {

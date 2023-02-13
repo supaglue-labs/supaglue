@@ -290,6 +290,8 @@ type BaseSyncConfig = {
   defaultFieldMapping?: FieldMapping[];
 };
 
+type BaseInboundSyncConfig = Omit<BaseSyncConfig, 'cronExpression' | 'strategy'>;
+
 export type InboundSyncConfig = BaseSyncConfig & {
   type: 'inbound';
   source: CustomerSource;
@@ -302,7 +304,13 @@ export type OutboundSyncConfig = BaseSyncConfig & {
   destination: CustomerDestination;
 };
 
-export type SyncConfig = InboundSyncConfig | OutboundSyncConfig;
+export type RealtimeInboundSyncConfig = BaseInboundSyncConfig & {
+  type: 'realtime_inbound';
+  source: CustomerSource;
+  destination: InternalDestination;
+};
+
+export type SyncConfig = InboundSyncConfig | OutboundSyncConfig | RealtimeInboundSyncConfig;
 
 export type DeveloperConfigSpec = {
   syncConfigs: SyncConfig[];
