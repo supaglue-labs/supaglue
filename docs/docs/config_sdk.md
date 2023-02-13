@@ -105,9 +105,16 @@ type Params = {
     table: string;
     customerIdColumn: string;
     upsertKey: string;
+    customPropertiesColumn?: string;
   };
 };
 ```
+
+If `customPropertiesColumn` is defined in your destination config, your customers will be able to create custom properties
+(by clicking the "+ Add custom property" button in the `SyncConfigCard`) and include them in their field mapping.
+
+Important: The `customPropertiesColumn` must be the name of a JSONB column on the same Postgres table that represents
+the destination in your Supaglue config.
 
 #### `internal.destinations.webhook(params: Params)`
 
