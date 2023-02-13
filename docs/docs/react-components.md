@@ -58,7 +58,7 @@ export default App;
 
 #### `<SalesforceConnectButton/>`
 
-A button that links to the Salesforce sign-in page or displays the sign-in page modal. By default, it is a `<button/>` tag that "Connect", but is completely customizable by passing children.
+A button that links to the Salesforce sign-in page or displays the sign-in page modal. By default, it is a `<button/>` tag that reads "Connect", but is completely customizable by passing children.
 
 ![salesforce_connect_button](/img/react_components/salesforce_connect_button.png 'salesforce connect button')
 
