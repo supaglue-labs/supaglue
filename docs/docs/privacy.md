@@ -11,7 +11,7 @@ This Privacy Policy describes the privacy practices of Supergrain, Inc. (doing b
 handle personal information that we collect through our digital properties that link to this Privacy Policy,
 including our website (collectively, the &quot;<strong>Service</strong>&quot;).
 
-Supergrain provides integration tools to business customers. This Privacy Policy
+Supaglue provides integration tools to business customers. This Privacy Policy
 does not apply to personal information that we handle on behalf of our business customers while providing our
 services to them. Our use of this information is restricted by our agreements with those business customers.
 
@@ -66,7 +66,7 @@ We may use your personal information for research and development purposes, incl
 ### Marketing and advertising
 We, our service providers and our third-party advertising partners may collect and use your personal information for marketing and advertising purposes:
 
-*   **Direct marketing**. We may send you Supergrain-related or other direct marketing communications as permitted by law. You may opt-out of our marketing communications as described in the [Opt-out of marketing](#Opt_out_of_marketing) section below.
+*   **Direct marketing**. We may send you Supaglue-related or other direct marketing communications as permitted by law. You may opt-out of our marketing communications as described in the [Opt-out of marketing](#Opt_out_of_marketing) section below.
 *   **Interest-based advertising**. We may engage third-party advertising companies and social media companies to display ads on our Service and other online services. These companies may use cookies and similar technologies to collect information about your interaction (including the data described in the automatic data collection section above) over time across the Service, our communications and other online services, and use that information to serve online ads that they think will interest you. This is called interest-based advertising. We may also share information about our users with these companies to facilitate interest-based advertising to those or similar users on other online platforms. You can learn more about your choices for limiting interest-based advertising in the [Advertising choices](#Advertisingchoices) section below.
 
 ### Compliance and protection
@@ -87,7 +87,7 @@ We may share your personal information with the following parties and as otherwi
 * **Third-party platforms and social media networks.** If you have enabled features or functionality that connect the Service to a third-party platform (such as by logging in to the Service using your account with the third-party), we may disclose the personal information that you authorized us to share. We do not control the third party's use of your personal information.
 * **Professional advisors.** Professional advisors, such as lawyers, auditors, bankers and insurers, where necessary in the course of the professional services that they render to us.
 * **Authorities and others.** Law enforcement, government authorities, and private parties, as we believe in good faith to be necessary or appropriate for the [compliance and protection purposes](#_Compliance_and_operations.) described above.
-* **Business transferees.** Acquirers and other relevant participants in business transactions (or negotiations and diligence for such transactions) involving a corporate divestiture, merger, consolidation, acquisition, reorganization, sale or other disposition of all or any portion of the business or assets of, or equity interests in, Supergrain or our affiliates (including, in connection with a bankruptcy or similar proceedings).
+* **Business transferees.** Acquirers and other relevant participants in business transactions (or negotiations and diligence for such transactions) involving a corporate divestiture, merger, consolidation, acquisition, reorganization, sale or other disposition of all or any portion of the business or assets of, or equity interests in, Supaglue or our affiliates (including, in connection with a bankruptcy or similar proceedings).
 
 ## Your choices
 You have the following choices with respect to your personal information.
