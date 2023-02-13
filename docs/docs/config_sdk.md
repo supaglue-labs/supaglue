@@ -52,8 +52,8 @@ class SalesforceCredentials {
 One [Sync Config](./concepts#sync-config).
 
 ```typescript
+// InboundSyncConfigParams
 type Params = {
-  type: 'inbound';
   name: string;
   cronExpression: string;
   strategy: 'full_refresh';
@@ -64,8 +64,8 @@ type Params = {
 ```
 
 ```typescript
+// OutboundSyncConfigParams
 type Params = {
-  type: 'outbound';
   name: string;
   cronExpression: string;
   strategy: 'full_refresh';
@@ -94,7 +94,7 @@ type Field = {
 
 #### `internal.destinations.postgres(params: Params)`
 
-A Postgres [Destination](./concepts#destination).
+A Postgres [Internal Destination](./concepts#internaldestination).
 
 ```typescript
 type Params = {
@@ -105,13 +105,20 @@ type Params = {
     table: string;
     customerIdColumn: string;
     upsertKey: string;
+    customPropertiesColumn?: string;
   };
 };
 ```
 
+If `customPropertiesColumn` is defined in your destination config, your customers will be able to create custom properties
+(by clicking the "+ Add custom property" button in the `SyncConfigCard`) and include them in their field mapping.
+
+Important: The `customPropertiesColumn` must be the name of a JSONB column on the same Postgres table that represents
+the destination in your Supaglue config.
+
 #### `internal.destinations.webhook(params: Params)`
 
-A webhook [Destination](./concepts#destination).
+A webhook [Internal Destination](./concepts#internaldestination).
 
 ```typescript
 type Params = {
@@ -127,7 +134,7 @@ type Params = {
 
 #### `internal.sources.postgres(params: Params)`
 
-A Postgres [Destination](./concepts#destination).
+A Postgres [Internal Source](./concepts#internalsource).
 
 ```typescript
 type Params = {
@@ -143,13 +150,17 @@ type Params = {
 
 #### `customer.destinations.salesforce(params: Params)`
 
-A Postgres [Destination](./concepts#destination).
+A Salesforce [Customer Destination](./concepts#customerdestination). You can configure
+a specific Salesforce object to sync or allow the customer to choose from a list.
 
 ```typescript
 type Params = {
   objectConfig: SalesforceObjectConfig;
   upsertKey: string;
 };
+
+const objectConfig1 = sdk.customer.common.salesforce.specifiedObjectConfig('Contact');
+const objectConfig2 = sdk.customer.common.salesforce.selectableObjectConfig(['Lead', 'Contact']);
 ```
 
 #### `defaultFieldMapping(fieldMapping: Mapping[], type: 'salesforce')`
