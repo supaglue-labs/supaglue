@@ -7,11 +7,11 @@
     "directory": "packages/types"
   },
   "main": "./src/index.ts",
-  "peerDependencies": {
+  "devDependencies": {
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "build": "yarn run clean && yarn run -T tsc -p .",
+    "build": "yarn run clean && tsc -p .",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "publish": "run -T turbo run build --filter=@supaglue/types ... && yarn npm publish",
     "lint-staged": "run -T lint-staged --no-stash --quiet",

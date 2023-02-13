@@ -3763,7 +3763,7 @@ __metadata:
 "@supaglue/types@workspace:*, @supaglue/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@supaglue/types@workspace:packages/types"
-  peerDependencies:
+  dependencies:
     typescript: ^4.9.4
   languageName: unknown
   linkType: soft
