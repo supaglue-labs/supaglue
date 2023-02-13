@@ -1,6 +1,4 @@
-import { PostgresInternalIntegration } from '../base';
-
-export type PostgresSource = PostgresInternalIntegration;
+import { PostgresSource } from '@supaglue/types';
 
 export function postgres(params: Omit<PostgresSource, 'type'>): PostgresSource {
   return {

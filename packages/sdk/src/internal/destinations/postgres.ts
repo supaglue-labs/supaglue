@@ -1,10 +1,4 @@
-import { PostgresInternalIntegration } from '../base';
-
-export type PostgresDestination = PostgresInternalIntegration & {
-  config: {
-    upsertKey: string;
-  };
-};
+import { PostgresDestination } from '@supaglue/types';
 
 export function postgres(params: Omit<PostgresDestination, 'type'>): PostgresDestination {
   return {

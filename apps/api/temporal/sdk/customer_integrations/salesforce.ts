@@ -1,7 +1,7 @@
+import { SalesforceDestination, SalesforceSource, SyncConfig } from '@supaglue/types';
 import { ApplicationFailure } from '@temporalio/client';
 import retry from 'async-retry';
 import * as jsforce from 'jsforce';
-import { SalesforceDestination, SalesforceSource, SyncConfig } from '../../../developer_config/entities';
 import { Sync } from '../../../syncs/entities';
 import { getMapping, getSalesforceObject, mapInternalToCustomerRecords } from '../../lib';
 import { BaseCustomerIntegration } from './base';

@@ -1,13 +1,4 @@
-type Field = {
-  name: string;
-  label?: string;
-  description?: string;
-  required?: boolean;
-};
-
-export type Schema = {
-  fields: Field[];
-};
+import { Schema } from '@supaglue/types';
 
 export function schema(params: Schema): Schema {
   return params;

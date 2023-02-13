@@ -1,10 +1,4 @@
-export type PostgresCredentials = {
-  host: string;
-  port: number;
-  database: string;
-  user: string;
-  password: string;
-};
+import { PostgresCredentials } from '@supaglue/types';
 
 export function credentials(params: PostgresCredentials): PostgresCredentials {
   return params;

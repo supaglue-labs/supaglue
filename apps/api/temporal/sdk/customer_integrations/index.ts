@@ -1,4 +1,4 @@
-import { SyncConfig } from '../../../developer_config/entities';
+import { SyncConfig } from '@supaglue/types';
 import { Sync } from '../../../syncs/entities';
 import {
   createDestinationSalesforce,

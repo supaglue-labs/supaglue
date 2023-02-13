@@ -1,6 +1,7 @@
+import { SyncConfig } from '@supaglue/types';
 import { SALESFORCE } from '../../../constants';
 import { getDependencyContainer } from '../../../dependency_container';
-import { DeveloperConfig, SyncConfig } from '../../../developer_config/entities';
+import { DeveloperConfig } from '../../../developer_config/entities';
 import { UnsafeSalesforceIntegration } from '../../../integrations/entities';
 import { Sync } from '../../../syncs/entities';
 

@@ -1,7 +1,7 @@
+import { WebhookDestination } from '@supaglue/types';
 import { ApplicationFailure } from '@temporalio/client';
 import retry from 'async-retry';
 import axios from 'axios';
-import { WebhookDestination } from '../../../developer_config/entities';
 import { getMapping, mapCustomerToInternalRecords } from '../../lib';
 import { BaseInternalIntegration } from './base';
 

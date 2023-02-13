@@ -1,6 +1,6 @@
+import { DeveloperConfigSpec } from '@supaglue/types';
 import { Request, Response, Router } from 'express';
 import { getDependencyContainer } from '../dependency_container';
-import { DeveloperConfigSpec } from '../developer_config/entities';
 import { errorMiddleware as posthogErrorMiddleware, middleware as posthogMiddleware } from '../lib/posthog';
 
 const { developerConfigService } = getDependencyContainer();

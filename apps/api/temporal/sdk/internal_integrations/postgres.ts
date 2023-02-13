@@ -1,11 +1,11 @@
-import { ApplicationFailure } from '@temporalio/client';
-import retry from 'async-retry';
-import pg from 'pg';
 import {
   PostgresDestination,
   PostgresInternalIntegration as PostgresInternalIntegrationConfig,
   PostgresSource,
-} from '../../../developer_config/entities';
+} from '@supaglue/types';
+import { ApplicationFailure } from '@temporalio/client';
+import retry from 'async-retry';
+import pg from 'pg';
 import { getMapping, mapCustomerToInternalRecords } from '../../lib';
 import { BaseInternalIntegration } from './base';
 
