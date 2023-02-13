@@ -21,6 +21,7 @@
     "eslint": "^8.31.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
     "husky": "^8.0.0",
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.2",
@@ -38,7 +39,8 @@
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "build": "turbo run build",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "gen:grpc": "buf generate https://github.com/supaglue-labs/salesforce-pub-sub-api.git"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit",

@@ -24,5 +24,6 @@
       }
     ],
     "no-console": "error"
-  }
+  },
+  "ignorePatterns": ["node_modules/", "dist/", "coverage/", "/packages/grpc/gen"]
 }

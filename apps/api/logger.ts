@@ -10,4 +10,5 @@ if (process.env.SUPAGLUE_PRETTY_LOGS) {
   streams.push({ stream: process.stdout });
 }
 
-export const logger = pino({ level: LOG_LEVEL }, pino.multistream(streams));
+export const logger = pino({}, pino.multistream(streams));
+logger.level = LOG_LEVEL;

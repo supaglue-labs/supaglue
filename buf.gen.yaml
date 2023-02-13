@@ -1,0 +1,16 @@
+version: v1
+plugins:
+  - plugin: buf.build/grpc/node
+    out: packages/grpc/gen
+    opt:
+      - grpc_js
+  # dependencies
+  - plugin: buf.build/protocolbuffers/js
+    out: packages/grpc/gen
+    opt:
+      - import_style=commonjs
+  - plugin: ts
+    path: ./node_modules/.bin/protoc-gen-ts
+    out: packages/grpc/gen
+    opt:
+      - grpc_js
