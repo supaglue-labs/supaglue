@@ -207,5 +207,17 @@ export type SalesforceSource = BaseCustomerIntegration & {
   objectConfig: SalesforceObjectConfig;
 };
 
+type SpecifiedSalesforceObjectConfig = {
+  type: 'specified';
+  object: SalesforceObject;
+};
+
+type SelectableSalesforceObjectConfig = {
+  type: 'selectable';
+  objectChoices: SalesforceObject[];
+};
+
+export type SalesforceObjectConfig = SpecifiedSalesforceObjectConfig | SelectableSalesforceObjectConfig;
+
 export type CustomerSource = SalesforceSource;
 ```
