@@ -12,7 +12,7 @@ sidebar_position: 2
 
 ```shell
 # Clone our repo
-git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.1.1-1 git@github.com:supaglue-labs/supaglue.git && cd supaglue
 
 # Create an encryption secret for credentials
 echo "SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)" >> .env
@@ -29,7 +29,7 @@ In this step, we will set up the sample application.
 
 1. Open a new terminal window and install the sample app (note: we've bundled it into our monorepo):
 
-   NOTE: for your convenience, [setup_env.sh](https://github.com/supaglue-labs/supaglue/blob/v0.1.1-1/apps/sample-app/scripts/setup_env.sh) helps you get started quickly by using our Salesforce Connected App credentials. You can also [set up](/references/setup_salesforce) or use your own Connected App credentials by changing the credentials in `.env`.
+   NOTE: for your convenience, [setup_env.sh](https://github.com/supaglue-labs/supaglue/blob/v0.1.1-1/apps/sample-app/scripts/setup_env.sh) helps you get started quickly by using our Salesforce Connected App credentials. You can also [set up](./references/setup_salesforce) or use your own Connected App credentials by changing the credentials in `.env`.
 
    ```shell
    cd apps/sample-app

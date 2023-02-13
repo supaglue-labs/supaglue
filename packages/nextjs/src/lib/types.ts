@@ -7,9 +7,21 @@ const SALESFORCE_OBJECT_TYPES = ['Contact', 'Lead', 'Account', 'Opportunity'] as
 
 export type SalesforceObjectType = (typeof SALESFORCE_OBJECT_TYPES)[number];
 
+export type SObjectField = {
+  name: string;
+  label: string;
+};
+
 export type FieldMapping = {
   name: string;
   field: string;
+};
+
+export type CustomerFieldMapping = Record<string, string>;
+export type SyncUpdateParams = {
+  id: string;
+  fieldMapping?: CustomerFieldMapping;
+  customProperties?: Field[];
 };
 
 export type SyncConfig = {
@@ -38,6 +50,7 @@ export type PostgresDestination = BaseDestination & {
     };
     table: string;
     upsertKey: string;
+    customPropertiesColumn?: string;
   };
 };
 
@@ -52,7 +65,7 @@ export type WebhookDestination = BaseDestination & {
 
 export type Destination = PostgresDestination | WebhookDestination;
 
-type Field = {
+export type Field = {
   name: string; // Raw field name.
   label?: string; // Human-readable label to be displayed to customers.
   description?: string;

@@ -1,12 +1,26 @@
-import { PostgresInternalIntegration } from './postgres';
-import { WebhookInternalIntegration } from './webhook';
+import { SyncConfig } from '@supaglue/types';
+import { Sync } from '../../../syncs/entities';
+import { DestinationPostgresInternalIntegration, SourcePostgresInternalIntegration } from './postgres';
+import { DestinationWebhookInternalIntegration } from './webhook';
 
 export type InternalIntegrations = {
-  postgres: PostgresInternalIntegration;
-  webhook: WebhookInternalIntegration;
+  sources: {
+    postgres: SourcePostgresInternalIntegration;
+  };
+  destinations: {
+    postgres: DestinationPostgresInternalIntegration;
+    webhook: DestinationWebhookInternalIntegration;
+  };
 };
 
-export const internalIntegrations = {
-  postgres: new PostgresInternalIntegration(),
-  webhook: new WebhookInternalIntegration(),
+export const createInternalIntegrations = (sync: Sync, syncConfig: SyncConfig, syncRunId: string) => {
+  return {
+    sources: {
+      postgres: new SourcePostgresInternalIntegration(sync, syncConfig, syncRunId),
+    },
+    destinations: {
+      postgres: new DestinationPostgresInternalIntegration(sync, syncConfig, syncRunId),
+      webhook: new DestinationWebhookInternalIntegration(sync, syncConfig, syncRunId),
+    },
+  };
 };

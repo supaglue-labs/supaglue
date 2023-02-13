@@ -16,12 +16,12 @@ sources={{
   }}
 />
 
-1. A [Developer Config](#developer_config) is authored by developers to define a set of [Sync Configs](#sync-config) each of which define the behavior of a [Sync](#sync)
-2. Once a Developer Config is deployed to the [Supaglue Integration Service](/architecture), the Sync(s) become available for customers to use
-3. Customers opt-in and use Syncs by saving [Sync Values](#sync-values) to the Supaglue Integration Service using [Supaglue React components](/react-components) which are embedded by developers into their applications
+1. A [Developer Config](#developer-config) is authored by developers to define a set of [Sync Configs](#sync-config) each of which define the behavior of a [Sync](#sync)
+2. Once a Developer Config is deployed to the [Supaglue Integration Service](./architecture), the Sync(s) become available for customers to use
+3. Customers opt-in and use Syncs by saving [Sync Values](#sync-values) to the Supaglue Integration Service using [Supaglue React components](./react-components) which are embedded by developers into their applications
 4. The Supaglue Integration Service executes Syncs, using the customer-provided Sync Values during runtime, as a [Sync Run](#sync-run)
 5. A Sync Run operates on your customer's Salesforce and your application, moving data between the two systems
-6. Developers can use the [CLI](/cli) to monitor the statuses of Syncs
+6. Developers can use the [CLI](./cli) to monitor the statuses of Syncs
 
 ## Developer Config
 
@@ -32,19 +32,31 @@ A Developer Config is authored by the developer and deployed to the Supaglue Int
 ### Schema
 
 ```typescript
-type DeveloperConfigSpec = {
+type DeveloperConfigParams = {
   syncConfigs: SyncConfig[];
   salesforceCredentials: SalesforceCredentials;
 };
 
 type SyncConfig = {
   name: string;
-  salesforceObject: 'Contact' | 'Lead' | 'Account' | 'Opportunity' | ...;
   cronExpression: string;
-  destination: Destination;
   strategy: 'full_refresh';
   defaultFieldMapping?: FieldMapping[];
 };
+
+type InboundSyncConfig = BaseSyncConfig & {
+  type: 'inbound';
+  source: CustomerSource;
+  destination: InternalDestination;
+};
+
+type OutboundSyncConfig = BaseSyncConfig & {
+  type: 'outbound';
+  source: InternalSource;
+  destination: CustomerDestination;
+};
+
+export type SyncConfig = InboundSyncConfig | OutboundSyncConfig;
 
 type SalesforceCredentials = {
   loginUrl: string;
@@ -53,17 +65,18 @@ type SalesforceCredentials = {
 };
 ```
 
-See the [Config SDK](/config_sdk) for a reference and [example](/config_sdk#examples) Developer Config.
+See the [Config SDK](./config_sdk) for a reference and [example](./config_sdk#examples) Developer Config.
 
 ### Sync Config
 
 A Sync Config is a Typescript object that declaratively defines the behavior of one [Sync](#sync). One Sync Config defines the following:
 
-1. The standard object type to sync from Salesforce
-2. How often it should sync
-3. Where it should deliver the records (Webhook or Postgres)
-4. How field mappings between Salesforce and the developer's application should work (i.e. which fields are exposed, how they are displayed, and their default field mappings)
-5. Other operational configurations around retries, fetch strategies, and more
+1. Whether this sync is inbound or outbound
+1. The standard object type to sync to/from Salesforce
+1. How often it should sync
+1. Where it should deliver the records (Webhook or Postgres or Salesforce)
+1. How field mappings between Salesforce and the developer's application should work (i.e. which fields are exposed, how they are displayed, and their default field mappings)
+1. Other operational configurations around retries, fetch strategies, and more
 
 :::info
 
@@ -92,21 +105,19 @@ type SyncRun = {
 };
 ```
 
-## Destination
+## InternalDestination
 
-A Destination is the target system of a Sync Config, either Postgres or a webhook.
+An InternalDestination is the target system of an Inbound Sync Config, either Postgres or a webhook.
 
 ### Schema
 
 ```typescript
-type BaseDestination = {
+type BaseInternalIntegration = {
   schema: Schema;
   retryPolicy?: RetryPolicy;
 };
-```
 
-```typescript
-export type PostgresDestination = BaseDestination & {
+export type PostgresDestination = BaseInternalIntegration & {
   type: 'postgres';
   config: {
     credentials: {
@@ -117,13 +128,11 @@ export type PostgresDestination = BaseDestination & {
       password: string;
     };
     table: string;
-    upsertKey: string;
     customerIdColumn: string;
+    upsertKey: string;
   };
 };
-```
 
-```typescript
 export type WebhookDestination = BaseDestination & {
   type: 'webhook';
   config: {
@@ -132,4 +141,71 @@ export type WebhookDestination = BaseDestination & {
     headers?: string | string[];
   };
 };
+
+export type InternalDestination = PostgresDestination | WebhookDestination;
+```
+
+## InternalSource
+
+An InternalSource is the source system of an Outbound Sync Config, currently just Postgres.
+
+### Schema
+
+```typescript
+type BaseInternalIntegration = {
+  schema: Schema;
+  retryPolicy?: RetryPolicy;
+};
+
+export type PostgresSource = BaseInternalIntegration & {
+  type: 'postgres';
+  config: {
+    credentials: {
+      host: string;
+      port: number;
+      database: string;
+      user: string;
+      password: string;
+    };
+    table: string;
+    customerIdColumn: string;
+  };
+};
+
+export type InternalSource = PostgresSource;
+```
+
+## CustomerDestination
+
+A CustomerDestination is the target system of an Outbound Sync Config, currently just Salesforce.
+
+### Schema
+
+```typescript
+type BaseCustomerIntegration = object;
+
+export type SalesforceDestination = BaseCustomerIntegration & {
+  type: 'salesforce';
+  objectConfig: SalesforceObjectConfig;
+  upsertKey: string;
+};
+
+export type CustomerDestination = SalesforceDestination;
+```
+
+## CustomerSource
+
+A CustomerSource is the source system of an Inbound Sync Config, currently just Salesforce.
+
+### Schema
+
+```typescript
+type BaseCustomerIntegration = object;
+
+export type SalesforceSource = BaseCustomerIntegration & {
+  type: 'salesforce';
+  objectConfig: SalesforceObjectConfig;
+};
+
+export type CustomerSource = SalesforceSource;
 ```

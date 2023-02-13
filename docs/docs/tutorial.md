@@ -6,17 +6,19 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 
 # Tutorial
 
-**In under 15 minutes**, you'll build an integration that allows your customers to sync their Salesforce Account records to a sample Next.js application. We'll use the same sample application from the [Quickstart](/quickstart) for the tutorial.
+**In under 15 minutes**, you'll build an integration that allows your customers to sync their Salesforce Account records to a sample Next.js application. We'll use the same sample application from the [Quickstart](./quickstart) for the tutorial.
 
 You'll learn how to use Supaglue's SDKs and CLI to setup and deploy the integration (frontend and backend), and customize the UI you expose to your customers.
 
+<iframe width="640" height="400" src="https://www.loom.com/embed/7f1385c598874448b171a010de325593" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
 ## Before you begin
 
-Be sure to have completed the [Quickstart](/quickstart).
+Be sure to have completed the [Quickstart](./quickstart).
 
 :::info
 
-For this tutorial, we've provided Salesforce Connected App credentials as part of the Sample App setup. Before deploying to production, please provide your own [Salesforce Connected App](/references/setup_salesforce) credentials.
+For this tutorial, we've provided Salesforce Connected App credentials as part of the Sample App setup. Before deploying to production, please provide your own [Salesforce Connected App](./references/setup_salesforce) credentials.
 
 :::
 
@@ -31,71 +33,71 @@ For this tutorial, we've provided Salesforce Connected App credentials as part o
 
 ## Deploy Developer Config
 
-In Supaglue, a [Developer Config](/concepts#developer-config) represents a set of Sync Configs. A [Sync Config](/concepts#sync-config) defines how to move one type of Salesforce object from your customers' Salesforce to your application. Once deployed to Supaglue's Integration Service, a Sync Config can be used by your customers as a [Sync](/concepts#sync) via embeddedable [Supaglue React components](/react-components).
+In Supaglue, a [Developer Config](./concepts#developer-config) represents a set of Sync Configs. A [Sync Config](./concepts#sync-config) defines how to move one type of Salesforce object from your customers' Salesforce to your application. Once deployed to Supaglue's Integration Service, a Sync Config can be used by your customers as a [Sync](./concepts#sync) via embeddedable [Supaglue React components](./react-components).
 
-The Developer Config you deployed in the [Quickstart](/quickstart) currently contains Syncs for Contacts, Leads, and Opportunities. We will now add a Sync for Accounts.
+The Developer Config you deployed in the [Quickstart](./quickstart) currently contains Syncs for Contacts, Leads, and Opportunities. We will now add a Sync for Accounts.
 
 ### Create Sync Config for Accounts
 
-To build a Salesforce Sync, we first use the [Config SDK](/config_sdk) to create a Sync Config, which defines how to move Salesforce records between your customers' Salesforce and your application:
+To build a Salesforce Sync, we first use the [Config SDK](./config_sdk) to create a Sync Config, which defines how to move Salesforce records between your customers' Salesforce and your application:
 
 :::info
 
-For this tutorial, we've included a sample [Developer Config](/concepts#developer-config) in the `supaglue-config` directory, which lives in the sample app. The Config SDK was also installed as part of the sample app earlier for your convenience.
+For this tutorial, we've included a sample [Developer Config](./concepts#developer-config) in the `supaglue-config` directory, which lives in the sample app. The Config SDK was also installed as part of the sample app earlier for your convenience.
 
 :::
 
 1. Create `account.ts` inside the `apps/sample-app/supaglue-config/inbound` directory. Paste in the following:
 
-   ```tsx title='apps/sample-app/supaglue-config/account.ts'
-   import * as sdk from '@supaglue/sdk';
-   import credentials from '../postgres_credentials';
+  ```tsx title='apps/sample-app/supaglue-config/inbound/account.ts'
+  import * as sdk from '@supaglue/sdk';
+  import credentials from '../postgres_credentials';
 
-   const accountsSchema = sdk.schema({
-     fields: [
-       {
-         name: 'salesforce_id',
-         label: 'id',
-       },
-       {
-         name: 'name',
-         label: 'name',
-       },
-     ],
-   });
+  const accountsSchema = sdk.schema({
+    fields: [
+      {
+        name: 'salesforce_id',
+        label: 'id',
+      },
+      {
+        name: 'name',
+        label: 'name',
+      },
+    ],
+  });
 
-   const defaultFieldMapping = sdk.defaultFieldMapping([
-     { name: 'salesforce_id', field: 'Id' },
-     { name: 'name', field: 'Name' },
-   ]);
+  const defaultFieldMapping = sdk.defaultFieldMapping([
+    { name: 'salesforce_id', field: 'Id' },
+    { name: 'name', field: 'Name' },
+  ]);
 
-   const accountSyncConfig = sdk.syncConfigs.inbound({
-     name: 'Accounts',
-     source: sdk.customer.sources.salesforce({
-       objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Account'),
-     }),
-     cronExpression: '*/15 * * * *',
-     destination: sdk.internal.destinations.postgres({
-       schema: accountsSchema,
-       config: {
-         credentials,
-         table: 'salesforce_accounts',
-         upsertKey: 'salesforce_id',
-         customerIdColumn: 'customer_id',
-       },
-     }),
-     strategy: 'full_refresh',
-     defaultFieldMapping,
-   });
+  const accountSyncConfig = sdk.syncConfigs.inbound({
+    name: 'Accounts',
+    source: sdk.customer.sources.salesforce({
+      objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Account'),
+    }),
+    cronExpression: '*/15 * * * *',
+    destination: sdk.internal.destinations.postgres({
+      schema: accountsSchema,
+      config: {
+        credentials,
+        table: 'salesforce_accounts',
+        upsertKey: 'salesforce_id',
+        customerIdColumn: 'customer_id',
+      },
+    }),
+    strategy: 'full_refresh',
+    defaultFieldMapping,
+  });
 
-   export default accountSyncConfig;
-   ```
+  export default accountSyncConfig;
+  ```
 
-   The `inbound` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
+  The `inbound` function creates a Sync Config that would allow customers to pull all Account records from their Salesforce instance into the sample app's Postgres database every 15 minutes.
 
-   The schema object exposes the specified Salesforce Account fields to your customers and lets them map them to fields in the sample app's Postgres database.
+  The schema object exposes the specified Salesforce Account fields to your customers and lets them map them to fields in the sample app's Postgres database.
 
-   The defaultFieldMapping object specifies the default field mapping values for the Salesforce Account object that would be used in the sample app absent any customer-provided overrides.
+  The defaultFieldMapping object specifies the default field mapping values for the Salesforce Account object that would be used in the sample app absent any customer-provided overrides.
 
 1. Finally, add the newly created Sync Config for Accounts to the existing Developer Config so it can be deployed with the existing sample Sync Configs:
 
@@ -123,30 +125,32 @@ For this tutorial, we've included a sample [Developer Config](/concepts#develope
 
    You should see the following output:
 
-   ```console
-   ...
-   ╔═══════════════╤═══════════╤════════╗
-   ║ Name          │ Action    │ Status ║
-   ╟───────────────┼───────────┼────────╢
-   ║ Contacts      │ No Change │ Live   ║
-   ╟───────────────┼───────────┼────────╢
-   ║ Leads         │ No Change │ Live   ║
-   ╟───────────────┼───────────┼────────╢
-   ║ Opportunities │ No Change │ Live   ║
-   ╟───────────────┼───────────┼────────╢
-   ║ Accounts      │ Created   │ Live   ║
-   ╚═══════════════╧═══════════╧════════╝
+  ```console
+  ...
+  ╔══════════════════╤═══════════╤════════╗
+  ║ Name             │ Action    │ Status ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ ContactsOutbound │ No Change │ Live   ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ Contacts         │ No Change │ Live   ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ Leads            │ No Change │ Live   ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ Opportunities    │ No Change │ Live   ║
+  ╟──────────────────┼───────────┼────────╢
+  ║ Accounts         │ Created   │ Live   ║
+  ╚══════════════════╧═══════════╧════════╝
 
-   Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 3
-   ```
+  Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 4
+  ```
 
 ### Test the integration
 
 Finally, let's manually trigger our sync to make sure it works as expected.
 
-1. Click the "Run sync now" button. This triggers Supaglue to execute a [Sync Run](/concepts#sync-run) as a background task.
+1. Click the "Run sync now" button. This triggers Supaglue to execute a [Sync Run](./concepts#sync-run) as a background task.
 
-1. Check the status of the Sync Run by running [`syncs list`](/cli#syncs-list) command to check when it completes:
+1. Check the status of the Sync Run by running [`syncs list`](./cli#syncs-list) command to check when it completes:
 
    ```shell
    supaglue syncs list --customer-id user1
@@ -156,17 +160,19 @@ Finally, let's manually trigger our sync to make sure it works as expected.
 
    ```supaglue syncs list --customer-id user1
    ℹ Info: Syncs for customer user1
-   ╔═══════════════╤═════════╤══════════════════════════╤══════════════════════════╗
-   ║ Sync Name     │ Enabled │ Last Run                 │ Next Run                 ║
-   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ Contacts      │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
-   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ Opportunities │ No      │ n/a                      │ n/a                      ║
-   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ Accounts      │ Yes     │ 2023-02-03T08:08:34.344Z │ 2023-02-03T08:15:00.000Z ║
-   ╟───────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ Leads         │ No      │ n/a                      │ n/a                      ║
-   ╚═══════════════╧═════════╧══════════════════════════╧══════════════════════════╝
+   ╔══════════════════╤═════════╤══════════════════════════╤══════════════════════════╗
+   ║ Sync Name        │ Enabled │ Last Run                 │ Next Run                 ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ ContactsOutbound │ No      │ n/a                      │ n/a                      ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Contacts         │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Opportunities    │ No      │ n/a                      │ n/a                      ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Accounts         │ Yes     │ 2023-02-03T08:08:34.344Z │ 2023-02-03T08:15:00.000Z ║
+   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
+   ║ Leads            │ No      │ n/a                      │ n/a                      ║
+   ╚══════════════════╧═════════╧══════════════════════════╧══════════════════════════╝
    ```
 
 1. Visit the "App Objects" tab to view the synced Accounts records, which is being populated by the Postgres table.
@@ -203,7 +209,7 @@ You may have realized that two of the columns in the sample app's Contacts table
    });
    ```
 
-1. Re-run the [`apply`](/cli#apply) CLI command to apply the latest changes:
+1. Re-run the [`apply`](./cli#apply) CLI command to apply the latest changes:
 
    ```shell
    supaglue apply supaglue-config/

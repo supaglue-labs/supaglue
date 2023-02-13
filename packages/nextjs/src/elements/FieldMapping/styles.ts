@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { indigo, slate } from '@radix-ui/colors';
 import { _applyTheme } from '../../style/internal';
 import { SgTheme } from '../../style/types/theme';
 
@@ -48,6 +49,7 @@ const fieldWrapper = _applyTheme((theme: SgTheme) =>
     flexDirection: 'row',
     gap: '1rem',
     justifyContent: 'space-between',
+    position: 'relative',
     ...theme.elementOverrides?.fieldWrapper,
   })
 );
@@ -60,13 +62,42 @@ const fieldName = _applyTheme((theme: SgTheme) =>
   })
 );
 
+const newCustomPropertyInput = css({
+  border: `1px solid ${slate.slate9}`,
+  borderRadius: '0.5rem',
+  height: '2.25rem',
+  lineHeight: 1,
+  padding: '0.25rem 0.5rem',
+  ':focus': {
+    boxShadow: 'none',
+  },
+  ':focus-visible': {
+    boxShadow: `0 0 0 2px ${indigo.indigo12}`,
+  },
+});
+
+const customPropertySubmitInput = css({
+  display: 'none',
+});
+
+const addCustomPropertyButton = css({
+  backgroundColor: 'white',
+  border: 'none',
+  color: slate.slate11,
+  marginTop: '1rem',
+  textAlign: 'start',
+});
+
 const styles = {
+  addCustomPropertyButton,
+  customPropertySubmitInput,
   emptyContentReason,
   form,
   formHeaderRow,
   formColumnHeader,
   fieldWrapper,
   fieldName,
+  newCustomPropertyInput,
 };
 
 export default styles;

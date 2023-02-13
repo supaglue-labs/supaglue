@@ -1,13 +1,30 @@
-import { createSalesforce, SalesforceCustomerIntegration } from './salesforce';
+import { SyncConfig } from '@supaglue/types';
+import { Sync } from '../../../syncs/entities';
+import {
+  createDestinationSalesforce,
+  createSourceSalesforce,
+  CustomerSalesforceDestinationIntegration,
+  CustomerSalesforceSourceIntegration,
+} from './salesforce';
 
 export type CustomerIntegrations = {
-  salesforce: SalesforceCustomerIntegration;
-};
-
-export const createCustomerIntegrations = (customerId: string) => {
-  return {
-    salesforce: createSalesforce(customerId),
+  sources: {
+    salesforce: CustomerSalesforceSourceIntegration;
+  };
+  destinations: {
+    salesforce: CustomerSalesforceDestinationIntegration;
   };
 };
 
-export { SalesforceCustomerIntegration } from './salesforce';
+export const createCustomerIntegrations = (sync: Sync, syncConfig: SyncConfig, syncRunId: string) => {
+  return {
+    sources: {
+      salesforce: createSourceSalesforce(sync, syncConfig, syncRunId),
+    },
+    destinations: {
+      salesforce: createDestinationSalesforce(sync, syncConfig, syncRunId),
+    },
+  };
+};
+
+export { CustomerSalesforceDestinationIntegration, CustomerSalesforceSourceIntegration } from './salesforce';

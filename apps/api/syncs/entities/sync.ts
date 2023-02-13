@@ -25,6 +25,8 @@ type BaseSyncUpdateParams = {
   enabled: boolean;
   syncConfigName: string;
   fieldMapping?: Record<string, string>;
+  // TODO: cast json column values to correct types when reading from db
+  customProperties?: Record<string, string>[]; // Customer-, rather than developer-defined
 };
 
 type BaseSyncCreateParams = BaseSyncUpdateParams & {

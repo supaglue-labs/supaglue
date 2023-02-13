@@ -29,7 +29,7 @@ In this step, we will set up the sample application.
 
 1. Open a new terminal window and install the sample app (note: we've bundled it into our monorepo):
 
-   NOTE: for your convenience, [setup_env.sh](https://github.com/supaglue-labs/supaglue/blob/main/apps/sample-app/scripts/setup_env.sh) helps you get started quickly by using our Salesforce Connected App credentials. You can also [set up](/references/setup_salesforce) or use your own Connected App credentials by changing the credentials in `.env`.
+   NOTE: for your convenience, [setup_env.sh](https://github.com/supaglue-labs/supaglue/blob/main/apps/sample-app/scripts/setup_env.sh) helps you get started quickly by using our Salesforce Connected App credentials. You can also [set up](./references/setup_salesforce) or use your own Connected App credentials by changing the credentials in `.env`.
 
    ```shell
    cd apps/sample-app
@@ -67,17 +67,19 @@ In this step, we will deploy Supaglue configuration to enable customers (i.e. `u
 
    ```console
    ...
-   ╔═══════════════╤═════════╤════════╗
-   ║ Name          │ Action  │ Status ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Contacts      │ Created │ Live   ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Leads         │ Created │ Live   ║
-   ╟───────────────┼─────────┼────────╢
-   ║ Opportunities │ Created │ Live   ║
-   ╚═══════════════╧═════════╧════════╝
+   ╔══════════════════╤═════════╤════════╗
+   ║ Name             │ Action  │ Status ║
+   ╟──────────────────┼─────────┼────────╢
+   ║ ContactsOutbound │ Created │ Live   ║
+   ╟──────────────────┼─────────┼────────╢
+   ║ Contacts         │ Created │ Live   ║
+   ╟──────────────────┼─────────┼────────╢
+   ║ Leads            │ Created │ Live   ║
+   ╟──────────────────┼─────────┼────────╢
+   ║ Opportunities    │ Created │ Live   ║
+   ╚══════════════════╧═════════╧════════╝
 
-   Syncs Created: 3, Updated: 0, Deleted: 0, No Change: 0
+   Syncs Created: 4, Updated: 0, Deleted: 0, No Change: 0
    ```
 
 1. Navigate to the [Integrations page](http://localhost:3000/integrations). You should now see a card that allows you to connect your Salesforce instance.

@@ -74,15 +74,16 @@ model SalesforceCreds {
 }
 
 model SalesforceContact {
-  id           Int      @id @default(autoincrement())
-  email        String   @db.VarChar(255)
-  customerId   String   @map("customer_id") @db.VarChar(255)
-  salesforceId String?  @map("salesforce_id") @db.VarChar(255)
-  title        String?  @db.VarChar(255)
-  firstName    String?  @map("first_name") @db.VarChar(255)
-  lastName     String?  @map("last_name") @db.VarChar(255)
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id              Int      @id @default(autoincrement())
+  email           String   @db.VarChar(255)
+  customerId      String   @map("customer_id") @db.VarChar(255)
+  salesforceId    String?  @map("salesforce_id") @db.VarChar(255)
+  title           String?  @db.VarChar(255)
+  firstName       String?  @map("first_name") @db.VarChar(255)
+  lastName        String?  @map("last_name") @db.VarChar(255)
+  extraAttributes Json?    @map("extra_attributes")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@unique([customerId, salesforceId])
   @@map("salesforce_contacts")

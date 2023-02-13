@@ -16,12 +16,12 @@ sources={{
   }}
 />
 
-1. A [Developer Config](#developer_config) is authored by developers to define a set of [Sync Configs](#sync-config) each of which define the behavior of a [Sync](#sync)
-2. Once a Developer Config is deployed to the [Supaglue Integration Service](/architecture), the Sync(s) become available for customers to use
-3. Customers opt-in and use Syncs by saving [Sync Values](#sync-values) to the Supaglue Integration Service using [Supaglue React components](/react-components) which are embedded by developers into their applications
+1. A [Developer Config](#developer-config) is authored by developers to define a set of [Sync Configs](#sync-config) each of which define the behavior of a [Sync](#sync)
+2. Once a Developer Config is deployed to the [Supaglue Integration Service](./architecture), the Sync(s) become available for customers to use
+3. Customers opt-in and use Syncs by saving [Sync Values](#sync-values) to the Supaglue Integration Service using [Supaglue React components](./react-components) which are embedded by developers into their applications
 4. The Supaglue Integration Service executes Syncs, using the customer-provided Sync Values during runtime, as a [Sync Run](#sync-run)
 5. A Sync Run operates on your customer's Salesforce and your application, moving data between the two systems
-6. Developers can use the [CLI](/cli) to monitor the statuses of Syncs
+6. Developers can use the [CLI](./cli) to monitor the statuses of Syncs
 
 ## Developer Config
 
@@ -53,7 +53,7 @@ type SalesforceCredentials = {
 };
 ```
 
-See the [Config SDK](/config_sdk) for a reference and [example](/config_sdk#examples) Developer Config.
+See the [Config SDK](./config_sdk) for a reference and [example](./config_sdk#examples) Developer Config.
 
 ### Sync Config
 

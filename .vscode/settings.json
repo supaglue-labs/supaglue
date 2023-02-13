@@ -20,6 +20,8 @@
   "[prisma]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "markdown.extension.list.indentationSize": "inherit",
+  "markdown.extension.orderedList.autoRenumber": false,
   "search.useIgnoreFiles": true,
   "sqltools.connections": [
     {
