@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { slate } from '@radix-ui/colors';
-import { _applyTheme } from '../../style/internal';
+import { ThemedStyles, _applyTheme } from '../../style/internal';
 import { SgTheme } from '../../style/types/theme';
 
 const toast = _applyTheme((theme: SgTheme) =>
@@ -21,7 +21,7 @@ const toast = _applyTheme((theme: SgTheme) =>
   })
 );
 
-const styles = {
+const styles: ThemedStyles = {
   toast,
 };
 

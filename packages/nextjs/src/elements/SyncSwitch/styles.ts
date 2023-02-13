@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { _applyTheme } from '../../style/internal';
+import { ThemedStyles, _applyTheme } from '../../style/internal';
 import { SgTheme } from '../../style/types/theme';
 
 const switchlabel = _applyTheme((theme: SgTheme) =>
@@ -27,8 +27,10 @@ const switchDescription = _applyTheme((theme: SgTheme) =>
   })
 );
 
-export default {
+const styles: ThemedStyles = {
   switchlabel,
   switchWrapper,
   switchDescription,
 };
+
+export default styles;

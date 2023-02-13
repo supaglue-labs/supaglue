@@ -1,3 +1,4 @@
+import { ThemedStyles } from '../../style/internal';
 import { _createVariants } from '../../style/internal/createVariants';
 import { DANGER, PRIMARY, SgTheme } from '../../style/types/theme';
 
@@ -53,6 +54,8 @@ const applyThemeAndVariants = _createVariants((theme: SgTheme) => {
   };
 });
 
-export default {
+const styles: ThemedStyles = {
   button: applyThemeAndVariants,
 };
+
+export default styles;
