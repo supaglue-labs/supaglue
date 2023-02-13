@@ -1,5 +1,6 @@
 import { SyncRun as SyncRunModel } from '@prisma/client';
-import { ErrorResult, SuccessResult, Sync, SyncRun, SyncRunResult } from '.';
+import { Sync } from '@supaglue/types';
+import { ErrorResult, SuccessResult, SyncRun, SyncRunResult } from '.';
 
 export const fromModelToSyncRun = (model: SyncRunModel): SyncRun => {
   const { id, syncId, startTimestamp } = model;

@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { isRealtimeInboundSyncConfig } from '@supaglue/types';
 import classnames from 'classnames';
 import cronstrue from 'cronstrue';
 import { useId } from 'react';
@@ -58,6 +59,11 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
     }
   };
 
+  // Realtime syncs not supported on the FE yet.
+  if (!syncConfig || isRealtimeInboundSyncConfig(syncConfig)) {
+    return null;
+  }
+
   return (
     <>
       <div
@@ -81,7 +87,7 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
         />
       </div>
 
-      {includeSyncDescription && syncConfig && (
+      {includeSyncDescription && (
         <p
           className={classnames('sg-switchDescription', appearance?.elements?.switchDescription)}
           css={styles.switchDescription}

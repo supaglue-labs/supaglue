@@ -1,8 +1,9 @@
+import { Sync, SyncCreateParams, SyncUpdateParams } from '@supaglue/types';
 import { Request, Response, Router } from 'express';
 import { getDependencyContainer } from '../dependency_container';
 import { BadRequestError, NotFoundError } from '../errors';
 import { errorMiddleware as posthogErrorMiddleware, middleware as posthogMiddleware } from '../lib/posthog';
-import { Sync, SyncCreateParams, SyncRun, SyncRunStatus, SyncUpdateParams } from '../syncs/entities';
+import { SyncRun, SyncRunStatus } from '../syncs/entities';
 
 const { syncService, developerConfigService } = getDependencyContainer();
 

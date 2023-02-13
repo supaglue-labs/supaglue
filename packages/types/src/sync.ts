@@ -1,4 +1,4 @@
-import { SalesforceObject } from '@supaglue/types';
+import { Field, SalesforceObject } from '.';
 
 type SalesforceCustomerIntegrationParams = {
   // If the developer allows the salesforce object to be selectable by the customer,
@@ -20,17 +20,23 @@ type CustomerSourceParams = SalesforceCustomerSourceParams;
 type SalesforceCustomerDestinationParams = SalesforceCustomerIntegrationParams;
 type CustomerDestinationParams = SalesforceCustomerDestinationParams;
 
+export type CustomerFieldMapping = Record<string, string>;
+
 type BaseSyncUpdateParams = {
   // TODO: Consider moving `enabled` elsewhere when/if we allow syncs to be triggered.
-  enabled: boolean;
-  syncConfigName: string;
-  fieldMapping?: Record<string, string>;
+  enabled?: boolean;
+  fieldMapping?: CustomerFieldMapping;
   // TODO: cast json column values to correct types when reading from db
-  customProperties?: Record<string, string>[]; // Customer-, rather than developer-defined
+  customProperties?: Field[]; // Customer-, rather than developer-defined
 };
 
-type BaseSyncCreateParams = BaseSyncUpdateParams & {
+type BaseSyncCreateParams = {
+  syncConfigName: string;
   customerId: string;
+  enabled: boolean;
+  fieldMapping?: CustomerFieldMapping;
+  // TODO: cast json column values to correct types when reading from db
+  customProperties?: Record<string, string>[]; // Customer-, rather than developer-defined
 };
 
 type BaseSync = BaseSyncCreateParams & {

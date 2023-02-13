@@ -3730,6 +3730,7 @@ __metadata:
     "@radix-ui/colors": ^0.1.8
     "@radix-ui/react-select": ^1.2.0
     "@radix-ui/react-switch": ^1.0.1
+    "@supaglue/types": "workspace:*"
     "@tsconfig/next": ^1.0.4
     "@types/eslint": ^8
     "@types/node": ^18.11.18

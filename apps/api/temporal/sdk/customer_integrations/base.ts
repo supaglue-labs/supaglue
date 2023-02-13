@@ -1,9 +1,8 @@
-import { SyncConfig } from '@supaglue/types';
+import { Sync, SyncConfig } from '@supaglue/types';
 import { SALESFORCE } from '../../../constants';
 import { getDependencyContainer } from '../../../dependency_container';
 import { DeveloperConfig } from '../../../developer_config/entities';
 import { UnsafeSalesforceIntegration } from '../../../integrations/entities';
-import { Sync } from '../../../syncs/entities';
 
 export abstract class BaseCustomerIntegration {
   protected readonly sync: Sync;

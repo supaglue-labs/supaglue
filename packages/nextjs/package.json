@@ -42,6 +42,7 @@
     "@radix-ui/colors": "^0.1.8",
     "@radix-ui/react-select": "^1.2.0",
     "@radix-ui/react-switch": "^1.0.1",
+    "@supaglue/types": "workspace:*",
     "@types/react-dom": "18.0.9",
     "axios": "^1.2.2",
     "classnames": "^2.3.2",
