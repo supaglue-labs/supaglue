@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { _applyTheme } from '../../style/internal';
+import { ThemedStyles, _applyTheme } from '../../style/internal';
 import { SgTheme } from '../../style/types/theme';
 
 const cardName = _applyTheme((theme: SgTheme) =>
@@ -33,7 +33,7 @@ const buttonWrapper = _applyTheme((theme: SgTheme) =>
   })
 );
 
-const styles = {
+const styles: ThemedStyles = {
   buttonWrapper,
   cardName,
   cardDescription,

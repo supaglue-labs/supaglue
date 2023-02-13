@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { indigo, slate } from '@radix-ui/colors';
-import { _applyTheme } from '../../style/internal';
+import { ThemedStyles, _applyTheme } from '../../style/internal';
 import { SgTheme } from '../../style/types/theme';
 
 const emptyContentReason = _applyTheme((theme: SgTheme) =>
@@ -62,33 +62,42 @@ const fieldName = _applyTheme((theme: SgTheme) =>
   })
 );
 
-const newCustomPropertyInput = css({
-  border: `1px solid ${slate.slate9}`,
-  borderRadius: '0.5rem',
-  height: '2.25rem',
-  lineHeight: 1,
-  padding: '0.25rem 0.5rem',
-  ':focus': {
-    boxShadow: 'none',
-  },
-  ':focus-visible': {
-    boxShadow: `0 0 0 2px ${indigo.indigo12}`,
-  },
-});
+const newCustomPropertyInput = _applyTheme((theme: SgTheme) =>
+  css({
+    border: `1px solid ${slate.slate9}`,
+    borderRadius: '0.5rem',
+    height: '2.25rem',
+    lineHeight: 1,
+    padding: '0.25rem 0.5rem',
+    ':focus': {
+      boxShadow: 'none',
+    },
+    ':focus-visible': {
+      boxShadow: `0 0 0 2px ${indigo.indigo12}`,
+    },
+    ...theme.elementOverrides?.newCustomPropertyInput,
+  })
+);
 
-const customPropertySubmitInput = css({
-  display: 'none',
-});
+const customPropertySubmitInput = _applyTheme((theme: SgTheme) =>
+  css({
+    display: 'none',
+    ...theme.elementOverrides?.customPropertySubmitInput,
+  })
+);
 
-const addCustomPropertyButton = css({
-  backgroundColor: 'white',
-  border: 'none',
-  color: slate.slate11,
-  marginTop: '1rem',
-  textAlign: 'start',
-});
+const addCustomPropertyButton = _applyTheme((theme: SgTheme) =>
+  css({
+    backgroundColor: theme.colors.background,
+    border: 'none',
+    color: theme.colors.text,
+    marginTop: '1rem',
+    textAlign: 'start',
+    ...theme.elementOverrides?.addCustomPropertyButton,
+  })
+);
 
-const styles = {
+const styles: ThemedStyles = {
   addCustomPropertyButton,
   customPropertySubmitInput,
   emptyContentReason,
