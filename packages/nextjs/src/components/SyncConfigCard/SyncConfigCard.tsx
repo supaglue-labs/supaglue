@@ -59,8 +59,8 @@ const SyncConfigCardInternal = ({ syncConfigName, appearance }: SupaglueConfigCa
 
   return (
     <Card css={styles.card} appearance={appearance}>
-      <TriggerSyncButton syncConfigName={syncConfigName} appearance={appearance} />
-      <SyncSwitch includeSyncDescription syncConfigName={syncConfigName} appearance={appearance} />
+      <TriggerSyncButton syncConfig={syncConfig} appearance={appearance} />
+      <SyncSwitch includeSyncDescription syncConfig={syncConfig} appearance={appearance} />
       <FieldMapping syncConfig={syncConfig} appearance={appearance} />
     </Card>
   );
