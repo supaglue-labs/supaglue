@@ -1,5 +1,6 @@
+import { SyncConfig } from '@supaglue/types';
 import { getDependencyContainer } from '../../../dependency_container';
-import { DeveloperConfig, SyncConfig } from '../../../developer_config/entities';
+import { DeveloperConfig } from '../../../developer_config/entities';
 import { Sync } from '../../../syncs/entities';
 
 export abstract class BaseInternalIntegration {

@@ -1,5 +1,4 @@
-import { SalesforceCredentials } from './customer/common/salesforce';
-import { SyncConfig } from './sync_config';
+import { SalesforceCredentials, SyncConfig } from '@supaglue/types';
 
 export type DeveloperConfigParams = {
   syncConfigs: SyncConfig[];

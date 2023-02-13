@@ -1,5 +1,4 @@
-import { PostgresDestination } from './postgres';
-import { WebhookDestination } from './webhook';
+import { PostgresDestination, WebhookDestination } from '@supaglue/types';
 
 export * from './postgres';
 export * from './webhook';

@@ -1,4 +1,4 @@
-import { PostgresSource } from './postgres';
+import { PostgresSource } from '@supaglue/types';
 
 export * from './postgres';
 

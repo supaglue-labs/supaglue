@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client';
+import { DeveloperConfigSpec, SyncConfig } from '@supaglue/types';
 import { SALESFORCE } from '../../constants';
 import { NotFoundError } from '../../errors';
 import { SyncService } from '../../syncs/services';
-import { DeveloperConfig, DeveloperConfigSpec, fromModelToDeveloperConfig, SyncConfig } from '../entities';
+import { DeveloperConfig, fromModelToDeveloperConfig } from '../entities';
 
 const DEVELOPER_CONFIG_ID = '1';
 
