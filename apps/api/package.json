@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
-    "@prisma/client": "^4.9.0",
+    "@prisma/client": "^4.10.1",
     "@sentry/integrations": "^7.34.0",
     "@sentry/node": "^7.34.0",
     "@supaglue/grpc": "workspace:^",
@@ -49,7 +49,7 @@
     "pino-http": "^8.3.1",
     "pino-pretty": "^9.1.1",
     "posthog-node": "^2.2.3",
-    "prisma": "^4.9.0",
+    "prisma": "^4.10.1",
     "tslib": "^2.5.0",
     "uuid": "^9.0.0"
   }

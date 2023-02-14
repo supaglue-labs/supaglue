@@ -3,6 +3,7 @@ import { useDeveloperConfig, useSalesforceIntegration } from '@supaglue/nextjs/s
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { DrawerMenuButton } from '../../components/DrawerMenuButton';
 import { PageTabs } from '../../components/PageTabs';
 import { useActiveTab } from '../../hooks';
 
@@ -46,7 +47,8 @@ const IntegrationPage = ({ type }: { type: string }) => {
 
   return (
     <>
-      <header>
+      <header className="flex items-center gap-4">
+        <DrawerMenuButton />
         <h1 className="text-4xl font-bold my-6">{type} Integration</h1>
       </header>
       {integrationConnected && developerConfig && <SyncConfiguration />}
@@ -63,16 +65,7 @@ const SyncConfiguration = () => {
     <>
       <PageTabs className="" tabs={pageTabs} disabled={false} />
       <div className="flex pt-4">
-        <SyncConfigCard
-          syncConfigName={syncConfigName}
-          // TUTORIAL: uncomment this
-          // appearance={{
-          //   elements: {
-          //     form: 'bg-base-100',
-          //     fieldName: 'italic text-sm',
-          //   },
-          // }}
-        />
+        <SyncConfigCard syncConfigName={syncConfigName} />
       </div>
     </>
   );

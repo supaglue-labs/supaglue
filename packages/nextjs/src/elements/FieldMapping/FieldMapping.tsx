@@ -164,7 +164,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   const onRemoveCustomProperty = async (name: string) => {
     const updatedFieldMapping: CustomerFieldMapping = { ...fieldMapping };
-    delete fieldMapping[name];
+    delete updatedFieldMapping[name];
 
     await onUpdateSync(
       sync.id,
@@ -219,7 +219,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
           {customPropertyNames.has(name) && (
             <XIcon
-              onClick={() => onRemoveCustomProperty(name)}
+              onClick={async () => await onRemoveCustomProperty(name)}
               css={css({ position: 'absolute', right: '-1.75rem' })}
             />
           )}
@@ -227,11 +227,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
       ))}
 
       {isCreatingCustomProperty && (
-        <NewCustomPropertyForm
-          appearance={appearance}
-          onCancel={() => setIsCreatingCustomProperty(false)}
-          onCreateCustomProperty={onCreateCustomProperty}
-        />
+        <NewCustomPropertyForm appearance={appearance} onCreateCustomProperty={onCreateCustomProperty} />
       )}
 
       {/* TODO: Add flag to enable/disable custom properties
@@ -249,11 +245,9 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
 const NewCustomPropertyForm = ({
   appearance,
-  onCancel,
   onCreateCustomProperty,
 }: {
   appearance?: FieldMappingAppearance;
-  onCancel: () => void;
   onCreateCustomProperty: (name: string) => void;
 }) => (
   <form
@@ -273,13 +267,6 @@ const NewCustomPropertyForm = ({
       type="text"
     />
     <input css={styles.customPropertySubmitInput} type="submit" />
-    <XIcon
-      className={classNames(appearance?.elements?.deleteCustomPropertyButton, 'sg-deleteCustomPropertyButton')}
-      onClick={onCancel}
-      css={css({
-        marginRight: 'auto',
-      })}
-    />
   </form>
 );
 
