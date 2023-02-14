@@ -101,6 +101,7 @@ export type BaseArgs = {
       }
       await Sentry.flush(2000);
       await posthogClient.shutdownAsync();
+      process.exit(1);
     })
     .config()
     .default('config', '~/.supaglue/config.json')
