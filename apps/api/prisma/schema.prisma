@@ -31,6 +31,22 @@ model DeveloperConfig {
   @@map("developer_configs")
 }
 
+model FieldMapping {
+  id              String   @id @default(uuid())
+  customerId      String   @map("customer_id")
+  entityName      String   @map("entity_name")
+  // Purposely using `integrationType` instead of foreign key `integrationId`
+  // so that even if the customer disconnects (deletes) the Salesforce integration
+  // we keep the FieldMappings around (in case they re-connect later).
+  integrationType String   @map("integration_type")
+  config          Json
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([customerId, entityName, integrationType])
+  @@map("field_mappings")
+}
+
 model Sync {
   id               String  @id @default(uuid())
   customerId       String  @map("customer_id")
