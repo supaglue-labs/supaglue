@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "field_mappings" (
+CREATE TABLE "entity_integration_configs" (
     "id" TEXT NOT NULL,
     "customer_id" TEXT NOT NULL,
     "entity_name" TEXT NOT NULL,
@@ -8,8 +8,8 @@ CREATE TABLE "field_mappings" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "field_mappings_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "entity_integration_configs_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "field_mappings_customer_id_entity_name_integration_type_key" ON "field_mappings"("customer_id", "entity_name", "integration_type");
+CREATE UNIQUE INDEX "entity_integration_configs_customer_id_entity_name_integrat_key" ON "entity_integration_configs"("customer_id", "entity_name", "integration_type");

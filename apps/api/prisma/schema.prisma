@@ -31,7 +31,7 @@ model DeveloperConfig {
   @@map("developer_configs")
 }
 
-model FieldMapping {
+model EntityIntegrationConfig {
   id              String   @id @default(uuid())
   customerId      String   @map("customer_id")
   entityName      String   @map("entity_name")
@@ -44,7 +44,7 @@ model FieldMapping {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@unique([customerId, entityName, integrationType])
-  @@map("field_mappings")
+  @@map("entity_integration_configs")
 }
 
 model Sync {
