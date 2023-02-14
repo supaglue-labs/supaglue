@@ -41,7 +41,7 @@ export type BaseArgs = {
   url: string;
 };
 
-(async () => {
+void (async () => {
   const posthogClient = await getClient(argv.url || DEFAULT_API_URL);
 
   await yargs

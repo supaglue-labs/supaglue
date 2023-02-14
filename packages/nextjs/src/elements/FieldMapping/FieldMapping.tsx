@@ -119,7 +119,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
     if (result?.data) {
       // Update the cache and state
-      mutate({ ...result.data });
+      await mutate({ ...result.data });
       if (onSuccess) {
         onSuccess();
       }

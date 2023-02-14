@@ -21,7 +21,7 @@ export const PageTabs: FC<PageTabsProps> = ({ tabs, disabled, className }: PageT
 
   const onSelectTab = (tab: string) => {
     setActiveTab(tab);
-    router.push({ hash: tab });
+    void router.push({ hash: tab });
   };
 
   return (
