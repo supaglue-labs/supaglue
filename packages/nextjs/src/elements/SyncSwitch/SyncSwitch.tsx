@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
+import { Sync, SyncConfig } from '@supaglue/types';
 import classnames from 'classnames';
 import cronstrue from 'cronstrue';
 import { useId } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync } from '../../hooks/api';
-import { DeveloperConfig } from '../../lib/types';
 import { Switch, SwitchElements } from '../../primitives/Switch';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
@@ -26,28 +26,25 @@ export type SyncSwitchProps = {
   disabled?: boolean;
   includeSyncDescription?: boolean;
   label?: string;
-  syncConfigName: string;
+  syncConfig: SyncConfig;
 };
 
 const SyncSwitchInternal = (props: SyncSwitchProps) => {
-  const { appearance, disabled, includeSyncDescription, label, syncConfigName } = props;
+  const { appearance, disabled, includeSyncDescription, label, syncConfig } = props;
   const { customerId, apiUrl } = useSupaglueContext();
-
-  const { data: developerConfig } = useSWR<DeveloperConfig>({ path: '/developer_config' });
 
   // TODO: Use conditional fetching syntax
   const {
     data: sync,
     isLoading: isLoadingSync,
     mutate,
-  } = useSWR({
-    path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfigName}`,
+  } = useSWR<Sync>({
+    path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
 
   const inputId = useId();
 
   const syncEnabled = !!sync?.enabled;
-  const syncConfig = developerConfig?.syncConfigs.find(({ name }) => name === syncConfigName);
 
   const { trigger: triggerUpdateSync } = useSWRMutation(`${apiUrl}/syncs/${sync?.id}`, updateSync);
 
@@ -57,6 +54,11 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
       mutate({ ...result.data });
     }
   };
+
+  // Realtime syncs not supported on the FE yet.
+  if (!syncConfig || syncConfig.type === 'realtime_inbound') {
+    return null;
+  }
 
   return (
     <>
@@ -69,7 +71,7 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
           className={classnames('sg-switchLabel', appearance?.elements?.switchLabel)}
           htmlFor={inputId}
         >
-          {label || `Sync ${syncConfigName}`}
+          {label || `Sync ${syncConfig.name}`}
         </label>
 
         <Switch
@@ -81,7 +83,7 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
         />
       </div>
 
-      {includeSyncDescription && syncConfig && (
+      {includeSyncDescription && (
         <p
           className={classnames('sg-switchDescription', appearance?.elements?.switchDescription)}
           css={styles.switchDescription}

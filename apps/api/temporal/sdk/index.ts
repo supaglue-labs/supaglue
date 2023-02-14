@@ -1,5 +1,4 @@
-import { SyncConfig } from '@supaglue/types';
-import { Sync } from '../../syncs/entities';
+import { Sync, SyncConfig } from '@supaglue/types';
 import { createCustomerIntegrations, CustomerIntegrations } from './customer_integrations';
 import { createInternalIntegrations, InternalIntegrations } from './internal_integrations';
 

@@ -1,24 +1,39 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import {
+  CustomerFieldMapping,
+  Field,
+  PostgresDestination,
+  Schema,
+  Sync,
+  SyncConfig,
+  SyncUpdateParams,
+} from '@supaglue/types';
 import classNames from 'classnames';
 import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
-import {
-  CustomerFieldMapping,
-  DeveloperConfig,
-  Field,
-  PostgresDestination,
-  SyncConfig,
-  SyncUpdateParams,
-} from '../../lib/types';
 import { Select, SelectElements } from '../../primitives';
 import { XIcon } from '../../primitives/icons';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
+
+const getSchema = (syncConfig: SyncConfig): Schema => {
+  if (syncConfig.type === 'outbound') {
+    return syncConfig.source.schema;
+  }
+  return syncConfig.destination.schema;
+};
+
+const customPropertiesEnabled = (syncConfig: SyncConfig): boolean => {
+  if (syncConfig.type === 'outbound') {
+    return !!syncConfig.source.config.customPropertiesColumn;
+  }
+  return syncConfig.destination.type === 'postgres' && !!syncConfig.destination.config.customPropertiesColumn;
+};
 
 type MappedField = {
   name: string;
@@ -33,24 +48,20 @@ const EmptyContent = ({ className, children }: { className?: string; children: R
   );
 };
 
-const FieldMappingInternal = ({ appearance, syncConfigName }: FieldMappingProps) => {
+const FieldMappingInternal = ({ appearance, syncConfig }: FieldMappingProps) => {
   const { customerId } = useSupaglueContext();
   const { data: integration, error, isLoading: isLoadingIntegration } = useSalesforceIntegration(customerId);
 
-  const { data: developerConfig, isLoading: isLoadingDeveloperConfig } = useSWR<DeveloperConfig>({
-    path: '/developer_config',
-  });
-
   // TODO: Use conditional fetching syntax
-  const { data: sync, isLoading: isLoadingSync } = useSWR({
-    path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfigName}`,
+  const { data: sync, isLoading: isLoadingSync } = useSWR<Sync>({
+    path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
 
   if (error) {
     return null;
   }
 
-  if (isLoadingDeveloperConfig || isLoadingSync || isLoadingIntegration) {
+  if (isLoadingSync || isLoadingIntegration) {
     return <EmptyContent>Loading...</EmptyContent>;
   }
 
@@ -62,38 +73,25 @@ const FieldMappingInternal = ({ appearance, syncConfigName }: FieldMappingProps)
     return <EmptyContent>No sync found.</EmptyContent>;
   }
 
-  if (!developerConfig?.syncConfigs?.length) {
-    return <EmptyContent>No developer config found.</EmptyContent>;
-  }
-
-  const syncConfig = developerConfig.syncConfigs.find(({ name }) => name === syncConfigName);
-
-  if (!syncConfig?.destination.schema.fields.length) {
+  if (!getSchema(syncConfig)) {
     return <EmptyContent>No fields to map.</EmptyContent>;
   }
 
-  return <FieldCollection appearance={appearance} key={syncConfigName} sync={sync} syncConfig={syncConfig} />;
+  return <FieldCollection appearance={appearance} key={syncConfig.name} sync={sync} syncConfig={syncConfig} />;
 };
 
 type FieldCollectionProps = {
   appearance?: FieldMappingAppearance;
   syncConfig: SyncConfig;
-  sync: {
-    id: string;
-    customerId: string;
-    enabled: boolean;
-    fieldMapping?: CustomerFieldMapping;
-    name: string;
-    syncConfigName: string;
-    customProperties?: Field[];
-  };
+  sync: Sync;
 };
 
 const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps) => {
+  const schema = getSchema(syncConfig);
   // Use the customer-defined field mapping if it exists, or else the default one supplied by the developer
   const initialFieldMapping =
     sync.fieldMapping ??
-    syncConfig.destination.schema.fields.reduce<CustomerFieldMapping>((mapping, { name }) => {
+    schema.fields.reduce<CustomerFieldMapping>((mapping, { name }) => {
       mapping[name] = syncConfig.defaultFieldMapping?.find((entry) => entry.name === name)?.field || '';
       return mapping;
     }, {});
@@ -103,7 +101,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   const { apiUrl, customerId } = useSupaglueContext();
 
-  const { data: fields, isLoading: isLoadingFields } = useSWR({
+  const { data: fields, isLoading: isLoadingFields } = useSWR<Field[]>({
     path: `/fields?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
 
@@ -114,7 +112,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   const { upsertKey } = (syncConfig.destination as PostgresDestination).config;
 
-  const onUpdateSync = async (params: SyncUpdateParams, onSuccess?: () => void) => {
+  const onUpdateSync = async (id: string, params: SyncUpdateParams, onSuccess?: () => void) => {
     const result = await callUpdateSync(params);
 
     if (result?.data) {
@@ -133,21 +131,16 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
     };
 
     await onUpdateSync(
+      sync.id,
       {
-        id: sync.id,
+        type: syncConfig.type,
         fieldMapping: updatedFieldMapping,
       },
       () => setFieldMapping(updatedFieldMapping)
     );
   };
 
-  // TODO: Add flag to enable/disable custom properties
-  // For now, just check to see if there's a column configured for custom properties
-  const destinationConfig = syncConfig.destination.config;
-  const customPropertiesEnabled =
-    'customPropertiesColumn' in destinationConfig && !!destinationConfig.customPropertiesColumn;
-
-  const applicationFields = [...syncConfig.destination.schema.fields, ...(sync.customProperties || [])];
+  const applicationFields = [...schema.fields, ...(sync.customProperties || [])];
   const customPropertyNames = new Set((sync.customProperties || []).map((field) => field.name));
 
   const onCreateCustomProperty = async (name: string) => {
@@ -160,9 +153,10 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
     }
 
     await onUpdateSync(
+      sync.id,
       {
-        id: sync.id,
-        customProperties: [...(sync.customProperties || []), { name, label: name }],
+        type: syncConfig.type,
+        customProperties: [...(sync.customProperties || []), { name, label: name }] as unknown as Field[],
       },
       () => setIsCreatingCustomProperty(false)
     );
@@ -173,9 +167,10 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
     delete fieldMapping[name];
 
     await onUpdateSync(
+      sync.id,
       {
-        id: sync.id,
-        customProperties: (sync.customProperties || []).filter((field) => field.name !== name),
+        type: syncConfig.type,
+        customProperties: (sync.customProperties || []).filter((field) => field.name !== name) as unknown as Field[],
         fieldMapping: updatedFieldMapping,
       },
       () => setFieldMapping(updatedFieldMapping)
@@ -239,7 +234,9 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
         />
       )}
 
-      {customPropertiesEnabled && (
+      {/* TODO: Add flag to enable/disable custom properties
+      For now, just check to see if there's a column configured for custom properties */}
+      {customPropertiesEnabled(syncConfig) && (
         <AddCustomPropertyButton
           appearance={appearance}
           disabled={isCreatingCustomProperty}
@@ -323,11 +320,11 @@ type FieldMappingAppearance = SupaglueAppearance & {
 
 export type FieldMappingProps = {
   appearance?: FieldMappingAppearance;
-  syncConfigName: string;
+  syncConfig: SyncConfig;
 };
 
-export const FieldMapping = ({ appearance, syncConfigName }: FieldMappingProps) => (
+export const FieldMapping = ({ appearance, syncConfig }: FieldMappingProps) => (
   <SupaglueProviderInternal>
-    <FieldMappingInternal appearance={appearance} syncConfigName={syncConfigName} />
+    <FieldMappingInternal appearance={appearance} syncConfig={syncConfig} />
   </SupaglueProviderInternal>
 );

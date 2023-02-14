@@ -47,19 +47,21 @@ const SyncConfigCardInternal = ({ syncConfigName, appearance }: SupaglueConfigCa
     return <EmptyContent>Not connected to Salesforce. Please connect to Salesforce first.</EmptyContent>;
   }
 
-  if (!sync) {
-    return <EmptyContent>No sync found.</EmptyContent>;
-  }
-
   if (!developerConfig?.syncConfigs?.length) {
     return <EmptyContent>No developer config found.</EmptyContent>;
   }
 
+  const syncConfig = developerConfig.syncConfigs.find(({ name }) => name === syncConfigName);
+
+  if (!sync || !syncConfig) {
+    return <EmptyContent>No sync found.</EmptyContent>;
+  }
+
   return (
     <Card css={styles.card} appearance={appearance}>
-      <TriggerSyncButton syncConfigName={syncConfigName} appearance={appearance} />
-      <SyncSwitch includeSyncDescription syncConfigName={syncConfigName} appearance={appearance} />
-      <FieldMapping syncConfigName={syncConfigName} appearance={appearance} />
+      <TriggerSyncButton syncConfig={syncConfig} appearance={appearance} />
+      <SyncSwitch includeSyncDescription syncConfig={syncConfig} appearance={appearance} />
+      <FieldMapping syncConfig={syncConfig} appearance={appearance} />
     </Card>
   );
 };

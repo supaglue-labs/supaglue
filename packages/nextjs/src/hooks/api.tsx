@@ -29,6 +29,7 @@ export async function updateSync(url: string, { arg }: { arg: any }) {
   try {
     return await axios({ url, method: 'PUT', data: arg });
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error('Error updating sync:', err);
   }
 }
@@ -37,6 +38,7 @@ export async function triggerSync(url: string) {
   try {
     return await axios({ url, method: 'POST' });
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error('Error triggering sync:', err);
   }
 }

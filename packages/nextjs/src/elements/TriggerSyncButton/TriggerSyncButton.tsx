@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { Sync, SyncConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
@@ -17,7 +18,7 @@ export type TriggerSyncButtonElements = {
 };
 
 export type TriggerSyncButtonProps = {
-  syncConfigName: string;
+  syncConfig: SyncConfig;
   label?: string;
   appearance?: SupaglueAppearance & {
     elements?: {
@@ -29,7 +30,7 @@ export type TriggerSyncButtonProps = {
 
 export const TriggerSyncButtonInternal = ({
   label,
-  syncConfigName,
+  syncConfig,
   showToast = true,
   appearance,
 }: TriggerSyncButtonProps) => {
@@ -37,8 +38,8 @@ export const TriggerSyncButtonInternal = ({
   const [syncingInProgress, setSyncingInProgress] = useState(false);
 
   const { customerId, apiUrl } = useSupaglueContext();
-  const { data: sync, isLoading: isLoadingSync } = useSWR({
-    path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfigName}`,
+  const { data: sync, isLoading: isLoadingSync } = useSWR<Sync>({
+    path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
   const { data: integration, error } = useSalesforceIntegration(customerId);
   const integrationConnected = integration && error?.response?.status !== 404;

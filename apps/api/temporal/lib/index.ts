@@ -1,5 +1,4 @@
-import { SalesforceCustomerIntegration, SyncConfig } from '@supaglue/types';
-import { Sync } from '../../syncs/entities';
+import { SalesforceCustomerIntegration, Sync, SyncConfig } from '@supaglue/types';
 
 export function getMapping({ fieldMapping }: Sync, syncConfig: SyncConfig): Record<string, string> {
   const schema =

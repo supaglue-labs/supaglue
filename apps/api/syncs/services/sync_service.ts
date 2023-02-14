@@ -1,19 +1,11 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { RealtimeInboundSyncConfig, SyncConfig } from '@supaglue/types';
+import { RealtimeInboundSyncConfig, Sync, SyncConfig, SyncCreateParams, SyncUpdateParams } from '@supaglue/types';
 import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, ScheduleOverlapPolicy } from '@temporalio/client';
 import { DeveloperConfig } from '../../developer_config/entities';
 import { logger } from '../../logger';
 import { TEMPORAL_SYNC_TASKS_TASK_QUEUE } from '../../temporal';
 import { getRunSyncWorkflowId, runSync } from '../../temporal/workflows';
-import {
-  fromModelToSyncRun,
-  fromModelToSyncRunWithSyncData,
-  Sync,
-  SyncCreateParams,
-  SyncRun,
-  SyncRunStatus,
-  SyncUpdateParams,
-} from '../entities';
+import { fromModelToSyncRun, fromModelToSyncRunWithSyncData, SyncRun, SyncRunStatus } from '../entities';
 import { getSyncId } from '../util';
 
 export class SyncService {
@@ -30,7 +22,7 @@ export class SyncService {
       where: {
         id: syncId,
       },
-    })) as Sync;
+    })) as unknown as Sync;
   }
 
   public async getSyncByCustomerIdAndSyncConfigName({
@@ -48,7 +40,8 @@ export class SyncService {
     if (!model) {
       return;
     }
-    return model as Sync;
+    // TODO: Implement a real mapper
+    return model as unknown as Sync;
   }
 
   public async getSyncsAndSyncRunsByCustomerId(
@@ -83,7 +76,7 @@ export class SyncService {
         id: getSyncId(params),
       },
     });
-    const sync = model as Sync;
+    const sync = model as unknown as Sync;
 
     const syncConfig = developerConfig.getSyncConfig(sync.syncConfigName);
 
