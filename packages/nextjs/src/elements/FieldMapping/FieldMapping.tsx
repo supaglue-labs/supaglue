@@ -3,10 +3,9 @@ import { css } from '@emotion/react';
 import {
   CustomerFieldMapping,
   Field,
-  isOutboundSyncConfig,
-  isPostgresDestination,
   PostgresDestination,
   Schema,
+  Sync,
   SyncConfig,
   SyncUpdateParams,
 } from '@supaglue/types';
@@ -23,17 +22,17 @@ import { SupaglueAppearance } from '../../types';
 import styles from './styles';
 
 const getSchema = (syncConfig: SyncConfig): Schema => {
-  if (isOutboundSyncConfig(syncConfig)) {
+  if (syncConfig.type === 'outbound') {
     return syncConfig.source.schema;
   }
   return syncConfig.destination.schema;
 };
 
 const customPropertiesEnabled = (syncConfig: SyncConfig): boolean => {
-  if (isOutboundSyncConfig(syncConfig)) {
+  if (syncConfig.type === 'outbound') {
     return !!syncConfig.source.config.customPropertiesColumn;
   }
-  return isPostgresDestination(syncConfig.destination) && !!syncConfig.destination.config.customPropertiesColumn;
+  return syncConfig.destination.type === 'postgres' && !!syncConfig.destination.config.customPropertiesColumn;
 };
 
 type MappedField = {
@@ -54,7 +53,7 @@ const FieldMappingInternal = ({ appearance, syncConfig }: FieldMappingProps) => 
   const { data: integration, error, isLoading: isLoadingIntegration } = useSalesforceIntegration(customerId);
 
   // TODO: Use conditional fetching syntax
-  const { data: sync, isLoading: isLoadingSync } = useSWR({
+  const { data: sync, isLoading: isLoadingSync } = useSWR<Sync>({
     path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
 
@@ -84,15 +83,7 @@ const FieldMappingInternal = ({ appearance, syncConfig }: FieldMappingProps) => 
 type FieldCollectionProps = {
   appearance?: FieldMappingAppearance;
   syncConfig: SyncConfig;
-  sync: {
-    id: string;
-    customerId: string;
-    enabled: boolean;
-    fieldMapping?: CustomerFieldMapping;
-    name: string;
-    syncConfigName: string;
-    customProperties?: Field[];
-  };
+  sync: Sync;
 };
 
 const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps) => {
@@ -165,7 +156,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
       sync.id,
       {
         type: syncConfig.type,
-        customProperties: [...(sync.customProperties || []), { name, label: name }],
+        customProperties: [...(sync.customProperties || []), { name, label: name }] as unknown as Field[],
       },
       () => setIsCreatingCustomProperty(false)
     );
@@ -179,7 +170,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
       sync.id,
       {
         type: syncConfig.type,
-        customProperties: (sync.customProperties || []).filter((field) => field.name !== name),
+        customProperties: (sync.customProperties || []).filter((field) => field.name !== name) as unknown as Field[],
         fieldMapping: updatedFieldMapping,
       },
       () => setFieldMapping(updatedFieldMapping)

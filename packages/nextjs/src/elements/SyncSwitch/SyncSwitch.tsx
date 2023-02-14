@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { isRealtimeInboundSyncConfig, SyncConfig } from '@supaglue/types';
+import { SyncConfig } from '@supaglue/types';
 import classnames from 'classnames';
 import cronstrue from 'cronstrue';
 import { useId } from 'react';
@@ -56,7 +56,7 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
   };
 
   // Realtime syncs not supported on the FE yet.
-  if (!syncConfig || isRealtimeInboundSyncConfig(syncConfig)) {
+  if (!syncConfig || syncConfig.type === 'realtime_inbound') {
     return null;
   }
 
