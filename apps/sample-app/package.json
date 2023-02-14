@@ -18,7 +18,7 @@
     "@next-auth/prisma-adapter": "^1.0.5",
     "@next/env": "13.1.1",
     "@next/font": "13.1.1",
-    "@prisma/client": "^4.9.0",
+    "@prisma/client": "^4.10.1",
     "@supaglue/nextjs": "workspace:*",
     "@supaglue/sdk": "workspace:*",
     "@types/node": "18.11.17",
@@ -51,7 +51,7 @@
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.20",
     "prettier-plugin-tailwindcss": "^0.2.1",
-    "prisma": "^4.9.0",
+    "prisma": "^4.10.1",
     "tailwindcss": "^3.2.4",
     "typescript": "4.9.4"
   },
