@@ -1,8 +1,10 @@
 {
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "@typescript-eslint"],
+  "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "project": ["./tsconfig.json"],
     "sourceType": "module",
     "requireConfigFile": false
   },
@@ -23,7 +25,9 @@
         "object": true
       }
     ],
-    "no-console": "error"
+    "no-console": "error",
+    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/no-misused-promises": ["warn", { "checksVoidReturn": false }]
   },
   "ignorePatterns": ["node_modules/", "dist/", "coverage/", "/packages/grpc/gen"]
 }

@@ -40,7 +40,7 @@ const IntegrationPage = ({ type }: { type: string }) => {
     }
 
     if (!integration) {
-      router.push('/integrations');
+      void router.push('/integrations');
     }
   }, [router, integration, isLoading, error]);
 

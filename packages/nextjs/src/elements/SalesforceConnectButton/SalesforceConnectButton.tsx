@@ -29,7 +29,7 @@ const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) =>
 
   const onClick = () => {
     if (integrationConnected) {
-      router.push(configurationUrl);
+      void router.push(configurationUrl);
     } else {
       window.location.href = `${apiUrl}/oauth/salesforce?${queryParams.toString()}`;
     }
