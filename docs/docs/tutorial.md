@@ -263,38 +263,6 @@ Suppose you want to implement dark mode on your application. The sample app come
    ![integrations_page_dark](/img/tutorial/integrations_page_dark2.png 'integrations page dark mode')
    </BrowserWindow>
 
-### Customize React components
-
-Supaglue provides several React component customization options to change its look-and-feel. Each exported component has an `appearance` prop that allows elements to be overridden with global css or Tailwind classes.
-
-:::info
-
-[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework that is used to apply styles directly in your markup. The sample app comes with Tailwind pre-installed.
-
-:::
-
-1. In the sample app, locate the `<FieldMapping/>` component and add the following `appearance` prop to change the background of the form:
-
-   ```jsx title=apps/sample-app/src/pages/integrations/[type].tsx
-   <SyncConfigCard
-     syncConfigName={syncConfigName}
-     // TUTORIAL: uncomment this
-     appearance={{
-       elements: {
-         form: 'bg-base-100',
-         fieldName: 'italic text-sm',
-       },
-     }}
-   />
-   ```
-
-1. The [Salesforce Integration](http://localhost:3000/integrations/salesforce#Contacts) page should now have updated styling for the field mapping component.
-
-   <BrowserWindow url="http://localhost:3000/salesforce#Contacts">
-
-   ![app_field_mapping_style](/img/tutorial/app_field_mapping_style_dark.png 'salesforce contacts config styled')
-   </BrowserWindow>
-
 ## Next Steps
 
 Congrats! You've successfully shipped your first Salesforce integration using Supaglue, complete with customizations. Learn more about how Supaglue works in the Concepts section.
