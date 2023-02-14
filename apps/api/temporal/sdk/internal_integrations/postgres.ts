@@ -72,13 +72,10 @@ export class DestinationPostgresInternalIntegration extends PostgresInternalInte
     const { customPropertiesColumn, upsertKey } = destination.config;
 
     const normalizedFields = destination.schema.fields.map((field) => field.name);
-    const dbFields = Object.keys(fieldMapping).filter((field) => normalizedFields.includes(field));
     const customFields = Object.keys(fieldMapping).filter((field) => !normalizedFields.includes(field));
 
     const hasCustomFields = !!customPropertiesColumn && customFields.length;
-    if (hasCustomFields) {
-      dbFields.push(customPropertiesColumn);
-    }
+    const dbFields = hasCustomFields ? [...normalizedFields, customPropertiesColumn] : normalizedFields;
 
     const dbFieldsWithoutPrimaryKey = dbFields.filter((field) => field !== upsertKey);
     const dbFieldsString = dbFields.map((field) => `"${field}"`).join(', ');
