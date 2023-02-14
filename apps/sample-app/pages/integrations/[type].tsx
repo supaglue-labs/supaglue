@@ -56,10 +56,15 @@ const IntegrationPage = ({ type }: { type: string }) => {
   );
 };
 
-const pageTabs = ['Contacts', 'Leads', 'Accounts', 'Opportunities'];
+const pageTabs = [
+  { name: 'Contacts', label: 'Contacts' },
+  { name: 'Leads', label: 'Leads' },
+  { name: 'Accounts', label: 'Accounts' },
+  { name: 'Opportunities', label: 'Opportunities' },
+];
 
 const SyncConfiguration = () => {
-  const syncConfigName = useActiveTab(pageTabs[0]);
+  const syncConfigName = useActiveTab(pageTabs[0].name);
 
   return (
     <>

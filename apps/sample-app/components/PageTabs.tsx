@@ -1,23 +1,28 @@
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import { FC, HTMLAttributes, useEffect, useState } from 'react';
+import { FC, HTMLAttributes, ReactNode, useEffect, useState } from 'react';
 import { overrideTailwindClasses } from 'tailwind-override';
 import { useActiveTab } from '../hooks';
 
+export type Tab = {
+  name: string;
+  label: ReactNode;
+};
+
 export interface PageTabsProps extends HTMLAttributes<HTMLDivElement> {
-  tabs: string[];
+  tabs: Tab[];
   disabled: boolean;
 }
 
 export const PageTabs: FC<PageTabsProps> = ({ tabs, disabled, className }: PageTabsProps) => {
-  const tab = useActiveTab(tabs[0]);
+  const tabName = useActiveTab(tabs[0].name);
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<string>(tab);
+  const [activeTab, setActiveTab] = useState<string>(tabName);
 
   useEffect(() => {
-    setActiveTab(tab);
-  }, [tab]);
+    setActiveTab(tabName);
+  }, [tabName]);
 
   const onSelectTab = (tab: string) => {
     setActiveTab(tab);
@@ -27,13 +32,13 @@ export const PageTabs: FC<PageTabsProps> = ({ tabs, disabled, className }: PageT
   return (
     <div className={overrideTailwindClasses(classNames(className, 'flex items-center justify-between'))}>
       <nav className="-mb-px flex" aria-label="Tabs">
-        {tabs.map((tab: string) => (
+        {tabs.map((tab: Tab) => (
           <PageTab
-            key={tab}
+            key={tab.name}
             tab={tab}
             href={`#${tab}`}
             disabled={disabled}
-            isActiveTab={tab === activeTab}
+            isActiveTab={tab.name === activeTab}
             setActiveTab={onSelectTab}
           />
         ))}
@@ -43,7 +48,7 @@ export const PageTabs: FC<PageTabsProps> = ({ tabs, disabled, className }: PageT
 };
 
 interface PageTabProps {
-  tab: string;
+  tab: Tab;
   href: string;
   disabled?: boolean;
   isActiveTab: boolean;
@@ -54,20 +59,20 @@ export const PageTab: FC<PageTabProps> = ({ tab, href, disabled = false, isActiv
   if (disabled) {
     return (
       <div className="tabs" aria-current={isActiveTab ? 'page' : undefined}>
-        {tab}
+        {tab.label}
       </div>
     );
   }
   return (
     <a
       href={href}
-      onClick={() => setActiveTab(tab)}
+      onClick={() => setActiveTab(tab.name)}
       className={classNames('tab tab-bordered px-6', {
         'tab-active': isActiveTab,
       })}
       aria-current={isActiveTab ? 'page' : undefined}
     >
-      {tab}
+      {tab.label}
     </a>
   );
 };
