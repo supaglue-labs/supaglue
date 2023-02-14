@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { SyncConfig } from '@supaglue/types';
+import { Sync, SyncConfig } from '@supaglue/types';
 import classnames from 'classnames';
 import cronstrue from 'cronstrue';
 import { useId } from 'react';
@@ -38,7 +38,7 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
     data: sync,
     isLoading: isLoadingSync,
     mutate,
-  } = useSWR({
+  } = useSWR<Sync>({
     path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
 

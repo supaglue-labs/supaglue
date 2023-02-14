@@ -101,7 +101,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   const { apiUrl, customerId } = useSupaglueContext();
 
-  const { data: fields, isLoading: isLoadingFields } = useSWR({
+  const { data: fields, isLoading: isLoadingFields } = useSWR<Field[]>({
     path: `/fields?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
 

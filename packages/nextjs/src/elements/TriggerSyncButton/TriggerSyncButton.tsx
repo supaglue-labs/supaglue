@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { SyncConfig } from '@supaglue/types';
+import { Sync, SyncConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
@@ -38,7 +38,7 @@ export const TriggerSyncButtonInternal = ({
   const [syncingInProgress, setSyncingInProgress] = useState(false);
 
   const { customerId, apiUrl } = useSupaglueContext();
-  const { data: sync, isLoading: isLoadingSync } = useSWR({
+  const { data: sync, isLoading: isLoadingSync } = useSWR<Sync>({
     path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
   const { data: integration, error } = useSalesforceIntegration(customerId);
