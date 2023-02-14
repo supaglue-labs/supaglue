@@ -130,8 +130,6 @@ For this tutorial, we've included a sample [Developer Config](./concepts#develop
   ╔══════════════════╤═══════════╤════════╗
   ║ Name             │ Action    │ Status ║
   ╟──────────────────┼───────────┼────────╢
-  ║ ContactsOutbound │ No Change │ Live   ║
-  ╟──────────────────┼───────────┼────────╢
   ║ Contacts         │ No Change │ Live   ║
   ╟──────────────────┼───────────┼────────╢
   ║ Leads            │ No Change │ Live   ║
@@ -141,7 +139,7 @@ For this tutorial, we've included a sample [Developer Config](./concepts#develop
   ║ Accounts         │ Created   │ Live   ║
   ╚══════════════════╧═══════════╧════════╝
 
-  Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 4
+  Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 3
   ```
 
 ### Test the integration
@@ -162,8 +160,6 @@ Finally, let's manually trigger our sync to make sure it works as expected.
    ℹ Info: Syncs for customer user1
    ╔══════════════════╤═════════╤══════════════════════════╤══════════════════════════╗
    ║ Sync Name        │ Enabled │ Last Run                 │ Next Run                 ║
-   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ ContactsOutbound │ No      │ n/a                      │ n/a                      ║
    ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
    ║ Contacts         │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
    ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
