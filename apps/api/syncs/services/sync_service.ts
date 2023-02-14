@@ -69,6 +69,30 @@ export class SyncService {
     return syncs as unknown as (Sync & { SyncRun: SyncRun[] })[];
   }
 
+  private getCreateSyncParams(syncConfig: SyncConfig, customerId: string): SyncCreateParams {
+    if (syncConfig.type === 'outbound') {
+      if (syncConfig.destination.objectConfig.type === 'selectable') {
+        return {
+          type: 'outbound',
+          syncConfigName: syncConfig.name,
+          customerId,
+          enabled: false,
+          destination: {
+            object: syncConfig.destination.objectConfig.objectChoices[0],
+          },
+        };
+      }
+    }
+  }
+
+  public async createSync2(
+    developerConfig: DeveloperConfig,
+    syncConfigName: string,
+    customerId: string
+  ): Promise<Sync> {
+    const syncConfig = developerConfig.getSyncConfig(syncConfigName);
+  }
+
   public async createSync(params: SyncCreateParams, developerConfig: DeveloperConfig): Promise<Sync> {
     const model = await this.#prisma.sync.create({
       data: {
