@@ -6,5 +6,5 @@
    we don't want any sticky
  */
 .table th:first-child {
-    position: absolute;
+    position: relative;
 }

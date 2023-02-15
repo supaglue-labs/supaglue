@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 const ANONYMOUS_CUSTOMER_ID = 'anonymousCustomerId';
 
@@ -9,7 +10,16 @@ export const useCustomerIdFromSession = () => {
 };
 
 export const useActiveTab = (defaultTab: string) => {
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const { asPath } = useRouter();
-  const hash = asPath.split('#')[1] ?? '';
-  return hash ? decodeURIComponent(hash) : defaultTab;
+  useEffect(() => {
+    const hash = asPath.split('#')[1] ?? '';
+    const newActiveTab = hash && decodeURIComponent(hash);
+
+    if (newActiveTab) {
+      setActiveTab(newActiveTab);
+    }
+  }, [asPath]);
+
+  return activeTab;
 };
