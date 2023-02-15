@@ -88,13 +88,21 @@ type FieldCollectionProps = {
 
 const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps) => {
   const schema = getSchema(syncConfig);
-  // Use the customer-defined field mapping if it exists, or else the default one supplied by the developer
-  const initialFieldMapping =
-    sync.fieldMapping ??
-    schema.fields.reduce<CustomerFieldMapping>((mapping, { name }) => {
-      mapping[name] = syncConfig.defaultFieldMapping?.find((entry) => entry.name === name)?.field || '';
-      return mapping;
-    }, {});
+
+  // Use the customer-defined field mapping if it exists; default to the values supplied by the developer
+  const initialFieldMapping: CustomerFieldMapping = {};
+  (syncConfig.defaultFieldMapping || []).map(({ name, field }) => {
+    initialFieldMapping[name] = field;
+  });
+
+  if (sync.fieldMapping) {
+    Object.keys(sync.fieldMapping).map((key) => {
+      if (sync.fieldMapping?.[key]) {
+        initialFieldMapping[key] = sync.fieldMapping[key];
+      }
+    });
+  }
+
   const [fieldMapping, setFieldMapping] = useState<CustomerFieldMapping>(initialFieldMapping);
 
   const [isCreatingCustomProperty, setIsCreatingCustomProperty] = useState(false);
@@ -148,6 +156,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
     // Prevent duplicate field names
     if (name === '' || applicationFields.map((field) => field.name).includes(name)) {
+      setIsCreatingCustomProperty(false);
       // TODO: Show error
       return;
     }
