@@ -18,14 +18,14 @@ export const PageTabs: FC<PageTabsProps> = ({ tabs, disabled, className }: PageT
   const tabName = useActiveTab(tabs[0].name);
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<string>(tabName);
+  const [activeTabName, setActiveTabName] = useState<string>(tabName);
 
   useEffect(() => {
-    setActiveTab(tabName);
+    setActiveTabName(tabName);
   }, [tabName]);
 
   const onSelectTab = (tab: string) => {
-    setActiveTab(tab);
+    setActiveTabName(tab);
     void router.push({ hash: tab });
   };
 
@@ -36,10 +36,10 @@ export const PageTabs: FC<PageTabsProps> = ({ tabs, disabled, className }: PageT
           <PageTab
             key={tab.name}
             tab={tab}
-            href={`#${tab}`}
+            href={`#${tab.name}`}
             disabled={disabled}
-            isActiveTab={tab.name === activeTab}
-            setActiveTab={onSelectTab}
+            isActiveTab={tab.name === activeTabName}
+            setActiveTabName={onSelectTab}
           />
         ))}
       </nav>
@@ -52,10 +52,16 @@ interface PageTabProps {
   href: string;
   disabled?: boolean;
   isActiveTab: boolean;
-  setActiveTab: (activeTab: string) => void;
+  setActiveTabName: (activeTabName: string) => void;
 }
 
-export const PageTab: FC<PageTabProps> = ({ tab, href, disabled = false, isActiveTab, setActiveTab }: PageTabProps) => {
+export const PageTab: FC<PageTabProps> = ({
+  tab,
+  href,
+  disabled = false,
+  isActiveTab,
+  setActiveTabName,
+}: PageTabProps) => {
   if (disabled) {
     return (
       <div className="tabs" aria-current={isActiveTab ? 'page' : undefined}>
@@ -66,7 +72,7 @@ export const PageTab: FC<PageTabProps> = ({ tab, href, disabled = false, isActiv
   return (
     <a
       href={href}
-      onClick={() => setActiveTab(tab.name)}
+      onClick={() => setActiveTabName(tab.name)}
       className={classNames('tab tab-bordered px-6', {
         'tab-active': isActiveTab,
       })}

@@ -4,11 +4,11 @@ import Head from 'next/head';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { DrawerMenuButton } from '../components/DrawerMenuButton';
-import { PageTabs, Tab } from '../components/PageTabs';
+import { PageTabs } from '../components/PageTabs';
 import { Pagination } from '../components/Pagination';
 import { Table } from '../components/Table';
 import { TableCell } from '../components/Table/TableCell';
-import { useActiveTab } from '../hooks';
+import { pageTabs, useActiveTab } from '../hooks';
 import prisma, { SalesforceAccount, SalesforceContact, SalesforceLead, SalesforceOpportunity } from '../lib/prismadb';
 import authOptions from './api/auth/[...nextauth]';
 
@@ -257,15 +257,8 @@ function LeadsTable({
   );
 }
 
-const pageTabs: Tab[] = [
-  { name: 'Contacts', label: 'App Contacts' },
-  { name: 'Leads', label: 'App Leads' },
-  { name: 'Accounts', label: 'App Accounts' },
-  { name: 'Opportunities', label: 'App Opportunities' },
-];
-
 export default function Users({ contacts, count }: PageProps) {
-  const activeTab = useActiveTab(pageTabs[0].name);
+  const activeTabName = useActiveTab(pageTabs[0].name);
   return (
     <>
       <Head>
@@ -280,10 +273,10 @@ export default function Users({ contacts, count }: PageProps) {
         </header>
 
         <PageTabs className="mb-4" tabs={pageTabs} disabled={false} />
-        {activeTab === 'Contacts' && <ContactsTable initialUsers={contacts} initialTotalUsers={count} />}
-        {activeTab === 'Leads' && <LeadsTable initialUsers={[]} initialTotalUsers={0} />}
-        {activeTab === 'Accounts' && <AccountsTable initialUsers={[]} initialTotalUsers={0} />}
-        {activeTab === 'Opportunities' && <OpportunitiesTable initialUsers={[]} initialTotalUsers={0} />}
+        {activeTabName === 'Contacts' && <ContactsTable initialUsers={contacts} initialTotalUsers={count} />}
+        {activeTabName === 'Leads' && <LeadsTable initialUsers={[]} initialTotalUsers={0} />}
+        {activeTabName === 'Accounts' && <AccountsTable initialUsers={[]} initialTotalUsers={0} />}
+        {activeTabName === 'Opportunities' && <OpportunitiesTable initialUsers={[]} initialTotalUsers={0} />}
       </main>
     </>
   );
