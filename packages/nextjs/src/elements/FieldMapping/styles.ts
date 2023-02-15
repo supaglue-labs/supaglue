@@ -94,7 +94,7 @@ const customPropertySubmitInput = _applyTheme((theme: SgTheme) =>
 
 const addCustomPropertyButton = _applyTheme((theme: SgTheme) =>
   css({
-    backgroundColor: theme.colors.background,
+    backgroundColor: 'white',
     border: `1px solid ${indigo.indigo11}`,
     borderRadius: '0.5rem',
     color: indigo.indigo11,
