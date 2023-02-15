@@ -229,30 +229,6 @@ You may have realized that two of the columns in the sample app's Contacts table
    ![app_filled_contacts](/img/tutorial/app_filled_contacts.png 'salesforce accounts records')
    </BrowserWindow>
 
-### Customize Theme
-
-Suppose you want to implement dark mode on your application.
-
-We can update the Supaglue components to fit a dark app theme by providing the `SupaglueProvider` with a dark theme.
-
-```tsx title=apps/sample-app/pages/_app.tsx
-// TUTORIAL: Uncomment this
-import { darkTheme } from '@supaglue/nextjs';
-// ...
-<SupaglueProvider
-  customerId={customerId}
-  // TUTORIAL: Uncomment this
-  theme={darkTheme}
->
-```
-
-Now the Supaglue components should reflect the dark theme:
-
-<BrowserWindow url="http://localhost:3000/Integrations">
-
-![integrations_page_dark](/img/tutorial/integrations_page_dark.png 'integrations page dark mode')
-</BrowserWindow>
-
 ## Next Steps
 
 Congrats! You've successfully shipped your first Salesforce integration using Supaglue, complete with customizations. Learn more about how Supaglue works in the Concepts section.
