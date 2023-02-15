@@ -231,41 +231,27 @@ You may have realized that two of the columns in the sample app's Contacts table
 
 ### Customize Theme
 
-Suppose you want to implement dark mode on your application. The sample app comes with DaisyUI pre-installed which makes it easy to change the theme of the page.
+Suppose you want to implement dark mode on your application.
 
-1. Inside `_document.tsx`, update the overall site theme to be `dark`:
+We can update the Supaglue components to fit a dark app theme by providing the `SupaglueProvider` with a dark theme.
 
-   ```tsx title=apps/sample-app/pages/_document.tsx
-      // TUTORIAL: Change `light` to `dark`
-      <Html data-theme="dark" lang="en" className="h-full bg-gray-100">
-   ```
+```tsx title=apps/sample-app/pages/_app.tsx
+// TUTORIAL: Uncomment this
+import { darkTheme } from '@supaglue/nextjs';
+// ...
+<SupaglueProvider
+  customerId={customerId}
+  // TUTORIAL: Uncomment this
+  theme={darkTheme}
+>
+```
 
-   You will see that the sample app itself has now updated to dark mode, but the Supaglue components remain light.
+Now the Supaglue components should reflect the dark theme:
 
-   <BrowserWindow url="http://localhost:3000/Integrations">
+<BrowserWindow url="http://localhost:3000/Integrations">
 
-   ![integrations_page_dark](/img/tutorial/integrations_page_dark1.png 'integrations page dark mode')
-   </BrowserWindow>
-
-2. We can update the Supaglue components to also reflect dark mode by providing the `SupaglueProvider` with a dark theme.
-
-   ```tsx title=apps/sample-app/pages/_app.tsx
-   // TUTORIAL: Uncomment this
-   import { darkTheme } from '@supaglue/nextjs';
-   // ...
-    <SupaglueProvider
-      customerId={customerId}
-      // TUTORIAL: Uncomment this
-      theme={darkTheme}
-    >
-   ```
-
-   Now the Supaglue components should also reflect the dark theme:
-
-   <BrowserWindow url="http://localhost:3000/Integrations">
-
-   ![integrations_page_dark](/img/tutorial/integrations_page_dark2.png 'integrations page dark mode')
-   </BrowserWindow>
+![integrations_page_dark](/img/tutorial/integrations_page_dark.png 'integrations page dark mode')
+</BrowserWindow>
 
 ## Next Steps
 
