@@ -229,6 +229,7 @@ You may have realized that two of the columns in the sample app's Contacts table
    ![app_filled_contacts](/img/tutorial/app_filled_contacts.png 'salesforce accounts records')
    </BrowserWindow>
 
+
 ## Next Steps
 
 Congrats! You've successfully shipped your first Salesforce integration using Supaglue, complete with customizations. Learn more about how Supaglue works in the Concepts section.
