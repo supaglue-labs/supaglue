@@ -99,8 +99,8 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   // Use the customer-defined field mapping if it exists; default to the values supplied by the developer
   const initialFieldMapping: CustomerFieldMapping = {};
-  (syncConfig.defaultFieldMapping || []).map(({ name, field }) => {
-    initialFieldMapping[name] = field;
+  ((syncConfig.destination as PostgresDestination).schema.fields || []).map(({ name }) => {
+    initialFieldMapping[name] = syncConfig.defaultFieldMapping?.find((field) => field.name === name)?.field || '';
   });
 
   if (sync.fieldMapping) {
