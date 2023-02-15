@@ -57,9 +57,10 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 
 In this step, we will deploy Supaglue configuration to enable customers (i.e. `user1` from the previous step) to sync Salesforce Contacts, Leads, and Opportunities
 
-1. Open a new tab and deploy the sample Developer Config using the CLI:
+1. Open a new terminal window and deploy the sample Developer Config using the CLI:
 
    ```shell
+   cd apps/sample-app
    supaglue apply supaglue-config/
    ```
 

@@ -102,7 +102,7 @@ For this tutorial, we've included a sample [Developer Config](./concepts#develop
 
 1. Finally, add the newly created Sync Config for Accounts to the existing Developer Config so it can be deployed with the existing sample Sync Configs:
 
-   ```tsx title='supaglue-config/index.ts'
+   ```tsx title='apps/sample-app/supaglue-config/index.ts'
    // TUTORIAL: uncomment this
    import accountSyncConfig from './account';
 
@@ -208,9 +208,9 @@ Finally, let's manually trigger our sync to make sure it works as expected.
    ╚═══════════════╧═════════╧══════════════════════════╧══════════════════════════╝
    ```
 
-1. Visit the "App Objects" tab to view the synced Accounts records, which is being populated by the Postgres table.
+1. Visit the "App Objects" tab to view the [synced Accounts records](http://localhost:3000/#Accounts), which is being populated by the Postgres table.
 
-   <BrowserWindow url="http://localhost:3000/Accounts">
+   <BrowserWindow url="http://localhost:3000/#Accounts">
 
    ![app_accounts_switch](/img/tutorial/app_filled_accounts.png 'salesforce accounts records')
    </BrowserWindow>
@@ -255,7 +255,7 @@ You may have realized that two of the columns in the sample app's Contacts table
    ![app_filled_contacts](/img/tutorial/app_contacts_config.png 'salesforce contacts records')
    </BrowserWindow>
 
-1. Click "Run sync now". Once the background sync completes, verify the newly synced fields now contain values on the "App Objects" page.
+1. Click "Run sync now". Once the background sync completes, verify the newly synced fields now contain values on the ["App Objects" page](http://localhost:3000/#Contacts).
 
    <BrowserWindow url="http://localhost:3000/#Contacts">
 
