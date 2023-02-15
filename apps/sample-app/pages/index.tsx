@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { DrawerMenuButton } from '../components/DrawerMenuButton';
-import { PageTabs } from '../components/PageTabs';
+import { PageTabs, Tab } from '../components/PageTabs';
 import { Pagination } from '../components/Pagination';
 import { Table } from '../components/Table';
 import { TableCell } from '../components/Table/TableCell';
@@ -257,10 +257,15 @@ function LeadsTable({
   );
 }
 
-const pageTabs = ['Contacts', 'Leads', 'Accounts', 'Opportunities'];
+const pageTabs: Tab[] = [
+  { name: 'Contacts', label: 'App Contacts' },
+  { name: 'Leads', label: 'App Leads' },
+  { name: 'Accounts', label: 'App Accounts' },
+  { name: 'Opportunities', label: 'App Opportunities' },
+];
 
 export default function Users({ contacts, count }: PageProps) {
-  const activeTab = useActiveTab(pageTabs[0]);
+  const activeTab = useActiveTab(pageTabs[0].name);
   return (
     <>
       <Head>

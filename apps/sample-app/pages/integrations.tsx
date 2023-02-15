@@ -1,5 +1,7 @@
 import { IntegrationCard } from '@supaglue/nextjs';
 import Head from 'next/head';
+import Image from 'next/image';
+import SalesforceIcon from '../assets/salesforce.svg';
 import { DrawerMenuButton } from '../components/DrawerMenuButton';
 
 export default function Integrations() {
@@ -30,8 +32,14 @@ const IntegrationsPage = () => {
       <ul className="flex list-none">
         <IntegrationCard
           name="Salesforce"
-          description="Sync your Objects"
+          icon={<Image src={SalesforceIcon} alt="Salesforce icon" className="w-14 h-14" />}
+          description="Sync your Apolla.io contacts, leads, and accounts to and from Salesforce"
           configurationUrl={`${location}/salesforce`}
+          appearance={{
+            elements: {
+              card: 'w-80',
+            },
+          }}
         />
       </ul>
     </>
