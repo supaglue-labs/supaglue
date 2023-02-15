@@ -17,7 +17,7 @@ const form = _applyTheme((theme: SgTheme) =>
     display: 'flex',
     flexDirection: 'column',
     gap: '0.75rem',
-    padding: '1rem',
+    padding: '1rem 1rem 1rem 0rem',
     borderRadius: '0.5rem',
     width: '30rem',
     ...theme.elementOverrides?.form,
@@ -28,14 +28,14 @@ const formHeaderRow = _applyTheme((theme: SgTheme) =>
   css({
     display: 'flex',
     flexDirection: 'row',
-    gap: '1rem',
+    gap: '0rem',
     ...theme.elementOverrides?.formHeaderRow,
   })
 );
 
 const formColumnHeader = _applyTheme((theme: SgTheme) =>
   css({
-    textDecoration: 'underline',
+    // textDecoration: 'underline',
     color: theme.colors.text,
     width: '50%',
     ...theme.elementOverrides?.formColumnHeader,
