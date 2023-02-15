@@ -29,10 +29,18 @@ const getSchema = (syncConfig: SyncConfig): Schema => {
 };
 
 const customPropertiesEnabled = (syncConfig: SyncConfig): boolean => {
-  if (syncConfig.type === 'outbound') {
-    return !!syncConfig.source.config.customPropertiesColumn;
+  if (syncConfig.type === 'inbound' && syncConfig.destination.type === 'postgres') {
+    return Boolean(
+      (syncConfig.destination as PostgresDestination).config.customPropertiesColumn &&
+        syncConfig.customPropertiesEnabled
+    );
   }
-  return syncConfig.destination.type === 'postgres' && !!syncConfig.destination.config.customPropertiesColumn;
+
+  if (syncConfig.type === 'outbound' && syncConfig.source.type === 'postgres') {
+    return false;
+  }
+
+  return Boolean(syncConfig.customPropertiesEnabled);
 };
 
 type MappedField = {
