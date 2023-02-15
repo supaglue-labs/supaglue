@@ -33,12 +33,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          lastVersion: '0.1.x',
-          versions: {
-            '0.1.x': {
-              label: '0.1.x - alpha',
-            },
-          },
+          lastVersion: '0.2.x',
           sidebarPath: require.resolve('./sidebars.js'),
           sidebarCollapsed: false,
           // Please change this to your repo.
