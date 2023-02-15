@@ -1,7 +1,7 @@
 {
   "name": "@supaglue/grpc",
   "private": true,
-  "version": "0.1.1-1",
+  "version": "0.2.0",
   "dependencies": {
     "@grpc/grpc-js": "^1.8.8",
     "google-protobuf": "^3.21.2"
