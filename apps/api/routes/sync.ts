@@ -49,7 +49,7 @@ router.post(
   posthogMiddleware('Create Sync'),
   async (req: Request<never, any, SyncCreateParams>, res: Response<Sync>) => {
     const developerConfig = await developerConfigService.getDeveloperConfig();
-    const sync = await syncService.createSync(req.body, developerConfig);
+    const sync = await syncService.createSync({ ...req.body, developerConfig });
 
     return res.status(200).send(sync);
   },

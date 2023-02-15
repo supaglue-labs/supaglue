@@ -1,5 +1,12 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { RealtimeInboundSyncConfig, Sync, SyncConfig, SyncCreateParams, SyncUpdateParams } from '@supaglue/types';
+import {
+  getDefaultObjectFromSyncConfig,
+  RealtimeInboundSyncConfig,
+  Sync,
+  SyncConfig,
+  SyncCreateParamsInternal,
+  SyncUpdateParams,
+} from '@supaglue/types';
 import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, ScheduleOverlapPolicy } from '@temporalio/client';
 import { DeveloperConfig } from '../../developer_config/entities';
 import { logger } from '../../logger';
@@ -69,7 +76,45 @@ export class SyncService {
     return syncs as unknown as (Sync & { SyncRun: SyncRun[] })[];
   }
 
-  public async createSync(params: SyncCreateParams, developerConfig: DeveloperConfig): Promise<Sync> {
+  private getCreateSyncParams(syncConfig: SyncConfig, customerId: string): SyncCreateParamsInternal {
+    const object = getDefaultObjectFromSyncConfig(syncConfig);
+    const common = {
+      type: syncConfig.type,
+      syncConfigName: syncConfig.name,
+      customerId,
+      enabled: false,
+    };
+    if (syncConfig.type === 'outbound') {
+      return {
+        ...common,
+        destination: {
+          object,
+        },
+      };
+    }
+    return {
+      ...common,
+      source: {
+        object,
+      },
+    };
+  }
+
+  public async createSync({
+    syncConfigName,
+    developerConfig,
+    customerId,
+  }: {
+    developerConfig: DeveloperConfig;
+    syncConfigName: string;
+    customerId: string;
+  }): Promise<Sync> {
+    const syncConfig = developerConfig.getSyncConfig(syncConfigName);
+    const createParams = this.getCreateSyncParams(syncConfig, customerId);
+    return this.createSyncInternal(createParams, developerConfig);
+  }
+
+  private async createSyncInternal(params: SyncCreateParamsInternal, developerConfig: DeveloperConfig): Promise<Sync> {
     const model = await this.#prisma.sync.create({
       data: {
         ...params,

@@ -76,17 +76,11 @@ export class IntegrationService {
     const developerConfig = await this.#developerConfigService.findDeveloperConfig();
     if (developerConfig) {
       await Promise.all(
-        developerConfig.getSyncConfigs().map((syncConfig) =>
-          this.#syncService.createSync(
-            {
-              type: 'inbound',
-              customerId,
-              syncConfigName: syncConfig.name,
-              enabled: false,
-            },
-            developerConfig
+        developerConfig
+          .getSyncConfigs()
+          .map((syncConfig) =>
+            this.#syncService.createSync({ customerId, developerConfig, syncConfigName: syncConfig.name })
           )
-        )
       );
     }
 
