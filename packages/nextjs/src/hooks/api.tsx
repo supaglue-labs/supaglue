@@ -8,10 +8,10 @@ export type RequestType = {
   data?: Record<string, unknown>;
 };
 
-export function useSalesforceIntegration(customerId: string) {
+export function useIntegration(customerId: string, type = 'salesforce') {
   const result = useSWR<any, AxiosError, RequestType>({
     path: '/integrations',
-    params: { customerId, type: 'salesforce' },
+    params: { customerId, type },
   });
 
   return result;

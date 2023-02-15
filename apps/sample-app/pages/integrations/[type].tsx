@@ -1,5 +1,5 @@
 import { SyncConfigCard, useSupaglueContext } from '@supaglue/nextjs';
-import { useDeveloperConfig, useSalesforceIntegration } from '@supaglue/nextjs/src/hooks/api';
+import { useDeveloperConfig, useIntegration } from '@supaglue/nextjs/src/hooks/api';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -28,7 +28,7 @@ export default function Integration() {
 const IntegrationPage = ({ type }: { type: string }) => {
   const router = useRouter();
   const { customerId } = useSupaglueContext();
-  const { data: integration, isLoading, error } = useSalesforceIntegration(customerId);
+  const { data: integration, isLoading, error } = useIntegration(customerId);
   const { data: developerConfig } = useDeveloperConfig();
   const integrationConnected = integration && error?.response?.status !== 404;
 
@@ -47,7 +47,7 @@ const IntegrationPage = ({ type }: { type: string }) => {
 
   return (
     <>
-      <header className="flex items-center gap-4">
+      <header className="flex items-center gap-4 ml-2">
         <DrawerMenuButton />
         <h1 className="text-4xl font-bold my-6">{type} Integration</h1>
       </header>
@@ -68,8 +68,8 @@ const SyncConfiguration = () => {
 
   return (
     <>
-      <PageTabs className="" tabs={pageTabs} disabled={false} />
-      <div className="flex pt-4">
+      <PageTabs className="ml-2" tabs={pageTabs} disabled={false} />
+      <div className="flex pt-4 ml-2">
         <SyncConfigCard syncConfigName={syncConfigName} />
       </div>
     </>

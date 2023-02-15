@@ -8,7 +8,7 @@ import {
   TriggerSyncButton,
   TriggerSyncButtonElements,
 } from '../../elements';
-import { useSalesforceIntegration } from '../../hooks/api';
+import { useIntegration } from '../../hooks/api';
 import { DeveloperConfig } from '../../lib';
 import { Card, CardElements, EmptyContent } from '../../primitives';
 import { SupaglueProviderInternal, useSupaglueContext } from '../../providers';
@@ -24,7 +24,7 @@ export type SupaglueConfigCardProps = {
 
 const SyncConfigCardInternal = ({ syncConfigName, appearance }: SupaglueConfigCardProps) => {
   const { customerId } = useSupaglueContext();
-  const { data: integration, error, isLoading: isLoadingIntegration } = useSalesforceIntegration(customerId);
+  const { data: integration, error, isLoading: isLoadingIntegration } = useIntegration(customerId, 'salesforce');
 
   const { data: developerConfig, isLoading: isLoadingDeveloperConfig } = useSWR<DeveloperConfig>({
     path: '/developer_config',
@@ -62,6 +62,38 @@ const SyncConfigCardInternal = ({ syncConfigName, appearance }: SupaglueConfigCa
       <SyncSwitch includeSyncDescription syncConfig={syncConfig} appearance={appearance} />
       <FieldMapping syncConfig={syncConfig} appearance={appearance} />
       <TriggerSyncButton syncConfig={syncConfig} appearance={appearance} />
+      <div
+        style={{
+          boxSizing: 'inherit',
+          position: 'relative',
+          transformOrigin: 'left bottom',
+          transform: 'rotate(-90deg) translateX(-10rem)',
+          borderRadius: '0.5em 0.5em 0px 0px',
+          boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05);',
+          left: '-25px',
+          top: '-100%',
+          bottom: 'unset',
+          padding: '0.375rem 1rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          gap: '0.5rem',
+          backgroundColor: 'hsl(226, 70.0%, 55.5%)',
+        }}
+      >
+        <p
+          style={{
+            fontSize: '0.625rem',
+            letterSpacing: '0px',
+            lineHeight: 1,
+            fontWeight: 400,
+            margin: '0px',
+            color: 'white',
+          }}
+        >
+          Powered by Supaglue
+        </p>
+      </div>
     </Card>
   );
 };

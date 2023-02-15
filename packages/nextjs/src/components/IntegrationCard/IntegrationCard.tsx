@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 import { SalesforceConnectButton, SalesforceDisconnectButton } from '../../elements';
-import { useDeveloperConfig, useSalesforceIntegration } from '../../hooks/api';
+import { useDeveloperConfig, useIntegration } from '../../hooks/api';
 import { Card } from '../../primitives';
 import { SupaglueProviderInternal, useSupaglueContext } from '../../providers';
 import { SupaglueAppearance } from '../../types';
@@ -10,6 +10,7 @@ import styles from './styles';
 
 export type IntegrationCardProps = {
   name: string;
+  type: string;
   description: string;
   icon?: ReactNode;
   /** this should have the same protocol and hostname as your app */
@@ -28,6 +29,7 @@ export type IntegrationCardProps = {
 
 const IntegrationCardInternal = ({
   name,
+  type,
   icon: UserIcon = null,
   description,
   configurationUrl,
@@ -35,7 +37,7 @@ const IntegrationCardInternal = ({
 }: IntegrationCardProps) => {
   const { customerId } = useSupaglueContext();
   const { data: developerConfig } = useDeveloperConfig();
-  const { data: integration, error } = useSalesforceIntegration(customerId);
+  const { data: integration, error } = useIntegration(customerId, type);
   const integrationConnected = integration && error?.response?.status !== 404;
 
   if (!developerConfig) {
@@ -62,6 +64,38 @@ const IntegrationCardInternal = ({
       >
         {integrationConnected ? <SalesforceDisconnectButton integration={integration} /> : null}
         <SalesforceConnectButton configurationUrl={configurationUrl} appearance={appearance} />
+      </div>
+      <div
+        style={{
+          boxSizing: 'inherit',
+          position: 'relative',
+          transformOrigin: 'left bottom',
+          transform: 'rotate(-90deg) translateX(-10rem)',
+          borderRadius: '0.5em 0.5em 0px 0px',
+          boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05);',
+          left: '-25px',
+          top: '-105%',
+          bottom: 'unset',
+          padding: '0.375rem 1rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          gap: '0.5rem',
+          backgroundColor: 'hsl(226, 70.0%, 55.5%)',
+        }}
+      >
+        <p
+          style={{
+            fontSize: '0.625rem',
+            letterSpacing: '0px',
+            lineHeight: 1,
+            fontWeight: 400,
+            margin: '0px',
+            color: 'white',
+          }}
+        >
+          Powered by Supaglue
+        </p>
       </div>
     </Card>
   );

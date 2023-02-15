@@ -13,7 +13,7 @@ import classNames from 'classnames';
 import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { updateSync, useSalesforceIntegration } from '../../hooks/api';
+import { updateSync, useIntegration } from '../../hooks/api';
 import { Select, SelectElements } from '../../primitives';
 import { XIcon } from '../../primitives/icons';
 import { SupaglueProviderInternal } from '../../providers';
@@ -50,7 +50,7 @@ const EmptyContent = ({ className, children }: { className?: string; children: R
 
 const FieldMappingInternal = ({ appearance, syncConfig }: FieldMappingProps) => {
   const { customerId } = useSupaglueContext();
-  const { data: integration, error, isLoading: isLoadingIntegration } = useSalesforceIntegration(customerId);
+  const { data: integration, error, isLoading: isLoadingIntegration } = useIntegration(customerId);
 
   // TODO: Use conditional fetching syntax
   const { data: sync, isLoading: isLoadingSync } = useSWR<Sync>({

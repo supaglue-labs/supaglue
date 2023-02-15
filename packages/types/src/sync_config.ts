@@ -245,6 +245,19 @@ export type SalesforceObject =
   | 'WorkTypeGroup'
   | 'WorkTypeGroupMember';
 
+export type SalesforceRateLimitConfig = {
+  batchAllocationPerHour?: number; // max: 15,000/24 hours = 625/hour
+  concurrentApiRequest?: number; // max:: developer: 5, production: 25
+  apiRequestAllocation?: number; // max: 100K + (number license x license type)
+};
+
+type SalesforceFetchConfig = {
+  strategy: 'full_refresh' | 'incremental';
+  watermarkField: 'LastModifiedDate';
+  batchSize: number;
+  rateLimitConfig?: SalesforceRateLimitConfig;
+};
+
 // Developer specifies the Salesforce sObject
 export type SpecifiedSalesforceObjectConfig = {
   type: 'specified';
@@ -265,6 +278,7 @@ export type BaseCustomerIntegration = object;
 export type SalesforceCustomerIntegration = BaseCustomerIntegration & {
   type: 'salesforce';
   objectConfig: SalesforceObjectConfig;
+  fetchConfig?: SalesforceFetchConfig;
 };
 
 export type SalesforceSource = SalesforceCustomerIntegration;

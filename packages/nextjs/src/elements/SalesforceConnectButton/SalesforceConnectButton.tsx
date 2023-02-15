@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useRouter } from 'next/router';
 import { HTMLAttributes } from 'react';
-import { useSalesforceIntegration } from '../../hooks/api';
+import { useIntegration } from '../../hooks/api';
 import { Button } from '../../primitives/Button';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
@@ -19,7 +19,7 @@ export type SalesforceConnectButtonProps = {
 const SalesforceConnectButtonInternal = (props: SalesforceConnectButtonProps) => {
   const { children, configurationUrl } = props;
   const { customerId, apiUrl } = useSupaglueContext();
-  const { data: integration, error } = useSalesforceIntegration(customerId);
+  const { data: integration, error } = useIntegration(customerId);
   const integrationConnected = integration && error?.response?.status !== 404;
   const router = useRouter();
 

@@ -3,7 +3,7 @@ import { Sync, SyncConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { triggerSync, useSalesforceIntegration } from '../../hooks/api';
+import { triggerSync, useIntegration } from '../../hooks/api';
 import { Button } from '../../primitives/Button';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
@@ -41,7 +41,7 @@ export const TriggerSyncButtonInternal = ({
   const { data: sync, isLoading: isLoadingSync } = useSWR<Sync>({
     path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
-  const { data: integration, error } = useSalesforceIntegration(customerId);
+  const { data: integration, error } = useIntegration(customerId);
   const integrationConnected = integration && error?.response?.status !== 404;
 
   const { trigger } = useSWRMutation(`${apiUrl}/syncs/${sync?.id}/_trigger`, triggerSync);
