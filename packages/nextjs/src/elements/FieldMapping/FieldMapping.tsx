@@ -14,7 +14,7 @@ import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { updateSync, useSalesforceIntegration } from '../../hooks/api';
-import { Select, SelectElements } from '../../primitives';
+import { Select, SelectElements, SelectOption } from '../../primitives';
 import { XIcon } from '../../primitives/icons';
 import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
@@ -214,6 +214,8 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
             {label ?? name}
           </p>
 
+          <span>»</span>
+
           <Select
             appearance={appearance}
             disabled={!!upsertKey && name === upsertKey}
@@ -236,7 +238,13 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
       ))}
 
       {isCreatingCustomProperty && (
-        <NewCustomPropertyForm appearance={appearance} onCreateCustomProperty={onCreateCustomProperty} />
+        <NewCustomPropertyForm
+          appearance={appearance}
+          onCreateCustomProperty={onCreateCustomProperty}
+          onRemoveCustomProperty={onRemoveCustomProperty}
+          onUpdateMappedField={onUpdateMappedField}
+          options={fields || []}
+        />
       )}
 
       {/* TODO: Add flag to enable/disable custom properties
@@ -255,29 +263,59 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 const NewCustomPropertyForm = ({
   appearance,
   onCreateCustomProperty,
+  onRemoveCustomProperty,
+  onUpdateMappedField,
+  options,
 }: {
   appearance?: FieldMappingAppearance;
   onCreateCustomProperty: (name: string) => void;
-}) => (
-  <form
-    onSubmit={(e) => {
-      e.preventDefault();
-      // @ts-expect-error: Figure out how to type this
-      onCreateCustomProperty(e.target[0].value);
-    }}
-    css={styles.fieldWrapper}
-    className={classNames(appearance?.elements?.fieldWrapper, 'sg-fieldWrapper')}
-  >
-    <input
-      css={styles.newCustomPropertyInput}
-      className={classNames(appearance?.elements?.newCustomPropertyInput, 'sg-newCustomPropertyInput')}
-      onBlur={(e) => onCreateCustomProperty(e.target.value)}
-      defaultValue=""
-      type="text"
-    />
-    <input css={styles.customPropertySubmitInput} type="submit" />
-  </form>
-);
+  onUpdateMappedField: (field: MappedField) => Promise<void>;
+  onRemoveCustomProperty: (name: string) => void;
+  options: SelectOption[];
+}) => {
+  const [customPropertyName, setCustomPropertyName] = useState('');
+
+  // TODO: Refactor into subcomponent
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onCreateCustomProperty(customPropertyName);
+      }}
+      css={styles.fieldWrapper}
+      className={classNames(appearance?.elements?.fieldWrapper, 'sg-fieldWrapper')}
+    >
+      <input
+        css={styles.newCustomPropertyInput}
+        className={classNames(appearance?.elements?.newCustomPropertyInput, 'sg-newCustomPropertyInput')}
+        onBlur={(e) => onCreateCustomProperty(e.target.value)}
+        onChange={(e) => setCustomPropertyName(e.target.value)}
+        type="text"
+        value={customPropertyName}
+      />
+      <input css={styles.customPropertySubmitInput} type="submit" />
+
+      <span>»</span>
+
+      {/* TODO: Allow selecting the field before naming the custom property */}
+      <Select
+        appearance={appearance}
+        disabled
+        label="Salesforce field name"
+        onValueChange={async (value: string) => {
+          await onUpdateMappedField({ name: customPropertyName, value });
+        }}
+        options={options}
+        value=""
+      />
+
+      <XIcon
+        onClick={async () => await onRemoveCustomProperty(customPropertyName)}
+        css={css({ position: 'absolute', right: '-1.75rem' })}
+      />
+    </form>
+  );
+};
 
 const AddCustomPropertyButton = ({
   appearance,
@@ -293,7 +331,7 @@ const AddCustomPropertyButton = ({
     {...props}
     type={undefined}
   >
-    + Add custom property
+    + Field
   </button>
 );
 
