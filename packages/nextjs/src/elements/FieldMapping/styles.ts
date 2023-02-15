@@ -35,7 +35,6 @@ const formHeaderRow = _applyTheme((theme: SgTheme) =>
 
 const formColumnHeader = _applyTheme((theme: SgTheme) =>
   css({
-    // textDecoration: 'underline',
     color: theme.colors.text,
     width: '50%',
     ...theme.elementOverrides?.formColumnHeader,
