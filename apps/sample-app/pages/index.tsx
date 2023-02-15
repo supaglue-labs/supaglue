@@ -4,11 +4,11 @@ import Head from 'next/head';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { DrawerMenuButton } from '../components/DrawerMenuButton';
-import { PageTabs, Tab } from '../components/PageTabs';
+import { PageTabs } from '../components/PageTabs';
 import { Pagination } from '../components/Pagination';
 import { Table } from '../components/Table';
 import { TableCell } from '../components/Table/TableCell';
-import { useActiveTab } from '../hooks';
+import { pageTabs, useActiveTab } from '../hooks';
 import prisma, { SalesforceAccount, SalesforceContact, SalesforceLead, SalesforceOpportunity } from '../lib/prismadb';
 import authOptions from './api/auth/[...nextauth]';
 
@@ -256,13 +256,6 @@ function LeadsTable({
     />
   );
 }
-
-const pageTabs: Tab[] = [
-  { name: 'Contacts', label: 'Contacts' },
-  { name: 'Leads', label: 'Leads' },
-  { name: 'Accounts', label: 'Accounts' },
-  { name: 'Opportunities', label: 'Opportunities' },
-];
 
 export default function Users({ contacts, count }: PageProps) {
   const activeTabName = useActiveTab(pageTabs[0].name);

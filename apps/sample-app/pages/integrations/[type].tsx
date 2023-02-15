@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { DrawerMenuButton } from '../../components/DrawerMenuButton';
 import { PageTabs } from '../../components/PageTabs';
-import { useActiveTab } from '../../hooks';
+import { pageTabs, useActiveTab } from '../../hooks';
 
 export default function Integration() {
   const router = useRouter();
@@ -55,13 +55,6 @@ const IntegrationPage = ({ type }: { type: string }) => {
     </>
   );
 };
-
-const pageTabs = [
-  { name: 'Contacts', label: 'Contacts' },
-  { name: 'Leads', label: 'Leads' },
-  { name: 'Accounts', label: 'Accounts' },
-  { name: 'Opportunities', label: 'Opportunities' },
-];
 
 const SyncConfiguration = () => {
   const syncConfigName = useActiveTab(pageTabs[0].name);

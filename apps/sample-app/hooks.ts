@@ -9,6 +9,13 @@ export const useCustomerIdFromSession = () => {
   return session?.data?.user?.name ?? ANONYMOUS_CUSTOMER_ID;
 };
 
+export const pageTabs = [
+  { name: 'Contacts', label: 'Contacts' },
+  { name: 'Leads', label: 'Leads' },
+  { name: 'Accounts', label: 'Accounts' },
+  { name: 'Opportunities', label: 'Opportunities' },
+];
+
 export const useActiveTab = (defaultTab: string) => {
   const [activeTabName, setActiveTabName] = useState(defaultTab);
   const { asPath } = useRouter();
