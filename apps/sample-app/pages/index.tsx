@@ -258,14 +258,14 @@ function LeadsTable({
 }
 
 const pageTabs: Tab[] = [
-  { name: 'Contacts', label: 'App Contacts' },
-  { name: 'Leads', label: 'App Leads' },
-  { name: 'Accounts', label: 'App Accounts' },
-  { name: 'Opportunities', label: 'App Opportunities' },
+  { name: 'Contacts', label: 'Contacts' },
+  { name: 'Leads', label: 'Leads' },
+  { name: 'Accounts', label: 'Accounts' },
+  { name: 'Opportunities', label: 'Opportunities' },
 ];
 
 export default function Users({ contacts, count }: PageProps) {
-  const activeTab = useActiveTab(pageTabs[0].name);
+  const activeTabName = useActiveTab(pageTabs[0].name);
   return (
     <>
       <Head>
@@ -280,10 +280,10 @@ export default function Users({ contacts, count }: PageProps) {
         </header>
 
         <PageTabs className="mb-4" tabs={pageTabs} disabled={false} />
-        {activeTab === 'Contacts' && <ContactsTable initialUsers={contacts} initialTotalUsers={count} />}
-        {activeTab === 'Leads' && <LeadsTable initialUsers={[]} initialTotalUsers={0} />}
-        {activeTab === 'Accounts' && <AccountsTable initialUsers={[]} initialTotalUsers={0} />}
-        {activeTab === 'Opportunities' && <OpportunitiesTable initialUsers={[]} initialTotalUsers={0} />}
+        {activeTabName === 'Contacts' && <ContactsTable initialUsers={contacts} initialTotalUsers={count} />}
+        {activeTabName === 'Leads' && <LeadsTable initialUsers={[]} initialTotalUsers={0} />}
+        {activeTabName === 'Accounts' && <AccountsTable initialUsers={[]} initialTotalUsers={0} />}
+        {activeTabName === 'Opportunities' && <OpportunitiesTable initialUsers={[]} initialTotalUsers={0} />}
       </main>
     </>
   );

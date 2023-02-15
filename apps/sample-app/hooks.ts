@@ -10,16 +10,16 @@ export const useCustomerIdFromSession = () => {
 };
 
 export const useActiveTab = (defaultTab: string) => {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeTabName, setActiveTabName] = useState(defaultTab);
   const { asPath } = useRouter();
   useEffect(() => {
     const hash = asPath.split('#')[1] ?? '';
     const newActiveTab = hash && decodeURIComponent(hash);
 
     if (newActiveTab) {
-      setActiveTab(newActiveTab);
+      setActiveTabName(newActiveTab);
     }
   }, [asPath]);
 
-  return activeTab;
+  return activeTabName;
 };
