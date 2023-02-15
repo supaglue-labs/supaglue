@@ -50,6 +50,10 @@ const fieldWrapper = _applyTheme((theme: SgTheme) =>
     justifyContent: 'space-between',
     position: 'relative',
     ...theme.elementOverrides?.fieldWrapper,
+    '> span:first-of-type': {
+      position: 'absolute',
+      right: '55%',
+    },
   })
 );
 
@@ -76,6 +80,7 @@ const newCustomPropertyInput = _applyTheme((theme: SgTheme) =>
     },
     backgroundColor: theme.colors.inputBackground,
     color: theme.colors.inputText,
+    width: '40%',
     ...theme.elementOverrides?.newCustomPropertyInput,
   })
 );
@@ -90,10 +95,21 @@ const customPropertySubmitInput = _applyTheme((theme: SgTheme) =>
 const addCustomPropertyButton = _applyTheme((theme: SgTheme) =>
   css({
     backgroundColor: theme.colors.background,
-    border: 'none',
-    color: theme.colors.text,
-    marginTop: '1rem',
-    textAlign: 'start',
+    border: `1px solid ${indigo.indigo11}`,
+    borderRadius: '0.5rem',
+    color: indigo.indigo11,
+    fontWeight: '500',
+    marginLeft: 'auto',
+    marginTop: '0.75rem',
+    padding: '0.375rem 0.75rem',
+    width: 'fit-content',
+    ':hover': {
+      backgroundColor: indigo.indigo2,
+    },
+    ':disabled': {
+      ...theme.common.disabled,
+      border: 'none',
+    },
     ...theme.elementOverrides?.addCustomPropertyButton,
   })
 );
