@@ -75,6 +75,8 @@ const newCustomPropertyInput = _applyTheme((theme: SgTheme) =>
     ':focus-visible': {
       boxShadow: `0 0 0 2px ${indigo.indigo12}`,
     },
+    backgroundColor: theme.colors.inputBackground,
+    color: theme.colors.inputText,
     ...theme.elementOverrides?.newCustomPropertyInput,
   })
 );
