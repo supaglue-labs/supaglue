@@ -146,7 +146,11 @@ For this tutorial, we've included a sample [Developer Config](./concepts#develop
 
 Finally, let's manually trigger our sync to make sure it works as expected.
 
-1. Click the "Run sync now" button. This triggers Supaglue to execute a [Sync Run](./concepts#sync-run) as a background task.
+1. Navigate to the [accounts sync config tab](http://localhost:3000/integrations/salesforce#Accounts) in the sample app.
+
+1. Click the "Sync Accounts" switch to enable accounts to be synced on a schedule.
+
+1. Click the "Run sync now" button. This triggers Supaglue to execute a [Sync Run](./concepts#sync-run) immediately as a background task.
 
 1. Check the status of the Sync Run by running [`syncs list`](./cli#syncs-list) command to check when it completes:
 
@@ -154,7 +158,7 @@ Finally, let's manually trigger our sync to make sure it works as expected.
    supaglue syncs list --customer-id user1
    ```
 
-   You should see that the Accounts sync is enabled from the switch, and that it was last run recently.
+   You should see that the Accounts sync is enabled from the switch, that it was last run recently and that it's scheduled to run in the future.
 
    ```supaglue syncs list --customer-id user1
    ℹ Info: Syncs for customer user1
