@@ -12,7 +12,7 @@ sidebar_position: 2
 
 ```shell
 # Clone our repo
-git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.2.0 git@github.com:supaglue-labs/supaglue.git && cd supaglue
 
 # Create an encryption secret for credentials
 echo "SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)" >> .env
