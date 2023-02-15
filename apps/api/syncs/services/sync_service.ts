@@ -289,10 +289,10 @@ export class SyncService {
 
     // Then delete them
     await Promise.all(
-      syncs.map((sync) => {
+      syncs.map(async (sync) => {
         // TODO: This shouldn't be best-effort
         const syncScheduleId = getSyncScheduleId(sync.id);
-        this.#temporalClient.schedule.getHandle(syncScheduleId).delete();
+        await this.#temporalClient.schedule.getHandle(syncScheduleId).delete();
       })
     );
 

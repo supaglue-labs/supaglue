@@ -130,8 +130,6 @@ For this tutorial, we've included a sample [Developer Config](./concepts#develop
   ╔══════════════════╤═══════════╤════════╗
   ║ Name             │ Action    │ Status ║
   ╟──────────────────┼───────────┼────────╢
-  ║ ContactsOutbound │ No Change │ Live   ║
-  ╟──────────────────┼───────────┼────────╢
   ║ Contacts         │ No Change │ Live   ║
   ╟──────────────────┼───────────┼────────╢
   ║ Leads            │ No Change │ Live   ║
@@ -141,7 +139,7 @@ For this tutorial, we've included a sample [Developer Config](./concepts#develop
   ║ Accounts         │ Created   │ Live   ║
   ╚══════════════════╧═══════════╧════════╝
 
-  Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 4
+  Syncs Created: 1, Updated: 0, Deleted: 0, No Change: 3
   ```
 
 ### Test the integration
@@ -162,8 +160,6 @@ Finally, let's manually trigger our sync to make sure it works as expected.
    ℹ Info: Syncs for customer user1
    ╔══════════════════╤═════════╤══════════════════════════╤══════════════════════════╗
    ║ Sync Name        │ Enabled │ Last Run                 │ Next Run                 ║
-   ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
-   ║ ContactsOutbound │ No      │ n/a                      │ n/a                      ║
    ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
    ║ Contacts         │ No      │ 2023-02-03T06:45:22.937Z │ n/a                      ║
    ╟──────────────────┼─────────┼──────────────────────────┼──────────────────────────╢
@@ -265,38 +261,6 @@ Suppose you want to implement dark mode on your application. The sample app come
    <BrowserWindow url="http://localhost:3000/Integrations">
 
    ![integrations_page_dark](/img/tutorial/integrations_page_dark2.png 'integrations page dark mode')
-   </BrowserWindow>
-
-### Customize React components
-
-Supaglue provides several React component customization options to change its look-and-feel. Each exported component has an `appearance` prop that allows elements to be overridden with global css or Tailwind classes.
-
-:::info
-
-[Tailwind CSS](https://tailwindcss.com/) is a utility-first CSS framework that is used to apply styles directly in your markup. The sample app comes with Tailwind pre-installed.
-
-:::
-
-1. In the sample app, locate the `<FieldMapping/>` component and add the following `appearance` prop to change the background of the form:
-
-   ```jsx title=apps/sample-app/src/pages/integrations/[type].tsx
-   <SyncConfigCard
-     syncConfigName={syncConfigName}
-     // TUTORIAL: uncomment this
-     appearance={{
-       elements: {
-         form: 'bg-base-100',
-         fieldName: 'italic text-sm',
-       },
-     }}
-   />
-   ```
-
-1. The [Salesforce Integration](http://localhost:3000/integrations/salesforce#Contacts) page should now have updated styling for the field mapping component.
-
-   <BrowserWindow url="http://localhost:3000/salesforce#Contacts">
-
-   ![app_field_mapping_style](/img/tutorial/app_field_mapping_style_dark.png 'salesforce contacts config styled')
    </BrowserWindow>
 
 ## Next Steps

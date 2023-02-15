@@ -74,9 +74,9 @@ export class DeveloperConfigService {
     await Promise.all(
       customerIds.map((customerId) =>
         Promise.all(
-          syncConfigsToBackfill.map(({ name, type }) => {
+          syncConfigsToBackfill.map(async ({ name }) => {
             // TODO: Make this idempotent in case developer config needs to be updated again
-            this.#syncService.createSync({ syncConfigName: name, developerConfig: newConfig, customerId });
+            await this.#syncService.createSync({ syncConfigName: name, developerConfig: newConfig, customerId });
           })
         )
       )

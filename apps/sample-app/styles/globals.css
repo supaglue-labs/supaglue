@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* daisyui wrongly only makes the first header cell sticky, and not the first row cells
+   we don't want any sticky
+ */
+.table th:first-child {
+    position: relative;
+}

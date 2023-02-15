@@ -51,7 +51,7 @@ const SyncSwitchInternal = (props: SyncSwitchProps) => {
   const onCheckedChange = async (checked: boolean) => {
     const result = await triggerUpdateSync({ enabled: checked });
     if (result?.data) {
-      mutate({ ...result.data });
+      await mutate({ ...result.data });
     }
   };
 

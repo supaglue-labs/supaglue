@@ -41,7 +41,7 @@ export type BaseArgs = {
   url: string;
 };
 
-(async () => {
+void (async () => {
   const posthogClient = await getClient(argv.url || DEFAULT_API_URL);
 
   await yargs
@@ -101,6 +101,7 @@ export type BaseArgs = {
       }
       await Sentry.flush(2000);
       await posthogClient.shutdownAsync();
+      process.exit(1);
     })
     .config()
     .default('config', '~/.supaglue/config.json')

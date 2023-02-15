@@ -122,7 +122,7 @@ const server = app.listen(port, (): void => {
 // TODO: We should deploy Temporal worker in another process later.
 // Bundling this with api for now to keep things simple.
 // Set up Temporal worker
-(async () => {
+void (async () => {
   Runtime.install({
     // don't listen on any signals since we are using terminus to handle the shutdown
     shutdownSignals: [],

@@ -88,13 +88,21 @@ type FieldCollectionProps = {
 
 const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps) => {
   const schema = getSchema(syncConfig);
-  // Use the customer-defined field mapping if it exists, or else the default one supplied by the developer
-  const initialFieldMapping =
-    sync.fieldMapping ??
-    schema.fields.reduce<CustomerFieldMapping>((mapping, { name }) => {
-      mapping[name] = syncConfig.defaultFieldMapping?.find((entry) => entry.name === name)?.field || '';
-      return mapping;
-    }, {});
+
+  // Use the customer-defined field mapping if it exists; default to the values supplied by the developer
+  const initialFieldMapping: CustomerFieldMapping = {};
+  (syncConfig.defaultFieldMapping || []).map(({ name, field }) => {
+    initialFieldMapping[name] = field;
+  });
+
+  if (sync.fieldMapping) {
+    Object.keys(sync.fieldMapping).map((key) => {
+      if (sync.fieldMapping?.[key]) {
+        initialFieldMapping[key] = sync.fieldMapping[key];
+      }
+    });
+  }
+
   const [fieldMapping, setFieldMapping] = useState<CustomerFieldMapping>(initialFieldMapping);
 
   const [isCreatingCustomProperty, setIsCreatingCustomProperty] = useState(false);
@@ -117,7 +125,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
     if (result?.data) {
       // Update the cache and state
-      mutate({ ...result.data });
+      await mutate({ ...result.data });
       if (onSuccess) {
         onSuccess();
       }
@@ -148,6 +156,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
     // Prevent duplicate field names
     if (name === '' || applicationFields.map((field) => field.name).includes(name)) {
+      setIsCreatingCustomProperty(false);
       // TODO: Show error
       return;
     }
@@ -164,7 +173,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   const onRemoveCustomProperty = async (name: string) => {
     const updatedFieldMapping: CustomerFieldMapping = { ...fieldMapping };
-    delete fieldMapping[name];
+    delete updatedFieldMapping[name];
 
     await onUpdateSync(
       sync.id,
@@ -219,7 +228,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
           {customPropertyNames.has(name) && (
             <XIcon
-              onClick={() => onRemoveCustomProperty(name)}
+              onClick={async () => await onRemoveCustomProperty(name)}
               css={css({ position: 'absolute', right: '-1.75rem' })}
             />
           )}
@@ -227,11 +236,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
       ))}
 
       {isCreatingCustomProperty && (
-        <NewCustomPropertyForm
-          appearance={appearance}
-          onCancel={() => setIsCreatingCustomProperty(false)}
-          onCreateCustomProperty={onCreateCustomProperty}
-        />
+        <NewCustomPropertyForm appearance={appearance} onCreateCustomProperty={onCreateCustomProperty} />
       )}
 
       {/* TODO: Add flag to enable/disable custom properties
@@ -249,11 +254,9 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
 const NewCustomPropertyForm = ({
   appearance,
-  onCancel,
   onCreateCustomProperty,
 }: {
   appearance?: FieldMappingAppearance;
-  onCancel: () => void;
   onCreateCustomProperty: (name: string) => void;
 }) => (
   <form
@@ -273,13 +276,6 @@ const NewCustomPropertyForm = ({
       type="text"
     />
     <input css={styles.customPropertySubmitInput} type="submit" />
-    <XIcon
-      className={classNames(appearance?.elements?.deleteCustomPropertyButton, 'sg-deleteCustomPropertyButton')}
-      onClick={onCancel}
-      css={css({
-        marginRight: 'auto',
-      })}
-    />
   </form>
 );
 
