@@ -76,15 +76,7 @@ export class DeveloperConfigService {
         Promise.all(
           syncConfigsToBackfill.map(({ name, type }) => {
             // TODO: Make this idempotent in case developer config needs to be updated again
-            this.#syncService.createSync(
-              {
-                type,
-                syncConfigName: name,
-                customerId,
-                enabled: false,
-              },
-              newConfig
-            );
+            this.#syncService.createSync({ syncConfigName: name, developerConfig: newConfig, customerId });
           })
         )
       )

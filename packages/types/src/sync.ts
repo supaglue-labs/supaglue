@@ -45,19 +45,26 @@ type BaseSync = BaseSyncCreateParams & {
 
 type InboundSyncCore = { type: 'inbound'; source?: CustomerSourceParams };
 export type InboundSyncUpdateParams = BaseSyncUpdateParams & InboundSyncCore;
-export type InboundSyncCreateParams = BaseSyncCreateParams & InboundSyncCore;
+export type InboundSyncCreateParamsInternal = BaseSyncCreateParams & InboundSyncCore;
 export type InboundSync = BaseSync & InboundSyncCore;
 
 type OutboundSyncCore = { type: 'outbound'; destination?: CustomerDestinationParams };
 export type OutboundSyncUpdateParams = BaseSyncUpdateParams & OutboundSyncCore;
-export type OutboundSyncCreateParams = BaseSyncCreateParams & OutboundSyncCore;
+export type OutboundSyncCreateParamsInternal = BaseSyncCreateParams & OutboundSyncCore;
 export type OutboundSync = BaseSync & OutboundSyncCore;
 
 type RealtimeInboundSyncCore = { type: 'realtime_inbound'; source?: CustomerSourceParams };
 export type RealtimeInboundSyncUpdateParams = BaseSyncUpdateParams & RealtimeInboundSyncCore;
-export type RealtimeInboundSyncCreateParams = BaseSyncCreateParams & RealtimeInboundSyncCore;
+export type RealtimeInboundSyncCreateParamsInternal = BaseSyncCreateParams & RealtimeInboundSyncCore;
 export type RealtimeInboundSync = BaseSync & RealtimeInboundSyncCore;
 
 export type SyncUpdateParams = InboundSyncUpdateParams | OutboundSyncUpdateParams | RealtimeInboundSyncUpdateParams;
-export type SyncCreateParams = InboundSyncCreateParams | OutboundSyncCreateParams | RealtimeInboundSyncCreateParams;
+export type SyncCreateParamsInternal =
+  | InboundSyncCreateParamsInternal
+  | OutboundSyncCreateParamsInternal
+  | RealtimeInboundSyncCreateParamsInternal;
 export type Sync = InboundSync | OutboundSync | RealtimeInboundSync;
+export type SyncCreateParams = {
+  syncConfigName: string;
+  customerId: string;
+};
