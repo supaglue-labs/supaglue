@@ -288,6 +288,10 @@ export type BasePeriodicSyncConfig = {
   strategy: 'full_refresh';
 
   defaultFieldMapping?: FieldMapping[];
+
+  // Determines whether the customer can create custom properties for this sync
+  // For Postgres integrations, a `customPropertiesColumn` must also be specified
+  customPropertiesEnabled?: boolean;
 };
 
 export type BaseRealtimeSyncConfig = Omit<BasePeriodicSyncConfig, 'cronExpression' | 'strategy'>;

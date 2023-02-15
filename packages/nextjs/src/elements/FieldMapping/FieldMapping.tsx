@@ -29,10 +29,18 @@ const getSchema = (syncConfig: SyncConfig): Schema => {
 };
 
 const customPropertiesEnabled = (syncConfig: SyncConfig): boolean => {
-  if (syncConfig.type === 'outbound') {
-    return !!syncConfig.source.config.customPropertiesColumn;
+  if (syncConfig.type === 'inbound' && syncConfig.destination.type === 'postgres') {
+    return Boolean(
+      (syncConfig.destination as PostgresDestination).config.customPropertiesColumn &&
+        syncConfig.customPropertiesEnabled
+    );
   }
-  return syncConfig.destination.type === 'postgres' && !!syncConfig.destination.config.customPropertiesColumn;
+
+  if (syncConfig.type === 'outbound' && syncConfig.source.type === 'postgres') {
+    return false;
+  }
+
+  return Boolean(syncConfig.customPropertiesEnabled);
 };
 
 type MappedField = {
@@ -91,8 +99,8 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   // Use the customer-defined field mapping if it exists; default to the values supplied by the developer
   const initialFieldMapping: CustomerFieldMapping = {};
-  (syncConfig.defaultFieldMapping || []).map(({ name, field }) => {
-    initialFieldMapping[name] = field;
+  ((syncConfig.destination as PostgresDestination).schema.fields || []).map(({ name }) => {
+    initialFieldMapping[name] = syncConfig.defaultFieldMapping?.find((field) => field.name === name)?.field || '';
   });
 
   if (sync.fieldMapping) {

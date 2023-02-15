@@ -48,6 +48,7 @@ const contactSyncConfig = sdk.syncConfigs.inbound({
   }),
   strategy: 'full_refresh',
   defaultFieldMapping: contactMapping,
+  customPropertiesEnabled: true,
 });
 
 export default contactSyncConfig;
