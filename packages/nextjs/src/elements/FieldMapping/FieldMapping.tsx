@@ -1,6 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CustomerFieldMapping, Field, getUpsertKey, Schema, Sync, SyncConfig, SyncUpdateParams } from '@supaglue/types';
+import {
+  CustomerFieldMapping,
+  customPropertiesEnabled,
+  Field,
+  getSchema,
+  getUpsertKey,
+  Sync,
+  SyncConfig,
+  SyncUpdateParams,
+} from '@supaglue/types';
 import classNames from 'classnames';
 import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
@@ -12,20 +21,6 @@ import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
-
-const getSchema = (syncConfig: SyncConfig): Schema => {
-  if (syncConfig.type === 'outbound') {
-    return syncConfig.source.schema;
-  }
-  return syncConfig.destination.schema;
-};
-
-const customPropertiesEnabled = (syncConfig: SyncConfig): boolean => {
-  if (syncConfig.type === 'outbound') {
-    return !!syncConfig.source.config.customPropertiesColumn;
-  }
-  return syncConfig.destination.type === 'postgres' && !!syncConfig.destination.config.customPropertiesColumn;
-};
 
 type MappedField = {
   name: string;

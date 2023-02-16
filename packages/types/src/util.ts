@@ -1,4 +1,4 @@
-import { SalesforceObject, SalesforceObjectConfig, SyncConfig } from '.';
+import { SalesforceObject, SalesforceObjectConfig, Schema, SyncConfig } from '.';
 
 export const getSalesforceObjectConfig = (syncConfig: SyncConfig): SalesforceObjectConfig => {
   if (syncConfig.type === 'outbound') {
@@ -25,4 +25,18 @@ export const getUpsertKey = (syncConfig: SyncConfig): string | undefined => {
   if (syncConfig.destination.type === 'postgres') {
     return syncConfig.destination.config.upsertKey;
   }
+};
+
+export const getSchema = (syncConfig: SyncConfig): Schema => {
+  if (syncConfig.type === 'outbound') {
+    return syncConfig.source.schema;
+  }
+  return syncConfig.destination.schema;
+};
+
+export const customPropertiesEnabled = (syncConfig: SyncConfig): boolean => {
+  if (syncConfig.type === 'outbound') {
+    return !!syncConfig.source.config.customPropertiesColumn;
+  }
+  return syncConfig.destination.type === 'postgres' && !!syncConfig.destination.config.customPropertiesColumn;
 };
