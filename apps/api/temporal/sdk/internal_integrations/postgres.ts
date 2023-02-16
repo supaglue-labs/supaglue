@@ -74,7 +74,12 @@ export class DestinationPostgresInternalIntegration extends PostgresInternalInte
     const normalizedFields = destination.schema.fields.map((field) => field.name);
     const customFields = Object.keys(fieldMapping).filter((field) => !normalizedFields.includes(field));
 
-    const hasCustomFields = !!customPropertiesColumn && customFields.length;
+    const customFieldsEnabled = !!syncConfig.customPropertiesEnabled;
+    if (customFieldsEnabled && !customPropertiesColumn) {
+      throw new Error('Unable to sync custom properties without a customPropertiesColumn specified');
+    }
+    const hasCustomFields = customFieldsEnabled && customFields.length;
+
     const dbFields = hasCustomFields ? [...normalizedFields, customPropertiesColumn] : normalizedFields;
 
     const dbFieldsWithoutPrimaryKey = dbFields.filter((field) => field !== upsertKey);
