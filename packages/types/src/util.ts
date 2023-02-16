@@ -1,10 +1,14 @@
 import { SalesforceObject, SalesforceObjectConfig, SyncConfig } from '.';
 
-export const getDefaultObjectFromSyncConfig = (syncConfig: SyncConfig): SalesforceObject => {
+export const getSalesforceObjectConfig = (syncConfig: SyncConfig): SalesforceObjectConfig => {
   if (syncConfig.type === 'outbound') {
-    return getDefaultObject(syncConfig.destination.objectConfig);
+    return syncConfig.destination.objectConfig;
   }
-  return getDefaultObject(syncConfig.source.objectConfig);
+  return syncConfig.source.objectConfig;
+};
+
+export const getDefaultObjectFromSyncConfig = (syncConfig: SyncConfig): SalesforceObject => {
+  return getDefaultObject(getSalesforceObjectConfig(syncConfig));
 };
 
 const getDefaultObject = (salesforceObjectConfig: SalesforceObjectConfig): SalesforceObject => {

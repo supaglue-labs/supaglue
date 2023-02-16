@@ -1,3 +1,4 @@
+import { getSalesforceObjectConfig } from '@supaglue/types';
 import { Request, Response, Router } from 'express';
 import jsforce from 'jsforce';
 import { SALESFORCE } from '../constants';
@@ -24,17 +25,13 @@ router.get(
     const developerConfig = await developerConfigService.getDeveloperConfig();
     const syncConfig = developerConfig.getSyncConfig(syncConfigName);
 
-    // TODO: Support grabbing fields for other syncs
+    const objectConfig = getSalesforceObjectConfig(syncConfig);
 
-    if (syncConfig.type !== 'inbound') {
-      throw new Error('Fields only supported for inbound syncs for now');
-    }
-
-    if (syncConfig.source.objectConfig.type !== 'specified') {
+    if (objectConfig.type !== 'specified') {
       throw new Error('Fields only supported for salesforce specified object for now');
     }
 
-    const salesforceObject = syncConfig.source.objectConfig.object;
+    const salesforceObject = objectConfig.object;
 
     const integration = await integrationService.getByCustomerIdAndType(customerId, SALESFORCE, true);
 
