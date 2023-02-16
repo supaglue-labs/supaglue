@@ -7,6 +7,7 @@ const card = _applyTheme((theme: SgTheme) => [
   cardStyles.card,
   css({
     alignItems: 'start',
+    width: '40rem',
     ...theme.elementOverrides?.card,
   }),
 ]);

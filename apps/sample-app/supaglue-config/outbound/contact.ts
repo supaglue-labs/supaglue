@@ -15,22 +15,13 @@ const contactSchema = sdk.schema({
       name: 'first_name',
       label: 'first name',
     },
-    // TUTORIAL: Uncomment this
-    // {
-    //   name: 'last_name',
-    //   label: 'last name',
-    // },
-    // {
-    //   name: 'title',
-    //   label: 'title',
-    // },
   ],
 });
 
 const contactSyncConfig = sdk.syncConfigs.outbound({
   name: 'ContactsOutbound',
   destination: sdk.customer.destinations.salesforce({
-    objectConfig: sdk.customer.common.salesforce.selectableObjectConfig(['Contact', 'Lead']),
+    objectConfig: sdk.customer.common.salesforce.specifiedObjectConfig('Contact'),
     upsertKey: 'salesforce_id',
   }),
   cronExpression: '*/15 * * * *',

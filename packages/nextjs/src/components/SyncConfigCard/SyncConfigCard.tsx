@@ -20,9 +20,10 @@ export type SupaglueConfigCardProps = {
   appearance?: SupaglueAppearance & {
     elements?: SyncSwitchElements & TriggerSyncButtonElements & CardElements & FieldMappingElements;
   };
+  syncLabel?: string;
 };
 
-const SyncConfigCardInternal = ({ syncConfigName, appearance }: SupaglueConfigCardProps) => {
+const SyncConfigCardInternal = ({ syncConfigName, appearance, syncLabel }: SupaglueConfigCardProps) => {
   const { customerId } = useSupaglueContext();
   const { data: integration, error, isLoading: isLoadingIntegration } = useSalesforceIntegration(customerId);
 
@@ -59,7 +60,7 @@ const SyncConfigCardInternal = ({ syncConfigName, appearance }: SupaglueConfigCa
 
   return (
     <Card css={styles.card} appearance={appearance}>
-      <SyncSwitch includeSyncDescription syncConfig={syncConfig} appearance={appearance} />
+      <SyncSwitch includeSyncDescription syncConfig={syncConfig} appearance={appearance} label={syncLabel} />
       <FieldMapping syncConfig={syncConfig} appearance={appearance} />
       <TriggerSyncButton syncConfig={syncConfig} appearance={appearance} />
     </Card>

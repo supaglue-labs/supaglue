@@ -57,13 +57,20 @@ const IntegrationPage = ({ type }: { type: string }) => {
 };
 
 const SyncConfiguration = () => {
-  const syncConfigName = useActiveTab(pageTabs[0].name);
+  const tabName = useActiveTab(pageTabs[0].name);
 
   return (
     <>
       <PageTabs className="" tabs={pageTabs} disabled={false} />
-      <div className="flex pt-4">
-        <SyncConfigCard syncConfigName={syncConfigName} />
+      <div className="flex flex-col gap-4 pt-4">
+        {tabName === 'Contacts' ? (
+          <>
+            <SyncConfigCard syncConfigName={tabName} />
+            <SyncConfigCard syncConfigName="ContactsOutbound" syncLabel="Sync Contacts Outbound (beta)" />
+          </>
+        ) : (
+          <SyncConfigCard syncConfigName={tabName} />
+        )}
       </div>
     </>
   );

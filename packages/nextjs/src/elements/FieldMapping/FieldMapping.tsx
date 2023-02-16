@@ -2,9 +2,10 @@
 import { css } from '@emotion/react';
 import {
   CustomerFieldMapping,
+  customPropertiesEnabled,
   Field,
-  PostgresDestination,
-  Schema,
+  getSchema,
+  getUpsertKey,
   Sync,
   SyncConfig,
   SyncUpdateParams,
@@ -20,28 +21,6 @@ import { SupaglueProviderInternal } from '../../providers';
 import { useSupaglueContext } from '../../providers/SupaglueProvider';
 import { SupaglueAppearance } from '../../types';
 import styles from './styles';
-
-const getSchema = (syncConfig: SyncConfig): Schema => {
-  if (syncConfig.type === 'outbound') {
-    return syncConfig.source.schema;
-  }
-  return syncConfig.destination.schema;
-};
-
-const customPropertiesEnabled = (syncConfig: SyncConfig): boolean => {
-  if (syncConfig.type === 'inbound' && syncConfig.destination.type === 'postgres') {
-    return Boolean(
-      (syncConfig.destination as PostgresDestination).config.customPropertiesColumn &&
-        syncConfig.customPropertiesEnabled
-    );
-  }
-
-  if (syncConfig.type === 'outbound' && syncConfig.source.type === 'postgres') {
-    return false;
-  }
-
-  return Boolean(syncConfig.customPropertiesEnabled);
-};
 
 type MappedField = {
   name: string;
@@ -99,7 +78,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
 
   // Use the customer-defined field mapping if it exists; default to the values supplied by the developer
   const initialFieldMapping: CustomerFieldMapping = {};
-  ((syncConfig.destination as PostgresDestination).schema.fields || []).map(({ name }) => {
+  (schema.fields || []).map(({ name }) => {
     initialFieldMapping[name] = syncConfig.defaultFieldMapping?.find((field) => field.name === name)?.field || '';
   });
 
@@ -126,7 +105,7 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
   });
   const { trigger: callUpdateSync } = useSWRMutation(`${apiUrl}/syncs/${sync.id}`, updateSync);
 
-  const { upsertKey } = (syncConfig.destination as PostgresDestination).config;
+  const upsertKey = getUpsertKey(syncConfig);
 
   const onUpdateSync = async (id: string, params: SyncUpdateParams, onSuccess?: () => void) => {
     const result = await callUpdateSync(params);
