@@ -60,8 +60,16 @@ type Params = {
   defaultFieldMapping?: DefaultFieldMapping;
   source: CustomerSource;
   destination: InternalDestination;
+  customPropertiesEnabled?: boolean;
 };
 ```
+
+If `customPropertiesEnabled` is set to `true` in your sync config, your customers will be able to create custom properties
+for that sync (by clicking the "+ Field" button in the `SyncConfigCard`) and include them in their field mappings.
+
+Note that for inbound syncs with a Postgres destination, or outbound syncs with a Postgres source,
+a `customPropertiesColumn` must also be defined for your destination (or source, respectively) config
+in order for custom properties to work.
 
 ```typescript
 // OutboundSyncConfigParams
@@ -109,9 +117,6 @@ type Params = {
   };
 };
 ```
-
-If `customPropertiesColumn` is defined in your destination config, your customers will be able to create custom properties
-(by clicking the "+ Add custom property" button in the `SyncConfigCard`) and include them in their field mapping.
 
 Important: The `customPropertiesColumn` must be the name of a JSONB column on the same Postgres table that represents
 the destination in your Supaglue config.
@@ -179,6 +184,10 @@ type Mapping = {
 };
 ```
 
+#### `customProperties`
+
+An array of customer-defined properties that are available to be mapped to a Salesforce object within the customer's field mapping.
+
 ## Examples
 
 #### Sync Config for syncing SFDC Contacts
@@ -238,6 +247,7 @@ sdk.syncConfigs.inbound({
       table: 'salesforce_contacts',
       upsertKey: 'salesforce_id',
       customerIdColumn: 'customer_id',
+      customPropertiesColumn: 'extra_attributes',
     },
     retryPolicy: sdk.retryPolicy({
       retries: 2,
@@ -245,5 +255,6 @@ sdk.syncConfigs.inbound({
   }),
   strategy: 'full_refresh',
   defaultFieldMapping: contactMapping,
+  customPropertiesEnabled: true,
 });
 ```
