@@ -17,3 +17,12 @@ const getDefaultObject = (salesforceObjectConfig: SalesforceObjectConfig): Sales
   }
   return salesforceObjectConfig.object;
 };
+
+export const getUpsertKey = (syncConfig: SyncConfig): string | undefined => {
+  if (syncConfig.type === 'outbound') {
+    return syncConfig.destination.upsertKey;
+  }
+  if (syncConfig.destination.type === 'postgres') {
+    return syncConfig.destination.config.upsertKey;
+  }
+};

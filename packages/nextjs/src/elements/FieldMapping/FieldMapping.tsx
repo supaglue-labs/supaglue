@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
-import { CustomerFieldMapping, Field, Schema, Sync, SyncConfig, SyncUpdateParams } from '@supaglue/types';
+import { CustomerFieldMapping, Field, getUpsertKey, Schema, Sync, SyncConfig, SyncUpdateParams } from '@supaglue/types';
 import classNames from 'classnames';
 import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
@@ -109,15 +109,6 @@ const FieldCollection = ({ appearance, syncConfig, sync }: FieldCollectionProps)
     path: `/syncs?customerId=${customerId}&syncConfigName=${syncConfig.name}`,
   });
   const { trigger: callUpdateSync } = useSWRMutation(`${apiUrl}/syncs/${sync.id}`, updateSync);
-
-  const getUpsertKey = (syncConfig: SyncConfig): string | undefined => {
-    if (syncConfig.type === 'outbound') {
-      return syncConfig.destination.upsertKey;
-    }
-    if (syncConfig.destination.type === 'postgres') {
-      return syncConfig.destination.config.upsertKey;
-    }
-  };
 
   const upsertKey = getUpsertKey(syncConfig);
 
