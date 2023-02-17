@@ -80,7 +80,7 @@ const newCustomPropertyInput = _applyTheme((theme: SgTheme) =>
     },
     backgroundColor: theme.colors.inputBackground,
     color: theme.colors.inputText,
-    width: '40%',
+    width: '90%',
     ...theme.elementOverrides?.newCustomPropertyInput,
   })
 );
