@@ -31,6 +31,7 @@ const contactSyncConfig = sdk.syncConfigs.outbound({
       credentials,
       table: 'salesforce_contacts',
       customerIdColumn: 'customer_id',
+      customPropertiesColumn: 'extra_attributes',
     },
     retryPolicy: sdk.retryPolicy({
       retries: 2,
@@ -38,6 +39,7 @@ const contactSyncConfig = sdk.syncConfigs.outbound({
   }),
   strategy: 'full_refresh',
   defaultFieldMapping: contactMapping,
+  customPropertiesEnabled: true,
 });
 
 export default contactSyncConfig;
