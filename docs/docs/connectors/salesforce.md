@@ -6,7 +6,7 @@ sidebar_position: 2
 
 ### Third-party provider information
 
-Supaglue interfaces with the Salesforce async Bulk 2 API using the jsForce client.
+Supaglue interfaces with the Salesforce async Bulk 2.0 API using the JSforce client.
 
 ### Common Model sync frequencies
 

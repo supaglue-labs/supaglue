@@ -122,9 +122,9 @@ Example result:
 ```console
 [
   {
-    "modelName": "account",
-    "lastSyncStart": "2023-02-24T07:52:00.076Z",
-    "nextSyncStart": "2023-02-24T07:53:00.000Z",
+    "model_name": "account",
+    "last_sync_start": "2023-02-24T07:52:00.076Z",
+    "next_sync_start": "2023-02-24T07:53:00.000Z",
     "status": "DONE"
   },
   ...
