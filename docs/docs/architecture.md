@@ -20,12 +20,12 @@ sources={{
 - Sync workflows
 - Workflow engine (Temporal)
 - DB Cache (Postgres)
-- Backend API (Nodejs Express)
+- Backend API (Node.js Express)
 - Common Model
 
 ### Overview
 
-Supaglue is a platform that you can self-host on your infrastructure. It consists of two services, a backend API (Nodejs Express) and workflow engine (Temporal), and a database (Postgres).
+Supaglue is a platform that you can self-host on your infrastructure. It consists of two services, a backend API (Node.js Express) and workflow engine (Temporal), and a database (Postgres).
 
 The backend API serves four purposes:
 
