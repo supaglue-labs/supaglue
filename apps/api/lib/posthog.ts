@@ -56,6 +56,7 @@ function onResFinished(req: Request, res: Response, err?: any) {
     event: 'API Call',
     properties: {
       method: req.method,
+      route: `${req.baseUrl}${req.route.path}`,
       params: req.params,
       providerName: getProviderNameFromRequest(req),
       query: req.query,
