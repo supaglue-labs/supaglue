@@ -1,23 +1,28 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Supaglue Docs',
-  // tagline: 'Dinosaurs are cool',
-  url: 'https://docs.supaglue.com',
-  baseUrl: '/',
-  onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+  tagline: 'Open source unified API',
   favicon: 'img/favicon.ico',
+
+  // Set the production url of your site here
+  url: 'https://docs.supaglue.com',
+  // Set the /<baseUrl>/ pathname under which your site is served
+  // For GitHub pages deployment, it is often '/<projectName>/'
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'supaglue-labs', // Usually your GitHub org/user name.
   projectName: 'supaglue', // Usually your repo name.
+
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -33,9 +38,14 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          lastVersion: '0.2.x',
-          sidebarPath: require.resolve('./sidebars.js'),
+          lastVersion: 'current',
+          versions: {
+            current: {
+              label: '0.3.x - alpha',
+            },
+          },
           sidebarCollapsed: false,
+          sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/supaglue-labs/supaglue/tree/main/docs/',
@@ -45,19 +55,38 @@ const config = {
         //   showReadingTime: true,
         //   // Please change this to your repo.
         //   // Remove this to remove the "edit this page" links.
-        //   editUrl: 'https://github.com/supaglue-labs/supaglue/tree/main/docs/',
+        //   editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         // },
         theme: {
           customCss: [require.resolve('./src/css/custom.css'), require.resolve('./src/css/supaglue.css')],
         },
       }),
     ],
+    [
+      'redocusaurus',
+      {
+        // Plugin Options for loading OpenAPI files
+        specs: [
+          {
+            spec: '../openapi/crm/openapi.bundle.json',
+            route: '/api/crm',
+          },
+        ],
+        // Theme Options for modifying how redoc renders them
+        theme: {
+          // Change with your site colors
+          primaryColor: '#1890ff',
+        },
+      },
+    ],
   ],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      disableSwitch: true,
+      colorMode: {
+        disableSwitch: false,
+      },
       announcementBar: {
         id: 'mtn-announcement',
         content: `<div id="mtn-announcement" class="flex items-center justify-center" style="gap: 7px; display: flex; align-items: center; justify-content: center;">
@@ -66,8 +95,10 @@ const config = {
           ⭐️
         </div>`,
       },
-      image: 'img/logo-opengraph.png',
+      // Replace with your project's social card
+      image: 'img/docusaurus-social-card.jpg',
       navbar: {
+        // title: 'Supaglue Docs',
         logo: {
           alt: 'Supaglue',
           src: 'img/logo-light.png',
@@ -81,6 +112,7 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
+          { to: '/api/crm', label: 'API Reference', position: 'left' },
           { type: 'docsVersionDropdown', position: 'left' },
           {
             type: 'custom-githubButton',
@@ -98,6 +130,18 @@ const config = {
                 label: 'Introduction',
                 to: '/',
               },
+              {
+                label: 'Quickstart',
+                to: '/quickstart',
+              },
+              {
+                label: 'Connectors',
+                to: '/category/connectors',
+              },
+              {
+                label: 'API Reference',
+                to: '/api/crm',
+              },
             ],
           },
           {
@@ -111,18 +155,66 @@ const config = {
                 label: 'Twitter',
                 href: 'https://twitter.com/supaglue_labs',
               },
+              {
+                label: 'GitHub',
+                href: 'https://github.com/supaglue-labs/supaglue',
+              },
             ],
           },
           {
-            title: 'More',
+            title: 'Connectors',
             items: [
               // {
               //   label: 'Blog',
               //   to: '/blog',
               // },
               {
-                label: 'GitHub',
-                href: 'https://github.com/supaglue-labs/supaglue',
+                label: 'HubSpot',
+                href: '/connectors/hubspot',
+              },
+              {
+                label: 'Salesforce',
+                href: '/connectors/salesforce',
+              },
+              {
+                label: 'Pipedrive',
+                href: '/connectors/more',
+              },
+              {
+                label: 'Microsoft Dynamics 365 Sales',
+                href: '/connectors/more',
+              },
+              {
+                label: 'Zendesk Sell',
+                href: '/connectors/more',
+              },
+              {
+                label: 'Zoho CRM',
+                href: '/connectors/more',
+              },
+              {
+                label: 'Copper',
+                href: '/connectors/more',
+              },
+              {
+                label: 'Keap',
+                href: '/connectors/more',
+              },
+              {
+                label: 'Teamwork CRM',
+                href: '/connectors/more',
+              },
+              {
+                label: 'Freshsales',
+                href: '/connectors/more',
+              },
+              {
+                label: 'ActiveCampaign',
+                href: '/connectors/more',
+              },
+              {
+                label: 'Capsule',
+                href: '/connectors/more',
               },
             ],
           },
@@ -131,17 +223,9 @@ const config = {
       },
       prism: {
         theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
-      },
-      algolia: {
-        appId: 'CJOFM1QP4P',
-        apiKey: 'bf8d1571a33851ba8bf7e70a0c57f28f',
-        indexName: 'supaglue',
-        contextualSearch: true,
-        searchPagePath: 'search',
+        // darkTheme: darkCodeTheme,
       },
     }),
-
   plugins: [
     [
       'posthog-docusaurus',

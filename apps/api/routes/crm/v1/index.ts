@@ -1,0 +1,24 @@
+import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
+import { Router } from 'express';
+import accounts from './account';
+import contacts from './contact';
+import leads from './lead';
+import opportunities from './opportunity';
+import syncInfo from './sync_info';
+
+export default function init(app: Router): void {
+  const v1Router = Router();
+
+  v1Router.use(openapiMiddleware('crm'));
+
+  contacts(v1Router);
+  accounts(v1Router);
+  leads(v1Router);
+  opportunities(v1Router);
+
+  syncInfo(v1Router);
+
+  v1Router.use(openApiErrorHandlerMiddleware);
+
+  app.use('/v1', v1Router);
+}

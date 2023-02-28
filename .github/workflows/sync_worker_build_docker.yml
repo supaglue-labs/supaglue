@@ -1,0 +1,25 @@
+name: Build and push sync-worker Docker image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/sync-worker/**
+  pull_request:
+    paths:
+      - apps/async-workerpi/**
+
+jobs:
+  build_and_push:
+    name: Build and push Docker image
+    uses: ./.github/workflows/docker_build_and_push.yml
+    with:
+      workspace: sync-worker
+      image-name: sync-worker
+    secrets:
+      build-args: |
+        POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

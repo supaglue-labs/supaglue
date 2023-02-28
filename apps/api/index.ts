@@ -1,39 +1,32 @@
+import { client as posthogClient, distinctId, posthogMiddlewares } from '@/lib/posthog';
+import { logger } from '@/logger';
+import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
-import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
-import { NativeConnection, Runtime, Worker } from '@temporalio/worker';
+import { HTTPError } from '@supaglue/core/errors';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import pinoHttp from 'pino-http';
 import { v4 as uuidv4 } from 'uuid';
-import { HTTPError } from './errors';
-import { client as posthogClient } from './lib/posthog';
-import { logger } from './logger';
-import initRoutes from './routes';
-import { TEMPORAL_SYNC_TASKS_TASK_QUEUE } from './temporal';
-import * as activities from './temporal/activities';
-
-// Uncomment if you want to test pubsub
-// import { subscribe } from './salesforce_pubsub/client';
 
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
 
-if (sentryEnabled) {
-  Sentry.init({
-    // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
-    // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
-    dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
-    integrations: [
-      new RewriteFrames({
-        root: __dirname,
-      }),
-    ],
-    release: version,
-  });
-}
+// if (sentryEnabled) {
+//   Sentry.init({
+//     // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
+//     // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
+//     dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
+//     integrations: [
+//       new RewriteFrames({
+//         root: __dirname,
+//       }),
+//     ],
+//     release: version,
+//   });
+// }
 
 const app = express();
 const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_PORT) : 8080;
@@ -85,6 +78,9 @@ app.use(
 
 initRoutes(app);
 
+// posthog
+app.use(posthogMiddlewares);
+
 // error handling middlewares
 app.use(
   Sentry.Handlers.errorHandler({
@@ -98,10 +94,26 @@ app.use(
 );
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof HTTPError) {
-    return res.status(err.code).send(`${err.message} - Error id: ${(res as any).sentry}`);
+    return res.status(err.code).send({
+      errors: [
+        {
+          title: err.message,
+          detail: err.cause?.message ?? err.message,
+          problem_type: err.problemType,
+        },
+      ],
+    });
   }
 
-  return next(err);
+  return res.status(500).json({
+    errors: [
+      {
+        title: 'Internal Server Error',
+        detail: (err as any).message || 'Internal Server Error',
+        problem_type: 'INTERNAL_SERVER_ERROR',
+      },
+    ],
+  });
 });
 
 const server = app.listen(port, (): void => {
@@ -117,62 +129,40 @@ const server = app.listen(port, (): void => {
 \\_______)(_______)|/       |/     \\|(_______)(_______/(_______)(_______/`);
   }
   logger.info(`Connected successfully at http://localhost:${port}`);
+
+  if (distinctId) {
+    posthogClient.capture({
+      distinctId,
+      event: 'API Server started',
+      properties: {
+        result: 'success',
+        isDevelopmentMode: process.env.NODE_ENV === 'development',
+        source: 'api',
+        system: {
+          version,
+          arch: process.arch,
+          os: process.platform,
+          nodeVersion: process.version,
+        },
+      },
+    });
+  }
 });
 
-// TODO: We should deploy Temporal worker in another process later.
-// Bundling this with api for now to keep things simple.
-// Set up Temporal worker
-void (async () => {
-  Runtime.install({
-    // don't listen on any signals since we are using terminus to handle the shutdown
-    shutdownSignals: [],
-    logger: {
-      info: (message) => logger.info(message),
-      warn: (message) => logger.warn(message),
-      error: (message) => logger.error(message),
-      log: (message) => logger.info(message),
-      trace: (message) => logger.trace(message),
-      debug: (message) => logger.debug(message),
+createTerminus(server, {
+  healthChecks: {
+    '/health': async () => {
+      return;
     },
-  });
-  const connection = await NativeConnection.connect({
-    address: 'temporal',
-  });
-
-  const worker = await Worker.create({
-    workflowsPath: require.resolve('./temporal/workflows'),
-    activities,
-    taskQueue: TEMPORAL_SYNC_TASKS_TASK_QUEUE,
-    connection,
-  });
-
-  // Uncomment if you want to test pubsub
-  // try {
-  //   await subscribe({ customerId: 'user1', topicName: '/data/ContactChangeEvent' });
-  // } catch (e) {
-  //   logger.error(e, 'Could not subscribe to topic');
-  // }
-
-  // set up terminus here since we need the worker
-  createTerminus(server, {
-    healthChecks: {
-      '/health': async () => {
-        return;
-      },
-    },
-    timeout: 10000,
-    beforeShutdown: async () => {
-      logger.info('Server is shutting down');
-      await posthogClient.shutdownAsync();
-      worker.shutdown();
-    },
-    onShutdown: async () => {
-      logger.info('Server is shut down');
-    },
-    useExit0: true,
-    logger: (message, error) => logger.error(error, message),
-  });
-
-  // must come last since it blocks
-  await worker.run();
-})();
+  },
+  timeout: 10000,
+  beforeShutdown: async () => {
+    logger.info('Server is shutting down');
+    await posthogClient.shutdownAsync();
+  },
+  onShutdown: async () => {
+    logger.info('Server is shut down');
+  },
+  useExit0: true,
+  logger: (message, error) => logger.error(error, message),
+});

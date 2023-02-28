@@ -13,17 +13,21 @@ COPY .yarnrc.build.yml .yarnrc.yml
 COPY .yarn .yarn
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
-RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus api
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn install
 
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
+COPY openapi ./openapi
+COPY scripts ./scripts
 COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 
-WORKDIR /app/apps/api
+WORKDIR /app/packages/core
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx prisma generate
 
 WORKDIR /app
+
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace api dlx ts-patch install -s
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo run build --filter=api...
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus --production api
 RUN rm -rf .yarn
@@ -41,7 +45,12 @@ RUN adduser --system --uid 1001 nodejs
 USER nodejs
 COPY --from=installer --chown=nodejs:nodejs /app/apps/api/dist .
 COPY --from=installer --chown=nodejs:nodejs /app/apps/api/node_modules ./node_modules
-COPY --from=installer --chown=nodejs:nodejs /app/apps/api/prisma ./prisma
+COPY --from=installer --chown=nodejs:nodejs /app/packages/core/dist ./node_modules/@supaglue/core
+COPY --from=installer --chown=nodejs:nodejs /app/packages/core/node_modules ./node_modules/@supaglue/core/node_modules
+COPY --from=installer --chown=nodejs:nodejs /app/packages/core/prisma ./prisma
+COPY --from=installer --chown=nodejs:nodejs /app/packages/sync-workflows/dist ./node_modules/@supaglue/sync-workflows
+COPY --from=installer --chown=nodejs:nodejs /app/packages/sync-workflows/node_modules ./node_modules/@supaglue/sync-workflows/node_modules
+COPY --from=installer --chown=nodejs:nodejs /app/openapi ./openapi
 COPY --from=installer --chown=nodejs:nodejs /app/package.json .
 
 CMD node ./index.js

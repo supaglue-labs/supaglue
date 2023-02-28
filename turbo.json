@@ -2,26 +2,21 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["generate", "^build"],
       "outputs": ["dist/**"]
     },
-    "sample-app#build": {
-      "dependsOn": ["^build"],
-      "inputs": [
-        "pages/**/*",
-        "public/**/*",
-        "prisma/**/*",
-        "styles/**/*",
-        "components/**/*",
-        "assets/**/*",
-        "next.config.js",
-        "package.json",
-        "tsconfig.json"
-      ],
-      "outputs": [".next/**"]
-    },
     "docs#build": {
-      "dependsOn": ["^build"],
+      "inputs": [
+        "../../openapi/**/openapi.bundle.json",
+        "blog/**/*",
+        "docs/**/*",
+        "docusaurus.config.js",
+        "sidebars.js",
+        "package.json",
+        "tsconfig.json",
+        "src/**/*",
+        "static/**/*"
+      ],
       "outputs": ["build/**"]
     },
     "lint-staged": {},
@@ -33,6 +28,16 @@
     },
     "test:watch": {
       "cache": false
+    },
+    "generate": {},
+    "//#generate": {
+      "inputs": ["openapi/**/*.yaml"],
+      "outputs": ["openapi/**/openapi.bundle.json"]
+    },
+    "@supaglue/schemas#generate": {
+      "dependsOn": ["//#generate"],
+      "inputs": ["../../openapi/**/*.yaml"],
+      "outputs": ["gen/**"]
     }
   },
   "globalDependencies": [

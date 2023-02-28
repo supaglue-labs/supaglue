@@ -1,0 +1,34 @@
+{
+  "name": "@supaglue/core",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "yarn@3.4.1",
+  "dependencies": {
+    "@hubspot/api-client": "^8.6.0",
+    "@prisma/client": "^4.10.1",
+    "dotenv": "^16.0.3",
+    "jsforce": "^2.0.0-beta.20"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^1.0.1",
+    "prisma": "^4.10.1",
+    "tsx": "^3.12.3",
+    "typescript": "^4.9.5"
+  },
+  "scripts": {
+    "build": "yarn run clean && tsc -p .",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "lint-staged": "run -T lint-staged --no-stash --quiet",
+    "lint": "run -T eslint"
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}

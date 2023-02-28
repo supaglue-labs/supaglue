@@ -1,0 +1,30 @@
+type: array
+items:
+  type: object
+  properties:
+    detail:
+      type: string
+      example: custom_fields is a required field on model.
+    problem_type:
+      type: string
+      example: MISSING_REQUIRED_FIELD
+    source:
+      type: object
+      properties:
+        pointer:
+          type: string
+          example: irure consectetur
+    title:
+      type: string
+      example: Missing Required Field
+  example:
+    - detail: custom_fields is a required field on model.
+      problem_type: MISSING_REQUIRED_FIELD
+      source:
+        pointer: irure consectetur
+      title: Missing Required Field
+    - detail: custom_fields is a required field on model.
+      problem_type: MISSING_REQUIRED_FIELD
+      source:
+        pointer: et
+      title: Missing Required Field

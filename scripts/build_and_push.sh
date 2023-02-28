@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -euo pipefail
+set -euox pipefail
 
 if [ -z "${1-}" ]; then
   echo "usage: $0 <workspace_name>"
@@ -8,6 +8,8 @@ if [ -z "${1-}" ]; then
 fi
 
 WORKSPACE_NAME=$1
+
+WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${WORKSPACE_NAME}\") | .location")
 
 if [ "$WORKSPACE_NAME" = "api" ]; then
   # fetch the posthog api key from 1password and pass it as an arg
@@ -21,14 +23,14 @@ if [ "$WORKSPACE_NAME" = "api" ]; then
 fi
 
 # read version from package.json
-VERSION=$(jq -r .version "apps/${WORKSPACE_NAME}/package.json")
+VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
 
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  -f "./apps/${WORKSPACE_NAME}/Dockerfile" \
+  -f "./${WORKSPACE_PATH}/Dockerfile" \
   --tag "supaglue/${WORKSPACE_NAME}:${VERSION}" \
-  --push \
   --label "org.opencontainers.image.source=https://github.com/supaglue-labs/supaglue" \
+  --push \
   ${ADDITIONAL_ARGS-} \
   .
 

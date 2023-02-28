@@ -1,0 +1,67 @@
+get:
+  operationId: getLead
+  summary: Get lead
+  tags:
+    - Leads
+  security:
+    - api_key: []
+  parameters:
+    - $ref: ../components/parameters/expand.yaml
+  responses:
+    200:
+      description: Lead
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/lead.yaml
+patch:
+  operationId: updateLead
+  summary: Update lead
+  security:
+    - api_key: []
+  tags:
+    - Leads
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            model:
+              $ref: ../components/schemas/create_update_lead.yaml
+          required:
+            - model
+        examples:
+          Example:
+            value:
+              company: Supaglue
+              first_name: George
+              id: c0dec24d-eb62-4a5a-bd62-5a52d888213b
+              last_name: Xing
+              lead_source: API Blogger
+              title: Co-Founder
+  responses:
+    200:
+      description: Lead updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../components/schemas/errors.yaml
+              logs:
+                $ref: ../components/schemas/logs.yaml
+              model:
+                $ref: ../components/schemas/objects/lead.yaml
+              warnings:
+                $ref: ../components/schemas/warnings.yaml
+parameters:
+  - name: lead_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 82de27cb-6f8c-4278-b783-82d1d916eddc

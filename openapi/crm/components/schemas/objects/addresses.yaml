@@ -1,0 +1,40 @@
+type: array
+items:
+  type: object
+  properties:
+    address_type:
+      type: string
+      nullable: true
+      example: Shipping
+    city:
+      type: string
+      nullable: true
+      example: San Francisco
+    country:
+      type: string
+      nullable: true
+      example: USA
+    postal_code:
+      type: string
+      nullable: true
+      example: '94107'
+    state:
+      type: string
+      nullable: true
+      example: CA
+    street_1:
+      type: string
+      nullable: true
+      example: 525 Brannan
+    street_2:
+      type: string
+      nullable: true
+      example: ~
+example:
+  - address_type: Shipping
+    city: San Francisco
+    country: US
+    postal_code: '94107'
+    state: CA
+    street_1: 525 Brannan
+    street_2: ~

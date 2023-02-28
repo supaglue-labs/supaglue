@@ -1,0 +1,14 @@
+type: array
+items:
+  type: object
+  properties:
+    email_address:
+      type: string
+      example: hello@supaglue.com
+    email_address_type:
+      type: string
+      nullable: true
+      example: Work
+example:
+  - email_address: hello@supaglue.com
+    email_address_type: Work

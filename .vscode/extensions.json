@@ -1,3 +1,9 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "Prisma.prisma", "yzhang.markdown-all-in-one"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "Prisma.prisma",
+    "yzhang.markdown-all-in-one",
+    "42Crunch.vscode-openapi"
+  ]
 }

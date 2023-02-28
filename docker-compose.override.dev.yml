@@ -1,0 +1,25 @@
+services:
+  api:
+    image: node:18
+    environment:
+      - NODE_ENV=development
+      - SUPAGLUE_PRETTY_LOGS=1
+      - SUPAGLUE_DISABLE_ANALYTICS=1
+      - SUPAGLUE_DISABLE_ERROR_REPORTING=1
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/sh -c "./apps/api/scripts/start_dev.sh"
+
+  sync-worker:
+    image: node:18
+    environment:
+      - NODE_ENV=development
+      - SUPAGLUE_PRETTY_LOGS=1
+      - SUPAGLUE_DISABLE_ANALYTICS=1
+      - SUPAGLUE_DISABLE_ERROR_REPORTING=1
+      - SUPAGLUE_POSTHOG_API_KEY
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/sh -c "./apps/sync-worker/scripts/start_dev.sh"

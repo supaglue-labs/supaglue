@@ -4,8 +4,7 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "target": "esnext",
-    "lib": ["es6"],
-    "jsx": "react-jsx"
+    "lib": ["es6"]
   },
   "exclude": ["node_modules", "dist"]
 }

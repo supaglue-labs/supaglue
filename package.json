@@ -1,46 +1,20 @@
 {
   "name": "supaglue",
-  "version": "0.2.0",
-  "packageManager": "yarn@3.3.1",
+  "version": "0.0.0",
+  "packageManager": "yarn@3.4.1",
   "private": true,
   "workspaces": [
     "packages/*",
     "apps/*",
-    "docs",
-    "examples/*"
+    "docs"
   ],
-  "devDependencies": {
-    "@commitlint/cli": "^17.4.2",
-    "@commitlint/config-conventional": "^17.4.2",
-    "@tsconfig/node18": "^1.0.1",
-    "@types/eslint": "^8",
-    "@types/node": "^18.11.18",
-    "@types/prettier": "^2",
-    "@typescript-eslint/eslint-plugin": "^5.48.1",
-    "@typescript-eslint/parser": "^5.48.1",
-    "eslint": "^8.31.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "grpc_tools_node_protoc_ts": "^5.3.3",
-    "husky": "^8.0.0",
-    "lint-staged": "^13.1.0",
-    "prettier": "^2.8.2",
-    "prettier-plugin-organize-imports": "^3.2.1",
-    "prettier-plugin-prisma": "^4.8.0",
-    "tsc-files": "^1.1.3",
-    "tsx": "^3.12.2",
-    "turbo": "^1.7.4",
-    "typescript": "^4.9.4",
-    "typescript-plugin-css-modules": "^4.1.1"
-  },
   "scripts": {
-    "supaglue": "node ./apps/cli/src/dev-cli.js",
     "postinstall": "husky install",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "gen:grpc": "buf generate https://github.com/supaglue-labs/salesforce-pub-sub-api.git"
+    "generate": "tsx scripts/validate_and_bundle_openapi.ts openapi/crm/openapi.yaml openapi/crm/openapi.bundle.json"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit",
@@ -48,5 +22,37 @@
       "eslint",
       "prettier --write"
     ]
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "^10.1.0",
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
+    "@tsconfig/node18": "^1.0.1",
+    "@types/eslint": "^8",
+    "@types/prettier": "^2",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.2",
+    "prettier": "^2.8.4",
+    "prettier-plugin-organize-imports": "^3.2.2",
+    "prettier-plugin-prisma": "^4.10.0",
+    "tsc-files": "^1.1.3",
+    "tsx": "^3.12.3",
+    "turbo": "^1.8.3",
+    "typescript": "^4.9.5"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "api": "workspace:^",
+    "posthog-docusaurus": "^2.0.0",
+    "posthog-node": "^2.5.4",
+    "sync-worker": "workspace:^",
+    "workspace": "^0.0.1-preview.1"
   }
 }

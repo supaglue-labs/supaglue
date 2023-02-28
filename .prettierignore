@@ -1,1 +1,1 @@
-/packages/grpc/gen
+/packages/schemas/gen/**/*

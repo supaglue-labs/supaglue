@@ -2,108 +2,135 @@
 sidebar_position: 2
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Quickstart
 
-**In less than 5 minutes**, you will use Supaglue to deploy a basic Salesforce integration that allows your customers to sync their Salesforce objects to a sample Next.js application.
+In less than 5 minutes, sync data from HubSpot or Salesforce into Supaglue and query it using a unified API.
 
-![supaglue-demo](/img/supaglue_gif.gif)
+[GIF]
 
-## Clone and start Supaglue
+## 1. Run Supaglue locally
+
+Clone our repo, run our setup script which will create an `.env` file for this quickstart, and run the Supaglue stack locally using docker compose:
 
 ```shell
-# Clone our repo
-git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
-
-# Create an encryption secret for credentials
-echo "SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)" >> .env
-
-# Start the Supaglue stack
+git clone -b v0.3.0 git@github.com:supaglue-labs/supaglue.git && cd supaglue
+./scripts/create_quickstart_env.sh
 docker compose up
 ```
 
-## Install sample app
+## 2. Authenticate Supaglue example app
 
-We've provided a [sample Next.js app](https://github.com/supaglue-labs/supaglue/blob/main/apps/sample-app/). The sample app represents your own application where you would like your customers to connect their Salesforce instance.
+Click the links below to simulate a customer connecting their HubSpot or Salesforce account to your app.
 
-In this step, we will set up the sample application.
+* **Salesforce:** [http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce](http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=http://localhost:3001/quickstart)
 
-1. Open a new terminal window and install the sample app (note: we've bundled it into our monorepo):
+* **HubSpot:** [http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot](http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=http://localhost:3001/quickstart)
 
-   NOTE: for your convenience, [setup_env.sh](https://github.com/supaglue-labs/supaglue/blob/main/apps/sample-app/scripts/setup_env.sh) helps you get started quickly by using our Salesforce Connected App credentials. You can also [set up](./references/setup_salesforce) or use your own Connected App credentials by changing the credentials in `.env`.
 
-   ```shell
-   cd apps/sample-app
-   ./scripts/setup_env.sh
-   yarn workspaces focus sample-app
-   npm install -g @supaglue/cli
-   ```
+This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data. Upon successful login, you will be redirected back to this page.
 
-1. Start the sample app locally:
+:::info
+To test running queries against Supaglue's API, you'll need the following:
+1. A Salesforce or HubSpot app that your customers can connect their CRMs to.
+2. A sample "customer" to test with.
+3. The sample customer's CRM instance that you'd like to query.
 
-   ```shell
-   yarn dev
-   ```
+For your convenience in this quickstart, we've provided Supaglue sample apps and two mock customers:
+   - Salesforce: `9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677`
+   - HubSpot: `ea3039fa-27de-4535-90d8-db2bab0c0252`
 
-The sample app can be accessed at ([http://localhost:3000](http://localhost:3000)) and by logging in as a mock customer with username: `user1` and password: `password`. You should see the following empty table, indicating no Salesforce records have yet synced to the sample app.
+If you don't have a sample CRM instance, you can create a free developer [HubSpot](https://app.hubspot.com/signup-hubspot/crm) or [Salesforce](https://developer.salesforce.com/signup) account.
+:::
 
-import BrowserWindow from '@site/src/components/BrowserWindow';
+## 3. Query the Supaglue unified API
 
-<BrowserWindow url="http://localhost:3000">
+After you install the Supaglue sample app in a Salesforce or HubSpot account, Supaglue will start asynchronously syncing Contacts, Leads, Accounts, and Opportunities in the background. This can take a few seconds or minutes depending on the size of the CRM instance.
 
-![empty_records](/img/quickstart/app_empty_records.png 'empty records sample app')
-</BrowserWindow>
+Make a `GET` request to get a list of accounts:
 
-## Deploy Supaglue config
+<Tabs>
+<TabItem value="salesforce" label="Salesforce" default>
 
-In this step, we will deploy Supaglue configuration to enable customers (i.e. `user1` from the previous step) to sync Salesforce Contacts, Leads, and Opportunities
+```shell
+curl localhost:8080/crm/v1/accounts \
+  -H 'customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
+  -H 'provider-name: salesforce'
+```
 
-1. Open a new terminal window and deploy the sample Developer Config using the CLI:
+</TabItem>
+<TabItem value="hubspot" label="HubSpot">
 
-   ```shell
-   cd apps/sample-app
-   supaglue apply supaglue-config/
-   ```
+```shell
+curl localhost:8080/crm/v1/accounts \
+  -H 'customer-id: ea3039fa-27de-4535-90d8-db2bab0c0252' \
+  -H 'provider-name: hubspot'
+```
 
-   You should see the following output:
+</TabItem>
+</Tabs>
 
-   ```console
-   ...
-   ╔══════════════════╤═════════╤════════╗
-   ║ Name             │ Action  │ Status ║
-   ╟──────────────────┼─────────┼────────╢
-   ║ Contacts         │ Created │ Live   ║
-   ╟──────────────────┼─────────┼────────╢
-   ║ Leads            │ Created │ Live   ║
-   ╟──────────────────┼─────────┼────────╢
-   ║ Opportunities    │ Created │ Live   ║
-   ╚══════════════════╧═════════╧════════╝
+Example result:
 
-   Syncs Created: 3, Updated: 0, Deleted: 0, No Change: 0
-   ```
+```console
+{
+  "results": [
+    {
+      "id": "4019000e-8743-4603-9a0e-69633289666d",
+      "owner": "005Dn000002DY8AIAW",
+      "name": "Supaglue",
+      "description": "open source unified api",
+      "industry": "software",
+      "website": "https://supaglue.com",
+      "number_of_employees": 6,
+      ...
+    },
+    ...
+  ]
+}
+```
 
-1. Navigate to the [Integrations page](http://localhost:3000/integrations). You should now see a card that allows you to connect your Salesforce instance.
+## 4. Check sync status (optional)
 
-   <BrowserWindow url="http://localhost:3000/integrations">
+If the curl in step 3 did not work, you can curl the `/crm/v1/sync-info` endpoint to check on the status of the syncs.
 
-   ![integration_card](/img/quickstart/app_salesforce_connect_card.png 'integration_card sample app')
-   </BrowserWindow>
+<Tabs>
+<TabItem value="salesforce" label="Salesforce" default>
 
-1. Click the "Connect" button and enter your Salesforce credentials to go through the OAuth flow. Note: these could be your Salesforce Developer or sandbox account login credentials.
+```shell
+curl localhost:8080/crm/v1/sync-info \
+  -H 'customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
+  -H 'provider-name: salesforce'
+```
 
-   Upon successful login, you will be redirected to the [Salesforce Integrations page](http://localhost:3000/integrations/salesforce) .
+</TabItem>
+<TabItem value="hubspot" label="HubSpot">
 
-   <BrowserWindow url="http://localhost:3000/integrations/salesforce">
+```shell
+curl localhost:8080/crm/v1/sync-info \
+  -H 'customer-id: ea3039fa-27de-4535-90d8-db2bab0c0252' \
+  -H 'provider-name: hubspot'
+```
 
-   ![salesforce_config](/img/quickstart/app_sync_config_card.png 'salesforce config sample app')
-   </BrowserWindow>
+</TabItem>
+</Tabs>
 
-## Run a Salesforce sync
+Example result:
 
-1. Click the "Run sync now" button to trigger an inbound sync from your Salesforce into the sample app.
+```console
+[
+  {
+    "modelName": "account",
+    "lastSyncStart": "2023-02-24T07:52:00.076Z",
+    "nextSyncStart": "2023-02-24T07:53:00.000Z",
+    "status": "DONE"
+  },
+  ...
+]
+```
 
-1. Navigate to the [App Objects](http://localhost:3000/) page and you will now see contacts from your Salesforce instance in a table! (You may have to refresh a few times if you navigated to this page before the sync has completed.)
+## Use your own Salesforce or HubSpot App
 
-   <BrowserWindow url="http://localhost:3000/integrations">
-
-   ![filled_records](/img/quickstart/app_filled_records.png 'filled records sample app')
-   </BrowserWindow>
+Please reach out to us if you'd like to try Supaglue using your Salesforce Connected App or HubSpot App: [support@supaglue.com](mailto:support@supaglue.com).

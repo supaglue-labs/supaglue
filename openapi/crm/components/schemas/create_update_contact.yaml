@@ -1,0 +1,10 @@
+type: object
+properties:
+  first_name:
+    type: string
+    nullable: true
+    example: George
+  last_name:
+    type: string
+    nullable: true
+    example: Xing

@@ -1,10 +1,10 @@
 ---
-sidebar_position: 10
+sidebar_position: 7
 ---
 
 # Contributing
 
-Supaglue is a community project: we welcome all kinds of contributions to help with developing Salesforce integrations.
+Supaglue is a community project: we welcome all kinds of contributions to help with our development.
 
 Here are some ways to contribute:
 
@@ -12,6 +12,6 @@ Here are some ways to contribute:
 - [Github](https://github.com/supaglue-labs/supaglue) - File bug reports and make code contributions
 - [Twitter](https://twitter.com/supaglue_labs) - Get the latest news and announcements
 
-If you have questions, ideas, or feedback, reach out to us on Slack. We're a friendly group of folks based out of the San Francisco Bay Area and Portland. Drop by a say 👋 or grab a ☕️ with one of our teammates.
+If you have questions, ideas, or feedback, reach out to us on Slack. We're a friendly group of folks based out of the San Francisco Bay Area. Drop by a say 👋 or grab a ☕️ with one of our teammates.
 
 Supaglue ❤️

@@ -1,64 +1,164 @@
+import { getDependencyContainer } from '@/dependency_container';
+import { ConnectionCreateParams, ConnectionUpsertParams } from '@supaglue/core/types/connection';
 import { Request, Response, Router } from 'express';
-import jsforce from 'jsforce';
-import { SALESFORCE } from '../constants';
-import { getDependencyContainer } from '../dependency_container';
+import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
-const router: Router = Router({ mergeParams: true });
+const { integrationService, connectionWriterService } = getDependencyContainer();
 
-const { integrationService, developerConfigService } = getDependencyContainer();
+const SimpleOAuth2AuthFields: Record<string, any> = {
+  salesforce: {
+    tokenHost: 'https://login.salesforce.com',
+    tokenPath: '/services/oauth2/token',
+    authorizeHost: 'https://login.salesforce.com',
+    authorizePath: '/services/oauth2/authorize',
+  },
+  hubspot: {
+    tokenHost: 'https://api.hubapi.com',
+    tokenPath: '/oauth/v1/token',
+    authorizeHost: 'https://app.hubspot.com',
+    authorizePath: '/oauth/authorize',
+  },
+};
+const REDIRECT_URI = 'http://localhost:8080/oauth/callback'; // TODO: data-drive
+const RETURN_URL = 'http://localhost:3000'; // TODO: data-drive
 
-router.get('/salesforce', async (req: Request<never, any, never, { state: string }>, res: Response) => {
-  const developerConfig = await developerConfigService.getDeveloperConfig();
-  const oauth2 = new jsforce.OAuth2({
-    ...developerConfig.getSalesforceCredentials(),
-    redirectUri: `${process.env.SUPAGLUE_API_SERVER_URL}/oauth/callback`,
-  });
-  const { state } = req.query;
-  const redirectUrl = oauth2.getAuthorizationUrl({
-    scope: 'api id refresh_token',
-    state,
-    prompt: 'login', // Always prompt the user to enter their username and password
-  });
+export default function init(app: Router): void {
+  const publicOauthRouter = Router();
 
-  res.redirect(redirectUrl);
-});
+  publicOauthRouter.get(
+    '/connect',
+    async (req: Request<never, any, never, any, { customerId: string; providerName: string }>, res: Response) => {
+      const { customerId, providerName, returnUrl } = req.query;
 
-router.get('/callback', async (req: Request<never, any, never, { code: string; state: string }>, res: Response) => {
-  const developerConfig = await developerConfigService.getDeveloperConfig();
-  const oauth2 = new jsforce.OAuth2({
-    ...developerConfig.getSalesforceCredentials(),
-    redirectUri: `${process.env.SUPAGLUE_API_SERVER_URL}/oauth/callback`,
-  });
-  const conn = new jsforce.Connection({ oauth2 });
-  const { code, state } = req.query;
-  if (!code) {
-    throw new Error('No code provided');
-  }
-  if (!state) {
-    throw new Error('No state provided');
-  }
-  const { customerId, returnUrl } = JSON.parse(decodeURIComponent(state));
-  if (!returnUrl) {
-    throw new Error('No return url provided');
-  }
+      if (!customerId) {
+        throw new Error('Missing customerId');
+      }
 
-  const userInfo = await conn.authorize(code);
+      if (!providerName) {
+        throw new Error('Missing providerName');
+      }
 
-  const { instanceUrl, refreshToken } = conn;
-  if (!refreshToken) {
-    throw new Error(`Unable to fetch refresh token`);
-  }
-  const { organizationId } = userInfo;
-  await integrationService.create({
-    customerId,
-    type: SALESFORCE,
-    credentials: {
-      organizationId,
-      refreshToken,
-      instanceUrl,
-    },
-  });
-  res.redirect(returnUrl);
-});
+      const integration = await integrationService.getByProviderName(providerName);
 
-export default router;
+      const { oauthScopes } = integration.config.oauth;
+      const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
+
+      const client = new simpleOauth2.AuthorizationCode({
+        client: {
+          id: oauthClientId,
+          secret: oauthClientSecret,
+        },
+        auth: SimpleOAuth2AuthFields[providerName],
+        options: {
+          authorizationMethod: 'body' as AuthorizationMethod,
+        },
+      });
+
+      // TODO: implement code_verifier/code_challenge when we implement sessions
+      const additionalAuthParams: Record<string, string> = {};
+
+      const authorizationUri = client.authorizeURL({
+        redirect_uri: REDIRECT_URI,
+        scope: oauthScopes.join(' '),
+        state: JSON.stringify({
+          returnUrl: returnUrl ?? RETURN_URL,
+          customerId,
+          providerName,
+          scope: oauthScopes.join(' '), // TODO: this should be in a session
+        }),
+        ...additionalAuthParams,
+      });
+
+      res.redirect(authorizationUri);
+    }
+  );
+
+  publicOauthRouter.get(
+    '/callback',
+    async (req: Request<never, any, never, { code: string; state: string }>, res: Response) => {
+      const { code, state } = req.query;
+
+      if (!code) {
+        throw new Error('No oauth code param provided');
+      }
+
+      if (!state) {
+        throw new Error('No oauth state param provided');
+      }
+
+      const {
+        returnUrl,
+        scope,
+        providerName,
+        customerId,
+      }: {
+        returnUrl: string;
+        scope?: string;
+        providerName?: string;
+        customerId?: string;
+      } = JSON.parse(decodeURIComponent(state));
+
+      if (!providerName || (providerName !== 'salesforce' && providerName !== 'hubspot')) {
+        throw new Error('No providerName or supported providerName on state object');
+      }
+
+      if (!scope) {
+        throw new Error('No scope on state object');
+      }
+
+      if (!customerId) {
+        throw new Error('No customerId on state object');
+      }
+
+      const integration = await integrationService.getByProviderName(providerName);
+      const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
+
+      const client = new simpleOauth2.AuthorizationCode({
+        client: {
+          id: oauthClientId,
+          secret: oauthClientSecret,
+        },
+        auth: SimpleOAuth2AuthFields[providerName],
+        options: {
+          authorizationMethod: 'body' as AuthorizationMethod,
+        },
+      });
+
+      // TODO: implement code_verifier/code_challenge when we implement sessions
+      const additionalAuthParams: Record<string, string> = {};
+
+      const accessToken = await client.getToken({
+        code,
+        redirect_uri: REDIRECT_URI,
+        ...additionalAuthParams,
+      });
+
+      const payload: ConnectionCreateParams | ConnectionUpsertParams = {
+        category: 'crm',
+        providerName,
+        customerId,
+        integrationId: integration.id,
+        credentials: {
+          type: 'oauth2',
+          accessToken: accessToken.token['access_token'] as string,
+          refreshToken: accessToken.token['refresh_token'] as string,
+          instanceUrl: accessToken.token['instance_url'] as string,
+          expiresAt: accessToken.token['expires_at'] as string,
+          raw: accessToken.token,
+        },
+      };
+
+      try {
+        await connectionWriterService.create(payload);
+      } catch (e: any) {
+        if (e.code === 'P2002') {
+          await connectionWriterService.upsert(payload);
+        }
+      }
+
+      res.redirect(returnUrl);
+    }
+  );
+
+  app.use('/oauth', publicOauthRouter);
+}
