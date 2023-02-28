@@ -25,6 +25,17 @@ Supaglue is an open source unified API for CRMs. It handles authentication, cach
 
 We are currently in Public Alpha. Watch "releases" of this repo to be notified of significant updates (as minor semver releases).
 
+## Get Started
+
+### Run Supaglue locally
+
+```shell
+git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
+./scripts/create_quickstart_env.sh
+yarn install
+docker compose up
+```
+
 ## Features
 
 - **Unified API**: single developer interface to read from and write to multiple third-party providers.
@@ -46,17 +57,6 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 Supported common objects: Accounts, Contacts, Leads, Opportunities.
 
 Looking for more connectors or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
-
-## Get Started
-
-### Run Supaglue locally
-
-```shell
-git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
-./scripts/create_quickstart_env.sh
-yarn install
-docker compose up
-```
 
 Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
 
