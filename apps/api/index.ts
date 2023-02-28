@@ -2,6 +2,7 @@ import { client as posthogClient, distinctId, posthogMiddlewares } from '@/lib/p
 import { logger } from '@/logger';
 import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
+import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import { HTTPError } from '@supaglue/core/errors';
 import cors from 'cors';
@@ -14,19 +15,19 @@ import { v4 as uuidv4 } from 'uuid';
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
 
-// if (sentryEnabled) {
-//   Sentry.init({
-//     // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
-//     // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
-//     dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
-//     integrations: [
-//       new RewriteFrames({
-//         root: __dirname,
-//       }),
-//     ],
-//     release: version,
-//   });
-// }
+if (sentryEnabled) {
+  Sentry.init({
+    // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
+    // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
+    dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
+    integrations: [
+      new RewriteFrames({
+        root: __dirname,
+      }),
+    ],
+    release: version,
+  });
+}
 
 const app = express();
 const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_PORT) : 8080;

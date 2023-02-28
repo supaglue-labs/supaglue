@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
 
-const enable = Boolean(process.env.SUPAGLUE_DISABLE_ANALYTICS === '1' && process.env.SUPAGLUE_POSTHOG_API_KEY);
+const enable = Boolean(process.env.SUPAGLUE_DISABLE_ANALYTICS !== '1' && process.env.SUPAGLUE_POSTHOG_API_KEY);
 const configPath = path.join(os.homedir(), '.supaglue', 'session.json');
 let distinctIdentifier: string | undefined = undefined;
 
