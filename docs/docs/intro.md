@@ -48,7 +48,7 @@ Supaglue consists of the following components:
 
 ## Roadmap & vision
 
-Read more about where Supaglue is headed [here](/roadmap_vision).
+Read more about where Supaglue is headed [here](/roadmap).
 
 ## License
 
