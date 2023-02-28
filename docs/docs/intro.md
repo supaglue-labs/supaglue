@@ -12,11 +12,11 @@ Supaglue is an open source unified API for CRMs. It handles authentication, cach
 ## Features
 
 - **Unified API**: single developer interface to read from and write to multiple third-party providers.
-- **Common Model**: a common data model for CRMs that has been standardized across multiple third-party providers.
+- **Common model**: a common data model for CRMs that has been standardized across multiple third-party providers.
 - **High performance**: query against synced data in your own cloud with no rate limits.
 - **Open source**: self-host and run Supaglue for free.
 - **Privacy-first**: prevent sensitive customer data from leaving your infrastructure.
-- **BYO-Connectors**: extend Supaglue with your own connectors.
+- **BYO-connectors**: extend Supaglue with your own connectors.
 - **Developer-centric**: self-host multiple instances for local, staging, and production environments.
 - **Monitoring and logs**: monitor the status of syncs and stream logs to your cloud.
 

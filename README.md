@@ -19,7 +19,7 @@
 
 # Supaglue
 
-Open source unified API for CRMs
+Supaglue is an open source unified API for CRMs. It handles authentication, caches and normalizes data from multiple CRM platforms, and provides a single set of API endpoints for reading and writing to those CRMs. Developers at B2B companies can use Supaglue to streamline and scale the work of building customer-facing CRM integrations. Supaglue can be self-hosted and runs alongside your stack.
 
 ## Status
 
@@ -27,18 +27,16 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 
 ## Features
 
-![supaglue-demo](https://raw.githubusercontent.com/supaglue-labs/supaglue/main/docs/static/img/)
-
-- **Unified API**: single developer interface to sync data from multiple third-party providers.
-- **Common Model**: a common data model that has been standardized across multiple third-party providers.
-- **Unlimited Supaglue API rate limits**: query against synced data in your own cloud with no rate limits.
+- **Unified API**: single developer interface to read from and write to multiple third-party providers.
+- **Common model**: a common data model for CRMs that has been standardized across multiple third-party providers.
+- **High performance**: query against synced data in your own cloud with no rate limits.
 - **Open source**: self-host and run Supaglue for free.
-- **Compliance-friendly**: self-host and keep sensitive customer data in your infrastructure.
-- **BYO-Connectors**: extend Supaglue with your own connectors.
-- **Dev-centric**: self-host multiple instances for local, staging, and production environments.
+- **Privacy-first**: prevent sensitive customer data from leaving your infrastructure.
+- **BYO-connectors**: extend Supaglue with your own connectors.
+- **Developer-centric**: self-host multiple instances for local, staging, and production environments.
 - **Monitoring and logs**: monitor the status of syncs and stream logs to your cloud.
 
-## Integrations
+## Connectors
 
 **CRM:**
 
@@ -47,7 +45,7 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 
 Supported common objects: Accounts, Contacts, Leads, Opportunities.
 
-Looking for more integrations or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
+Looking for more connectors or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
 
 ## Benchmarks
 
