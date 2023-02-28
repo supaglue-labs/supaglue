@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/core",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "dependencies": {
