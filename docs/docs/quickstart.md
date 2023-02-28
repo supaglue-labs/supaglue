@@ -9,8 +9,6 @@ import TabItem from '@theme/TabItem';
 
 In less than 5 minutes, sync data from HubSpot or Salesforce into Supaglue and query it using a unified API.
 
-[GIF]
-
 ## 1. Run Supaglue locally
 
 Clone our repo, run our setup script which will create an `.env` file for this quickstart, and run the Supaglue stack locally using docker compose:
@@ -26,9 +24,9 @@ docker compose up
 
 Click the links below to simulate a customer connecting their HubSpot or Salesforce account to your app.
 
-- **Salesforce:** [http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce](http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=http://localhost:3001/quickstart)
+- **Salesforce:** [http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce](http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=https://docs.supaglue.com/quickstart)
 
-- **HubSpot:** [http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot](http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=http://localhost:3001/quickstart)
+- **HubSpot:** [http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot](http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=https://docs.supaglue.com/quickstart)
 
 This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data. Upon successful login, you will be redirected back to this page.
 
