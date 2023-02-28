@@ -14,7 +14,7 @@ Currently, Supaglue is a good fit for developers at B2B SaaS companies who need 
 
 ## Why is this better than alternatives?
 
-Supaglue helps you ship customer-facing CRM integrations 10x faster through its unified API and common data model for CRMs. Because it is open source, Supaglue has several advantages over traditional unified APIs: no vendor lock-in, privacy-first, and fully extensible.
+Supaglue helps you ship customer-facing CRM integrations 10x faster through its unified API and common data model for CRMs. Because it is open source, Supaglue has several advantages over traditional unified APIs: it has no vendor lock-in, it's privacy-first, and it's fully extensible.
 
 ## Is there a hosted version of Supaglue?
 
