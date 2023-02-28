@@ -56,7 +56,7 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
       params: req.params,
       providerName: getProviderNameFromRequest(req),
       query: req.query,
-      result: 'success',
+      result: 'attempt',
       source: 'api',
       path: req.originalUrl,
       system: {
