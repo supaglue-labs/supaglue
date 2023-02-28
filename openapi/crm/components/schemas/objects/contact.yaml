@@ -1,0 +1,40 @@
+type: object
+properties:
+  account_id:
+    type: string
+    nullable: true
+    example: fd089246-09b1-4e3b-a60a-7a76314bbcce 
+  account: 
+    $ref: ./account.yaml
+  addresses:
+    $ref: ./addresses.yaml
+  email_addresses:
+    $ref: ./email_addresses.yaml
+  first_name:
+    type: string
+    nullable: true
+    example: George
+  id:
+    type: string
+    example: 88cc44ca-7a34-4e8b-b0da-51c3aae34daf
+  last_activity_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  last_name:
+    type: string
+    nullable: true
+    example: Xing
+  phone_numbers:
+    $ref: ./phone_numbers.yaml
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'

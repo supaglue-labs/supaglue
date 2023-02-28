@@ -12,22 +12,34 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supaglue}
 
   api:
-    image: supaglue/api:0.2.0
+    image: supaglue/api
     ports:
       - '8080:8080'
     depends_on:
       - postgres
     environment:
       - NODE_ENV=production
+      - SUPAGLUE_SYNC_PERIOD_MS
       - SUPAGLUE_DATABASE_URL=${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}
-      - SUPAGLUE_API_SERVER_URL=${SUPAGLUE_API_SERVER_URL:-http://localhost:8080}
       - SUPAGLUE_API_PORT=${SUPAGLUE_API_PORT:-8080}
-      - SUPAGLUE_API_ENCRYPTION_SECRET=${SUPAGLUE_API_ENCRYPTION_SECRET:?please set an encryption secret}
-      - SUPAGLUE_PRETTY_LOGS=${SUPAGLUE_PRETTY_LOGS:-1}
       - SUPAGLUE_CORS_ORIGIN=${SUPAGLUE_CORS_ORIGIN:-http://localhost:3000}
+      - SUPAGLUE_PRETTY_LOGS=1
       - SUPAGLUE_DISABLE_ANALYTICS
       - SUPAGLUE_DISABLE_ERROR_REPORTING
-    working_dir: /app
+    restart: on-failure
+    command: /bin/sh -c "npx prisma migrate deploy && node ./index.js"
+
+  sync-worker:
+    image: supaglue/sync-worker
+    depends_on:
+      - postgres
+    environment:
+      - NODE_ENV=production
+      - SUPAGLUE_DATABASE_URL=${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}
+      - SUPAGLUE_PRETTY_LOGS=1
+      - SUPAGLUE_DISABLE_ANALYTICS
+      - SUPAGLUE_DISABLE_ERROR_REPORTING
+      - SUPAGLUE_POSTHOG_API_KEY
     restart: on-failure
     command: /bin/sh -c "npx prisma migrate deploy && node ./index.js"
 

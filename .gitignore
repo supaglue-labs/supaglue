@@ -1,12 +1,12 @@
 node_modules
 
-# yarn
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.pnp.*
 
 # misc
 .DS_Store

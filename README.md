@@ -8,8 +8,6 @@
 
 <p align="center">
   <a href="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml"><img title="CI Status" src="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://www.npmjs.com/package/@supaglue/cli" target="_blank"><img title="cli latest version" src="https://img.shields.io/npm/v/@supaglue/cli?label=%40supaglue%2Fcli"></a>
-  <a href="https://www.npmjs.com/package/@supaglue/nextjs" target="_blank"><img title="nextjs latest version" src="https://img.shields.io/npm/v/@supaglue/nextjs?label=%40supaglue%2Fnextjs"></a>
   <a href="https://github.com/supaglue-labs/supaglue/issues"><img title="github issues" src="https://img.shields.io/github/issues/supaglue-labs/supaglue"></a>
   <a href="https://github.com/supaglue-labs/supaglue"><img title="github activity" src="https://img.shields.io/github/commit-activity/w/supaglue-labs/supaglue"></a>
   <a href="https://github.com/supaglue-labs/supaglue"><img title="github stars" src="https://img.shields.io/github/stars/supaglue-labs/supaglue?style=social"></a>
@@ -21,40 +19,51 @@
 
 # Supaglue
 
-Supaglue is a developer platform for integrating your application with your customer's Salesforce instance. It lets you authenticate with Salesforce, define integrations with code to sync SFDC sObjects, and expose customer-facing UI components in your application. Supaglue takes care of execution, fault-tolerance, and communicating with customer's Salesforce. Supaglue is open source and can be self-hosted to run alongside your stack.
+Open source unified API for CRMs
 
 ## Status
-
-- [x] **Private Alpha**: Testing Supaglue with a closed set of developers
-- [x] **Public Alpha**: Anyone can run Supaglue locally using Docker. Go easy on us! We're working on substantial improvements.
-- [ ] **Public Beta**: Stable and feature-rich enough to implement in production
-- [ ] **Public**: Production-ready for majority of integration use cases with Salesforce
 
 We are currently in Public Alpha. Watch "releases" of this repo to be notified of significant updates (as minor semver releases).
 
 ## Features
 
-![supaglue-demo](https://raw.githubusercontent.com/supaglue-labs/supaglue/main/docs/static/img/short_supaglue_gif.gif)
+![supaglue-demo](https://raw.githubusercontent.com/supaglue-labs/supaglue/main/docs/static/img/)
 
-- **Integration as code**: Use Typescript as declarative configuration to define syncs.
-- **Managed syncs**: Let Supaglue execute syncs for you with fault-tolerance, retries, rate limiting, and error handling.
-- **Managed OAuth**: Offload OAuth flows, storing & refreshing tokens to Supaglue
-- **Embeddable UI components**: Customer-facing React components that let your customers configure syncs. Fully-functional and customizable.
-- **Prebuilt sync templates**: Use ready-made sync templates or customize them to your use case.
-- **Open source**: Self-host Supaglue or extend it. Sensitive customer data never leaves your cloud.
+- **Unified API**: single developer interface to sync data from multiple third-party providers.
+- **Common Model**: a common data model that has been standardized across multiple third-party providers.
+- **Unlimited Supaglue API rate limits**: query against synced data in your own cloud with no rate limits.
+- **Open source**: self-host and run Supaglue for free.
+- **Compliance-friendly**: self-host and keep sensitive customer data in your infrastructure.
+- **BYO-Connectors**: extend Supaglue with your own connectors.
+- **Dev-centric**: self-host multiple instances for local, staging, and production environments.
+- **Monitoring and logs**: monitor the status of syncs and stream logs to your cloud.
+
+## Integrations
+
+**CRM:**
+
+- Hubspot
+- Salesforce
+
+Supported common objects: Accounts, Contacts, Leads, Opportunities.
+
+Looking for more integrations or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
+
+## Benchmarks
+
+...
 
 ## Get Started
 
-#### Run Supaglue locally with Docker Compose
+### Run Supaglue locally
 
 ```shell
-git clone git@github.com:supaglue-labs/supaglue.git
-cd supaglue
-echo "SUPAGLUE_API_ENCRYPTION_SECRET=$(openssl rand -base64 32)" >> .env
+git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
+./scripts/create_quickstart_env.sh
 docker compose up
 ```
 
-Continue on to the docs to go through an [integration tutorial](https://docs.supaglue.com/tutorial).
+Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
 
 ## Roadmap
 

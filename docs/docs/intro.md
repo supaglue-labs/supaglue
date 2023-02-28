@@ -7,70 +7,48 @@ slug: /
 
 ## What is Supaglue?
 
-Supaglue is a developer platform for integrating your application with your customer's Salesforce instance. It lets you authenticate with Salesforce, define integrations with code to sync SFDC sObjects, and expose customer-facing UI components in your application. Supaglue takes care of execution, fault-tolerance, and communicating with customer's Salesforce. Supaglue is open source and can be self-hosted to run alongside your stack.
-
-:::caution
-
-Supaglue is in Public Alpha. There are currently many missing features, interfaces will likely change, and it is not production-ready yet.
-
-:::
-
-## What it isn't
-
-Supaglue is not a no-code tool. While there are no-code tools that also help companies integrate with their customers' Salesforce, we take a code-centric approach to integrations and are focused exclusively on developers.
-
-Supaglue is also not a unified API for interacting with many CRMs. Whereas unified APIs help developers efficiently build integrations within a single category, we enable developers to build deeper Salesforce integrations that could otherwise only be built in-house.
+Supaglue is an open source unified API for CRMs. It handles authentication, caches and normalizes data from multiple CRM platforms, and provides a single set of API endpoints for reading and writing to those CRMs. Developers at B2B companies can use Supaglue to streamline and scale the work of building customer-facing CRM integrations. Supaglue can be self-hosted and runs alongside your stack.
 
 ## Features
 
-- **Integration as code**: Use Typescript as declarative configuration to define syncs.
-- **Managed syncs**: Let Supaglue execute syncs for you with fault-tolerance, retries, rate limiting, and error handling.
-- **Managed OAuth**: Offload OAuth flows, storing & refreshing tokens to Supaglue
-- **Embeddable UI components**: Customer-facing React components that let your customers configure syncs. Fully-functional and customizable.
-- **Prebuilt sync templates**: Use ready-made sync templates or customize them to your use case.
-- **Open source**: Self-host Supaglue or extend it. Sensitive customer data never leaves your cloud.
+- **Unified API**: single developer interface to read from and write to multiple third-party providers.
+- **Common Model**: a common data model for CRMs that has been standardized across multiple third-party providers.
+- **High performance**: query against synced data in your own cloud with no rate limits.
+- **Open source**: self-host and run Supaglue for free.
+- **Privacy-first**: prevent sensitive customer data from leaving your infrastructure.
+- **BYO-Connectors**: extend Supaglue with your own connectors.
+- **Developer-centric**: self-host multiple instances for local, staging, and production environments.
+- **Monitoring and logs**: monitor the status of syncs and stream logs to your cloud.
+
+## Connectors
+
+- HubSpot
+- Salesforce
+
+Supported common objects: Accounts, Contacts, Leads, Opportunities.
+
+Looking for more connectors or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
 
 ## How it works
 
-Supaglue is a set of open-source components to let developers build integrations in their applications with their customers' Salesforce using code, quickly and extensibly.
+When developers at B2B companies integrate with Supaglue, they are able to provide many CRM integrations to their customers. Supaglue enables those customers to authenticate with their CRM, and reliably sync data from those customers' CRM into Supaglue's database. The data is mapped to a common data model and exposed through a unified REST API that provides developers read/write access to their customer's CRMs. Supaglue is a separate service that runs alongside your stack. Supaglue is open source and can be self-hosted.
 
-import ThemedImage from '@theme/ThemedImage';
+Supaglue consists of the following components:
 
-<ThemedImage
-alt="Intro Diagram"
-sources={{
-    light: ('/img/intro_diagram_light.png'),
-    dark: ('/img/intro_diagram_dark.png'),
-  }}
-/>
-
-- **Config SDK** to define [syncs](./concepts#developer-config) declaratively
-- **CLI** to publish sync configuration changes
-- **API** to communicate an coordinate with your application, Salesforce, and Supaglue
-- **Workflow engine (Temporal)** to reliably execute [syncs](./concepts#sync)
-- **Database** to store developer and customer configurations and credentials
-- **React components (Nextjs SDK)** to embed customer-facing UI into your application
+- Managed authentication
+- Sync engine
+- Postgres database
+- Common data model
+- REST API
 
 ## Use cases
 
-Supaglue can be used by B2B SaaS companies to provide customer-facing Salesforce integrations as part of their products.
+- Ingest Contact and Account data from HubSpot and Salesforce into your B2B SaaS application.
+- Enrich your customers' CRM with additional data from your product.
 
-- Sync Salesforce standard objects into your application's Postgres database, where your customers customize field mappings using a UI component
-- Sync your application objects in Postgres to your customer's Salesforce instance as standard objects
-- Consume Salesforce standard objects via a webhook, transform the payload, and call multiple backend systems before writing it to a data store
+## Roadmap & vision
 
-## Roadmap & Vision
-
-Read more about where Supaglue is headed [here](./roadmap).
-
-## Status
-
-- [x] **Private Alpha**: Testing Supaglue with a closed set of developers
-- [x] **Public Alpha**: Anyone can run Supaglue locally using Docker. Go easy on us! We're working on substantial improvements.
-- [ ] **Public Beta**: Stable and feature-rich enough to implement in production
-- [ ] **Public**: Production-ready for majority of integration use cases with Salesforce
-
-We are currently in Public Alpha. Watch releases of [this repo](https://github.com/supaglue-labs/supaglue) to be notified of significant updates (as minor semver releases).
+Read more about where Supaglue is headed [here](/roadmap_vision).
 
 ## License
 

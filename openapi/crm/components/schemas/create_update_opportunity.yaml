@@ -1,0 +1,21 @@
+type: object
+properties:
+  amount:
+    type: integer
+    nullable: true
+    example: 100000
+  close_date:
+    type: string
+    nullable: true
+    example: '2022-02-10T00:00:00Z'
+  description:
+    type: string
+    nullable: true
+    example: Wants to use open source unified API for third-party integrations
+  name:
+    type: string
+    nullable: true
+    example: Needs Integrations
+  stage:
+    type: string
+    example: Closed Won

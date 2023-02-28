@@ -1,0 +1,2137 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.3.0",
+    "title": "Supaglue API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "# Introduction\n\nWelcome to the Supaglue unified CRM API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.\n\n### Base API URL\n\n```\nhttp://localhost:8080/api/crm/v1\n```\n"
+  },
+  "externalDocs": {
+    "description": "Try out our API in Postman!",
+    "url": "https://www.postman.com/supaglue/workspace/supaglue-public/overview"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:8080/crm/v1",
+      "description": "Local Supaglue API"
+    }
+  ],
+  "paths": {
+    "/accounts": {
+      "get": {
+        "operationId": "getAccounts",
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "List accounts",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "description": "Get a list of accounts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/updated_after"
+          },
+          {
+            "$ref": "#/components/parameters/updated_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/expand"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/account"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "addresses": [
+                            {
+                              "address_type": "Shipping",
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ],
+                          "description": "Integration API",
+                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "industry": "APIs",
+                          "last_activity_at": "2022-02-10T00:00:00Z",
+                          "name": "Sample Customer",
+                          "number_of_employees": 276000,
+                          "owner": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
+                          "phone_numbers": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "Mobile"
+                            }
+                          ],
+                          "created_at": "2021-11-10T00:00:00Z",
+                          "updated_at": "2022-01-09T00:00:00Z",
+                          "website": "https://supaglue.com/"
+                        },
+                        {
+                          "addresses": [
+                            {
+                              "address_type": "Shipping",
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ],
+                          "description": "Integration API",
+                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "industry": "APIs",
+                          "last_activity_at": "2023-02-27T00:00:00Z",
+                          "name": "Sample Customer",
+                          "number_of_employees": 276000,
+                          "owner": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
+                          "phone_numbers": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "Mobile"
+                            }
+                          ],
+                          "created_at": "2023-02-27T00:00:00Z",
+                          "updated_at": "2023-02-27T00:00:00Z",
+                          "website": "https://supaglue.com/"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createAccount",
+        "summary": "Create account",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_update_account"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/account"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts/{account_id}": {
+      "get": {
+        "operationId": "getAccount",
+        "summary": "Get account",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/expand"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/account"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "addresses": [
+                        {
+                          "address_type": "BILLING",
+                          "city": "San Francisco",
+                          "country": "CX",
+                          "postal_code": "94107",
+                          "state": "CA",
+                          "street_1": "525 Brannan",
+                          "street_2": null
+                        },
+                        {
+                          "address_type": "BILLING",
+                          "city": "San Francisco",
+                          "country": "US",
+                          "postal_code": "94107",
+                          "state": "CA",
+                          "street_1": "525 Brannan",
+                          "street_2": null
+                        }
+                      ],
+                      "description": "Integration API",
+                      "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                      "industry": "API's",
+                      "last_activity_at": "2022-02-10T00:00:00Z",
+                      "name": "Supaglue",
+                      "number_of_employees": 276000,
+                      "owner": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
+                      "phone_numbers": [
+                        {
+                          "phone_number": "+14151234567",
+                          "phone_number_type": "Mobile"
+                        }
+                      ],
+                      "created_at": "2023-02-27T00:00:00Z",
+                      "updated_at": "2023-02-27T00:00:00Z",
+                      "website": "https://supaglue.com/"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateAccount",
+        "summary": "Update account",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_update_account"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/account"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "account_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/contacts": {
+      "get": {
+        "operationId": "getContacts",
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "List contacts",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "description": "Get a list of contacts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/updated_after"
+          },
+          {
+            "$ref": "#/components/parameters/updated_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/expand"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/contact"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "account_id": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
+                          "addresses": [
+                            {
+                              "address_type": "Shipping",
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ],
+                          "email_addresses": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "Work"
+                            }
+                          ],
+                          "first_name": "George",
+                          "id": "43a45011-c55e-42f3-81a1-99158c956775",
+                          "last_activity_at": "2023-02-27T00:00:00Z",
+                          "last_name": "Xing",
+                          "phone_numbers": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "Mobile"
+                            }
+                          ],
+                          "created_at": "2023-02-27T00:00:00Z"
+                        },
+                        {
+                          "account": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
+                          "addresses": [
+                            {
+                              "address_type": "Shipping",
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ],
+                          "email_addresses": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "Work"
+                            }
+                          ],
+                          "first_name": "George",
+                          "id": "5733a8b6-472d-45fa-8f10-e0b00727cced",
+                          "last_activity_at": "2023-02-27T00:00:00Z",
+                          "last_name": "Xing",
+                          "phone_numbers": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "Mobile"
+                            }
+                          ],
+                          "created_at": "2023-02-27T00:00:00Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createContact",
+        "summary": "Create contact",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_update_contact"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "example": {
+                "first_name": "George",
+                "last_activity_at": "2022-02-10T00:00:00Z",
+                "last_name": "Xing"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/contact"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{contact_id}": {
+      "get": {
+        "operationId": "getContact",
+        "summary": "Get contact",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/expand"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/contact"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateContact",
+        "summary": "Update contact",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Contacts"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_update_contact"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "first_name": "George",
+                    "id": "5733a8b6-472d-45fa-8f10-e0b00727cced",
+                    "last_activity_at": "2023-02-27T00:00:00Z",
+                    "last_name": "Xing"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/contact"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "contact_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/leads": {
+      "get": {
+        "operationId": "getLeads",
+        "tags": [
+          "Leads"
+        ],
+        "summary": "List leads",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "description": "Get a list of leads",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/updated_after"
+          },
+          {
+            "$ref": "#/components/parameters/updated_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/expand"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leads",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/lead"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "addresses": [
+                            {
+                              "address_type": "Shipping",
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ],
+                          "company": "Supaglue",
+                          "converted_account_id": "5733a8b6-472d-45fa-8f10-e0b00727cced",
+                          "converted_contact_id": "7f65f33c-e645-40f8-b87c-6148899caa8e",
+                          "converted_date": "2023-02-27T00:00:00Z",
+                          "email_addresses": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "Work"
+                            }
+                          ],
+                          "first_name": "George",
+                          "id": "62bd34b8-54fa-4628-ae75-5fd6be59e4b7",
+                          "last_name": "Xing",
+                          "lead_source": "API Blogger",
+                          "owner": "04363f99-e807-4f69-b233-3d31b92f9bb2",
+                          "phone_numbers": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "Mobile"
+                            }
+                          ],
+                          "created_at": "2023-02-27T00:00:00Z",
+                          "updated_at": "2023-02-27T00:00:00Z",
+                          "title": "Co-Founder"
+                        },
+                        {
+                          "addresses": [
+                            {
+                              "address_type": "Shipping",
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ],
+                          "company": "Supaglue",
+                          "converted_account_id": "c300123d-91e0-4519-b514-ff6d308eab47",
+                          "converted_contact_id": "762b1d20-374b-41c9-a006-f6ed188a3e54",
+                          "converted_date": "2022-03-10T00:00:00Z",
+                          "email_addresses": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "Work"
+                            }
+                          ],
+                          "first_name": "George",
+                          "id": "29b3e861-b1da-4f74-885a-e151c5759acf",
+                          "last_name": "Xing",
+                          "lead_source": "API Blogger",
+                          "owner": "71e01ac4-5f21-46e2-b021-46555ade976d",
+                          "phone_numbers": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "Mobile"
+                            }
+                          ],
+                          "created_at": "2023-02-27T00:00:00Z",
+                          "updated_at": "2023-02-27T00:00:00Z",
+                          "title": "Co-Founder"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createLead",
+        "summary": "Create lead",
+        "tags": [
+          "Leads"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_update_lead"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "example": {
+                "company": "Supaglue",
+                "first_name": "George",
+                "last_name": "Xing",
+                "lead_source": "API Blogger",
+                "title": "Co-Founder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Lead created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/lead"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leads/{lead_id}": {
+      "get": {
+        "operationId": "getLead",
+        "summary": "Get lead",
+        "tags": [
+          "Leads"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/expand"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lead",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lead"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateLead",
+        "summary": "Update lead",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Leads"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_update_lead"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "company": "Supaglue",
+                    "first_name": "George",
+                    "id": "c0dec24d-eb62-4a5a-bd62-5a52d888213b",
+                    "last_name": "Xing",
+                    "lead_source": "API Blogger",
+                    "title": "Co-Founder"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lead updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/lead"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "lead_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
+          }
+        }
+      ]
+    },
+    "/opportunities": {
+      "get": {
+        "operationId": "getOpportunities",
+        "tags": [
+          "Opportunities"
+        ],
+        "summary": "List opportunities",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "description": "Get a list of opportunities",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/updated_after"
+          },
+          {
+            "$ref": "#/components/parameters/updated_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/expand"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Opportunities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/opportunity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "account": "82de27cb-6f8c-4278-b783-82d1d916eddc",
+                          "amount": 100000,
+                          "close_date": "2023-02-27T00:00:00Z",
+                          "description": "Wants to use open source unified API for third-party integrations",
+                          "id": "700eaee7-0b1d-40d3-90a9-1ebf77943a2e",
+                          "last_activity_at": "2023-02-27T00:00:00Z",
+                          "name": "Needs third-party integrations",
+                          "owner": "475789f9-0df9-4a09-959e-c9f5eb7a541c",
+                          "created_at": "2023-02-27T00:00:00Z",
+                          "updated_at": "2023-02-27T00:00:00Z",
+                          "stage": "Closed Won"
+                        },
+                        {
+                          "account": "0958cbc6-6040-430a-848e-aafacbadf4ae",
+                          "amount": 100000,
+                          "close_date": "2023-02-27T00:00:00Z",
+                          "description": "Wants to use open source unified API for third-party integrations",
+                          "id": "1e68260b-f250-427b-88f1-26ccc34c62d6",
+                          "last_activity_at": "2023-02-27T00:00:00Z",
+                          "name": "Needs third-party integrations",
+                          "owner": "64761ae1-8c42-461c-8778-9671f9d39997",
+                          "created_at": "2023-02-27T00:00:00Z",
+                          "updated_at": "2023-02-27T00:00:00Z",
+                          "stage": "Closed Lost"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createOpportunity",
+        "summary": "Create opportunity",
+        "tags": [
+          "Opportunities"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_update_opportunity"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "example": {
+                "amount": 100000,
+                "close_date": "2023-02-27T00:00:00Z",
+                "description": "Wants to use open source unified API for third-party integrations",
+                "name": "Needs Integrations",
+                "stage": "Closed Won"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opportunity created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/opportunity"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/opportunities/{opportunity_id}": {
+      "get": {
+        "operationId": "getOpportunity",
+        "summary": "Get opportunity",
+        "tags": [
+          "Opportunities"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/expand"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Opportunity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/opportunity"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "accountId": "a329053d-bf86-4b82-8356-9e897aa7dacc",
+                      "amount": 100000,
+                      "close_date": "2023-02-27T00:00:00Z",
+                      "description": "Wants to use open source unified API for third-party integrations",
+                      "id": "3bde961a-90da-4daa-ab2e-cc4498c460f9",
+                      "last_activity_at": "2023-02-27T00:00:00Z",
+                      "name": "Needs third-party integrations",
+                      "owner": "93b0c2b5-26a8-4b92-b4e5-05d764eb1119",
+                      "created_at": "2023-02-27T00:00:00Z",
+                      "updated_at": "2023-02-27T00:00:00Z",
+                      "stage": "Closed Won"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateOpportunity",
+        "summary": "Update opportunity",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Opportunities"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_update_opportunity"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Opportunity updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/opportunity"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "opportunity_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "c9f58083-a370-47b5-ad02-99160ea20372"
+          }
+        }
+      ]
+    },
+    "/sync-info": {
+      "get": {
+        "operationId": "getSyncInfos",
+        "tags": [
+          "SyncInfo"
+        ],
+        "summary": "Get Sync Info",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "description": "Get a list of Sync Info",
+        "responses": {
+          "200": {
+            "description": "Sync Info List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "model_name": {
+                        "type": "string",
+                        "example": "Account"
+                      },
+                      "last_sync_start": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2023-02-22T19:55:17.559Z"
+                      },
+                      "next_sync_start": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2023-02-22T20:55:17.559Z"
+                      },
+                      "status": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "SYNCING"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "model_name": "account",
+                        "last_sync_start": "2023-02-22T19:55:17.559Z",
+                        "next_sync_start": "2023-02-22T20:55:17.559Z",
+                        "status": "SYNCING"
+                      },
+                      {
+                        "model_name": "contact",
+                        "last_sync_start": "2023-02-22T19:50:17.559Z",
+                        "next_sync_start": "2023-02-22T20:50:17.559Z",
+                        "status": "DONE"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Accounts",
+      "description": "The `Account` Common Model is used to represent a \"company\" in CRMs."
+    },
+    {
+      "name": "Contacts",
+      "description": "The `Contact` Common Model is used to represent a \"contact\" in CRMs."
+    },
+    {
+      "name": "Leads",
+      "description": "The `Lead` Common Model is used to represent a \"potential customer\" in CRMs."
+    },
+    {
+      "name": "Opportunities",
+      "description": "The `Opportunity` Common Model is used to represent a \"deal opportunity\" in CRMs."
+    },
+    {
+      "name": "SyncInfo",
+      "description": "(Non-CRM) `SyncInfo` provides metadata about a `Sync`."
+    }
+  ],
+  "components": {
+    "schemas": {
+      "account": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "$ref": "#/components/schemas/addresses"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Integration API"
+          },
+          "id": {
+            "type": "string",
+            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          "industry": {
+            "type": "string",
+            "nullable": true,
+            "example": "API's"
+          },
+          "last_activity_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Sample Customer"
+          },
+          "number_of_employees": {
+            "type": "integer",
+            "nullable": true,
+            "example": 276000
+          },
+          "owner": {
+            "type": "string",
+            "nullable": true,
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "phone_numbers": {
+            "$ref": "#/components/schemas/phone_numbers"
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "website": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://supaglue.com/"
+          }
+        },
+        "example": [
+          {
+            "addresses": [
+              {
+                "address_type": "Shipping",
+                "city": "San Francisco",
+                "country": "US",
+                "postal_code": "94107",
+                "state": "CA",
+                "street_1": "525 Brannan",
+                "street_2": null
+              }
+            ],
+            "description": "Integration API",
+            "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
+            "industry": "APIs",
+            "last_activity_at": "2022-02-10T00:00:00Z",
+            "name": "Sample Customer",
+            "number_of_employees": 224,
+            "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+            "phone_numbers": [
+              {
+                "phone_number": "+14151234567",
+                "phone_number_type": "Mobile"
+              }
+            ],
+            "created_at": "2022-02-27T00:00:00Z",
+            "updated_at": "2022-02-27T00:00:00Z",
+            "website": "https://supaglue.com/"
+          },
+          {
+            "addresses": [
+              {
+                "address_type": "Shipping",
+                "city": "San Francisco",
+                "country": "US",
+                "postal_code": "94107",
+                "state": "CA",
+                "street_1": "525 Brannan",
+                "street_2": null
+              }
+            ],
+            "description": "Integration API",
+            "id": "3bde961a-90da-4daa-ab2e-cc4498c460f9",
+            "industry": "APIs",
+            "last_activity_at": "2022-02-27T00:00:00Z",
+            "name": "Sample Customer",
+            "number_of_employees": 1000,
+            "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+            "phone_numbers": [
+              {
+                "phone_number": "+14151234567",
+                "phone_number_type": "Mobile"
+              }
+            ],
+            "created_at": "2022-02-27T00:00:00Z",
+            "updated_at": "2022-02-27T00:00:00Z",
+            "website": "https://supaglue.com/"
+          }
+        ]
+      },
+      "create_update_account": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Integration API"
+          },
+          "industry": {
+            "type": "string",
+            "nullable": true,
+            "example": "API's"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Sample Customer"
+          },
+          "number_of_employees": {
+            "type": "integer",
+            "nullable": true,
+            "example": 276000
+          },
+          "website": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://supaglue.com/"
+          }
+        },
+        "example": {
+          "description": "Integration API",
+          "industry": "API's",
+          "last_activity_at": "2022-02-10T00:00:00Z",
+          "name": "Sample Customer",
+          "number_of_employees": 276000,
+          "website": "https://supaglue.com/"
+        }
+      },
+      "contact": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "fd089246-09b1-4e3b-a60a-7a76314bbcce"
+          },
+          "account": {
+            "$ref": "#/components/schemas/account"
+          },
+          "addresses": {
+            "$ref": "#/components/schemas/addresses"
+          },
+          "email_addresses": {
+            "$ref": "#/components/schemas/email_addresses"
+          },
+          "first_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "George"
+          },
+          "id": {
+            "type": "string",
+            "example": "88cc44ca-7a34-4e8b-b0da-51c3aae34daf"
+          },
+          "last_activity_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Xing"
+          },
+          "phone_numbers": {
+            "$ref": "#/components/schemas/phone_numbers"
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          }
+        }
+      },
+      "create_update_contact": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "George"
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Xing"
+          }
+        }
+      },
+      "lead": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "$ref": "#/components/schemas/addresses"
+          },
+          "company": {
+            "type": "string",
+            "nullable": true,
+            "example": "Supaglue"
+          },
+          "converted_account_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "88cc44ca-7a34-4e8b-b0da-51c3aae34daf"
+          },
+          "converted_account": {
+            "$ref": "#/components/schemas/account"
+          },
+          "converted_contact_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "8c8de778-a219-4d6c-848c-1d57b52149f6"
+          },
+          "converted_contact": {
+            "$ref": "#/components/schemas/contact"
+          },
+          "converted_date": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-27T00:00:00Z"
+          },
+          "email_addresses": {
+            "$ref": "#/components/schemas/email_addresses"
+          },
+          "first_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "George"
+          },
+          "id": {
+            "type": "string",
+            "example": "e774484c-4ff2-421f-adfa-12f66ed75b91"
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Xing"
+          },
+          "lead_source": {
+            "type": "string",
+            "nullable": true,
+            "example": "API Blogger"
+          },
+          "owner": {
+            "type": "string",
+            "nullable": true,
+            "example": "62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2"
+          },
+          "phone_numbers": {
+            "$ref": "#/components/schemas/phone_numbers"
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-10T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-10T00:00:00Z"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "example": "Co-Founder"
+          }
+        }
+      },
+      "create_update_lead": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "nullable": true,
+            "example": "Supaglue"
+          },
+          "first_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "George"
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Xing"
+          },
+          "lead_source": {
+            "type": "string",
+            "nullable": true,
+            "example": "API Blogger"
+          },
+          "title": {
+            "type": "string",
+            "example": "Co-Founder"
+          }
+        }
+      },
+      "opportunity": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "fd089246-09b1-4e3b-a60a-7a76314bbcce"
+          },
+          "account": {
+            "$ref": "#/components/schemas/account"
+          },
+          "amount": {
+            "type": "integer",
+            "nullable": true,
+            "example": 100000
+          },
+          "close_date": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-27T00:00:00Z"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Wants to use open source unified API for third-party integrations"
+          },
+          "id": {
+            "type": "string",
+            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          "last_activity_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-27T00:00:00Z"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Needs third-party integrations"
+          },
+          "owner": {
+            "type": "string",
+            "nullable": true,
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-27T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-27T00:00:00Z"
+          },
+          "stage": {
+            "type": "string",
+            "nullable": true,
+            "example": "Closed Won"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "example": "OPEN"
+          }
+        }
+      },
+      "create_update_opportunity": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "nullable": true,
+            "example": 100000
+          },
+          "close_date": {
+            "type": "string",
+            "nullable": true,
+            "example": "2022-02-10T00:00:00Z"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Wants to use open source unified API for third-party integrations"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Needs Integrations"
+          },
+          "stage": {
+            "type": "string",
+            "example": "Closed Won"
+          }
+        }
+      },
+      "logs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "dashboard_view": {
+              "type": "string",
+              "example": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832"
+            },
+            "log_id": {
+              "type": "string",
+              "example": "99433219-8017-4acd-bb3c-ceb23d663832"
+            },
+            "log_summary": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "example": "POST"
+                },
+                "status_code": {
+                  "type": "number",
+                  "example": 200
+                },
+                "url": {
+                  "type": "string",
+                  "example": "https://harvest.greenhouse.io/v1/candidates/"
+                }
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+            "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+            "log_summary": {
+              "method": "POST",
+              "status_code": 200,
+              "url": "https://harvest.greenhouse.io/v1/candidates/"
+            }
+          },
+          {
+            "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+            "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+            "log_summary": {
+              "method": "POST",
+              "status_code": 200,
+              "url": "https://harvest.greenhouse.io/v1/candidates/"
+            }
+          }
+        ]
+      },
+      "errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "example": "custom_fields is a required field on model."
+            },
+            "problem_type": {
+              "type": "string",
+              "example": "MISSING_REQUIRED_FIELD"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string",
+                  "example": "irure consectetur"
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "example": "Missing Required Field"
+            }
+          },
+          "example": [
+            {
+              "detail": "custom_fields is a required field on model.",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "source": {
+                "pointer": "irure consectetur"
+              },
+              "title": "Missing Required Field"
+            },
+            {
+              "detail": "custom_fields is a required field on model.",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "source": {
+                "pointer": "et"
+              },
+              "title": "Missing Required Field"
+            }
+          ]
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "example": "An unrecognized field, age, was passed in with request data."
+            },
+            "problem_type": {
+              "type": "string",
+              "example": "UNRECOGNIZED_FIELD"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string",
+                  "example": "Lorem ipsum"
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "example": "Unrecognized Field"
+            }
+          }
+        },
+        "example": [
+          {
+            "detail": "An unrecognized field, age, was passed in with request data.",
+            "problem_type": "UNRECOGNIZED_FIELD",
+            "source": {
+              "pointer": "Lorem ipsum"
+            },
+            "title": "Unrecognized Field"
+          },
+          {
+            "detail": "An unrecognized field, age, was passed in with request data.",
+            "problem_type": "UNRECOGNIZED_FIELD",
+            "source": {
+              "pointer": "in"
+            },
+            "title": "Unrecognized Field"
+          }
+        ]
+      },
+      "addresses": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "address_type": {
+              "type": "string",
+              "nullable": true,
+              "example": "Shipping"
+            },
+            "city": {
+              "type": "string",
+              "nullable": true,
+              "example": "San Francisco"
+            },
+            "country": {
+              "type": "string",
+              "nullable": true,
+              "example": "USA"
+            },
+            "postal_code": {
+              "type": "string",
+              "nullable": true,
+              "example": "94107"
+            },
+            "state": {
+              "type": "string",
+              "nullable": true,
+              "example": "CA"
+            },
+            "street_1": {
+              "type": "string",
+              "nullable": true,
+              "example": "525 Brannan"
+            },
+            "street_2": {
+              "type": "string",
+              "nullable": true,
+              "example": null
+            }
+          }
+        },
+        "example": [
+          {
+            "address_type": "Shipping",
+            "city": "San Francisco",
+            "country": "US",
+            "postal_code": "94107",
+            "state": "CA",
+            "street_1": "525 Brannan",
+            "street_2": null
+          }
+        ]
+      },
+      "email_addresses": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email_address": {
+              "type": "string",
+              "example": "hello@supaglue.com"
+            },
+            "email_address_type": {
+              "type": "string",
+              "nullable": true,
+              "example": "Work"
+            }
+          }
+        },
+        "example": [
+          {
+            "email_address": "hello@supaglue.com",
+            "email_address_type": "Work"
+          }
+        ]
+      },
+      "phone_numbers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "phone_number": {
+              "type": "string",
+              "nullable": true,
+              "example": "+14151234567"
+            },
+            "phone_number_type": {
+              "type": "string",
+              "nullable": true,
+              "example": "Mobile"
+            }
+          }
+        },
+        "example": [
+          {
+            "phone_number": "+14151234567",
+            "phone_number_type": "Mobile"
+          }
+        ]
+      },
+      "pagination": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "created_after": {
+        "name": "created_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created after this datetime"
+      },
+      "created_before": {
+        "name": "created_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created before this datetime"
+      },
+      "updated_after": {
+        "name": "updated_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified after this datetime"
+      },
+      "updated_before": {
+        "name": "updated_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified before this datetime"
+      },
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+        },
+        "description": "The pagination cursor value"
+      },
+      "expand": {
+        "name": "expand",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "owner"
+        },
+        "description": "Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces"
+      },
+      "page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "3804695"
+        },
+        "description": "Number of results to return per page"
+      }
+    }
+  }
+}

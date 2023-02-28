@@ -1,0 +1,29 @@
+type: object
+properties:
+  description:
+    type: string
+    nullable: true
+    example: Integration API
+  industry:
+    type: string
+    nullable: true
+    example: API's
+  name:
+    type: string
+    nullable: true
+    example: Sample Customer
+  number_of_employees:
+    type: integer
+    nullable: true
+    example: 276000
+  website:
+    type: string
+    nullable: true
+    example: https://supaglue.com/
+example:
+  description: Integration API
+  industry: API's
+  last_activity_at: '2022-02-10T00:00:00Z'
+  name: Sample Customer
+  number_of_employees: 276000
+  website: https://supaglue.com/

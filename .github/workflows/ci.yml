@@ -34,11 +34,26 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Lint
+      - name: Lint changed workspaces
+        if: github.ref != 'refs/heads/main'
         run: yarn lint "--filter=[origin/main...HEAD]"
 
-      - name: Build
+      - name: Lint
+        if: github.ref == 'refs/heads/main'
+        run: yarn lint
+
+      - name: Build changed workspaces
+        if: github.ref != 'refs/heads/main'
         run: yarn build "--filter=[origin/main...HEAD]"
 
-      - name: Test
+      - name: Build
+        if: github.ref == 'refs/heads/main'
+        run: yarn build
+
+      - name: Test changed workspaces
+        if: github.ref != 'refs/heads/main'
         run: yarn test "--filter=[origin/main...HEAD]"
+
+      - name: Test
+        if: github.ref == 'refs/heads/main'
+        run: yarn test

@@ -22,18 +22,10 @@
   },
   "markdown.extension.list.indentationSize": "inherit",
   "markdown.extension.orderedList.autoRenumber": false,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
   "search.useIgnoreFiles": true,
   "sqltools.connections": [
-    {
-      "previewLimit": 50,
-      "server": "localhost",
-      "port": 5432,
-      "driver": "PostgreSQL",
-      "name": "sample app",
-      "database": "sample_app",
-      "username": "sample_app",
-      "password": "sample_app"
-    },
     {
       "previewLimit": 50,
       "server": "localhost",
