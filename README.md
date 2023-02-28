@@ -54,6 +54,7 @@ Looking for more connectors or objects? Reach out to us! [support@supaglue.com](
 ```shell
 git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
+yarn install
 docker compose up
 ```
 
