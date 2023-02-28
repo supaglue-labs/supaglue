@@ -18,6 +18,7 @@ Clone our repo, run our setup script which will create an `.env` file for this q
 ```shell
 git clone -b v0.3.0 git@github.com:supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
+yarn install
 docker compose up
 ```
 
@@ -25,22 +26,23 @@ docker compose up
 
 Click the links below to simulate a customer connecting their HubSpot or Salesforce account to your app.
 
-* **Salesforce:** [http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce](http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=http://localhost:3001/quickstart)
+- **Salesforce:** [http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce](http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=http://localhost:3001/quickstart)
 
-* **HubSpot:** [http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot](http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=http://localhost:3001/quickstart)
-
+- **HubSpot:** [http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot](http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=http://localhost:3001/quickstart)
 
 This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data. Upon successful login, you will be redirected back to this page.
 
 :::info
 To test running queries against Supaglue's API, you'll need the following:
+
 1. A Salesforce or HubSpot app that your customers can connect their CRMs to.
 2. A sample "customer" to test with.
 3. The sample customer's CRM instance that you'd like to query.
 
 For your convenience in this quickstart, we've provided Supaglue sample apps and two mock customers:
-   - Salesforce: `9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677`
-   - HubSpot: `ea3039fa-27de-4535-90d8-db2bab0c0252`
+
+- Salesforce: `9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677`
+- HubSpot: `ea3039fa-27de-4535-90d8-db2bab0c0252`
 
 If you don't have a sample CRM instance, you can create a free developer [HubSpot](https://app.hubspot.com/signup-hubspot/crm) or [Salesforce](https://developer.salesforce.com/signup) account.
 :::
