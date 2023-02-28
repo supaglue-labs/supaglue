@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { snakecaseKeys } from '@/lib/snakecase';
 import { GetSyncInfosPathParams, GetSyncInfosRequest, GetSyncInfosResponse } from '@supaglue/schemas/crm';
 import { Request, Response, Router } from 'express';
 
@@ -14,7 +15,14 @@ export default function init(app: Router): void {
       res: Response<GetSyncInfosResponse>
     ) => {
       const syncInfoList = await syncService.getSyncInfoList(req.customerConnection.id);
-      return res.status(200).send(syncInfoList);
+      const syncInfoListRes = syncInfoList.map((syncInfo) =>
+        snakecaseKeys({
+          ...syncInfo,
+          lastSyncStart: syncInfo.lastSyncStart?.toISOString(),
+          nextSyncStart: syncInfo.nextSyncStart?.toISOString(),
+        })
+      );
+      return res.status(200).send(syncInfoListRes);
     }
   );
 
