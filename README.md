@@ -47,10 +47,6 @@ Supported common objects: Accounts, Contacts, Leads, Opportunities.
 
 Looking for more integrations or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
 
-## Benchmarks
-
-...
-
 ## Get Started
 
 ### Run Supaglue locally
