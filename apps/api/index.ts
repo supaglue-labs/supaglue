@@ -1,4 +1,4 @@
-import { client as posthogClient, distinctId, errorMiddleware as posthogErrorMiddleware, middleware as posthogMiddleware } from '@/lib/posthog';
+import { client as posthogClient, distinctId, posthogMiddleware } from '@/lib/posthog';
 import { logger } from '@/logger';
 import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
@@ -79,10 +79,10 @@ app.use(
   })
 );
 
-initRoutes(app);
-
 // posthog
-app.use(posthogErrorMiddleware);
+app.use(posthogMiddleware);
+
+initRoutes(app);
 
 // error handling middlewares
 app.use(

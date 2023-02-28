@@ -44,9 +44,9 @@ function getProviderNameFromRequest(req: Request) {
   return providerName;
 }
 
-export function middleware(req: Request, res: Response, next: NextFunction) {
+function onResFinished(req: Request, res: Response, err?: any) {
   if (!distinctId) {
-    return next();
+    return;
   }
 
   client.capture({
@@ -57,7 +57,8 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
       params: req.params,
       providerName: getProviderNameFromRequest(req),
       query: req.query,
-      result: 'attempt',
+      result: err ? 'error' : 'success',
+      error: err?.message,
       source: 'api',
       path: req.originalUrl,
       system: {
@@ -68,29 +69,19 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
       },
     },
   });
-
-  return next();
 }
 
-export function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunction) {
-  if (!distinctId) {
-    return next(err);
-  }
+export function posthogMiddleware(req: Request, res: Response, next: NextFunction) {
+  const onResponseComplete = (err: any) => {
+    res.removeListener('close', onResponseComplete);
+    res.removeListener('finish', onResponseComplete);
+    res.removeListener('error', onResponseComplete);
+    return onResFinished(req, res, err);
+  };
 
-  client.capture({
-    distinctId,
-    event: 'API Call',
-    properties: {
-      method: req.method,
-      params: req.params,
-      providerName: getProviderNameFromRequest(req),
-      query: req.query,
-      error: err.message,
-      path: req.originalUrl,
-      result: 'error',
-      source: 'api',
-    },
-  });
+  res.on('close', onResponseComplete);
+  res.on('finish', onResponseComplete);
+  res.on('error', onResponseComplete);
 
-  return next(err);
+  return next();
 }
