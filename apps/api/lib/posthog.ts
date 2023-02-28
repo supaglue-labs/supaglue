@@ -53,6 +53,7 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
     distinctId,
     event: 'API Call',
     properties: {
+      method: req.method,
       params: req.params,
       providerName: getProviderNameFromRequest(req),
       query: req.query,
@@ -80,6 +81,7 @@ export function errorMiddleware(err: Error, req: Request, res: Response, next: N
     distinctId,
     event: 'API Call',
     properties: {
+      method: req.method,
       params: req.params,
       providerName: getProviderNameFromRequest(req),
       query: req.query,
