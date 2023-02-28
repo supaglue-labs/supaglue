@@ -28,11 +28,6 @@
           "Accounts"
         ],
         "summary": "List accounts",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "description": "Get a list of accounts",
         "parameters": [
           {
@@ -159,11 +154,6 @@
         "tags": [
           "Accounts"
         ],
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -217,11 +207,6 @@
         "summary": "Get account",
         "tags": [
           "Accounts"
-        ],
-        "security": [
-          {
-            "api_key": []
-          }
         ],
         "parameters": [
           {
@@ -286,11 +271,6 @@
       "patch": {
         "operationId": "updateAccount",
         "summary": "Update account",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "tags": [
           "Accounts"
         ],
@@ -359,11 +339,6 @@
           "Contacts"
         ],
         "summary": "List contacts",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "description": "Get a list of contacts",
         "parameters": [
           {
@@ -494,11 +469,6 @@
         "tags": [
           "Contacts"
         ],
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -558,11 +528,6 @@
         "tags": [
           "Contacts"
         ],
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "parameters": [
           {
             "$ref": "#/components/parameters/expand"
@@ -584,11 +549,6 @@
       "patch": {
         "operationId": "updateContact",
         "summary": "Update contact",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "tags": [
           "Contacts"
         ],
@@ -667,11 +627,6 @@
           "Leads"
         ],
         "summary": "List leads",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "description": "Get a list of leads",
         "parameters": [
           {
@@ -814,11 +769,6 @@
         "tags": [
           "Leads"
         ],
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -880,11 +830,6 @@
         "tags": [
           "Leads"
         ],
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "parameters": [
           {
             "$ref": "#/components/parameters/expand"
@@ -906,11 +851,6 @@
       "patch": {
         "operationId": "updateLead",
         "summary": "Update lead",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "tags": [
           "Leads"
         ],
@@ -991,11 +931,6 @@
           "Opportunities"
         ],
         "summary": "List opportunities",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "description": "Get a list of opportunities",
         "parameters": [
           {
@@ -1090,11 +1025,6 @@
         "tags": [
           "Opportunities"
         ],
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1156,11 +1086,6 @@
         "tags": [
           "Opportunities"
         ],
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "parameters": [
           {
             "$ref": "#/components/parameters/expand"
@@ -1199,11 +1124,6 @@
       "patch": {
         "operationId": "updateOpportunity",
         "summary": "Update opportunity",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "tags": [
           "Opportunities"
         ],
@@ -1272,11 +1192,6 @@
           "SyncInfo"
         ],
         "summary": "Get Sync Info",
-        "security": [
-          {
-            "api_key": []
-          }
-        ],
         "description": "Get a list of Sync Info",
         "responses": {
           "200": {
