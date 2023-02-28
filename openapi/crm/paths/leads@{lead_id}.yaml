@@ -3,8 +3,6 @@ get:
   summary: Get lead
   tags:
     - Leads
-  security:
-    - api_key: []
   parameters:
     - $ref: ../components/parameters/expand.yaml
   responses:
@@ -17,8 +15,6 @@ get:
 patch:
   operationId: updateLead
   summary: Update lead
-  security:
-    - api_key: []
   tags:
     - Leads
   parameters: []

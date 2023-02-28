@@ -3,8 +3,6 @@ get:
   summary: Get contact
   tags:
     - Contacts
-  security:
-    - api_key: []
   parameters:
     - $ref: ../components/parameters/expand.yaml
   responses:
@@ -17,8 +15,6 @@ get:
 patch:
   operationId: updateContact
   summary: Update contact
-  security:
-    - api_key: []
   tags:
     - Contacts
   parameters: []

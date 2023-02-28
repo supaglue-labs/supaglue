@@ -3,8 +3,6 @@ get:
   tags:
     - Contacts
   summary: List contacts
-  security:
-    - api_key: []
   description: >-
     Get a list of contacts
   parameters:
@@ -80,8 +78,6 @@ post:
   summary: Create contact
   tags:
     - Contacts
-  security:
-    - api_key: []
   parameters: []
   requestBody:
     required: true
