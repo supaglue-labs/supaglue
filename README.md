@@ -61,7 +61,7 @@ git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
 docker compose up
 ```
 
-Continue on to the docs to go through our [quicktart](https://docs.supaglue.com/quickstart?ref=github-readme).
+Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
 
 ## Roadmap
 
