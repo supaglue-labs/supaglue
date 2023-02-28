@@ -49,6 +49,8 @@ function onResFinished(req: Request, res: Response, err?: any) {
     return;
   }
 
+  const error = err ?? res.locals.error;
+
   client.capture({
     distinctId,
     event: 'API Call',
@@ -57,8 +59,8 @@ function onResFinished(req: Request, res: Response, err?: any) {
       params: req.params,
       providerName: getProviderNameFromRequest(req),
       query: req.query,
-      result: err ? 'error' : 'success',
-      error: err?.message,
+      result: error ? 'error' : 'success',
+      error: error?.message,
       source: 'api',
       path: req.originalUrl,
       system: {
@@ -76,6 +78,7 @@ export function posthogMiddleware(req: Request, res: Response, next: NextFunctio
     res.removeListener('close', onResponseComplete);
     res.removeListener('finish', onResponseComplete);
     res.removeListener('error', onResponseComplete);
+
     return onResFinished(req, res, err);
   };
 
@@ -84,4 +87,9 @@ export function posthogMiddleware(req: Request, res: Response, next: NextFunctio
   res.on('error', onResponseComplete);
 
   return next();
+}
+
+export function posthogErrorMiddleware(err: any, req: Request, res: Response, next: NextFunction) {
+  res.locals.error = err;
+  return next(err);
 }
