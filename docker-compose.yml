@@ -25,6 +25,7 @@ services:
       - SUPAGLUE_PRETTY_LOGS=1
       - SUPAGLUE_DISABLE_ANALYTICS
       - SUPAGLUE_DISABLE_ERROR_REPORTING
+      - SUPAGLUE_POSTHOG_API_KEY
       - NODE_ENV=development
     restart: on-failure
     volumes:

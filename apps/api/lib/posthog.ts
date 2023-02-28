@@ -35,7 +35,16 @@ export const client = new PostHog(process.env.SUPAGLUE_POSTHOG_API_KEY ?? 'dummy
   enable,
 });
 
-function middleware(req: Request, res: Response, next: NextFunction) {
+function getProviderNameFromRequest(req: Request) {
+  let { providerName } = req.query;
+  if (!providerName && 'state' in req.query && typeof req.query.state === 'string') {
+    ({ providerName } = JSON.parse(req.query.state));
+  }
+
+  return providerName;
+}
+
+export function middleware(req: Request, res: Response, next: NextFunction) {
   if (!distinctId) {
     return next();
   }
@@ -45,8 +54,9 @@ function middleware(req: Request, res: Response, next: NextFunction) {
     event: 'API Call',
     properties: {
       params: req.params,
+      providerName: getProviderNameFromRequest(req),
       query: req.query,
-      result: 'success',
+      result: 'attempt',
       source: 'api',
       path: req.originalUrl,
       system: {
@@ -61,7 +71,7 @@ function middleware(req: Request, res: Response, next: NextFunction) {
   return next();
 }
 
-function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunction) {
+export function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunction) {
   if (!distinctId) {
     return next(err);
   }
@@ -71,6 +81,7 @@ function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunc
     event: 'API Call',
     properties: {
       params: req.params,
+      providerName: getProviderNameFromRequest(req),
       query: req.query,
       error: err.message,
       path: req.originalUrl,
@@ -81,5 +92,3 @@ function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunc
 
   return next(err);
 }
-
-export const posthogMiddlewares = [middleware, errorMiddleware];
