@@ -45,7 +45,7 @@ function getProviderNameFromRequest(req: Request) {
 }
 
 function onResFinished(req: Request, res: Response, err?: any) {
-  if (!distinctId) {
+  if (!distinctId || res.locals.analyticsLogged) {
     return;
   }
 
@@ -71,6 +71,7 @@ function onResFinished(req: Request, res: Response, err?: any) {
       },
     },
   });
+  res.locals.analyticsLogged = true;
 }
 
 export function posthogMiddleware(req: Request, res: Response, next: NextFunction) {
