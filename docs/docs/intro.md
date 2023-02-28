@@ -31,7 +31,7 @@ Looking for more connectors or objects? Reach out to us! [support@supaglue.com](
 
 ## How it works
 
-When developers at B2B companies integrate with Supaglue, they are able to provide many CRM integrations to their customers. Supaglue enables those customers to authenticate with their CRM, and reliably sync data from those customers' CRM into Supaglue's database. The data is mapped to a common data model and exposed through a unified REST API that provides developers read/write access to their customer's CRMs. Supaglue is a separate service that runs alongside your stack. Supaglue is open source and can be self-hosted.
+When developers at B2B companies integrate with Supaglue, they are able to provide many CRM integrations to their customers. Supaglue enables those customers to authenticate with their CRM, and reliably sync data from those customers' CRMs into Supaglue's database. The data is mapped to a common data model and exposed through a unified REST API that provides developers read/write access to their customers' CRMs. Supaglue is a separate service that runs alongside your stack. Supaglue is open source and can be self-hosted.
 
 Supaglue consists of the following components:
 
@@ -44,7 +44,7 @@ Supaglue consists of the following components:
 ## Use cases
 
 - Ingest Contact and Account data from HubSpot and Salesforce into your B2B SaaS application.
-- Enrich your customers' CRM with additional data from your product.
+- Enrich your customers' CRMs with additional data from your product.
 
 ## Roadmap & vision
 
