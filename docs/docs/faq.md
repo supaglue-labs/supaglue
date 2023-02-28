@@ -34,4 +34,4 @@ Yes, see our roadmap for more details.
 
 ## What kind of tracking/analytics do you collect?
 
-We use PostHog to anonymized, session-level event data in our API to help us improve the developer experience. We use Sentry for error reporting. You can opt out of tracking by setting SUPAGLUE_DISABLE_ERROR_REPORTING=1 and SUPAGLUE_DISABLE_ANALYTICS=1 in your `.env` file.
+We use PostHog to anonymized, session-level event data in our API to help us improve the developer experience. We use Sentry for error reporting. You can opt out of tracking by setting `SUPAGLUE_DISABLE_ERROR_REPORTING=1` and `SUPAGLUE_DISABLE_ANALYTICS=1` in your `.env` file.
