@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -euox pipefail
+set -euo pipefail
 
 if [ -z "${1-}" ]; then
   echo "usage: $0 <workspace_name>"

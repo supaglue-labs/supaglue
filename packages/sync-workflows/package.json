@@ -5,7 +5,8 @@
     "@supaglue/core": "workspace:*",
     "@temporalio/activity": "^1.6.0",
     "@temporalio/client": "^1.6.0",
-    "@temporalio/workflow": "^1.6.0"
+    "@temporalio/workflow": "^1.6.0",
+    "posthog-node": "^2.5.4"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
