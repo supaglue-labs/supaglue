@@ -1,4 +1,4 @@
-import { client as posthogClient, distinctId, errorMiddleware as posthogErrorMiddleware, middleware as posthogMiddleware } from '@/lib/posthog';
+import { client as posthogClient, distinctId, posthogErrorMiddleware, posthogMiddleware } from '@/lib/posthog';
 import { logger } from '@/logger';
 import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
@@ -79,12 +79,13 @@ app.use(
   })
 );
 
+// posthog
+app.use(posthogMiddleware);
+
 initRoutes(app);
 
-// posthog
-app.use(posthogErrorMiddleware);
-
 // error handling middlewares
+app.use(posthogErrorMiddleware);
 app.use(
   Sentry.Handlers.errorHandler({
     shouldHandleError: (error) => {
