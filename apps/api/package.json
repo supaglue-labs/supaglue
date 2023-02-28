@@ -1,5 +1,6 @@
 {
   "name": "api",
+  "version": "0.0.0",
   "packageManager": "yarn@3.4.1",
   "type": "commonjs",
   "dependencies": {
@@ -39,7 +40,7 @@
   },
   "scripts": {
     "start": "tsx watch --clear-screen=false ./index.ts",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.json",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
     "prepare": "ts-patch install -s"

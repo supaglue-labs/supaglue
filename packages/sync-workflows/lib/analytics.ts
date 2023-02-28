@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { PostHog } from 'posthog-node';
 
-const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 const analytics = new PostHog(process.env.SUPAGLUE_POSTHOG_API_KEY ?? 'dummy', { enable: true });
 
 export const logEvent = (

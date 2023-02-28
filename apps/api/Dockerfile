@@ -48,8 +48,6 @@ COPY --from=installer --chown=nodejs:nodejs /app/apps/api/node_modules ./node_mo
 COPY --from=installer --chown=nodejs:nodejs /app/packages/core/dist ./node_modules/@supaglue/core
 COPY --from=installer --chown=nodejs:nodejs /app/packages/core/node_modules ./node_modules/@supaglue/core/node_modules
 COPY --from=installer --chown=nodejs:nodejs /app/packages/core/prisma ./prisma
-COPY --from=installer --chown=nodejs:nodejs /app/packages/sync-workflows/dist ./node_modules/@supaglue/sync-workflows
-COPY --from=installer --chown=nodejs:nodejs /app/packages/sync-workflows/node_modules ./node_modules/@supaglue/sync-workflows/node_modules
 COPY --from=installer --chown=nodejs:nodejs /app/openapi ./openapi
 COPY --from=installer --chown=nodejs:nodejs /app/package.json .
 

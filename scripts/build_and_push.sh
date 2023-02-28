@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -euox pipefail
+set -euo pipefail
 
 if [ -z "${1-}" ]; then
   echo "usage: $0 <workspace_name>"
@@ -11,16 +11,14 @@ WORKSPACE_NAME=$1
 
 WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${WORKSPACE_NAME}\") | .location")
 
-if [ "$WORKSPACE_NAME" = "api" ]; then
-  # fetch the posthog api key from 1password and pass it as an arg
-  # to the docker build
+# fetch the posthog api key from 1password and pass it as an arg
+# to the docker build
 
-  eval "$(op signin supaglue)"
+eval "$(op signin supaglue)"
 
-  POSTHOG_API_KEY=$(op get item dl4y3dryfib2huqpultgp7wlcq --fields credential)
+POSTHOG_API_KEY=$(op get item dl4y3dryfib2huqpultgp7wlcq --fields credential)
 
-  ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
-fi
+ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
 
 # read version from package.json
 VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
