@@ -3,8 +3,6 @@ get:
   tags:
     - Leads
   summary: List leads
-  security:
-    - api_key: []
   description: >-
     Get a list of leads
   parameters:
@@ -92,8 +90,6 @@ post:
   summary: Create lead
   tags:
     - Leads
-  security:
-    - api_key: []
   parameters: []
   requestBody:
     required: true

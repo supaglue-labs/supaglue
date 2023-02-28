@@ -3,8 +3,6 @@ get:
   tags:
     - Accounts
   summary: List accounts
-  security:
-    - api_key: []
   description: >-
     Get a list of accounts
   parameters:
@@ -82,8 +80,6 @@ post:
   summary: Create account
   tags:
     - Accounts
-  security:
-    - api_key: []
   parameters: []
   requestBody:
     required: true

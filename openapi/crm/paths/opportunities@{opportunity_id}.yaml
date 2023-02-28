@@ -3,8 +3,6 @@ get:
   summary: Get opportunity
   tags:
     - Opportunities
-  security:
-    - api_key: []
   parameters:
     - $ref: ../components/parameters/expand.yaml
   responses:
@@ -31,8 +29,6 @@ get:
 patch:
   operationId: updateOpportunity
   summary: Update opportunity
-  security:
-    - api_key: []
   tags:
     - Opportunities
   parameters: []

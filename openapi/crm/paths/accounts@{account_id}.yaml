@@ -3,8 +3,6 @@ get:
   summary: Get account
   tags:
     - Accounts
-  security:
-    - api_key: []
   parameters:
     - $ref: ../components/parameters/expand.yaml
   responses:
@@ -48,8 +46,6 @@ get:
 patch:
   operationId: updateAccount
   summary: Update account
-  security:
-    - api_key: []
   tags:
     - Accounts
   parameters: []
