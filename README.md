@@ -27,8 +27,6 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 
 ## Features
 
-![supaglue-demo](https://raw.githubusercontent.com/supaglue-labs/supaglue/main/docs/static/img/)
-
 - **Unified API**: single developer interface to sync data from multiple third-party providers.
 - **Common Model**: a common data model that has been standardized across multiple third-party providers.
 - **Unlimited Supaglue API rate limits**: query against synced data in your own cloud with no rate limits.
