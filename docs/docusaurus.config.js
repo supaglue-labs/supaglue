@@ -223,7 +223,13 @@ const config = {
       },
       prism: {
         theme: lightCodeTheme,
-        // darkTheme: darkCodeTheme,
+      },
+      algolia: {
+        appId: 'CJOFM1QP4P',
+        apiKey: 'bf8d1571a33851ba8bf7e70a0c57f28f',
+        indexName: 'supaglue',
+        contextualSearch: true,
+        searchPagePath: 'search',
       },
     }),
   plugins: [
