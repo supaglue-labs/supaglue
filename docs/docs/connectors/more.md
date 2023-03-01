@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # More Connectors
@@ -10,7 +10,6 @@ Supaglue plans to support the following connectors.
 
 **CRM:**
 
-- Pipedrive
 - Microsoft Dynamics 365 Sales
 - Zendesk Sell
 - Zoho CRM

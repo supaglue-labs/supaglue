@@ -178,7 +178,7 @@ const config = {
               },
               {
                 label: 'Pipedrive',
-                href: '/connectors/more',
+                href: '/connectors/pipedrive',
               },
               {
                 label: 'Microsoft Dynamics 365 Sales',

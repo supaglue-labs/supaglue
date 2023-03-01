@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { ConnectionCreateParams, ConnectionUpsertParams } from '@supaglue/core/types/connection';
+import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/core/types/crm';
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
@@ -16,6 +17,12 @@ const SimpleOAuth2AuthFields: Record<string, any> = {
     tokenHost: 'https://api.hubapi.com',
     tokenPath: '/oauth/v1/token',
     authorizeHost: 'https://app.hubspot.com',
+    authorizePath: '/oauth/authorize',
+  },
+  pipedrive: {
+    tokenHost: 'https://oauth.pipedrive.com',
+    tokenPath: '/oauth/token',
+    authorizeHost: 'https://oauth.pipedrive.com',
     authorizePath: '/oauth/authorize',
   },
 };
@@ -94,11 +101,11 @@ export default function init(app: Router): void {
       }: {
         returnUrl: string;
         scope?: string;
-        providerName?: string;
+        providerName?: CRMProviderName;
         customerId?: string;
       } = JSON.parse(decodeURIComponent(state));
 
-      if (!providerName || (providerName !== 'salesforce' && providerName !== 'hubspot')) {
+      if (!providerName || !SUPPORTED_CRM_CONNECTIONS.includes(providerName)) {
         throw new Error('No providerName or supported providerName on state object');
       }
 
