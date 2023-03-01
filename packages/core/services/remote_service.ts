@@ -1,5 +1,5 @@
 import { CrmRemoteClient } from '../remotes/crm/base';
-import { createHubSpotClient, createSalesforceClient } from '../remotes/index';
+import { createHubSpotClient, createPipedriveClient, createSalesforceClient } from '../remotes/index';
 import { ConnectionService } from './connection_service';
 import { IntegrationService } from './integration_service';
 
@@ -21,6 +21,8 @@ export class RemoteService {
         return createSalesforceClient(connection, integration);
       case 'hubspot':
         return createHubSpotClient(connection, integration);
+      case 'pipedrive':
+        return createPipedriveClient(connection, integration);
     }
   }
 }
