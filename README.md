@@ -32,7 +32,6 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 ```shell
 git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
-yarn install
 docker compose up
 ```
 
