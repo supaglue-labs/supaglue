@@ -189,7 +189,7 @@ export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreate
     closedate: params.closeDate?.toISOString() ?? '',
     dealname: params.name ?? '',
     description: params.description ?? '',
-    stage: params.stage ?? '',
+    dealstage: params.stage ?? '',
   };
 };
 export const toHubspotOpportunityUpdateParams = toHubspotOpportunityCreateParams;

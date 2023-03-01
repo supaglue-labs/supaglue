@@ -16,6 +16,6 @@ export type RunSyncsArgs = {
 };
 
 export async function runSyncs({ connectionId, sessionId }: RunSyncsArgs): Promise<void> {
-  await Promise.all(CRM_COMMON_MODELS.map((commonModel) => doSync({ connectionId, commonModel, sessionId })));
+  CRM_COMMON_MODELS.map(async (commonModel) => await doSync({ connectionId, commonModel, sessionId }));
   await populateAssociations({ connectionId });
 }
