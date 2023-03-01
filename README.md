@@ -7,6 +7,7 @@
 </p>
 
 <p align="center">
+  <a href="https://hub.docker.com/r/supaglue/api" target="_blank"><img alt="Docker Image Version (latest semver)" src="https://img.shields.io/docker/v/supaglue/api"></a>
   <a href="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml"><img title="CI Status" src="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/supaglue-labs/supaglue/issues"><img title="github issues" src="https://img.shields.io/github/issues/supaglue-labs/supaglue"></a>
   <a href="https://github.com/supaglue-labs/supaglue"><img title="github activity" src="https://img.shields.io/github/commit-activity/w/supaglue-labs/supaglue"></a>
