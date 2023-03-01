@@ -36,6 +36,8 @@ git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
 docker compose up
 ```
 
+![supaglue-quickstart](https://github.com/supaglue-labs/supaglue/blob/main/docs/static/img/quickstart.gif)
+
 ## Features
 
 - **Unified API**: single developer interface to read from and write to multiple third-party providers.
