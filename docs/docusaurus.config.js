@@ -225,6 +225,13 @@ const config = {
         theme: lightCodeTheme,
         // darkTheme: darkCodeTheme,
       },
+      algolia: {
+        appId: 'CJOFM1QP4P',
+        // Public API key: it is safe to commit it
+        apiKey: 'df1b7f9cda04ea41a90afc0fda6cc925',
+        indexName: 'supaglue',
+        contextualSearch: true,
+      },
     }),
   plugins: [
     [
