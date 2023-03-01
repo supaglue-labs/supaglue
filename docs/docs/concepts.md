@@ -6,38 +6,31 @@ sidebar_position: 3
 
 Learn about major Supaglue concepts.
 
-### Common Model
+<dl>
+<dt>Common Model</dt>
+<dd>A canonical data model that has been standardized across all third-party tools.</dd>
 
-A canonical data model that has been standardized across all third-party tools.
+<dt>Connector</dt>
+<dd>A code package that is used by Supaglue to interact with a third-party tool's auth, APIs, and object model.</dd>
 
-### Connector
+<dt>Connection</dt>
+<dd>A link between a Customer's third-party tool and a Supaglue Integration.</dd>
 
-A code package that is used by Supaglue to interact with a third-party tool's auth, APIs, and object model.
+<dt>Customer</dt>
+<dd>An end-user of a developer's application.</dd>
 
-### Connection
+<dt>Integration</dt>
+<dd>An offering made available by a developer to Customers so that Customers can connect their third-party tools.</dd>
 
-A link between a Customer's third-party tool and a Supaglue Integration.
+<dt>Provider</dt>
+<dd>A third-party tool such as Salesforce or Hubspot.</dd>
 
-### Customer
+<dt>Sync workflow</dt>
+<dd>A process that Supaglue will run to move data from a third-party tool to/from Supaglue.</dd>
 
-An end-user of a developer's application.
+<dt>Sync Info</dt>
+<dd>Metadata (start time, end time, status, model name) related to a Sync workflow.</dd>
 
-### Integration
-
-An offering made available by a developer to Customers so that Customers can connect their third-party tools.
-
-### Provider
-
-A third-party tool such as Salesforce or Hubspot.
-
-### Sync workflow
-
-A process that Supaglue will run to move data from a third-party tool to/from Supaglue.
-
-### Sync Info
-
-Metadata (start time, end time, status, model name) related to a Sync workflow.
-
-### Unified API
-
-A HTTP API that gives developers a single interface to sync (read and write) common data models from multiple CRM providers.
+<dt>Unified API</dt>
+<dd>A HTTP API that gives developers a single interface to sync (read and write) common data models from multiple CRM providers.</dd>
+</dl>

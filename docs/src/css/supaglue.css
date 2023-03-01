@@ -4,3 +4,17 @@ div[role='banner'] {
   background-color: #0000a5;
   color: white;
 }
+
+dl dd{
+  margin-bottom: 1.5em;
+  margin-left: 0;
+}
+
+dl dt {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+dl dd:last-child {
+  margin-bottom: 0;
+}
