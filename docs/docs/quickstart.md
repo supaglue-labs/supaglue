@@ -16,7 +16,6 @@ Clone our repo, run our setup script which will create an `.env` file for this q
 ```shell
 git clone -b v0.3.1 git@github.com:supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
-yarn install
 docker compose up
 ```
 
