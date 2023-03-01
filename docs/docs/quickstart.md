@@ -9,6 +9,12 @@ import TabItem from '@theme/TabItem';
 
 In less than 5 minutes, sync data from HubSpot or Salesforce into Supaglue and query it using a unified API.
 
+<figure>
+
+![supaglue-quickstart](/img/quickstart.gif)
+
+</figure>
+
 ## 1. Run Supaglue locally
 
 Clone our repo, run our setup script which will create an `.env` file for this quickstart, and run the Supaglue stack locally using docker compose:
