@@ -6,17 +6,6 @@
       "outputs": ["dist/**"]
     },
     "docs#build": {
-      "inputs": [
-        "../../openapi/**/openapi.bundle.json",
-        "blog/**/*",
-        "docs/**/*",
-        "docusaurus.config.js",
-        "sidebars.js",
-        "package.json",
-        "tsconfig.json",
-        "src/**/*",
-        "static/**/*"
-      ],
       "outputs": ["build/**"]
     },
     "lint-staged": {},
