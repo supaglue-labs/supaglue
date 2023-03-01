@@ -117,7 +117,6 @@ export class HubSpotClient implements CrmRemoteClient {
   }
 
   public async listAccounts(limit?: number): Promise<RemoteAccount[]> {
-    // await this.#client.oauth.accessTokensApi.getAccessToken();
     const companies = await this.#client.crm.companies.getAll(
       limit,
       /* after */ undefined,
