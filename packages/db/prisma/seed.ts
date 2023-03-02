@@ -76,7 +76,7 @@ async function seedCRMIntegrations() {
               },
             },
             sync: {
-              period_ms: SUPAGLUE_SYNC_PERIOD_MS,
+              periodMs: SUPAGLUE_SYNC_PERIOD_MS,
             },
           },
         },

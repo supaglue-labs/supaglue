@@ -1,3 +1,3 @@
 export type SyncConfig = {
-  period_ms: number;
+  periodMs: number;
 };

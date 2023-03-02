@@ -38,14 +38,14 @@ export class SyncService {
   }
 
   // TODO: Create CommonModel type
-  public async createSyncsSchedule(connectionId: string, sync_period_ms: number): Promise<void> {
+  public async createSyncsSchedule(connectionId: string, syncPeriodMs: number): Promise<void> {
     try {
       await this.#temporalClient.schedule.create({
         scheduleId: getRunSyncsScheduleId(connectionId),
         spec: {
           intervals: [
             {
-              every: sync_period_ms,
+              every: syncPeriodMs,
               offset: 0,
             },
           ],
