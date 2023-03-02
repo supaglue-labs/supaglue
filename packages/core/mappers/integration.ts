@@ -1,4 +1,4 @@
-import { Integration as IntegrationModel } from '@prisma/client';
+import type { Integration as IntegrationModel } from '@supaglue/db';
 import { CRMProviderName, Integration, IntegrationCategory, IntegrationConfig } from '../types';
 
 export const fromIntegrationModel = ({ id, category, providerName, config }: IntegrationModel): Integration => {

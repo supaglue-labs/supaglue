@@ -1,4 +1,4 @@
-import { CRMCommonModel } from './crm';
+import type { CRMCommonModel } from './crm';
 
 export type ListParams = GetParams &
   PaginationParams & {

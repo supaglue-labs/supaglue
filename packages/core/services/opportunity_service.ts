@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
 import { getExpandedAssociations } from '../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { refreshAccessTokenIfNecessary } from '../lib/refresh_token';
 import { fromOpportunityModel } from '../mappers';
-import {
+import type {
   GetParams,
   ListParams,
   Opportunity,
@@ -13,8 +13,8 @@ import {
   OpportunityUpdateParams,
   PaginatedResult,
 } from '../types';
-import { ConnectionService } from './connection_service';
-import { RemoteService } from './remote_service';
+import type { ConnectionService } from './connection_service';
+import type { RemoteService } from './remote_service';
 
 export class OpportunityService {
   #prisma: PrismaClient;

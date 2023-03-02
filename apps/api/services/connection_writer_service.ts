@@ -1,12 +1,12 @@
-import { PrismaClient } from '@supaglue/core';
 import { fromConnectionModel } from '@supaglue/core/mappers/connection';
-import {
+import type {
   Connection,
   ConnectionCreateParams,
   ConnectionStatus,
   ConnectionUpsertParams,
 } from '@supaglue/core/types/connection';
-import { SyncService } from './sync_service';
+import type { PrismaClient } from '@supaglue/db';
+import type { SyncService } from './sync_service';
 
 export class ConnectionWriterService {
   #prisma: PrismaClient;

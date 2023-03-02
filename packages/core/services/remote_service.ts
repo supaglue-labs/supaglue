@@ -1,7 +1,7 @@
-import { CrmRemoteClient } from '../remotes/crm/base';
+import type { CrmRemoteClient } from '../remotes/crm/base';
 import { createHubSpotClient, createPipedriveClient, createSalesforceClient } from '../remotes/index';
-import { ConnectionService } from './connection_service';
-import { IntegrationService } from './integration_service';
+import type { ConnectionService } from './connection_service';
+import type { IntegrationService } from './integration_service';
 
 export class RemoteService {
   #connectionService: ConnectionService;
