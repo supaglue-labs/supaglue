@@ -14,16 +14,11 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types';
-import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
+import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 
-class PipedriveClient implements CrmRemoteClient {
-  public async refreshAccessToken(): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    tokenType: string;
-  }> {
-    throw new Error('Not implemented');
+class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
+  public constructor() {
+    super();
   }
 
   public async listAccounts(): Promise<RemoteAccount[]> {

@@ -2,7 +2,6 @@ import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
 import { getExpandedAssociations } from '../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { refreshAccessTokenIfNecessary } from '../lib/refresh_token';
 import { fromLeadModel } from '../mappers';
 import type {
   GetParams,
@@ -84,7 +83,6 @@ export class LeadService {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteLead = await remoteClient.createLead(createParams);
     const leadModel = await this.#prisma.crmLead.create({
       data: {
@@ -110,7 +108,6 @@ export class LeadService {
     }
 
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteLead = await remoteClient.updateLead({
       ...updateParams,
       remoteId: foundLeadModel.remoteId,

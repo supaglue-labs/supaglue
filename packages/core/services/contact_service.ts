@@ -2,7 +2,6 @@ import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
 import { getExpandedAssociations } from '../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { refreshAccessTokenIfNecessary } from '../lib/refresh_token';
 import { fromContactModel } from '../mappers';
 import type {
   Contact,
@@ -96,7 +95,6 @@ export class ContactService {
       remoteCreateParams.accountId = await this.getAssociatedAccountRemoteId(createParams.accountId);
     }
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteContact = await remoteClient.createContact(remoteCreateParams);
     const contactModel = await this.#prisma.crmContact.create({
       data: {
@@ -128,7 +126,6 @@ export class ContactService {
     }
 
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteContact = await remoteClient.updateContact({
       ...remoteUpdateParams,
       remoteId: foundContactModel.remoteId,

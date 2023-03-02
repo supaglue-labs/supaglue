@@ -1,7 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { refreshAccessTokenIfNecessary } from '../lib/refresh_token';
 import { fromAccountModel } from '../mappers';
 import type {
   Account,
@@ -72,7 +71,6 @@ export class AccountService {
     // TODO: We may want to have better guarantees that we create the record in both our DB
     // and the external integration.
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteAccount = await remoteClient.createAccount(createParams);
     const accountModel = await this.#prisma.crmAccount.create({
       data: {
@@ -98,7 +96,6 @@ export class AccountService {
     }
 
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteAccount = await remoteClient.updateAccount({
       ...updateParams,
       remoteId: foundAccountModel.remoteId,

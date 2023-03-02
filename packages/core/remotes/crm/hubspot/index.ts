@@ -9,7 +9,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types/opportunity';
-import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
+import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
   fromHubSpotContactToRemoteContact,
@@ -83,15 +83,17 @@ const OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 5;
 type Credentials = {
   accessToken: string;
   refreshToken: string;
+  expiresAt: string; // ISO string
   clientId: string;
   clientSecret: string;
 };
 
-class HubSpotClient implements CrmRemoteClient {
+class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
   readonly #client: Client;
   readonly #credentials: Credentials;
 
   public constructor(credentials: Credentials) {
+    super();
     const { accessToken } = credentials;
     this.#client = new Client({
       accessToken,
@@ -100,27 +102,30 @@ class HubSpotClient implements CrmRemoteClient {
     this.#credentials = credentials;
   }
 
-  public async refreshAccessToken(): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    tokenType: string;
-  }> {
-    const token = await this.#client.oauth.tokensApi.createToken(
-      'refresh_token',
-      undefined,
-      undefined,
-      this.#credentials.clientId,
-      this.#credentials.clientSecret,
-      this.#credentials.refreshToken
-    );
+  private async maybeRefreshAccessToken(): Promise<void> {
+    if (!this.#credentials.expiresAt || Date.parse(this.#credentials.expiresAt) < Date.now() + 300000) {
+      const token = await this.#client.oauth.tokensApi.createToken(
+        'refresh_token',
+        undefined,
+        undefined,
+        this.#credentials.clientId,
+        this.#credentials.clientSecret,
+        this.#credentials.refreshToken
+      );
 
-    this.#client.setAccessToken(token.accessToken);
+      const newAccessToken = token.accessToken;
+      const newExpiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
 
-    return token;
+      this.#credentials.accessToken = newAccessToken;
+      this.#credentials.expiresAt = newExpiresAt;
+
+      this.#client.setAccessToken(newAccessToken);
+      this.emit('token_refreshed', [newAccessToken, newExpiresAt]);
+    }
   }
 
   public async listAccounts(limit?: number): Promise<RemoteAccount[]> {
+    await this.maybeRefreshAccessToken();
     const companies = await this.#client.crm.companies.getAll(
       limit,
       /* after */ undefined,
@@ -130,6 +135,7 @@ class HubSpotClient implements CrmRemoteClient {
   }
 
   public async createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount> {
+    await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.create({
       properties: toHubspotAccountCreateParams(params),
     });
@@ -139,6 +145,7 @@ class HubSpotClient implements CrmRemoteClient {
   }
 
   public async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
+    await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.update(params.remoteId, {
       properties: toHubspotAccountUpdateParams(params),
     });
@@ -148,6 +155,7 @@ class HubSpotClient implements CrmRemoteClient {
   }
 
   public async listOpportunities(limit?: number): Promise<RemoteOpportunity[]> {
+    await this.maybeRefreshAccessToken();
     const deals = await this.#client.crm.deals.getAll(
       limit,
       /* after */ undefined,
@@ -159,6 +167,7 @@ class HubSpotClient implements CrmRemoteClient {
   }
 
   public async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
+    await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.create({
       properties: toHubspotOpportunityCreateParams(params),
     });
@@ -173,6 +182,7 @@ class HubSpotClient implements CrmRemoteClient {
   }
 
   public async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
+    await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.update(params.remoteId, {
       properties: toHubspotOpportunityUpdateParams(params),
     });
@@ -187,6 +197,7 @@ class HubSpotClient implements CrmRemoteClient {
   }
 
   public async listContacts(limit?: number): Promise<RemoteContact[]> {
+    await this.maybeRefreshAccessToken();
     const contacts = await this.#client.crm.contacts.getAll(
       limit,
       /* after */ undefined,
@@ -198,6 +209,7 @@ class HubSpotClient implements CrmRemoteClient {
   }
 
   public async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+    await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.create({
       properties: toHubspotContactCreateParams(params),
     });
@@ -215,6 +227,7 @@ class HubSpotClient implements CrmRemoteClient {
   }
 
   public async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+    await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.update(params.remoteId, {
       properties: toHubspotContactUpdateParams(params),
     });
@@ -249,6 +262,7 @@ export function newClient(connection: CRMConnection, integration: Integration): 
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
+    expiresAt: connection.credentials.expiresAt,
     clientId: integration.config.oauth.credentials.oauthClientId,
     clientSecret: integration.config.oauth.credentials.oauthClientSecret,
   });

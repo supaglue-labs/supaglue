@@ -132,7 +132,6 @@ export default function init(app: Router): void {
           refreshToken: accessToken.token['refresh_token'] as string,
           instanceUrl: accessToken.token['instance_url'] as string,
           expiresAt: accessToken.token['expires_at'] as string,
-          raw: accessToken.token,
         },
       };
 

@@ -9,7 +9,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types/opportunity';
-import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
+import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
   fromSalesforceContactToRemoteContact,
@@ -123,7 +123,7 @@ const propertiesToFetch = {
   ],
 };
 
-class SalesforceClient implements CrmRemoteClient {
+class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
   readonly #client: jsforce.Connection;
 
   public constructor({
@@ -137,6 +137,7 @@ class SalesforceClient implements CrmRemoteClient {
     clientId: string;
     clientSecret: string;
   }) {
+    super();
     this.#client = new jsforce.Connection({
       oauth2: new jsforce.OAuth2({
         loginUrl: 'https://login.salesforce.com',
@@ -147,15 +148,6 @@ class SalesforceClient implements CrmRemoteClient {
       refreshToken,
       maxRequest: 10,
     });
-  }
-
-  public async refreshAccessToken(): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    tokenType: string;
-  }> {
-    throw new Error('Not implemented');
   }
 
   public async listAccounts(): Promise<RemoteAccount[]> {

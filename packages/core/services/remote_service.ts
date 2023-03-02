@@ -16,6 +16,19 @@ export class RemoteService {
     const connection = await this.#connectionService.getById(connectionId);
     const integration = await this.#integrationService.getById(connection.integrationId);
 
-    return getCrmRemoteClient(connection, integration);
+    const client = getCrmRemoteClient(connection, integration);
+
+    // Persist the refreshed token
+    client.on('token_refreshed', (accessToken: string, expiresAt: string) => {
+      this.#connectionService
+        .updateConnectionWithNewAccessToken(connectionId, accessToken, expiresAt)
+        .catch((err: unknown) => {
+          // TODO: Use logger
+          // eslint-disable-next-line no-console
+          console.error(`Failed to persist refreshed token for connection ${connectionId}`, err);
+        });
+    });
+
+    return client;
   }
 }

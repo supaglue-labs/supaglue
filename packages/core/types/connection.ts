@@ -8,7 +8,6 @@ export type ConnectionCredentials = {
   refreshToken: string;
   expiresAt: string;
   instanceUrl: string;
-  raw: Record<string, unknown>;
 };
 
 type BaseConnectionCreateParams = {
