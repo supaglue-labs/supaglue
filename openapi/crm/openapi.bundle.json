@@ -488,7 +488,8 @@
               "example": {
                 "first_name": "George",
                 "last_activity_at": "2022-02-10T00:00:00Z",
-                "last_name": "Xing"
+                "last_name": "Xing",
+                "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
               }
             }
           }
@@ -574,7 +575,8 @@
                     "first_name": "George",
                     "id": "5733a8b6-472d-45fa-8f10-e0b00727cced",
                     "last_activity_at": "2023-02-27T00:00:00Z",
-                    "last_name": "Xing"
+                    "last_name": "Xing",
+                    "account_id": "0ce05511-adbc-4144-a049-6631c7ea3b04"
                   }
                 }
               }
@@ -790,7 +792,9 @@
                 "first_name": "George",
                 "last_name": "Xing",
                 "lead_source": "API Blogger",
-                "title": "Co-Founder"
+                "title": "Co-Founder",
+                "converted_contact_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b",
+                "converted_account_id": "ab849b1c-c36b-4d8b-9e45-679b48fc4de7"
               }
             }
           }
@@ -878,7 +882,9 @@
                     "id": "c0dec24d-eb62-4a5a-bd62-5a52d888213b",
                     "last_name": "Xing",
                     "lead_source": "API Blogger",
-                    "title": "Co-Founder"
+                    "title": "Co-Founder",
+                    "converted_contact_id": "b6cb219c-f476-4460-8d01-92c939fa8a80",
+                    "converted_account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
                   }
                 }
               }
@@ -1046,7 +1052,8 @@
                 "close_date": "2023-02-27T00:00:00Z",
                 "description": "Wants to use open source unified API for third-party integrations",
                 "name": "Needs Integrations",
-                "stage": "Closed Won"
+                "stage": "Closed Won",
+                "account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
               }
             }
           }
@@ -1501,6 +1508,11 @@
             "type": "string",
             "nullable": true,
             "example": "Xing"
+          },
+          "account_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
           }
         }
       },
@@ -1612,6 +1624,16 @@
           "title": {
             "type": "string",
             "example": "Co-Founder"
+          },
+          "converted_account_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "ab849b1c-c36b-4d8b-9e45-679b48fc4de7"
+          },
+          "converted_contact_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
           }
         }
       },
@@ -1712,6 +1734,11 @@
           "stage": {
             "type": "string",
             "example": "Closed Won"
+          },
+          "account_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
           }
         }
       },

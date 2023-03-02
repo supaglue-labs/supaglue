@@ -249,6 +249,8 @@ export interface components {
       first_name?: string | null;
       /** @example Xing */
       last_name?: string | null;
+      /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
+      account_id?: string | null;
     };
     lead: {
       addresses?: components["schemas"]["addresses"];
@@ -301,6 +303,10 @@ export interface components {
       lead_source?: string | null;
       /** @example Co-Founder */
       title?: string;
+      /** @example ab849b1c-c36b-4d8b-9e45-679b48fc4de7 */
+      converted_account_id?: string | null;
+      /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
+      converted_contact_id?: string | null;
     };
     opportunity: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
@@ -352,6 +358,8 @@ export interface components {
       name?: string | null;
       /** @example Closed Won */
       stage?: string;
+      /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
+      account_id?: string | null;
     };
     /**
      * @example [
@@ -620,7 +628,8 @@ export interface operations {
          * @example {
          *   "first_name": "George",
          *   "last_activity_at": "2022-02-10T00:00:00Z",
-         *   "last_name": "Xing"
+         *   "last_name": "Xing",
+         *   "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
          * }
          */
         "application/json": {
@@ -702,7 +711,9 @@ export interface operations {
          *   "first_name": "George",
          *   "last_name": "Xing",
          *   "lead_source": "API Blogger",
-         *   "title": "Co-Founder"
+         *   "title": "Co-Founder",
+         *   "converted_contact_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b",
+         *   "converted_account_id": "ab849b1c-c36b-4d8b-9e45-679b48fc4de7"
          * }
          */
         "application/json": {
@@ -784,7 +795,8 @@ export interface operations {
          *   "close_date": "2023-02-27T00:00:00Z",
          *   "description": "Wants to use open source unified API for third-party integrations",
          *   "name": "Needs Integrations",
-         *   "stage": "Closed Won"
+         *   "stage": "Closed Won",
+         *   "account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
          * }
          */
         "application/json": {
