@@ -2,7 +2,6 @@ import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
 import { getExpandedAssociations } from '../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { refreshAccessTokenIfNecessary } from '../lib/refresh_token';
 import { fromOpportunityModel } from '../mappers';
 import type {
   GetParams,
@@ -102,7 +101,6 @@ export class OpportunityService {
       remoteCreateParams.accountId = await this.getAssociatedAccountRemoteId(createParams.accountId);
     }
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteOpportunity = await remoteClient.createOpportunity(remoteCreateParams);
     const opportunityModel = await this.#prisma.crmOpportunity.create({
       data: {
@@ -138,7 +136,6 @@ export class OpportunityService {
     }
 
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteOpportunity = await remoteClient.updateOpportunity({
       ...remoteUpdateParams,
       remoteId: foundOpportunityModel.remoteId,

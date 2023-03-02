@@ -32,19 +32,13 @@ export class ConnectionWriterService {
         ...params,
         integrationId: integration.id,
         status,
-        credentials: {
-          ...params.credentials,
-          raw: params.credentials.raw as Record<string, any>,
-        },
+        credentials: params.credentials,
       },
       update: {
         ...params,
         integrationId: integration.id,
         status,
-        credentials: {
-          ...params.credentials,
-          raw: params.credentials.raw as Record<string, any>,
-        },
+        credentials: params.credentials,
       },
       where: {
         customerId_integrationId: {
@@ -73,10 +67,7 @@ export class ConnectionWriterService {
         ...params,
         integrationId: integration.id,
         status,
-        credentials: {
-          ...params.credentials,
-          raw: params.credentials.raw as Record<string, any>,
-        },
+        credentials: params.credentials,
       },
     });
 

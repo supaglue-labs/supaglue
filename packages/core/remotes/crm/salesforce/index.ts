@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import * as jsforce from 'jsforce';
 import { AccountCreateParams, RemoteAccount, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
@@ -123,7 +124,7 @@ const propertiesToFetch = {
   ],
 };
 
-class SalesforceClient implements CrmRemoteClient {
+class SalesforceClient extends EventEmitter implements CrmRemoteClient {
   readonly #client: jsforce.Connection;
 
   public constructor({
@@ -137,6 +138,7 @@ class SalesforceClient implements CrmRemoteClient {
     clientId: string;
     clientSecret: string;
   }) {
+    super();
     this.#client = new jsforce.Connection({
       oauth2: new jsforce.OAuth2({
         loginUrl: 'https://login.salesforce.com',
@@ -147,15 +149,6 @@ class SalesforceClient implements CrmRemoteClient {
       refreshToken,
       maxRequest: 10,
     });
-  }
-
-  public async refreshAccessToken(): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    tokenType: string;
-  }> {
-    throw new Error('Not implemented');
   }
 
   public async listAccounts(): Promise<RemoteAccount[]> {

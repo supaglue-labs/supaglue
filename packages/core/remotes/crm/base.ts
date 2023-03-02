@@ -10,13 +10,12 @@ import {
 } from '../../types/opportunity';
 import { RemoteClient } from '../base';
 
+interface CrmRemoteClientEvents {
+  token_refreshed: (accessToken: string, expiresAt: string) => void;
+}
+
 export interface CrmRemoteClient extends RemoteClient {
-  refreshAccessToken(): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    tokenType: string;
-  }>;
+  on<U extends keyof CrmRemoteClientEvents>(event: U, listener: CrmRemoteClientEvents[U]): this;
 
   listAccounts(): Promise<RemoteAccount[]>;
   createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount>;

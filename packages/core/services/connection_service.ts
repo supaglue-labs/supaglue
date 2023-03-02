@@ -1,7 +1,7 @@
-import type { PrismaClient } from '@supaglue/db';
+import type { Prisma, PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
 import { fromConnectionModel } from '../mappers';
-import type { Connection, CRMConnection, CRMConnectionUpdateParams } from '../types';
+import type { Connection, ConnectionCredentials, CRMConnection, CRMConnectionUpdateParams } from '../types';
 
 export class ConnectionService {
   #prisma: PrismaClient;
@@ -48,10 +48,34 @@ export class ConnectionService {
       },
       data: {
         ...params,
+        credentials: params.credentials as Prisma.InputJsonObject,
+      },
+    });
+
+    return fromConnectionModel(updatedConnection) as CRMConnection;
+  }
+
+  public async updateConnectionWithNewAccessToken(
+    connectionId: string,
+    accessToken: string,
+    expiresAt: string
+  ): Promise<CRMConnection> {
+    // TODO: Not atomic.
+
+    const connection = await this.#prisma.connection.findUniqueOrThrow({
+      where: { id: connectionId },
+    });
+
+    const updatedConnection = await this.#prisma.connection.update({
+      where: {
+        id: connectionId,
+      },
+      data: {
         credentials: {
-          ...params.credentials,
-          raw: params.credentials.raw as Record<string, any>,
-        },
+          ...(connection.credentials as ConnectionCredentials),
+          accessToken,
+          expiresAt,
+        } as Prisma.InputJsonObject,
       },
     });
 
