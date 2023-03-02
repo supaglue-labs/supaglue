@@ -1,1 +1,1 @@
-export * from './crm';
+export * as crm from './crm';

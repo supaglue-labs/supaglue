@@ -1,5 +1,5 @@
+import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
-import { createHubSpotClient, createPipedriveClient, createSalesforceClient } from '../remotes/index';
 import type { ConnectionService } from './connection_service';
 import type { IntegrationService } from './integration_service';
 
@@ -16,13 +16,6 @@ export class RemoteService {
     const connection = await this.#connectionService.getById(connectionId);
     const integration = await this.#integrationService.getById(connection.integrationId);
 
-    switch (connection.providerName) {
-      case 'salesforce':
-        return createSalesforceClient(connection, integration);
-      case 'hubspot':
-        return createHubSpotClient(connection, integration);
-      case 'pipedrive':
-        return createPipedriveClient(connection, integration);
-    }
+    return getCrmRemoteClient(connection, integration);
   }
 }

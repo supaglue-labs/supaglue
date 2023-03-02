@@ -76,17 +76,34 @@ export class ContactService {
     };
   }
 
+  private async getAssociatedAccountRemoteId(accountId: string): Promise<string> {
+    const crmAccount = await this.#prisma.crmAccount.findUnique({
+      where: {
+        id: accountId,
+      },
+    });
+    if (!crmAccount) {
+      throw new NotFoundError(`Account ${accountId} not found`);
+    }
+    return crmAccount.remoteId;
+  }
+
   public async create(customerId: string, connectionId: string, createParams: ContactCreateParams): Promise<Contact> {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
+    const remoteCreateParams = { ...createParams };
+    if (createParams.accountId) {
+      remoteCreateParams.accountId = await this.getAssociatedAccountRemoteId(createParams.accountId);
+    }
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
     await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
-    const remoteContact = await remoteClient.createContact(createParams);
+    const remoteContact = await remoteClient.createContact(remoteCreateParams);
     const contactModel = await this.#prisma.crmContact.create({
       data: {
         customerId,
         connectionId,
         ...remoteContact,
+        accountId: createParams.accountId,
       },
     });
     return fromContactModel(contactModel);
@@ -105,15 +122,20 @@ export class ContactService {
       throw new Error('Contact customerId does not match');
     }
 
+    const remoteUpdateParams = { ...updateParams };
+    if (updateParams.accountId) {
+      remoteUpdateParams.accountId = await this.getAssociatedAccountRemoteId(updateParams.accountId);
+    }
+
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
     await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteContact = await remoteClient.updateContact({
-      ...updateParams,
+      ...remoteUpdateParams,
       remoteId: foundContactModel.remoteId,
     });
 
     const contactModel = await this.#prisma.crmContact.update({
-      data: remoteContact,
+      data: { ...remoteContact, accountId: updateParams.accountId },
       where: {
         id: updateParams.id,
       },

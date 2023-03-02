@@ -78,6 +78,18 @@ export class OpportunityService {
     };
   }
 
+  private async getAssociatedAccountRemoteId(accountId: string): Promise<string> {
+    const crmAccount = await this.#prisma.crmAccount.findUnique({
+      where: {
+        id: accountId,
+      },
+    });
+    if (!crmAccount) {
+      throw new NotFoundError(`Account ${accountId} not found`);
+    }
+    return crmAccount.remoteId;
+  }
+
   public async create(
     customerId: string,
     connectionId: string,
@@ -85,14 +97,19 @@ export class OpportunityService {
   ): Promise<Opportunity> {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
+    const remoteCreateParams = { ...createParams };
+    if (createParams.accountId) {
+      remoteCreateParams.accountId = await this.getAssociatedAccountRemoteId(createParams.accountId);
+    }
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
     await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
-    const remoteOpportunity = await remoteClient.createOpportunity(createParams);
+    const remoteOpportunity = await remoteClient.createOpportunity(remoteCreateParams);
     const opportunityModel = await this.#prisma.crmOpportunity.create({
       data: {
         customerId,
         connectionId,
         ...remoteOpportunity,
+        accountId: createParams.accountId,
       },
     });
     return fromOpportunityModel(opportunityModel);
@@ -115,15 +132,20 @@ export class OpportunityService {
       throw new Error('Opportunity customerId does not match');
     }
 
+    const remoteUpdateParams = { ...updateParams };
+    if (updateParams.accountId) {
+      remoteUpdateParams.accountId = await this.getAssociatedAccountRemoteId(updateParams.accountId);
+    }
+
     const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
     await refreshAccessTokenIfNecessary(connectionId, remoteClient, this.#connectionService);
     const remoteOpportunity = await remoteClient.updateOpportunity({
-      ...updateParams,
+      ...remoteUpdateParams,
       remoteId: foundOpportunityModel.remoteId,
     });
 
     const opportunityModel = await this.#prisma.crmOpportunity.update({
-      data: remoteOpportunity,
+      data: { ...remoteOpportunity, accountId: updateParams.accountId },
       where: {
         id: updateParams.id,
       },
