@@ -79,6 +79,7 @@ post:
           description: Wants to use open source unified API for third-party integrations
           name: Needs Integrations
           stage: Closed Won
+          account_id: 109c88c0-7bf4-4cd8-afbc-b51f9432ca0b
   responses:
     '201':
       description: Opportunity created

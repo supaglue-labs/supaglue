@@ -204,6 +204,7 @@ export const toSalesforceContactCreateParams = (params: RemoteContactCreateParam
   return {
     FirstName: params.firstName,
     LastName: params.lastName,
+    AccountId: params.accountId,
   };
 };
 
@@ -305,6 +306,7 @@ export const toSalesforceOpportunityCreateParams = (params: RemoteOpportunityCre
     Description: params.description,
     Name: params.name,
     StageName: params.stage,
+    AccountId: params.accountId,
   };
 };
 

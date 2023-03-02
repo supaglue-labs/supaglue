@@ -36,6 +36,7 @@ patch:
               id: 5733a8b6-472d-45fa-8f10-e0b00727cced
               last_activity_at: '2023-02-27T00:00:00Z'
               last_name: Xing
+              account_id: 0ce05511-adbc-4144-a049-6631c7ea3b04
   responses:
     200:
       description: Contact updated

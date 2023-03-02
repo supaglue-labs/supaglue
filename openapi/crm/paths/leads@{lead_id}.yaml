@@ -38,6 +38,8 @@ patch:
               last_name: Xing
               lead_source: API Blogger
               title: Co-Founder
+              converted_contact_id: b6cb219c-f476-4460-8d01-92c939fa8a80
+              converted_account_id: 109c88c0-7bf4-4cd8-afbc-b51f9432ca0b
   responses:
     200:
       description: Lead updated
