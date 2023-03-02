@@ -36,6 +36,7 @@ export type RemoteContact = BaseContact & {
 type BaseContactCreateParams = {
   firstName?: string | null;
   lastName?: string | null;
+  accountId?: string | null;
 
   // TODO: Need extra permissions to create/update this derived field in SF
   // lastActivityAt?: Date | null;
