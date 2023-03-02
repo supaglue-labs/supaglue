@@ -68,7 +68,9 @@ services:
         condition: service_started
     volumes:
       - ./packages/db/prisma:/app/packages/db/prisma
+      - .env:/app/.env
     working_dir: /app
+
 volumes:
   pgdata:
   temporalitedata:
