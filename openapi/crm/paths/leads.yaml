@@ -108,8 +108,6 @@ post:
           last_name: Xing
           lead_source: API Blogger
           title: Co-Founder
-          converted_contact_id: 109c88c0-7bf4-4cd8-afbc-b51f9432ca0b
-          converted_account_id: ab849b1c-c36b-4d8b-9e45-679b48fc4de7
   responses:
     '201':
       description: Lead created
