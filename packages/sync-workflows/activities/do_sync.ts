@@ -25,7 +25,6 @@ export function createDoSync(
   leadService: LeadService
 ) {
   return async function doSync({ connectionId, commonModel, sessionId }: DoSyncArgs): Promise<void> {
-    // TODO: Use `remoteService` instead to get the client
     const connection = await connectionService.getById(connectionId);
     const integration = await integrationService.getById(connection.integrationId);
 
@@ -46,7 +45,6 @@ export function createDoSync(
         await accountService.upsertRemoteAccounts(connection.id, accountSyncUpsertParams);
         break;
       }
-
       case 'contact': {
         const remoteContacts = await client.listContacts();
         const contactSyncUpsertParams = remoteContacts.map((remoteContact) => ({
@@ -57,7 +55,6 @@ export function createDoSync(
         await contactService.upsertRemoteContacts(connection.id, contactSyncUpsertParams);
         break;
       }
-
       case 'opportunity': {
         const remoteOpportunities = await client.listOpportunities();
         const opportunitySyncUpsertParams = remoteOpportunities.map((remoteOpportunity) => ({
