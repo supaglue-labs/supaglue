@@ -33,20 +33,20 @@ model Integration {
 }
 
 model Connection {
-  id            String        @id @default(uuid())
-  integration   Integration   @relation(fields: [integrationId], references: [id], onDelete: Cascade)
-  integrationId String        @map("integration_id")
+  id              String        @id @default(uuid())
+  integration     Integration   @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  integrationId   String        @map("integration_id")
   // CRM, HRIS, etc.
-  category      String
+  category        String
   // Salesforce, Hubspot, etc.
-  providerName  String        @map("provider_name")
-  status        String // available | added | authorized | callable
-  credentials   Json // {type, access_token, refresh_token, expires_at, raw}
-  customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId    String        @map("customer_id")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
-  SyncHistory   SyncHistory[]
+  providerName    String        @map("provider_name")
+  status          String // available | added | authorized | callable
+  credentials     Json // {type, access_token, refresh_token, expires_at, raw}
+  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId      String        @map("customer_id")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  syncHistoryList SyncHistory[]
 
   @@unique([customerId, integrationId])
   @@map("connections")
@@ -171,11 +171,11 @@ model CrmOpportunity {
 model SyncHistory {
   id             String     @id @default(uuid())
   // contact, lead, account, opportunity, etc.
-  object         String
+  model          String
   // success | error
   result         String
   errorMessage   String?    @map("error_message")
-  startTimestamp DateTime   @default(now()) @map("start_timestamp")
+  startTimestamp DateTime   @map("start_timestamp")
   endTimestamp   DateTime?  @map("end_timestamp")
   // Associations
   connectionId   String     @map("connection_id")

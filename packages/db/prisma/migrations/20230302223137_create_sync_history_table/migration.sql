@@ -1,10 +1,10 @@
 -- CreateTable
 CREATE TABLE "sync_history" (
     "id" TEXT NOT NULL,
-    "object" TEXT NOT NULL,
+    "model" TEXT NOT NULL,
     "result" TEXT NOT NULL,
     "error_message" TEXT,
-    "start_timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "start_timestamp" TIMESTAMP(3) NOT NULL,
     "end_timestamp" TIMESTAMP(3),
     "connection_id" TEXT NOT NULL,
 
