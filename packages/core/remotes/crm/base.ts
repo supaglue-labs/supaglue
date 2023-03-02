@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../types/account';
 import { CRMConnection } from '../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../types/contact';
@@ -32,6 +33,12 @@ export interface CrmRemoteClient extends RemoteClient {
   listOpportunities(): Promise<RemoteOpportunity[]>;
   createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity>;
   updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity>;
+}
+
+export abstract class CrmRemoteClientEventEmitter extends EventEmitter {
+  public emit<U extends keyof CrmRemoteClientEvents>(event: U, args: Parameters<CrmRemoteClientEvents[U]>): boolean {
+    return super.emit(event, args);
+  }
 }
 
 export type ConnectorAuthConfig = {

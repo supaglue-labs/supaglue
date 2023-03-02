@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import {
   AccountCreateParams,
   CRMConnection,
@@ -15,9 +14,9 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types';
-import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
+import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 
-class PipedriveClient extends EventEmitter implements CrmRemoteClient {
+class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
   public constructor() {
     super();
   }

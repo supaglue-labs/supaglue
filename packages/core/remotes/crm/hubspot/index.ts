@@ -1,5 +1,4 @@
 import { Client } from '@hubspot/api-client';
-import { EventEmitter } from 'events';
 import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
@@ -10,7 +9,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types/opportunity';
-import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
+import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
   fromHubSpotContactToRemoteContact,
@@ -85,7 +84,7 @@ type Credentials = {
   clientSecret: string;
 };
 
-class HubSpotClient extends EventEmitter implements CrmRemoteClient {
+class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
   readonly #client: Client;
   readonly #credentials: Credentials;
 

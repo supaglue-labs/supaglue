@@ -1,4 +1,3 @@
-import { EventEmitter } from 'events';
 import * as jsforce from 'jsforce';
 import { AccountCreateParams, RemoteAccount, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
@@ -10,7 +9,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types/opportunity';
-import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
+import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
   fromSalesforceContactToRemoteContact,
@@ -124,7 +123,7 @@ const propertiesToFetch = {
   ],
 };
 
-class SalesforceClient extends EventEmitter implements CrmRemoteClient {
+class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
   readonly #client: jsforce.Connection;
 
   public constructor({
