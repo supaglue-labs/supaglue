@@ -159,7 +159,7 @@ model CrmOpportunity {
   createdAt        DateTime    @default(now()) @map("created_at")
   updatedAt        DateTime    @updatedAt @map("updated_at")
   // Associations
-  remoteAccountId  String?     @map("_remote_aaccount_id")
+  remoteAccountId  String?     @map("_remote_account_id")
   accountId        String?     @map("account_id")
   account          CrmAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
 
