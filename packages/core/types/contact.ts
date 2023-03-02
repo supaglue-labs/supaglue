@@ -1,6 +1,6 @@
-import { CrmAccount, CrmContact } from '@prisma/client';
-import { Account } from './account';
-import { Address, EmailAddress, PhoneNumber } from './base';
+import type { CrmAccount, CrmContact } from '@supaglue/db';
+import type { Account } from './account';
+import type { Address, EmailAddress, PhoneNumber } from './base';
 
 export type CrmContactExpanded = CrmContact & {
   account?: CrmAccount | null;

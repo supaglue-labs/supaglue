@@ -1,4 +1,4 @@
-import { CRMProviderName } from './crm';
+import type { CRMProviderName } from './crm';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 

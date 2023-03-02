@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres
+    image: postgres:15
     ports:
       - '5432:5432'
     volumes:
@@ -60,17 +60,15 @@ services:
       - temporalitedata:/data
 
   init:
-    image: node:18
+    image: supaglue/init
     environment:
       - SUPAGLUE_DATABASE_URL=${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}
     depends_on:
       postgres:
         condition: service_started
     volumes:
-      - .:/app
+      - ./packages/db/prisma:/app/packages/db/prisma
     working_dir: /app
-    command: /bin/sh -c "yarn workspace @supaglue/core dlx prisma migrate dev && yarn workspace @supaglue/core dlx -p prisma -p tsx prisma db seed"
-
 volumes:
   pgdata:
   temporalitedata:

@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import * as dotenv from 'dotenv';
-import { SUPPORTED_CRM_CONNECTIONS } from '../types/crm';
+
+const SUPPORTED_CRM_CONNECTIONS = ['salesforce', 'hubspot', 'pipedrive'];
+
 dotenv.config({
   path: '/app/.env',
 });

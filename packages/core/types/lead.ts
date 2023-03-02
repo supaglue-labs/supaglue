@@ -1,5 +1,5 @@
-import { CrmAccount, CrmContact, CrmLead } from '@prisma/client';
-import { Account, Address, Contact, EmailAddress, PhoneNumber } from '.';
+import type { CrmAccount, CrmContact, CrmLead } from '@supaglue/db';
+import type { Account, Address, Contact, EmailAddress, PhoneNumber } from '.';
 
 export type CrmLeadExpanded = CrmLead & {
   convertedAccount?: CrmAccount | null;

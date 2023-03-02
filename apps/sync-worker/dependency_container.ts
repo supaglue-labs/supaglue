@@ -1,5 +1,5 @@
-import { getCoreDependencyContainer, PrismaClient } from '@supaglue/core';
-import {
+import { getCoreDependencyContainer } from '@supaglue/core';
+import type {
   AccountService,
   ConnectionService,
   ContactService,
@@ -7,6 +7,7 @@ import {
   LeadService,
   OpportunityService,
 } from '@supaglue/core/services';
+import type { PrismaClient } from '@supaglue/db';
 
 type DependencyContainer = {
   prisma: PrismaClient;

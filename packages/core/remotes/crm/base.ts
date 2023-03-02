@@ -1,5 +1,7 @@
 import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../types/account';
+import { CRMConnection } from '../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../types/contact';
+import { Integration } from '../../types/integration';
 import { RemoteLead, RemoteLeadCreateParams, RemoteLeadUpdateParams } from '../../types/lead';
 import {
   RemoteOpportunity,
@@ -32,3 +34,15 @@ export interface CrmRemoteClient extends RemoteClient {
   createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity>;
   updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity>;
 }
+
+export type ConnectorAuthConfig = {
+  tokenHost: string;
+  tokenPath: string;
+  authorizeHost: string;
+  authorizePath: string;
+};
+
+export type CrmConnectorConfig = {
+  authConfig: ConnectorAuthConfig;
+  newClient: (connection: CRMConnection, integration: Integration) => CrmRemoteClient;
+};

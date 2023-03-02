@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import prisma, { PrismaClient } from '@supaglue/db';
 import { ConnectionService, ContactService, IntegrationService, RemoteService } from './services';
 import { AccountService } from './services/account_service';
 import { LeadService } from './services/lead_service';
@@ -19,7 +19,6 @@ export type CoreDependencyContainer = {
 let coreDependencyContainer: CoreDependencyContainer | undefined = undefined;
 
 function createCoreDependencyContainer(): CoreDependencyContainer {
-  const prisma = new PrismaClient();
   const connectionService = new ConnectionService(prisma);
   const integrationService = new IntegrationService(prisma);
   const remoteService = new RemoteService(connectionService, integrationService);

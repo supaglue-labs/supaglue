@@ -1,13 +1,13 @@
-import { PrismaClient } from '@supaglue/core';
 import { fromConnectionModel } from '@supaglue/core/mappers/connection';
 import { IntegrationService } from '@supaglue/core/services';
-import {
+import type {
   Connection,
   ConnectionCreateParams,
   ConnectionStatus,
   ConnectionUpsertParams,
 } from '@supaglue/core/types/connection';
-import { SyncService } from './sync_service';
+import type { PrismaClient } from '@supaglue/db';
+import type { SyncService } from './sync_service';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 

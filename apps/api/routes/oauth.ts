@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { getConnectorAuthConfig } from '@supaglue/core/remotes/crm';
 import { ConnectionCreateParams, ConnectionUpsertParams } from '@supaglue/core/types/connection';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/core/types/crm';
 import { Request, Response, Router } from 'express';
@@ -6,26 +7,6 @@ import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
 const { integrationService, connectionWriterService } = getDependencyContainer();
 
-const SimpleOAuth2AuthFields: Record<string, any> = {
-  salesforce: {
-    tokenHost: 'https://login.salesforce.com',
-    tokenPath: '/services/oauth2/token',
-    authorizeHost: 'https://login.salesforce.com',
-    authorizePath: '/services/oauth2/authorize',
-  },
-  hubspot: {
-    tokenHost: 'https://api.hubapi.com',
-    tokenPath: '/oauth/v1/token',
-    authorizeHost: 'https://app.hubspot.com',
-    authorizePath: '/oauth/authorize',
-  },
-  pipedrive: {
-    tokenHost: 'https://oauth.pipedrive.com',
-    tokenPath: '/oauth/token',
-    authorizeHost: 'https://oauth.pipedrive.com',
-    authorizePath: '/oauth/authorize',
-  },
-};
 const REDIRECT_URI = 'http://localhost:8080/oauth/callback'; // TODO: data-drive
 const RETURN_URL = 'http://localhost:3000'; // TODO: data-drive
 
@@ -55,7 +36,7 @@ export default function init(app: Router): void {
           id: oauthClientId,
           secret: oauthClientSecret,
         },
-        auth: SimpleOAuth2AuthFields[providerName],
+        auth: getConnectorAuthConfig(providerName),
         options: {
           authorizationMethod: 'body' as AuthorizationMethod,
         },
@@ -125,7 +106,7 @@ export default function init(app: Router): void {
           id: oauthClientId,
           secret: oauthClientSecret,
         },
-        auth: SimpleOAuth2AuthFields[providerName],
+        auth: getConnectorAuthConfig(providerName),
         options: {
           authorizationMethod: 'body' as AuthorizationMethod,
         },

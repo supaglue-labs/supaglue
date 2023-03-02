@@ -9,7 +9,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types/opportunity';
-import { CrmRemoteClient } from '../base';
+import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
   fromSalesforceContactToRemoteContact,
@@ -123,7 +123,7 @@ const propertiesToFetch = {
   ],
 };
 
-export class SalesforceClient implements CrmRemoteClient {
+class SalesforceClient implements CrmRemoteClient {
   readonly #client: jsforce.Connection;
 
   public constructor({
@@ -285,7 +285,7 @@ export class SalesforceClient implements CrmRemoteClient {
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function createSalesforceClient(connection: CRMConnection, integration: Integration): SalesforceClient {
+export function newClient(connection: CRMConnection, integration: Integration): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     refreshToken: connection.credentials.refreshToken,
@@ -293,3 +293,10 @@ export function createSalesforceClient(connection: CRMConnection, integration: I
     clientSecret: integration.config.oauth.credentials.oauthClientSecret,
   });
 }
+
+export const authConfig: ConnectorAuthConfig = {
+  tokenHost: 'https://login.salesforce.com',
+  tokenPath: '/services/oauth2/token',
+  authorizeHost: 'https://login.salesforce.com',
+  authorizePath: '/services/oauth2/authorize',
+};

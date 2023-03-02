@@ -1,4 +1,4 @@
-import { CrmAccount } from '@prisma/client';
+import type { CrmAccount } from '@supaglue/db';
 import { Account, Address, PhoneNumber } from '../types';
 
 export const fromAccountModel = ({

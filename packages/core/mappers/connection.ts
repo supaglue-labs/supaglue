@@ -1,4 +1,4 @@
-import { Connection as ConnectionModel } from '@prisma/client';
+import type { Connection as ConnectionModel } from '@supaglue/db';
 import { Connection, ConnectionCredentials, ConnectionStatus, CRMConnection } from '../types';
 
 export const fromConnectionModel = ({
