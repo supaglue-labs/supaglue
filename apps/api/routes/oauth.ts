@@ -108,7 +108,7 @@ export default function init(app: Router): void {
         },
         auth: getConnectorAuthConfig(providerName),
         options: {
-          authorizationMethod: AuthorizationMethod.BODY,
+          authorizationMethod: 'body' as AuthorizationMethod,
         },
       });
 
