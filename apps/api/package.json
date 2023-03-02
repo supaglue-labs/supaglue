@@ -8,6 +8,7 @@
     "@sentry/integrations": "^7.38.0",
     "@sentry/node": "^7.38.0",
     "@supaglue/core": "workspace:*",
+    "@supaglue/db": "workspace:*",
     "@supaglue/schemas": "workspace:*",
     "@supaglue/sync-workflows": "workspace:*",
     "@temporalio/activity": "^1.6.0",

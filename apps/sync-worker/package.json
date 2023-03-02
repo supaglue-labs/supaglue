@@ -4,6 +4,7 @@
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "@supaglue/core": "workspace:*",
+    "@supaglue/db": "workspace:*",
     "@supaglue/sync-workflows": "workspace:*",
     "@swc/core": "^1.3.35",
     "@temporalio/worker": "^1.6.0",

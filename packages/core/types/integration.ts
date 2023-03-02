@@ -1,5 +1,5 @@
-import { IntegrationCategory } from './common';
-import { CRMProviderName } from './crm';
+import type { IntegrationCategory } from './common';
+import type { CRMProviderName } from './crm';
 
 export type BaseIntegration = {
   id: string;

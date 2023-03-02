@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
 import { fromIntegrationModel } from '../mappers';
-import { Integration } from '../types';
+import type { Integration } from '../types';
 
 export class IntegrationService {
   #prisma: PrismaClient;

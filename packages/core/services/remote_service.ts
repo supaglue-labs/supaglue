@@ -1,7 +1,7 @@
 import { getCrmRemoteClient } from '../remotes/crm';
-import { CrmRemoteClient } from '../remotes/crm/base';
-import { ConnectionService } from './connection_service';
-import { IntegrationService } from './integration_service';
+import type { CrmRemoteClient } from '../remotes/crm/base';
+import type { ConnectionService } from './connection_service';
+import type { IntegrationService } from './integration_service';
 
 export class RemoteService {
   #connectionService: ConnectionService;

@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
 import { fromConnectionModel } from '../mappers';
-import { Connection, CRMConnection, CRMConnectionUpdateParams } from '../types';
+import type { Connection, CRMConnection, CRMConnectionUpdateParams } from '../types';
 
 export class ConnectionService {
   #prisma: PrismaClient;
