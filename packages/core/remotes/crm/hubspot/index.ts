@@ -9,7 +9,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types/opportunity';
-import { CrmRemoteClient } from '../base';
+import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
   fromHubSpotContactToRemoteContact,
@@ -83,7 +83,7 @@ type Credentials = {
   clientSecret: string;
 };
 
-export class HubSpotClient implements CrmRemoteClient {
+class HubSpotClient implements CrmRemoteClient {
   readonly #client: Client;
   readonly #credentials: Credentials;
 
@@ -215,7 +215,7 @@ export class HubSpotClient implements CrmRemoteClient {
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function createHubSpotClient(connection: CRMConnection, integration: Integration): HubSpotClient {
+export function newClient(connection: CRMConnection, integration: Integration): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
@@ -223,3 +223,10 @@ export function createHubSpotClient(connection: CRMConnection, integration: Inte
     clientSecret: integration.config.oauth.credentials.oauthClientSecret,
   });
 }
+
+export const authConfig: ConnectorAuthConfig = {
+  tokenHost: 'https://api.hubapi.com',
+  tokenPath: '/oauth/v1/token',
+  authorizeHost: 'https://app.hubspot.com',
+  authorizePath: '/oauth/authorize',
+};

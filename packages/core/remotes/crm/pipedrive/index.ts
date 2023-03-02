@@ -13,10 +13,10 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/index';
-import { CrmRemoteClient } from '../base';
+} from '../../../types';
+import { ConnectorAuthConfig, CrmRemoteClient } from '../base';
 
-export class PipedriveClient implements CrmRemoteClient {
+class PipedriveClient implements CrmRemoteClient {
   public async refreshAccessToken(): Promise<{
     accessToken: string;
     refreshToken: string;
@@ -92,6 +92,13 @@ export class PipedriveClient implements CrmRemoteClient {
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function createPipedriveClient(connection: CRMConnection, integration: Integration): PipedriveClient {
+export function newClient(connection: CRMConnection, integration: Integration): PipedriveClient {
   return new PipedriveClient();
 }
+
+export const authConfig: ConnectorAuthConfig = {
+  tokenHost: 'https://oauth.pipedrive.com',
+  tokenPath: '/oauth/token',
+  authorizeHost: 'https://oauth.pipedrive.com',
+  authorizePath: '/oauth/authorize',
+};
