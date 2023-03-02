@@ -76,6 +76,10 @@ const propertiesToFetch = {
   ],
 };
 
+// TODO: We may need to fetch this from the hubspot schema
+const CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 1;
+const OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 5;
+
 type Credentials = {
   accessToken: string;
   refreshToken: string;
@@ -158,6 +162,11 @@ class HubSpotClient implements CrmRemoteClient {
     const deal = await this.#client.crm.deals.basicApi.create({
       properties: toHubspotOpportunityCreateParams(params),
     });
+    if (params.accountId && parseInt(params.accountId)) {
+      await this.#client.crm.deals.associationsApi.create(parseInt(deal.id), 'company', parseInt(params.accountId), [
+        { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
+      ]);
+    }
     // TODO: when we support associations on creates/updates, we should fetch
     // for associations. The current returned object doesn't have associations.
     return fromHubSpotDealToRemoteOpportunity(deal);
@@ -167,6 +176,11 @@ class HubSpotClient implements CrmRemoteClient {
     const deal = await this.#client.crm.deals.basicApi.update(params.remoteId, {
       properties: toHubspotOpportunityUpdateParams(params),
     });
+    if (params.accountId && parseInt(params.accountId)) {
+      await this.#client.crm.deals.associationsApi.create(parseInt(deal.id), 'company', parseInt(params.accountId), [
+        { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
+      ]);
+    }
     // TODO: when we support associations on creates/updates, we should fetch
     // for associations. The current returned object doesn't have associations.
     return fromHubSpotDealToRemoteOpportunity(deal);
@@ -187,6 +201,14 @@ class HubSpotClient implements CrmRemoteClient {
     const contact = await this.#client.crm.contacts.basicApi.create({
       properties: toHubspotContactCreateParams(params),
     });
+    if (params.accountId && parseInt(params.accountId)) {
+      await this.#client.crm.contacts.associationsApi.create(
+        parseInt(contact.id),
+        'company',
+        parseInt(params.accountId),
+        [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
+      );
+    }
     // TODO: when we support associations on creates/updates, we should fetch
     // for associations. The current returned object doesn't have associations.
     return fromHubSpotContactToRemoteContact(contact);
@@ -196,6 +218,14 @@ class HubSpotClient implements CrmRemoteClient {
     const contact = await this.#client.crm.contacts.basicApi.update(params.remoteId, {
       properties: toHubspotContactUpdateParams(params),
     });
+    if (params.accountId && parseInt(params.accountId)) {
+      await this.#client.crm.contacts.associationsApi.create(
+        parseInt(contact.id),
+        'company',
+        parseInt(params.accountId),
+        [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
+      );
+    }
     // TODO: when we support associations on creates/updates, we should fetch
     // for associations. The current returned object doesn't have associations.
     return fromHubSpotContactToRemoteContact(contact);

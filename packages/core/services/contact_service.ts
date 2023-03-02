@@ -42,7 +42,7 @@ export class ContactService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromContactModel(model);
+    return fromContactModel(model, expandedAssociations);
   }
 
   public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Contact>> {
