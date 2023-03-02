@@ -9,6 +9,8 @@ import {
 } from '@supaglue/core/types/connection';
 import { SyncService } from './sync_service';
 
+const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
+
 export class ConnectionWriterService {
   #prisma: PrismaClient;
   #syncService: SyncService;
@@ -80,7 +82,7 @@ export class ConnectionWriterService {
     // an event to another table and have a background job pick this up to guarantee
     // that we start up syncs when connections are created.
     // TODO: Do this for non-CRM models
-    await this.#syncService.createSyncsSchedule(connection.id, integration.config.sync.period_ms);
+    await this.#syncService.createSyncsSchedule(connection.id, integration.config.sync.period_ms ?? FIFTEEN_MINUTES_MS);
 
     return fromConnectionModel(connection);
   }

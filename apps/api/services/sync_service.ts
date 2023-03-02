@@ -6,8 +6,6 @@ import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { getRunSyncsScheduleId, getRunSyncsWorkflowId, runSyncs } from '@supaglue/sync-workflows/workflows/run_syncs';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 
-const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-
 export class SyncService {
   #temporalClient: Client;
 
