@@ -6,8 +6,6 @@ import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { getRunSyncsScheduleId, getRunSyncsWorkflowId, runSyncs } from '@supaglue/sync-workflows/workflows/run_syncs';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 
-const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-
 export class SyncService {
   #temporalClient: Client;
 
@@ -40,16 +38,14 @@ export class SyncService {
   }
 
   // TODO: Create CommonModel type
-  public async createSyncsSchedule(connectionId: string): Promise<void> {
+  public async createSyncsSchedule(connectionId: string, syncPeriodMs: number): Promise<void> {
     try {
       await this.#temporalClient.schedule.create({
         scheduleId: getRunSyncsScheduleId(connectionId),
         spec: {
           intervals: [
             {
-              every: process.env.SUPAGLUE_SYNC_PERIOD_MS
-                ? parseInt(process.env.SUPAGLUE_SYNC_PERIOD_MS)
-                : FIFTEEN_MINUTES_MS,
+              every: syncPeriodMs,
               offset: 0,
             },
           ],

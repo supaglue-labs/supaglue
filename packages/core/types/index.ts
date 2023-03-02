@@ -7,4 +7,5 @@ export * from './crm';
 export * from './integration';
 export * from './lead';
 export * from './opportunity';
+export * from './sync_config';
 export * from './sync_info';
