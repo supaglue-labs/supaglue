@@ -1,5 +1,6 @@
 import { IntegrationCategory } from './common';
 import { CRMProviderName } from './crm';
+import { SyncConfig } from './sync_config';
 
 export type BaseIntegration = {
   id: string;
@@ -15,6 +16,7 @@ export type CRMIntegration = BaseIntegration & {
 export type IntegrationConfig = {
   remoteProviderAppId: string;
   oauth: OauthConfig;
+  sync: SyncConfig;
 };
 
 export type OauthConfig = {

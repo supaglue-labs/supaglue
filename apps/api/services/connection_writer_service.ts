@@ -1,5 +1,6 @@
 import { PrismaClient } from '@supaglue/core';
 import { fromConnectionModel } from '@supaglue/core/mappers/connection';
+import { IntegrationService } from '@supaglue/core/services';
 import {
   Connection,
   ConnectionCreateParams,
@@ -11,10 +12,12 @@ import { SyncService } from './sync_service';
 export class ConnectionWriterService {
   #prisma: PrismaClient;
   #syncService: SyncService;
+  #integrationService: IntegrationService;
 
-  constructor(prisma: PrismaClient, syncService: SyncService) {
+  constructor(prisma: PrismaClient, syncService: SyncService, integrationService: IntegrationService) {
     this.#prisma = prisma;
     this.#syncService = syncService;
+    this.#integrationService = integrationService;
   }
 
   public async upsert(params: ConnectionUpsertParams): Promise<Connection> {
@@ -58,14 +61,7 @@ export class ConnectionWriterService {
   }
 
   public async create(params: ConnectionCreateParams): Promise<Connection> {
-    const integration = await this.#prisma.integration.findUnique({
-      where: {
-        providerName: params.providerName,
-      },
-    });
-    if (!integration) {
-      throw new Error(`No integration found for ${params.providerName}`);
-    }
+    const integration = await this.#integrationService.getByProviderName(params.providerName);
     // TODO: Is this the correct status?
     const status: ConnectionStatus = 'added';
     const connection = await this.#prisma.connection.create({
@@ -84,7 +80,7 @@ export class ConnectionWriterService {
     // an event to another table and have a background job pick this up to guarantee
     // that we start up syncs when connections are created.
     // TODO: Do this for non-CRM models
-    await this.#syncService.createSyncsSchedule(connection.id);
+    await this.#syncService.createSyncsSchedule(connection.id, integration.config.sync.period_ms);
 
     return fromConnectionModel(connection);
   }

@@ -19,6 +19,7 @@ const {
   DEV_PIPEDRIVE_CLIENT_SECRET,
   DEV_PIPEDRIVE_SCOPES,
   DEV_PIPEDRIVE_APP_ID,
+  SUPAGLUE_SYNC_PERIOD_MS,
 } = process.env;
 
 const SALESFORCE_CUSTOMER_ID = '9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677';
@@ -71,6 +72,9 @@ async function seedCRMIntegrations() {
                 oauthClientId: OAUTH_CLIENT_IDS[idx],
                 oauthClientSecret: OAUTH_CLIENT_SECRETS[idx],
               },
+            },
+            sync: {
+              period_ms: SUPAGLUE_SYNC_PERIOD_MS,
             },
           },
         },
