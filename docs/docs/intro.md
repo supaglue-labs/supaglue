@@ -29,12 +29,7 @@ Supaglue is an open source unified API for CRMs. It handles authentication, cach
 
 ## Connectors
 
-- HubSpot
-- Salesforce
-
-Supported common objects: Accounts, Contacts, Leads, Opportunities.
-
-Looking for more connectors or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
+See the [list of connectors](/category/connectors) we currently support.
 
 ## How it works
 
