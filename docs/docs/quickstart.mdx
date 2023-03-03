@@ -27,11 +27,40 @@ docker compose up
 
 ## 2. Authenticate Supaglue example app
 
-Click the links below to simulate a customer connecting their HubSpot or Salesforce account to your app.
+Click a card below to simulate a customer connecting their HubSpot or Salesforce account to your app. (Note: you'll need to have completed step 1 for this to work.)
 
-- **Salesforce:** [http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce](http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=https://docs.supaglue.com/quickstart)
+export const IntegrationCard = ({ icon, provider, description, to }) => (
+  <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
+    <img src={icon} style={{ width: 'auto', height: '36px' }} />
+    <div className="font-semibold mt-4">{provider}</div>
+    <div className="text-xs mt-2">{description}</div>
+    <div
+      onClick={() => {
+        window.location.href = to;
+      }}
+      className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
+    >
+      Connect
+    </div>
+  </div>
+);
 
-- **HubSpot:** [http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot](http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=https://docs.supaglue.com/quickstart)
+<div className="grid grid-cols-2 gap-4">
+
+<IntegrationCard
+  icon="/img/salesforce.svg"
+  provider="Salesforce"
+  description="Sync your leads in and out of Salesforce"
+  to="http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=https://docs.supaglue.com/quickstart"
+/>
+
+<IntegrationCard
+  icon="/img/hubspot.svg"
+  provider="Hubspot"
+  description="Sync your leads in and out of Hubspot"
+  to="http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=https://docs.supaglue.com/quickstart"
+/>
+</div>
 
 This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data. Upon successful login, you will be redirected back to this page.
 
@@ -135,6 +164,11 @@ Example result:
   ...
 ]
 ```
+
+## References
+
+- Visit the [API Reference](/api/crm) to view supported objects and HTTP methods.
+- Visit the [Supaglue Postman Collection](https://www.postman.com/supaglue/workspace/supaglue-public/overview) to make HTTP requests against your instance of Supaglue.
 
 ## Use your own Salesforce or HubSpot App
 
