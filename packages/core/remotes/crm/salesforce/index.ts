@@ -1,4 +1,6 @@
+import { CsvError, Info, parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
+import fetch, { type Response } from 'node-fetch';
 import { AccountCreateParams, RemoteAccount, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
@@ -123,21 +125,64 @@ const propertiesToFetch = {
   ],
 };
 
+// this is incomplete; it only includes the fields that we need to use
+type SalesforceBulk2QueryJob = {
+  id: string;
+  state: 'Open' | 'UploadComplete' | 'InProgress' | 'Aborted' | 'JobComplete' | 'Failed';
+};
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function getBulk2QueryJobNextLocatorFromResponse(response: Response): string | undefined {
+  const locator = response.headers.get('Sforce-locator');
+  return locator && locator !== 'null' ? locator : undefined;
+}
+
+async function getBulk2QueryJobResultsFromResponse(response: Response): Promise<Record<string, string>[]> {
+  // TODO: Stream this instead of reading all into memory at once?
+  const text = await response.text();
+  return new Promise((resolve, reject) => {
+    parse(text, { columns: true }, (err: CsvError | undefined, records: Record<string, string>[], info: Info) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(records);
+    });
+  });
+}
+
 class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
   readonly #client: jsforce.Connection;
 
+  readonly #instanceUrl: string;
+  readonly #accessToken: string;
+  readonly #refreshToken: string;
+  readonly #clientId: string;
+  readonly #clientSecret: string;
+
   public constructor({
     instanceUrl,
+    accessToken,
     refreshToken,
     clientId,
     clientSecret,
   }: {
     instanceUrl: string;
+    accessToken: string;
     refreshToken: string;
     clientId: string;
     clientSecret: string;
   }) {
     super();
+
+    this.#instanceUrl = instanceUrl;
+    this.#accessToken = accessToken;
+    this.#refreshToken = refreshToken;
+    this.#clientId = clientId;
+    this.#clientSecret = clientSecret;
+
     this.#client = new jsforce.Connection({
       oauth2: new jsforce.OAuth2({
         loginUrl: 'https://login.salesforce.com',
@@ -150,13 +195,112 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     });
   }
 
+  async #submitBulk2QueryJob(soql: string): Promise<SalesforceBulk2QueryJob> {
+    const response = await fetch(`${this.#instanceUrl}/services/data/v57.0/jobs/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.#accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        operation: 'query',
+        query: soql,
+      }),
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`Status code ${response.status} when submitting salesforce bulk 2.0 query`);
+    }
+
+    return await response.json();
+  }
+
+  async #pollBulk2QueryJob(jobId: string): Promise<void> {
+    const poll = async (): Promise<SalesforceBulk2QueryJob> => {
+      const response = await fetch(`${this.#instanceUrl}/services/data/v57.0/jobs/query/${jobId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.#accessToken}`,
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error(`Status code ${response.status} when polling bulk 2.0 query job`);
+      }
+
+      return await response.json();
+    };
+
+    const startTime = Date.now();
+    const timeout = 5 * 60 * 1000; // TODO: make configurable
+    const interval = 1000; // TODO: make configurable
+
+    while (startTime + timeout > Date.now()) {
+      const { state } = await poll();
+      switch (state) {
+        case 'Open':
+          throw new Error('job has not been started');
+        case 'Aborted':
+          throw new Error('job has been aborted');
+        case 'UploadComplete':
+        case 'InProgress':
+          await delay(interval);
+          break;
+        case 'Failed':
+          throw new Error('job has failed');
+        case 'JobComplete':
+          return;
+      }
+    }
+
+    throw new Error('bulk 2.0 job polling timed out');
+  }
+
+  async #getBulk2QueryJobResponse(jobId: string, locator?: string): Promise<Response> {
+    const params = new URLSearchParams();
+    if (locator) {
+      params.set('locator', locator);
+    }
+
+    const response = await fetch(`${this.#instanceUrl}/services/data/v57.0/jobs/query/${jobId}/results?${params}`, {
+      headers: {
+        Authorization: `Bearer ${this.#accessToken}`,
+        'Content-Type': 'application/json; charset=UTF-8',
+        Accept: 'text/csv',
+      },
+    });
+
+    if (response.status !== 200) {
+      throw new Error(`Status code ${response.status} when fetching bulk 2.0 query job results`);
+    }
+
+    return response;
+  }
+
+  async #getBulk2QueryJobResults(soql: string): Promise<Record<string, string>[]> {
+    const { id } = await this.#submitBulk2QueryJob(soql);
+    await this.#pollBulk2QueryJob(id);
+
+    const recordsPromises: Promise<Record<string, string>[]>[] = [];
+    let locator: string | undefined = undefined;
+    do {
+      const response = await this.#getBulk2QueryJobResponse(id, locator);
+      const recordsPromise = getBulk2QueryJobResultsFromResponse(response);
+      recordsPromises.push(recordsPromise);
+      locator = getBulk2QueryJobNextLocatorFromResponse(response);
+    } while (locator);
+
+    const unflattenedRecords = await Promise.all(recordsPromises);
+    return unflattenedRecords.flat();
+  }
+
   public async listAccounts(): Promise<RemoteAccount[]> {
     const soql = `
       SELECT ${propertiesToFetch.account.join(', ')}
       FROM Account
     `;
 
-    const accounts = await this.#client.bulk2.query(soql, { pollTimeout: BULK2_POLL_TIMEOUT });
+    const accounts = await this.#getBulk2QueryJobResults(soql);
     return accounts.map(fromSalesforceAccountToRemoteAccount);
   }
 
@@ -187,8 +331,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
       SELECT ${propertiesToFetch.contact.join(', ')}
       FROM Contact
     `;
-
-    const contacts = await this.#client.bulk2.query(soql, { pollTimeout: BULK2_POLL_TIMEOUT });
+    const contacts = await this.#getBulk2QueryJobResults(soql);
     return contacts.map(fromSalesforceContactToRemoteContact);
   }
 
@@ -219,7 +362,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
       FROM Opportunity
     `;
 
-    const opportunities = await this.#client.bulk2.query(soql);
+    const opportunities = await this.#getBulk2QueryJobResults(soql);
     return opportunities.map(fromSalesforceOpportunityToRemoteOpportunity);
   }
 
@@ -250,7 +393,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
       FROM Lead 
     `;
 
-    const leads = await this.#client.bulk2.query(soql, { pollTimeout: BULK2_POLL_TIMEOUT });
+    const leads = await this.#getBulk2QueryJobResults(soql);
     return leads.map(fromSalesforceLeadToRemoteLead);
   }
 
@@ -280,6 +423,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
 export function newClient(connection: CRMConnection, integration: Integration): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
+    accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
     clientId: integration.config.oauth.credentials.oauthClientId,
     clientSecret: integration.config.oauth.credentials.oauthClientSecret,
