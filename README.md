@@ -51,14 +51,7 @@ docker compose up
 
 ## Connectors
 
-**CRM:**
-
-- Hubspot
-- Salesforce
-
-Supported common objects: Accounts, Contacts, Leads, Opportunities.
-
-Looking for more connectors or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
+See the [list of connectors](https://docs.supaglue.com/category/connectors) we currently support.
 
 Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
 
