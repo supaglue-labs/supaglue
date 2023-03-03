@@ -31,7 +31,7 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 ### Run Supaglue locally
 
 ```shell
-git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.3.2 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
 docker compose up
 ```
