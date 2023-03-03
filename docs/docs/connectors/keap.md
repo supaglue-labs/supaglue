@@ -1,26 +1,21 @@
-# Salesforce
+# Keap
 
 ### Third-party provider information
 
-Supaglue interfaces with the Salesforce async Bulk 2.0 API using the JSforce client.
+Supaglue interfaces with the Keap V1 API.
 
 Status: Alpha
 
 | Feature                    | Available |
 | -------------------------- | --------- |
-| Auth                       | Yes       |
-| Reads: Full refresh        | Yes       |
+| Auth                       | No        |
+| Reads: Full refresh        | No        |
 | Reads: Incremental refresh | No        |
-| Creates                    | Yes       |
-| Updates                    | Yes       |
+| Creates                    | No        |
+| Updates                    | No        |
 | Handles rate limits        | No        |
 
-Supported object types:
-
-- Account
-- Contact
-- Lead
-- Opportunity
+Supported object types: -
 
 ### Common Model sync frequencies
 

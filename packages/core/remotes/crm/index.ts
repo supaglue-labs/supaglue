@@ -2,14 +2,22 @@ import { CRMConnection } from '../../types/connection';
 import { CRMProviderName } from '../../types/crm';
 import { Integration } from '../../types/integration';
 import { ConnectorAuthConfig, CrmConnectorConfig, CrmRemoteClient } from './base';
+import * as capsule from './capsule';
 import * as hubspot from './hubspot';
+import * as ms_dynamics_365_sales from './ms_dynamics_365_sales';
 import * as pipedrive from './pipedrive';
 import * as salesforce from './salesforce';
+import * as zendesk_sell from './zendesk_sell';
+import * as zoho_crm from './zoho_crm';
 
 const crmConnectorConfigMap: Record<CRMProviderName, CrmConnectorConfig> = {
   salesforce,
   hubspot,
   pipedrive,
+  zendesk_sell,
+  ms_dynamics_365_sales,
+  capsule,
+  zoho_crm,
 };
 
 export function getConnectorAuthConfig(providerName: CRMProviderName): ConnectorAuthConfig {

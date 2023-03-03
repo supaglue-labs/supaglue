@@ -1,12 +1,21 @@
----
-sidebar_position: 3
----
-
 # Pipedrive
 
 ### Third-party provider information
 
-Supaglue interfaces with the Pipedrive V1 API using Pipedrive's official nodejs client.
+Supaglue interfaces with the Pipedrive V1 API.
+
+Status: Alpha
+
+| Feature                    | Available |
+| -------------------------- | --------- |
+| Auth                       | Yes       |
+| Reads: Full refresh        | No        |
+| Reads: Incremental refresh | No        |
+| Creates                    | No        |
+| Updates                    | No        |
+| Handles rate limits        | No        |
+
+Supported object types: -
 
 ### Common Model sync frequencies
 
