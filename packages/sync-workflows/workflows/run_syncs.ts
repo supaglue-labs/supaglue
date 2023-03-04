@@ -1,10 +1,10 @@
-import { CRM_COMMON_MODELS } from '@supaglue/core/types';
+import { CRM_COMMON_MODELS } from '@supaglue/core/types/crm';
 import { proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
 import type { createActivities } from '../activities';
 
 const { doSync, populateAssociations } = proxyActivities<ReturnType<typeof createActivities>>({
-  startToCloseTimeout: '5 minute',
+  startToCloseTimeout: '120 minute',
 });
 
 export const getRunSyncsScheduleId = (connectionId: string): string => `run-syncs-cid-${connectionId}`;

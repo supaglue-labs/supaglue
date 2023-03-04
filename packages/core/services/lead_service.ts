@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
+import { POSTGRES_UPDATE_PARALLELISM } from '../lib/constants';
 import { getExpandedAssociations } from '../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromLeadModel } from '../mappers';
@@ -139,7 +140,11 @@ export class LeadService {
     }
   }
 
-  public async updateDanglingAccounts(connectionId: string) {
+  private async updateDanglingAccountsImpl(
+    connectionId: string,
+    limit: number,
+    cursor?: string
+  ): Promise<string | undefined> {
     const leadsWithDanglingAccounts = await this.#prisma.crmLead.findMany({
       where: {
         connectionId,
@@ -148,7 +153,16 @@ export class LeadService {
           convertedRemoteAccountId: null,
         },
       },
+      skip: cursor ? 1 : undefined,
+      take: limit,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: {
+        id: 'asc',
+      },
     });
+    if (!leadsWithDanglingAccounts.length) {
+      return;
+    }
 
     const danglingRemoteAccountIds = leadsWithDanglingAccounts.map(
       ({ convertedRemoteAccountId }) => convertedRemoteAccountId
@@ -174,9 +188,21 @@ export class LeadService {
         });
       })
     );
+    return leadsWithDanglingAccounts[leadsWithDanglingAccounts.length - 1].id;
   }
 
-  public async updateDanglingContacts(connectionId: string) {
+  public async updateDanglingAccounts(connectionId: string) {
+    let cursor = undefined;
+    do {
+      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_PARALLELISM, cursor);
+    } while (cursor);
+  }
+
+  private async updateDanglingContactsImpl(
+    connectionId: string,
+    limit: number,
+    cursor?: string
+  ): Promise<string | undefined> {
     const leadsWithDanglingContacts = await this.#prisma.crmLead.findMany({
       where: {
         connectionId,
@@ -185,7 +211,16 @@ export class LeadService {
           convertedRemoteContactId: null,
         },
       },
+      skip: cursor ? 1 : undefined,
+      take: limit,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: {
+        id: 'asc',
+      },
     });
+    if (!leadsWithDanglingContacts.length) {
+      return;
+    }
 
     const danglingRemoteContactIds = leadsWithDanglingContacts.map(
       ({ convertedRemoteContactId }) => convertedRemoteContactId
@@ -211,5 +246,13 @@ export class LeadService {
         });
       })
     );
+    return leadsWithDanglingContacts[leadsWithDanglingContacts.length - 1].id;
+  }
+
+  public async updateDanglingContacts(connectionId: string) {
+    let cursor = undefined;
+    do {
+      cursor = await this.updateDanglingContactsImpl(connectionId, POSTGRES_UPDATE_PARALLELISM, cursor);
+    } while (cursor);
   }
 }

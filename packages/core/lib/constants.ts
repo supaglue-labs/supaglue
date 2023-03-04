@@ -1,0 +1,1 @@
+export const POSTGRES_UPDATE_PARALLELISM = 1000;

@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
+import { POSTGRES_UPDATE_PARALLELISM } from '../lib/constants';
 import { getExpandedAssociations } from '../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromContactModel } from '../mappers';
@@ -156,8 +157,11 @@ export class ContactService {
       });
     }
   }
-
-  public async updateDanglingAccounts(connectionId: string) {
+  private async updateDanglingAccountsImpl(
+    connectionId: string,
+    limit: number,
+    cursor?: string
+  ): Promise<string | undefined> {
     const contactsWithDanglingAccounts = await this.#prisma.crmContact.findMany({
       where: {
         connectionId,
@@ -166,7 +170,16 @@ export class ContactService {
           remoteAccountId: null,
         },
       },
+      skip: cursor ? 1 : undefined,
+      take: limit,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: {
+        id: 'asc',
+      },
     });
+    if (!contactsWithDanglingAccounts.length) {
+      return;
+    }
 
     const danglingRemoteAccountIds = contactsWithDanglingAccounts.map(
       ({ remoteAccountId }) => remoteAccountId
@@ -192,5 +205,13 @@ export class ContactService {
         });
       })
     );
+    return contactsWithDanglingAccounts[contactsWithDanglingAccounts.length - 1].id;
+  }
+
+  public async updateDanglingAccounts(connectionId: string) {
+    let cursor = undefined;
+    do {
+      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_PARALLELISM, cursor);
+    } while (cursor);
   }
 }
