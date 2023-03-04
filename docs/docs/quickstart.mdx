@@ -4,6 +4,7 @@ sidebar_position: 2
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import ThemedImage from '@theme/ThemedImage';
 
 # Quickstart
 
@@ -51,18 +52,46 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
   icon="/img/salesforce.svg"
   provider="Salesforce"
   description="Sync your leads in and out of Salesforce"
-  to="http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=https://docs.supaglue.com/quickstart"
+  to="http://localhost:8080/oauth/connect?customerId=9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
 />
 
 <IntegrationCard
   icon="/img/hubspot.svg"
   provider="Hubspot"
   description="Sync your leads in and out of Hubspot"
-  to="http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=https://docs.supaglue.com/quickstart"
+  to="http://localhost:8080/oauth/connect?customerId=ea3039fa-27de-4535-90d8-db2bab0c0252&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
 />
 </div>
 
-This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data. Upon successful login, you will be redirected back to this page.
+This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data.
+
+<div className="grid grid-cols-2 gap-4 justify-items-center">
+
+<div>
+  <ThemedImage
+    alt="Salesforce Example App"
+    width="50%"
+    sources={{
+      light: '/img/salesforce_app.png',
+      dark: '/img/salesforce_app.png',
+    }}
+  />
+</div>
+
+<div>
+  <ThemedImage
+    alt="Hubspot Example App"
+    width="50%"
+    sources={{
+      light: '/img/hubspot_app.png',
+      dark: '/img/hubspot_app.png',
+    }}
+  />
+</div>
+
+</div>
+
+Upon successful login, you will be redirected back to this page.
 
 :::info
 To test running queries against Supaglue's API, you'll need the following:
@@ -71,7 +100,7 @@ To test running queries against Supaglue's API, you'll need the following:
 2. A sample "customer" to test with.
 3. The sample customer's CRM instance that you'd like to query.
 
-For your convenience in this quickstart, we've provided Supaglue sample apps and two mock customers:
+For your convenience in this quickstart, we've provided Supaglue example apps and two mock customers:
 
 - Salesforce: `9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677`
 - HubSpot: `ea3039fa-27de-4535-90d8-db2bab0c0252`
@@ -81,7 +110,7 @@ If you don't have a sample CRM instance, you can create a free developer [HubSpo
 
 ## 3. Query the Supaglue unified API
 
-After you install the Supaglue sample app in a Salesforce or HubSpot account, Supaglue will start asynchronously syncing Contacts, Leads, Accounts, and Opportunities in the background. This can take a few seconds or minutes depending on the size of the CRM instance.
+Now that you've successfully installed the Supaglue Example App in a Salesforce or HubSpot account, Supaglue will start asynchronously syncing Contacts, Leads, Accounts, and Opportunities in the background. This can take a few seconds or minutes depending on the size of the CRM instance.
 
 Make a `GET` request to get a list of accounts:
 
