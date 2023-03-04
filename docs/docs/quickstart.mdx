@@ -4,6 +4,7 @@ sidebar_position: 2
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import ThemedImage from '@theme/ThemedImage';
 
 # Quickstart
 
@@ -62,7 +63,35 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
 />
 </div>
 
-This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data. Upon successful login, you will be redirected back to this page.
+This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data.
+
+<div className="grid grid-cols-2 gap-4 justify-items-center">
+
+<div>
+  <ThemedImage
+    alt="Salesforce Example App"
+    width="50%"
+    sources={{
+      light: '/img/salesforce_app.png',
+      dark: '/img/salesforce_app.png',
+    }}
+  />
+</div>
+
+<div>
+  <ThemedImage
+    alt="Hubspot Example App"
+    width="50%"
+    sources={{
+      light: '/img/hubspot_app.png',
+      dark: '/img/hubspot_app.png',
+    }}
+  />
+</div>
+
+</div>
+
+Upon successful login, you will be redirected back to this page.
 
 :::info
 To test running queries against Supaglue's API, you'll need the following:
