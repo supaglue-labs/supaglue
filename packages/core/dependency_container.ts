@@ -1,8 +1,15 @@
 import prisma, { PrismaClient } from '@supaglue/db';
-import { ConnectionService, ContactService, CustomerService, IntegrationService, RemoteService } from './services';
-import { AccountService } from './services/account_service';
-import { LeadService } from './services/lead_service';
-import { OpportunityService } from './services/opportunity_service';
+import {
+  AccountService,
+  ConnectionService,
+  ContactService,
+  CustomerService,
+  IntegrationService,
+  LeadService,
+  OpportunityService,
+  RemoteService,
+  SyncHistoryService,
+} from './services';
 
 export type CoreDependencyContainer = {
   prisma: PrismaClient;
@@ -16,6 +23,7 @@ export type CoreDependencyContainer = {
   contactService: ContactService;
   leadService: LeadService;
   opportunityService: OpportunityService;
+  syncHistoryService: SyncHistoryService;
 };
 
 // global
@@ -32,6 +40,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const leadService = new LeadService(prisma, remoteService);
   const opportunityService = new OpportunityService(prisma, remoteService);
   const contactService = new ContactService(prisma, remoteService);
+  const syncHistoryService = new SyncHistoryService(prisma);
 
   return {
     prisma,
@@ -45,6 +54,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     accountService,
     leadService,
     opportunityService,
+    syncHistoryService,
   };
 }
 
