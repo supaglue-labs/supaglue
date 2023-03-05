@@ -20,6 +20,19 @@ export class ConnectionService {
     return fromConnectionModel(integration);
   }
 
+  // TODO: paginate
+  public async list(): Promise<Connection[]> {
+    const connections = await this.#prisma.connection.findMany();
+    return connections.map((connection) => fromConnectionModel(connection));
+  }
+
+  public async delete(id: string): Promise<Connection> {
+    const deletedConnection = await this.#prisma.connection.delete({
+      where: { id },
+    });
+    return fromConnectionModel(deletedConnection);
+  }
+
   public async getByCustomerIdAndIntegrationId({
     customerId,
     integrationId,
