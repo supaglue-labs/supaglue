@@ -8,6 +8,7 @@
   "dependencies": {
     "@hubspot/api-client": "^8.6.0",
     "@supaglue/db": "workspace:*",
+    "csv-parse": "^5.3.5",
     "jsforce": "^2.0.0-beta.20"
   },
   "devDependencies": {
