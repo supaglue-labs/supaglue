@@ -29,4 +29,8 @@ export type OauthCredentials = {
   oauthClientSecret: string;
 };
 
+type BaseCRMIntegrationCreateParams = Omit<CRMIntegration, 'id'>;
+export type CRMIntegrationCreateParams = BaseCRMIntegrationCreateParams;
+export type CRMIntegrationUpdateParams = BaseCRMIntegrationCreateParams;
+
 export type Integration = CRMIntegration;
