@@ -83,7 +83,7 @@ const OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 5;
 type Credentials = {
   accessToken: string;
   refreshToken: string;
-  expiresAt: string; // ISO string
+  expiresAt: string | null; // ISO string
   clientId: string;
   clientSecret: string;
 };
@@ -120,7 +120,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
       this.#credentials.expiresAt = newExpiresAt;
 
       this.#client.setAccessToken(newAccessToken);
-      this.emit('token_refreshed', [newAccessToken, newExpiresAt]);
+      this.emit('token_refreshed', newAccessToken, newExpiresAt);
     }
   }
 

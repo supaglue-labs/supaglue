@@ -157,31 +157,27 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
   readonly #client: jsforce.Connection;
 
   readonly #instanceUrl: string;
-  readonly #accessToken: string;
   readonly #refreshToken: string;
-  readonly #clientId: string;
-  readonly #clientSecret: string;
+  #accessToken: string;
 
   public constructor({
     instanceUrl,
-    accessToken,
     refreshToken,
+    accessToken,
     clientId,
     clientSecret,
   }: {
     instanceUrl: string;
-    accessToken: string;
     refreshToken: string;
+    accessToken: string;
     clientId: string;
     clientSecret: string;
   }) {
     super();
 
     this.#instanceUrl = instanceUrl;
-    this.#accessToken = accessToken;
     this.#refreshToken = refreshToken;
-    this.#clientId = clientId;
-    this.#clientSecret = clientSecret;
+    this.#accessToken = accessToken;
 
     this.#client = new jsforce.Connection({
       oauth2: new jsforce.OAuth2({
@@ -195,11 +191,54 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     });
   }
 
+  async #refreshAccessToken(): Promise<void> {
+    // TODO: Shouldn't be relying on `jsforce` to do this.
+    const token = await this.#client.oauth2.refreshToken(this.#refreshToken);
+    this.#accessToken = token.access_token;
+    const hadListeners = this.emit('token_refreshed', token.access_token, null);
+  }
+
+  async #fetch(path: string, init: RequestInit): Promise<ReturnType<typeof fetch>> {
+    const helper = async () => {
+      return await fetch(`${this.#instanceUrl}${path}`, {
+        ...init,
+        headers: {
+          ...init.headers,
+          Authorization: `Bearer ${this.#accessToken}`,
+        },
+      });
+    };
+
+    const response = await helper();
+
+    // Only try to refresh token once (to avoid infinite loop).
+    // TODO: Clean up this code a bit.
+    // TODO: We should consider having a global singleton to do a single token refresh rather
+    //       than many concurrent ones.
+    // TODO: Check on `jsforce` periodically to see if we can just use that library instead
+    // of writing this ourselves. For now, we are writing ourselves due to issue with hanging
+    // CSV download for bulk 2.0 with large loads and also more future control of rate limits,
+    // etc.
+    if (response.status === 401) {
+      await this.#refreshAccessToken();
+      const response = await helper();
+      if (response.status !== 200) {
+        throw new Error(`Status code ${response.status} when calling salesforce API`);
+      }
+      return response;
+    }
+
+    if (response.status !== 200) {
+      throw new Error(`Status code ${response.status} when calling salesforce API`);
+    }
+
+    return response;
+  }
+
   async #submitBulk2QueryJob(soql: string): Promise<SalesforceBulk2QueryJob> {
-    const response = await fetch(`${this.#instanceUrl}/services/data/v57.0/jobs/query`, {
+    const response = await this.#fetch('/services/data/v57.0/jobs/query', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.#accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -207,27 +246,14 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
         query: soql,
       }),
     });
-
-    if (response.status !== 200) {
-      throw new Error(`Status code ${response.status} when submitting salesforce bulk 2.0 query`);
-    }
-
     return await response.json();
   }
 
   async #pollBulk2QueryJob(jobId: string): Promise<void> {
     const poll = async (): Promise<SalesforceBulk2QueryJob> => {
-      const response = await fetch(`${this.#instanceUrl}/services/data/v57.0/jobs/query/${jobId}`, {
+      const response = await this.#fetch(`/services/data/v57.0/jobs/query/${jobId}`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${this.#accessToken}`,
-        },
       });
-
-      if (response.status !== 200) {
-        throw new Error(`Status code ${response.status} when polling bulk 2.0 query job`);
-      }
-
       return await response.json();
     };
 
@@ -262,23 +288,17 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
       params.set('locator', locator);
     }
 
-    const response = await fetch(`${this.#instanceUrl}/services/data/v57.0/jobs/query/${jobId}/results?${params}`, {
+    return await this.#fetch(`/services/data/v57.0/jobs/query/${jobId}/results?${params}`, {
       headers: {
-        Authorization: `Bearer ${this.#accessToken}`,
         'Content-Type': 'application/json; charset=UTF-8',
         Accept: 'text/csv',
       },
     });
-
-    if (response.status !== 200) {
-      throw new Error(`Status code ${response.status} when fetching bulk 2.0 query job results`);
-    }
-
-    return response;
   }
 
   async #getBulk2QueryJobResults(soql: string): Promise<Record<string, string>[]> {
     const { id } = await this.#submitBulk2QueryJob(soql);
+
     await this.#pollBulk2QueryJob(id);
 
     const recordsPromises: Promise<Record<string, string>[]>[] = [];

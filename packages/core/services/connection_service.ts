@@ -71,7 +71,7 @@ export class ConnectionService {
   public async updateConnectionWithNewAccessToken(
     connectionId: string,
     accessToken: string,
-    expiresAt: string
+    expiresAt: string | null
   ): Promise<CRMConnection> {
     // TODO: Not atomic.
 
