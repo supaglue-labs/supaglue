@@ -22,10 +22,6 @@
 
 Supaglue is an open source unified API for CRMs. It handles authentication, caches and normalizes data from multiple CRM platforms, and provides a single set of API endpoints for reading and writing to those CRMs. Developers at B2B companies can use Supaglue to streamline and scale the work of building customer-facing CRM integrations. Supaglue can be self-hosted and runs alongside your stack.
 
-## Status
-
-We are currently in Public Alpha. Watch "releases" of this repo to be notified of significant updates (as minor semver releases).
-
 ## Get Started
 
 ### Run Supaglue locally
@@ -35,8 +31,6 @@ git clone -b v0.3.2 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
 docker compose up
 ```
-
-![supaglue-quickstart](https://github.com/supaglue-labs/supaglue/blob/main/docs/static/img/quickstart.gif)
 
 ## Features
 
@@ -54,6 +48,10 @@ docker compose up
 See the [list of connectors](https://docs.supaglue.com/category/connectors) we currently support.
 
 Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
+
+## Status
+
+We are currently in Public Alpha. Watch "releases" of this repo to be notified of significant updates (as minor semver releases).
 
 ## Roadmap
 
