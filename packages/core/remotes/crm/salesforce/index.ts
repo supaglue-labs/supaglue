@@ -1,6 +1,9 @@
+// fetch methods / types not present in @types/node yet
+// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
+/// <reference lib="dom" />
+
 import { CsvError, Info, parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
-import fetch, { type Response } from 'node-fetch';
 import { AccountCreateParams, RemoteAccount, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
@@ -26,9 +29,6 @@ import {
   toSalesforceOpportunityCreateParams,
   toSalesforceOpportunityUpdateParams,
 } from './mappers';
-
-// TODO: data-drive
-const BULK2_POLL_TIMEOUT = 240000; // 4 minutes
 
 const propertiesToFetch = {
   account: [
