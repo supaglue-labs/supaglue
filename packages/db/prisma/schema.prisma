@@ -40,6 +40,7 @@ model Connection {
   category        String
   // Salesforce, Hubspot, etc.
   providerName    String        @map("provider_name")
+  name            String?
   status          String // available | added | authorized | callable
   credentials     Json // {type, access_token, refresh_token, expires_at, raw}
   customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
@@ -48,7 +49,6 @@ model Connection {
   updatedAt       DateTime      @updatedAt @map("updated_at")
   syncHistoryList SyncHistory[]
 
-  @@unique([customerId, integrationId])
   @@map("connections")
 }
 

@@ -2,8 +2,10 @@ import { getDependencyContainer } from '@/dependency_container';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes/crm';
 import { ConnectionCreateParams, ConnectionUpsertParams } from '@supaglue/core/types/connection';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/core/types/crm';
+import axios from 'axios';
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
+import { logger } from '../logger';
 
 const { integrationService, connectionWriterService } = getDependencyContainer();
 
@@ -121,17 +123,35 @@ export default function init(app: Router): void {
         ...additionalAuthParams,
       });
 
+      const { token } = accessToken;
+
+      let username;
+
+      try {
+        // TODO: this works for salesforce only. needs to be abstracted to handle hubspot as well:
+        // https://legacydocs.hubspot.com/docs/methods/oauth2/get-access-token-information
+        const response = await axios.get(token.id as string, {
+          headers: {
+            authorization: `Bearer ${token.access_token}`,
+          },
+        });
+        username = response.data?.username;
+      } catch (err) {
+        logger.error(`Error fetching oauth user info: ${err}`);
+      }
+
       const payload: ConnectionCreateParams | ConnectionUpsertParams = {
         category: 'crm',
         providerName,
         customerId,
         integrationId: integration.id,
+        name: username,
         credentials: {
           type: 'oauth2',
-          accessToken: accessToken.token['access_token'] as string,
-          refreshToken: accessToken.token['refresh_token'] as string,
-          instanceUrl: accessToken.token['instance_url'] as string,
-          expiresAt: accessToken.token['expires_at'] as string,
+          accessToken: token.access_token as string,
+          refreshToken: token.refresh_token as string,
+          instanceUrl: token.instance_url as string,
+          expiresAt: token.expires_at as string,
         },
       };
 
