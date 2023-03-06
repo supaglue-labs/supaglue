@@ -172,7 +172,7 @@ model SyncHistory {
   id             Int        @id @default(autoincrement())
   // contact, lead, account, opportunity, etc.
   model          String
-  // success | error
+  // SUCCESS | ERROR | IN_PROGRESS
   status         String
   errorMessage   String?    @map("error_message")
   startTimestamp DateTime   @map("start_timestamp")

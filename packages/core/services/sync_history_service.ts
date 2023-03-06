@@ -1,7 +1,13 @@
 import type { PrismaClient } from '@supaglue/db';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromSyncHistoryModel } from '../mappers';
-import type { PaginatedResult, PaginationParams, SyncHistory, SyncHistoryCreateParams } from '../types';
+import type {
+  PaginatedResult,
+  PaginationParams,
+  SyncHistory,
+  SyncHistoryCreateParams,
+  SyncHistoryStatus,
+} from '../types';
 
 export class SyncHistoryService {
   #prisma: PrismaClient;
@@ -48,6 +54,39 @@ export class SyncHistoryService {
     return fromSyncHistoryModel(model);
   }
 
+  public async logFinish({
+    historyId,
+    status,
+    errorMessage,
+  }: {
+    historyId: number;
+    status: SyncHistoryStatus;
+    errorMessage?: string;
+  }): Promise<void> {
+    await this.update({
+      id: historyId,
+      updateParams: {
+        status,
+        errorMessage: errorMessage ?? null,
+        endTimestamp: new Date(),
+      },
+    });
+  }
+
+  public async logStart({ connectionId, commonModel }: { connectionId: string; commonModel: string }): Promise<number> {
+    const { id } = await this.create({
+      connectionId,
+      createParams: {
+        model: commonModel,
+        status: 'IN_PROGRESS',
+        errorMessage: null,
+        startTimestamp: new Date(),
+        endTimestamp: null,
+      },
+    });
+    return id;
+  }
+
   public async list({
     connectionId,
     paginationParams,
@@ -61,14 +100,21 @@ export class SyncHistoryService {
     const pageSize = page_size ? parseInt(page_size) : undefined;
     // TODO casting to any here because prisma isn't typing the model with the included connection correctly
     const models: any[] = await this.#prisma.syncHistory.findMany({
-      // TODO casting to any here because our pagination system expects id to be a string, but is a number here
-      ...(getPaginationParams(pageSize, cursor) as any),
+      ...getPaginationParams<number>(pageSize, cursor),
       where: {
         connectionId,
         model,
       },
       include: {
-        connection: true,
+        connection: {
+          select: {
+            id: true,
+            category: true,
+            providerName: true,
+            status: true,
+            customerId: true,
+          },
+        },
       },
       orderBy: {
         id: 'desc',
@@ -78,8 +124,7 @@ export class SyncHistoryService {
     const results = models.map(fromSyncHistoryModel);
 
     return {
-      // TODO casting to any here because our pagination system expects id to be a string, but is a number here
-      ...getPaginationResult(pageSize, cursor, results as any),
+      ...getPaginationResult<number>(pageSize, cursor, results),
       results,
     };
   }

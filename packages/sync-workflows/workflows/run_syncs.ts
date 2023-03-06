@@ -24,6 +24,8 @@ export async function runSyncs({ connectionId, sessionId }: RunSyncsArgs): Promi
   const results = await Promise.allSettled(
     CRM_COMMON_MODELS.map((commonModel, idx) => doSync({ connectionId, commonModel, sessionId }))
   );
+  // technically the sync isn't really complete since we haven't populated associations
+  // but we want the per-model granularity on the logs
   await Promise.all(
     results.map(async (result, idx) => {
       if (result.status === 'fulfilled') {

@@ -1,4 +1,7 @@
-export const getPaginationParams = (pageSize: number | undefined, cursorStr: string | undefined) => {
+export function getPaginationParams<T extends string | number = string>(
+  pageSize: number | undefined,
+  cursorStr: string | undefined
+) {
   const cursor = decodeCursor(cursorStr);
   let take = pageSize;
   if (cursor?.reverse && pageSize) {
@@ -7,15 +10,15 @@ export const getPaginationParams = (pageSize: number | undefined, cursorStr: str
   return {
     take,
     skip: cursor ? 1 : undefined,
-    cursor: cursor ? { id: cursor.id } : undefined,
+    cursor: cursor ? { id: cursor.id as T } : undefined,
   };
-};
+}
 
-export const getPaginationResult = (
+export function getPaginationResult<T extends string | number = string>(
   pageSize: number | undefined,
   cursorStr: string | undefined,
-  results: { id: string }[]
-) => {
+  results: { id: T }[]
+) {
   const cursor = decodeCursor(cursorStr);
   let next = null;
   let previous = null;
@@ -31,10 +34,10 @@ export const getPaginationResult = (
     next,
     previous,
   };
-};
+}
 
 export type Cursor = {
-  id: string;
+  id: string | number;
   reverse: boolean;
 };
 

@@ -11,13 +11,6 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
     status: SyncHistoryStatus;
     errorMessage?: string;
   }) {
-    await syncHistoryService.update({
-      id: historyId,
-      updateParams: {
-        status,
-        errorMessage: errorMessage ?? null,
-        endTimestamp: new Date(),
-      },
-    });
+    await syncHistoryService.logFinish({ historyId, status, errorMessage });
   };
 }
