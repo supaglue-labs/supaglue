@@ -169,11 +169,11 @@ model CrmOpportunity {
 }
 
 model SyncHistory {
-  id             String     @id @default(uuid())
+  id             Int        @id @default(autoincrement())
   // contact, lead, account, opportunity, etc.
   model          String
-  // success | error
-  result         String
+  // SUCCESS | ERROR | IN_PROGRESS
+  status         String
   errorMessage   String?    @map("error_message")
   startTimestamp DateTime   @map("start_timestamp")
   endTimestamp   DateTime?  @map("end_timestamp")
