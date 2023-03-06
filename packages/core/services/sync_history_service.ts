@@ -98,23 +98,11 @@ export class SyncHistoryService {
   }): Promise<PaginatedResult<SyncHistory>> {
     const { page_size, cursor } = paginationParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;
-    // TODO casting to any here because prisma isn't typing the model with the included connection correctly
     const models: any[] = await this.#prisma.syncHistory.findMany({
       ...getPaginationParams<number>(pageSize, cursor),
       where: {
         connectionId,
         model,
-      },
-      include: {
-        connection: {
-          select: {
-            id: true,
-            category: true,
-            providerName: true,
-            status: true,
-            customerId: true,
-          },
-        },
       },
       orderBy: {
         id: 'desc',
