@@ -6,3 +6,4 @@ export * from './integration_service';
 export * from './lead_service';
 export * from './opportunity_service';
 export * from './remote_service';
+export * from './sync_history_service';
