@@ -22,10 +22,10 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const connectionService = new ConnectionService(prisma);
   const integrationService = new IntegrationService(prisma);
   const remoteService = new RemoteService(connectionService, integrationService);
-  const accountService = new AccountService(prisma, remoteService, connectionService);
-  const leadService = new LeadService(prisma, remoteService, connectionService);
-  const opportunityService = new OpportunityService(prisma, remoteService, connectionService);
-  const contactService = new ContactService(prisma, remoteService, connectionService);
+  const accountService = new AccountService(prisma, remoteService);
+  const leadService = new LeadService(prisma, remoteService);
+  const opportunityService = new OpportunityService(prisma, remoteService);
+  const contactService = new ContactService(prisma, remoteService);
 
   return {
     prisma,

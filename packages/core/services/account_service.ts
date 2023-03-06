@@ -11,18 +11,15 @@ import type {
   ListParams,
   PaginatedResult,
 } from '../types';
-import type { ConnectionService } from './connection_service';
 import type { RemoteService } from './remote_service';
 
 export class AccountService {
   #prisma: PrismaClient;
   #remoteService: RemoteService;
-  #connectionService: ConnectionService;
 
-  constructor(prisma: PrismaClient, remoteService: RemoteService, connectionService: ConnectionService) {
+  constructor(prisma: PrismaClient, remoteService: RemoteService) {
     this.#prisma = prisma;
     this.#remoteService = remoteService;
-    this.#connectionService = connectionService;
   }
 
   // TODO: implement getParams
