@@ -103,7 +103,11 @@ app.use(
     },
   })
 );
+
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  // add the error to the response so pino-http can log it
+  res.err = err as Error;
+
   if (err instanceof HTTPError) {
     return res.status(err.code).send({
       errors: [

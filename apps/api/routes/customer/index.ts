@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { customerMiddleware } from '@/middleware/customer';
+import { openapiMiddleware } from '@/middleware/openapi';
 import { Request, Response, Router } from 'express';
 import integration from './integration';
 
@@ -7,6 +8,7 @@ const { customerService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const customerRouter = Router();
+  customerRouter.use(openapiMiddleware('customer'));
 
   app.get('/customers', async (req: Request, res: Response) => {
     const customers = await customerService.list();
@@ -35,5 +37,5 @@ export default function init(app: Router): void {
 
   integration(customerRouter);
 
-  app.use('/customers/:customerId', customerMiddleware, customerRouter);
+  app.use('/customers/:customer_id', customerMiddleware, customerRouter);
 }

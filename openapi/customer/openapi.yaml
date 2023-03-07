@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  version: 0.3.3
+  title: Supaglue Customer API
+  contact:
+    name: Supaglue
+    email: docs@supaglue.com
+    url: 'https://supaglue.com'
+  description: |
+    # Introduction
+
+    Welcome to the Supaglue Customer API documentation. You can use this API to manage customer integrations and connections.
+
+    ### Base API URL
+
+    ```
+    http://localhost:8080/api/customer
+    ```
+externalDocs:
+  description: Try out our API in Postman!
+  url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
+servers:
+  - url: 'https://localhost:8080/customer'
+    description: Local Supaglue API
+paths: {}
+tags: []
+components:
+  schemas:
+    logs:
+      $ref: ../common/components/schemas/logs.yaml
+    errors:
+      $ref: ../common/components/schemas/errors.yaml
+    warnings:
+      $ref: ../common/components/schemas/warnings.yaml
+    pagination:
+      $ref: ../common/components/schemas/pagination.yaml
+  # TODO: uncomment when we implement API authentication
+  # securitySchemes:
+  #   api_key:
+  #     type: apiKey
+  #     name: X-Account-Token
+  #     in: header
+  #     description: Token identifying the end user
+  parameters:
+    created_after:
+      $ref: ../common/components/parameters/created_after.yaml
+    created_before:
+      $ref: ../common/components/parameters/created_before.yaml
+    updated_after:
+      $ref: ../common/components/parameters/updated_after.yaml
+    updated_before:
+      $ref: ../common/components/parameters/updated_before.yaml
+    cursor:
+      $ref: ../common/components/parameters/cursor.yaml
+    expand:
+      $ref: ../common/components/parameters/expand.yaml
+    page_size:
+      $ref: ../common/components/parameters/page_size.yaml
+    connection_id:
+      $ref: ./components/parameters/connection_id.yaml
+    integration_id:
+      $ref: ./components/parameters/integration_id.yaml
+    customer_id:
+      $ref: ./components/parameters/customer_id.yaml

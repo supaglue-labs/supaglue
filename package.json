@@ -14,7 +14,8 @@
     "test:watch": "turbo run test:watch",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "generate": "tsx scripts/validate_and_bundle_openapi.ts openapi/crm/openapi.yaml openapi/crm/openapi.bundle.json"
+    "generate": "turbo run generate",
+    "bundle-openapi": "tsx scripts/validate_and_bundle_openapi.ts openapi/crm/openapi.yaml openapi/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/customer/openapi.yaml openapi/customer/openapi.bundle.json"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit",

@@ -28,5 +28,5 @@ export default function init(app: Router): void {
     return res.status(200).send(connection);
   });
 
-  app.use('/connections/:connectionId', connectionMiddleware, connectionRouter);
+  app.use('/connections/:connection_id', connectionMiddleware, connectionRouter);
 }

@@ -6,13 +6,13 @@ get:
   description: >-
     Get a list of leads
   parameters:
-    - $ref: ../components/parameters/created_after.yaml
-    - $ref: ../components/parameters/created_before.yaml
-    - $ref: ../components/parameters/updated_after.yaml
-    - $ref: ../components/parameters/updated_before.yaml
-    - $ref: ../components/parameters/cursor.yaml
-    - $ref: ../components/parameters/expand.yaml
-    - $ref: ../components/parameters/page_size.yaml
+    - $ref: ../../common/components/parameters/created_after.yaml
+    - $ref: ../../common/components/parameters/created_before.yaml
+    - $ref: ../../common/components/parameters/updated_after.yaml
+    - $ref: ../../common/components/parameters/updated_before.yaml
+    - $ref: ../../common/components/parameters/cursor.yaml
+    - $ref: ../../common/components/parameters/expand.yaml
+    - $ref: ../../common/components/parameters/page_size.yaml
   responses:
     '200':
       description: Leads
@@ -20,7 +20,7 @@ get:
         application/json:
           schema:
             allOf:
-              - $ref: ../components/schemas/pagination.yaml
+              - $ref: ../../common/components/schemas/pagination.yaml
               - type: object
                 properties:
                   results:
@@ -103,11 +103,12 @@ post:
           required:
             - model
         example:
-          company: Supaglue
-          first_name: George
-          last_name: Xing
-          lead_source: API Blogger
-          title: Co-Founder
+          model:
+            company: Supaglue
+            first_name: George
+            last_name: Xing
+            lead_source: API Blogger
+            title: Co-Founder
   responses:
     '201':
       description: Lead created
@@ -117,10 +118,13 @@ post:
             type: object
             properties:
               errors:
-                $ref: ../components/schemas/errors.yaml
+                $ref: ../../common/components/schemas/errors.yaml
               logs:
-                $ref: ../components/schemas/logs.yaml
+                $ref: ../../common/components/schemas/logs.yaml
               model:
                 $ref: ../components/schemas/objects/lead.yaml
               warnings:
-                $ref: ../components/schemas/warnings.yaml
+                $ref: ../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../common/components/parameters/customer-id.yaml
+  - $ref: ../../common/components/parameters/provider-name.yaml

@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.3.0",
-    "title": "Supaglue API",
+    "version": "0.3.3",
+    "title": "Supaglue CRM API",
     "contact": {
       "name": "Supaglue",
       "email": "docs@supaglue.com",
@@ -199,7 +199,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     },
     "/accounts/{account_id}": {
       "get": {
@@ -321,6 +329,12 @@
         }
       },
       "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
         {
           "name": "account_id",
           "in": "path",
@@ -520,7 +534,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     },
     "/contacts/{contact_id}": {
       "get": {
@@ -572,11 +594,11 @@
               "examples": {
                 "Example": {
                   "value": {
-                    "first_name": "George",
-                    "id": "5733a8b6-472d-45fa-8f10-e0b00727cced",
-                    "last_activity_at": "2023-02-27T00:00:00Z",
-                    "last_name": "Xing",
-                    "account_id": "0ce05511-adbc-4144-a049-6631c7ea3b04"
+                    "model": {
+                      "first_name": "George",
+                      "last_name": "Xing",
+                      "account_id": "0ce05511-adbc-4144-a049-6631c7ea3b04"
+                    }
                   }
                 }
               }
@@ -611,6 +633,12 @@
         }
       },
       "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
         {
           "name": "contact_id",
           "in": "path",
@@ -788,11 +816,13 @@
                 ]
               },
               "example": {
-                "company": "Supaglue",
-                "first_name": "George",
-                "last_name": "Xing",
-                "lead_source": "API Blogger",
-                "title": "Co-Founder"
+                "model": {
+                  "company": "Supaglue",
+                  "first_name": "George",
+                  "last_name": "Xing",
+                  "lead_source": "API Blogger",
+                  "title": "Co-Founder"
+                }
               }
             }
           }
@@ -823,7 +853,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     },
     "/leads/{lead_id}": {
       "get": {
@@ -875,12 +913,13 @@
               "examples": {
                 "Example": {
                   "value": {
-                    "company": "Supaglue",
-                    "first_name": "George",
-                    "id": "c0dec24d-eb62-4a5a-bd62-5a52d888213b",
-                    "last_name": "Xing",
-                    "lead_source": "API Blogger",
-                    "title": "Co-Founder"
+                    "model": {
+                      "company": "Supaglue",
+                      "first_name": "George",
+                      "last_name": "Xing",
+                      "lead_source": "API Blogger",
+                      "title": "Co-Founder"
+                    }
                   }
                 }
               }
@@ -915,6 +954,12 @@
         }
       },
       "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
         {
           "name": "lead_id",
           "in": "path",
@@ -987,7 +1032,9 @@
                       "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
                       "results": [
                         {
-                          "account": "82de27cb-6f8c-4278-b783-82d1d916eddc",
+                          "account": {
+                            "id": "82de27cb-6f8c-4278-b783-82d1d916eddc"
+                          },
                           "amount": 100000,
                           "close_date": "2023-02-27T00:00:00Z",
                           "description": "Wants to use open source unified API for third-party integrations",
@@ -1000,7 +1047,9 @@
                           "stage": "Closed Won"
                         },
                         {
-                          "account": "0958cbc6-6040-430a-848e-aafacbadf4ae",
+                          "account": {
+                            "id": "0958cbc6-6040-430a-848e-aafacbadf4ae"
+                          },
                           "amount": 100000,
                           "close_date": "2023-02-27T00:00:00Z",
                           "description": "Wants to use open source unified API for third-party integrations",
@@ -1044,12 +1093,14 @@
                 ]
               },
               "example": {
-                "amount": 100000,
-                "close_date": "2023-02-27T00:00:00Z",
-                "description": "Wants to use open source unified API for third-party integrations",
-                "name": "Needs Integrations",
-                "stage": "Closed Won",
-                "account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
+                "model": {
+                  "amount": 100000,
+                  "close_date": "2023-02-27T00:00:00Z",
+                  "description": "Wants to use open source unified API for third-party integrations",
+                  "name": "Needs Integrations",
+                  "stage": "Closed Won",
+                  "account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
+                }
               }
             }
           }
@@ -1080,7 +1131,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     },
     "/opportunities/{opportunity_id}": {
       "get": {
@@ -1105,7 +1164,9 @@
                 "examples": {
                   "Example": {
                     "value": {
-                      "accountId": "a329053d-bf86-4b82-8356-9e897aa7dacc",
+                      "account": {
+                        "id": "a329053d-bf86-4b82-8356-9e897aa7dacc"
+                      },
                       "amount": 100000,
                       "close_date": "2023-02-27T00:00:00Z",
                       "description": "Wants to use open source unified API for third-party integrations",
@@ -1178,6 +1239,12 @@
       },
       "parameters": [
         {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
+        {
           "name": "opportunity_id",
           "in": "path",
           "required": true,
@@ -1188,11 +1255,118 @@
         }
       ]
     },
+    "/sync-history": {
+      "get": {
+        "operationId": "getSyncHistory",
+        "tags": [
+          "Sync"
+        ],
+        "summary": "Get Sync History",
+        "description": "Get a list of Sync History objects.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The model name to filter by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync History",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "model_name": {
+                                "type": "string",
+                                "example": "Account"
+                              },
+                              "error_message": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "start_timestamp": {
+                                "type": "string",
+                                "example": "2023-02-22T19:55:17.559Z"
+                              },
+                              "end_timestamp": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "2023-02-22T20:55:17.559Z"
+                              },
+                              "status": {
+                                "type": "string",
+                                "example": "IN_PROGRESS"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "sjkflwbajkbbkajwbcs",
+                      "previous": null,
+                      "results": [
+                        {
+                          "model_name": "account",
+                          "start_timestamp": "2023-02-22T19:55:17.559Z",
+                          "status": "IN_PROGRESS"
+                        },
+                        {
+                          "model_name": "contact",
+                          "start_timestamp": "2023-02-22T19:50:17.559Z",
+                          "end_timestamp": "2023-02-22T20:50:17.559Z",
+                          "status": "ERROR",
+                          "error_message": "Error: Something went wrong"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
+    },
     "/sync-info": {
       "get": {
         "operationId": "getSyncInfos",
         "tags": [
-          "SyncInfo"
+          "Sync"
         ],
         "summary": "Get Sync Info",
         "description": "Get a list of Sync Info",
@@ -1250,7 +1424,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     }
   },
   "tags": [
@@ -1271,8 +1453,8 @@
       "description": "The `Opportunity` Common Model is used to represent a \"deal opportunity\" in CRMs."
     },
     {
-      "name": "SyncInfo",
-      "description": "(Non-CRM) `SyncInfo` provides metadata about a `Sync`."
+      "name": "Sync",
+      "description": "Get information and history for the sync process."
     }
   ],
   "components": {
@@ -2069,6 +2251,27 @@
           "example": "3804695"
         },
         "description": "Number of results to return per page"
+      },
+      "customer-id": {
+        "name": "customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "E85AC5CD-BFEE-47C9-B7E8-6112F6CDC51A"
+        },
+        "description": "The customer ID",
+        "required": true
+      },
+      "provider-name": {
+        "name": "provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
       }
     }
   }
