@@ -26,7 +26,7 @@ import java.io.IOException;
  * LeadsBody
  */
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2023-03-07T15:49:43.015334-08:00[America/Los_Angeles]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2023-03-07T15:50:51.298786-08:00[America/Los_Angeles]")
 public class LeadsBody {
   @SerializedName("model")
   private CreateUpdateLead model = null;
