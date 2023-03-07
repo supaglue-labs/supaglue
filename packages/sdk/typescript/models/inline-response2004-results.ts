@@ -14,19 +14,37 @@
 /**
  * 
  * @export
- * @interface Pagination
+ * @interface InlineResponse2004Results
  */
-export interface Pagination {
+export interface InlineResponse2004Results {
     /**
      * 
      * @type {string}
-     * @memberof Pagination
+     * @memberof InlineResponse2004Results
      */
-    next?: string | null;
+    modelName?: string;
     /**
      * 
      * @type {string}
-     * @memberof Pagination
+     * @memberof InlineResponse2004Results
      */
-    previous?: string | null;
+    errorMessage?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2004Results
+     */
+    startTimestamp?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2004Results
+     */
+    endTimestamp?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2004Results
+     */
+    status?: string;
 }

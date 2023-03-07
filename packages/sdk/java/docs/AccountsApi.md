@@ -1,6 +1,6 @@
 # AccountsApi
 
-All URIs are relative to *https://localhost:8080/crm/v1*
+All URIs are relative to *http://localhost:8080/crm/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 <a name="createAccount"></a>
 # **createAccount**
-> InlineResponse201 createAccount(body)
+> InlineResponse201 createAccount(body, customerId, providerName)
 
 Create account
 
@@ -24,8 +24,10 @@ Create account
 
 AccountsApi apiInstance = new AccountsApi();
 AccountsBody body = new AccountsBody(); // AccountsBody | 
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 try {
-    InlineResponse201 result = apiInstance.createAccount(body);
+    InlineResponse201 result = apiInstance.createAccount(body, customerId, providerName);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AccountsApi#createAccount");
@@ -38,6 +40,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**AccountsBody**](AccountsBody.md)|  |
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
 
 ### Return type
 
@@ -54,7 +58,7 @@ No authorization required
 
 <a name="getAccount"></a>
 # **getAccount**
-> Account getAccount(accountId, expand)
+> Account getAccount(customerId, providerName, accountId, expand)
 
 Get account
 
@@ -66,10 +70,12 @@ Get account
 
 
 AccountsApi apiInstance = new AccountsApi();
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 String accountId = "accountId_example"; // String | 
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 try {
-    Account result = apiInstance.getAccount(accountId, expand);
+    Account result = apiInstance.getAccount(customerId, providerName, accountId, expand);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AccountsApi#getAccount");
@@ -81,6 +87,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **accountId** | **String**|  |
  **expand** | **String**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional]
 
@@ -99,7 +107,7 @@ No authorization required
 
 <a name="getAccounts"></a>
 # **getAccounts**
-> InlineResponse200 getAccounts(createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
+> InlineResponse200 getAccounts(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
 
 List accounts
 
@@ -113,6 +121,8 @@ Get a list of accounts
 
 
 AccountsApi apiInstance = new AccountsApi();
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 OffsetDateTime createdAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created after this datetime
 OffsetDateTime createdBefore = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created before this datetime
 OffsetDateTime updatedAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified after this datetime
@@ -121,7 +131,7 @@ String cursor = "cursor_example"; // String | The pagination cursor value
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 try {
-    InlineResponse200 result = apiInstance.getAccounts(createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
+    InlineResponse200 result = apiInstance.getAccounts(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AccountsApi#getAccounts");
@@ -133,6 +143,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **createdAfter** | **OffsetDateTime**| If provided, will only return objects created after this datetime | [optional]
  **createdBefore** | **OffsetDateTime**| If provided, will only return objects created before this datetime | [optional]
  **updatedAfter** | **OffsetDateTime**| If provided, will only return objects modified after this datetime | [optional]
@@ -156,7 +168,7 @@ No authorization required
 
 <a name="updateAccount"></a>
 # **updateAccount**
-> InlineResponse201 updateAccount(body, accountId)
+> InlineResponse201 updateAccount(body, customerId, providerName, accountId)
 
 Update account
 
@@ -169,9 +181,11 @@ Update account
 
 AccountsApi apiInstance = new AccountsApi();
 AccountsAccountIdBody body = new AccountsAccountIdBody(); // AccountsAccountIdBody | 
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 String accountId = "accountId_example"; // String | 
 try {
-    InlineResponse201 result = apiInstance.updateAccount(body, accountId);
+    InlineResponse201 result = apiInstance.updateAccount(body, customerId, providerName, accountId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AccountsApi#updateAccount");
@@ -184,6 +198,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**AccountsAccountIdBody**](AccountsAccountIdBody.md)|  |
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **accountId** | **String**|  |
 
 ### Return type

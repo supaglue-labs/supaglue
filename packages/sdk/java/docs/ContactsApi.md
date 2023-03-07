@@ -1,6 +1,6 @@
 # ContactsApi
 
-All URIs are relative to *https://localhost:8080/crm/v1*
+All URIs are relative to *http://localhost:8080/crm/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 <a name="createContact"></a>
 # **createContact**
-> InlineResponse2011 createContact(body)
+> InlineResponse2011 createContact(body, customerId, providerName)
 
 Create contact
 
@@ -24,8 +24,10 @@ Create contact
 
 ContactsApi apiInstance = new ContactsApi();
 ContactsBody body = new ContactsBody(); // ContactsBody | 
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 try {
-    InlineResponse2011 result = apiInstance.createContact(body);
+    InlineResponse2011 result = apiInstance.createContact(body, customerId, providerName);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ContactsApi#createContact");
@@ -38,6 +40,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**ContactsBody**](ContactsBody.md)|  |
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
 
 ### Return type
 
@@ -54,7 +58,7 @@ No authorization required
 
 <a name="getContact"></a>
 # **getContact**
-> Contact getContact(contactId, expand)
+> Contact getContact(customerId, providerName, contactId, expand)
 
 Get contact
 
@@ -66,10 +70,12 @@ Get contact
 
 
 ContactsApi apiInstance = new ContactsApi();
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 String contactId = "contactId_example"; // String | 
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 try {
-    Contact result = apiInstance.getContact(contactId, expand);
+    Contact result = apiInstance.getContact(customerId, providerName, contactId, expand);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ContactsApi#getContact");
@@ -81,6 +87,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **contactId** | **String**|  |
  **expand** | **String**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional]
 
@@ -99,7 +107,7 @@ No authorization required
 
 <a name="getContacts"></a>
 # **getContacts**
-> InlineResponse2001 getContacts(createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
+> InlineResponse2001 getContacts(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
 
 List contacts
 
@@ -113,6 +121,8 @@ Get a list of contacts
 
 
 ContactsApi apiInstance = new ContactsApi();
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 OffsetDateTime createdAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created after this datetime
 OffsetDateTime createdBefore = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created before this datetime
 OffsetDateTime updatedAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified after this datetime
@@ -121,7 +131,7 @@ String cursor = "cursor_example"; // String | The pagination cursor value
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 try {
-    InlineResponse2001 result = apiInstance.getContacts(createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
+    InlineResponse2001 result = apiInstance.getContacts(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ContactsApi#getContacts");
@@ -133,6 +143,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **createdAfter** | **OffsetDateTime**| If provided, will only return objects created after this datetime | [optional]
  **createdBefore** | **OffsetDateTime**| If provided, will only return objects created before this datetime | [optional]
  **updatedAfter** | **OffsetDateTime**| If provided, will only return objects modified after this datetime | [optional]
@@ -156,7 +168,7 @@ No authorization required
 
 <a name="updateContact"></a>
 # **updateContact**
-> InlineResponse2011 updateContact(body, contactId)
+> InlineResponse2011 updateContact(body, customerId, providerName, contactId)
 
 Update contact
 
@@ -169,9 +181,11 @@ Update contact
 
 ContactsApi apiInstance = new ContactsApi();
 ContactsContactIdBody body = new ContactsContactIdBody(); // ContactsContactIdBody | 
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 String contactId = "contactId_example"; // String | 
 try {
-    InlineResponse2011 result = apiInstance.updateContact(body, contactId);
+    InlineResponse2011 result = apiInstance.updateContact(body, customerId, providerName, contactId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ContactsApi#updateContact");
@@ -184,6 +198,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**ContactsContactIdBody**](ContactsContactIdBody.md)|  |
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **contactId** | **String**|  |
 
 ### Return type

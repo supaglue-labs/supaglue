@@ -1,6 +1,6 @@
 # LeadsApi
 
-All URIs are relative to *https://localhost:8080/crm/v1*
+All URIs are relative to *http://localhost:8080/crm/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 <a name="createLead"></a>
 # **createLead**
-> InlineResponse2012 createLead(body)
+> InlineResponse2012 createLead(body, customerId, providerName)
 
 Create lead
 
@@ -24,8 +24,10 @@ Create lead
 
 LeadsApi apiInstance = new LeadsApi();
 LeadsBody body = new LeadsBody(); // LeadsBody | 
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 try {
-    InlineResponse2012 result = apiInstance.createLead(body);
+    InlineResponse2012 result = apiInstance.createLead(body, customerId, providerName);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling LeadsApi#createLead");
@@ -38,6 +40,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**LeadsBody**](LeadsBody.md)|  |
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
 
 ### Return type
 
@@ -54,7 +58,7 @@ No authorization required
 
 <a name="getLead"></a>
 # **getLead**
-> Lead getLead(leadId, expand)
+> Lead getLead(customerId, providerName, leadId, expand)
 
 Get lead
 
@@ -66,10 +70,12 @@ Get lead
 
 
 LeadsApi apiInstance = new LeadsApi();
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 String leadId = "leadId_example"; // String | 
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 try {
-    Lead result = apiInstance.getLead(leadId, expand);
+    Lead result = apiInstance.getLead(customerId, providerName, leadId, expand);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling LeadsApi#getLead");
@@ -81,6 +87,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **leadId** | **String**|  |
  **expand** | **String**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional]
 
@@ -99,7 +107,7 @@ No authorization required
 
 <a name="getLeads"></a>
 # **getLeads**
-> InlineResponse2002 getLeads(createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
+> InlineResponse2002 getLeads(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
 
 List leads
 
@@ -113,6 +121,8 @@ Get a list of leads
 
 
 LeadsApi apiInstance = new LeadsApi();
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 OffsetDateTime createdAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created after this datetime
 OffsetDateTime createdBefore = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created before this datetime
 OffsetDateTime updatedAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified after this datetime
@@ -121,7 +131,7 @@ String cursor = "cursor_example"; // String | The pagination cursor value
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 try {
-    InlineResponse2002 result = apiInstance.getLeads(createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
+    InlineResponse2002 result = apiInstance.getLeads(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling LeadsApi#getLeads");
@@ -133,6 +143,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **createdAfter** | **OffsetDateTime**| If provided, will only return objects created after this datetime | [optional]
  **createdBefore** | **OffsetDateTime**| If provided, will only return objects created before this datetime | [optional]
  **updatedAfter** | **OffsetDateTime**| If provided, will only return objects modified after this datetime | [optional]
@@ -156,7 +168,7 @@ No authorization required
 
 <a name="updateLead"></a>
 # **updateLead**
-> InlineResponse2012 updateLead(body, leadId)
+> InlineResponse2012 updateLead(body, customerId, providerName, leadId)
 
 Update lead
 
@@ -169,9 +181,11 @@ Update lead
 
 LeadsApi apiInstance = new LeadsApi();
 LeadsLeadIdBody body = new LeadsLeadIdBody(); // LeadsLeadIdBody | 
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 String leadId = "leadId_example"; // String | 
 try {
-    InlineResponse2012 result = apiInstance.updateLead(body, leadId);
+    InlineResponse2012 result = apiInstance.updateLead(body, customerId, providerName, leadId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling LeadsApi#updateLead");
@@ -184,6 +198,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**LeadsLeadIdBody**](LeadsLeadIdBody.md)|  |
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **leadId** | **String**|  |
 
 ### Return type

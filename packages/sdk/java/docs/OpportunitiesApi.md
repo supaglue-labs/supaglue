@@ -1,6 +1,6 @@
 # OpportunitiesApi
 
-All URIs are relative to *https://localhost:8080/crm/v1*
+All URIs are relative to *http://localhost:8080/crm/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 <a name="createOpportunity"></a>
 # **createOpportunity**
-> InlineResponse2013 createOpportunity(body)
+> InlineResponse2013 createOpportunity(body, customerId, providerName)
 
 Create opportunity
 
@@ -24,8 +24,10 @@ Create opportunity
 
 OpportunitiesApi apiInstance = new OpportunitiesApi();
 OpportunitiesBody body = new OpportunitiesBody(); // OpportunitiesBody | 
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 try {
-    InlineResponse2013 result = apiInstance.createOpportunity(body);
+    InlineResponse2013 result = apiInstance.createOpportunity(body, customerId, providerName);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#createOpportunity");
@@ -38,6 +40,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**OpportunitiesBody**](OpportunitiesBody.md)|  |
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
 
 ### Return type
 
@@ -54,7 +58,7 @@ No authorization required
 
 <a name="getOpportunities"></a>
 # **getOpportunities**
-> InlineResponse2003 getOpportunities(createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
+> InlineResponse2003 getOpportunities(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
 
 List opportunities
 
@@ -68,6 +72,8 @@ Get a list of opportunities
 
 
 OpportunitiesApi apiInstance = new OpportunitiesApi();
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 OffsetDateTime createdAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created after this datetime
 OffsetDateTime createdBefore = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created before this datetime
 OffsetDateTime updatedAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified after this datetime
@@ -76,7 +82,7 @@ String cursor = "cursor_example"; // String | The pagination cursor value
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 try {
-    InlineResponse2003 result = apiInstance.getOpportunities(createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
+    InlineResponse2003 result = apiInstance.getOpportunities(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#getOpportunities");
@@ -88,6 +94,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **createdAfter** | **OffsetDateTime**| If provided, will only return objects created after this datetime | [optional]
  **createdBefore** | **OffsetDateTime**| If provided, will only return objects created before this datetime | [optional]
  **updatedAfter** | **OffsetDateTime**| If provided, will only return objects modified after this datetime | [optional]
@@ -111,7 +119,7 @@ No authorization required
 
 <a name="getOpportunity"></a>
 # **getOpportunity**
-> Opportunity getOpportunity(opportunityId, expand)
+> Opportunity getOpportunity(customerId, providerName, opportunityId, expand)
 
 Get opportunity
 
@@ -123,10 +131,12 @@ Get opportunity
 
 
 OpportunitiesApi apiInstance = new OpportunitiesApi();
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 String opportunityId = "opportunityId_example"; // String | 
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 try {
-    Opportunity result = apiInstance.getOpportunity(opportunityId, expand);
+    Opportunity result = apiInstance.getOpportunity(customerId, providerName, opportunityId, expand);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#getOpportunity");
@@ -138,6 +148,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **opportunityId** | **String**|  |
  **expand** | **String**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional]
 
@@ -156,7 +168,7 @@ No authorization required
 
 <a name="updateOpportunity"></a>
 # **updateOpportunity**
-> InlineResponse2013 updateOpportunity(body, opportunityId)
+> InlineResponse2013 updateOpportunity(body, customerId, providerName, opportunityId)
 
 Update opportunity
 
@@ -169,9 +181,11 @@ Update opportunity
 
 OpportunitiesApi apiInstance = new OpportunitiesApi();
 OpportunitiesOpportunityIdBody body = new OpportunitiesOpportunityIdBody(); // OpportunitiesOpportunityIdBody | 
+String customerId = "customerId_example"; // String | The customer ID
+String providerName = "providerName_example"; // String | The provider name
 String opportunityId = "opportunityId_example"; // String | 
 try {
-    InlineResponse2013 result = apiInstance.updateOpportunity(body, opportunityId);
+    InlineResponse2013 result = apiInstance.updateOpportunity(body, customerId, providerName, opportunityId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#updateOpportunity");
@@ -184,6 +198,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**OpportunitiesOpportunityIdBody**](OpportunitiesOpportunityIdBody.md)|  |
+ **customerId** | **String**| The customer ID |
+ **providerName** | **String**| The provider name |
  **opportunityId** | **String**|  |
 
 ### Return type

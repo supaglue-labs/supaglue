@@ -1,6 +1,6 @@
 # swagger_client.OpportunitiesApi
 
-All URIs are relative to *https://localhost:8080/crm/v1*
+All URIs are relative to *http://localhost:8080/crm/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -10,7 +10,7 @@ Method | HTTP request | Description
 [**update_opportunity**](OpportunitiesApi.md#update_opportunity) | **PATCH** /opportunities/{opportunity_id} | Update opportunity
 
 # **create_opportunity**
-> InlineResponse2013 create_opportunity(body)
+> InlineResponse2013 create_opportunity(body, customer_id, provider_name)
 
 Create opportunity
 
@@ -25,10 +25,12 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.OpportunitiesApi()
 body = swagger_client.OpportunitiesBody() # OpportunitiesBody | 
+customer_id = 'customer_id_example' # str | The customer ID
+provider_name = 'provider_name_example' # str | The provider name
 
 try:
     # Create opportunity
-    api_response = api_instance.create_opportunity(body)
+    api_response = api_instance.create_opportunity(body, customer_id, provider_name)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling OpportunitiesApi->create_opportunity: %s\n" % e)
@@ -39,6 +41,8 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**OpportunitiesBody**](OpportunitiesBody.md)|  | 
+ **customer_id** | **str**| The customer ID | 
+ **provider_name** | **str**| The provider name | 
 
 ### Return type
 
@@ -56,7 +60,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_opportunities**
-> InlineResponse2003 get_opportunities(created_after=created_after, created_before=created_before, updated_after=updated_after, updated_before=updated_before, cursor=cursor, expand=expand, page_size=page_size)
+> InlineResponse2003 get_opportunities(customer_id, provider_name, created_after=created_after, created_before=created_before, updated_after=updated_after, updated_before=updated_before, cursor=cursor, expand=expand, page_size=page_size)
 
 List opportunities
 
@@ -72,6 +76,8 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.OpportunitiesApi()
+customer_id = 'customer_id_example' # str | The customer ID
+provider_name = 'provider_name_example' # str | The provider name
 created_after = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects created after this datetime (optional)
 created_before = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects created before this datetime (optional)
 updated_after = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects modified after this datetime (optional)
@@ -82,7 +88,7 @@ page_size = 'page_size_example' # str | Number of results to return per page (op
 
 try:
     # List opportunities
-    api_response = api_instance.get_opportunities(created_after=created_after, created_before=created_before, updated_after=updated_after, updated_before=updated_before, cursor=cursor, expand=expand, page_size=page_size)
+    api_response = api_instance.get_opportunities(customer_id, provider_name, created_after=created_after, created_before=created_before, updated_after=updated_after, updated_before=updated_before, cursor=cursor, expand=expand, page_size=page_size)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling OpportunitiesApi->get_opportunities: %s\n" % e)
@@ -92,6 +98,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customer_id** | **str**| The customer ID | 
+ **provider_name** | **str**| The provider name | 
  **created_after** | **datetime**| If provided, will only return objects created after this datetime | [optional] 
  **created_before** | **datetime**| If provided, will only return objects created before this datetime | [optional] 
  **updated_after** | **datetime**| If provided, will only return objects modified after this datetime | [optional] 
@@ -116,7 +124,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_opportunity**
-> Opportunity get_opportunity(opportunity_id, expand=expand)
+> Opportunity get_opportunity(customer_id, provider_name, opportunity_id, expand=expand)
 
 Get opportunity
 
@@ -130,12 +138,14 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.OpportunitiesApi()
+customer_id = 'customer_id_example' # str | The customer ID
+provider_name = 'provider_name_example' # str | The provider name
 opportunity_id = 'opportunity_id_example' # str | 
 expand = 'expand_example' # str | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces (optional)
 
 try:
     # Get opportunity
-    api_response = api_instance.get_opportunity(opportunity_id, expand=expand)
+    api_response = api_instance.get_opportunity(customer_id, provider_name, opportunity_id, expand=expand)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling OpportunitiesApi->get_opportunity: %s\n" % e)
@@ -145,6 +155,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **customer_id** | **str**| The customer ID | 
+ **provider_name** | **str**| The provider name | 
  **opportunity_id** | **str**|  | 
  **expand** | **str**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional] 
 
@@ -164,7 +176,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **update_opportunity**
-> InlineResponse2013 update_opportunity(body, opportunity_id)
+> InlineResponse2013 update_opportunity(body, customer_id, provider_name, opportunity_id)
 
 Update opportunity
 
@@ -179,11 +191,13 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.OpportunitiesApi()
 body = swagger_client.OpportunitiesOpportunityIdBody() # OpportunitiesOpportunityIdBody | 
+customer_id = 'customer_id_example' # str | The customer ID
+provider_name = 'provider_name_example' # str | The provider name
 opportunity_id = 'opportunity_id_example' # str | 
 
 try:
     # Update opportunity
-    api_response = api_instance.update_opportunity(body, opportunity_id)
+    api_response = api_instance.update_opportunity(body, customer_id, provider_name, opportunity_id)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling OpportunitiesApi->update_opportunity: %s\n" % e)
@@ -194,6 +208,8 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**OpportunitiesOpportunityIdBody**](OpportunitiesOpportunityIdBody.md)|  | 
+ **customer_id** | **str**| The customer ID | 
+ **provider_name** | **str**| The provider name | 
  **opportunity_id** | **str**|  | 
 
 ### Return type

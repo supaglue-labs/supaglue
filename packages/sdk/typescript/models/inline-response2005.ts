@@ -11,11 +11,34 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { LogsInner } from './logs-inner';
 /**
  * 
  * @export
- * @interface Logs
+ * @interface InlineResponse2005
  */
-export interface Logs extends Array<LogsInner> {
+export interface InlineResponse2005 {
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2005
+     */
+    modelName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2005
+     */
+    lastSyncStart?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2005
+     */
+    nextSyncStart?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof InlineResponse2005
+     */
+    status?: string | null;
 }
