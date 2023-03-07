@@ -6,7 +6,7 @@
   "index": "dist/index.js",
   "types": "index.ts",
   "dependencies": {
-    "@prisma/client": "^4.10.1",
+    "@prisma/client": "^4.11.0",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
@@ -19,7 +19,8 @@
     "build": "yarn run clean && tsc -p .",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
-    "lint": "run -T eslint"
+    "lint": "run -T eslint",
+    "generate": "prisma generate"
   },
   "files": [
     "dist"
