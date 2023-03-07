@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "version": "0.3.0",
-    "title": "Supaglue API",
+    "title": "Supaglue CRM API",
     "contact": {
       "name": "Supaglue",
       "email": "docs@supaglue.com",
@@ -572,11 +572,11 @@
               "examples": {
                 "Example": {
                   "value": {
-                    "first_name": "George",
-                    "id": "5733a8b6-472d-45fa-8f10-e0b00727cced",
-                    "last_activity_at": "2023-02-27T00:00:00Z",
-                    "last_name": "Xing",
-                    "account_id": "0ce05511-adbc-4144-a049-6631c7ea3b04"
+                    "model": {
+                      "first_name": "George",
+                      "last_name": "Xing",
+                      "account_id": "0ce05511-adbc-4144-a049-6631c7ea3b04"
+                    }
                   }
                 }
               }
@@ -788,11 +788,13 @@
                 ]
               },
               "example": {
-                "company": "Supaglue",
-                "first_name": "George",
-                "last_name": "Xing",
-                "lead_source": "API Blogger",
-                "title": "Co-Founder"
+                "model": {
+                  "company": "Supaglue",
+                  "first_name": "George",
+                  "last_name": "Xing",
+                  "lead_source": "API Blogger",
+                  "title": "Co-Founder"
+                }
               }
             }
           }
@@ -875,12 +877,13 @@
               "examples": {
                 "Example": {
                   "value": {
-                    "company": "Supaglue",
-                    "first_name": "George",
-                    "id": "c0dec24d-eb62-4a5a-bd62-5a52d888213b",
-                    "last_name": "Xing",
-                    "lead_source": "API Blogger",
-                    "title": "Co-Founder"
+                    "model": {
+                      "company": "Supaglue",
+                      "first_name": "George",
+                      "last_name": "Xing",
+                      "lead_source": "API Blogger",
+                      "title": "Co-Founder"
+                    }
                   }
                 }
               }
@@ -987,7 +990,9 @@
                       "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
                       "results": [
                         {
-                          "account": "82de27cb-6f8c-4278-b783-82d1d916eddc",
+                          "account": {
+                            "id": "82de27cb-6f8c-4278-b783-82d1d916eddc"
+                          },
                           "amount": 100000,
                           "close_date": "2023-02-27T00:00:00Z",
                           "description": "Wants to use open source unified API for third-party integrations",
@@ -1000,7 +1005,9 @@
                           "stage": "Closed Won"
                         },
                         {
-                          "account": "0958cbc6-6040-430a-848e-aafacbadf4ae",
+                          "account": {
+                            "id": "0958cbc6-6040-430a-848e-aafacbadf4ae"
+                          },
                           "amount": 100000,
                           "close_date": "2023-02-27T00:00:00Z",
                           "description": "Wants to use open source unified API for third-party integrations",
@@ -1044,12 +1051,14 @@
                 ]
               },
               "example": {
-                "amount": 100000,
-                "close_date": "2023-02-27T00:00:00Z",
-                "description": "Wants to use open source unified API for third-party integrations",
-                "name": "Needs Integrations",
-                "stage": "Closed Won",
-                "account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
+                "model": {
+                  "amount": 100000,
+                  "close_date": "2023-02-27T00:00:00Z",
+                  "description": "Wants to use open source unified API for third-party integrations",
+                  "name": "Needs Integrations",
+                  "stage": "Closed Won",
+                  "account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
+                }
               }
             }
           }
@@ -1105,7 +1114,9 @@
                 "examples": {
                   "Example": {
                     "value": {
-                      "accountId": "a329053d-bf86-4b82-8356-9e897aa7dacc",
+                      "account": {
+                        "id": "a329053d-bf86-4b82-8356-9e897aa7dacc"
+                      },
                       "amount": 100000,
                       "close_date": "2023-02-27T00:00:00Z",
                       "description": "Wants to use open source unified API for third-party integrations",
@@ -1187,70 +1198,6 @@
           }
         }
       ]
-    },
-    "/sync-info": {
-      "get": {
-        "operationId": "getSyncInfos",
-        "tags": [
-          "SyncInfo"
-        ],
-        "summary": "Get Sync Info",
-        "description": "Get a list of Sync Info",
-        "responses": {
-          "200": {
-            "description": "Sync Info List",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "model_name": {
-                        "type": "string",
-                        "example": "Account"
-                      },
-                      "last_sync_start": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": "2023-02-22T19:55:17.559Z"
-                      },
-                      "next_sync_start": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": "2023-02-22T20:55:17.559Z"
-                      },
-                      "status": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": "SYNCING"
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "model_name": "account",
-                        "last_sync_start": "2023-02-22T19:55:17.559Z",
-                        "next_sync_start": "2023-02-22T20:55:17.559Z",
-                        "status": "SYNCING"
-                      },
-                      {
-                        "model_name": "contact",
-                        "last_sync_start": "2023-02-22T19:50:17.559Z",
-                        "next_sync_start": "2023-02-22T20:50:17.559Z",
-                        "status": "DONE"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -1269,10 +1216,6 @@
     {
       "name": "Opportunities",
       "description": "The `Opportunity` Common Model is used to represent a \"deal opportunity\" in CRMs."
-    },
-    {
-      "name": "SyncInfo",
-      "description": "(Non-CRM) `SyncInfo` provides metadata about a `Sync`."
     }
   ],
   "components": {

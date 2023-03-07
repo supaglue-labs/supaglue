@@ -6,7 +6,7 @@ const { connectionService, integrationService } = getDependencyContainer();
 
 export async function connectionMiddleware(req: any, res: Response, next: NextFunction) {
   req.sg = {
-    connectionId: req.params.connectionId,
+    connectionId: req.params.connectionId ?? req.params.connection_id,
     ...req.sg,
   };
   next();

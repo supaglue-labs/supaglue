@@ -1,0 +1,479 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.3.0",
+    "title": "Supaglue Customer API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "# Introduction\n\nWelcome to the Supaglue unified CRM API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.\n\n### Base API URL\n\n```\nhttp://localhost:8080/api/customer/v1\n```\n"
+  },
+  "externalDocs": {
+    "description": "Try out our API in Postman!",
+    "url": "https://www.postman.com/supaglue/workspace/supaglue-public/overview"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:8080/customer/v1",
+      "description": "Local Supaglue API"
+    }
+  ],
+  "paths": {
+    "/customers/{customer_id}/integrations/{integration_id}/connections/{connection_id}/sync-info": {
+      "get": {
+        "operationId": "getSyncInfos",
+        "tags": [
+          "Sync"
+        ],
+        "summary": "Get Sync Info",
+        "description": "Get a list of Sync Info",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/customer_id"
+          },
+          {
+            "$ref": "#/components/parameters/integration_id"
+          },
+          {
+            "$ref": "#/components/parameters/connection_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync Info List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "model_name": {
+                        "type": "string",
+                        "example": "Account"
+                      },
+                      "last_sync_start": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2023-02-22T19:55:17.559Z"
+                      },
+                      "next_sync_start": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2023-02-22T20:55:17.559Z"
+                      },
+                      "status": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "SYNCING"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "model_name": "account",
+                        "last_sync_start": "2023-02-22T19:55:17.559Z",
+                        "next_sync_start": "2023-02-22T20:55:17.559Z",
+                        "status": "SYNCING"
+                      },
+                      {
+                        "model_name": "contact",
+                        "last_sync_start": "2023-02-22T19:50:17.559Z",
+                        "next_sync_start": "2023-02-22T20:50:17.559Z",
+                        "status": "DONE"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/integrations/{integration_id}/connections/{connection_id}/sync-history": {
+      "get": {
+        "operationId": "getSyncHistory",
+        "tags": [
+          "Sync"
+        ],
+        "summary": "Get Sync History",
+        "description": "Get a list of Sync History objects.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/customer_id"
+          },
+          {
+            "$ref": "#/components/parameters/integration_id"
+          },
+          {
+            "$ref": "#/components/parameters/connection_id"
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The model name to filter by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync History",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "model_name": {
+                                "type": "string",
+                                "example": "Account"
+                              },
+                              "error_message": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "start_timestamp": {
+                                "type": "string",
+                                "example": "2023-02-22T19:55:17.559Z"
+                              },
+                              "end_timestamp": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "2023-02-22T20:55:17.559Z"
+                              },
+                              "status": {
+                                "type": "string",
+                                "example": "IN_PROGRESS"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "sjkflwbajkbbkajwbcs",
+                      "previous": null,
+                      "results": [
+                        {
+                          "model_name": "account",
+                          "start_timestamp": "2023-02-22T19:55:17.559Z",
+                          "status": "IN_PROGRESS"
+                        },
+                        {
+                          "model_name": "contact",
+                          "start_timestamp": "2023-02-22T19:50:17.559Z",
+                          "end_timestamp": "2023-02-22T20:50:17.559Z",
+                          "status": "ERROR",
+                          "error_message": "Error: Something went wrong"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Sync",
+      "description": "Provides metadata about `Syncs`."
+    }
+  ],
+  "components": {
+    "schemas": {
+      "logs": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "dashboard_view": {
+              "type": "string",
+              "example": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832"
+            },
+            "log_id": {
+              "type": "string",
+              "example": "99433219-8017-4acd-bb3c-ceb23d663832"
+            },
+            "log_summary": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "example": "POST"
+                },
+                "status_code": {
+                  "type": "number",
+                  "example": 200
+                },
+                "url": {
+                  "type": "string",
+                  "example": "https://harvest.greenhouse.io/v1/candidates/"
+                }
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+            "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+            "log_summary": {
+              "method": "POST",
+              "status_code": 200,
+              "url": "https://harvest.greenhouse.io/v1/candidates/"
+            }
+          },
+          {
+            "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+            "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+            "log_summary": {
+              "method": "POST",
+              "status_code": 200,
+              "url": "https://harvest.greenhouse.io/v1/candidates/"
+            }
+          }
+        ]
+      },
+      "errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "example": "custom_fields is a required field on model."
+            },
+            "problem_type": {
+              "type": "string",
+              "example": "MISSING_REQUIRED_FIELD"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string",
+                  "example": "irure consectetur"
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "example": "Missing Required Field"
+            }
+          },
+          "example": [
+            {
+              "detail": "custom_fields is a required field on model.",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "source": {
+                "pointer": "irure consectetur"
+              },
+              "title": "Missing Required Field"
+            },
+            {
+              "detail": "custom_fields is a required field on model.",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "source": {
+                "pointer": "et"
+              },
+              "title": "Missing Required Field"
+            }
+          ]
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "example": "An unrecognized field, age, was passed in with request data."
+            },
+            "problem_type": {
+              "type": "string",
+              "example": "UNRECOGNIZED_FIELD"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string",
+                  "example": "Lorem ipsum"
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "example": "Unrecognized Field"
+            }
+          }
+        },
+        "example": [
+          {
+            "detail": "An unrecognized field, age, was passed in with request data.",
+            "problem_type": "UNRECOGNIZED_FIELD",
+            "source": {
+              "pointer": "Lorem ipsum"
+            },
+            "title": "Unrecognized Field"
+          },
+          {
+            "detail": "An unrecognized field, age, was passed in with request data.",
+            "problem_type": "UNRECOGNIZED_FIELD",
+            "source": {
+              "pointer": "in"
+            },
+            "title": "Unrecognized Field"
+          }
+        ]
+      },
+      "pagination": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "created_after": {
+        "name": "created_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created after this datetime"
+      },
+      "created_before": {
+        "name": "created_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created before this datetime"
+      },
+      "updated_after": {
+        "name": "updated_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified after this datetime"
+      },
+      "updated_before": {
+        "name": "updated_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified before this datetime"
+      },
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+        },
+        "description": "The pagination cursor value"
+      },
+      "expand": {
+        "name": "expand",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "owner"
+        },
+        "description": "Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces"
+      },
+      "page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "3804695"
+        },
+        "description": "Number of results to return per page"
+      },
+      "connection_id": {
+        "name": "connection_id",
+        "in": "path",
+        "schema": {
+          "type": "string",
+          "example": "87A5C080-887E-45EC-B176-235A41DC8C33"
+        },
+        "description": "Connection ID",
+        "required": true
+      },
+      "integration_id": {
+        "name": "integration_id",
+        "in": "path",
+        "schema": {
+          "type": "string",
+          "example": "87A5C080-887E-45EC-B176-235A41DC8C33"
+        },
+        "description": "Integration ID",
+        "required": true
+      },
+      "customer_id": {
+        "name": "customer_id",
+        "in": "path",
+        "schema": {
+          "type": "string",
+          "example": "87A5C080-887E-45EC-B176-235A41DC8C33"
+        },
+        "description": "Customer ID",
+        "required": true
+      }
+    }
+  }
+}

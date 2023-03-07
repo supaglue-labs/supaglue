@@ -1,10 +1,14 @@
 get:
   operationId: getSyncInfos
   tags:
-    - SyncInfo
+    - Sync
   summary: Get Sync Info
   description: >-
     Get a list of Sync Info
+  parameters:
+    - $ref: ../components/parameters/customer_id.yaml
+    - $ref: ../components/parameters/integration_id.yaml
+    - $ref: ../components/parameters/connection_id.yaml
   responses:
     '200':
       description: Sync Info List

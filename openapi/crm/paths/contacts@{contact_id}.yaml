@@ -4,7 +4,7 @@ get:
   tags:
     - Contacts
   parameters:
-    - $ref: ../components/parameters/expand.yaml
+    - $ref: ../../common/components/parameters/expand.yaml
   responses:
     200:
       description: Contact
@@ -32,11 +32,10 @@ patch:
         examples:
           Example:
             value:
-              first_name: George
-              id: 5733a8b6-472d-45fa-8f10-e0b00727cced
-              last_activity_at: '2023-02-27T00:00:00Z'
-              last_name: Xing
-              account_id: 0ce05511-adbc-4144-a049-6631c7ea3b04
+              model:
+                first_name: George
+                last_name: Xing
+                account_id: 0ce05511-adbc-4144-a049-6631c7ea3b04
   responses:
     200:
       description: Contact updated
@@ -46,13 +45,13 @@ patch:
             type: object
             properties:
               errors:
-                $ref: ../components/schemas/errors.yaml
+                $ref: ../../common/components/schemas/errors.yaml
               logs:
-                $ref: ../components/schemas/logs.yaml
+                $ref: ../../common/components/schemas/logs.yaml
               model:
                 $ref: ../components/schemas/objects/contact.yaml
               warnings:
-                $ref: ../components/schemas/warnings.yaml
+                $ref: ../../common/components/schemas/warnings.yaml
 parameters:
   - name: contact_id
     in: path

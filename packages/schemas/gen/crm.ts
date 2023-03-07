@@ -85,13 +85,6 @@ export interface paths {
       };
     };
   };
-  "/sync-info": {
-    /**
-     * Get Sync Info 
-     * @description Get a list of Sync Info
-     */
-    get: operations["getSyncInfos"];
-  };
 }
 
 export type webhooks = Record<string, never>;
@@ -707,11 +700,13 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "company": "Supaglue",
-         *   "first_name": "George",
-         *   "last_name": "Xing",
-         *   "lead_source": "API Blogger",
-         *   "title": "Co-Founder"
+         *   "model": {
+         *     "company": "Supaglue",
+         *     "first_name": "George",
+         *     "last_name": "Xing",
+         *     "lead_source": "API Blogger",
+         *     "title": "Co-Founder"
+         *   }
          * }
          */
         "application/json": {
@@ -789,12 +784,14 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "amount": 100000,
-         *   "close_date": "2023-02-27T00:00:00Z",
-         *   "description": "Wants to use open source unified API for third-party integrations",
-         *   "name": "Needs Integrations",
-         *   "stage": "Closed Won",
-         *   "account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
+         *   "model": {
+         *     "amount": 100000,
+         *     "close_date": "2023-02-27T00:00:00Z",
+         *     "description": "Wants to use open source unified API for third-party integrations",
+         *     "name": "Needs Integrations",
+         *     "stage": "Closed Won",
+         *     "account_id": "109c88c0-7bf4-4cd8-afbc-b51f9432ca0b"
+         *   }
          * }
          */
         "application/json": {
@@ -846,29 +843,6 @@ export interface operations {
             model?: components["schemas"]["opportunity"];
             warnings?: components["schemas"]["warnings"];
           };
-        };
-      };
-    };
-  };
-  getSyncInfos: {
-    /**
-     * Get Sync Info 
-     * @description Get a list of Sync Info
-     */
-    responses: {
-      /** @description Sync Info List */
-      200: {
-        content: {
-          "application/json": ({
-              /** @example Account */
-              model_name?: string;
-              /** @example 2023-02-22T19:55:17.559Z */
-              last_sync_start?: string | null;
-              /** @example 2023-02-22T20:55:17.559Z */
-              next_sync_start?: string | null;
-              /** @example SYNCING */
-              status?: string | null;
-            })[];
         };
       };
     };

@@ -1,0 +1,7 @@
+name: integration_id
+in: path
+schema:
+  type: string
+  example: 87A5C080-887E-45EC-B176-235A41DC8C33
+description: Integration ID
+required: true

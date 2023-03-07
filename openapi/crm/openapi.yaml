@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   version: 0.3.0
-  title: Supaglue API
+  title: Supaglue CRM API
   contact:
     name: Supaglue
     email: docs@supaglue.com
@@ -39,8 +39,6 @@ paths:
     $ref: paths/opportunities.yaml
   '/opportunities/{opportunity_id}':
     $ref: paths/opportunities@{opportunity_id}.yaml
-  '/sync-info':
-    $ref: paths/sync-info.yaml
 tags:
   - name: Accounts
     description: The `Account` Common Model is used to represent a "company" in CRMs.
@@ -50,8 +48,6 @@ tags:
     description: The `Lead` Common Model is used to represent a "potential customer" in CRMs.
   - name: Opportunities
     description: The `Opportunity` Common Model is used to represent a "deal opportunity" in CRMs.
-  - name: SyncInfo
-    description: (Non-CRM) `SyncInfo` provides metadata about a `Sync`.
 components:
   schemas:
     account:
@@ -71,11 +67,11 @@ components:
     create_update_opportunity:
       $ref: ./components/schemas/create_update_opportunity.yaml
     logs:
-      $ref: ./components/schemas/logs.yaml
+      $ref: ../common/components/schemas/logs.yaml
     errors:
-      $ref: ./components/schemas/errors.yaml
+      $ref: ../common/components/schemas/errors.yaml
     warnings:
-      $ref: ./components/schemas/warnings.yaml
+      $ref: ../common/components/schemas/warnings.yaml
     addresses:
       $ref: ./components/schemas/objects/addresses.yaml
     email_addresses:
@@ -83,7 +79,7 @@ components:
     phone_numbers:
       $ref: ./components/schemas/objects/phone_numbers.yaml
     pagination:
-      $ref: ./components/schemas/pagination.yaml
+      $ref: ../common/components/schemas/pagination.yaml
   # TODO: uncomment when we implement API authentication
   # securitySchemes:
   #   api_key:
@@ -93,16 +89,16 @@ components:
   #     description: Token identifying the end user
   parameters:
     created_after:
-      $ref: ./components/parameters/created_after.yaml
+      $ref: ../common/components/parameters/created_after.yaml
     created_before:
-      $ref: ./components/parameters/created_before.yaml
+      $ref: ../common/components/parameters/created_before.yaml
     updated_after:
-      $ref: ./components/parameters/updated_after.yaml
+      $ref: ../common/components/parameters/updated_after.yaml
     updated_before:
-      $ref: ./components/parameters/updated_before.yaml
+      $ref: ../common/components/parameters/updated_before.yaml
     cursor:
-      $ref: ./components/parameters/cursor.yaml
+      $ref: ../common/components/parameters/cursor.yaml
     expand:
-      $ref: ./components/parameters/expand.yaml
+      $ref: ../common/components/parameters/expand.yaml
     page_size:
-      $ref: ./components/parameters/page_size.yaml
+      $ref: ../common/components/parameters/page_size.yaml

@@ -4,7 +4,7 @@ get:
   tags:
     - Leads
   parameters:
-    - $ref: ../components/parameters/expand.yaml
+    - $ref: ../../common/components/parameters/expand.yaml
   responses:
     200:
       description: Lead
@@ -32,12 +32,12 @@ patch:
         examples:
           Example:
             value:
-              company: Supaglue
-              first_name: George
-              id: c0dec24d-eb62-4a5a-bd62-5a52d888213b
-              last_name: Xing
-              lead_source: API Blogger
-              title: Co-Founder
+              model:
+                company: Supaglue
+                first_name: George
+                last_name: Xing
+                lead_source: API Blogger
+                title: Co-Founder
   responses:
     200:
       description: Lead updated
@@ -47,13 +47,13 @@ patch:
             type: object
             properties:
               errors:
-                $ref: ../components/schemas/errors.yaml
+                $ref: ../../common/components/schemas/errors.yaml
               logs:
-                $ref: ../components/schemas/logs.yaml
+                $ref: ../../common/components/schemas/logs.yaml
               model:
                 $ref: ../components/schemas/objects/lead.yaml
               warnings:
-                $ref: ../components/schemas/warnings.yaml
+                $ref: ../../common/components/schemas/warnings.yaml
 parameters:
   - name: lead_id
     in: path
