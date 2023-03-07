@@ -1,14 +1,16 @@
 import { connectionHeaderMiddleware } from '@/middleware/connection';
 import { Router } from 'express';
 import crm from './crm';
-import customer from './customer';
+import mgmt from './mgmt';
 import oauth from './oauth';
 
 export default function initRoutes(app: Router): void {
   oauth(app);
+  mgmt(app);
 
-  customer(app);
+  const crmRouter = Router();
+  crmRouter.use(connectionHeaderMiddleware);
+  crm(crmRouter);
 
-  app.use(connectionHeaderMiddleware);
-  crm(app);
+  app.use(crmRouter);
 }
