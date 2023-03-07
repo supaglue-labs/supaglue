@@ -53,6 +53,8 @@ patch:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
+  - $ref: ../../common/components/parameters/customer-id.yaml
+  - $ref: ../../common/components/parameters/provider-name.yaml
   - name: contact_id
     in: path
     required: true

@@ -13,6 +13,7 @@ export interface paths {
     get: operations["getAccounts"];
     /** Create account */
     post: operations["createAccount"];
+    
   };
   "/accounts/{account_id}": {
     /** Get account */
@@ -33,6 +34,7 @@ export interface paths {
     get: operations["getContacts"];
     /** Create contact */
     post: operations["createContact"];
+    
   };
   "/contacts/{contact_id}": {
     /** Get contact */
@@ -53,6 +55,7 @@ export interface paths {
     get: operations["getLeads"];
     /** Create lead */
     post: operations["createLead"];
+    
   };
   "/leads/{lead_id}": {
     /** Get lead */
@@ -73,6 +76,7 @@ export interface paths {
     get: operations["getOpportunities"];
     /** Create opportunity */
     post: operations["createOpportunity"];
+    
   };
   "/opportunities/{opportunity_id}": {
     /** Get opportunity */
@@ -84,6 +88,22 @@ export interface paths {
         opportunity_id: string;
       };
     };
+  };
+  "/sync-history": {
+    /**
+     * Get Sync History 
+     * @description Get a list of Sync History objects.
+     */
+    get: operations["getSyncHistory"];
+    
+  };
+  "/sync-info": {
+    /**
+     * Get Sync Info 
+     * @description Get a list of Sync Info
+     */
+    get: operations["getSyncInfos"];
+    
   };
 }
 
@@ -514,6 +534,10 @@ export interface components {
     expand: string;
     /** @description Number of results to return per page */
     page_size: string;
+    /** @description The customer ID */
+    "customer-id": string;
+    /** @description The provider name */
+    "provider-name": string;
   };
   requestBodies: never;
   headers: never;
@@ -843,6 +867,61 @@ export interface operations {
             model?: components["schemas"]["opportunity"];
             warnings?: components["schemas"]["warnings"];
           };
+        };
+      };
+    };
+  };
+  getSyncHistory: {
+    /**
+     * Get Sync History 
+     * @description Get a list of Sync History objects.
+     */
+    parameters?: {
+        /** @description The model name to filter by */
+      query?: {
+        model?: string;
+      };
+    };
+    responses: {
+      /** @description Sync History */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & ({
+            results?: ({
+                /** @example Account */
+                model_name?: string;
+                error_message?: string | null;
+                /** @example 2023-02-22T19:55:17.559Z */
+                start_timestamp?: string;
+                /** @example 2023-02-22T20:55:17.559Z */
+                end_timestamp?: string | null;
+                /** @example IN_PROGRESS */
+                status?: string;
+              })[];
+          });
+        };
+      };
+    };
+  };
+  getSyncInfos: {
+    /**
+     * Get Sync Info 
+     * @description Get a list of Sync Info
+     */
+    responses: {
+      /** @description Sync Info List */
+      200: {
+        content: {
+          "application/json": ({
+              /** @example Account */
+              model_name?: string;
+              /** @example 2023-02-22T19:55:17.559Z */
+              last_sync_start?: string | null;
+              /** @example 2023-02-22T20:55:17.559Z */
+              next_sync_start?: string | null;
+              /** @example SYNCING */
+              status?: string | null;
+            })[];
         };
       };
     };

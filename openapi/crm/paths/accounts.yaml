@@ -108,3 +108,6 @@ post:
                 $ref: ../components/schemas/objects/account.yaml
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../common/components/parameters/customer-id.yaml
+  - $ref: ../../common/components/parameters/provider-name.yaml

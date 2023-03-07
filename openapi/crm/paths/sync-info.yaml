@@ -5,10 +5,6 @@ get:
   summary: Get Sync Info
   description: >-
     Get a list of Sync Info
-  parameters:
-    - $ref: ../components/parameters/customer_id.yaml
-    - $ref: ../components/parameters/integration_id.yaml
-    - $ref: ../components/parameters/connection_id.yaml
   responses:
     '200':
       description: Sync Info List
@@ -29,3 +25,6 @@ get:
                   last_sync_start: 2023-02-22T19:50:17.559537Z
                   next_sync_start: 2023-02-22T20:50:17.559537Z
                   status: DONE
+parameters:
+  - $ref: ../../common/components/parameters/customer-id.yaml
+  - $ref: ../../common/components/parameters/provider-name.yaml

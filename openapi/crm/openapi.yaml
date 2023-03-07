@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.3.0
+  version: 0.3.3
   title: Supaglue CRM API
   contact:
     name: Supaglue
@@ -39,6 +39,10 @@ paths:
     $ref: paths/opportunities.yaml
   '/opportunities/{opportunity_id}':
     $ref: paths/opportunities@{opportunity_id}.yaml
+  '/sync-history':
+    $ref: paths/sync-history.yaml
+  '/sync-info':
+    $ref: paths/sync-info.yaml
 tags:
   - name: Accounts
     description: The `Account` Common Model is used to represent a "company" in CRMs.
@@ -48,6 +52,8 @@ tags:
     description: The `Lead` Common Model is used to represent a "potential customer" in CRMs.
   - name: Opportunities
     description: The `Opportunity` Common Model is used to represent a "deal opportunity" in CRMs.
+  - name: Sync
+    description: Get information and history for the sync process.
 components:
   schemas:
     account:
@@ -102,3 +108,7 @@ components:
       $ref: ../common/components/parameters/expand.yaml
     page_size:
       $ref: ../common/components/parameters/page_size.yaml
+    customer-id:
+      $ref: ../common/components/parameters/customer-id.yaml
+    provider-name:
+      $ref: ../common/components/parameters/provider-name.yaml

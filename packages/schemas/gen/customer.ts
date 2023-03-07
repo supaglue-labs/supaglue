@@ -4,22 +4,7 @@
  */
 
 
-export interface paths {
-  "/customers/{customer_id}/integrations/{integration_id}/connections/{connection_id}/sync-info": {
-    /**
-     * Get Sync Info 
-     * @description Get a list of Sync Info
-     */
-    get: operations["getSyncInfos"];
-  };
-  "/customers/{customer_id}/integrations/{integration_id}/connections/{connection_id}/sync-history": {
-    /**
-     * Get Sync History 
-     * @description Get a list of Sync History objects.
-     */
-    get: operations["getSyncHistory"];
-  };
-}
+export type paths = Record<string, never>;
 
 export type webhooks = Record<string, never>;
 
@@ -142,61 +127,4 @@ export interface components {
 
 export type external = Record<string, never>;
 
-export interface operations {
-
-  getSyncInfos: {
-    /**
-     * Get Sync Info 
-     * @description Get a list of Sync Info
-     */
-    responses: {
-      /** @description Sync Info List */
-      200: {
-        content: {
-          "application/json": ({
-              /** @example Account */
-              model_name?: string;
-              /** @example 2023-02-22T19:55:17.559Z */
-              last_sync_start?: string | null;
-              /** @example 2023-02-22T20:55:17.559Z */
-              next_sync_start?: string | null;
-              /** @example SYNCING */
-              status?: string | null;
-            })[];
-        };
-      };
-    };
-  };
-  getSyncHistory: {
-    /**
-     * Get Sync History 
-     * @description Get a list of Sync History objects.
-     */
-    parameters?: {
-        /** @description The model name to filter by */
-      query?: {
-        model?: string;
-      };
-    };
-    responses: {
-      /** @description Sync History */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & ({
-            results?: ({
-                /** @example Account */
-                model_name?: string;
-                error_message?: string | null;
-                /** @example 2023-02-22T19:55:17.559Z */
-                start_timestamp?: string;
-                /** @example 2023-02-22T20:55:17.559Z */
-                end_timestamp?: string | null;
-                /** @example IN_PROGRESS */
-                status?: string;
-              })[];
-          });
-        };
-      };
-    };
-  };
-}
+export type operations = Record<string, never>;

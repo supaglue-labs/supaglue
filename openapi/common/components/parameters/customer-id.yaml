@@ -1,0 +1,8 @@
+name: customer-id
+in: header
+schema:
+  type: string
+  format: uuid
+  example: E85AC5CD-BFEE-47C9-B7E8-6112F6CDC51A
+description: The customer ID
+required: true

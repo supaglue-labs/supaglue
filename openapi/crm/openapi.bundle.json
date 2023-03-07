@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.3.0",
+    "version": "0.3.3",
     "title": "Supaglue CRM API",
     "contact": {
       "name": "Supaglue",
@@ -199,7 +199,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     },
     "/accounts/{account_id}": {
       "get": {
@@ -321,6 +329,12 @@
         }
       },
       "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
         {
           "name": "account_id",
           "in": "path",
@@ -520,7 +534,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     },
     "/contacts/{contact_id}": {
       "get": {
@@ -611,6 +633,12 @@
         }
       },
       "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
         {
           "name": "contact_id",
           "in": "path",
@@ -825,7 +853,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     },
     "/leads/{lead_id}": {
       "get": {
@@ -918,6 +954,12 @@
         }
       },
       "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
         {
           "name": "lead_id",
           "in": "path",
@@ -1089,7 +1131,15 @@
             }
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
     },
     "/opportunities/{opportunity_id}": {
       "get": {
@@ -1189,6 +1239,12 @@
       },
       "parameters": [
         {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
+        {
           "name": "opportunity_id",
           "in": "path",
           "required": true,
@@ -1196,6 +1252,185 @@
             "type": "string",
             "example": "c9f58083-a370-47b5-ad02-99160ea20372"
           }
+        }
+      ]
+    },
+    "/sync-history": {
+      "get": {
+        "operationId": "getSyncHistory",
+        "tags": [
+          "Sync"
+        ],
+        "summary": "Get Sync History",
+        "description": "Get a list of Sync History objects.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The model name to filter by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync History",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "model_name": {
+                                "type": "string",
+                                "example": "Account"
+                              },
+                              "error_message": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "start_timestamp": {
+                                "type": "string",
+                                "example": "2023-02-22T19:55:17.559Z"
+                              },
+                              "end_timestamp": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "2023-02-22T20:55:17.559Z"
+                              },
+                              "status": {
+                                "type": "string",
+                                "example": "IN_PROGRESS"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "sjkflwbajkbbkajwbcs",
+                      "previous": null,
+                      "results": [
+                        {
+                          "model_name": "account",
+                          "start_timestamp": "2023-02-22T19:55:17.559Z",
+                          "status": "IN_PROGRESS"
+                        },
+                        {
+                          "model_name": "contact",
+                          "start_timestamp": "2023-02-22T19:50:17.559Z",
+                          "end_timestamp": "2023-02-22T20:50:17.559Z",
+                          "status": "ERROR",
+                          "error_message": "Error: Something went wrong"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
+    },
+    "/sync-info": {
+      "get": {
+        "operationId": "getSyncInfos",
+        "tags": [
+          "Sync"
+        ],
+        "summary": "Get Sync Info",
+        "description": "Get a list of Sync Info",
+        "responses": {
+          "200": {
+            "description": "Sync Info List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "model_name": {
+                        "type": "string",
+                        "example": "Account"
+                      },
+                      "last_sync_start": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2023-02-22T19:55:17.559Z"
+                      },
+                      "next_sync_start": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2023-02-22T20:55:17.559Z"
+                      },
+                      "status": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "SYNCING"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "model_name": "account",
+                        "last_sync_start": "2023-02-22T19:55:17.559Z",
+                        "next_sync_start": "2023-02-22T20:55:17.559Z",
+                        "status": "SYNCING"
+                      },
+                      {
+                        "model_name": "contact",
+                        "last_sync_start": "2023-02-22T19:50:17.559Z",
+                        "next_sync_start": "2023-02-22T20:50:17.559Z",
+                        "status": "DONE"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
         }
       ]
     }
@@ -1216,6 +1451,10 @@
     {
       "name": "Opportunities",
       "description": "The `Opportunity` Common Model is used to represent a \"deal opportunity\" in CRMs."
+    },
+    {
+      "name": "Sync",
+      "description": "Get information and history for the sync process."
     }
   ],
   "components": {
@@ -2012,6 +2251,27 @@
           "example": "3804695"
         },
         "description": "Number of results to return per page"
+      },
+      "customer-id": {
+        "name": "customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "example": "E85AC5CD-BFEE-47C9-B7E8-6112F6CDC51A"
+        },
+        "description": "The customer ID",
+        "required": true
+      },
+      "provider-name": {
+        "name": "provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
       }
     }
   }

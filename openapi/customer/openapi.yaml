@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.3.0
+  version: 0.3.3
   title: Supaglue Customer API
   contact:
     name: Supaglue
@@ -9,7 +9,7 @@ info:
   description: |
     # Introduction
 
-    Welcome to the Supaglue unified CRM API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.
+    Welcome to the Supaglue Customer API documentation. You can use this API to manage customer integrations and connections.
 
     ### Base API URL
 
@@ -22,14 +22,8 @@ externalDocs:
 servers:
   - url: 'https://localhost:8080/customer'
     description: Local Supaglue API
-paths:
-  '/customers/{customer_id}/integrations/{integration_id}/connections/{connection_id}/sync-info':
-    $ref: paths/customers@{customer_id}@integrations@{integration_id}@connections@{connection_id}@sync-info.yaml
-  '/customers/{customer_id}/integrations/{integration_id}/connections/{connection_id}/sync-history':
-    $ref: paths/customers@{customer_id}@integrations@{integration_id}@connections@{connection_id}@sync-history.yaml
-tags:
-  - name: Sync
-    description: Provides metadata about `Syncs`.
+paths: {}
+tags: []
 components:
   schemas:
     logs:

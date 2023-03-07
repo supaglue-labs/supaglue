@@ -1,14 +1,14 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.3.0",
+    "version": "0.3.3",
     "title": "Supaglue Customer API",
     "contact": {
       "name": "Supaglue",
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "# Introduction\n\nWelcome to the Supaglue unified CRM API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.\n\n### Base API URL\n\n```\nhttp://localhost:8080/api/customer\n```\n"
+    "description": "# Introduction\n\nWelcome to the Supaglue Customer API documentation. You can use this API to manage customer integrations and connections.\n\n### Base API URL\n\n```\nhttp://localhost:8080/api/customer\n```\n"
   },
   "externalDocs": {
     "description": "Try out our API in Postman!",
@@ -20,197 +20,8 @@
       "description": "Local Supaglue API"
     }
   ],
-  "paths": {
-    "/customers/{customer_id}/integrations/{integration_id}/connections/{connection_id}/sync-info": {
-      "get": {
-        "operationId": "getSyncInfos",
-        "tags": [
-          "Sync"
-        ],
-        "summary": "Get Sync Info",
-        "description": "Get a list of Sync Info",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/customer_id"
-          },
-          {
-            "$ref": "#/components/parameters/integration_id"
-          },
-          {
-            "$ref": "#/components/parameters/connection_id"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Sync Info List",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "model_name": {
-                        "type": "string",
-                        "example": "Account"
-                      },
-                      "last_sync_start": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": "2023-02-22T19:55:17.559Z"
-                      },
-                      "next_sync_start": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": "2023-02-22T20:55:17.559Z"
-                      },
-                      "status": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": "SYNCING"
-                      }
-                    }
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "model_name": "account",
-                        "last_sync_start": "2023-02-22T19:55:17.559Z",
-                        "next_sync_start": "2023-02-22T20:55:17.559Z",
-                        "status": "SYNCING"
-                      },
-                      {
-                        "model_name": "contact",
-                        "last_sync_start": "2023-02-22T19:50:17.559Z",
-                        "next_sync_start": "2023-02-22T20:50:17.559Z",
-                        "status": "DONE"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/customers/{customer_id}/integrations/{integration_id}/connections/{connection_id}/sync-history": {
-      "get": {
-        "operationId": "getSyncHistory",
-        "tags": [
-          "Sync"
-        ],
-        "summary": "Get Sync History",
-        "description": "Get a list of Sync History objects.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/page_size"
-          },
-          {
-            "$ref": "#/components/parameters/customer_id"
-          },
-          {
-            "$ref": "#/components/parameters/integration_id"
-          },
-          {
-            "$ref": "#/components/parameters/connection_id"
-          },
-          {
-            "name": "model",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "contact"
-            },
-            "description": "The model name to filter by"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Sync History",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/pagination"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "results": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "model_name": {
-                                "type": "string",
-                                "example": "Account"
-                              },
-                              "error_message": {
-                                "type": "string",
-                                "nullable": true
-                              },
-                              "start_timestamp": {
-                                "type": "string",
-                                "example": "2023-02-22T19:55:17.559Z"
-                              },
-                              "end_timestamp": {
-                                "type": "string",
-                                "nullable": true,
-                                "example": "2023-02-22T20:55:17.559Z"
-                              },
-                              "status": {
-                                "type": "string",
-                                "example": "IN_PROGRESS"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "next": "sjkflwbajkbbkajwbcs",
-                      "previous": null,
-                      "results": [
-                        {
-                          "model_name": "account",
-                          "start_timestamp": "2023-02-22T19:55:17.559Z",
-                          "status": "IN_PROGRESS"
-                        },
-                        {
-                          "model_name": "contact",
-                          "start_timestamp": "2023-02-22T19:50:17.559Z",
-                          "end_timestamp": "2023-02-22T20:50:17.559Z",
-                          "status": "ERROR",
-                          "error_message": "Error: Something went wrong"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "tags": [
-    {
-      "name": "Sync",
-      "description": "Provides metadata about `Syncs`."
-    }
-  ],
+  "paths": {},
+  "tags": [],
   "components": {
     "schemas": {
       "logs": {
