@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
-import { POSTGRES_UPDATE_PARALLELISM } from '../lib/constants';
+import { POSTGRES_UPDATE_BATCH_SIZE } from '../lib/constants';
 import { getExpandedAssociations } from '../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromOpportunityModel } from '../mappers';
@@ -222,7 +222,7 @@ export class OpportunityService {
   public async updateDanglingAccounts(connectionId: string) {
     let cursor = undefined;
     do {
-      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_PARALLELISM, cursor);
+      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_BATCH_SIZE, cursor);
     } while (cursor);
   }
 }
