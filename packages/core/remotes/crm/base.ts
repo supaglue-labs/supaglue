@@ -12,7 +12,7 @@ import {
 import { RemoteClient } from '../base';
 
 interface CrmRemoteClientEvents {
-  token_refreshed: (accessToken: string, expiresAt: string) => void;
+  token_refreshed: (accessToken: string, expiresAt: string | null) => void;
 }
 
 export interface CrmRemoteClient extends RemoteClient {
@@ -36,8 +36,8 @@ export interface CrmRemoteClient extends RemoteClient {
 }
 
 export abstract class CrmRemoteClientEventEmitter extends EventEmitter {
-  public emit<U extends keyof CrmRemoteClientEvents>(event: U, args: Parameters<CrmRemoteClientEvents[U]>): boolean {
-    return super.emit(event, args);
+  public emit<U extends keyof CrmRemoteClientEvents>(event: U, ...args: Parameters<CrmRemoteClientEvents[U]>): boolean {
+    return super.emit(event, ...args);
   }
 }
 
