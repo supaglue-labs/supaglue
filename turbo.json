@@ -27,6 +27,9 @@
       "dependsOn": ["//#bundle-openapi"],
       "inputs": ["../../openapi/**/*.yaml"],
       "outputs": ["gen/**"]
+    },
+    "@supaglue/db#generate": {
+      "inputs": ["prisma/schema.prisma"]
     }
   },
   "globalDependencies": [
