@@ -37,5 +37,5 @@ export default function init(app: Router): void {
 
   integration(customerRouter);
 
-  app.use('/customers/:customerId', customerMiddleware, customerRouter);
+  app.use('/customers/:customer_id', customerMiddleware, customerRouter);
 }

@@ -35,5 +35,5 @@ export default function init(app: Router): void {
 
   connection(integrationRouter);
 
-  app.use('/integrations/:integrationId', integrationMiddleware, integrationRouter);
+  app.use('/integrations/:integration_id', integrationMiddleware, integrationRouter);
 }

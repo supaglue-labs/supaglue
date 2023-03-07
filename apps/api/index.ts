@@ -102,7 +102,7 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   res.err = err as Error;
 
   if (err instanceof HTTPError) {
-    res.status(err.code).send({
+    return res.status(err.code).send({
       errors: [
         {
           title: err.message,
@@ -111,8 +111,6 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
         },
       ],
     });
-
-    return next(err);
   }
 
   return res.status(500).json({
