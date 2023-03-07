@@ -25,7 +25,7 @@ import java.io.IOException;
  * Pagination
  */
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2023-03-07T15:23:33.014690-08:00[America/Los_Angeles]")
+@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2023-03-07T15:49:43.015334-08:00[America/Los_Angeles]")
 public class Pagination {
   @SerializedName("next")
   private String next = null;
