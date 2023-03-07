@@ -4,7 +4,7 @@ get:
   tags:
     - Opportunities
   parameters:
-    - $ref: ../components/parameters/expand.yaml
+    - $ref: ../../common/components/parameters/expand.yaml
   responses:
     200:
       description: Opportunity
@@ -15,7 +15,8 @@ get:
           examples:
             Example:
               value:
-                accountId: a329053d-bf86-4b82-8356-9e897aa7dacc
+                account:
+                  id: a329053d-bf86-4b82-8356-9e897aa7dacc
                 amount: 100000
                 close_date: '2023-02-27T00:00:00Z'
                 description: Wants to use open source unified API for third-party integrations
@@ -52,14 +53,16 @@ patch:
             type: object
             properties:
               errors:
-                $ref: ../components/schemas/errors.yaml
+                $ref: ../../common/components/schemas/errors.yaml
               logs:
-                $ref: ../components/schemas/logs.yaml
+                $ref: ../../common/components/schemas/logs.yaml
               model:
                 $ref: ../components/schemas/objects/opportunity.yaml
               warnings:
-                $ref: ../components/schemas/warnings.yaml
+                $ref: ../../common/components/schemas/warnings.yaml
 parameters:
+  - $ref: ../../common/components/parameters/customer-id.yaml
+  - $ref: ../../common/components/parameters/provider-name.yaml
   - name: opportunity_id
     in: path
     required: true

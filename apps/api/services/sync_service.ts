@@ -1,4 +1,4 @@
-import { distinctId } from '@/lib/posthog';
+import { distinctId } from '@/lib/distinct_identifier';
 import { CRM_COMMON_MODELS } from '@supaglue/core/types/';
 import { CommonModel } from '@supaglue/core/types/common';
 import { SyncInfo } from '@supaglue/core/types/sync_info';

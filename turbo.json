@@ -19,12 +19,12 @@
       "cache": false
     },
     "generate": {},
-    "//#generate": {
+    "//#bundle-openapi": {
       "inputs": ["openapi/**/*.yaml"],
       "outputs": ["openapi/**/openapi.bundle.json"]
     },
     "@supaglue/schemas#generate": {
-      "dependsOn": ["//#generate"],
+      "dependsOn": ["//#bundle-openapi"],
       "inputs": ["../../openapi/**/*.yaml"],
       "outputs": ["gen/**"]
     }
