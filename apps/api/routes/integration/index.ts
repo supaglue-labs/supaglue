@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { integrationMiddleware } from '@/middleware/integration';
 import { Request, Response, Router } from 'express';
-import connection from './connection';
 
 const { integrationService } = getDependencyContainer();
 
@@ -32,8 +31,6 @@ export default function init(app: Router): void {
     const integration = await integrationService.delete(req.sg.integrationId);
     return res.status(200).send(integration);
   });
-
-  connection(integrationRouter);
 
   app.use('/integrations/:integration_id', integrationMiddleware, integrationRouter);
 }

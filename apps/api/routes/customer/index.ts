@@ -2,7 +2,7 @@ import { getDependencyContainer } from '@/dependency_container';
 import { customerMiddleware } from '@/middleware/customer';
 import { openapiMiddleware } from '@/middleware/openapi';
 import { Request, Response, Router } from 'express';
-import integration from './integration';
+import connection from './connection';
 
 const { customerService } = getDependencyContainer();
 
@@ -35,7 +35,7 @@ export default function init(app: Router): void {
     return res.status(200).send(customer);
   });
 
-  integration(customerRouter);
+  connection(customerRouter);
 
   app.use('/customers/:customer_id', customerMiddleware, customerRouter);
 }
