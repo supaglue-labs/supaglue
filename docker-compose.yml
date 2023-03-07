@@ -20,6 +20,8 @@ services:
         condition: service_started
       init:
         condition: service_completed_successfully
+    volumes:
+      - ${SUPAGLUE_CONFIG_DIR:-/tmp/supaglue}:/root/.supaglue
     environment:
       - NODE_ENV=production
       - SUPAGLUE_SYNC_PERIOD_MS

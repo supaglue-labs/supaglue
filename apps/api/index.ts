@@ -1,4 +1,5 @@
-import { client as posthogClient, distinctId, posthogErrorMiddleware, posthogMiddleware } from '@/lib/posthog';
+import { distinctId } from '@/lib/distinct_identifier';
+import { client as posthogClient, posthogErrorMiddleware, posthogMiddleware } from '@/lib/posthog';
 import { logger } from '@/logger';
 import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
@@ -26,6 +27,12 @@ if (sentryEnabled) {
       }),
     ],
     release: version,
+    includeLocalVariables: true,
+    initialScope: {
+      user: {
+        id: distinctId,
+      },
+    },
   });
 }
 
