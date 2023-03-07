@@ -1,12 +1,26 @@
----
-sidebar_position: 2
----
-
 # Salesforce
 
 ### Third-party provider information
 
 Supaglue interfaces with the Salesforce async Bulk 2.0 API using the JSforce client.
+
+Status: Alpha
+
+| Feature                    | Available |
+| -------------------------- | --------- |
+| Auth                       | Yes       |
+| Reads: Full refresh        | Yes       |
+| Reads: Incremental refresh | No        |
+| Creates                    | Yes       |
+| Updates                    | Yes       |
+| Handles rate limits        | No        |
+
+Supported object types:
+
+- Account
+- Contact
+- Lead
+- Opportunity
 
 ### Common Model sync frequencies
 

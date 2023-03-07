@@ -6,6 +6,7 @@ declare global {
     // See: https://www.typescriptlang.org/docs/handbook/declaration-merging.html
     interface Request {
       customerConnection: Connection;
+      sg: Record<string, string>;
     }
   }
 }

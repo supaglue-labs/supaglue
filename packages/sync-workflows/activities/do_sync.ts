@@ -1,11 +1,10 @@
-import { getCrmRemoteClient } from '@supaglue/core/remotes/crm';
 import {
   AccountService,
   ConnectionService,
   ContactService,
-  IntegrationService,
   LeadService,
   OpportunityService,
+  RemoteService,
 } from '@supaglue/core/services';
 import { CommonModel } from '@supaglue/core/types';
 import { logEvent } from '../lib/analytics';
@@ -20,19 +19,17 @@ export function createDoSync(
   accountService: AccountService,
   connectionService: ConnectionService,
   contactService: ContactService,
-  integrationService: IntegrationService,
+  remoteService: RemoteService,
   opportunityService: OpportunityService,
   leadService: LeadService
 ) {
   return async function doSync({ connectionId, commonModel, sessionId }: DoSyncArgs): Promise<void> {
     const connection = await connectionService.getById(connectionId);
-    const integration = await integrationService.getById(connection.integrationId);
+    const client = await remoteService.getCrmRemoteClient(connectionId);
 
     if (sessionId) {
       logEvent('Start Sync', connection.providerName, commonModel, sessionId);
     }
-
-    const client = getCrmRemoteClient(connection, integration);
 
     switch (commonModel) {
       case 'account': {

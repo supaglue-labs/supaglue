@@ -182,39 +182,39 @@ const config = {
               },
               {
                 label: 'Microsoft Dynamics 365 Sales',
-                href: '/connectors/more',
+                href: '/connectors/ms_dynamics_365_sales',
               },
               {
                 label: 'Zendesk Sell',
-                href: '/connectors/more',
+                href: '/connectors/zendesk_sell',
               },
               {
                 label: 'Zoho CRM',
-                href: '/connectors/more',
+                href: '/connectors/zoho_crm',
               },
               {
                 label: 'Copper',
-                href: '/connectors/more',
+                href: '/connectors/copper',
               },
               {
                 label: 'Keap',
-                href: '/connectors/more',
+                href: '/connectors/keap',
               },
               {
                 label: 'Teamwork CRM',
-                href: '/connectors/more',
+                href: '/connectors/teamwork_crm',
               },
               {
                 label: 'Freshsales',
-                href: '/connectors/more',
+                href: '/connectors/freshsales',
               },
               {
                 label: 'ActiveCampaign',
-                href: '/connectors/more',
+                href: '/connectors/activecampaign',
               },
               {
                 label: 'Capsule',
-                href: '/connectors/more',
+                href: '/connectors/capsule',
               },
             ],
           },
@@ -234,6 +234,17 @@ const config = {
       },
     }),
   plugins: [
+    async function myPlugin(context, options) {
+      return {
+        name: 'docusaurus-tailwindcss',
+        configurePostCss(postcssOptions) {
+          // Appends TailwindCSS and AutoPrefixer.
+          postcssOptions.plugins.push(require('tailwindcss'));
+          postcssOptions.plugins.push(require('autoprefixer'));
+          return postcssOptions;
+        },
+      };
+    },
     [
       'posthog-docusaurus',
       {

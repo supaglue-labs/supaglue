@@ -19,7 +19,7 @@ export class RemoteService {
     const client = getCrmRemoteClient(connection, integration);
 
     // Persist the refreshed token
-    client.on('token_refreshed', (accessToken: string, expiresAt: string) => {
+    client.on('token_refreshed', (accessToken: string, expiresAt: string | null) => {
       this.#connectionService
         .updateConnectionWithNewAccessToken(connectionId, accessToken, expiresAt)
         .catch((err: unknown) => {

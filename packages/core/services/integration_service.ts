@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
 import { fromIntegrationModel } from '../mappers';
-import type { Integration } from '../types';
+import type { CRMIntegrationCreateParams, CRMIntegrationUpdateParams, Integration } from '../types';
 
 export class IntegrationService {
   #prisma: PrismaClient;
@@ -30,5 +30,39 @@ export class IntegrationService {
       throw new NotFoundError(`Integration not found for provider name: ${providerName}`);
     }
     return fromIntegrationModel(integration);
+  }
+
+  // TODO: paginate
+  public async list(): Promise<Integration[]> {
+    const integrations = await this.#prisma.integration.findMany();
+    return integrations.map((integration) => fromIntegrationModel(integration));
+  }
+
+  public async create(integration: CRMIntegrationCreateParams): Promise<Integration> {
+    const createdIntegration = await this.#prisma.integration.create({
+      data: {
+        ...integration,
+        category: 'crm',
+      },
+    });
+    return fromIntegrationModel(createdIntegration);
+  }
+
+  public async update(id: string, integration: CRMIntegrationUpdateParams): Promise<Integration> {
+    const updatedIntegration = await this.#prisma.integration.update({
+      where: { id },
+      data: {
+        ...integration,
+        category: 'crm',
+      },
+    });
+    return fromIntegrationModel(updatedIntegration);
+  }
+
+  public async delete(id: string): Promise<Integration> {
+    const deletedIntegration = await this.#prisma.integration.delete({
+      where: { id },
+    });
+    return fromIntegrationModel(deletedIntegration);
   }
 }

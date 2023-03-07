@@ -3,6 +3,7 @@ import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as Hu
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
 import retry from 'async-retry';
+import { logger } from 'sync-worker/logger';
 import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
@@ -96,7 +97,7 @@ const OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 5;
 type Credentials = {
   accessToken: string;
   refreshToken: string;
-  expiresAt: string; // ISO string
+  expiresAt: string | null; // ISO string
   clientId: string;
   clientSecret: string;
 };
@@ -133,7 +134,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
       this.#credentials.expiresAt = newExpiresAt;
 
       this.#client.setAccessToken(newAccessToken);
-      this.emit('token_refreshed', [newAccessToken, newExpiresAt]);
+      this.emit('token_refreshed', newAccessToken, newExpiresAt);
     }
   }
 
@@ -159,8 +160,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         );
         return companies;
       } catch (e: any) {
-        // eslint-disable-next-line no-console
-        console.error(`error: ${e}`);
+        logger.error(`Error encountered: ${e}`);
         throw e;
       }
     };
@@ -211,8 +211,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         );
         return deals;
       } catch (e: any) {
-        // eslint-disable-next-line no-console
-        console.error(`error: ${e}`);
+        logger.error(`Error encountered: ${e}`);
         throw e;
       }
     };
@@ -273,8 +272,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         );
         return contacts;
       } catch (e: any) {
-        // eslint-disable-next-line no-console
-        console.error(`error: ${e}`);
+        logger.error(`Error encountered: ${e}`);
         throw e;
       }
     };

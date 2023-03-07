@@ -22,21 +22,17 @@
 
 Supaglue is an open source unified API for CRMs. It handles authentication, caches and normalizes data from multiple CRM platforms, and provides a single set of API endpoints for reading and writing to those CRMs. Developers at B2B companies can use Supaglue to streamline and scale the work of building customer-facing CRM integrations. Supaglue can be self-hosted and runs alongside your stack.
 
-## Status
-
-We are currently in Public Alpha. Watch "releases" of this repo to be notified of significant updates (as minor semver releases).
+https://user-images.githubusercontent.com/1925713/223279162-c53ceb43-b51e-4d78-9f7b-d36ac141cecf.mp4
 
 ## Get Started
 
 ### Run Supaglue locally
 
 ```shell
-git clone git@github.com:supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.3.3 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
 docker compose up
 ```
-
-![supaglue-quickstart](https://github.com/supaglue-labs/supaglue/blob/main/docs/static/img/quickstart.gif)
 
 ## Features
 
@@ -51,16 +47,13 @@ docker compose up
 
 ## Connectors
 
-**CRM:**
-
-- Hubspot
-- Salesforce
-
-Supported common objects: Accounts, Contacts, Leads, Opportunities.
-
-Looking for more connectors or objects? Reach out to us! [support@supaglue.com](mailto:support@supaglue.com)
+See the [list of connectors](https://docs.supaglue.com/category/connectors) we currently support.
 
 Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
+
+## Status
+
+We are currently in Public Alpha. Watch "releases" of this repo to be notified of significant updates (as minor semver releases).
 
 ## Roadmap
 

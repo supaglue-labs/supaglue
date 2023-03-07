@@ -8,7 +8,7 @@ export type ListParams = GetParams &
     updated_before?: string;
   };
 
-type PaginationParams = {
+export type PaginationParams = {
   cursor?: string;
   page_size?: string;
 };

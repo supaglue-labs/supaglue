@@ -6,7 +6,7 @@ export type ConnectionCredentials = {
   type: string;
   accessToken: string;
   refreshToken: string;
-  expiresAt: string;
+  expiresAt: string | null; // null means unknown expiry time
   instanceUrl: string;
 };
 
