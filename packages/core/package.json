@@ -8,11 +8,13 @@
   "dependencies": {
     "@hubspot/api-client": "^8.6.0",
     "@supaglue/db": "workspace:*",
+    "async-retry": "^1.3.3",
     "csv-parse": "^5.3.5",
     "jsforce": "^2.0.0-beta.20"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
+    "@types/async-retry": "^1",
     "typescript": "^4.9.5"
   },
   "scripts": {

@@ -1,4 +1,4 @@
-import { CRM_COMMON_MODELS } from '@supaglue/core/types';
+import { CRM_COMMON_MODELS } from '@supaglue/core/types/crm';
 import { proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
 import type { createActivities } from '../activities';
@@ -6,7 +6,7 @@ import type { createActivities } from '../activities';
 const { doSync, populateAssociations, logSyncStart, logSyncFinish } = proxyActivities<
   ReturnType<typeof createActivities>
 >({
-  startToCloseTimeout: '5 minute',
+  startToCloseTimeout: '120 minute',
 });
 
 export const getRunSyncsScheduleId = (connectionId: string): string => `run-syncs-cid-${connectionId}`;
@@ -22,7 +22,7 @@ export async function runSyncs({ connectionId, sessionId }: RunSyncsArgs): Promi
     CRM_COMMON_MODELS.map((commonModel) => logSyncStart({ connectionId, commonModel }))
   );
   const results = await Promise.allSettled(
-    CRM_COMMON_MODELS.map((commonModel, idx) => doSync({ connectionId, commonModel, sessionId }))
+    CRM_COMMON_MODELS.map((commonModel) => doSync({ connectionId, commonModel, sessionId }))
   );
   // technically the sync isn't really complete since we haven't populated associations
   // but we want the per-model granularity on the logs

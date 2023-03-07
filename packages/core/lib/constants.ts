@@ -1,0 +1,1 @@
+export const POSTGRES_UPDATE_BATCH_SIZE = 1000;

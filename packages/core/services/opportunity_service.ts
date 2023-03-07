@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError, UnauthorizedError } from '../errors';
+import { POSTGRES_UPDATE_BATCH_SIZE } from '../lib/constants';
 import { getExpandedAssociations } from '../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromOpportunityModel } from '../mappers';
@@ -167,7 +168,11 @@ export class OpportunityService {
     }
   }
 
-  public async updateDanglingAccounts(connectionId: string) {
+  private async updateDanglingAccountsImpl(
+    connectionId: string,
+    limit: number,
+    cursor?: string
+  ): Promise<string | undefined> {
     const opportunitiesWithDanglingAccounts = await this.#prisma.crmOpportunity.findMany({
       where: {
         connectionId,
@@ -176,7 +181,16 @@ export class OpportunityService {
           remoteAccountId: null,
         },
       },
+      skip: cursor ? 1 : undefined,
+      take: limit,
+      cursor: cursor ? { id: cursor } : undefined,
+      orderBy: {
+        id: 'asc',
+      },
     });
+    if (!opportunitiesWithDanglingAccounts.length) {
+      return;
+    }
 
     const danglingRemoteAccountIds = opportunitiesWithDanglingAccounts.map(
       ({ remoteAccountId }) => remoteAccountId
@@ -202,5 +216,13 @@ export class OpportunityService {
         });
       })
     );
+    return opportunitiesWithDanglingAccounts[opportunitiesWithDanglingAccounts.length - 1].id;
+  }
+
+  public async updateDanglingAccounts(connectionId: string) {
+    let cursor = undefined;
+    do {
+      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_BATCH_SIZE, cursor);
+    } while (cursor);
   }
 }
