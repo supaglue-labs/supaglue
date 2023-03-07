@@ -29,7 +29,7 @@ import java.io.IOException;
  * InlineResponse2012
  */
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2023-03-07T15:50:51.298786-08:00[America/Los_Angeles]")
+
 public class InlineResponse2012 {
   @SerializedName("errors")
   private Errors errors = null;

@@ -25,7 +25,7 @@ import java.io.IOException;
  * CreateUpdateLead
  */
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2023-03-07T15:50:51.298786-08:00[America/Los_Angeles]")
+
 public class CreateUpdateLead {
   @SerializedName("company")
   private String company = null;

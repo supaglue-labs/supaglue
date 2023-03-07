@@ -29,7 +29,7 @@ import java.util.List;
  * InlineResponse2004
  */
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2023-03-07T15:50:51.298786-08:00[America/Los_Angeles]")
+
 public class InlineResponse2004 extends Pagination {
   @SerializedName("results")
   private List<InlineResponse2004Results> results = null;
