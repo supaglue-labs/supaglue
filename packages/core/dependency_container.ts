@@ -1,4 +1,5 @@
 import prisma, { PrismaClient } from '@supaglue/db';
+import { Pool } from 'pg';
 import {
   AccountService,
   ConnectionService,
@@ -12,7 +13,9 @@ import {
 } from './services';
 
 export type CoreDependencyContainer = {
+  pgPool: Pool;
   prisma: PrismaClient;
+
   connectionService: ConnectionService;
   integrationService: IntegrationService;
   customerService: CustomerService;
@@ -30,25 +33,29 @@ export type CoreDependencyContainer = {
 let coreDependencyContainer: CoreDependencyContainer | undefined = undefined;
 
 function createCoreDependencyContainer(): CoreDependencyContainer {
+  const pgPool = new Pool({
+    connectionString: process.env.SUPAGLUE_DATABASE_URL,
+  });
+
   const connectionService = new ConnectionService(prisma);
   const integrationService = new IntegrationService(prisma);
   const customerService = new CustomerService(prisma);
   const remoteService = new RemoteService(connectionService, integrationService);
 
   // crm
-  const accountService = new AccountService(prisma, remoteService);
-  const leadService = new LeadService(prisma, remoteService);
-  const opportunityService = new OpportunityService(prisma, remoteService);
-  const contactService = new ContactService(prisma, remoteService);
+  const accountService = new AccountService(pgPool, prisma, remoteService);
+  const leadService = new LeadService(pgPool, prisma, remoteService);
+  const opportunityService = new OpportunityService(pgPool, prisma, remoteService);
+  const contactService = new ContactService(pgPool, prisma, remoteService);
   const syncHistoryService = new SyncHistoryService(prisma);
 
   return {
+    pgPool,
     prisma,
     connectionService,
     customerService,
     integrationService,
     remoteService,
-
     // crm
     contactService,
     accountService,
