@@ -19,6 +19,35 @@ export const fromHubSpotCompanyToRemoteAccount = ({
   createdAt,
   updatedAt,
 }: HubSpotCompany): RemoteAccount => {
+  const addresses =
+    properties.address ||
+    properties.address2 ||
+    properties.city ||
+    properties.state ||
+    properties.zip ||
+    properties.country
+      ? [
+          {
+            street1: properties.address ?? null,
+            street2: properties.address2 ?? null,
+            city: properties.city ?? null,
+            state: properties.state ?? null,
+            postalCode: properties.zip ?? null,
+            country: properties.country ?? null,
+            addressType: null,
+          },
+        ]
+      : [];
+
+  const phoneNumbers = properties.phone
+    ? [
+        {
+          phoneNumber: properties.phone ?? null,
+          phoneNumberType: null,
+        },
+      ]
+    : [];
+
   return {
     remoteId: id,
     name: properties.name ?? null,
@@ -27,23 +56,8 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     industry: properties.industry ?? null,
     website: properties.website ?? null,
     numberOfEmployees: properties.numberofemployees ? parseInt(properties.numberofemployees) : null,
-    addresses: [
-      {
-        street1: properties.address ?? null,
-        street2: properties.address2 ?? null,
-        city: properties.city ?? null,
-        state: properties.state ?? null,
-        postalCode: properties.zip ?? null,
-        country: properties.country ?? null,
-        addressType: null,
-      },
-    ],
-    phoneNumbers: [
-      {
-        phoneNumber: properties.phone ?? null,
-        phoneNumberType: null,
-      },
-    ],
+    addresses,
+    phoneNumbers,
     // Figure out where this comes from
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     remoteCreatedAt: createdAt,
@@ -112,22 +126,32 @@ export const fromHubSpotContactToRemoteContact = ({
       : null,
   ].filter(Boolean) as PhoneNumber[];
 
+  const addresses =
+    properties.address ||
+    properties.address2 ||
+    properties.city ||
+    properties.state ||
+    properties.zip ||
+    properties.country
+      ? [
+          {
+            street1: properties.address ?? null,
+            street2: properties.address2 ?? null,
+            city: properties.city ?? null,
+            state: properties.state ?? null,
+            postalCode: properties.zip ?? null,
+            country: properties.country ?? null,
+            addressType: null,
+          },
+        ]
+      : [];
+
   return {
     remoteId: id,
     remoteAccountId,
     firstName: properties.firstname ?? null,
     lastName: properties.lastname ?? null,
-    addresses: [
-      {
-        street1: properties.address ?? null,
-        street2: properties.address2 ?? null,
-        city: properties.city ?? null,
-        state: properties.state ?? null,
-        postalCode: properties.zip ?? null,
-        country: properties.country ?? null,
-        addressType: null,
-      },
-    ],
+    addresses,
     phoneNumbers,
     emailAddresses,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
@@ -165,7 +189,7 @@ export const fromHubSpotDealToRemoteOpportunity = ({
     status,
     remoteAccountId,
     amount: properties.amount ? parseInt(properties.amount) : null,
-    closeDate: properties.closedate ? new Date(properties.closeDate) : null,
+    closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage: properties.dealstage,
     remoteWasDeleted: false,
   };
