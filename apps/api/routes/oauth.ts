@@ -7,8 +7,9 @@ import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
 const { integrationService, connectionWriterService } = getDependencyContainer();
 
-const REDIRECT_URI = 'http://localhost:8080/oauth/callback'; // TODO: data-drive
-const RETURN_URL = 'http://localhost:3000'; // TODO: data-drive
+const SERVER_URL = process.env.SUPERGRAIN_SERVER_URL ?? 'http://localhost:8080';
+const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
+const RETURN_URL = process.env.SUPERGRAIN_OAUTH_RETURN_URL ?? 'http://localhost:3000';
 
 export default function init(app: Router): void {
   const publicOauthRouter = Router();
@@ -57,7 +58,7 @@ export default function init(app: Router): void {
         ...additionalAuthParams,
       });
 
-      res.redirect(authorizationUri);
+      res.redirect(`${authorizationUri}&prompt=login`);
     }
   );
 
