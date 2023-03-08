@@ -165,7 +165,7 @@ export const fromHubSpotDealToRemoteOpportunity = ({
     status,
     remoteAccountId,
     amount: properties.amount ? parseInt(properties.amount) : null,
-    closeDate: properties.closedate ? new Date(properties.closeDate) : null,
+    closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage: properties.dealstage,
     remoteWasDeleted: false,
   };
