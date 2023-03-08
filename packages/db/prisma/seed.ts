@@ -132,7 +132,7 @@ async function seedApplication() {
       name: 'My App',
       config: {
         webhook: {
-          url: null,
+          url: 'http://localhost:8080/webhook',
           notifyOnSyncSuccess: true,
           notifyOnSyncError: true,
           notifyOnConnectionSuccess: true,

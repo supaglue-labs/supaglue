@@ -67,6 +67,7 @@ export class ConnectionWriterService {
   public async create(params: ConnectionCreateParams): Promise<Connection> {
     const integration = await this.#integrationService.getByProviderName(params.providerName);
     const application = await this.#applicationService.getById(integration.applicationId);
+    let errored = false;
     try {
       // TODO: Is this the correct status?
       const status: ConnectionStatus = 'added';
@@ -87,15 +88,18 @@ export class ConnectionWriterService {
         connection.id,
         integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
       );
-      if (application.config.webhook) {
-        await sendWebhookPayload(application.config.webhook, 'CONNECTION_SUCCESS', params);
-      }
       return fromConnectionModel(connection);
     } catch (e) {
-      if (application.config.webhook) {
-        await sendWebhookPayload(application.config.webhook, 'CONNECTION_ERROR', params);
-      }
+      errored = true;
       throw e;
+    } finally {
+      if (application.config.webhook) {
+        await sendWebhookPayload(
+          application.config.webhook,
+          errored ? 'CONNECTION_ERROR' : 'CONNECTION_SUCCESS',
+          params
+        );
+      }
     }
   }
 }
