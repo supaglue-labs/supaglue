@@ -2,6 +2,11 @@
 
 ### Setup
 
+Run:
+```shell
+./scripts/setup_dev_env.sh
+```
+
 Be sure to copy the `docker-compose.override.dev.yml` to `docker-compose.override.yml` to get the appropriate environment variables.
 
 ```shell

@@ -3341,6 +3341,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@supaglue/sdk@workspace:packages/sdk":
+  version: 0.0.0-use.local
+  resolution: "@supaglue/sdk@workspace:packages/sdk"
+  languageName: unknown
+  linkType: soft
+
 "@supaglue/sync-workflows@workspace:*, @supaglue/sync-workflows@workspace:packages/sync-workflows":
   version: 0.0.0-use.local
   resolution: "@supaglue/sync-workflows@workspace:packages/sync-workflows"

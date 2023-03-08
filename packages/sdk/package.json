@@ -1,0 +1,18 @@
+{
+  "name": "@supaglue/sdk",
+  "version": "",
+  "description": "OpenAPI clients for Supaglue",
+  "keywords": [
+    "axios",
+    "typescript",
+    "python",
+    "java",
+    "supaglue",
+    "unified-api",
+    "openapi-client",
+    "openapi-generator"
+  ],
+  "scripts": {
+    "generate:clients": "./scripts/generate_sdks.sh"
+  }
+}
