@@ -137,6 +137,7 @@ async function seedApplication() {
           notifyOnSyncError: true,
           notifyOnConnectionSuccess: true,
           notifyOnConnectionError: true,
+          requestType: 'POST',
         },
       },
     },

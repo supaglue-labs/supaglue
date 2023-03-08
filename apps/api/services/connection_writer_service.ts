@@ -1,5 +1,6 @@
+import { sendWebhookPayload } from '@supaglue/core/lib';
 import { fromConnectionModel } from '@supaglue/core/mappers/connection';
-import { IntegrationService } from '@supaglue/core/services';
+import { ApplicationService, IntegrationService } from '@supaglue/core/services';
 import type {
   Connection,
   ConnectionCreateParams,
@@ -15,11 +16,18 @@ export class ConnectionWriterService {
   #prisma: PrismaClient;
   #syncService: SyncService;
   #integrationService: IntegrationService;
+  #applicationService: ApplicationService;
 
-  constructor(prisma: PrismaClient, syncService: SyncService, integrationService: IntegrationService) {
+  constructor(
+    prisma: PrismaClient,
+    syncService: SyncService,
+    integrationService: IntegrationService,
+    applicationService: ApplicationService
+  ) {
     this.#prisma = prisma;
     this.#syncService = syncService;
     this.#integrationService = integrationService;
+    this.#applicationService = applicationService;
   }
 
   public async upsert(params: ConnectionUpsertParams): Promise<Connection> {
@@ -58,23 +66,36 @@ export class ConnectionWriterService {
 
   public async create(params: ConnectionCreateParams): Promise<Connection> {
     const integration = await this.#integrationService.getByProviderName(params.providerName);
-    // TODO: Is this the correct status?
-    const status: ConnectionStatus = 'added';
-    const connection = await this.#prisma.connection.create({
-      data: {
-        ...params,
-        integrationId: integration.id,
-        status,
-        credentials: params.credentials,
-      },
-    });
+    const application = await this.#applicationService.getById(integration.applicationId);
+    try {
+      // TODO: Is this the correct status?
+      const status: ConnectionStatus = 'added';
+      const connection = await this.#prisma.connection.create({
+        data: {
+          ...params,
+          integrationId: integration.id,
+          status,
+          credentials: params.credentials,
+        },
+      });
 
-    // TODO: We need do this transactionally and not best-effort. Maybe transactionally write
-    // an event to another table and have a background job pick this up to guarantee
-    // that we start up syncs when connections are created.
-    // TODO: Do this for non-CRM models
-    await this.#syncService.createSyncsSchedule(connection.id, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
-
-    return fromConnectionModel(connection);
+      // TODO: We need do this transactionally and not best-effort. Maybe transactionally write
+      // an event to another table and have a background job pick this up to guarantee
+      // that we start up syncs when connections are created.
+      // TODO: Do this for non-CRM models
+      await this.#syncService.createSyncsSchedule(
+        connection.id,
+        integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
+      );
+      if (application.config.webhook) {
+        await sendWebhookPayload(application.config.webhook, 'CONNECTION_SUCCESS', params);
+      }
+      return fromConnectionModel(connection);
+    } catch (e) {
+      if (application.config.webhook) {
+        await sendWebhookPayload(application.config.webhook, 'CONNECTION_ERROR', params);
+      }
+      throw e;
+    }
   }
 }
