@@ -16,7 +16,7 @@
   },
   "servers": [
     {
-      "url": "https://localhost:8080/customer",
+      "url": "http://localhost:8080/customer",
       "description": "Local Supaglue API"
     }
   ],

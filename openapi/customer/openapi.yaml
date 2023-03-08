@@ -20,7 +20,7 @@ externalDocs:
   description: Try out our API in Postman!
   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
 servers:
-  - url: 'https://localhost:8080/customer'
+  - url: 'http://localhost:8080/customer'
     description: Local Supaglue API
 paths: {}
 tags: []
