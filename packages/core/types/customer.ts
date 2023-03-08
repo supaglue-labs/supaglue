@@ -1,5 +1,6 @@
 export type Customer = {
   id: string;
+  applicationId: string;
   createdAt: Date;
   updatedAt: Date;
 

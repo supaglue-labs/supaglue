@@ -4,6 +4,7 @@ import { SyncConfig } from './sync_config';
 
 export type BaseIntegration = {
   id: string;
+  applicationId: string;
   authType: 'oauth2';
   config: IntegrationConfig;
 };
