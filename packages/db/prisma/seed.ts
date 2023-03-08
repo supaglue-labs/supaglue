@@ -48,6 +48,8 @@ const {
   DEV_CAPSULE_APP_ID,
 } = process.env;
 
+const APPLICATION_ID = 'a4398523-03a2-42dd-9681-c91e3e2efaf4';
+
 const SALESFORCE_CUSTOMER_ID = '9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677';
 const HUBSPOT_CUSTOMER_ID = 'ea3039fa-27de-4535-90d8-db2bab0c0252';
 const SALESFORCE_INTEGRATION_ID = '9b725cc5-98f8-4cf7-bda4-c72242b456e2';
@@ -118,6 +120,29 @@ const INTEGRATION_IDS = [
   CAPSULE_INTEGRATION_ID,
 ];
 
+async function seedApplication() {
+  // Create application
+  await prisma.application.upsert({
+    where: {
+      id: APPLICATION_ID,
+    },
+    update: {},
+    create: {
+      id: APPLICATION_ID,
+      name: 'My App',
+      config: {
+        webhook: {
+          url: null,
+          notifyOnSyncSuccess: true,
+          notifyOnSyncError: true,
+          notifyOnConnectionSuccess: true,
+          notifyOnConnectionError: true,
+        },
+      },
+    },
+  });
+}
+
 async function seedCustomers() {
   // Create customers
   await Promise.all(
@@ -127,7 +152,7 @@ async function seedCustomers() {
           id,
         },
         update: {},
-        create: { id },
+        create: { id, applicationId: APPLICATION_ID },
       })
     )
   );
@@ -144,6 +169,7 @@ async function seedCRMIntegrations() {
         update: {},
         create: {
           id: INTEGRATION_IDS[idx],
+          applicationId: APPLICATION_ID,
           category: 'crm',
           providerName: SUPPORTED_CRM_CONNECTIONS[idx],
           authType: 'oauth2',
@@ -167,6 +193,7 @@ async function seedCRMIntegrations() {
 }
 
 async function main() {
+  await seedApplication();
   await seedCustomers();
   await seedCRMIntegrations();
 }

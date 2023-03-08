@@ -10,24 +10,38 @@ datasource db {
   url      = env("SUPAGLUE_DATABASE_URL")
 }
 
+model Application {
+  id          String        @id @default(uuid())
+  name        String        @db.VarChar(255)
+  config      Json
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  Customer    Customer[]
+  Integration Integration[]
+}
+
 model Customer {
-  id          String       @id @default(uuid())
-  connections Connection[]
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
+  id            String       @id @default(uuid())
+  applicationId String       @map("application_id")
+  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  connections   Connection[]
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
 
   @@map("customers")
 }
 
 model Integration {
-  id           String       @id @default(uuid())
-  authType     String       @map("auth_type") // [oauth2]
-  category     String
-  providerName String       @unique @map("provider_name") // [salesforce, hubspot]
-  config       Json // {remote_provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-  connections  Connection[]
+  id            String       @id @default(uuid())
+  applicationId String       @map("application_id")
+  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  authType      String       @map("auth_type") // [oauth2]
+  category      String
+  providerName  String       @unique @map("provider_name") // [salesforce, hubspot]
+  config        Json // {remote_provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  connections   Connection[]
 
   @@map("integrations")
 }
@@ -118,8 +132,8 @@ model CrmLead {
   leadSource               String?     @map("lead_source") @db.VarChar(255)
   title                    String?     @db.VarChar(255)
   company                  String?     @db.VarChar(255)
-  firstName                String?     @db.VarChar(255) @map("first_name")
-  lastName                 String?     @db.VarChar(255) @map("last_name")
+  firstName                String?     @map("first_name") @db.VarChar(255)
+  lastName                 String?     @map("last_name") @db.VarChar(255)
   addresses                Json?
   phoneNumbers             Json?       @map("phone_numbers")
   emailAddresses           Json?       @map("email_addresses")
