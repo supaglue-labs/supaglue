@@ -118,8 +118,8 @@ model CrmLead {
   leadSource               String?     @map("lead_source") @db.VarChar(255)
   title                    String?     @db.VarChar(255)
   company                  String?     @db.VarChar(255)
-  firstName                String?     @db.VarChar(255)
-  lastName                 String?     @db.VarChar(255)
+  firstName                String?     @db.VarChar(255) @map("first_name")
+  lastName                 String?     @db.VarChar(255) @map("last_name")
   addresses                Json?
   phoneNumbers             Json?       @map("phone_numbers")
   emailAddresses           Json?       @map("email_addresses")
