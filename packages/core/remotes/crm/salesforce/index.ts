@@ -195,7 +195,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     // TODO: Shouldn't be relying on `jsforce` to do this.
     const token = await this.#client.oauth2.refreshToken(this.#refreshToken);
     this.#accessToken = token.access_token;
-    const hadListeners = this.emit('token_refreshed', token.access_token, null);
+    this.emit('token_refreshed', token.access_token, null);
   }
 
   async #fetch(path: string, init: RequestInit): Promise<ReturnType<typeof fetch>> {
@@ -347,6 +347,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
   }
 
   public async listContacts(): Promise<RemoteContact[]> {
+    // TODO: remove limit
     const soql = `
       SELECT ${propertiesToFetch.contact.join(', ')}
       FROM Contact
