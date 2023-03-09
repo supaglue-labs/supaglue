@@ -14,7 +14,7 @@ info:
     ### Base API URL
 
     ```
-    http://localhost:8080/api/mgmt/v1
+    http://localhost:8080/mgmt/v1
     ```
 externalDocs:
   description: Try out our API in Postman!
@@ -27,6 +27,8 @@ paths:
     $ref: paths/customers.yaml
   '/customers/{customer_id}':
     $ref: paths/customers@{customer_id}.yaml
+  '/integrations':
+    $ref: paths/integrations.yaml
 tags: []
 components:
   schemas:

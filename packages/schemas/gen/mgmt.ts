@@ -25,6 +25,15 @@ export interface paths {
       };
     };
   };
+  "/integrations": {
+    /**
+     * List integrations 
+     * @description Get a list of integrations
+     */
+    get: operations["getIntegrations"];
+    /** Create integration */
+    post: operations["createIntegration"];
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -89,10 +98,8 @@ export interface components {
             /** @example 2023-03-09T21:55:54.000Z */
             expires_at?: string | null;
           };
-          /** @enum {string} */
-          provider_name?: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
-          /** @enum {string} */
-          category?: "crm";
+          provider_name?: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["provider_name"];
+          category?: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["category"];
         })[];
     };
   };
@@ -158,6 +165,110 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["customer"];
+        };
+      };
+    };
+  };
+  getIntegrations: {
+    /**
+     * List integrations 
+     * @description Get a list of integrations
+     */
+    responses: {
+      /** @description Integrations */
+      200: {
+        content: {
+          "application/json": (paths["/integrations"]["post"]["responses"]["201"]["content"]["application/json"]["schema"])[];
+        };
+      };
+    };
+  };
+  createIntegration: {
+    /** Create integration */
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+          application_id: string;
+          /** @enum {string} */
+          category: "crm";
+          /** @enum {string} */
+          auth_type: "oauth2";
+          /** @enum {string} */
+          provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
+          /**
+           * @example [
+           *   {
+           *     "remote_provider_app_id": "my_app_id"
+           *   },
+           *   {
+           *     "oauth": [
+           *       {
+           *         "oauth_scopes": [
+           *           "crm.objects.contacts.read",
+           *           "crm.objects.companies.read",
+           *           "crm.objects.deals.read",
+           *           "crm.objects.contacts.write",
+           *           "crm.objects.companies.write",
+           *           "crm.objects.deals.write"
+           *         ]
+           *       },
+           *       {
+           *         "credentials": [
+           *           {
+           *             "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+           *           },
+           *           {
+           *             "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+           *           }
+           *         ]
+           *       }
+           *     ]
+           *   },
+           *   {
+           *     "sync": [
+           *       {
+           *         "period_ms": 60000
+           *       }
+           *     ]
+           *   }
+           * ]
+           */
+          config: {
+            /** @example my_app_id */
+            remote_provider_app_id: string;
+            oauth: {
+              oauth_scopes: (string)[];
+              credentials: {
+                /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+                oauth_client_id: string;
+                /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+                oauth_client_secret: string;
+              };
+            };
+            sync: {
+              /** @example 60000 */
+              period_ms: number;
+            };
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Integration created */
+      201: {
+        content: {
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+            application_id: string;
+            category: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["category"];
+            /** @enum {string} */
+            auth_type: "oauth2";
+            provider_name: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["provider_name"];
+            config: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["config"];
+          };
         };
       };
     };
