@@ -33,6 +33,6 @@ export const sendWebhookPayload = async (
         throw new Error(`Unsupported requestType: ${requestType}`);
     }
   } catch (e) {
-    logger.error('Failed to send webhook');
+    logger.error(`Failed to send webhook: ${e}`);
   }
 };
