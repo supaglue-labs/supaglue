@@ -51,8 +51,3 @@ export type AccountUpdateParams = AccountCreateParams & {
 export type RemoteAccountUpdateParams = RemoteAccountCreateParams & {
   remoteId: string;
 };
-
-export type AccountSyncUpsertParams = RemoteAccount & {
-  customerId: string;
-  connectionId: string;
-};
