@@ -3,6 +3,7 @@ import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as Hu
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
 import retry from 'async-retry';
+import { PassThrough, Readable } from 'stream';
 import { logger } from 'sync-worker/logger';
 import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
@@ -138,15 +139,31 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     }
   }
 
-  public async listAccounts(): Promise<RemoteAccount[]> {
-    let after = undefined;
-    const remoteAccounts = [];
-    do {
-      const currResult: HubspotPaginatedDeals = await this.listAccountsImpl(after);
-      after = currResult.paging?.next?.after;
-      remoteAccounts.push(...currResult.results.map(fromHubSpotCompanyToRemoteAccount));
-    } while (after);
-    return remoteAccounts;
+  public async listAccounts(): Promise<Readable> {
+    const passThrough = new PassThrough({ objectMode: true });
+
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedDeals = await this.listAccountsImpl(after);
+        const remoteAccounts = currResults.results.map(fromHubSpotCompanyToRemoteAccount);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteAccounts);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
+    return passThrough;
   }
 
   private async listAccountsImpl(after?: string): Promise<HubspotPaginatedCompanies> {
@@ -187,15 +204,31 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     return fromHubSpotCompanyToRemoteAccount(company);
   }
 
-  public async listOpportunities(): Promise<RemoteOpportunity[]> {
-    let after = undefined;
-    const remoteOpportunities = [];
-    do {
-      const currResult: HubspotPaginatedDeals = await this.listOpportunitiesImpl(after);
-      after = currResult.paging?.next?.after;
-      remoteOpportunities.push(...currResult.results.map(fromHubSpotDealToRemoteOpportunity));
-    } while (after);
-    return remoteOpportunities;
+  public async listOpportunities(): Promise<Readable> {
+    const passThrough = new PassThrough({ objectMode: true });
+
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedDeals = await this.listOpportunitiesImpl(after);
+        const remoteOpportunities = currResults.results.map(fromHubSpotDealToRemoteOpportunity);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteOpportunities);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
+    return passThrough;
   }
 
   private async listOpportunitiesImpl(after?: string): Promise<HubspotPaginatedDeals> {
@@ -248,15 +281,31 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     return fromHubSpotDealToRemoteOpportunity(deal);
   }
 
-  public async listContacts(): Promise<RemoteContact[]> {
-    let after = undefined;
-    const remoteContacts = [];
-    do {
-      const currResult: HubspotPaginatedContacts = await this.listContactsImpl(after);
-      after = currResult.paging?.next?.after;
-      remoteContacts.push(...currResult.results.map(fromHubSpotContactToRemoteContact));
-    } while (after);
-    return remoteContacts;
+  public async listContacts(): Promise<Readable> {
+    const passThrough = new PassThrough({ objectMode: true });
+
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedContacts = await this.listContactsImpl(after);
+        const remoteContacts = currResults.results.map(fromHubSpotContactToRemoteContact);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteContacts);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
+    return passThrough;
   }
 
   private async listContactsImpl(after?: string): Promise<HubspotPaginatedContacts> {
@@ -315,8 +364,8 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     return fromHubSpotContactToRemoteContact(contact);
   }
 
-  public async listLeads(limit?: number): Promise<RemoteLead[]> {
-    return [];
+  public async listLeads(limit?: number): Promise<Readable> {
+    return Readable.from([]);
   }
 
   public async createLead(params: RemoteLeadCreateParams): Promise<RemoteLead> {

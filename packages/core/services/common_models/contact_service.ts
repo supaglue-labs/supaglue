@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { POSTGRES_UPDATE_BATCH_SIZE } from '../../lib/constants';
 import { getExpandedAssociations } from '../../lib/expand';
@@ -10,7 +11,6 @@ import type {
   GetParams,
   ListParams,
   PaginatedResult,
-  RemoteContact,
 } from '../../types';
 import { CommonModelBaseService } from './base_service';
 
@@ -136,7 +136,7 @@ export class ContactService extends CommonModelBaseService {
   public async upsertRemoteContacts(
     connectionId: string,
     customerId: string,
-    remoteContacts: RemoteContact[]
+    remoteContactsReadable: Readable
   ): Promise<void> {
     // TODO: Shouldn't be hard-coding the DB schema here.
     const table = 'api.crm_contacts';
@@ -161,7 +161,7 @@ export class ContactService extends CommonModelBaseService {
     await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteContacts,
+      remoteContactsReadable,
       table,
       tempTable,
       columnsWithoutId,

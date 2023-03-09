@@ -33,23 +33,23 @@ export function createDoSync(
 
     switch (commonModel) {
       case 'account': {
-        const remoteAccounts = await client.listAccounts();
-        await accountService.upsertRemoteAccounts(connection.id, connection.customerId, remoteAccounts);
+        const readable = await client.listAccounts();
+        await accountService.upsertRemoteAccounts(connection.id, connection.customerId, readable);
         break;
       }
       case 'contact': {
-        const remoteContacts = await client.listContacts();
-        await contactService.upsertRemoteContacts(connection.id, connection.customerId, remoteContacts);
+        const readable = await client.listContacts();
+        await contactService.upsertRemoteContacts(connection.id, connection.customerId, readable);
         break;
       }
       case 'opportunity': {
-        const remoteOpportunities = await client.listOpportunities();
-        await opportunityService.upsertRemoteOpportunities(connection.id, connection.customerId, remoteOpportunities);
+        const readable = await client.listOpportunities();
+        await opportunityService.upsertRemoteOpportunities(connection.id, connection.customerId, readable);
         break;
       }
       case 'lead': {
-        const remoteLeads = await client.listLeads();
-        await leadService.upsertRemoteLeads(connection.id, connection.customerId, remoteLeads);
+        const readable = await client.listLeads();
+        await leadService.upsertRemoteLeads(connection.id, connection.customerId, readable);
         break;
       }
     }

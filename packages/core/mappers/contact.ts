@@ -19,11 +19,11 @@ export const fromContactModel = (
   }: CrmContactExpanded,
   expandedAssociations: string[] = []
 ): Contact => {
-  const expandAccount = expandedAssociations.includes('account');
+  const expandContact = expandedAssociations.includes('account');
   return {
     id,
     accountId,
-    account: expandAccount && account ? fromAccountModel(account) : undefined,
+    account: expandContact && account ? fromAccountModel(account) : undefined,
     firstName,
     lastName,
     addresses: addresses as Address[],

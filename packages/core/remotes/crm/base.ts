@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { Readable } from 'stream';
 import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../types/account';
 import { CRMConnection } from '../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../types/contact';
@@ -18,19 +19,19 @@ interface CrmRemoteClientEvents {
 export interface CrmRemoteClient extends RemoteClient {
   on<U extends keyof CrmRemoteClientEvents>(event: U, listener: CrmRemoteClientEvents[U]): this;
 
-  listAccounts(): Promise<RemoteAccount[]>;
+  listAccounts(): Promise<Readable>; // streams RemoteAccount
   createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount>;
   updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount>;
 
-  listContacts(): Promise<RemoteContact[]>;
+  listContacts(): Promise<Readable>; // streams RemoteContact
   createContact(params: RemoteContactCreateParams): Promise<RemoteContact>;
   updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact>;
 
-  listLeads(): Promise<RemoteLead[]>;
+  listLeads(): Promise<Readable>; // streams RemoteLead
   createLead(params: RemoteLeadCreateParams): Promise<RemoteLead>;
   updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead>;
 
-  listOpportunities(): Promise<RemoteOpportunity[]>;
+  listOpportunities(): Promise<Readable>; // streams RemoteOpportunity
   createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity>;
   updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity>;
 }
