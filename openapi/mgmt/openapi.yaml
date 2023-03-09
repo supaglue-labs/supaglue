@@ -14,7 +14,7 @@ info:
     ### Base API URL
 
     ```
-    http://localhost:8080/api/mgmt/v1
+    http://localhost:8080/mgmt/v1
     ```
 externalDocs:
   description: Try out our API in Postman!
