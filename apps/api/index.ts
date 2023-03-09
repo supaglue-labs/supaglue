@@ -1,11 +1,11 @@
 import { distinctId } from '@/lib/distinct_identifier';
 import { client as posthogClient, posthogErrorMiddleware, posthogMiddleware } from '@/lib/posthog';
-import { logger } from '@/logger';
 import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import { HTTPError } from '@supaglue/core/errors';
+import { logger } from '@supaglue/core/lib';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
@@ -56,7 +56,7 @@ app.use(posthogMiddleware);
 
 app.use(
   pinoHttp({
-    logger,
+    logger: logger as any,
     customLogLevel: function (req, res, err) {
       if (res.statusCode >= 400 && res.statusCode < 500) {
         return 'warn';

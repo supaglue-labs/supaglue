@@ -3962,6 +3962,8 @@ __metadata:
     jsforce: ^2.0.0-beta.20
     pg: ^8.10.0
     pg-copy-streams: ^6.0.5
+    pino: ^8.11.0
+    pino-pretty: ^9.4.0
     typescript: ^4.9.5
     uuid: ^9.0.0
   languageName: unknown
@@ -5693,9 +5695,7 @@ __metadata:
     dotenv: ^16.0.3
     express: ">=5.0.0-beta.1"
     express-openapi-validator: ^5.0.2
-    pino: ^8.10.0
     pino-http: ^8.3.3
-    pino-pretty: ^9.3.0
     posthog-node: ^2.5.3
     simple-oauth2: ^5.0.0
     snakecase-keys: ^5.4.5
@@ -13393,9 +13393,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-pretty@npm:^9.3.0":
-  version: 9.3.0
-  resolution: "pino-pretty@npm:9.3.0"
+"pino-pretty@npm:^9.4.0":
+  version: 9.4.0
+  resolution: "pino-pretty@npm:9.4.0"
   dependencies:
     colorette: ^2.0.7
     dateformat: ^4.6.3
@@ -13413,7 +13413,7 @@ __metadata:
     strip-json-comments: ^3.1.1
   bin:
     pino-pretty: bin.js
-  checksum: 52daee67a36ad6e025f6504adc350b517131ff00838806f08da9dcce295d426d7fc657c92095bc0617e9ff54a8038817130f4cf90be0e86d6dc441c77a6563c9
+  checksum: 4870d44879048219003b0c6f28181ca871e62c1d9679b07b3f3d703e961284b5b0df495e4be95954a0e467ded34f2323bc9cf3280c3a143311b364a733a08e03
   languageName: node
   linkType: hard
 
@@ -13424,7 +13424,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^8.0.0, pino@npm:^8.10.0":
+"pino@npm:^8.0.0":
   version: 8.10.0
   resolution: "pino@npm:8.10.0"
   dependencies:
@@ -16568,8 +16568,6 @@ __metadata:
     "@swc/core": ^1.3.35
     "@temporalio/worker": ^1.6.0
     "@tsconfig/node18": ^1.0.1
-    pino: ^8.11.0
-    pino-pretty: ^9.3.0
     tsx: ^3.12.3
     typescript: ^4.9.5
   languageName: unknown
