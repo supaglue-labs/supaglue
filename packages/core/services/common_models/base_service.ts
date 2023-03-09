@@ -29,7 +29,7 @@ export abstract class CommonModelBaseService {
     tempTable: string,
     columnsWithoutId: string[],
     mapper: (connectionId: string, customerId: string, remoteCommonModel: T) => Record<string, any>
-  ): Promise<void> {
+  ): Promise<number> {
     const client = await this.pgPool.connect();
 
     // TODO: On the first run, we should be able to directly write into the table and skip the temp table
@@ -74,10 +74,11 @@ export abstract class CommonModelBaseService {
       // Copy from temp table
       const columnsToUpdate = columnsWithoutId.join(',');
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
-      await client.query(`INSERT INTO ${table}
+      const result = await client.query(`INSERT INTO ${table}
 SELECT * FROM ${tempTable}
 ON CONFLICT (connection_id, remote_id)
 DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
+      return result.rowCount;
     } finally {
       client.release();
     }

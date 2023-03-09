@@ -1,8 +1,10 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
 import type {
   AccountService,
+  ApplicationService,
   ConnectionService,
   ContactService,
+  IntegrationService,
   LeadService,
   OpportunityService,
   RemoteService,
@@ -19,6 +21,8 @@ type DependencyContainer = {
   leadService: LeadService;
   opportunityService: OpportunityService;
   syncHistoryService: SyncHistoryService;
+  integrationService: IntegrationService;
+  applicationService: ApplicationService;
 };
 
 // global
@@ -34,6 +38,8 @@ function createDependencyContainer(): DependencyContainer {
     leadService,
     opportunityService,
     syncHistoryService,
+    integrationService,
+    applicationService,
   } = getCoreDependencyContainer();
 
   return {
@@ -45,6 +51,8 @@ function createDependencyContainer(): DependencyContainer {
     leadService,
     opportunityService,
     syncHistoryService,
+    integrationService,
+    applicationService,
   };
 }
 

@@ -15,6 +15,10 @@ export type DoSyncArgs = {
   sessionId?: string;
 };
 
+export type DoSyncResult = {
+  numRecordsSynced: number;
+};
+
 export function createDoSync(
   accountService: AccountService,
   connectionService: ConnectionService,
@@ -23,9 +27,11 @@ export function createDoSync(
   opportunityService: OpportunityService,
   leadService: LeadService
 ) {
-  return async function doSync({ connectionId, commonModel, sessionId }: DoSyncArgs): Promise<void> {
+  return async function doSync({ connectionId, commonModel, sessionId }: DoSyncArgs): Promise<DoSyncResult> {
     const connection = await connectionService.getById(connectionId);
     const client = await remoteService.getCrmRemoteClient(connectionId);
+
+    let numRecordsSynced = 0;
 
     if (sessionId) {
       logEvent('Start Sync', connection.providerName, commonModel, sessionId);
@@ -34,22 +40,26 @@ export function createDoSync(
     switch (commonModel) {
       case 'account': {
         const readable = await client.listAccounts();
-        await accountService.upsertRemoteAccounts(connection.id, connection.customerId, readable);
+        numRecordsSynced = await accountService.upsertRemoteAccounts(connection.id, connection.customerId, readable);
         break;
       }
       case 'contact': {
         const readable = await client.listContacts();
-        await contactService.upsertRemoteContacts(connection.id, connection.customerId, readable);
+        numRecordsSynced = await contactService.upsertRemoteContacts(connection.id, connection.customerId, readable);
         break;
       }
       case 'opportunity': {
         const readable = await client.listOpportunities();
-        await opportunityService.upsertRemoteOpportunities(connection.id, connection.customerId, readable);
+        numRecordsSynced = await opportunityService.upsertRemoteOpportunities(
+          connection.id,
+          connection.customerId,
+          readable
+        );
         break;
       }
       case 'lead': {
         const readable = await client.listLeads();
-        await leadService.upsertRemoteLeads(connection.id, connection.customerId, readable);
+        numRecordsSynced = await leadService.upsertRemoteLeads(connection.id, connection.customerId, readable);
         break;
       }
     }
@@ -57,5 +67,9 @@ export function createDoSync(
     if (sessionId) {
       logEvent('Completed Sync', connection.providerName, commonModel, sessionId);
     }
+
+    return {
+      numRecordsSynced,
+    };
   };
 }
