@@ -60,8 +60,3 @@ export type OpportunityUpdateParams = OpportunityCreateParams & {
 export type RemoteOpportunityUpdateParams = RemoteOpportunityCreateParams & {
   remoteId: string;
 };
-
-export type OpportunitySyncUpsertParams = RemoteOpportunity & {
-  customerId: string;
-  connectionId: string;
-};

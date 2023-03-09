@@ -52,8 +52,3 @@ export type ContactUpdateParams = ContactCreateParams & {
 export type RemoteContactUpdateParams = RemoteContactCreateParams & {
   remoteId: string;
 };
-
-export type ContactSyncUpsertParams = RemoteContact & {
-  customerId: string;
-  connectionId: string;
-};

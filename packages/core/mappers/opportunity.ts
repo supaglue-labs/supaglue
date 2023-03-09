@@ -40,6 +40,7 @@ export const fromOpportunityModel = (
   };
 };
 
+// TODO: Use prisma generator to generate return type
 export const fromRemoteOpportunityToDbOpportunityParams = (
   connectionId: string,
   customerId: string,
