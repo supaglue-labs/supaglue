@@ -19,6 +19,9 @@ Learn about major Supaglue concepts.
 <dt>Customer</dt>
 <dd>An end-user of a developer's application.</dd>
 
+<dt>Embedded Link</dt>
+ <dd>A Customer-facing HTTP link that developers add into their application so their customers can connect third-party tools to their application using Supaglue.</dd>
+
 <dt>Integration</dt>
 <dd>An offering made available by a developer to Customers so that Customers can connect their third-party tools.</dd>
 
