@@ -34,42 +34,22 @@ export function createDoSync(
     switch (commonModel) {
       case 'account': {
         const remoteAccounts = await client.listAccounts();
-        const accountSyncUpsertParams = remoteAccounts.map((remoteAccount) => ({
-          customerId: connection.customerId,
-          connectionId: connection.id,
-          ...remoteAccount,
-        }));
-        await accountService.upsertRemoteAccounts(connection.id, accountSyncUpsertParams);
+        await accountService.upsertRemoteAccounts(connection.id, connection.customerId, remoteAccounts);
         break;
       }
       case 'contact': {
         const remoteContacts = await client.listContacts();
-        const contactSyncUpsertParams = remoteContacts.map((remoteContact) => ({
-          customerId: connection.customerId,
-          connectionId: connection.id,
-          ...remoteContact,
-        }));
-        await contactService.upsertRemoteContacts(connection.id, contactSyncUpsertParams);
+        await contactService.upsertRemoteContacts(connection.id, connection.customerId, remoteContacts);
         break;
       }
       case 'opportunity': {
         const remoteOpportunities = await client.listOpportunities();
-        const opportunitySyncUpsertParams = remoteOpportunities.map((remoteOpportunity) => ({
-          customerId: connection.customerId,
-          connectionId: connection.id,
-          ...remoteOpportunity,
-        }));
-        await opportunityService.upsertRemoteOpportunities(connection.id, opportunitySyncUpsertParams);
+        await opportunityService.upsertRemoteOpportunities(connection.id, connection.customerId, remoteOpportunities);
         break;
       }
       case 'lead': {
         const remoteLeads = await client.listLeads();
-        const leadSyncUpsertParams = remoteLeads.map((remoteLead) => ({
-          customerId: connection.customerId,
-          connectionId: connection.id,
-          ...remoteLead,
-        }));
-        await leadService.upsertRemoteLeads(connection.id, leadSyncUpsertParams);
+        await leadService.upsertRemoteLeads(connection.id, connection.customerId, remoteLeads);
         break;
       }
     }

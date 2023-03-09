@@ -61,8 +61,3 @@ export type LeadUpdateParams = LeadCreateParams & {
 export type RemoteLeadUpdateParams = RemoteLeadCreateParams & {
   remoteId: string;
 };
-
-export type LeadSyncUpsertParams = RemoteLead & {
-  customerId: string;
-  connectionId: string;
-};

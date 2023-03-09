@@ -1,21 +1,18 @@
-import { stringify } from 'csv-stringify';
-import { from as copyFrom } from 'pg-copy-streams';
-import { v4 as uuidv4 } from 'uuid';
-import { NotFoundError, UnauthorizedError } from '../errors';
-import { POSTGRES_UPDATE_BATCH_SIZE } from '../lib/constants';
-import { getExpandedAssociations } from '../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { fromOpportunityModel } from '../mappers';
+import { NotFoundError, UnauthorizedError } from '../../errors';
+import { POSTGRES_UPDATE_BATCH_SIZE } from '../../lib/constants';
+import { getExpandedAssociations } from '../../lib/expand';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../mappers';
 import type {
   GetParams,
   ListParams,
   Opportunity,
   OpportunityCreateParams,
-  OpportunitySyncUpsertParams,
   OpportunityUpdateParams,
   PaginatedResult,
-} from '../types';
-import { CommonModelBaseService } from './common_model_base_service';
+  RemoteOpportunity,
+} from '../../types';
+import { CommonModelBaseService } from './base_service';
 
 export class OpportunityService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -148,97 +145,40 @@ export class OpportunityService extends CommonModelBaseService {
 
   public async upsertRemoteOpportunities(
     connectionId: string,
-    upsertParamsList: OpportunitySyncUpsertParams[]
+    customerId: string,
+    remoteOpportunities: RemoteOpportunity[]
   ): Promise<void> {
-    const client = await this.pgPool.connect();
+    // TODO: Shouldn't be hard-coding the DB schema here.
+    const table = 'api.crm_opportunities';
+    const tempTable = 'crm_opportunities_temp';
+    const columnsWithoutId = [
+      'remote_id',
+      'customer_id',
+      'connection_id',
+      'remote_was_deleted',
+      'owner',
+      'name',
+      'description',
+      'amount',
+      'stage',
+      'status',
+      'last_activity_at',
+      'close_date',
+      'remote_created_at',
+      'remote_updated_at',
+      '_remote_account_id',
+      'updated_at', // TODO: We should have default for this column in Postgres
+    ];
 
-    // TODO: On the first run, we should be able to directly write into the table and skip the temp table
-
-    try {
-      // TODO: Get schema (api) from config
-      const table = 'api.crm_opportunities';
-      const tempTable = 'crm_opportunities_temp';
-
-      // Create a temporary table
-      // TODO: In the future, we may want to create a permanent table with background reaper
-      // so that we can resume in the case of failure during the COPY stage.
-      // TODO: Maybe we don't need to include all
-      await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING ALL)`);
-
-      // TODO: Define columns and mappers elsewhere
-      // Columns
-      const columnsWithoutId = [
-        'remote_id',
-        'customer_id',
-        'connection_id',
-        'remote_was_deleted',
-        'owner',
-        'name',
-        'description',
-        'amount',
-        'stage',
-        'status',
-        'last_activity_at',
-        'close_date',
-        'remote_created_at',
-        'remote_updated_at',
-        '_remote_account_id',
-        'updated_at', // TODO: We should have default for this column in Postgres
-      ];
-      const columns = ['id', ...columnsWithoutId];
-
-      // Output
-      const stream = client.query(
-        copyFrom(`COPY ${tempTable} (${columns.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`)
-      );
-
-      // Input
-      const convertedUpsertParamsList = upsertParamsList.map((upsertParams) => ({
-        id: uuidv4(),
-        remote_id: upsertParams.remoteId,
-        customer_id: upsertParams.customerId,
-        connection_id: upsertParams.connectionId,
-        remote_was_deleted: upsertParams.remoteWasDeleted,
-        owner: upsertParams.owner,
-        name: upsertParams.name,
-        description: upsertParams.description,
-        amount: upsertParams.amount,
-        stage: upsertParams.stage,
-        status: upsertParams.status,
-        last_activity_at: upsertParams.lastActivityAt?.toISOString(),
-        close_date: upsertParams.closeDate?.toISOString(),
-        remote_created_at: upsertParams.remoteCreatedAt?.toISOString(),
-        remote_updated_at: upsertParams.remoteUpdatedAt?.toISOString(),
-        _remote_account_id: upsertParams.remoteAccountId,
-        updated_at: new Date().toISOString(),
-      }));
-
-      await new Promise((resolve, reject) => {
-        const csvInput = stringify(
-          convertedUpsertParamsList.map((upsertParams) => ({ ...upsertParams, id: uuidv4() })),
-          {
-            columns,
-            cast: {
-              boolean: (value: boolean) => value.toString(),
-            },
-          }
-        );
-        csvInput.on('error', reject);
-        stream.on('error', reject);
-        stream.on('finish', resolve);
-        csvInput.pipe(stream);
-      });
-
-      // Copy from temp table
-      const columnsToUpdate = columnsWithoutId.join(',');
-      const excludedDolumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
-      await client.query(`INSERT INTO ${table}
-SELECT * FROM ${tempTable}
-ON CONFLICT (connection_id, remote_id)
-DO UPDATE SET (${columnsToUpdate}) = (${excludedDolumnsToUpdate})`);
-    } finally {
-      client.release();
-    }
+    await this.upsertRemoteCommonModels(
+      connectionId,
+      customerId,
+      remoteOpportunities,
+      table,
+      tempTable,
+      columnsWithoutId,
+      fromRemoteOpportunityToDbOpportunityParams
+    );
   }
 
   private async updateDanglingAccountsImpl(
