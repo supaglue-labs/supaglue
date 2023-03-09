@@ -4,7 +4,7 @@ import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as Hu
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
-import { logger } from 'sync-worker/logger';
+import { logger } from '../../../lib';
 import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';

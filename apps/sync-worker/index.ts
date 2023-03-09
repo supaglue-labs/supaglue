@@ -1,8 +1,8 @@
+import { logger } from '@supaglue/core/lib';
 import { createActivities } from '@supaglue/sync-workflows';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { LogLevel, LogMetadata, NativeConnection, Runtime, Worker } from '@temporalio/worker';
 import { getDependencyContainer } from './dependency_container';
-import { logger } from './logger';
 
 async function run() {
   // pino expects errors to be placed under the `err` key. We're doing mapping here

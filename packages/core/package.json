@@ -14,6 +14,8 @@
     "jsforce": "^2.0.0-beta.20",
     "pg": "^8.10.0",
     "pg-copy-streams": "^6.0.5",
+    "pino": "^8.11.0",
+    "pino-pretty": "^9.4.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

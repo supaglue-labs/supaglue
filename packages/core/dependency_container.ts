@@ -2,6 +2,7 @@ import prisma, { PrismaClient } from '@supaglue/db';
 import { Pool } from 'pg';
 import {
   AccountService,
+  ApplicationService,
   ConnectionService,
   ContactService,
   CustomerService,
@@ -16,6 +17,7 @@ export type CoreDependencyContainer = {
   pgPool: Pool;
   prisma: PrismaClient;
 
+  applicationService: ApplicationService;
   connectionService: ConnectionService;
   integrationService: IntegrationService;
   customerService: CustomerService;
@@ -37,6 +39,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     connectionString: process.env.SUPAGLUE_DATABASE_URL,
   });
 
+  const applicationService = new ApplicationService(prisma);
   const connectionService = new ConnectionService(prisma);
   const integrationService = new IntegrationService(prisma);
   const customerService = new CustomerService(prisma);
@@ -52,6 +55,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   return {
     pgPool,
     prisma,
+    applicationService,
     connectionService,
     customerService,
     integrationService,

@@ -7,9 +7,7 @@
     "@supaglue/db": "workspace:*",
     "@supaglue/sync-workflows": "workspace:*",
     "@swc/core": "^1.3.35",
-    "@temporalio/worker": "^1.6.0",
-    "pino": "^8.11.0",
-    "pino-pretty": "^9.3.0"
+    "@temporalio/worker": "^1.6.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
