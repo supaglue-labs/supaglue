@@ -1,0 +1,330 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.3.3",
+    "title": "Supaglue Customer API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "# Introduction\n\nWelcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.\n\n### Base API URL\n\n```\nhttp://localhost:8080/mgmt/v1\n```\n"
+  },
+  "externalDocs": {
+    "description": "Try out our API in Postman!",
+    "url": "https://www.postman.com/supaglue/workspace/supaglue-public/overview"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/mgmt/v1",
+      "description": "Local Supaglue API"
+    }
+  ],
+  "paths": {
+    "/customers": {
+      "get": {
+        "operationId": "getCustomers",
+        "tags": [
+          "Customers"
+        ],
+        "summary": "List customers",
+        "description": "Get a list of customers",
+        "responses": {
+          "200": {
+            "description": "Customers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/customer"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                      },
+                      {
+                        "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
+                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createCustomer",
+        "summary": "Create customer",
+        "tags": [
+          "Customers"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "application_id": {
+                    "type": "string",
+                    "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                  }
+                },
+                "required": [
+                  "application_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}": {
+      "get": {
+        "operationId": "getCustomer",
+        "summary": "Get customer",
+        "tags": [
+          "Customers"
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "0258cbc6-6020-430a-848e-aafacbadf4ae",
+                      "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteCustomer",
+        "summary": "Delete customer",
+        "tags": [
+          "Customers"
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "0258cbc6-6020-430a-848e-aafacbadf4ae",
+                      "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    }
+  },
+  "tags": [],
+  "components": {
+    "schemas": {
+      "customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "connections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "available",
+                    "added",
+                    "authorized",
+                    "callable"
+                  ],
+                  "example": "available"
+                },
+                "customer_id": {
+                  "type": "string",
+                  "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                },
+                "integration_id": {
+                  "type": "string",
+                  "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                },
+                "credentials": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "oauth2"
+                    },
+                    "access_token": {
+                      "type": "string",
+                      "example": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ"
+                    },
+                    "refresh_token": {
+                      "type": "string",
+                      "example": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e"
+                    },
+                    "instance_url": {
+                      "type": "string",
+                      "example": "https://myapp-dev-ed.develop.my.salesforce.com"
+                    },
+                    "expires_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "2023-03-09T21:55:54.000Z"
+                    }
+                  },
+                  "example": [
+                    {
+                      "type": "oauth2"
+                    },
+                    {
+                      "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ"
+                    },
+                    {
+                      "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e"
+                    },
+                    {
+                      "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com"
+                    },
+                    {
+                      "expires_at": "2023-03-09T21:55:54.000Z"
+                    }
+                  ]
+                },
+                "provider_name": {
+                  "type": "string",
+                  "enum": [
+                    "hubspot",
+                    "salesforce",
+                    "pipedrive",
+                    "zendesk_sell",
+                    "ms_dynamics_365_sales",
+                    "zoho_crm",
+                    "capsule"
+                  ]
+                },
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "crm"
+                  ]
+                }
+              },
+              "example": [
+                {
+                  "id": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                },
+                {
+                  "customer_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                },
+                {
+                  "status": "available"
+                },
+                {
+                  "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                },
+                {
+                  "provider_name": "salesforce"
+                },
+                {
+                  "category": "crm"
+                },
+                {
+                  "credentials": [
+                    {
+                      "type": "oauth2"
+                    },
+                    {
+                      "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ"
+                    },
+                    {
+                      "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e"
+                    },
+                    {
+                      "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com"
+                    },
+                    {
+                      "expires_at": "2023-03-09T21:55:54.000Z"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "application_id"
+        ],
+        "example": [
+          {
+            "id": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          {
+            "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          }
+        ]
+      }
+    }
+  }
+}

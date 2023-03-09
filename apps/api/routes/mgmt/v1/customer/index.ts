@@ -1,6 +1,21 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { customerMiddleware } from '@/middleware/customer';
+import { camelcaseKeys } from '@/lib/camelcase';
+import { snakecaseKeys } from '@/lib/snakecase';
 import { openapiMiddleware } from '@/middleware/openapi';
+import {
+  CreateCustomerPathParams,
+  CreateCustomerRequest,
+  CreateCustomerResponse,
+  DeleteCustomerPathParams,
+  DeleteCustomerRequest,
+  DeleteCustomerResponse,
+  GetCustomerPathParams,
+  GetCustomerRequest,
+  GetCustomerResponse,
+  GetCustomersPathParams,
+  GetCustomersRequest,
+  GetCustomersResponse,
+} from '@supaglue/schemas/mgmt';
 import { Request, Response, Router } from 'express';
 import connection from './connection';
 
@@ -10,32 +25,51 @@ export default function init(app: Router): void {
   const customerRouter = Router();
   customerRouter.use(openapiMiddleware('customer'));
 
-  app.get('/customers', async (req: Request, res: Response) => {
-    const customers = await customerService.list();
-    return res.status(200).send(customers);
-  });
+  customerRouter.get(
+    '/',
+    async (
+      req: Request<GetCustomersPathParams, GetCustomersResponse, GetCustomersRequest>,
+      res: Response<GetCustomersResponse>
+    ) => {
+      const customers = await customerService.list();
+      return res.status(200).send(customers.map(snakecaseKeys));
+    }
+  );
 
-  app.post('/customers', async (req: Request, res: Response) => {
-    const customer = await customerService.create(req.body);
-    return res.status(201).send(customer);
-  });
+  customerRouter.post(
+    '/',
+    async (
+      req: Request<CreateCustomerPathParams, CreateCustomerResponse, CreateCustomerRequest>,
+      res: Response<CreateCustomerResponse>
+    ) => {
+      const customer = await customerService.create(camelcaseKeys(req.body));
+      return res.status(201).send(snakecaseKeys(customer));
+    }
+  );
 
-  customerRouter.get('/', async (req: Request, res: Response) => {
-    const customer = await customerService.getById(req.sg.customerId);
-    return res.status(200).send(customer);
-  });
+  customerRouter.get(
+    '/:customer_id',
+    async (
+      req: Request<GetCustomerPathParams, GetCustomerResponse, GetCustomerRequest>,
+      res: Response<GetCustomerResponse>
+    ) => {
+      const customer = await customerService.getById(req.params.customer_id);
+      return res.status(200).send(snakecaseKeys(customer));
+    }
+  );
 
-  customerRouter.put('/', async (req: Request, res: Response) => {
-    const customer = await customerService.update(req.sg.customerId, req.body);
-    return res.status(200).send(customer);
-  });
-
-  customerRouter.delete('/', async (req: Request, res: Response) => {
-    const customer = await customerService.delete(req.sg.customerId);
-    return res.status(200).send(customer);
-  });
+  customerRouter.delete(
+    '/:customer_id',
+    async (
+      req: Request<DeleteCustomerPathParams, DeleteCustomerResponse, DeleteCustomerRequest>,
+      res: Response<DeleteCustomerResponse>
+    ) => {
+      const customer = await customerService.delete(req.params.customer_id);
+      return res.status(200).send(snakecaseKeys(customer));
+    }
+  );
 
   connection(customerRouter);
 
-  app.use('/customers/:customer_id', customerMiddleware, customerRouter);
+  app.use('/customers', customerRouter);
 }

@@ -1,0 +1,42 @@
+get:
+  operationId: getCustomers
+  tags:
+    - Customers
+  summary: List customers
+  description: >-
+    Get a list of customers
+  responses:
+    '200':
+      description: Customers
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/customer.yaml
+          examples:
+            Example:
+              value:
+                - id: 7393b5a4-5e20-4648-87af-b7b297793fd1
+                  application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+                - id: e888cedf-e9d0-42c5-9485-2d72984faef2
+                  application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+post:
+  operationId: createCustomer
+  summary: Create customer
+  tags:
+    - Customers
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_update_customer.yaml
+  responses:
+    '201':
+      description: Customer created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/customer.yaml
