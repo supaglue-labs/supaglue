@@ -34,6 +34,19 @@ export interface paths {
     /** Create integration */
     post: operations["createIntegration"];
   };
+  "/integrations/{integration_id}": {
+    /** Get integration */
+    get: operations["getIntegration"];
+    /** Update integration */
+    put: operations["updateIntegration"];
+    /** Delete integration */
+    delete: operations["deleteIntegration"];
+    parameters: {
+      path: {
+        integration_id: string;
+      };
+    };
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -98,9 +111,132 @@ export interface components {
             /** @example 2023-03-09T21:55:54.000Z */
             expires_at?: string | null;
           };
-          provider_name?: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["provider_name"];
-          category?: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["category"];
+          provider_name?: components["schemas"]["provider_name"];
+          category?: components["schemas"]["category"];
         })[];
+    };
+    /**
+     * @example [
+     *   {
+     *     "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
+     *     "category": "crm",
+     *     "auth_type": "oauth2",
+     *     "provider_name": "hubspot",
+     *     "config": [
+     *       {
+     *         "remote_provider_app_id": "my_app_id",
+     *         "oauth": [
+     *           {
+     *             "oauth_scopes": [
+     *               "crm.objects.contacts.read",
+     *               "crm.objects.companies.read",
+     *               "crm.objects.deals.read",
+     *               "crm.objects.contacts.write",
+     *               "crm.objects.companies.write",
+     *               "crm.objects.deals.write"
+     *             ],
+     *             "credentials": [
+     *               {
+     *                 "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+     *                 "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+     *               }
+     *             ]
+     *           }
+     *         ]
+     *       },
+     *       {
+     *         "sync": [
+     *           {
+     *             "period_ms": 60000
+     *           }
+     *         ]
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    integration: {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      category: components["schemas"]["category"];
+      /** @enum {string} */
+      auth_type: "oauth2";
+      provider_name: components["schemas"]["provider_name"];
+      config: components["schemas"]["integration_config"];
+    };
+    /** @enum {string} */
+    category: "crm";
+    /**
+     * @example [
+     *   {
+     *     "remote_provider_app_id": "my_app_id"
+     *   },
+     *   {
+     *     "oauth": [
+     *       {
+     *         "oauth_scopes": [
+     *           "crm.objects.contacts.read",
+     *           "crm.objects.companies.read",
+     *           "crm.objects.deals.read",
+     *           "crm.objects.contacts.write",
+     *           "crm.objects.companies.write",
+     *           "crm.objects.deals.write"
+     *         ]
+     *       },
+     *       {
+     *         "credentials": [
+     *           {
+     *             "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+     *           },
+     *           {
+     *             "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+     *           }
+     *         ]
+     *       }
+     *     ]
+     *   },
+     *   {
+     *     "sync": [
+     *       {
+     *         "period_ms": 60000
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    integration_config: {
+      /** @example my_app_id */
+      remote_provider_app_id: string;
+      oauth: {
+        oauth_scopes: (string)[];
+        credentials: {
+          /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+          oauth_client_id: string;
+          /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+          oauth_client_secret: string;
+        };
+      };
+      sync: {
+        /** @example 60000 */
+        period_ms: number;
+      };
+    };
+    /** @enum {string} */
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
+    create_update_customer: {
+      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+      application_id: string;
+    };
+    create_update_integration: {
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      category: components["schemas"]["category"];
+      /** @enum {string} */
+      auth_type: "oauth2";
+      provider_name: components["schemas"]["provider_name"];
+      config: components["schemas"]["integration_config"];
     };
   };
   responses: never;
@@ -132,10 +268,7 @@ export interface operations {
     /** Create customer */
     requestBody: {
       content: {
-        "application/json": {
-          /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-          application_id: string;
-        };
+        "application/json": components["schemas"]["create_update_customer"];
       };
     };
     responses: {
@@ -178,7 +311,7 @@ export interface operations {
       /** @description Integrations */
       200: {
         content: {
-          "application/json": (paths["/integrations"]["post"]["responses"]["201"]["content"]["application/json"]["schema"])[];
+          "application/json": (components["schemas"]["integration"])[];
         };
       };
     };
@@ -187,88 +320,52 @@ export interface operations {
     /** Create integration */
     requestBody: {
       content: {
-        "application/json": {
-          /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-          application_id: string;
-          /** @enum {string} */
-          category: "crm";
-          /** @enum {string} */
-          auth_type: "oauth2";
-          /** @enum {string} */
-          provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
-          /**
-           * @example [
-           *   {
-           *     "remote_provider_app_id": "my_app_id"
-           *   },
-           *   {
-           *     "oauth": [
-           *       {
-           *         "oauth_scopes": [
-           *           "crm.objects.contacts.read",
-           *           "crm.objects.companies.read",
-           *           "crm.objects.deals.read",
-           *           "crm.objects.contacts.write",
-           *           "crm.objects.companies.write",
-           *           "crm.objects.deals.write"
-           *         ]
-           *       },
-           *       {
-           *         "credentials": [
-           *           {
-           *             "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1"
-           *           },
-           *           {
-           *             "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-           *           }
-           *         ]
-           *       }
-           *     ]
-           *   },
-           *   {
-           *     "sync": [
-           *       {
-           *         "period_ms": 60000
-           *       }
-           *     ]
-           *   }
-           * ]
-           */
-          config: {
-            /** @example my_app_id */
-            remote_provider_app_id: string;
-            oauth: {
-              oauth_scopes: (string)[];
-              credentials: {
-                /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
-                oauth_client_id: string;
-                /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
-                oauth_client_secret: string;
-              };
-            };
-            sync: {
-              /** @example 60000 */
-              period_ms: number;
-            };
-          };
-        };
+        "application/json": components["schemas"]["create_update_integration"];
       };
     };
     responses: {
       /** @description Integration created */
       201: {
         content: {
-          "application/json": {
-            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-            id: string;
-            /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-            application_id: string;
-            category: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["category"];
-            /** @enum {string} */
-            auth_type: "oauth2";
-            provider_name: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["provider_name"];
-            config: paths["/integrations"]["post"]["requestBody"]["content"]["application/json"]["schema"]["config"];
-          };
+          "application/json": components["schemas"]["integration"];
+        };
+      };
+    };
+  };
+  getIntegration: {
+    /** Get integration */
+    responses: {
+      /** @description Integration */
+      200: {
+        content: {
+          "application/json": components["schemas"]["integration"];
+        };
+      };
+    };
+  };
+  updateIntegration: {
+    /** Update integration */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_integration"];
+      };
+    };
+    responses: {
+      /** @description Integration */
+      200: {
+        content: {
+          "application/json": components["schemas"]["integration"];
+        };
+      };
+    };
+  };
+  deleteIntegration: {
+    /** Delete integration */
+    responses: {
+      /** @description Integration */
+      200: {
+        content: {
+          "application/json": components["schemas"]["integration"];
         };
       };
     };

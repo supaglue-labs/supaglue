@@ -20,3 +20,29 @@ export type DeleteCustomerPathParams = paths[`/customers/{customer_id}`]['parame
 export type DeleteCustomerRequest = never;
 export type DeleteCustomerResponse =
   operations['deleteCustomer']['responses'][keyof operations['deleteCustomer']['responses']]['content']['application/json'];
+
+export type GetIntegrationsPathParams = never;
+export type GetIntegrationsQueryParams = never;
+export type GetIntegrationsRequest = never;
+export type GetIntegrationsResponse =
+  operations['getIntegrations']['responses'][keyof operations['getIntegrations']['responses']]['content']['application/json'];
+
+export type CreateIntegrationPathParams = never;
+export type CreateIntegrationRequest = operations['createIntegration']['requestBody']['content']['application/json'];
+export type CreateIntegrationResponse =
+  operations['createIntegration']['responses'][keyof operations['createIntegration']['responses']]['content']['application/json'];
+
+export type GetIntegrationPathParams = paths[`/integrations/{integration_id}`]['parameters']['path'];
+export type GetIntegrationRequest = never;
+export type GetIntegrationResponse =
+  operations['getIntegration']['responses'][keyof operations['getIntegration']['responses']]['content']['application/json'];
+
+export type UpdateIntegrationPathParams = paths[`/integrations/{integration_id}`]['parameters']['path'];
+export type UpdateIntegrationRequest = never;
+export type UpdateIntegrationResponse =
+  operations['updateIntegration']['responses'][keyof operations['updateIntegration']['responses']]['content']['application/json'];
+
+export type DeleteIntegrationPathParams = paths[`/integrations/{integration_id}`]['parameters']['path'];
+export type DeleteIntegrationRequest = never;
+export type DeleteIntegrationResponse =
+  operations['deleteIntegration']['responses'][keyof operations['deleteIntegration']['responses']]['content']['application/json'];
