@@ -4,14 +4,6 @@ import { getDependencyContainer } from '../dependency_container';
 
 const { connectionService, integrationService } = getDependencyContainer();
 
-export async function connectionMiddleware(req: any, res: Response, next: NextFunction) {
-  req.sg = {
-    connectionId: req.params.connection_id,
-    ...req.sg,
-  };
-  next();
-}
-
 export async function connectionHeaderMiddleware(req: Request, res: Response, next: NextFunction) {
   const customerId = req.headers['customer-id'] as string;
   const providerName = req.headers['provider-name'] as string;
