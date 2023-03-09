@@ -3,7 +3,7 @@ import { proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
 import type { createActivities } from '../activities';
 
-const { doSync, populateAssociations, logSyncStart, logSyncFinish } = proxyActivities<
+const { doSync, populateAssociations, logSyncStart, logSyncFinish, maybeSendSyncFinishWebhook } = proxyActivities<
   ReturnType<typeof createActivities>
 >({
   startToCloseTimeout: '120 minute',
@@ -30,10 +30,24 @@ export async function runSyncs({ connectionId, sessionId }: RunSyncsArgs): Promi
     results.map(async (result, idx) => {
       if (result.status === 'fulfilled') {
         await logSyncFinish({ historyId: historyIds[idx], status: 'SUCCESS' });
+        await maybeSendSyncFinishWebhook({
+          historyId: historyIds[idx],
+          status: 'SYNC_SUCCESS',
+          connectionId,
+          numRecordsSynced: result.value.numRecordsSynced,
+        });
       } else {
         await logSyncFinish({
           historyId: historyIds[idx],
           status: 'FAILURE',
+          errorMessage: result.reason.message ?? 'Unknown error',
+        });
+        await maybeSendSyncFinishWebhook({
+          historyId: historyIds[idx],
+          status: 'SYNC_ERROR',
+          connectionId,
+          // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
+          numRecordsSynced: 0,
           errorMessage: result.reason.message ?? 'Unknown error',
         });
       }
