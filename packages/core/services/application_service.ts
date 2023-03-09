@@ -23,7 +23,7 @@ export class ApplicationService {
   // TODO: paginate
   public async list(): Promise<Application[]> {
     const applications = await this.#prisma.application.findMany();
-    return applications.map((application) => fromApplicationModel(application));
+    return applications.map(fromApplicationModel);
   }
 
   public async create(application: ApplicationCreateParams): Promise<Application> {
