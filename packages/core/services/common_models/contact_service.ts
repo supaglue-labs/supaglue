@@ -137,7 +137,7 @@ export class ContactService extends CommonModelBaseService {
     connectionId: string,
     customerId: string,
     remoteContactsReadable: Readable
-  ): Promise<void> {
+  ): Promise<number> {
     // TODO: Shouldn't be hard-coding the DB schema here.
     const table = 'api.crm_contacts';
     const tempTable = 'crm_contacts_temp';
@@ -158,7 +158,7 @@ export class ContactService extends CommonModelBaseService {
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 
-    await this.upsertRemoteCommonModels(
+    return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
       remoteContactsReadable,
