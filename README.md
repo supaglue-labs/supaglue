@@ -70,6 +70,8 @@ We are currently in Public Alpha. Watch "releases" of this repo to be notified o
 
 **IMPORTANT NOTE:** This is very insecure and should only be used for POCs.
 
+For more advanced configuration, such as attaching to an existing load balancer, a custom VPC, and the like, modify the `docker-compose-aws.yml` file per the [docker compose ecs integration docs](https://docs.docker.com/cloud/ecs-integration/).
+
 #### Prerequisites
 
 1. Install Docker Desktop:
