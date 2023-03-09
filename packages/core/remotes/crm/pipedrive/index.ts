@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import {
   AccountCreateParams,
   CRMConnection,
@@ -21,7 +22,7 @@ class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteCl
     super();
   }
 
-  public async listAccounts(): Promise<RemoteAccount[]> {
+  public async listAccounts(): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
@@ -37,7 +38,7 @@ class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteCl
     throw new Error('Not implemented');
   }
 
-  public async listContacts(): Promise<RemoteContact[]> {
+  public async listContacts(): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
@@ -53,7 +54,7 @@ class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteCl
     throw new Error('Not implemented');
   }
 
-  public async listOpportunities(): Promise<RemoteOpportunity[]> {
+  public async listOpportunities(): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
@@ -69,7 +70,7 @@ class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteCl
     throw new Error('Not implemented');
   }
 
-  public async listLeads(): Promise<RemoteLead[]> {
+  public async listLeads(): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
