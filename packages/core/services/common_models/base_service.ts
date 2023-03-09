@@ -65,11 +65,11 @@ export abstract class CommonModelBaseService {
 
       // Copy from temp table
       const columnsToUpdate = columnsWithoutId.join(',');
-      const excludedDolumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
+      const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
       await client.query(`INSERT INTO ${table}
 SELECT * FROM ${tempTable}
 ON CONFLICT (connection_id, remote_id)
-DO UPDATE SET (${columnsToUpdate}) = (${excludedDolumnsToUpdate})`);
+DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
     } finally {
       client.release();
     }
