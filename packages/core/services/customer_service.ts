@@ -1,7 +1,7 @@
-import type { Customer, PrismaClient } from '@supaglue/db';
+import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
 import { fromCustomerModel } from '../mappers/customer';
-import { CustomerCreateParams, CustomerUpdateParams } from '../types/customer';
+import { Customer, CustomerCreateParams, CustomerUpdateParams } from '../types/customer';
 
 export class CustomerService {
   #prisma: PrismaClient;
@@ -22,8 +22,12 @@ export class CustomerService {
 
   // TODO: paginate
   public async list(): Promise<Customer[]> {
-    const customers = await this.#prisma.customer.findMany();
-    return customers.map((customer) => fromCustomerModel(customer));
+    const customers = await this.#prisma.customer.findMany({
+      include: {
+        connections: true,
+      },
+    });
+    return customers.map((customer) => fromCustomerModel(customer, true));
   }
 
   public async create(customer: CustomerCreateParams): Promise<Customer> {
