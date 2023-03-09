@@ -20,6 +20,8 @@ import IntegrationTabPanel from './IntegrationTabPanel';
 
 export type Integration = any /* TODO: use type from monorepo */;
 
+const ICON_SIZE = 35;
+
 export type IntegrationCardInfo = {
   icon?: React.ReactNode;
   name: string;
@@ -30,7 +32,7 @@ export type IntegrationCardInfo = {
 };
 const integrationCardsInfo: IntegrationCardInfo[] = [
   {
-    icon: <Image alt="salesforce" src={SalesforceIcon} width={25} height={25} />,
+    icon: <Image alt="salesforce" src={SalesforceIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'Salesforce',
     providerName: 'salesforce',
     category: 'crm',
@@ -39,7 +41,7 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
       'CRM software solutions and enterprise cloud computing from Salesforce, the leader in customer relationship management (CRM) and PaaS. Free 30 day trial.',
   },
   {
-    icon: <Image alt="hubspot" src={HubspotIcon} width={25} height={25} />,
+    icon: <Image alt="hubspot" src={HubspotIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'Hubspot',
     providerName: 'hubspot',
     category: 'crm',
@@ -47,7 +49,7 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
     description: 'Hubspot is your all-in-one stop for all of your marketing software needs.',
   },
   {
-    icon: <Image alt="pipedrive" src={PipedriveIcon} width={25} height={25} />,
+    icon: <Image alt="pipedrive" src={PipedriveIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'Pipedrive',
     providerName: 'pipedrive',
     category: 'crm',
@@ -56,7 +58,7 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
       'Pipedrive is the easy-to-use, #1 user-rated CRM tool. Get more qualified leads and grow your business. Sign up for a 14-day free trial.',
   },
   {
-    icon: <Image alt="activecampaign" src={ActiveCampaignIcon} width={25} height={25} />,
+    icon: <Image alt="activecampaign" src={ActiveCampaignIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'ActiveCampaign',
     providerName: 'activecampaign',
     category: 'crm',
@@ -65,7 +67,7 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
       'Integrated email marketing, marketing automation, and small business CRM. Save time while growing your business with sales automation.',
   },
   {
-    icon: <Image alt="copper" src={CopperIcon} width={25} height={25} />,
+    icon: <Image alt="copper" src={CopperIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'Copper',
     providerName: 'copper',
     category: 'crm',
@@ -74,7 +76,9 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
       'When you need CRM software that works with G Suite, you need Copper. Give us a try and see how we can help your business build stronger customer relationships.',
   },
   {
-    icon: <Image alt="ms_dynamics_365_sales" src={MicrosoftDynamics365SalesIcon} width={25} height={25} />,
+    icon: (
+      <Image alt="ms_dynamics_365_sales" src={MicrosoftDynamics365SalesIcon} width={ICON_SIZE} height={ICON_SIZE} />
+    ),
     name: 'Microsoft Dynamics 365 Sales',
     providerName: 'ms_dynamics_365_sales',
     category: 'crm',
@@ -82,7 +86,7 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
     description: 'Dynamics CRM is a leading customer resource management and enterprise resource planning software.',
   },
   {
-    icon: <Image alt="zendesk_sell" src={ZendeskSellIcon} width={25} height={25} />,
+    icon: <Image alt="zendesk_sell" src={ZendeskSellIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'Zendesk Sell',
     providerName: 'zendesk_sell',
     category: 'crm',
@@ -119,8 +123,8 @@ type ConfigurationTab = {
 };
 const configurationTabs: ConfigurationTab[] = [
   {
-    label: 'Active',
-    value: 'active',
+    label: 'Installed',
+    value: 'installed',
   },
   {
     label: 'CRM API',
@@ -143,7 +147,7 @@ export default function VerticalTabs() {
   const router = useRouter();
   const { tab = [] } = router.query;
   const [value, setValue] = React.useState(0);
-  const { integrations: activeIntegrations = [] } = useIntegrations();
+  const { integrations: existingIntegrations = [] } = useIntegrations();
 
   React.useEffect(() => {
     const tabIndex = configurationTabs.findIndex((configurationTab) => configurationTab.value === tab[0]);
@@ -154,8 +158,8 @@ export default function VerticalTabs() {
     router.push(`/configuration/${configurationTabs[newValue].value}`);
   };
 
-  const targetIntegration = activeIntegrations.find(
-    (activeIntegration: Integration) => activeIntegration.providerName === tab[1]
+  const targetIntegration = existingIntegrations.find(
+    (existingIntegration: Integration) => existingIntegration.providerName === tab[1]
   );
 
   const targetIntegrationCardInfo = integrationCardsInfo.find(
@@ -188,8 +192,10 @@ export default function VerticalTabs() {
         ))}
       </Tabs>
       <TabPanel value={value} index={0}>
+        {/* "Active" tab */}
         <Grid container spacing={2}>
-          {activeIntegrations.map((integration: Integration) => {
+          {existingIntegrations.length === 0 && <Box padding={2}>No active integrations.</Box>}
+          {existingIntegrations.map((integration: Integration) => {
             const info = integrationCardsInfo.find((info) => info.providerName === integration.providerName);
 
             if (!info) {
@@ -198,7 +204,7 @@ export default function VerticalTabs() {
 
             return (
               <Grid key={info.name} item xs={6}>
-                <IntegrationCard enabled={true} integration={integration} integrationInfo={info} />
+                <IntegrationCard integration={integration} integrationInfo={info} />
               </Grid>
             );
           })}
@@ -209,7 +215,7 @@ export default function VerticalTabs() {
           <IntegrationTabPanel
             status="available"
             integrationCardsInfo={integrationCardsInfo}
-            activeIntegrations={activeIntegrations}
+            existingIntegrations={existingIntegrations}
           />
         )}
         {tab.length === 2 && targetIntegrationCardInfo && (
@@ -224,7 +230,7 @@ export default function VerticalTabs() {
         <IntegrationTabPanel
           status="auth-only"
           integrationCardsInfo={integrationCardsInfo}
-          activeIntegrations={activeIntegrations}
+          existingIntegrations={existingIntegrations}
         />
       </TabPanel>
     </Box>

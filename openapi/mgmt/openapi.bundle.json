@@ -1041,6 +1041,9 @@
           },
           "config": {
             "$ref": "#/components/schemas/integration_config"
+          },
+          "is_enabled": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -1049,7 +1052,7 @@
           "category",
           "auth_type",
           "provider_name",
-          "config"
+          "is_enabled"
         ]
       },
       "connection": {
@@ -1288,6 +1291,9 @@
           },
           "config": {
             "$ref": "#/components/schemas/integration_config"
+          },
+          "is_enabled": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -1295,7 +1301,7 @@
           "category",
           "auth_type",
           "provider_name",
-          "config"
+          "is_enabled"
         ]
       },
       "create_update_application": {

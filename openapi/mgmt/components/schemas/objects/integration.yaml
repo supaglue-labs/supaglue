@@ -16,13 +16,15 @@ properties:
     $ref: ./provider_name.yaml
   config:
     $ref: ./integration_config.yaml
+  is_enabled:
+    type: boolean
 required:
   - id
   - application_id
   - category
   - auth_type
   - provider_name
-  - config
+  - is_enabled
 # ajv has issues with interpreting the id here as a schema id
 # example:
 #   id: e888cedf-e9d0-42c5-9485-2d72984faef5

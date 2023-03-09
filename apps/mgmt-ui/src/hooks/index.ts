@@ -1,4 +1,4 @@
-export const API_HOST = 'http://localhost:8080';
+import { API_HOST } from '@/client';
 
 export const fetcher = (input: RequestInfo, init: RequestInit) => {
   const supaglueHeaders = new Headers();

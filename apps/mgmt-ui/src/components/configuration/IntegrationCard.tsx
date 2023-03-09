@@ -1,20 +1,19 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { sendRequest } from '@/sendRequests';
-import { Button, Card, CardContent, CardHeader, Divider, Grid, Switch } from '@mui/material';
+import { useIntegration } from '@/hooks/useIntegration';
+import { useIntegrations } from '@/hooks/useIntegrations';
+import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Switch, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useRouter } from 'next/router';
-import useSWRMutation from 'swr/mutation';
 import { Integration, IntegrationCardInfo } from './VerticalTabs';
 
-export default function IntegrationCard(props: {
-  integration: Integration;
-  integrationInfo: IntegrationCardInfo;
-  enabled: boolean;
-}) {
+export default function IntegrationCard(props: { integration: Integration; integrationInfo: IntegrationCardInfo }) {
   const router = useRouter();
-  const { trigger } = useSWRMutation('/mgmt/v1/integrations', sendRequest);
-  const { enabled, integration } = props;
-  const { icon, name, description, category, providerName } = props.integrationInfo;
+  const { integration } = props;
+  const { integrations: existingIntegrations = [], mutate } = useIntegrations();
+  const { mutate: mutateIntegration } = useIntegration(integration?.id); // TODO: run this when there's an integration only
+
+  const { icon, name, description, category, status, providerName } = props.integrationInfo;
+
   return (
     <Card
       classes={{
@@ -24,13 +23,40 @@ export default function IntegrationCard(props: {
       <Box>
         <CardHeader
           avatar={icon}
-          subheader={name}
+          subheader={
+            <Stack direction="column">
+              <Typography>{name}</Typography>
+              <Typography fontSize={12}>{status === 'auth-only' ? status : category.toUpperCase()}</Typography>
+            </Stack>
+          }
           action={
             <Switch
-              checked={enabled}
-              onClick={() => {
-                trigger({ ...integration, enabled: !enabled });
-              }}
+              disabled={true}
+              checked={integration?.isEnabled}
+              // onClick={() => {
+              //   if (!integration) {
+              //     const newIntegration = {
+              //       authType: 'oauth2',
+              //       category,
+              //       providerName,
+              //       isEnabled: true, // TODO: we need another notion of live vs enabled
+              //       applicationId: APPLICATION_ID,
+              //     };
+              //     const updatedIntegrations = [...existingIntegrations, newIntegration];
+
+              //     mutate(updatedIntegrations, false);
+              //     mutateIntegration(createRemoteIntegration(newIntegration), false);
+              //     return;
+              //   }
+
+              //   const updatedIntegration = { ...integration, isEnabled: !integration?.isEnabled };
+              //   const updatedIntegrations = existingIntegrations.map((ei: Integration) =>
+              //     ei.id === updatedIntegration.id ? updatedIntegration : ei
+              //   );
+
+              //   mutate(updatedIntegrations, false);
+              //   mutateIntegration(updateRemoteIntegration(updatedIntegration), false);
+              // }}
             ></Switch>
           }
         />

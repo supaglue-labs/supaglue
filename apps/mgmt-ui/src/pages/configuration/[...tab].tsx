@@ -25,7 +25,7 @@ export default function Home() {
           tabs={
             <Tabs value={0} textColor="inherit">
               <Tab label="Connectors" />
-              <Tab label="API Keys" />
+              {/* <Tab label="API Keys" /> */}
             </Tabs>
           }
           title="Configuration"

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { BarChart, Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
+import { BarChart, Biotech, MenuBook, Tune } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
   Box,
@@ -31,13 +31,13 @@ const categories: {
     children: [
       {
         id: 'Dashboard',
-        to: '/dashboard',
+        to: '/',
         icon: <BarChart />,
         active: false,
       },
       {
         id: 'Configuration',
-        to: '/configuration/active',
+        to: '/configuration/installed',
         icon: <Tune />,
         active: false,
       },
@@ -47,12 +47,12 @@ const categories: {
         icon: <PeopleIcon />,
         active: false,
       },
-      {
-        id: 'Sync Logs',
-        to: '/sync_logs',
-        icon: <FindInPage />,
-        active: false,
-      },
+      // {
+      //   id: 'Sync Logs',
+      //   to: '/sync_logs',
+      //   icon: <FindInPage />,
+      //   active: false,
+      // },
     ],
   },
   {

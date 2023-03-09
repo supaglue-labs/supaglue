@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { sendRequest } from '@/sendRequests';
+import { removeRemoteIntegration, updateRemoteIntegration } from '@/client';
+import { useIntegration } from '@/hooks/useIntegration';
+import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Box, Button, Stack, Switch, TextField, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import useSWRMutation from 'swr/mutation';
 import { Integration, IntegrationCardInfo } from './VerticalTabs';
 
 export type IntegrationDetailTabPanelProps = {
@@ -17,8 +19,10 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
   const [clientId, setClientId] = useState('');
   const [clientSecret, setClientSecret] = useState('');
   const [oauthScopes, setOauthScopes] = useState('');
+  const router = useRouter();
 
-  const { trigger } = useSWRMutation('/mgmt/v1/integrations', sendRequest);
+  const { mutate: mutateIntegration } = useIntegration(integration?.id);
+  const { integrations: existingIntegrations = [], mutate } = useIntegrations();
 
   useEffect(() => {
     setClientId(integration?.config?.oauth?.credentials?.oauthClientId);
@@ -29,12 +33,19 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
   return (
     <Stack direction="column" className="gap-4">
       <Stack direction="row" className="items-center justify-between w-full">
-        <Stack direction="row">
-          {providerToIcon(integrationCardInfo.providerName)}
-          <Typography variant="subtitle1">{integrationCardInfo.name}</Typography>
+        <Stack direction="row" className="items-center justify-center gap-2">
+          {providerToIcon(integrationCardInfo.providerName, 35)}
+          <Stack direction="column">
+            <Typography variant="subtitle1">{integrationCardInfo.name}</Typography>
+            <Typography fontSize={12}>
+              {integrationCardInfo.status === 'auth-only'
+                ? integrationCardInfo.status
+                : integrationCardInfo.category.toUpperCase()}
+            </Typography>
+          </Stack>
         </Stack>
         <Box>
-          <Switch></Switch>
+          <Switch checked={integration?.isEnabled}></Switch>
         </Box>
       </Stack>
 
@@ -72,29 +83,62 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
           }}
         />
       </Stack>
-      <Stack direction="row" className="gap-2">
-        <Button variant="outlined">Cancel</Button>{' '}
-        <Button
-          variant="contained"
-          onClick={() => {
-            trigger({
-              ...integration,
-              config: {
-                ...integration?.config,
-                oauth: {
-                  credentials: {
-                    oauthClientId: clientId,
-                    oauthClientSecret: clientSecret,
+      <Stack direction="row" className="gap-2 justify-between">
+        <Stack direction="row" className="gap-2">
+          <Button
+            variant="outlined"
+            onClick={() => {
+              router.back();
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => {
+              const newIntegration = {
+                ...integration,
+                config: {
+                  providerAppId: '',
+                  ...integration?.config,
+                  oauth: {
+                    ...integration?.config?.oauth,
+                    credentials: {
+                      oauthClientId: clientId,
+                      oauthClientSecret: clientSecret,
+                    },
+                    oauthScopes: oauthScopes.split(','),
                   },
-                  oauthScopes: oauthScopes.split(','),
-                  ...integration?.config?.oauth,
+                  sync: {
+                    periodMs: 60 * 60 * 1000,
+                  },
                 },
-              },
-            });
-          }}
-        >
-          Save
-        </Button>
+              };
+              const updatedIntegrations = existingIntegrations.map((ei: Integration) =>
+                ei.id === newIntegration.id ? newIntegration : ei
+              );
+
+              mutate(updatedIntegrations, false);
+              mutateIntegration(updateRemoteIntegration(newIntegration), false);
+            }}
+          >
+            Save
+          </Button>
+        </Stack>
+        <Stack direction="row" className="gap-2">
+          <Button
+            variant="text"
+            color="error"
+            onClick={() => {
+              const updatedIntegrations = existingIntegrations.filter((ei: Integration) => ei.id !== integration.id);
+              mutate(updatedIntegrations, false);
+              mutateIntegration(removeRemoteIntegration(integration), false);
+              router.back();
+            }}
+          >
+            Delete
+          </Button>
+        </Stack>
       </Stack>
     </Stack>
   );

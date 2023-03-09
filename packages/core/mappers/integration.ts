@@ -4,6 +4,7 @@ import { CRMProviderName, Integration, IntegrationCategory, IntegrationConfig } 
 export const fromIntegrationModel = ({
   id,
   applicationId,
+  isEnabled,
   category,
   providerName,
   config,
@@ -11,6 +12,7 @@ export const fromIntegrationModel = ({
   return {
     id,
     applicationId,
+    isEnabled,
     category: category as IntegrationCategory,
     authType: 'oauth2',
     providerName: providerName as CRMProviderName,
