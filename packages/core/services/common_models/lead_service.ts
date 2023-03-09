@@ -1,17 +1,10 @@
+import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { POSTGRES_UPDATE_BATCH_SIZE } from '../../lib/constants';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
-import type {
-  GetParams,
-  Lead,
-  LeadCreateParams,
-  LeadUpdateParams,
-  ListParams,
-  PaginatedResult,
-  RemoteLead,
-} from '../../types';
+import type { GetParams, Lead, LeadCreateParams, LeadUpdateParams, ListParams, PaginatedResult } from '../../types';
 import { CommonModelBaseService } from './base_service';
 
 export class LeadService extends CommonModelBaseService {
@@ -115,7 +108,11 @@ export class LeadService extends CommonModelBaseService {
     return fromLeadModel(leadModel);
   }
 
-  public async upsertRemoteLeads(connectionId: string, customerId: string, remoteLeads: RemoteLead[]): Promise<void> {
+  public async upsertRemoteLeads(
+    connectionId: string,
+    customerId: string,
+    remoteLeadsReadable: Readable
+  ): Promise<void> {
     // TODO: Shouldn't be hard-coding the DB schema here.
     const table = 'api.crm_leads';
     const tempTable = 'crm_leads_temp';
@@ -144,7 +141,7 @@ export class LeadService extends CommonModelBaseService {
     await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteLeads,
+      remoteLeadsReadable,
       table,
       tempTable,
       columnsWithoutId,

@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { POSTGRES_UPDATE_BATCH_SIZE } from '../../lib/constants';
 import { getExpandedAssociations } from '../../lib/expand';
@@ -10,7 +11,6 @@ import type {
   OpportunityCreateParams,
   OpportunityUpdateParams,
   PaginatedResult,
-  RemoteOpportunity,
 } from '../../types';
 import { CommonModelBaseService } from './base_service';
 
@@ -146,7 +146,7 @@ export class OpportunityService extends CommonModelBaseService {
   public async upsertRemoteOpportunities(
     connectionId: string,
     customerId: string,
-    remoteOpportunities: RemoteOpportunity[]
+    remoteOpportunitiesReadable: Readable
   ): Promise<void> {
     // TODO: Shouldn't be hard-coding the DB schema here.
     const table = 'api.crm_opportunities';
@@ -173,7 +173,7 @@ export class OpportunityService extends CommonModelBaseService {
     await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteOpportunities,
+      remoteOpportunitiesReadable,
       table,
       tempTable,
       columnsWithoutId,

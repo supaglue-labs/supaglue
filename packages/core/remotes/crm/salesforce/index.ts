@@ -2,8 +2,9 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import { CsvError, Info, parse } from 'csv-parse';
+import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
+import { PassThrough, pipeline, Readable, Transform } from 'stream';
 import { AccountCreateParams, RemoteAccount, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
 import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
@@ -140,17 +141,17 @@ function getBulk2QueryJobNextLocatorFromResponse(response: Response): string | u
   return locator && locator !== 'null' ? locator : undefined;
 }
 
-async function getBulk2QueryJobResultsFromResponse(response: Response): Promise<Record<string, string>[]> {
-  // TODO: Stream this instead of reading all into memory at once?
-  const text = await response.text();
-  return new Promise((resolve, reject) => {
-    parse(text, { columns: true }, (err: CsvError | undefined, records: Record<string, string>[], info: Info) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(records);
-    });
+function getBulk2QueryJobResultsFromResponse(response: Response): Readable {
+  if (!response.body) {
+    throw new Error('No response body found for salesforce bulk 2.0 query');
+  }
+
+  const parser = parse({
+    columns: true,
   });
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-explicit-any
+  return pipeline(Readable.fromWeb(response.body as any), parser, () => {});
 }
 
 class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
@@ -296,32 +297,64 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     });
   }
 
-  async #getBulk2QueryJobResults(soql: string): Promise<Record<string, string>[]> {
+  async #getBulk2QueryJobResults(soql: string): Promise<Readable> {
     const { id } = await this.#submitBulk2QueryJob(soql);
 
     await this.#pollBulk2QueryJob(id);
 
-    const recordsPromises: Promise<Record<string, string>[]>[] = [];
-    let locator: string | undefined = undefined;
-    do {
-      const response = await this.#getBulk2QueryJobResponse(id, locator);
-      const recordsPromise = getBulk2QueryJobResultsFromResponse(response);
-      recordsPromises.push(recordsPromise);
-      locator = getBulk2QueryJobNextLocatorFromResponse(response);
-    } while (locator);
+    const passThrough = new PassThrough({ objectMode: true });
 
-    const unflattenedRecords = await Promise.all(recordsPromises);
-    return unflattenedRecords.flat();
+    // TODO: Simplify / clean up this code. Maybe we should start considering
+    // deploying data syncs in separate Docker containers to isolate work.
+    // It may also be easier to reason about stdout.
+    // Return `passThrough` before we fetch all the data chunks
+    (async () => {
+      let locator: string | undefined = undefined;
+      do {
+        const response = await this.#getBulk2QueryJobResponse(id, locator);
+        const readable = getBulk2QueryJobResultsFromResponse(response);
+        locator = getBulk2QueryJobNextLocatorFromResponse(response);
+
+        // Do not emit 'end' event until the last batch
+        readable.pipe(passThrough, { end: !locator });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait until we finish downloading the stream before moving onto the next chunk
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (locator);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
+    return passThrough;
   }
 
-  public async listAccounts(): Promise<RemoteAccount[]> {
+  private async listCommonModelRecords(soql: string, mapper: (record: Record<string, any>) => any): Promise<Readable> {
+    return pipeline(
+      await this.#getBulk2QueryJobResults(soql),
+      new Transform({
+        objectMode: true,
+        transform: (chunk, encoding, callback) => {
+          try {
+            callback(null, mapper(chunk));
+          } catch (e: any) {
+            return callback(e);
+          }
+        },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      () => {}
+    );
+  }
+
+  public async listAccounts(): Promise<Readable> {
     const soql = `
       SELECT ${propertiesToFetch.account.join(', ')}
       FROM Account
     `;
-
-    const accounts = await this.#getBulk2QueryJobResults(soql);
-    return accounts.map(fromSalesforceAccountToRemoteAccount);
+    return this.listCommonModelRecords(soql, fromSalesforceAccountToRemoteAccount);
   }
 
   public async getAccount(remoteId: string): Promise<RemoteAccount> {
@@ -346,14 +379,12 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     return await this.getAccount(response.id);
   }
 
-  public async listContacts(): Promise<RemoteContact[]> {
-    // TODO: remove limit
+  public async listContacts(): Promise<Readable> {
     const soql = `
       SELECT ${propertiesToFetch.contact.join(', ')}
       FROM Contact
     `;
-    const contacts = await this.#getBulk2QueryJobResults(soql);
-    return contacts.map(fromSalesforceContactToRemoteContact);
+    return this.listCommonModelRecords(soql, fromSalesforceContactToRemoteContact);
   }
 
   public async getContact(remoteId: string): Promise<RemoteContact> {
@@ -377,14 +408,12 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     return await this.getContact(response.id);
   }
 
-  public async listOpportunities(): Promise<RemoteOpportunity[]> {
+  public async listOpportunities(): Promise<Readable> {
     const soql = `
       SELECT ${propertiesToFetch.opportunity.join(', ')}
       FROM Opportunity
     `;
-
-    const opportunities = await this.#getBulk2QueryJobResults(soql);
-    return opportunities.map(fromSalesforceOpportunityToRemoteOpportunity);
+    return this.listCommonModelRecords(soql, fromSalesforceOpportunityToRemoteOpportunity);
   }
 
   public async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
@@ -408,14 +437,12 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     return await this.getOpportunity(response.id);
   }
 
-  public async listLeads(): Promise<RemoteLead[]> {
+  public async listLeads(): Promise<Readable> {
     const soql = `
       SELECT ${propertiesToFetch.lead.join(', ')}
       FROM Lead 
     `;
-
-    const leads = await this.#getBulk2QueryJobResults(soql);
-    return leads.map(fromSalesforceLeadToRemoteLead);
+    return this.listCommonModelRecords(soql, fromSalesforceLeadToRemoteLead);
   }
 
   public async getLead(remoteId: string): Promise<RemoteLead> {

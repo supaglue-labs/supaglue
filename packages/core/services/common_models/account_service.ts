@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
@@ -8,7 +9,6 @@ import type {
   GetParams,
   ListParams,
   PaginatedResult,
-  RemoteAccount,
 } from '../../types/index';
 import { CommonModelBaseService } from './base_service';
 
@@ -105,7 +105,7 @@ export class AccountService extends CommonModelBaseService {
   public async upsertRemoteAccounts(
     connectionId: string,
     customerId: string,
-    remoteAccounts: RemoteAccount[]
+    remoteAccountsReadable: Readable
   ): Promise<void> {
     // TODO: Shouldn't be hard-coding the DB schema here.
     const table = 'api.crm_accounts';
@@ -132,7 +132,7 @@ export class AccountService extends CommonModelBaseService {
     await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteAccounts,
+      remoteAccountsReadable,
       table,
       tempTable,
       columnsWithoutId,

@@ -2,6 +2,8 @@ import { PrismaClient } from '@supaglue/db';
 import { stringify } from 'csv-stringify';
 import { Pool } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
+import { Readable, Transform } from 'stream';
+import { pipeline } from 'stream/promises';
 import { RemoteService } from '../remote_service';
 
 export abstract class CommonModelBaseService {
@@ -22,7 +24,7 @@ export abstract class CommonModelBaseService {
   protected async upsertRemoteCommonModels<T>(
     connectionId: string,
     customerId: string,
-    remoteCommonModels: T[],
+    remoteCommonModelReadable: Readable,
     table: string,
     tempTable: string,
     columnsWithoutId: string[],
@@ -46,22 +48,28 @@ export abstract class CommonModelBaseService {
       );
 
       // Input
-      const mappedRemoteCommonModels = remoteCommonModels.map((remoteCommonModel) =>
-        mapper(connectionId, customerId, remoteCommonModel)
-      );
-
-      await new Promise((resolve, reject) => {
-        const csvInput = stringify(mappedRemoteCommonModels, {
-          columns: columns,
-          cast: {
-            boolean: (value: boolean) => value.toString(),
-          },
-        });
-        csvInput.on('error', reject);
-        stream.on('error', reject);
-        stream.on('finish', resolve);
-        csvInput.pipe(stream);
+      const stringifier = stringify({
+        columns: columns,
+        cast: {
+          boolean: (value: boolean) => value.toString(),
+        },
       });
+
+      await pipeline(
+        remoteCommonModelReadable,
+        new Transform({
+          objectMode: true,
+          transform: (chunk, encoding, callback) => {
+            try {
+              callback(null, mapper(connectionId, customerId, chunk));
+            } catch (e: any) {
+              return callback(e);
+            }
+          },
+        }),
+        stringifier,
+        stream
+      );
 
       // Copy from temp table
       const columnsToUpdate = columnsWithoutId.join(',');

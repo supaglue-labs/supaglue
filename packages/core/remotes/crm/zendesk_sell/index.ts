@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import {
   AccountCreateParams,
   CRMConnection,
@@ -17,7 +18,7 @@ import {
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 
 class ZendeskSellClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
-  public async listAccounts(): Promise<RemoteAccount[]> {
+  public async listAccounts(): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
@@ -33,7 +34,7 @@ class ZendeskSellClient extends CrmRemoteClientEventEmitter implements CrmRemote
     throw new Error('Not implemented');
   }
 
-  public async listContacts(): Promise<RemoteContact[]> {
+  public async listContacts(): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
@@ -49,7 +50,7 @@ class ZendeskSellClient extends CrmRemoteClientEventEmitter implements CrmRemote
     throw new Error('Not implemented');
   }
 
-  public async listOpportunities(): Promise<RemoteOpportunity[]> {
+  public async listOpportunities(): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
@@ -65,7 +66,7 @@ class ZendeskSellClient extends CrmRemoteClientEventEmitter implements CrmRemote
     throw new Error('Not implemented');
   }
 
-  public async listLeads(): Promise<RemoteLead[]> {
+  public async listLeads(): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
