@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  version: 0.3.3
+  title: Supaglue Customer API
+  contact:
+    name: Supaglue
+    email: docs@supaglue.com
+    url: 'https://supaglue.com'
+  description: |
+    # Introduction
+
+    Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.
+
+    ### Base API URL
+
+    ```
+    http://localhost:8080/api/mgmt/v1
+    ```
+externalDocs:
+  description: Try out our API in Postman!
+  url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
+servers:
+  - url: 'http://localhost:8080/mgmt/v1'
+    description: Local Supaglue API
+paths:
+  '/customers':
+    $ref: paths/customers.yaml
+  '/customers/{customer_id}':
+    $ref: paths/customers@{customer_id}.yaml
+tags: []
+components:
+  schemas:
+    customer:
+      $ref: ./components/schemas/objects/customer.yaml

@@ -1,0 +1,7 @@
+type: object
+properties:
+  application_id:
+    type: string
+    example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+required:
+  - application_id
