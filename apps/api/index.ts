@@ -56,6 +56,7 @@ app.use(posthogMiddleware);
 
 app.use(
   pinoHttp({
+    // TODO: Fix once version drift between pino and pino-http is resolved
     logger: logger as any,
     customLogLevel: function (req, res, err) {
       if (res.statusCode >= 400 && res.statusCode < 500) {
