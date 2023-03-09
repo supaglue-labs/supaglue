@@ -1,18 +1,40 @@
 import { createActivities } from '@supaglue/sync-workflows';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import { NativeConnection, Runtime, Worker } from '@temporalio/worker';
+import { LogLevel, LogMetadata, NativeConnection, Runtime, Worker } from '@temporalio/worker';
 import { getDependencyContainer } from './dependency_container';
 import { logger } from './logger';
 
 async function run() {
+  // pino expects errors to be placed under the `err` key. We're doing mapping here
+  // instead of configuring it in `logger.ts` because we may use the pino logger
+  // elsewhere in this app ourselves.
+  // TODO: come up with better way to deal with this?
+
+  const transformMeta = (meta?: LogMetadata): LogMetadata | undefined => {
+    if (!meta) {
+      return meta;
+    }
+
+    const { error, ...rest } = meta;
+    if (!error) {
+      return meta;
+    }
+
+    // TODO: don't assume that `error` is an error object
+    return {
+      ...rest,
+      err: error,
+    };
+  };
+
   Runtime.install({
     logger: {
-      info: (message, meta) => logger.info(meta, message),
-      warn: (message, meta) => logger.warn(meta, message),
-      error: (message, meta) => logger.error(meta, message),
-      log: (message, meta) => logger.info(meta, message),
-      trace: (message, meta) => logger.trace(meta, message),
-      debug: (message, meta) => logger.debug(meta, message),
+      info: (message: string, meta?: LogMetadata) => logger.info(transformMeta(meta), message),
+      warn: (message: string, meta?: LogMetadata) => logger.warn(transformMeta(meta), message),
+      error: (message: string, meta?: LogMetadata) => logger.error(transformMeta(meta), message),
+      log: (level: LogLevel, message: string, meta?: LogMetadata) => logger.info(transformMeta(meta), message),
+      trace: (message: string, meta?: LogMetadata) => logger.trace(transformMeta(meta), message),
+      debug: (message: string, meta?: LogMetadata) => logger.debug(transformMeta(meta), message),
     },
   });
 
