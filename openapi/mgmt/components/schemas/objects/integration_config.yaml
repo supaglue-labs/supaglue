@@ -20,12 +20,24 @@ properties:
           oauth_client_secret:
             type: string
             example: 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a
+        required:
+          - oauth_client_id
+          - oauth_client_secret
+    required:
+      - oauth_scopes
+      - credentials
   sync:
     type: object
     properties:
       period_ms:
         type: integer
         example: 60000
+    required:
+      - period_ms
+required:
+  - remote_provider_app_id
+  - oauth
+  - sync
 example:
   - remote_provider_app_id: my_app_id
   - oauth:

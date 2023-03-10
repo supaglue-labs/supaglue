@@ -27,8 +27,32 @@ paths:
     $ref: paths/customers.yaml
   '/customers/{customer_id}':
     $ref: paths/customers@{customer_id}.yaml
+  '/integrations':
+    $ref: paths/integrations.yaml
+  '/integrations/{integration_id}':
+    $ref: paths/integrations@{integration_id}.yaml
+  '/customers/{customer_id}/connections':
+    $ref: paths/customers@{customer_id}connections.yaml
+  '/customers/{customer_id}/connections/{connection_id}':
+    $ref: paths/customers@{customer_id}connections@{connection_id}.yaml
 tags: []
 components:
   schemas:
     customer:
       $ref: ./components/schemas/objects/customer.yaml
+    integration:
+      $ref: ./components/schemas/objects/integration.yaml
+    connection:
+      $ref: ./components/schemas/objects/connection.yaml
+    connection_credentials:
+      $ref: ./components/schemas/objects/connection_credentials.yaml
+    category:
+      $ref: ./components/schemas/objects/category.yaml
+    integration_config:
+      $ref: ./components/schemas/objects/integration_config.yaml
+    provider_name:
+      $ref: ./components/schemas/objects/provider_name.yaml
+    create_update_customer:
+      $ref: ./components/schemas/create_update_customer.yaml
+    create_update_integration:
+      $ref: ./components/schemas/create_update_integration.yaml

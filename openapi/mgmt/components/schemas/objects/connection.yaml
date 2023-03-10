@@ -23,16 +23,24 @@ properties:
     $ref: ./provider_name.yaml
   category:
     $ref: ./category.yaml
+required:
+  - id
+  - status
+  - customer_id
+  - integration_id
+  - credentials
+  - provider_name
+  - category
 example:
   - id: e888cedf-e9d0-42c5-9485-2d72984faef2
-  - customer_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 
-  - status: available
-  - integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
-  - provider_name: salesforce
-  - category: crm
-  - credentials:
+    customer_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 
+    status: available
+    integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+    provider_name: salesforce
+    category: crm
+    credentials:
     - type: oauth2
-    - access_token: 00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ
-    - refresh_token: 5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e
-    - instance_url: https://myapp-dev-ed.develop.my.salesforce.com
-    - expires_at: 2023-03-09T21:55:54Z
+      access_token: 00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ
+      refresh_token: 5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e
+      instance_url: https://myapp-dev-ed.develop.my.salesforce.com
+      expires_at: 2023-03-09T21:55:54Z
