@@ -1,7 +1,7 @@
 # coding: utf-8
 
 """
-    Supaglue Customer API
+    Supaglue Management API
 
     # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ```   # noqa: E501
 
@@ -32,43 +32,45 @@ class CustomersApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def create_customer(self, body, **kwargs):  # noqa: E501
+    def create_customer(self, body, application_id, **kwargs):  # noqa: E501
         """Create customer  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.create_customer(body, async_req=True)
+        >>> thread = api.create_customer(body, application_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param CreateUpdateCustomer body: (required)
+        :param str application_id: (required)
         :return: Customer
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.create_customer_with_http_info(body, **kwargs)  # noqa: E501
+            return self.create_customer_with_http_info(body, application_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.create_customer_with_http_info(body, **kwargs)  # noqa: E501
+            (data) = self.create_customer_with_http_info(body, application_id, **kwargs)  # noqa: E501
             return data
 
-    def create_customer_with_http_info(self, body, **kwargs):  # noqa: E501
+    def create_customer_with_http_info(self, body, application_id, **kwargs):  # noqa: E501
         """Create customer  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.create_customer_with_http_info(body, async_req=True)
+        >>> thread = api.create_customer_with_http_info(body, application_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param CreateUpdateCustomer body: (required)
+        :param str application_id: (required)
         :return: Customer
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['body']  # noqa: E501
+        all_params = ['body', 'application_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -87,10 +89,16 @@ class CustomersApi(object):
         if ('body' not in params or
                 params['body'] is None):
             raise ValueError("Missing the required parameter `body` when calling `create_customer`")  # noqa: E501
+        # verify the required parameter 'application_id' is set
+        if ('application_id' not in params or
+                params['application_id'] is None):
+            raise ValueError("Missing the required parameter `application_id` when calling `create_customer`")  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
+        if 'application_id' in params:
+            path_params['application_id'] = params['application_id']  # noqa: E501
 
         query_params = []
 
@@ -114,7 +122,7 @@ class CustomersApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/customers', 'POST',
+            '/applications/{application_id}/customers', 'POST',
             path_params,
             query_params,
             header_params,
@@ -129,15 +137,16 @@ class CustomersApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def delete_customer(self, customer_id, **kwargs):  # noqa: E501
+    def delete_customer(self, application_id, customer_id, **kwargs):  # noqa: E501
         """Delete customer  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.delete_customer(customer_id, async_req=True)
+        >>> thread = api.delete_customer(application_id, customer_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :return: Customer
                  If the method is called asynchronously,
@@ -145,27 +154,28 @@ class CustomersApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.delete_customer_with_http_info(customer_id, **kwargs)  # noqa: E501
+            return self.delete_customer_with_http_info(application_id, customer_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.delete_customer_with_http_info(customer_id, **kwargs)  # noqa: E501
+            (data) = self.delete_customer_with_http_info(application_id, customer_id, **kwargs)  # noqa: E501
             return data
 
-    def delete_customer_with_http_info(self, customer_id, **kwargs):  # noqa: E501
+    def delete_customer_with_http_info(self, application_id, customer_id, **kwargs):  # noqa: E501
         """Delete customer  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.delete_customer_with_http_info(customer_id, async_req=True)
+        >>> thread = api.delete_customer_with_http_info(application_id, customer_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :return: Customer
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['customer_id']  # noqa: E501
+        all_params = ['application_id', 'customer_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -180,6 +190,10 @@ class CustomersApi(object):
                 )
             params[key] = val
         del params['kwargs']
+        # verify the required parameter 'application_id' is set
+        if ('application_id' not in params or
+                params['application_id'] is None):
+            raise ValueError("Missing the required parameter `application_id` when calling `delete_customer`")  # noqa: E501
         # verify the required parameter 'customer_id' is set
         if ('customer_id' not in params or
                 params['customer_id'] is None):
@@ -188,6 +202,8 @@ class CustomersApi(object):
         collection_formats = {}
 
         path_params = {}
+        if 'application_id' in params:
+            path_params['application_id'] = params['application_id']  # noqa: E501
         if 'customer_id' in params:
             path_params['customer_id'] = params['customer_id']  # noqa: E501
 
@@ -207,7 +223,7 @@ class CustomersApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/customers/{customer_id}', 'DELETE',
+            '/applications/{application_id}/customers/{customer_id}', 'DELETE',
             path_params,
             query_params,
             header_params,
@@ -222,15 +238,16 @@ class CustomersApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def get_customer(self, customer_id, **kwargs):  # noqa: E501
+    def get_customer(self, application_id, customer_id, **kwargs):  # noqa: E501
         """Get customer  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_customer(customer_id, async_req=True)
+        >>> thread = api.get_customer(application_id, customer_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :return: Customer
                  If the method is called asynchronously,
@@ -238,27 +255,28 @@ class CustomersApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.get_customer_with_http_info(customer_id, **kwargs)  # noqa: E501
+            return self.get_customer_with_http_info(application_id, customer_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.get_customer_with_http_info(customer_id, **kwargs)  # noqa: E501
+            (data) = self.get_customer_with_http_info(application_id, customer_id, **kwargs)  # noqa: E501
             return data
 
-    def get_customer_with_http_info(self, customer_id, **kwargs):  # noqa: E501
+    def get_customer_with_http_info(self, application_id, customer_id, **kwargs):  # noqa: E501
         """Get customer  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_customer_with_http_info(customer_id, async_req=True)
+        >>> thread = api.get_customer_with_http_info(application_id, customer_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :return: Customer
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['customer_id']  # noqa: E501
+        all_params = ['application_id', 'customer_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -273,6 +291,10 @@ class CustomersApi(object):
                 )
             params[key] = val
         del params['kwargs']
+        # verify the required parameter 'application_id' is set
+        if ('application_id' not in params or
+                params['application_id'] is None):
+            raise ValueError("Missing the required parameter `application_id` when calling `get_customer`")  # noqa: E501
         # verify the required parameter 'customer_id' is set
         if ('customer_id' not in params or
                 params['customer_id'] is None):
@@ -281,6 +303,8 @@ class CustomersApi(object):
         collection_formats = {}
 
         path_params = {}
+        if 'application_id' in params:
+            path_params['application_id'] = params['application_id']  # noqa: E501
         if 'customer_id' in params:
             path_params['customer_id'] = params['customer_id']  # noqa: E501
 
@@ -300,7 +324,7 @@ class CustomersApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/customers/{customer_id}', 'GET',
+            '/applications/{application_id}/customers/{customer_id}', 'GET',
             path_params,
             query_params,
             header_params,
@@ -315,43 +339,45 @@ class CustomersApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def get_customers(self, **kwargs):  # noqa: E501
+    def get_customers(self, application_id, **kwargs):  # noqa: E501
         """List customers  # noqa: E501
 
         Get a list of customers  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_customers(async_req=True)
+        >>> thread = api.get_customers(application_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :return: list[Customer]
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.get_customers_with_http_info(**kwargs)  # noqa: E501
+            return self.get_customers_with_http_info(application_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.get_customers_with_http_info(**kwargs)  # noqa: E501
+            (data) = self.get_customers_with_http_info(application_id, **kwargs)  # noqa: E501
             return data
 
-    def get_customers_with_http_info(self, **kwargs):  # noqa: E501
+    def get_customers_with_http_info(self, application_id, **kwargs):  # noqa: E501
         """List customers  # noqa: E501
 
         Get a list of customers  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_customers_with_http_info(async_req=True)
+        >>> thread = api.get_customers_with_http_info(application_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :return: list[Customer]
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = []  # noqa: E501
+        all_params = ['application_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -366,10 +392,16 @@ class CustomersApi(object):
                 )
             params[key] = val
         del params['kwargs']
+        # verify the required parameter 'application_id' is set
+        if ('application_id' not in params or
+                params['application_id'] is None):
+            raise ValueError("Missing the required parameter `application_id` when calling `get_customers`")  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
+        if 'application_id' in params:
+            path_params['application_id'] = params['application_id']  # noqa: E501
 
         query_params = []
 
@@ -387,7 +419,7 @@ class CustomersApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/customers', 'GET',
+            '/applications/{application_id}/customers', 'GET',
             path_params,
             query_params,
             header_params,

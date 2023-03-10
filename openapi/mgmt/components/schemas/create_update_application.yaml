@@ -1,0 +1,10 @@
+type: object
+properties:
+  name:
+    type: string
+    example: my-app
+  config:
+    $ref: ./objects/application_config.yaml
+required:
+  - name
+  - config

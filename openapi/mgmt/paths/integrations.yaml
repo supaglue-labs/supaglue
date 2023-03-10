@@ -74,3 +74,10 @@ post:
         application/json:
           schema:
             $ref: ../components/schemas/objects/integration.yaml
+parameters:
+  - name: application_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0623bf1c-3f71-4d53-ab11-f92ae72833c0

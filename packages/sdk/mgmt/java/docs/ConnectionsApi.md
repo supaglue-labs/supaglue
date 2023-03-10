@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteConnection**](ConnectionsApi.md#deleteConnection) | **DELETE** /customers/{customer_id}/connections/{connection_id} | Delete connection
-[**getConnection**](ConnectionsApi.md#getConnection) | **GET** /customers/{customer_id}/connections/{connection_id} | Get connection
-[**getConnections**](ConnectionsApi.md#getConnections) | **GET** /customers/{customer_id}/connections | List connections
+[**deleteConnection**](ConnectionsApi.md#deleteConnection) | **DELETE** /applications/{application_id}/customers/{customer_id}/connections/{connection_id} | Delete connection
+[**getConnection**](ConnectionsApi.md#getConnection) | **GET** /applications/{application_id}/customers/{customer_id}/connections/{connection_id} | Get connection
+[**getConnections**](ConnectionsApi.md#getConnections) | **GET** /applications/{application_id}/customers/{customer_id}/connections | List connections
 
 <a name="deleteConnection"></a>
 # **deleteConnection**
-> Connection deleteConnection(customerId, connectionId)
+> Connection deleteConnection(applicationId, customerId, connectionId)
 
 Delete connection
 
@@ -22,10 +22,11 @@ Delete connection
 
 
 ConnectionsApi apiInstance = new ConnectionsApi();
+String applicationId = "applicationId_example"; // String | 
 String customerId = "customerId_example"; // String | 
 String connectionId = "connectionId_example"; // String | 
 try {
-    Connection result = apiInstance.deleteConnection(customerId, connectionId);
+    Connection result = apiInstance.deleteConnection(applicationId, customerId, connectionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConnectionsApi#deleteConnection");
@@ -37,6 +38,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
  **customerId** | **String**|  |
  **connectionId** | **String**|  |
 
@@ -55,7 +57,7 @@ No authorization required
 
 <a name="getConnection"></a>
 # **getConnection**
-> Connection getConnection(customerId, connectionId)
+> Connection getConnection(applicationId, customerId, connectionId)
 
 Get connection
 
@@ -67,10 +69,11 @@ Get connection
 
 
 ConnectionsApi apiInstance = new ConnectionsApi();
+String applicationId = "applicationId_example"; // String | 
 String customerId = "customerId_example"; // String | 
 String connectionId = "connectionId_example"; // String | 
 try {
-    Connection result = apiInstance.getConnection(customerId, connectionId);
+    Connection result = apiInstance.getConnection(applicationId, customerId, connectionId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConnectionsApi#getConnection");
@@ -82,6 +85,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
  **customerId** | **String**|  |
  **connectionId** | **String**|  |
 
@@ -100,7 +104,7 @@ No authorization required
 
 <a name="getConnections"></a>
 # **getConnections**
-> List&lt;Connection&gt; getConnections(customerId)
+> List&lt;Connection&gt; getConnections(applicationId, customerId)
 
 List connections
 
@@ -114,9 +118,10 @@ Get a list of connections
 
 
 ConnectionsApi apiInstance = new ConnectionsApi();
+String applicationId = "applicationId_example"; // String | 
 String customerId = "customerId_example"; // String | 
 try {
-    List<Connection> result = apiInstance.getConnections(customerId);
+    List<Connection> result = apiInstance.getConnections(applicationId, customerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConnectionsApi#getConnections");
@@ -128,6 +133,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
  **customerId** | **String**|  |
 
 ### Return type

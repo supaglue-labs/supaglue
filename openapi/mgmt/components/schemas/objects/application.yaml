@@ -1,0 +1,14 @@
+type: object
+properties:
+  id:
+    type: string
+    example: e888cedf-e9d0-42c5-9485-2d72984faef2
+  name:
+    type: string
+    example: my-app
+  config:
+    $ref: ./application_config.yaml
+required:
+  - id
+  - name
+  - config

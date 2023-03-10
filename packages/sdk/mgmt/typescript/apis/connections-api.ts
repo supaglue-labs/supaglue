@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Supaglue Customer API
+ * Supaglue Management API
  * # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ``` 
  *
  * OpenAPI spec version: 0.3.3
@@ -26,12 +26,17 @@ export const ConnectionsApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 
          * @summary Delete connection
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {string} connectionId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteConnection: async (customerId: string, connectionId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteConnection: async (applicationId: string, customerId: string, connectionId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling deleteConnection.');
+            }
             // verify required parameter 'customerId' is not null or undefined
             if (customerId === null || customerId === undefined) {
                 throw new RequiredError('customerId','Required parameter customerId was null or undefined when calling deleteConnection.');
@@ -40,7 +45,8 @@ export const ConnectionsApiAxiosParamCreator = function (configuration?: Configu
             if (connectionId === null || connectionId === undefined) {
                 throw new RequiredError('connectionId','Required parameter connectionId was null or undefined when calling deleteConnection.');
             }
-            const localVarPath = `/customers/{customer_id}/connections/{connection_id}`
+            const localVarPath = `/applications/{application_id}/customers/{customer_id}/connections/{connection_id}`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)))
                 .replace(`{${"customer_id"}}`, encodeURIComponent(String(customerId)))
                 .replace(`{${"connection_id"}}`, encodeURIComponent(String(connectionId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -72,12 +78,17 @@ export const ConnectionsApiAxiosParamCreator = function (configuration?: Configu
         /**
          * 
          * @summary Get connection
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {string} connectionId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getConnection: async (customerId: string, connectionId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getConnection: async (applicationId: string, customerId: string, connectionId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling getConnection.');
+            }
             // verify required parameter 'customerId' is not null or undefined
             if (customerId === null || customerId === undefined) {
                 throw new RequiredError('customerId','Required parameter customerId was null or undefined when calling getConnection.');
@@ -86,7 +97,8 @@ export const ConnectionsApiAxiosParamCreator = function (configuration?: Configu
             if (connectionId === null || connectionId === undefined) {
                 throw new RequiredError('connectionId','Required parameter connectionId was null or undefined when calling getConnection.');
             }
-            const localVarPath = `/customers/{customer_id}/connections/{connection_id}`
+            const localVarPath = `/applications/{application_id}/customers/{customer_id}/connections/{connection_id}`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)))
                 .replace(`{${"customer_id"}}`, encodeURIComponent(String(customerId)))
                 .replace(`{${"connection_id"}}`, encodeURIComponent(String(connectionId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -118,16 +130,22 @@ export const ConnectionsApiAxiosParamCreator = function (configuration?: Configu
         /**
          * Get a list of connections
          * @summary List connections
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getConnections: async (customerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getConnections: async (applicationId: string, customerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling getConnections.');
+            }
             // verify required parameter 'customerId' is not null or undefined
             if (customerId === null || customerId === undefined) {
                 throw new RequiredError('customerId','Required parameter customerId was null or undefined when calling getConnections.');
             }
-            const localVarPath = `/customers/{customer_id}/connections`
+            const localVarPath = `/applications/{application_id}/customers/{customer_id}/connections`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)))
                 .replace(`{${"customer_id"}}`, encodeURIComponent(String(customerId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -167,13 +185,14 @@ export const ConnectionsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Delete connection
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {string} connectionId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteConnection(customerId: string, connectionId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Connection>>> {
-            const localVarAxiosArgs = await ConnectionsApiAxiosParamCreator(configuration).deleteConnection(customerId, connectionId, options);
+        async deleteConnection(applicationId: string, customerId: string, connectionId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Connection>>> {
+            const localVarAxiosArgs = await ConnectionsApiAxiosParamCreator(configuration).deleteConnection(applicationId, customerId, connectionId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -182,13 +201,14 @@ export const ConnectionsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get connection
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {string} connectionId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getConnection(customerId: string, connectionId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Connection>>> {
-            const localVarAxiosArgs = await ConnectionsApiAxiosParamCreator(configuration).getConnection(customerId, connectionId, options);
+        async getConnection(applicationId: string, customerId: string, connectionId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Connection>>> {
+            const localVarAxiosArgs = await ConnectionsApiAxiosParamCreator(configuration).getConnection(applicationId, customerId, connectionId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -197,12 +217,13 @@ export const ConnectionsApiFp = function(configuration?: Configuration) {
         /**
          * Get a list of connections
          * @summary List connections
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getConnections(customerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Array<Connection>>>> {
-            const localVarAxiosArgs = await ConnectionsApiAxiosParamCreator(configuration).getConnections(customerId, options);
+        async getConnections(applicationId: string, customerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Array<Connection>>>> {
+            const localVarAxiosArgs = await ConnectionsApiAxiosParamCreator(configuration).getConnections(applicationId, customerId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -220,34 +241,37 @@ export const ConnectionsApiFactory = function (configuration?: Configuration, ba
         /**
          * 
          * @summary Delete connection
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {string} connectionId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteConnection(customerId: string, connectionId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Connection>> {
-            return ConnectionsApiFp(configuration).deleteConnection(customerId, connectionId, options).then((request) => request(axios, basePath));
+        async deleteConnection(applicationId: string, customerId: string, connectionId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Connection>> {
+            return ConnectionsApiFp(configuration).deleteConnection(applicationId, customerId, connectionId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Get connection
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {string} connectionId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getConnection(customerId: string, connectionId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Connection>> {
-            return ConnectionsApiFp(configuration).getConnection(customerId, connectionId, options).then((request) => request(axios, basePath));
+        async getConnection(applicationId: string, customerId: string, connectionId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Connection>> {
+            return ConnectionsApiFp(configuration).getConnection(applicationId, customerId, connectionId, options).then((request) => request(axios, basePath));
         },
         /**
          * Get a list of connections
          * @summary List connections
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getConnections(customerId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<Connection>>> {
-            return ConnectionsApiFp(configuration).getConnections(customerId, options).then((request) => request(axios, basePath));
+        async getConnections(applicationId: string, customerId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<Connection>>> {
+            return ConnectionsApiFp(configuration).getConnections(applicationId, customerId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -262,36 +286,39 @@ export class ConnectionsApi extends BaseAPI {
     /**
      * 
      * @summary Delete connection
+     * @param {string} applicationId 
      * @param {string} customerId 
      * @param {string} connectionId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ConnectionsApi
      */
-    public async deleteConnection(customerId: string, connectionId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Connection>> {
-        return ConnectionsApiFp(this.configuration).deleteConnection(customerId, connectionId, options).then((request) => request(this.axios, this.basePath));
+    public async deleteConnection(applicationId: string, customerId: string, connectionId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Connection>> {
+        return ConnectionsApiFp(this.configuration).deleteConnection(applicationId, customerId, connectionId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
      * @summary Get connection
+     * @param {string} applicationId 
      * @param {string} customerId 
      * @param {string} connectionId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ConnectionsApi
      */
-    public async getConnection(customerId: string, connectionId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Connection>> {
-        return ConnectionsApiFp(this.configuration).getConnection(customerId, connectionId, options).then((request) => request(this.axios, this.basePath));
+    public async getConnection(applicationId: string, customerId: string, connectionId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Connection>> {
+        return ConnectionsApiFp(this.configuration).getConnection(applicationId, customerId, connectionId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * Get a list of connections
      * @summary List connections
+     * @param {string} applicationId 
      * @param {string} customerId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ConnectionsApi
      */
-    public async getConnections(customerId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Array<Connection>>> {
-        return ConnectionsApiFp(this.configuration).getConnections(customerId, options).then((request) => request(this.axios, this.basePath));
+    public async getConnections(applicationId: string, customerId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Array<Connection>>> {
+        return ConnectionsApiFp(this.configuration).getConnections(applicationId, customerId, options).then((request) => request(this.axios, this.basePath));
     }
 }

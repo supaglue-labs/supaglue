@@ -4,15 +4,15 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**createIntegration**](IntegrationsApi.md#createIntegration) | **POST** /integrations | Create integration
-[**deleteIntegration**](IntegrationsApi.md#deleteIntegration) | **DELETE** /integrations/{integration_id} | Delete integration
-[**getIntegration**](IntegrationsApi.md#getIntegration) | **GET** /integrations/{integration_id} | Get integration
-[**getIntegrations**](IntegrationsApi.md#getIntegrations) | **GET** /integrations | List integrations
-[**updateIntegration**](IntegrationsApi.md#updateIntegration) | **PUT** /integrations/{integration_id} | Update integration
+[**createIntegration**](IntegrationsApi.md#createIntegration) | **POST** /applications/{application_id}/integrations | Create integration
+[**deleteIntegration**](IntegrationsApi.md#deleteIntegration) | **DELETE** /applications/{application_id}/integrations/{integration_id} | Delete integration
+[**getIntegration**](IntegrationsApi.md#getIntegration) | **GET** /applications/{application_id}/integrations/{integration_id} | Get integration
+[**getIntegrations**](IntegrationsApi.md#getIntegrations) | **GET** /applications/{application_id}/integrations | List integrations
+[**updateIntegration**](IntegrationsApi.md#updateIntegration) | **PUT** /applications/{application_id}/integrations/{integration_id} | Update integration
 
 <a name="createIntegration"></a>
 # **createIntegration**
-> Integration createIntegration(body)
+> Integration createIntegration(body, applicationId)
 
 Create integration
 
@@ -25,8 +25,9 @@ Create integration
 
 IntegrationsApi apiInstance = new IntegrationsApi();
 CreateUpdateIntegration body = new CreateUpdateIntegration(); // CreateUpdateIntegration | 
+String applicationId = "applicationId_example"; // String | 
 try {
-    Integration result = apiInstance.createIntegration(body);
+    Integration result = apiInstance.createIntegration(body, applicationId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling IntegrationsApi#createIntegration");
@@ -39,6 +40,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**CreateUpdateIntegration**](CreateUpdateIntegration.md)|  |
+ **applicationId** | **String**|  |
 
 ### Return type
 
@@ -55,7 +57,7 @@ No authorization required
 
 <a name="deleteIntegration"></a>
 # **deleteIntegration**
-> Integration deleteIntegration(integrationId)
+> Integration deleteIntegration(applicationId, integrationId)
 
 Delete integration
 
@@ -67,9 +69,10 @@ Delete integration
 
 
 IntegrationsApi apiInstance = new IntegrationsApi();
+String applicationId = "applicationId_example"; // String | 
 String integrationId = "integrationId_example"; // String | 
 try {
-    Integration result = apiInstance.deleteIntegration(integrationId);
+    Integration result = apiInstance.deleteIntegration(applicationId, integrationId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling IntegrationsApi#deleteIntegration");
@@ -81,6 +84,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
  **integrationId** | **String**|  |
 
 ### Return type
@@ -98,7 +102,7 @@ No authorization required
 
 <a name="getIntegration"></a>
 # **getIntegration**
-> Integration getIntegration(integrationId)
+> Integration getIntegration(applicationId, integrationId)
 
 Get integration
 
@@ -110,9 +114,10 @@ Get integration
 
 
 IntegrationsApi apiInstance = new IntegrationsApi();
+String applicationId = "applicationId_example"; // String | 
 String integrationId = "integrationId_example"; // String | 
 try {
-    Integration result = apiInstance.getIntegration(integrationId);
+    Integration result = apiInstance.getIntegration(applicationId, integrationId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling IntegrationsApi#getIntegration");
@@ -124,6 +129,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
  **integrationId** | **String**|  |
 
 ### Return type
@@ -141,7 +147,7 @@ No authorization required
 
 <a name="getIntegrations"></a>
 # **getIntegrations**
-> List&lt;Integration&gt; getIntegrations()
+> List&lt;Integration&gt; getIntegrations(applicationId)
 
 List integrations
 
@@ -155,8 +161,9 @@ Get a list of integrations
 
 
 IntegrationsApi apiInstance = new IntegrationsApi();
+String applicationId = "applicationId_example"; // String | 
 try {
-    List<Integration> result = apiInstance.getIntegrations();
+    List<Integration> result = apiInstance.getIntegrations(applicationId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling IntegrationsApi#getIntegrations");
@@ -165,7 +172,10 @@ try {
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
 
 ### Return type
 
@@ -182,7 +192,7 @@ No authorization required
 
 <a name="updateIntegration"></a>
 # **updateIntegration**
-> Integration updateIntegration(body, integrationId)
+> Integration updateIntegration(body, applicationId, integrationId)
 
 Update integration
 
@@ -195,9 +205,10 @@ Update integration
 
 IntegrationsApi apiInstance = new IntegrationsApi();
 CreateUpdateIntegration body = new CreateUpdateIntegration(); // CreateUpdateIntegration | 
+String applicationId = "applicationId_example"; // String | 
 String integrationId = "integrationId_example"; // String | 
 try {
-    Integration result = apiInstance.updateIntegration(body, integrationId);
+    Integration result = apiInstance.updateIntegration(body, applicationId, integrationId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling IntegrationsApi#updateIntegration");
@@ -210,6 +221,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**CreateUpdateIntegration**](CreateUpdateIntegration.md)|  |
+ **applicationId** | **String**|  |
  **integrationId** | **String**|  |
 
 ### Return type

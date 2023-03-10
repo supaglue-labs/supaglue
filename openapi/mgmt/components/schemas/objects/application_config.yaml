@@ -1,0 +1,36 @@
+type: object
+properties:
+  webhook:
+    type: object
+    nullable: true
+    properties:
+      url:
+        type: string
+      request_type:
+        type: string
+        enum:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - PATCH
+      notify_on_sync_success:
+        type: boolean
+      notify_on_sync_error:
+        type: boolean
+      notify_on_connection_success:
+        type: boolean
+      notify_on_connection_error:
+        type: boolean
+      headers:
+        type: object
+        additionalProperties: true
+    required:
+      - url
+      - request_type
+      - notify_on_sync_success
+      - notify_on_sync_error
+      - notify_on_connection_success
+      - notify_on_connection_error
+required:
+  - webhook
