@@ -1,7 +1,7 @@
 # coding: utf-8
 
 """
-    Supaglue Customer API
+    Supaglue Management API
 
     # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ```   # noqa: E501
 
@@ -32,15 +32,16 @@ class ConnectionsApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def delete_connection(self, customer_id, connection_id, **kwargs):  # noqa: E501
+    def delete_connection(self, application_id, customer_id, connection_id, **kwargs):  # noqa: E501
         """Delete connection  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.delete_connection(customer_id, connection_id, async_req=True)
+        >>> thread = api.delete_connection(application_id, customer_id, connection_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :param str connection_id: (required)
         :return: Connection
@@ -49,20 +50,21 @@ class ConnectionsApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.delete_connection_with_http_info(customer_id, connection_id, **kwargs)  # noqa: E501
+            return self.delete_connection_with_http_info(application_id, customer_id, connection_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.delete_connection_with_http_info(customer_id, connection_id, **kwargs)  # noqa: E501
+            (data) = self.delete_connection_with_http_info(application_id, customer_id, connection_id, **kwargs)  # noqa: E501
             return data
 
-    def delete_connection_with_http_info(self, customer_id, connection_id, **kwargs):  # noqa: E501
+    def delete_connection_with_http_info(self, application_id, customer_id, connection_id, **kwargs):  # noqa: E501
         """Delete connection  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.delete_connection_with_http_info(customer_id, connection_id, async_req=True)
+        >>> thread = api.delete_connection_with_http_info(application_id, customer_id, connection_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :param str connection_id: (required)
         :return: Connection
@@ -70,7 +72,7 @@ class ConnectionsApi(object):
                  returns the request thread.
         """
 
-        all_params = ['customer_id', 'connection_id']  # noqa: E501
+        all_params = ['application_id', 'customer_id', 'connection_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -85,6 +87,10 @@ class ConnectionsApi(object):
                 )
             params[key] = val
         del params['kwargs']
+        # verify the required parameter 'application_id' is set
+        if ('application_id' not in params or
+                params['application_id'] is None):
+            raise ValueError("Missing the required parameter `application_id` when calling `delete_connection`")  # noqa: E501
         # verify the required parameter 'customer_id' is set
         if ('customer_id' not in params or
                 params['customer_id'] is None):
@@ -97,6 +103,8 @@ class ConnectionsApi(object):
         collection_formats = {}
 
         path_params = {}
+        if 'application_id' in params:
+            path_params['application_id'] = params['application_id']  # noqa: E501
         if 'customer_id' in params:
             path_params['customer_id'] = params['customer_id']  # noqa: E501
         if 'connection_id' in params:
@@ -118,7 +126,7 @@ class ConnectionsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/customers/{customer_id}/connections/{connection_id}', 'DELETE',
+            '/applications/{application_id}/customers/{customer_id}/connections/{connection_id}', 'DELETE',
             path_params,
             query_params,
             header_params,
@@ -133,15 +141,16 @@ class ConnectionsApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def get_connection(self, customer_id, connection_id, **kwargs):  # noqa: E501
+    def get_connection(self, application_id, customer_id, connection_id, **kwargs):  # noqa: E501
         """Get connection  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_connection(customer_id, connection_id, async_req=True)
+        >>> thread = api.get_connection(application_id, customer_id, connection_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :param str connection_id: (required)
         :return: Connection
@@ -150,20 +159,21 @@ class ConnectionsApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.get_connection_with_http_info(customer_id, connection_id, **kwargs)  # noqa: E501
+            return self.get_connection_with_http_info(application_id, customer_id, connection_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.get_connection_with_http_info(customer_id, connection_id, **kwargs)  # noqa: E501
+            (data) = self.get_connection_with_http_info(application_id, customer_id, connection_id, **kwargs)  # noqa: E501
             return data
 
-    def get_connection_with_http_info(self, customer_id, connection_id, **kwargs):  # noqa: E501
+    def get_connection_with_http_info(self, application_id, customer_id, connection_id, **kwargs):  # noqa: E501
         """Get connection  # noqa: E501
 
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_connection_with_http_info(customer_id, connection_id, async_req=True)
+        >>> thread = api.get_connection_with_http_info(application_id, customer_id, connection_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :param str connection_id: (required)
         :return: Connection
@@ -171,7 +181,7 @@ class ConnectionsApi(object):
                  returns the request thread.
         """
 
-        all_params = ['customer_id', 'connection_id']  # noqa: E501
+        all_params = ['application_id', 'customer_id', 'connection_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -186,6 +196,10 @@ class ConnectionsApi(object):
                 )
             params[key] = val
         del params['kwargs']
+        # verify the required parameter 'application_id' is set
+        if ('application_id' not in params or
+                params['application_id'] is None):
+            raise ValueError("Missing the required parameter `application_id` when calling `get_connection`")  # noqa: E501
         # verify the required parameter 'customer_id' is set
         if ('customer_id' not in params or
                 params['customer_id'] is None):
@@ -198,6 +212,8 @@ class ConnectionsApi(object):
         collection_formats = {}
 
         path_params = {}
+        if 'application_id' in params:
+            path_params['application_id'] = params['application_id']  # noqa: E501
         if 'customer_id' in params:
             path_params['customer_id'] = params['customer_id']  # noqa: E501
         if 'connection_id' in params:
@@ -219,7 +235,7 @@ class ConnectionsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/customers/{customer_id}/connections/{connection_id}', 'GET',
+            '/applications/{application_id}/customers/{customer_id}/connections/{connection_id}', 'GET',
             path_params,
             query_params,
             header_params,
@@ -234,16 +250,17 @@ class ConnectionsApi(object):
             _request_timeout=params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def get_connections(self, customer_id, **kwargs):  # noqa: E501
+    def get_connections(self, application_id, customer_id, **kwargs):  # noqa: E501
         """List connections  # noqa: E501
 
         Get a list of connections  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_connections(customer_id, async_req=True)
+        >>> thread = api.get_connections(application_id, customer_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :return: list[Connection]
                  If the method is called asynchronously,
@@ -251,28 +268,29 @@ class ConnectionsApi(object):
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.get_connections_with_http_info(customer_id, **kwargs)  # noqa: E501
+            return self.get_connections_with_http_info(application_id, customer_id, **kwargs)  # noqa: E501
         else:
-            (data) = self.get_connections_with_http_info(customer_id, **kwargs)  # noqa: E501
+            (data) = self.get_connections_with_http_info(application_id, customer_id, **kwargs)  # noqa: E501
             return data
 
-    def get_connections_with_http_info(self, customer_id, **kwargs):  # noqa: E501
+    def get_connections_with_http_info(self, application_id, customer_id, **kwargs):  # noqa: E501
         """List connections  # noqa: E501
 
         Get a list of connections  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.get_connections_with_http_info(customer_id, async_req=True)
+        >>> thread = api.get_connections_with_http_info(application_id, customer_id, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
+        :param str application_id: (required)
         :param str customer_id: (required)
         :return: list[Connection]
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
-        all_params = ['customer_id']  # noqa: E501
+        all_params = ['application_id', 'customer_id']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -287,6 +305,10 @@ class ConnectionsApi(object):
                 )
             params[key] = val
         del params['kwargs']
+        # verify the required parameter 'application_id' is set
+        if ('application_id' not in params or
+                params['application_id'] is None):
+            raise ValueError("Missing the required parameter `application_id` when calling `get_connections`")  # noqa: E501
         # verify the required parameter 'customer_id' is set
         if ('customer_id' not in params or
                 params['customer_id'] is None):
@@ -295,6 +317,8 @@ class ConnectionsApi(object):
         collection_formats = {}
 
         path_params = {}
+        if 'application_id' in params:
+            path_params['application_id'] = params['application_id']  # noqa: E501
         if 'customer_id' in params:
             path_params['customer_id'] = params['customer_id']  # noqa: E501
 
@@ -314,7 +338,7 @@ class ConnectionsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/customers/{customer_id}/connections', 'GET',
+            '/applications/{application_id}/customers/{customer_id}/connections', 'GET',
             path_params,
             query_params,
             header_params,

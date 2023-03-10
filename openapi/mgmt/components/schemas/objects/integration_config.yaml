@@ -1,6 +1,6 @@
 type: object
 properties:
-  remote_provider_app_id:
+  provider_app_id:
     type: string
     example: my_app_id
   oauth:
@@ -35,11 +35,11 @@ properties:
     required:
       - period_ms
 required:
-  - remote_provider_app_id
+  - provider_app_id
   - oauth
   - sync
 example:
-  - remote_provider_app_id: my_app_id
+  - provider_app_id: my_app_id
   - oauth:
     - oauth_scopes:
       - crm.objects.contacts.read

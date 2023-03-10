@@ -22,7 +22,7 @@ get:
                   auth_type: oauth2
                   provider_name: hubspot
                   config:
-                  - remote_provider_app_id: my_app_id
+                  - provider_app_id: my_app_id
                     oauth:
                     - oauth_scopes:
                       - crm.objects.contacts.read
@@ -41,7 +41,7 @@ get:
                   auth_type: oauth2
                   provider_name: salesforce
                   config:
-                  - remote_provider_app_id: my_app_id2
+                  - provider_app_id: my_app_id2
                     oauth:
                     - oauth_scopes:
                       - crm.objects.contacts.read
@@ -74,3 +74,10 @@ post:
         application/json:
           schema:
             $ref: ../components/schemas/objects/integration.yaml
+parameters:
+  - name: application_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0623bf1c-3f71-4d53-ab11-f92ae72833c0

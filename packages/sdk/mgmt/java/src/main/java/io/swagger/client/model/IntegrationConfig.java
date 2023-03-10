@@ -1,5 +1,5 @@
 /*
- * Supaglue Customer API
+ * Supaglue Management API
  * # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ``` 
  *
  * OpenAPI spec version: 0.3.3
@@ -29,8 +29,8 @@ import java.io.IOException;
 
 
 public class IntegrationConfig {
-  @SerializedName("remote_provider_app_id")
-  private String remoteProviderAppId = null;
+  @SerializedName("provider_app_id")
+  private String providerAppId = null;
 
   @SerializedName("oauth")
   private IntegrationConfigOauth oauth = null;
@@ -38,22 +38,22 @@ public class IntegrationConfig {
   @SerializedName("sync")
   private IntegrationConfigSync sync = null;
 
-  public IntegrationConfig remoteProviderAppId(String remoteProviderAppId) {
-    this.remoteProviderAppId = remoteProviderAppId;
+  public IntegrationConfig providerAppId(String providerAppId) {
+    this.providerAppId = providerAppId;
     return this;
   }
 
    /**
-   * Get remoteProviderAppId
-   * @return remoteProviderAppId
+   * Get providerAppId
+   * @return providerAppId
   **/
   @Schema(example = "my_app_id", required = true, description = "")
-  public String getRemoteProviderAppId() {
-    return remoteProviderAppId;
+  public String getProviderAppId() {
+    return providerAppId;
   }
 
-  public void setRemoteProviderAppId(String remoteProviderAppId) {
-    this.remoteProviderAppId = remoteProviderAppId;
+  public void setProviderAppId(String providerAppId) {
+    this.providerAppId = providerAppId;
   }
 
   public IntegrationConfig oauth(IntegrationConfigOauth oauth) {
@@ -102,14 +102,14 @@ public class IntegrationConfig {
       return false;
     }
     IntegrationConfig integrationConfig = (IntegrationConfig) o;
-    return Objects.equals(this.remoteProviderAppId, integrationConfig.remoteProviderAppId) &&
+    return Objects.equals(this.providerAppId, integrationConfig.providerAppId) &&
         Objects.equals(this.oauth, integrationConfig.oauth) &&
         Objects.equals(this.sync, integrationConfig.sync);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(remoteProviderAppId, oauth, sync);
+    return Objects.hash(providerAppId, oauth, sync);
   }
 
 
@@ -118,7 +118,7 @@ public class IntegrationConfig {
     StringBuilder sb = new StringBuilder();
     sb.append("class IntegrationConfig {\n");
     
-    sb.append("    remoteProviderAppId: ").append(toIndentedString(remoteProviderAppId)).append("\n");
+    sb.append("    providerAppId: ").append(toIndentedString(providerAppId)).append("\n");
     sb.append("    oauth: ").append(toIndentedString(oauth)).append("\n");
     sb.append("    sync: ").append(toIndentedString(sync)).append("\n");
     sb.append("}");

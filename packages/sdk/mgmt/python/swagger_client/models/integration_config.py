@@ -1,7 +1,7 @@
 # coding: utf-8
 
 """
-    Supaglue Customer API
+    Supaglue Management API
 
     # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ```   # noqa: E501
 
@@ -28,49 +28,49 @@ class IntegrationConfig(object):
                             and the value is json key in definition.
     """
     swagger_types = {
-        'remote_provider_app_id': 'str',
+        'provider_app_id': 'str',
         'oauth': 'IntegrationConfigOauth',
         'sync': 'IntegrationConfigSync'
     }
 
     attribute_map = {
-        'remote_provider_app_id': 'remote_provider_app_id',
+        'provider_app_id': 'provider_app_id',
         'oauth': 'oauth',
         'sync': 'sync'
     }
 
-    def __init__(self, remote_provider_app_id=None, oauth=None, sync=None):  # noqa: E501
+    def __init__(self, provider_app_id=None, oauth=None, sync=None):  # noqa: E501
         """IntegrationConfig - a model defined in Swagger"""  # noqa: E501
-        self._remote_provider_app_id = None
+        self._provider_app_id = None
         self._oauth = None
         self._sync = None
         self.discriminator = None
-        self.remote_provider_app_id = remote_provider_app_id
+        self.provider_app_id = provider_app_id
         self.oauth = oauth
         self.sync = sync
 
     @property
-    def remote_provider_app_id(self):
-        """Gets the remote_provider_app_id of this IntegrationConfig.  # noqa: E501
+    def provider_app_id(self):
+        """Gets the provider_app_id of this IntegrationConfig.  # noqa: E501
 
 
-        :return: The remote_provider_app_id of this IntegrationConfig.  # noqa: E501
+        :return: The provider_app_id of this IntegrationConfig.  # noqa: E501
         :rtype: str
         """
-        return self._remote_provider_app_id
+        return self._provider_app_id
 
-    @remote_provider_app_id.setter
-    def remote_provider_app_id(self, remote_provider_app_id):
-        """Sets the remote_provider_app_id of this IntegrationConfig.
+    @provider_app_id.setter
+    def provider_app_id(self, provider_app_id):
+        """Sets the provider_app_id of this IntegrationConfig.
 
 
-        :param remote_provider_app_id: The remote_provider_app_id of this IntegrationConfig.  # noqa: E501
+        :param provider_app_id: The provider_app_id of this IntegrationConfig.  # noqa: E501
         :type: str
         """
-        if remote_provider_app_id is None:
-            raise ValueError("Invalid value for `remote_provider_app_id`, must not be `None`")  # noqa: E501
+        if provider_app_id is None:
+            raise ValueError("Invalid value for `provider_app_id`, must not be `None`")  # noqa: E501
 
-        self._remote_provider_app_id = remote_provider_app_id
+        self._provider_app_id = provider_app_id
 
     @property
     def oauth(self):

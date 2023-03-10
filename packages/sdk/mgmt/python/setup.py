@@ -1,7 +1,7 @@
 # coding: utf-8
 
 """
-    Supaglue Customer API
+    Supaglue Management API
 
     # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ```   # noqa: E501
 
@@ -26,10 +26,10 @@ REQUIRES = ["urllib3 >= 1.15", "six >= 1.10", "certifi", "python-dateutil"]
 setup(
     name=NAME,
     version=VERSION,
-    description="Supaglue Customer API",
+    description="Supaglue Management API",
     author_email="docs@supaglue.com",
     url="",
-    keywords=["Swagger", "Supaglue Customer API"],
+    keywords=["Swagger", "Supaglue Management API"],
     install_requires=REQUIRES,
     packages=find_packages(),
     include_package_data=True,

@@ -1,5 +1,5 @@
 /*
- * Supaglue Customer API
+ * Supaglue Management API
  * # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ``` 
  *
  * OpenAPI spec version: 0.3.3

@@ -4,14 +4,14 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**createCustomer**](CustomersApi.md#createCustomer) | **POST** /customers | Create customer
-[**deleteCustomer**](CustomersApi.md#deleteCustomer) | **DELETE** /customers/{customer_id} | Delete customer
-[**getCustomer**](CustomersApi.md#getCustomer) | **GET** /customers/{customer_id} | Get customer
-[**getCustomers**](CustomersApi.md#getCustomers) | **GET** /customers | List customers
+[**createCustomer**](CustomersApi.md#createCustomer) | **POST** /applications/{application_id}/customers | Create customer
+[**deleteCustomer**](CustomersApi.md#deleteCustomer) | **DELETE** /applications/{application_id}/customers/{customer_id} | Delete customer
+[**getCustomer**](CustomersApi.md#getCustomer) | **GET** /applications/{application_id}/customers/{customer_id} | Get customer
+[**getCustomers**](CustomersApi.md#getCustomers) | **GET** /applications/{application_id}/customers | List customers
 
 <a name="createCustomer"></a>
 # **createCustomer**
-> Customer createCustomer(body)
+> Customer createCustomer(body, applicationId)
 
 Create customer
 
@@ -24,8 +24,9 @@ Create customer
 
 CustomersApi apiInstance = new CustomersApi();
 CreateUpdateCustomer body = new CreateUpdateCustomer(); // CreateUpdateCustomer | 
+String applicationId = "applicationId_example"; // String | 
 try {
-    Customer result = apiInstance.createCustomer(body);
+    Customer result = apiInstance.createCustomer(body, applicationId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling CustomersApi#createCustomer");
@@ -38,6 +39,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**CreateUpdateCustomer**](CreateUpdateCustomer.md)|  |
+ **applicationId** | **String**|  |
 
 ### Return type
 
@@ -54,7 +56,7 @@ No authorization required
 
 <a name="deleteCustomer"></a>
 # **deleteCustomer**
-> Customer deleteCustomer(customerId)
+> Customer deleteCustomer(applicationId, customerId)
 
 Delete customer
 
@@ -66,9 +68,10 @@ Delete customer
 
 
 CustomersApi apiInstance = new CustomersApi();
+String applicationId = "applicationId_example"; // String | 
 String customerId = "customerId_example"; // String | 
 try {
-    Customer result = apiInstance.deleteCustomer(customerId);
+    Customer result = apiInstance.deleteCustomer(applicationId, customerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling CustomersApi#deleteCustomer");
@@ -80,6 +83,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
  **customerId** | **String**|  |
 
 ### Return type
@@ -97,7 +101,7 @@ No authorization required
 
 <a name="getCustomer"></a>
 # **getCustomer**
-> Customer getCustomer(customerId)
+> Customer getCustomer(applicationId, customerId)
 
 Get customer
 
@@ -109,9 +113,10 @@ Get customer
 
 
 CustomersApi apiInstance = new CustomersApi();
+String applicationId = "applicationId_example"; // String | 
 String customerId = "customerId_example"; // String | 
 try {
-    Customer result = apiInstance.getCustomer(customerId);
+    Customer result = apiInstance.getCustomer(applicationId, customerId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling CustomersApi#getCustomer");
@@ -123,6 +128,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
  **customerId** | **String**|  |
 
 ### Return type
@@ -140,7 +146,7 @@ No authorization required
 
 <a name="getCustomers"></a>
 # **getCustomers**
-> List&lt;Customer&gt; getCustomers()
+> List&lt;Customer&gt; getCustomers(applicationId)
 
 List customers
 
@@ -154,8 +160,9 @@ Get a list of customers
 
 
 CustomersApi apiInstance = new CustomersApi();
+String applicationId = "applicationId_example"; // String | 
 try {
-    List<Customer> result = apiInstance.getCustomers();
+    List<Customer> result = apiInstance.getCustomers(applicationId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling CustomersApi#getCustomers");
@@ -164,7 +171,10 @@ try {
 ```
 
 ### Parameters
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **applicationId** | **String**|  |
 
 ### Return type
 

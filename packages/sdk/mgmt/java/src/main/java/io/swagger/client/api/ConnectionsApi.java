@@ -1,5 +1,5 @@
 /*
- * Supaglue Customer API
+ * Supaglue Management API
  * # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ``` 
  *
  * OpenAPI spec version: 0.3.3
@@ -55,6 +55,7 @@ public class ConnectionsApi {
 
     /**
      * Build call for deleteConnection
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param connectionId  (required)
      * @param progressListener Progress listener
@@ -62,11 +63,12 @@ public class ConnectionsApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call deleteConnectionCall(String customerId, String connectionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call deleteConnectionCall(String applicationId, String customerId, String connectionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/customers/{customer_id}/connections/{connection_id}"
+        String localVarPath = "/applications/{application_id}/customers/{customer_id}/connections/{connection_id}"
+            .replaceAll("\\{" + "application_id" + "\\}", apiClient.escapeString(applicationId.toString()))
             .replaceAll("\\{" + "customer_id" + "\\}", apiClient.escapeString(customerId.toString()))
             .replaceAll("\\{" + "connection_id" + "\\}", apiClient.escapeString(connectionId.toString()));
 
@@ -106,7 +108,11 @@ public class ConnectionsApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call deleteConnectionValidateBeforeCall(String customerId, String connectionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call deleteConnectionValidateBeforeCall(String applicationId, String customerId, String connectionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        // verify the required parameter 'applicationId' is set
+        if (applicationId == null) {
+            throw new ApiException("Missing the required parameter 'applicationId' when calling deleteConnection(Async)");
+        }
         // verify the required parameter 'customerId' is set
         if (customerId == null) {
             throw new ApiException("Missing the required parameter 'customerId' when calling deleteConnection(Async)");
@@ -116,7 +122,7 @@ public class ConnectionsApi {
             throw new ApiException("Missing the required parameter 'connectionId' when calling deleteConnection(Async)");
         }
         
-        com.squareup.okhttp.Call call = deleteConnectionCall(customerId, connectionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = deleteConnectionCall(applicationId, customerId, connectionId, progressListener, progressRequestListener);
         return call;
 
         
@@ -128,26 +134,28 @@ public class ConnectionsApi {
     /**
      * Delete connection
      * 
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param connectionId  (required)
      * @return Connection
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public Connection deleteConnection(String customerId, String connectionId) throws ApiException {
-        ApiResponse<Connection> resp = deleteConnectionWithHttpInfo(customerId, connectionId);
+    public Connection deleteConnection(String applicationId, String customerId, String connectionId) throws ApiException {
+        ApiResponse<Connection> resp = deleteConnectionWithHttpInfo(applicationId, customerId, connectionId);
         return resp.getData();
     }
 
     /**
      * Delete connection
      * 
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param connectionId  (required)
      * @return ApiResponse&lt;Connection&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Connection> deleteConnectionWithHttpInfo(String customerId, String connectionId) throws ApiException {
-        com.squareup.okhttp.Call call = deleteConnectionValidateBeforeCall(customerId, connectionId, null, null);
+    public ApiResponse<Connection> deleteConnectionWithHttpInfo(String applicationId, String customerId, String connectionId) throws ApiException {
+        com.squareup.okhttp.Call call = deleteConnectionValidateBeforeCall(applicationId, customerId, connectionId, null, null);
         Type localVarReturnType = new TypeToken<Connection>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -155,13 +163,14 @@ public class ConnectionsApi {
     /**
      * Delete connection (asynchronously)
      * 
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param connectionId  (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call deleteConnectionAsync(String customerId, String connectionId, final ApiCallback<Connection> callback) throws ApiException {
+    public com.squareup.okhttp.Call deleteConnectionAsync(String applicationId, String customerId, String connectionId, final ApiCallback<Connection> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -182,13 +191,14 @@ public class ConnectionsApi {
             };
         }
 
-        com.squareup.okhttp.Call call = deleteConnectionValidateBeforeCall(customerId, connectionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = deleteConnectionValidateBeforeCall(applicationId, customerId, connectionId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<Connection>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
      * Build call for getConnection
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param connectionId  (required)
      * @param progressListener Progress listener
@@ -196,11 +206,12 @@ public class ConnectionsApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getConnectionCall(String customerId, String connectionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getConnectionCall(String applicationId, String customerId, String connectionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/customers/{customer_id}/connections/{connection_id}"
+        String localVarPath = "/applications/{application_id}/customers/{customer_id}/connections/{connection_id}"
+            .replaceAll("\\{" + "application_id" + "\\}", apiClient.escapeString(applicationId.toString()))
             .replaceAll("\\{" + "customer_id" + "\\}", apiClient.escapeString(customerId.toString()))
             .replaceAll("\\{" + "connection_id" + "\\}", apiClient.escapeString(connectionId.toString()));
 
@@ -240,7 +251,11 @@ public class ConnectionsApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getConnectionValidateBeforeCall(String customerId, String connectionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getConnectionValidateBeforeCall(String applicationId, String customerId, String connectionId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        // verify the required parameter 'applicationId' is set
+        if (applicationId == null) {
+            throw new ApiException("Missing the required parameter 'applicationId' when calling getConnection(Async)");
+        }
         // verify the required parameter 'customerId' is set
         if (customerId == null) {
             throw new ApiException("Missing the required parameter 'customerId' when calling getConnection(Async)");
@@ -250,7 +265,7 @@ public class ConnectionsApi {
             throw new ApiException("Missing the required parameter 'connectionId' when calling getConnection(Async)");
         }
         
-        com.squareup.okhttp.Call call = getConnectionCall(customerId, connectionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getConnectionCall(applicationId, customerId, connectionId, progressListener, progressRequestListener);
         return call;
 
         
@@ -262,26 +277,28 @@ public class ConnectionsApi {
     /**
      * Get connection
      * 
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param connectionId  (required)
      * @return Connection
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public Connection getConnection(String customerId, String connectionId) throws ApiException {
-        ApiResponse<Connection> resp = getConnectionWithHttpInfo(customerId, connectionId);
+    public Connection getConnection(String applicationId, String customerId, String connectionId) throws ApiException {
+        ApiResponse<Connection> resp = getConnectionWithHttpInfo(applicationId, customerId, connectionId);
         return resp.getData();
     }
 
     /**
      * Get connection
      * 
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param connectionId  (required)
      * @return ApiResponse&lt;Connection&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Connection> getConnectionWithHttpInfo(String customerId, String connectionId) throws ApiException {
-        com.squareup.okhttp.Call call = getConnectionValidateBeforeCall(customerId, connectionId, null, null);
+    public ApiResponse<Connection> getConnectionWithHttpInfo(String applicationId, String customerId, String connectionId) throws ApiException {
+        com.squareup.okhttp.Call call = getConnectionValidateBeforeCall(applicationId, customerId, connectionId, null, null);
         Type localVarReturnType = new TypeToken<Connection>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -289,13 +306,14 @@ public class ConnectionsApi {
     /**
      * Get connection (asynchronously)
      * 
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param connectionId  (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getConnectionAsync(String customerId, String connectionId, final ApiCallback<Connection> callback) throws ApiException {
+    public com.squareup.okhttp.Call getConnectionAsync(String applicationId, String customerId, String connectionId, final ApiCallback<Connection> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -316,24 +334,26 @@ public class ConnectionsApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getConnectionValidateBeforeCall(customerId, connectionId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getConnectionValidateBeforeCall(applicationId, customerId, connectionId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<Connection>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
     /**
      * Build call for getConnections
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param progressListener Progress listener
      * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public com.squareup.okhttp.Call getConnectionsCall(String customerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public com.squareup.okhttp.Call getConnectionsCall(String applicationId, String customerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/customers/{customer_id}/connections"
+        String localVarPath = "/applications/{application_id}/customers/{customer_id}/connections"
+            .replaceAll("\\{" + "application_id" + "\\}", apiClient.escapeString(applicationId.toString()))
             .replaceAll("\\{" + "customer_id" + "\\}", apiClient.escapeString(customerId.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -372,13 +392,17 @@ public class ConnectionsApi {
     }
     
     @SuppressWarnings("rawtypes")
-    private com.squareup.okhttp.Call getConnectionsValidateBeforeCall(String customerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private com.squareup.okhttp.Call getConnectionsValidateBeforeCall(String applicationId, String customerId, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        // verify the required parameter 'applicationId' is set
+        if (applicationId == null) {
+            throw new ApiException("Missing the required parameter 'applicationId' when calling getConnections(Async)");
+        }
         // verify the required parameter 'customerId' is set
         if (customerId == null) {
             throw new ApiException("Missing the required parameter 'customerId' when calling getConnections(Async)");
         }
         
-        com.squareup.okhttp.Call call = getConnectionsCall(customerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getConnectionsCall(applicationId, customerId, progressListener, progressRequestListener);
         return call;
 
         
@@ -390,24 +414,26 @@ public class ConnectionsApi {
     /**
      * List connections
      * Get a list of connections
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @return List&lt;Connection&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public List<Connection> getConnections(String customerId) throws ApiException {
-        ApiResponse<List<Connection>> resp = getConnectionsWithHttpInfo(customerId);
+    public List<Connection> getConnections(String applicationId, String customerId) throws ApiException {
+        ApiResponse<List<Connection>> resp = getConnectionsWithHttpInfo(applicationId, customerId);
         return resp.getData();
     }
 
     /**
      * List connections
      * Get a list of connections
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @return ApiResponse&lt;List&lt;Connection&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<List<Connection>> getConnectionsWithHttpInfo(String customerId) throws ApiException {
-        com.squareup.okhttp.Call call = getConnectionsValidateBeforeCall(customerId, null, null);
+    public ApiResponse<List<Connection>> getConnectionsWithHttpInfo(String applicationId, String customerId) throws ApiException {
+        com.squareup.okhttp.Call call = getConnectionsValidateBeforeCall(applicationId, customerId, null, null);
         Type localVarReturnType = new TypeToken<List<Connection>>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -415,12 +441,13 @@ public class ConnectionsApi {
     /**
      * List connections (asynchronously)
      * Get a list of connections
+     * @param applicationId  (required)
      * @param customerId  (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call getConnectionsAsync(String customerId, final ApiCallback<List<Connection>> callback) throws ApiException {
+    public com.squareup.okhttp.Call getConnectionsAsync(String applicationId, String customerId, final ApiCallback<List<Connection>> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -441,7 +468,7 @@ public class ConnectionsApi {
             };
         }
 
-        com.squareup.okhttp.Call call = getConnectionsValidateBeforeCall(customerId, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = getConnectionsValidateBeforeCall(applicationId, customerId, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<List<Connection>>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

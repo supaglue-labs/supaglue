@@ -5,8 +5,6 @@ type BaseApplication = {
 
 export type Application = BaseApplication & {
   id: string;
-  name: string;
-  config: ApplicationConfig;
 };
 
 export type ApplicationConfig = {

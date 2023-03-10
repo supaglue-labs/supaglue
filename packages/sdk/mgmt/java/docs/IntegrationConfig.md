@@ -3,6 +3,6 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**remoteProviderAppId** | **String** |  | 
+**providerAppId** | **String** |  | 
 **oauth** | [**IntegrationConfigOauth**](IntegrationConfigOauth.md) |  | 
 **sync** | [**IntegrationConfigSync**](IntegrationConfigSync.md) |  | 

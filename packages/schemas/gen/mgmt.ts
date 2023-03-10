@@ -5,7 +5,29 @@
 
 
 export interface paths {
-  "/customers": {
+  "/applications": {
+    /**
+     * List applications 
+     * @description Get a list of applications
+     */
+    get: operations["getApplications"];
+    /** Create application */
+    post: operations["createApplication"];
+  };
+  "/applications/{application_id}": {
+    /** Get application */
+    get: operations["getApplication"];
+    /** Update application */
+    put: operations["updateApplication"];
+    /** Delete application */
+    delete: operations["deleteApplication"];
+    parameters: {
+      path: {
+        application_id: string;
+      };
+    };
+  };
+  "/applications/{application_id}/customers": {
     /**
      * List customers 
      * @description Get a list of customers
@@ -13,19 +35,25 @@ export interface paths {
     get: operations["getCustomers"];
     /** Create customer */
     post: operations["createCustomer"];
+    parameters: {
+      path: {
+        application_id: string;
+      };
+    };
   };
-  "/customers/{customer_id}": {
+  "/applications/{application_id}/customers/{customer_id}": {
     /** Get customer */
     get: operations["getCustomer"];
     /** Delete customer */
     delete: operations["deleteCustomer"];
     parameters: {
       path: {
+        application_id: string;
         customer_id: string;
       };
     };
   };
-  "/integrations": {
+  "/applications/{application_id}/integrations": {
     /**
      * List integrations 
      * @description Get a list of integrations
@@ -33,8 +61,13 @@ export interface paths {
     get: operations["getIntegrations"];
     /** Create integration */
     post: operations["createIntegration"];
+    parameters: {
+      path: {
+        application_id: string;
+      };
+    };
   };
-  "/integrations/{integration_id}": {
+  "/applications/{application_id}/integrations/{integration_id}": {
     /** Get integration */
     get: operations["getIntegration"];
     /** Update integration */
@@ -43,11 +76,12 @@ export interface paths {
     delete: operations["deleteIntegration"];
     parameters: {
       path: {
+        application_id: string;
         integration_id: string;
       };
     };
   };
-  "/customers/{customer_id}/connections": {
+  "/applications/{application_id}/customers/{customer_id}/connections": {
     /**
      * List connections 
      * @description Get a list of connections
@@ -55,17 +89,19 @@ export interface paths {
     get: operations["getConnections"];
     parameters: {
       path: {
+        application_id: string;
         customer_id: string;
       };
     };
   };
-  "/customers/{customer_id}/connections/{connection_id}": {
+  "/applications/{application_id}/customers/{customer_id}/connections/{connection_id}": {
     /** Get connection */
     get: operations["getConnection"];
     /** Delete connection */
     delete: operations["deleteConnection"];
     parameters: {
       path: {
+        application_id: string;
         customer_id: string;
         connection_id: string;
       };
@@ -77,16 +113,6 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /**
-     * @example [
-     *   {
-     *     "id": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-     *   },
-     *   {
-     *     "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
-     *   }
-     * ]
-     */
     customer: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -94,46 +120,6 @@ export interface components {
       application_id: string;
       connections?: (components["schemas"]["connection"])[];
     };
-    /**
-     * @example [
-     *   {
-     *     "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
-     *     "category": "crm",
-     *     "auth_type": "oauth2",
-     *     "provider_name": "hubspot",
-     *     "config": [
-     *       {
-     *         "remote_provider_app_id": "my_app_id",
-     *         "oauth": [
-     *           {
-     *             "oauth_scopes": [
-     *               "crm.objects.contacts.read",
-     *               "crm.objects.companies.read",
-     *               "crm.objects.deals.read",
-     *               "crm.objects.contacts.write",
-     *               "crm.objects.companies.write",
-     *               "crm.objects.deals.write"
-     *             ],
-     *             "credentials": [
-     *               {
-     *                 "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-     *                 "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-     *               }
-     *             ]
-     *           }
-     *         ]
-     *       },
-     *       {
-     *         "sync": [
-     *           {
-     *             "period_ms": 60000
-     *           }
-     *         ]
-     *       }
-     *     ]
-     *   }
-     * ]
-     */
     integration: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -145,27 +131,6 @@ export interface components {
       provider_name: components["schemas"]["provider_name"];
       config: components["schemas"]["integration_config"];
     };
-    /**
-     * @example [
-     *   {
-     *     "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
-     *     "customer_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-     *     "status": "available",
-     *     "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
-     *     "provider_name": "salesforce",
-     *     "category": "crm",
-     *     "credentials": [
-     *       {
-     *         "type": "oauth2",
-     *         "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
-     *         "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
-     *         "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
-     *         "expires_at": "2023-03-09T21:55:54.000Z"
-     *       }
-     *     ]
-     *   }
-     * ]
-     */
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -210,7 +175,7 @@ export interface components {
     /**
      * @example [
      *   {
-     *     "remote_provider_app_id": "my_app_id"
+     *     "provider_app_id": "my_app_id"
      *   },
      *   {
      *     "oauth": [
@@ -247,7 +212,7 @@ export interface components {
      */
     integration_config: {
       /** @example my_app_id */
-      remote_provider_app_id: string;
+      provider_app_id: string;
       oauth: {
         oauth_scopes: (string)[];
         credentials: {
@@ -277,6 +242,32 @@ export interface components {
       provider_name: components["schemas"]["provider_name"];
       config: components["schemas"]["integration_config"];
     };
+    create_update_application: {
+      /** @example my-app */
+      name: string;
+      config: components["schemas"]["application_config"];
+    };
+    application: {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example my-app */
+      name: string;
+      config: components["schemas"]["application_config"];
+    };
+    application_config: {
+      webhook: ({
+        url: string;
+        /** @enum {string} */
+        request_type: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+        notify_on_sync_success: boolean;
+        notify_on_sync_error: boolean;
+        notify_on_connection_success: boolean;
+        notify_on_connection_error: boolean;
+        headers?: {
+          [key: string]: unknown | undefined;
+        };
+      }) | null;
+    };
   };
   responses: never;
   parameters: never;
@@ -289,6 +280,74 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  getApplications: {
+    /**
+     * List applications 
+     * @description Get a list of applications
+     */
+    responses: {
+      /** @description Applications */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["application"])[];
+        };
+      };
+    };
+  };
+  createApplication: {
+    /** Create application */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_application"];
+      };
+    };
+    responses: {
+      /** @description Application created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["application"];
+        };
+      };
+    };
+  };
+  getApplication: {
+    /** Get application */
+    responses: {
+      /** @description Application */
+      200: {
+        content: {
+          "application/json": components["schemas"]["application"];
+        };
+      };
+    };
+  };
+  updateApplication: {
+    /** Update application */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_application"];
+      };
+    };
+    responses: {
+      /** @description Application */
+      200: {
+        content: {
+          "application/json": components["schemas"]["application"];
+        };
+      };
+    };
+  };
+  deleteApplication: {
+    /** Delete application */
+    responses: {
+      /** @description Application */
+      200: {
+        content: {
+          "application/json": components["schemas"]["application"];
+        };
+      };
+    };
+  };
   getCustomers: {
     /**
      * List customers 

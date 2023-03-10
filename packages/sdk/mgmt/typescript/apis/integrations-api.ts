@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Supaglue Customer API
+ * Supaglue Management API
  * # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ``` 
  *
  * OpenAPI spec version: 0.3.3
@@ -28,15 +28,21 @@ export const IntegrationsApiAxiosParamCreator = function (configuration?: Config
          * 
          * @summary Create integration
          * @param {CreateUpdateIntegration} body 
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createIntegration: async (body: CreateUpdateIntegration, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createIntegration: async (body: CreateUpdateIntegration, applicationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'body' is not null or undefined
             if (body === null || body === undefined) {
                 throw new RequiredError('body','Required parameter body was null or undefined when calling createIntegration.');
             }
-            const localVarPath = `/integrations`;
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling createIntegration.');
+            }
+            const localVarPath = `/applications/{application_id}/integrations`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
             let baseOptions;
@@ -70,16 +76,22 @@ export const IntegrationsApiAxiosParamCreator = function (configuration?: Config
         /**
          * 
          * @summary Delete integration
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteIntegration: async (integrationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteIntegration: async (applicationId: string, integrationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling deleteIntegration.');
+            }
             // verify required parameter 'integrationId' is not null or undefined
             if (integrationId === null || integrationId === undefined) {
                 throw new RequiredError('integrationId','Required parameter integrationId was null or undefined when calling deleteIntegration.');
             }
-            const localVarPath = `/integrations/{integration_id}`
+            const localVarPath = `/applications/{application_id}/integrations/{integration_id}`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)))
                 .replace(`{${"integration_id"}}`, encodeURIComponent(String(integrationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -110,16 +122,22 @@ export const IntegrationsApiAxiosParamCreator = function (configuration?: Config
         /**
          * 
          * @summary Get integration
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getIntegration: async (integrationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getIntegration: async (applicationId: string, integrationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling getIntegration.');
+            }
             // verify required parameter 'integrationId' is not null or undefined
             if (integrationId === null || integrationId === undefined) {
                 throw new RequiredError('integrationId','Required parameter integrationId was null or undefined when calling getIntegration.');
             }
-            const localVarPath = `/integrations/{integration_id}`
+            const localVarPath = `/applications/{application_id}/integrations/{integration_id}`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)))
                 .replace(`{${"integration_id"}}`, encodeURIComponent(String(integrationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -150,11 +168,17 @@ export const IntegrationsApiAxiosParamCreator = function (configuration?: Config
         /**
          * Get a list of integrations
          * @summary List integrations
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getIntegrations: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/integrations`;
+        getIntegrations: async (applicationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling getIntegrations.');
+            }
+            const localVarPath = `/applications/{application_id}/integrations`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
             let baseOptions;
@@ -185,20 +209,26 @@ export const IntegrationsApiAxiosParamCreator = function (configuration?: Config
          * 
          * @summary Update integration
          * @param {CreateUpdateIntegration} body 
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateIntegration: async (body: CreateUpdateIntegration, integrationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateIntegration: async (body: CreateUpdateIntegration, applicationId: string, integrationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'body' is not null or undefined
             if (body === null || body === undefined) {
                 throw new RequiredError('body','Required parameter body was null or undefined when calling updateIntegration.');
+            }
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling updateIntegration.');
             }
             // verify required parameter 'integrationId' is not null or undefined
             if (integrationId === null || integrationId === undefined) {
                 throw new RequiredError('integrationId','Required parameter integrationId was null or undefined when calling updateIntegration.');
             }
-            const localVarPath = `/integrations/{integration_id}`
+            const localVarPath = `/applications/{application_id}/integrations/{integration_id}`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)))
                 .replace(`{${"integration_id"}}`, encodeURIComponent(String(integrationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -243,11 +273,12 @@ export const IntegrationsApiFp = function(configuration?: Configuration) {
          * 
          * @summary Create integration
          * @param {CreateUpdateIntegration} body 
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createIntegration(body: CreateUpdateIntegration, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Integration>>> {
-            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).createIntegration(body, options);
+        async createIntegration(body: CreateUpdateIntegration, applicationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Integration>>> {
+            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).createIntegration(body, applicationId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -256,12 +287,13 @@ export const IntegrationsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Delete integration
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteIntegration(integrationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Integration>>> {
-            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).deleteIntegration(integrationId, options);
+        async deleteIntegration(applicationId: string, integrationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Integration>>> {
+            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).deleteIntegration(applicationId, integrationId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -270,12 +302,13 @@ export const IntegrationsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get integration
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getIntegration(integrationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Integration>>> {
-            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).getIntegration(integrationId, options);
+        async getIntegration(applicationId: string, integrationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Integration>>> {
+            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).getIntegration(applicationId, integrationId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -284,11 +317,12 @@ export const IntegrationsApiFp = function(configuration?: Configuration) {
         /**
          * Get a list of integrations
          * @summary List integrations
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getIntegrations(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Array<Integration>>>> {
-            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).getIntegrations(options);
+        async getIntegrations(applicationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Array<Integration>>>> {
+            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).getIntegrations(applicationId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -298,12 +332,13 @@ export const IntegrationsApiFp = function(configuration?: Configuration) {
          * 
          * @summary Update integration
          * @param {CreateUpdateIntegration} body 
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateIntegration(body: CreateUpdateIntegration, integrationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Integration>>> {
-            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).updateIntegration(body, integrationId, options);
+        async updateIntegration(body: CreateUpdateIntegration, applicationId: string, integrationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Integration>>> {
+            const localVarAxiosArgs = await IntegrationsApiAxiosParamCreator(configuration).updateIntegration(body, applicationId, integrationId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -322,51 +357,56 @@ export const IntegrationsApiFactory = function (configuration?: Configuration, b
          * 
          * @summary Create integration
          * @param {CreateUpdateIntegration} body 
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createIntegration(body: CreateUpdateIntegration, options?: AxiosRequestConfig): Promise<AxiosResponse<Integration>> {
-            return IntegrationsApiFp(configuration).createIntegration(body, options).then((request) => request(axios, basePath));
+        async createIntegration(body: CreateUpdateIntegration, applicationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Integration>> {
+            return IntegrationsApiFp(configuration).createIntegration(body, applicationId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Delete integration
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteIntegration(integrationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Integration>> {
-            return IntegrationsApiFp(configuration).deleteIntegration(integrationId, options).then((request) => request(axios, basePath));
+        async deleteIntegration(applicationId: string, integrationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Integration>> {
+            return IntegrationsApiFp(configuration).deleteIntegration(applicationId, integrationId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Get integration
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getIntegration(integrationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Integration>> {
-            return IntegrationsApiFp(configuration).getIntegration(integrationId, options).then((request) => request(axios, basePath));
+        async getIntegration(applicationId: string, integrationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Integration>> {
+            return IntegrationsApiFp(configuration).getIntegration(applicationId, integrationId, options).then((request) => request(axios, basePath));
         },
         /**
          * Get a list of integrations
          * @summary List integrations
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getIntegrations(options?: AxiosRequestConfig): Promise<AxiosResponse<Array<Integration>>> {
-            return IntegrationsApiFp(configuration).getIntegrations(options).then((request) => request(axios, basePath));
+        async getIntegrations(applicationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<Integration>>> {
+            return IntegrationsApiFp(configuration).getIntegrations(applicationId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Update integration
          * @param {CreateUpdateIntegration} body 
+         * @param {string} applicationId 
          * @param {string} integrationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateIntegration(body: CreateUpdateIntegration, integrationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Integration>> {
-            return IntegrationsApiFp(configuration).updateIntegration(body, integrationId, options).then((request) => request(axios, basePath));
+        async updateIntegration(body: CreateUpdateIntegration, applicationId: string, integrationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Integration>> {
+            return IntegrationsApiFp(configuration).updateIntegration(body, applicationId, integrationId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -382,55 +422,60 @@ export class IntegrationsApi extends BaseAPI {
      * 
      * @summary Create integration
      * @param {CreateUpdateIntegration} body 
+     * @param {string} applicationId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof IntegrationsApi
      */
-    public async createIntegration(body: CreateUpdateIntegration, options?: AxiosRequestConfig) : Promise<AxiosResponse<Integration>> {
-        return IntegrationsApiFp(this.configuration).createIntegration(body, options).then((request) => request(this.axios, this.basePath));
+    public async createIntegration(body: CreateUpdateIntegration, applicationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Integration>> {
+        return IntegrationsApiFp(this.configuration).createIntegration(body, applicationId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
      * @summary Delete integration
+     * @param {string} applicationId 
      * @param {string} integrationId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof IntegrationsApi
      */
-    public async deleteIntegration(integrationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Integration>> {
-        return IntegrationsApiFp(this.configuration).deleteIntegration(integrationId, options).then((request) => request(this.axios, this.basePath));
+    public async deleteIntegration(applicationId: string, integrationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Integration>> {
+        return IntegrationsApiFp(this.configuration).deleteIntegration(applicationId, integrationId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
      * @summary Get integration
+     * @param {string} applicationId 
      * @param {string} integrationId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof IntegrationsApi
      */
-    public async getIntegration(integrationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Integration>> {
-        return IntegrationsApiFp(this.configuration).getIntegration(integrationId, options).then((request) => request(this.axios, this.basePath));
+    public async getIntegration(applicationId: string, integrationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Integration>> {
+        return IntegrationsApiFp(this.configuration).getIntegration(applicationId, integrationId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * Get a list of integrations
      * @summary List integrations
+     * @param {string} applicationId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof IntegrationsApi
      */
-    public async getIntegrations(options?: AxiosRequestConfig) : Promise<AxiosResponse<Array<Integration>>> {
-        return IntegrationsApiFp(this.configuration).getIntegrations(options).then((request) => request(this.axios, this.basePath));
+    public async getIntegrations(applicationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Array<Integration>>> {
+        return IntegrationsApiFp(this.configuration).getIntegrations(applicationId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
      * @summary Update integration
      * @param {CreateUpdateIntegration} body 
+     * @param {string} applicationId 
      * @param {string} integrationId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof IntegrationsApi
      */
-    public async updateIntegration(body: CreateUpdateIntegration, integrationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Integration>> {
-        return IntegrationsApiFp(this.configuration).updateIntegration(body, integrationId, options).then((request) => request(this.axios, this.basePath));
+    public async updateIntegration(body: CreateUpdateIntegration, applicationId: string, integrationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Integration>> {
+        return IntegrationsApiFp(this.configuration).updateIntegration(body, applicationId, integrationId, options).then((request) => request(this.axios, this.basePath));
     }
 }

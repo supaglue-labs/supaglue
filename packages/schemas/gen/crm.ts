@@ -111,68 +111,6 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /**
-     * @example [
-     *   {
-     *     "addresses": [
-     *       {
-     *         "address_type": "Shipping",
-     *         "city": "San Francisco",
-     *         "country": "US",
-     *         "postal_code": "94107",
-     *         "state": "CA",
-     *         "street_1": "525 Brannan",
-     *         "street_2": null
-     *       }
-     *     ],
-     *     "description": "Integration API",
-     *     "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
-     *     "industry": "APIs",
-     *     "last_activity_at": "2022-02-10T00:00:00Z",
-     *     "name": "Sample Customer",
-     *     "number_of_employees": 224,
-     *     "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-     *     "phone_numbers": [
-     *       {
-     *         "phone_number": "+14151234567",
-     *         "phone_number_type": "Mobile"
-     *       }
-     *     ],
-     *     "created_at": "2022-02-27T00:00:00Z",
-     *     "updated_at": "2022-02-27T00:00:00Z",
-     *     "website": "https://supaglue.com/"
-     *   },
-     *   {
-     *     "addresses": [
-     *       {
-     *         "address_type": "Shipping",
-     *         "city": "San Francisco",
-     *         "country": "US",
-     *         "postal_code": "94107",
-     *         "state": "CA",
-     *         "street_1": "525 Brannan",
-     *         "street_2": null
-     *       }
-     *     ],
-     *     "description": "Integration API",
-     *     "id": "3bde961a-90da-4daa-ab2e-cc4498c460f9",
-     *     "industry": "APIs",
-     *     "last_activity_at": "2022-02-27T00:00:00Z",
-     *     "name": "Sample Customer",
-     *     "number_of_employees": 1000,
-     *     "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-     *     "phone_numbers": [
-     *       {
-     *         "phone_number": "+14151234567",
-     *         "phone_number_type": "Mobile"
-     *       }
-     *     ],
-     *     "created_at": "2022-02-27T00:00:00Z",
-     *     "updated_at": "2022-02-27T00:00:00Z",
-     *     "website": "https://supaglue.com/"
-     *   }
-     * ]
-     */
     account: {
       addresses?: components["schemas"]["addresses"];
       /** @example Integration API */

@@ -53,39 +53,59 @@ from swagger_client.rest import ApiException
 from pprint import pprint
 
 # create an instance of the API class
-api_instance = swagger_client.ConnectionsApi(swagger_client.ApiClient(configuration))
-customer_id = 'customer_id_example' # str | 
-connection_id = 'connection_id_example' # str | 
+api_instance = swagger_client.ApplicationsApi(swagger_client.ApiClient(configuration))
+body = swagger_client.CreateUpdateApplication() # CreateUpdateApplication | 
 
 try:
-    # Delete connection
-    api_response = api_instance.delete_connection(customer_id, connection_id)
+    # Create application
+    api_response = api_instance.create_application(body)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling ConnectionsApi->delete_connection: %s\n" % e)
+    print("Exception when calling ApplicationsApi->create_application: %s\n" % e)
 
 # create an instance of the API class
-api_instance = swagger_client.ConnectionsApi(swagger_client.ApiClient(configuration))
-customer_id = 'customer_id_example' # str | 
-connection_id = 'connection_id_example' # str | 
+api_instance = swagger_client.ApplicationsApi(swagger_client.ApiClient(configuration))
+application_id = 'application_id_example' # str | 
 
 try:
-    # Get connection
-    api_response = api_instance.get_connection(customer_id, connection_id)
+    # Delete application
+    api_response = api_instance.delete_application(application_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling ConnectionsApi->get_connection: %s\n" % e)
+    print("Exception when calling ApplicationsApi->delete_application: %s\n" % e)
 
 # create an instance of the API class
-api_instance = swagger_client.ConnectionsApi(swagger_client.ApiClient(configuration))
-customer_id = 'customer_id_example' # str | 
+api_instance = swagger_client.ApplicationsApi(swagger_client.ApiClient(configuration))
+application_id = 'application_id_example' # str | 
 
 try:
-    # List connections
-    api_response = api_instance.get_connections(customer_id)
+    # Get application
+    api_response = api_instance.get_application(application_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling ConnectionsApi->get_connections: %s\n" % e)
+    print("Exception when calling ApplicationsApi->get_application: %s\n" % e)
+
+# create an instance of the API class
+api_instance = swagger_client.ApplicationsApi(swagger_client.ApiClient(configuration))
+
+try:
+    # List applications
+    api_response = api_instance.get_applications()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ApplicationsApi->get_applications: %s\n" % e)
+
+# create an instance of the API class
+api_instance = swagger_client.ApplicationsApi(swagger_client.ApiClient(configuration))
+body = swagger_client.CreateUpdateApplication() # CreateUpdateApplication | 
+application_id = 'application_id_example' # str | 
+
+try:
+    # Update application
+    api_response = api_instance.update_application(body, application_id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling ApplicationsApi->update_application: %s\n" % e)
 ```
 
 ## Documentation for API Endpoints
@@ -94,24 +114,33 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*ConnectionsApi* | [**delete_connection**](docs/ConnectionsApi.md#delete_connection) | **DELETE** /customers/{customer_id}/connections/{connection_id} | Delete connection
-*ConnectionsApi* | [**get_connection**](docs/ConnectionsApi.md#get_connection) | **GET** /customers/{customer_id}/connections/{connection_id} | Get connection
-*ConnectionsApi* | [**get_connections**](docs/ConnectionsApi.md#get_connections) | **GET** /customers/{customer_id}/connections | List connections
-*CustomersApi* | [**create_customer**](docs/CustomersApi.md#create_customer) | **POST** /customers | Create customer
-*CustomersApi* | [**delete_customer**](docs/CustomersApi.md#delete_customer) | **DELETE** /customers/{customer_id} | Delete customer
-*CustomersApi* | [**get_customer**](docs/CustomersApi.md#get_customer) | **GET** /customers/{customer_id} | Get customer
-*CustomersApi* | [**get_customers**](docs/CustomersApi.md#get_customers) | **GET** /customers | List customers
-*IntegrationsApi* | [**create_integration**](docs/IntegrationsApi.md#create_integration) | **POST** /integrations | Create integration
-*IntegrationsApi* | [**delete_integration**](docs/IntegrationsApi.md#delete_integration) | **DELETE** /integrations/{integration_id} | Delete integration
-*IntegrationsApi* | [**get_integration**](docs/IntegrationsApi.md#get_integration) | **GET** /integrations/{integration_id} | Get integration
-*IntegrationsApi* | [**get_integrations**](docs/IntegrationsApi.md#get_integrations) | **GET** /integrations | List integrations
-*IntegrationsApi* | [**update_integration**](docs/IntegrationsApi.md#update_integration) | **PUT** /integrations/{integration_id} | Update integration
+*ApplicationsApi* | [**create_application**](docs/ApplicationsApi.md#create_application) | **POST** /applications | Create application
+*ApplicationsApi* | [**delete_application**](docs/ApplicationsApi.md#delete_application) | **DELETE** /applications/{application_id} | Delete application
+*ApplicationsApi* | [**get_application**](docs/ApplicationsApi.md#get_application) | **GET** /applications/{application_id} | Get application
+*ApplicationsApi* | [**get_applications**](docs/ApplicationsApi.md#get_applications) | **GET** /applications | List applications
+*ApplicationsApi* | [**update_application**](docs/ApplicationsApi.md#update_application) | **PUT** /applications/{application_id} | Update application
+*ConnectionsApi* | [**delete_connection**](docs/ConnectionsApi.md#delete_connection) | **DELETE** /applications/{application_id}/customers/{customer_id}/connections/{connection_id} | Delete connection
+*ConnectionsApi* | [**get_connection**](docs/ConnectionsApi.md#get_connection) | **GET** /applications/{application_id}/customers/{customer_id}/connections/{connection_id} | Get connection
+*ConnectionsApi* | [**get_connections**](docs/ConnectionsApi.md#get_connections) | **GET** /applications/{application_id}/customers/{customer_id}/connections | List connections
+*CustomersApi* | [**create_customer**](docs/CustomersApi.md#create_customer) | **POST** /applications/{application_id}/customers | Create customer
+*CustomersApi* | [**delete_customer**](docs/CustomersApi.md#delete_customer) | **DELETE** /applications/{application_id}/customers/{customer_id} | Delete customer
+*CustomersApi* | [**get_customer**](docs/CustomersApi.md#get_customer) | **GET** /applications/{application_id}/customers/{customer_id} | Get customer
+*CustomersApi* | [**get_customers**](docs/CustomersApi.md#get_customers) | **GET** /applications/{application_id}/customers | List customers
+*IntegrationsApi* | [**create_integration**](docs/IntegrationsApi.md#create_integration) | **POST** /applications/{application_id}/integrations | Create integration
+*IntegrationsApi* | [**delete_integration**](docs/IntegrationsApi.md#delete_integration) | **DELETE** /applications/{application_id}/integrations/{integration_id} | Delete integration
+*IntegrationsApi* | [**get_integration**](docs/IntegrationsApi.md#get_integration) | **GET** /applications/{application_id}/integrations/{integration_id} | Get integration
+*IntegrationsApi* | [**get_integrations**](docs/IntegrationsApi.md#get_integrations) | **GET** /applications/{application_id}/integrations | List integrations
+*IntegrationsApi* | [**update_integration**](docs/IntegrationsApi.md#update_integration) | **PUT** /applications/{application_id}/integrations/{integration_id} | Update integration
 
 ## Documentation For Models
 
+ - [Application](docs/Application.md)
+ - [ApplicationConfig](docs/ApplicationConfig.md)
+ - [ApplicationConfigWebhook](docs/ApplicationConfigWebhook.md)
  - [Category](docs/Category.md)
  - [Connection](docs/Connection.md)
  - [ConnectionCredentials](docs/ConnectionCredentials.md)
+ - [CreateUpdateApplication](docs/CreateUpdateApplication.md)
  - [CreateUpdateCustomer](docs/CreateUpdateCustomer.md)
  - [CreateUpdateIntegration](docs/CreateUpdateIntegration.md)
  - [Customer](docs/Customer.md)

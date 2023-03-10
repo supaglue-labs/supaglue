@@ -15,7 +15,7 @@ export type CRMIntegration = BaseIntegration & {
 };
 
 export type IntegrationConfig = {
-  remoteProviderAppId: string;
+  providerAppId: string;
   oauth: OauthConfig;
   sync: SyncConfig;
 };

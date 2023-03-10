@@ -67,7 +67,10 @@ export default function init(app: Router): void {
     }
   );
 
-  connection(customerRouter);
-
   app.use('/customers', customerRouter);
+
+  const perCustomerRouter = Router({ mergeParams: true });
+
+  connection(perCustomerRouter);
+  customerRouter.use('/:customer_id', perCustomerRouter);
 }

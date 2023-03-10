@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Supaglue Customer API
+ * Supaglue Management API
  * # Introduction  Welcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.  ### Base API URL  ``` http://localhost:8080/mgmt/v1 ``` 
  *
  * OpenAPI spec version: 0.3.3
@@ -28,15 +28,21 @@ export const CustomersApiAxiosParamCreator = function (configuration?: Configura
          * 
          * @summary Create customer
          * @param {CreateUpdateCustomer} body 
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createCustomer: async (body: CreateUpdateCustomer, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createCustomer: async (body: CreateUpdateCustomer, applicationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'body' is not null or undefined
             if (body === null || body === undefined) {
                 throw new RequiredError('body','Required parameter body was null or undefined when calling createCustomer.');
             }
-            const localVarPath = `/customers`;
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling createCustomer.');
+            }
+            const localVarPath = `/applications/{application_id}/customers`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
             let baseOptions;
@@ -70,16 +76,22 @@ export const CustomersApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @summary Delete customer
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteCustomer: async (customerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteCustomer: async (applicationId: string, customerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling deleteCustomer.');
+            }
             // verify required parameter 'customerId' is not null or undefined
             if (customerId === null || customerId === undefined) {
                 throw new RequiredError('customerId','Required parameter customerId was null or undefined when calling deleteCustomer.');
             }
-            const localVarPath = `/customers/{customer_id}`
+            const localVarPath = `/applications/{application_id}/customers/{customer_id}`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)))
                 .replace(`{${"customer_id"}}`, encodeURIComponent(String(customerId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -110,16 +122,22 @@ export const CustomersApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @summary Get customer
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCustomer: async (customerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getCustomer: async (applicationId: string, customerId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling getCustomer.');
+            }
             // verify required parameter 'customerId' is not null or undefined
             if (customerId === null || customerId === undefined) {
                 throw new RequiredError('customerId','Required parameter customerId was null or undefined when calling getCustomer.');
             }
-            const localVarPath = `/customers/{customer_id}`
+            const localVarPath = `/applications/{application_id}/customers/{customer_id}`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)))
                 .replace(`{${"customer_id"}}`, encodeURIComponent(String(customerId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
@@ -150,11 +168,17 @@ export const CustomersApiAxiosParamCreator = function (configuration?: Configura
         /**
          * Get a list of customers
          * @summary List customers
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCustomers: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/customers`;
+        getCustomers: async (applicationId: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'applicationId' is not null or undefined
+            if (applicationId === null || applicationId === undefined) {
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling getCustomers.');
+            }
+            const localVarPath = `/applications/{application_id}/customers`
+                .replace(`{${"application_id"}}`, encodeURIComponent(String(applicationId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, 'https://example.com');
             let baseOptions;
@@ -194,11 +218,12 @@ export const CustomersApiFp = function(configuration?: Configuration) {
          * 
          * @summary Create customer
          * @param {CreateUpdateCustomer} body 
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createCustomer(body: CreateUpdateCustomer, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Customer>>> {
-            const localVarAxiosArgs = await CustomersApiAxiosParamCreator(configuration).createCustomer(body, options);
+        async createCustomer(body: CreateUpdateCustomer, applicationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Customer>>> {
+            const localVarAxiosArgs = await CustomersApiAxiosParamCreator(configuration).createCustomer(body, applicationId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -207,12 +232,13 @@ export const CustomersApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Delete customer
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteCustomer(customerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Customer>>> {
-            const localVarAxiosArgs = await CustomersApiAxiosParamCreator(configuration).deleteCustomer(customerId, options);
+        async deleteCustomer(applicationId: string, customerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Customer>>> {
+            const localVarAxiosArgs = await CustomersApiAxiosParamCreator(configuration).deleteCustomer(applicationId, customerId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -221,12 +247,13 @@ export const CustomersApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get customer
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCustomer(customerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Customer>>> {
-            const localVarAxiosArgs = await CustomersApiAxiosParamCreator(configuration).getCustomer(customerId, options);
+        async getCustomer(applicationId: string, customerId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Customer>>> {
+            const localVarAxiosArgs = await CustomersApiAxiosParamCreator(configuration).getCustomer(applicationId, customerId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -235,11 +262,12 @@ export const CustomersApiFp = function(configuration?: Configuration) {
         /**
          * Get a list of customers
          * @summary List customers
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCustomers(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Array<Customer>>>> {
-            const localVarAxiosArgs = await CustomersApiAxiosParamCreator(configuration).getCustomers(options);
+        async getCustomers(applicationId: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => Promise<AxiosResponse<Array<Customer>>>> {
+            const localVarAxiosArgs = await CustomersApiAxiosParamCreator(configuration).getCustomers(applicationId, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs :AxiosRequestConfig = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -258,40 +286,44 @@ export const CustomersApiFactory = function (configuration?: Configuration, base
          * 
          * @summary Create customer
          * @param {CreateUpdateCustomer} body 
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createCustomer(body: CreateUpdateCustomer, options?: AxiosRequestConfig): Promise<AxiosResponse<Customer>> {
-            return CustomersApiFp(configuration).createCustomer(body, options).then((request) => request(axios, basePath));
+        async createCustomer(body: CreateUpdateCustomer, applicationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Customer>> {
+            return CustomersApiFp(configuration).createCustomer(body, applicationId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Delete customer
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteCustomer(customerId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Customer>> {
-            return CustomersApiFp(configuration).deleteCustomer(customerId, options).then((request) => request(axios, basePath));
+        async deleteCustomer(applicationId: string, customerId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Customer>> {
+            return CustomersApiFp(configuration).deleteCustomer(applicationId, customerId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Get customer
+         * @param {string} applicationId 
          * @param {string} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCustomer(customerId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Customer>> {
-            return CustomersApiFp(configuration).getCustomer(customerId, options).then((request) => request(axios, basePath));
+        async getCustomer(applicationId: string, customerId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Customer>> {
+            return CustomersApiFp(configuration).getCustomer(applicationId, customerId, options).then((request) => request(axios, basePath));
         },
         /**
          * Get a list of customers
          * @summary List customers
+         * @param {string} applicationId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCustomers(options?: AxiosRequestConfig): Promise<AxiosResponse<Array<Customer>>> {
-            return CustomersApiFp(configuration).getCustomers(options).then((request) => request(axios, basePath));
+        async getCustomers(applicationId: string, options?: AxiosRequestConfig): Promise<AxiosResponse<Array<Customer>>> {
+            return CustomersApiFp(configuration).getCustomers(applicationId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -307,43 +339,47 @@ export class CustomersApi extends BaseAPI {
      * 
      * @summary Create customer
      * @param {CreateUpdateCustomer} body 
+     * @param {string} applicationId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CustomersApi
      */
-    public async createCustomer(body: CreateUpdateCustomer, options?: AxiosRequestConfig) : Promise<AxiosResponse<Customer>> {
-        return CustomersApiFp(this.configuration).createCustomer(body, options).then((request) => request(this.axios, this.basePath));
+    public async createCustomer(body: CreateUpdateCustomer, applicationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Customer>> {
+        return CustomersApiFp(this.configuration).createCustomer(body, applicationId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
      * @summary Delete customer
+     * @param {string} applicationId 
      * @param {string} customerId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CustomersApi
      */
-    public async deleteCustomer(customerId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Customer>> {
-        return CustomersApiFp(this.configuration).deleteCustomer(customerId, options).then((request) => request(this.axios, this.basePath));
+    public async deleteCustomer(applicationId: string, customerId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Customer>> {
+        return CustomersApiFp(this.configuration).deleteCustomer(applicationId, customerId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * 
      * @summary Get customer
+     * @param {string} applicationId 
      * @param {string} customerId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CustomersApi
      */
-    public async getCustomer(customerId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Customer>> {
-        return CustomersApiFp(this.configuration).getCustomer(customerId, options).then((request) => request(this.axios, this.basePath));
+    public async getCustomer(applicationId: string, customerId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Customer>> {
+        return CustomersApiFp(this.configuration).getCustomer(applicationId, customerId, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * Get a list of customers
      * @summary List customers
+     * @param {string} applicationId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CustomersApi
      */
-    public async getCustomers(options?: AxiosRequestConfig) : Promise<AxiosResponse<Array<Customer>>> {
-        return CustomersApiFp(this.configuration).getCustomers(options).then((request) => request(this.axios, this.basePath));
+    public async getCustomers(applicationId: string, options?: AxiosRequestConfig) : Promise<AxiosResponse<Array<Customer>>> {
+        return CustomersApiFp(this.configuration).getCustomers(applicationId, options).then((request) => request(this.axios, this.basePath));
     }
 }
