@@ -18,7 +18,7 @@ Supaglue helps you ship customer-facing CRM integrations 10x faster through its 
 
 ## Is there a hosted version of Supaglue?
 
-Not yet. We're planning to have a managed offering of Supaglue (which is how we plan to make money). Please reach out to us at hello@supaglue.com if you’re interested.
+We're currently building a cloud/managed version of Supaglue (which is how we plan to make money). Please reach out to us at hello@supaglue.com if you’re interested.
 
 ## How do I self-host this?
 
@@ -26,11 +26,11 @@ We're early and are working on documentation for self-hosting. Please reach out 
 
 ## When are you going to be production-ready?
 
-We're still early in our journey (public alpha) but hope to be ready soon. Join our Slack community and/or sign up for our mailing list for updates!
+We're still early in our journey (public alpha) but will be ready soon. Join our Slack community and/or sign up for our mailing list for updates!
 
-## Are you planning to support other integrations besides Salesforce and HubSpot?
+## Are you planning to support non-CRM integrations?
 
-Yes, see our roadmap for more details.
+Yes, we plan to expand to other verticals. Please let us know if you have a specific use case Supaglue can help with.
 
 ## What kind of tracking/analytics do you collect?
 

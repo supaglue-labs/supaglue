@@ -14,8 +14,6 @@ Our longer-term vision is to become the connected layer for all business applica
 
 ## Upcoming weeks
 
-We started working on Supaglue in January 2023 and the project is in Public Alpha.
-
 In the coming weeks we plan to ship:
 
 - Client drivers

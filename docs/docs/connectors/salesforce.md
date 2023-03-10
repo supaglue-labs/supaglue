@@ -1,6 +1,6 @@
 # Salesforce
 
-### Third-party provider information
+## Overview
 
 Supaglue interfaces with the Salesforce async Bulk 2.0 API using the JSforce client.
 
@@ -22,7 +22,7 @@ Supported object types:
 - Lead
 - Opportunity
 
-### Common Model sync frequencies
+## Common Model sync frequencies
 
 _The default sync frequency is 15 minutes (900000 ms)._
 
