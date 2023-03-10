@@ -71,6 +71,10 @@ const config = {
             spec: '../openapi/crm/openapi.bundle.json',
             route: '/api/crm',
           },
+          {
+            spec: '../openapi/mgmt/openapi.bundle.json',
+            route: '/api/mgmt',
+          },
         ],
         // Theme Options for modifying how redoc renders them
         theme: {
