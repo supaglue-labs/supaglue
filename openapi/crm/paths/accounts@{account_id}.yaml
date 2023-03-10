@@ -31,7 +31,7 @@ get:
                     street_1: 525 Brannan
                     street_2: ~
                 description: Integration API
-                id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                id: 9572d08b-f19f-48cc-a992-1eb7031d3f6c
                 industry: API's
                 last_activity_at: '2022-02-10T00:00:00Z'
                 name: Supaglue

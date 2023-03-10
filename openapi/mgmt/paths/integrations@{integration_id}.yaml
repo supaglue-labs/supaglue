@@ -13,7 +13,7 @@ get:
           examples:
             Example:
               value:
-                id: e888cedf-e9d0-42c5-9485-2d72984faef2
+                id: e888cedf-e9d0-42c5-9485-2d72984faef9
                 category: crm
                 auth_type: oauth2
                 provider_name: hubspot
@@ -54,7 +54,7 @@ put:
           examples:
             Example:
               value:
-                id: e888cedf-e9d0-42c5-9485-2d72984faef2
+                id: e888cedf-e9d0-42c5-9485-2d72984faef0
                 category: crm
                 auth_type: oauth2
                 provider_name: hubspot
@@ -88,7 +88,7 @@ delete:
           examples:
             Example:
               value:
-                id: e888cedf-e9d0-42c5-9485-2d72984faef2
+                id: e888cedf-e9d0-42c5-9485-2d72984faefa
                 category: crm
                 auth_type: oauth2
                 provider_name: hubspot

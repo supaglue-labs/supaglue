@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeys } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
-import { openapiMiddleware } from '@/middleware/openapi';
 import {
   CreateCustomerPathParams,
   CreateCustomerRequest,
@@ -23,7 +22,6 @@ const { customerService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const customerRouter = Router();
-  customerRouter.use(openapiMiddleware('customer'));
 
   customerRouter.get(
     '/',
