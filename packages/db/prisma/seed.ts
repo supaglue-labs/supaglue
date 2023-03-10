@@ -175,7 +175,7 @@ async function seedCRMIntegrations() {
           providerName: SUPPORTED_CRM_CONNECTIONS[idx],
           authType: 'oauth2',
           config: {
-            providerNameAppId: OAUTH_APP_IDS[idx],
+            providerAppId: OAUTH_APP_IDS[idx],
             oauth: {
               oauthScopes: OAUTH_SCOPES[idx]?.split(','),
               credentials: {

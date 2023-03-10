@@ -18,7 +18,7 @@ get:
                 auth_type: oauth2
                 provider_name: hubspot
                 config:
-                - remote_provider_app_id: my_app_id
+                - provider_app_id: my_app_id
                   oauth:
                   - oauth_scopes:
                     - crm.objects.contacts.read
@@ -59,7 +59,7 @@ put:
                 auth_type: oauth2
                 provider_name: hubspot
                 config:
-                - remote_provider_app_id: my_app_id
+                - provider_app_id: my_app_id
                   oauth:
                   - oauth_scopes:
                     - crm.objects.contacts.read
@@ -93,7 +93,7 @@ delete:
                 auth_type: oauth2
                 provider_name: hubspot
                 config:
-                - remote_provider_app_id: my_app_id
+                - provider_app_id: my_app_id
                   oauth:
                   - oauth_scopes:
                     - crm.objects.contacts.read

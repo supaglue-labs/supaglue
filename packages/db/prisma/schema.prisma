@@ -40,7 +40,7 @@ model Integration {
   authType      String       @map("auth_type") // [oauth2]
   category      String
   providerName  String       @unique @map("provider_name") // [salesforce, hubspot]
-  config        Json // {remote_provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
+  config        Json // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
   connections   Connection[]

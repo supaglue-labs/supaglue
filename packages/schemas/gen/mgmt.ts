@@ -175,7 +175,7 @@ export interface components {
     /**
      * @example [
      *   {
-     *     "remote_provider_app_id": "my_app_id"
+     *     "provider_app_id": "my_app_id"
      *   },
      *   {
      *     "oauth": [
@@ -212,7 +212,7 @@ export interface components {
      */
     integration_config: {
       /** @example my_app_id */
-      remote_provider_app_id: string;
+      provider_app_id: string;
       oauth: {
         oauth_scopes: (string)[];
         credentials: {

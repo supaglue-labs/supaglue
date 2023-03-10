@@ -450,7 +450,7 @@
                         "provider_name": "hubspot",
                         "config": [
                           {
-                            "remote_provider_app_id": "my_app_id",
+                            "provider_app_id": "my_app_id",
                             "oauth": [
                               {
                                 "oauth_scopes": [
@@ -486,7 +486,7 @@
                         "provider_name": "salesforce",
                         "config": [
                           {
-                            "remote_provider_app_id": "my_app_id2",
+                            "provider_app_id": "my_app_id2",
                             "oauth": [
                               {
                                 "oauth_scopes": [
@@ -589,7 +589,7 @@
                       "provider_name": "hubspot",
                       "config": [
                         {
-                          "remote_provider_app_id": "my_app_id",
+                          "provider_app_id": "my_app_id",
                           "oauth": [
                             {
                               "oauth_scopes": [
@@ -659,7 +659,7 @@
                       "provider_name": "hubspot",
                       "config": [
                         {
-                          "remote_provider_app_id": "my_app_id",
+                          "provider_app_id": "my_app_id",
                           "oauth": [
                             {
                               "oauth_scopes": [
@@ -718,7 +718,7 @@
                       "provider_name": "hubspot",
                       "config": [
                         {
-                          "remote_provider_app_id": "my_app_id",
+                          "provider_app_id": "my_app_id",
                           "oauth": [
                             {
                               "oauth_scopes": [
@@ -1123,7 +1123,7 @@
       "integration_config": {
         "type": "object",
         "properties": {
-          "remote_provider_app_id": {
+          "provider_app_id": {
             "type": "string",
             "example": "my_app_id"
           },
@@ -1174,13 +1174,13 @@
           }
         },
         "required": [
-          "remote_provider_app_id",
+          "provider_app_id",
           "oauth",
           "sync"
         ],
         "example": [
           {
-            "remote_provider_app_id": "my_app_id"
+            "provider_app_id": "my_app_id"
           },
           {
             "oauth": [

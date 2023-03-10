@@ -24,7 +24,7 @@ export interface IntegrationConfig {
      * @type {string}
      * @memberof IntegrationConfig
      */
-    remoteProviderAppId: string;
+    providerAppId: string;
     /**
      * 
      * @type {IntegrationConfigOauth}
