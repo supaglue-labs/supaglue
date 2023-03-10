@@ -28,18 +28,26 @@ class CreateUpdateCustomer(object):
                             and the value is json key in definition.
     """
     swagger_types = {
-        'application_id': 'str'
+        'application_id': 'str',
+        'name': 'str',
+        'email': 'str'
     }
 
     attribute_map = {
-        'application_id': 'application_id'
+        'application_id': 'application_id',
+        'name': 'name',
+        'email': 'email'
     }
 
-    def __init__(self, application_id=None):  # noqa: E501
+    def __init__(self, application_id=None, name=None, email=None):  # noqa: E501
         """CreateUpdateCustomer - a model defined in Swagger"""  # noqa: E501
         self._application_id = None
+        self._name = None
+        self._email = None
         self.discriminator = None
         self.application_id = application_id
+        self.name = name
+        self.email = email
 
     @property
     def application_id(self):
@@ -63,6 +71,52 @@ class CreateUpdateCustomer(object):
             raise ValueError("Invalid value for `application_id`, must not be `None`")  # noqa: E501
 
         self._application_id = application_id
+
+    @property
+    def name(self):
+        """Gets the name of this CreateUpdateCustomer.  # noqa: E501
+
+
+        :return: The name of this CreateUpdateCustomer.  # noqa: E501
+        :rtype: str
+        """
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        """Sets the name of this CreateUpdateCustomer.
+
+
+        :param name: The name of this CreateUpdateCustomer.  # noqa: E501
+        :type: str
+        """
+        if name is None:
+            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
+
+        self._name = name
+
+    @property
+    def email(self):
+        """Gets the email of this CreateUpdateCustomer.  # noqa: E501
+
+
+        :return: The email of this CreateUpdateCustomer.  # noqa: E501
+        :rtype: str
+        """
+        return self._email
+
+    @email.setter
+    def email(self, email):
+        """Sets the email of this CreateUpdateCustomer.
+
+
+        :param email: The email of this CreateUpdateCustomer.  # noqa: E501
+        :type: str
+        """
+        if email is None:
+            raise ValueError("Invalid value for `email`, must not be `None`")  # noqa: E501
+
+        self._email = email
 
     def to_dict(self):
         """Returns the model properties as a dict"""

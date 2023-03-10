@@ -32,6 +32,18 @@ export interface Customer {
     applicationId: string;
     /**
      * 
+     * @type {string}
+     * @memberof Customer
+     */
+    name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    email: string;
+    /**
+     * 
      * @type {Array<Connection>}
      * @memberof Customer
      */

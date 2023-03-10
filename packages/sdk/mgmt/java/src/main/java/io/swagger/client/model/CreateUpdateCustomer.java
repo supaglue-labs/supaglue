@@ -30,6 +30,12 @@ public class CreateUpdateCustomer {
   @SerializedName("application_id")
   private String applicationId = null;
 
+  @SerializedName("name")
+  private String name = null;
+
+  @SerializedName("email")
+  private String email = null;
+
   public CreateUpdateCustomer applicationId(String applicationId) {
     this.applicationId = applicationId;
     return this;
@@ -48,6 +54,42 @@ public class CreateUpdateCustomer {
     this.applicationId = applicationId;
   }
 
+  public CreateUpdateCustomer name(String name) {
+    this.name = name;
+    return this;
+  }
+
+   /**
+   * Get name
+   * @return name
+  **/
+  @Schema(example = "MyCompany Inc", required = true, description = "")
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public CreateUpdateCustomer email(String email) {
+    this.email = email;
+    return this;
+  }
+
+   /**
+   * Get email
+   * @return email
+  **/
+  @Schema(example = "contact@mycompany.com", required = true, description = "")
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -58,12 +100,14 @@ public class CreateUpdateCustomer {
       return false;
     }
     CreateUpdateCustomer createUpdateCustomer = (CreateUpdateCustomer) o;
-    return Objects.equals(this.applicationId, createUpdateCustomer.applicationId);
+    return Objects.equals(this.applicationId, createUpdateCustomer.applicationId) &&
+        Objects.equals(this.name, createUpdateCustomer.name) &&
+        Objects.equals(this.email, createUpdateCustomer.email);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(applicationId);
+    return Objects.hash(applicationId, name, email);
   }
 
 
@@ -73,6 +117,8 @@ public class CreateUpdateCustomer {
     sb.append("class CreateUpdateCustomer {\n");
     
     sb.append("    applicationId: ").append(toIndentedString(applicationId)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("}");
     return sb.toString();
   }
