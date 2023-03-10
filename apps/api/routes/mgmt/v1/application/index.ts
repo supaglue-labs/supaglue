@@ -86,8 +86,13 @@ export default function init(app: Router): void {
       return res.status(200).send(snakecaseKeys(application) as DeleteApplicationResponse);
     }
   );
-  customer(applicationRouter);
-  integration(applicationRouter);
 
   app.use('/applications', applicationRouter);
+
+  const perApplicationRouter = Router({ mergeParams: true });
+
+  customer(perApplicationRouter);
+  integration(perApplicationRouter);
+
+  applicationRouter.use(`/:application_id`, perApplicationRouter);
 }
