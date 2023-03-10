@@ -46,3 +46,19 @@ export type DeleteIntegrationPathParams = paths[`/integrations/{integration_id}`
 export type DeleteIntegrationRequest = never;
 export type DeleteIntegrationResponse =
   operations['deleteIntegration']['responses'][keyof operations['deleteIntegration']['responses']]['content']['application/json'];
+
+export type GetConnectionsPathParams = never;
+export type GetConnectionsQueryParams = never;
+export type GetConnectionsRequest = never;
+export type GetConnectionsResponse =
+  operations['getConnections']['responses'][keyof operations['getConnections']['responses']]['content']['application/json'];
+
+export type GetConnectionPathParams = paths[`/connections/{connection_id}`]['parameters']['path'];
+export type GetConnectionRequest = never;
+export type GetConnectionResponse =
+  operations['getConnection']['responses'][keyof operations['getConnection']['responses']]['content']['application/json'];
+
+export type DeleteConnectionPathParams = paths[`/connections/{connection_id}`]['parameters']['path'];
+export type DeleteConnectionRequest = never;
+export type DeleteConnectionResponse =
+  operations['deleteConnection']['responses'][keyof operations['deleteConnection']['responses']]['content']['application/json'];

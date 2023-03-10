@@ -47,6 +47,30 @@ export interface paths {
       };
     };
   };
+  "/connections": {
+    /**
+     * List connections 
+     * @description Get a list of connections
+     */
+    get: operations["getConnections"];
+    parameters: {
+      path: {
+        customer_id: string;
+      };
+    };
+  };
+  "/connections/{connection_id}": {
+    /** Get connection */
+    get: operations["getConnection"];
+    /** Delete connection */
+    delete: operations["deleteConnection"];
+    parameters: {
+      path: {
+        customer_id: string;
+        connection_id: string;
+      };
+    };
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -68,52 +92,7 @@ export interface components {
       id: string;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
-      connections?: ({
-          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-          id?: string;
-          /**
-           * @example available 
-           * @enum {string}
-           */
-          status?: "available" | "added" | "authorized" | "callable";
-          /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-          customer_id?: string;
-          /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-          integration_id?: string;
-          /**
-           * @example [
-           *   {
-           *     "type": "oauth2"
-           *   },
-           *   {
-           *     "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ"
-           *   },
-           *   {
-           *     "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e"
-           *   },
-           *   {
-           *     "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com"
-           *   },
-           *   {
-           *     "expires_at": "2023-03-09T21:55:54.000Z"
-           *   }
-           * ]
-           */
-          credentials?: {
-            /** @example oauth2 */
-            type?: string;
-            /** @example 00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ */
-            access_token?: string;
-            /** @example 5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e */
-            refresh_token?: string;
-            /** @example https://myapp-dev-ed.develop.my.salesforce.com */
-            instance_url?: string;
-            /** @example 2023-03-09T21:55:54.000Z */
-            expires_at?: string | null;
-          };
-          provider_name?: components["schemas"]["provider_name"];
-          category?: components["schemas"]["category"];
-        })[];
+      connections?: (components["schemas"]["connection"])[];
     };
     /**
      * @example [
@@ -165,6 +144,66 @@ export interface components {
       auth_type: "oauth2";
       provider_name: components["schemas"]["provider_name"];
       config: components["schemas"]["integration_config"];
+    };
+    /**
+     * @example [
+     *   {
+     *     "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
+     *     "customer_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+     *     "status": "available",
+     *     "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+     *     "provider_name": "salesforce",
+     *     "category": "crm",
+     *     "credentials": [
+     *       {
+     *         "type": "oauth2",
+     *         "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
+     *         "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
+     *         "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
+     *         "expires_at": "2023-03-09T21:55:54.000Z"
+     *       }
+     *     ]
+     *   }
+     * ]
+     */
+    connection: {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /**
+       * @example available 
+       * @enum {string}
+       */
+      status: "available" | "added" | "authorized" | "callable";
+      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+      customer_id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      integration_id: string;
+      credentials: components["schemas"]["connection_credentials"];
+      provider_name: components["schemas"]["provider_name"];
+      category: components["schemas"]["category"];
+    };
+    /**
+     * @example [
+     *   {
+     *     "type": "oauth2",
+     *     "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
+     *     "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
+     *     "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
+     *     "expires_at": "2023-03-09T21:55:54.000Z"
+     *   }
+     * ]
+     */
+    connection_credentials: {
+      /** @example oauth2 */
+      type?: string;
+      /** @example 00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ */
+      access_token?: string;
+      /** @example 5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e */
+      refresh_token?: string;
+      /** @example https://myapp-dev-ed.develop.my.salesforce.com */
+      instance_url?: string;
+      /** @example 2023-03-09T21:55:54.000Z */
+      expires_at?: string | null;
     };
     /** @enum {string} */
     category: "crm";
@@ -366,6 +405,42 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["integration"];
+        };
+      };
+    };
+  };
+  getConnections: {
+    /**
+     * List connections 
+     * @description Get a list of connections
+     */
+    responses: {
+      /** @description Connections */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["connection"])[];
+        };
+      };
+    };
+  };
+  getConnection: {
+    /** Get connection */
+    responses: {
+      /** @description Connection */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection"];
+        };
+      };
+    };
+  };
+  deleteConnection: {
+    /** Delete connection */
+    responses: {
+      /** @description Connection */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection"];
         };
       };
     };

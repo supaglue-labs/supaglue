@@ -1,0 +1,67 @@
+get:
+  operationId: getConnection
+  summary: Get connection
+  tags:
+    - Connections
+  responses:
+    200:
+      description: Connection
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/connection.yaml
+          examples:
+            Example:
+              value:
+                id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                customer_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 
+                status: available
+                integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                provider_name: salesforce
+                category: crm
+                credentials:
+                - type: oauth2
+                  access_token: 00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ
+                  refresh_token: 5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e
+                  instance_url: https://myapp-dev-ed.develop.my.salesforce.com
+                  expires_at: 2023-03-09T21:55:54Z
+delete:
+  operationId: deleteConnection
+  summary: Delete connection
+  tags:
+    - Connections
+  responses:
+    200:
+      description: Connection
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/connection.yaml
+          examples:
+            Example:
+              value:
+                id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                customer_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 
+                status: available
+                integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                provider_name: salesforce
+                category: crm
+                credentials:
+                - type: oauth2
+                  access_token: 00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ
+                  refresh_token: 5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e
+                  instance_url: https://myapp-dev-ed.develop.my.salesforce.com
+                  expires_at: 2023-03-09T21:55:54Z
+parameters:
+  - name: customer_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
+  - name: connection_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

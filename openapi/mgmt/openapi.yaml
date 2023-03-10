@@ -31,6 +31,10 @@ paths:
     $ref: paths/integrations.yaml
   '/integrations/{integration_id}':
     $ref: paths/integrations@{integration_id}.yaml
+  '/connections':
+    $ref: paths/connections.yaml
+  '/connections/{connection_id}':
+    $ref: paths/connections@{connection_id}.yaml
 tags: []
 components:
   schemas:
@@ -38,6 +42,10 @@ components:
       $ref: ./components/schemas/objects/customer.yaml
     integration:
       $ref: ./components/schemas/objects/integration.yaml
+    connection:
+      $ref: ./components/schemas/objects/connection.yaml
+    connection_credentials:
+      $ref: ./components/schemas/objects/connection_credentials.yaml
     category:
       $ref: ./components/schemas/objects/category.yaml
     integration_config:
