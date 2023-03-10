@@ -8,7 +8,7 @@ import ThemedImage from '@theme/ThemedImage';
 
 An Embedded Link is a customer-facing HTTP link that developers add into their application so their customers can connect third-party tools to their application using Supaglue.
 
-### Embedded Link format
+## Embedded Link format
 
 An Embedded Link takes the following form:
 
@@ -21,9 +21,9 @@ https://`{DOMAIN}`/oauth/connect?customerId=`{CUSTOMER_ID}`&providerName=`{PROVI
 | `{PROVIDER_NAME}` | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                | Yes      |
 | `{RETURN_URL}`    | The URL to return to once the OAuth connection is complete, note: this can be uriEncoded | No       |
 
-To obtain a `{CUSTOMER_ID}` for a customer, you can use the [Supaglue API](/api/crm) to create a new customer when they sign up for your application.
+To obtain a `{CUSTOMER_ID}` for a customer, use the [Supaglue API](/api/crm) to create a new customer when they sign up for your application.
 
-To obtain a `{PROVIDER_NAME}`, you can use the [Supaglue API](/api/crm) to create new integrations for your customers to have available for them to connect to.
+To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](/api/crm) to create new integrations for your customers to have available for them to connect to.
 
 Examples:
 
@@ -47,7 +47,7 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
   </div>
 );
 
-### Embedded Links in UI components
+## Embedded Links in UI components
 
 Embedded Links can be used in any UI components in your frontend application. For example, below are two cards that can be used to connect to Salesforce and Hubspot:
 

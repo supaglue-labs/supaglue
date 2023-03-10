@@ -1,6 +1,6 @@
 # Zendesk Sell
 
-### Third-party provider information
+## Overview
 
 Supaglue interfaces with the Zendesk Sell V2 API.
 
@@ -17,7 +17,7 @@ Status: Alpha
 
 Supported object types: -
 
-### Common Model sync frequencies
+## Common Model sync frequencies
 
 _The default sync frequency is 15 minutes (900000 ms)._
 
