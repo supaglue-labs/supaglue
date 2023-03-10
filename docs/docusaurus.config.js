@@ -71,6 +71,10 @@ const config = {
             spec: '../openapi/crm/openapi.bundle.json',
             route: '/api/crm',
           },
+          {
+            spec: '../openapi/mgmt/openapi.bundle.json',
+            route: '/api/mgmt',
+          },
         ],
         // Theme Options for modifying how redoc renders them
         theme: {
@@ -112,7 +116,7 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          { to: '/api/crm', label: 'API Reference', position: 'left' },
+          { to: '/api', label: 'API Reference', position: 'left' },
           { type: 'docsVersionDropdown', position: 'left' },
           {
             type: 'custom-githubButton',
@@ -140,7 +144,7 @@ const config = {
               },
               {
                 label: 'API Reference',
-                to: '/api/crm',
+                to: '/api',
               },
             ],
           },
