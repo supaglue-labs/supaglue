@@ -26,11 +26,20 @@ https://user-images.githubusercontent.com/1925713/223279162-c53ceb43-b51e-4d78-9
 
 ## Get Started
 
+### Prerequisites
+
+1. Install Docker Desktop:
+    - [Mac](https://docs.docker.com/desktop/install/mac-install/)
+    - [Windows](https://docs.docker.com/desktop/install/windows-install/)
+    - [Linux](https://docs.docker.com/desktop/install/linux-install/)
+
+
 ### Run Supaglue locally
 
 ```shell
 git clone -b v0.3.3 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
+cp docker-compose.override.local.yml docker-compose.override.yml
 docker compose up
 ```
 

@@ -1,0 +1,37 @@
+x-aws-cloudformation:
+  Resources:
+    ApiTCP8080Listener:
+      Properties:
+        Port: 443
+        Protocol: TLS
+        Certificates:
+          - CertificateArn: ${SUPAGLUE_API_CERTIFICATE_ARN:?You must provide a certificate ARN for the API}
+      Type: AWS::ElasticLoadBalancingV2::Listener
+
+services:
+  api:
+    environment:
+      - DISABLE_BANNER=1
+      - DEV_SALESFORCE_CLIENT_ID
+      - DEV_SALESFORCE_CLIENT_SECRET
+      - DEV_SALESFORCE_SCOPES
+      - DEV_SALESFORCE_APP_ID
+      - DEV_HUBSPOT_CLIENT_ID
+      - DEV_HUBSPOT_CLIENT_SECRET
+      - DEV_HUBSPOT_SCOPES
+      - DEV_HUBSPOT_APP_ID
+
+    command: /bin/bash -c "npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node ./index.js"
+
+volumes:
+  pgdata:
+    driver_opts:
+      uid: 0
+      gid: 0
+  temporalitedata:
+    driver_opts:
+      uid: 0
+      gid: 0
+
+networks:
+  default:
