@@ -18,6 +18,8 @@ model Application {
   updatedAt   DateTime      @updatedAt @map("updated_at")
   Customer    Customer[]
   Integration Integration[]
+
+  @@map("applications")
 }
 
 model Customer {
