@@ -6,6 +6,12 @@ properties:
   application_id:
     type: string
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+  name:
+    type: string
+    example: MyCompany Inc
+  email:
+    type: string
+    example: contact@mycompany.com
   connections:
     type: array
     items:
@@ -13,6 +19,8 @@ properties:
 required:
   - id
   - application_id
+  - name
+  - email
 # ajv has issues with interpreting the id here as a schema id
 # example:
 #   id: e888cedf-e9d0-42c5-9485-2d72984faefc

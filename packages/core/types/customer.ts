@@ -9,6 +9,8 @@ export type CustomerModelExpanded = CustomerModel & {
 export type BaseCustomer = {
   id: string;
   applicationId: string;
+  name: string;
+  email: string;
   connections?: Connection[];
 };
 
