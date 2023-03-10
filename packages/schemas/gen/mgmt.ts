@@ -47,7 +47,7 @@ export interface paths {
       };
     };
   };
-  "/connections": {
+  "/customers/{customer_id}/connections": {
     /**
      * List connections 
      * @description Get a list of connections
@@ -59,7 +59,7 @@ export interface paths {
       };
     };
   };
-  "/connections/{connection_id}": {
+  "/customers/{customer_id}/connections/{connection_id}": {
     /** Get connection */
     get: operations["getConnection"];
     /** Delete connection */

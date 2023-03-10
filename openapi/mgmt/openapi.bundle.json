@@ -491,7 +491,7 @@
         }
       ]
     },
-    "/connections": {
+    "/customers/{customer_id}/connections": {
       "get": {
         "operationId": "getConnections",
         "tags": [
@@ -567,7 +567,7 @@
         }
       ]
     },
-    "/connections/{connection_id}": {
+    "/customers/{customer_id}/connections/{connection_id}": {
       "get": {
         "operationId": "getConnection",
         "summary": "Get connection",

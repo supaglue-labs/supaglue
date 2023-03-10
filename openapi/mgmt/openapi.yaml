@@ -31,10 +31,10 @@ paths:
     $ref: paths/integrations.yaml
   '/integrations/{integration_id}':
     $ref: paths/integrations@{integration_id}.yaml
-  '/connections':
-    $ref: paths/connections.yaml
-  '/connections/{connection_id}':
-    $ref: paths/connections@{connection_id}.yaml
+  '/customers/{customer_id}/connections':
+    $ref: paths/customers@{customer_id}connections.yaml
+  '/customers/{customer_id}/connections/{connection_id}':
+    $ref: paths/customers@{customer_id}connections@{connection_id}.yaml
 tags: []
 components:
   schemas:
