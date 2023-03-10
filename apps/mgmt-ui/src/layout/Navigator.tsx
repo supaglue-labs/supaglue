@@ -60,7 +60,7 @@ const categories: {
     children: [
       {
         id: 'API Explorer',
-        to: 'https://docs.supaglue.com/api/crm',
+        to: 'https://docs.supaglue.com/api',
         icon: <Biotech />,
         active: false,
       },
