@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/schemas",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "scripts": {
     "generate": "tsx scripts/generate_typescript_from_openapi.ts ../../openapi/crm/openapi.bundle.json gen/crm.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/mgmt/openapi.bundle.json gen/mgmt.ts"
   },
