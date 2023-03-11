@@ -1,0 +1,110 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+
+# Getting Started
+
+Use this guide to get up and running with Supaglue with your application.
+
+Here's a quick overview of the steps:
+
+1. Self-host Supaglue on your infrastructure.
+2. Enable integrations you want to offer to your customers.
+3. Obtain your Supaglue API key.
+4. Create a customer.
+5. Add an Embedded Link in your application.
+6. As a mock customer: OAuth with a provider to create a connection.
+7. Make API calls.
+
+### 1. Self-host Supaglue on your infrastructure
+
+...
+
+Throughout this guide we'll assume http://localhost:8080 for the Backend API and http://localhost:3000 for the Management Portal.
+
+### 2. Enable integrations you want to offer to your customers
+
+You can use the Management API or Management Portal to enable integrations.
+
+##### API
+
+Use the [`Management API for Integrations`](/api/mgmt#tag/Integrations/operation/createIntegration) to create integrations. Creating an integration enables your customers to connect their third-party CRMs to your application using Supaglue.
+
+You will need four pieces of information when hitting this endpoint:
+
+- **application_id**: this is your unique Supaglue application id (`a4398523-03a2-42dd-9681-c91e3e2efaf4`)
+- **category**: `crm`
+- **auth_type**: `oauth2`
+- **provider_name**: the name of the third-party CRM
+- **config**: an object containing OAuth2 credentials (id, secret, scopes), sync frequency, and the OAuth2 application name
+- **is_enabled**: `true`
+
+Example:
+```shell
+```
+
+##### Management Portal
+
+Navigate to [http://localhost:3000/configuration/crm](http://localhost:3000/configuration/crm) to enable the integrations you want to offer your customers.
+
+<BrowserWindow url="http://localhost:3000/configuration/crm">
+
+![image](/img/configurations-ui.png)
+
+</BrowserWindow>
+
+For each integration, obtain the OAuth2 client ID, secret, and scopes from your provider application.
+
+<BrowserWindow url="http://localhost:3000/configuration/crm/salesforce">
+
+![image](/img/configuration-ui.png)
+
+</BrowserWindow>
+
+
+### 3. Obtain your Supaglue API key
+
+...
+
+### 4. Create a customer
+
+Use the [`Management API for Customers`](/api/mgmt#tag/Customers/operation/createCustomer) to create customers. A customer is an end-user in your application. You can create a customer when they signup for your application or update their profile in your application. You can also backfill your existing end-users by running a script hitting this endpoint.
+
+You will need four pieces of information when hitting this endpoint:
+
+- **application_id**: this is your unique Supaglue application id (`a4398523-03a2-42dd-9681-c91e3e2efaf4`)
+- **name**: the full name of the customer
+- **email**: the email associated with the customer
+- **identifier**: the key you use in your application to uniquely identify this customer
+
+Note: this endpoint is idempotent.
+
+Once a customer has been created, save its ID on your end-user's blob in your application. You will need to access this for composing an Embedded Link below.
+
+### 5. Add an Embedded Link in your application
+
+In your frontend application, add a Supaglue Embedded Link which is a HTTP link (redirect) that will allow a customer to connect their third-party CRM to your application using Supaglue. The link looks like:
+
+`{PROTOCOL}{DOMAIN}`/oauth/connect?customerId=`{CUSTOMER_ID}`&providerName=`{PROVIDER_NAME}`&returnUrl=`{RETURN_URL}`
+
+- **{PROTOCOL}**: `http://` if running locally or `https://` if hosted in the cloud
+- **{DOMAIN}**: the domain in which your Supaglue Backend API is hosted, e.g. `localhost:8080`
+- **{CUSTOMER_ID}**: the {CUSTOMER_ID} is the Supaglue customer ID (from step 5 above) associated with the logged-in end-user in your application
+- **{PROVIDER_NAME}**: this name of the third-party provider (e.g. `salesforce` or `hubspot`) you want customers to create a connection for
+- **{RETURN_URL}**: where customers should be redirected after a successful OAuth login (somewhere back to your application)
+
+You can add an Embedded Link to any UI component in your application.
+
+### 6. As a mock customer: OAuth with a provider to create a connection 
+
+Simulate a mock customer authenticating with their CRM by clicking on the Embedded Link you added in step 5 in your application. Upon a successful OAuth login, the mock customer's CRM objects (Account, Opportunity, Lead, Contact), will begin to sync to your Supaglue instance at the frequency that you configured in step 1.
+
+You can use the [CRM API's Sync-Info](/api/crm#tag/Sync/operation/getSyncInfos) to check the status of the syncs or you can navigate to the [Sync History page](#) in the Management Portal.
+
+### 7. Make API calls
+
+...
