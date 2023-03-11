@@ -36,6 +36,12 @@ public class Customer {
   @SerializedName("application_id")
   private String applicationId = null;
 
+  @SerializedName("name")
+  private String name = null;
+
+  @SerializedName("email")
+  private String email = null;
+
   @SerializedName("connections")
   private List<Connection> connections = null;
 
@@ -73,6 +79,42 @@ public class Customer {
 
   public void setApplicationId(String applicationId) {
     this.applicationId = applicationId;
+  }
+
+  public Customer name(String name) {
+    this.name = name;
+    return this;
+  }
+
+   /**
+   * Get name
+   * @return name
+  **/
+  @Schema(example = "MyCompany Inc", required = true, description = "")
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Customer email(String email) {
+    this.email = email;
+    return this;
+  }
+
+   /**
+   * Get email
+   * @return email
+  **/
+  @Schema(example = "contact@mycompany.com", required = true, description = "")
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
   }
 
   public Customer connections(List<Connection> connections) {
@@ -113,12 +155,14 @@ public class Customer {
     Customer customer = (Customer) o;
     return Objects.equals(this.id, customer.id) &&
         Objects.equals(this.applicationId, customer.applicationId) &&
+        Objects.equals(this.name, customer.name) &&
+        Objects.equals(this.email, customer.email) &&
         Objects.equals(this.connections, customer.connections);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, applicationId, connections);
+    return Objects.hash(id, applicationId, name, email, connections);
   }
 
 
@@ -129,6 +173,8 @@ public class Customer {
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    applicationId: ").append(toIndentedString(applicationId)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    connections: ").append(toIndentedString(connections)).append("\n");
     sb.append("}");
     return sb.toString();

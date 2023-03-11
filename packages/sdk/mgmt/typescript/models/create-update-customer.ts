@@ -23,4 +23,16 @@ export interface CreateUpdateCustomer {
      * @memberof CreateUpdateCustomer
      */
     applicationId: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUpdateCustomer
+     */
+    name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateUpdateCustomer
+     */
+    email: string;
 }

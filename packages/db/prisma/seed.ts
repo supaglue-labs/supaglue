@@ -147,13 +147,13 @@ async function seedApplication() {
 async function seedCustomers() {
   // Create customers
   await Promise.all(
-    CUSTOMER_IDS.map((id) =>
+    CUSTOMER_IDS.map((id, idx) =>
       prisma.customer.upsert({
         where: {
           id,
         },
         update: {},
-        create: { id, applicationId: APPLICATION_ID },
+        create: { id, applicationId: APPLICATION_ID, name: `customer-${idx}`, email: `customer-${idx}@email.com` },
       })
     )
   );
