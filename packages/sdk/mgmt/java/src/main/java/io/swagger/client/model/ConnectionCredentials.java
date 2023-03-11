@@ -69,7 +69,7 @@ public class ConnectionCredentials {
    * Get accessToken
    * @return accessToken
   **/
-  @Schema(example = "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ", description = "")
+  @Schema(description = "")
   public String getAccessToken() {
     return accessToken;
   }
@@ -87,7 +87,7 @@ public class ConnectionCredentials {
    * Get refreshToken
    * @return refreshToken
   **/
-  @Schema(example = "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e", description = "")
+  @Schema(description = "")
   public String getRefreshToken() {
     return refreshToken;
   }

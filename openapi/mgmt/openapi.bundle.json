@@ -815,8 +815,8 @@
                         "credentials": [
                           {
                             "type": "oauth2",
-                            "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
-                            "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
+                            "access_token": "FILL THIS",
+                            "refresh_token": "FILL THIS",
                             "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
                             "expires_at": "2023-03-09T21:55:54.000Z"
                           }
@@ -832,8 +832,8 @@
                         "credentials": [
                           {
                             "type": "oauth2",
-                            "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
-                            "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
+                            "access_token": "FILL THIS",
+                            "refresh_token": "FILL THIS",
                             "instance_url": "https://myapp2-dev-ed.develop.my.salesforce.com",
                             "expires_at": "2023-03-09T21:55:54.000Z"
                           }
@@ -895,8 +895,8 @@
                       "credentials": [
                         {
                           "type": "oauth2",
-                          "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
-                          "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
+                          "access_token": "FILL THIS",
+                          "refresh_token": "FILL THIS",
                           "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
                           "expires_at": "2023-03-09T21:55:54.000Z"
                         }
@@ -935,8 +935,8 @@
                       "credentials": [
                         {
                           "type": "oauth2",
-                          "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
-                          "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
+                          "access_token": "FILL THIS",
+                          "refresh_token": "FILL THIS",
                           "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
                           "expires_at": "2023-03-09T21:55:54.000Z"
                         }
@@ -1105,12 +1105,10 @@
             "example": "oauth2"
           },
           "access_token": {
-            "type": "string",
-            "example": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ"
+            "type": "string"
           },
           "refresh_token": {
-            "type": "string",
-            "example": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e"
+            "type": "string"
           },
           "instance_url": {
             "type": "string",
@@ -1125,8 +1123,8 @@
         "example": [
           {
             "type": "oauth2",
-            "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
-            "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
+            "access_token": "FILL THIS",
+            "refresh_token": "FILL THIS",
             "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
             "expires_at": "2023-03-09T21:55:54.000Z"
           }

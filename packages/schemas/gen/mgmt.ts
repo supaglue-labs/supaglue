@@ -155,8 +155,8 @@ export interface components {
      * @example [
      *   {
      *     "type": "oauth2",
-     *     "access_token": "00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ",
-     *     "refresh_token": "5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e",
+     *     "access_token": "FILL THIS",
+     *     "refresh_token": "FILL THIS",
      *     "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
      *     "expires_at": "2023-03-09T21:55:54.000Z"
      *   }
@@ -165,9 +165,7 @@ export interface components {
     connection_credentials: {
       /** @example oauth2 */
       type?: string;
-      /** @example 00DDn000004L1rN!AQwAQFcdcvZCaMN83FUDEI5BHyjWILUCMH91UOX7xPVAgn2DjT9LrYTX8RT9vSQ281kBUtQBNsjBKC6R4lIlQTLLvCTuYxtJ */
       access_token?: string;
-      /** @example 5Aep861J.7rrvmXwLwV8Hw86X7cQtxqOq1cNOt9LLourdPAeVgOQHl7idtvQp_e70Q_r20DpwpB4Mo.45QlO29e */
       refresh_token?: string;
       /** @example https://myapp-dev-ed.develop.my.salesforce.com */
       instance_url?: string;
