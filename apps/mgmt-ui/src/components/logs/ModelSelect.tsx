@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import * as React from 'react';
 
-export default function HttpMethodSelect() {
+export default function ModelSelect() {
   const [method, setMethod] = React.useState('');
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -15,18 +15,12 @@ export default function HttpMethodSelect() {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth size="small">
-        <InputLabel id="http-method-select-label">Http Method</InputLabel>
-        <Select
-          labelId="http-method-select-label"
-          id="http-method-select"
-          value={method}
-          label="Http Method"
-          onChange={handleChange}
-        >
-          <MenuItem value="get">Get</MenuItem>
-          <MenuItem value="post">Post</MenuItem>
-          <MenuItem value="patch">Patch</MenuItem>
-          <MenuItem value="delete">Delete</MenuItem>
+        <InputLabel id="model-select-label">Model</InputLabel>
+        <Select labelId="model-select-label" id="model-select" value={method} label="Model" onChange={handleChange}>
+          <MenuItem value="account">Account</MenuItem>
+          <MenuItem value="contact">Contact</MenuItem>
+          <MenuItem value="lead">Lead</MenuItem>
+          <MenuItem value="opportunity">Opportunity</MenuItem>
         </Select>
       </FormControl>
     </Box>

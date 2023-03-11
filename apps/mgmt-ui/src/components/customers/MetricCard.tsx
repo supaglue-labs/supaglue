@@ -1,4 +1,4 @@
-import { Card, Grid, Typography } from '@mui/material';
+import { Card, CardContent, CardHeader, Stack, Typography } from '@mui/material';
 
 type MetricCardProps = {
   icon: React.ReactNode;
@@ -10,37 +10,15 @@ export default function MetricCard(props: MetricCardProps) {
   const { title, value, icon } = props;
 
   return (
-    <Card
-      classes={{
-        root: 'p-4 max-h-28',
-      }}
-    >
-      <Grid container>
-        <Grid
-          item
-          classes={{
-            root: 'flex mx-4',
-          }}
-          alignItems="center"
-          justifyContent="center"
-        >
-          {icon}
-        </Grid>
-        <Grid
-          item
-          direction="column"
-          classes={{
-            root: 'my-4 mr-4',
-          }}
-        >
-          <Typography variant="subtitle1" noWrap>
-            {title}
-          </Typography>
-          <Typography variant="body2" noWrap>
+    <Card variant="outlined" className="h-32">
+      <Stack>
+        <CardHeader avatar={icon} subheader={title} />
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             {value}
           </Typography>
-        </Grid>
-      </Grid>
+        </CardContent>
+      </Stack>
     </Card>
   );
 }

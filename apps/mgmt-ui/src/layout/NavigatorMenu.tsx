@@ -56,10 +56,10 @@ export default function NavigatorMenu() {
           onClick={handleToggle}
           variant="outlined"
           classes={{
-            root: 'w-full justify-between',
+            root: 'w-full justify-between border-[#b8b8b9] text-[#b8b8b9]', // #b8b8b9 - matching text in navigator
           }}
         >
-          <span>Application 1</span>
+          <span>Your application</span>
           <span className="flex items-center justify-center">
             <ExpandMore />
           </span>
@@ -88,9 +88,7 @@ export default function NavigatorMenu() {
                     aria-labelledby="composition-button"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose}>Application 1</MenuItem>
-                    <MenuItem onClick={handleClose}>Application 2</MenuItem>
-                    <MenuItem onClick={handleClose}>+Add new application</MenuItem>
+                    <MenuItem onClick={handleClose}>Your application</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

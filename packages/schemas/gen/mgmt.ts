@@ -133,7 +133,8 @@ export interface components {
       /** @enum {string} */
       auth_type: "oauth2";
       provider_name: components["schemas"]["provider_name"];
-      config: components["schemas"]["integration_config"];
+      config?: components["schemas"]["integration_config"];
+      is_enabled: boolean;
     };
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -246,7 +247,8 @@ export interface components {
       /** @enum {string} */
       auth_type: "oauth2";
       provider_name: components["schemas"]["provider_name"];
-      config: components["schemas"]["integration_config"];
+      config?: components["schemas"]["integration_config"];
+      is_enabled: boolean;
     };
     create_update_application: {
       /** @example my-app */

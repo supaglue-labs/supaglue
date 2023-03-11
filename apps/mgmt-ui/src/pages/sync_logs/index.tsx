@@ -1,6 +1,5 @@
-import HttpMethodSelect from '@/components/logs/HttpMethodSelect';
 import LogsTable from '@/components/logs/LogsTable';
-import StatusCodeSelect from '@/components/logs/StatusCodeSelect';
+import ModelSelect from '@/components/logs/ModelSelect';
 import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
 import { Box, Divider, Grid, Typography } from '@mui/material';
@@ -30,9 +29,9 @@ export default function Home() {
         <Header title="Sync Logs" onDrawerToggle={handleDrawerToggle} />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
           <Typography variant="h6">Overview</Typography>
-          <Typography variant="subtitle2">Logs of requests with the Supaglue API.</Typography>
+          <Typography variant="subtitle2">Logs of syncs running for your customers.</Typography>
 
-          <Grid className="my-4" container direction="row" justifyContent="start" alignItems="center">
+          <Grid className="my-4 gap-2" container direction="row" justifyContent="start" alignItems="center">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 label="Start date"
@@ -52,8 +51,7 @@ export default function Home() {
               />
             </LocalizationProvider>
 
-            <HttpMethodSelect />
-            <StatusCodeSelect />
+            <ModelSelect />
           </Grid>
 
           <Divider className="my-4" />

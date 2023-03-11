@@ -3,14 +3,14 @@ import { camelcaseKeys } from '@/utils/camelcase';
 import useSWR from 'swr';
 import { fetcher } from '.';
 
-export function useIntegrations() {
+export function useIntegration(integrationId: string) {
   const { data, error, isLoading, ...rest } = useSWR(
-    `${API_HOST}/mgmt/v1/applications/${APPLICATION_ID}/integrations`,
+    `${API_HOST}/mgmt/v1/applications/${APPLICATION_ID}/integrations/${integrationId}`,
     fetcher
   );
 
   return {
-    integrations: data ? camelcaseKeys(data) : undefined,
+    integration: data ? camelcaseKeys(data) : undefined,
     isLoading,
     isError: error,
     ...rest,
