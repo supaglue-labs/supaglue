@@ -7,6 +7,7 @@ const { doSync, populateAssociations, logSyncStart, logSyncFinish, maybeSendSync
   ReturnType<typeof createActivities>
 >({
   startToCloseTimeout: '120 minute',
+  heartbeatTimeout: '30 seconds',
 });
 
 export const getRunSyncsScheduleId = (connectionId: string): string => `run-syncs-cid-${connectionId}`;

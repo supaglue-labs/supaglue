@@ -34,7 +34,7 @@ const ASYNC_RETRY_OPTIONS = {
   forever: true,
   factor: 2,
   minTimeout: 1000,
-  maxTimeout: 60 * 6000,
+  maxTimeout: 60 * 1000,
 };
 
 const propertiesToFetch = {
@@ -112,7 +112,6 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     const { accessToken } = credentials;
     this.#client = new Client({
       accessToken,
-      numberOfApiCallRetries: 1,
     });
     this.#credentials = credentials;
   }
@@ -145,7 +144,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     (async () => {
       let after = undefined;
       do {
-        const currResults: HubspotPaginatedDeals = await this.listAccountsImpl(after);
+        const currResults: HubspotPaginatedCompanies = await this.listAccountsImpl(after);
         const remoteAccounts = currResults.results.map(fromHubSpotCompanyToRemoteAccount);
         after = currResults.paging?.next?.after;
 

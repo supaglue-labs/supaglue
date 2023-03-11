@@ -27,5 +27,8 @@
   ],
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
   }
 }
