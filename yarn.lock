@@ -3070,9 +3070,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hubspot/api-client@npm:^8.6.0":
-  version: 8.6.0
-  resolution: "@hubspot/api-client@npm:8.6.0"
+"@hubspot/api-client@npm:8.3.2":
+  version: 8.3.2
+  resolution: "@hubspot/api-client@npm:8.3.2"
   dependencies:
     "@types/node-fetch": ^2.5.7
     bottleneck: ^2.19.5
@@ -3082,7 +3082,7 @@ __metadata:
     lodash.merge: ^4.6.2
     node-fetch: ^2.6.0
     url-parse: ^1.4.3
-  checksum: c1c2bdddd324a2fe00ce9680f57425819efede1c261ab4e17d7633c221b246d6dcb3f72a58774e30deb1a5677c3c8d5e34703373a8f5c3623ea927ffd492bbca
+  checksum: 965c25c5265f9dc43cce88291d3a8144f28fea12f90e0b1ec2ed04c0cc396da3d3994fc93041b3f04ff330f16b0ec1d26d83445e0f7de47069d5e1d2d9e9568c
   languageName: node
   linkType: hard
 
@@ -3949,7 +3949,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/core@workspace:packages/core"
   dependencies:
-    "@hubspot/api-client": ^8.6.0
+    "@hubspot/api-client": 8.3.2
     "@supaglue/db": "workspace:*"
     "@tsconfig/node18": ^1.0.1
     "@types/async-retry": ^1
