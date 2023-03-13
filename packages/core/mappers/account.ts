@@ -5,7 +5,7 @@ import { Account, Address, PhoneNumber, RemoteAccount } from '../types';
 export const fromAccountModel = ({
   id,
   remoteWasDeleted,
-  owner,
+  ownerId,
   name,
   description,
   industry,
@@ -19,7 +19,7 @@ export const fromAccountModel = ({
 }: CrmAccount): Account => {
   return {
     id,
-    owner,
+    ownerId,
     name,
     description,
     industry,
@@ -42,7 +42,6 @@ export const fromRemoteAccountToDbAccountParams = (
 ) => {
   return {
     id: uuidv4(),
-    owner: remoteAccount.owner,
     name: remoteAccount.name,
     description: remoteAccount.description,
     industry: remoteAccount.industry,
@@ -55,6 +54,7 @@ export const fromRemoteAccountToDbAccountParams = (
     remote_created_at: remoteAccount.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteAccount.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteAccount.remoteWasDeleted,
+    _remote_owner_id: remoteAccount.remoteOwnerId,
     customer_id: customerId,
     connection_id: connectionId,
     updated_at: new Date().toISOString(),

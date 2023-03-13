@@ -6,7 +6,7 @@ export const fromLeadModel = (
   {
     id,
     remoteWasDeleted,
-    owner,
+    ownerId,
     leadSource,
     title,
     company,
@@ -29,7 +29,7 @@ export const fromLeadModel = (
   const expandContact = expandedAssociations.includes('converted_contact');
   return {
     id,
-    owner,
+    ownerId,
     leadSource,
     title,
     company,
@@ -57,7 +57,6 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     connection_id: connectionId,
     customer_id: customerId,
     remote_was_deleted: remoteLead.remoteWasDeleted,
-    owner: remoteLead.owner,
     lead_source: remoteLead.leadSource,
     title: remoteLead.title,
     company: remoteLead.company,
@@ -70,6 +69,7 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     converted_date: remoteLead.convertedDate?.toISOString(),
     _converted_remote_account_id: remoteLead.convertedRemoteAccountId,
     _converted_remote_contact_id: remoteLead.convertedRemoteContactId,
+    _remote_owner_id: remoteLead.remoteOwnerId,
     updated_at: new Date().toISOString(),
   };
 };

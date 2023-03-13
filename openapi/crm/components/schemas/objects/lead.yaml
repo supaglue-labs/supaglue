@@ -40,7 +40,7 @@ properties:
     type: string
     nullable: true
     example: API Blogger
-  owner:
+  owner_id:
     type: string
     nullable: true
     example: 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2

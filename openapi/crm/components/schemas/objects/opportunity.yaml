@@ -31,7 +31,7 @@ properties:
     type: string
     nullable: true
     example: Needs third-party integrations
-  owner:
+  owner_id:
     type: string
     nullable: true
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69

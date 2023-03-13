@@ -6,7 +6,7 @@ export const fromOpportunityModel = (
   {
     id,
     remoteWasDeleted,
-    owner,
+    ownerId,
     name,
     description,
     stage,
@@ -24,7 +24,7 @@ export const fromOpportunityModel = (
   const expandAccount = expandedAssociations.includes('account');
   return {
     id,
-    owner,
+    ownerId,
     name,
     description,
     accountId,
@@ -52,7 +52,6 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     connection_id: connectionId,
     customer_id: customerId,
     remote_was_deleted: remoteOpportunity.remoteWasDeleted,
-    owner: remoteOpportunity.owner,
     name: remoteOpportunity.name,
     description: remoteOpportunity.description,
     amount: remoteOpportunity.amount,
@@ -63,6 +62,7 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     remote_created_at: remoteOpportunity.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteOpportunity.remoteUpdatedAt?.toISOString(),
     _remote_account_id: remoteOpportunity.remoteAccountId,
+    _remote_owner_id: remoteOpportunity.remoteOwnerId,
     updated_at: new Date().toISOString(),
   };
 };

@@ -78,6 +78,7 @@ const propertiesToFetch = {
     'hs_is_contact', // TODO: distinguish from "visitor"?
     'hs_lastmodifieddate', // TODO: Use this or lastmodifieddate?
     'hs_whatsapp_phone_number',
+    'hubspot_owner_id',
     'lastmodifieddate',
     'lastname',
     'mobilephone',

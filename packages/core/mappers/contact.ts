@@ -5,6 +5,7 @@ import { fromAccountModel } from './account';
 export const fromContactModel = (
   {
     id,
+    ownerId,
     accountId,
     account,
     firstName,
@@ -22,6 +23,7 @@ export const fromContactModel = (
   const expandContact = expandedAssociations.includes('account');
   return {
     id,
+    ownerId,
     accountId,
     account: expandContact && account ? fromAccountModel(account) : undefined,
     firstName,
@@ -57,6 +59,7 @@ export const fromRemoteContactToDbContactParams = (
     remote_updated_at: remoteContact.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteContact.remoteWasDeleted,
     _remote_account_id: remoteContact.remoteAccountId,
+    _remote_owner_id: remoteContact.remoteOwnerId,
     updated_at: new Date().toISOString(),
   };
 };

@@ -1,5 +1,5 @@
 import type { CrmAccount, CrmContact, CrmLead } from '@supaglue/db';
-import type { Account, Address, Contact, EmailAddress, PhoneNumber } from '..';
+import type { Account, Address, Contact, EmailAddress, PhoneNumber, User } from '..';
 
 export type CrmLeadExpanded = CrmLead & {
   convertedAccount?: CrmAccount | null;
@@ -7,7 +7,6 @@ export type CrmLeadExpanded = CrmLead & {
 };
 
 type BaseLead = {
-  owner: string | null;
   leadSource: string | null;
   title: string | null;
   company: string | null;
@@ -26,6 +25,8 @@ export type Lead = BaseLead & {
   convertedContact?: Contact;
   convertedAccountId: string | null;
   convertedAccount?: Account;
+  ownerId: string | null;
+  owner?: User;
   wasDeleted: boolean;
   id: string;
   // Support field mappings + remote data etc
@@ -35,6 +36,7 @@ export type RemoteLead = BaseLead & {
   remoteId: string;
   convertedRemoteContactId: string | null;
   convertedRemoteAccountId: string | null;
+  remoteOwnerId: string | null;
   remoteCreatedAt: Date | null;
   remoteUpdatedAt: Date | null;
   remoteWasDeleted: boolean;
