@@ -291,13 +291,15 @@
                         "id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
                         "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
                         "name": "MyCompany Inc",
-                        "email": "contact@mycompany.com"
+                        "email": "contact@mycompany.com",
+                        "external_identifier": "your-customers-unique-application-id"
                       },
                       {
                         "id": "e888cedf-e9d0-42c5-9485-2d72984faef6",
                         "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
                         "name": "TheirCompany Inc",
-                        "email": "contact@theircompany.com"
+                        "email": "contact@theircompany.com",
+                        "external_identifier": "your-other-customers-unique-application-id"
                       }
                     ]
                   }
@@ -307,9 +309,9 @@
           }
         }
       },
-      "post": {
-        "operationId": "createCustomer",
-        "summary": "Create customer",
+      "put": {
+        "operationId": "upsertCustomer",
+        "summary": "Upsert customer",
         "tags": [
           "Customers"
         ],
@@ -325,8 +327,8 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Customer created",
+          "200": {
+            "description": "Customer upserted",
             "content": {
               "application/json": {
                 "schema": {
@@ -370,7 +372,8 @@
                       "id": "0258cbc6-6020-430a-848e-aafacbadf4ae",
                       "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
                       "name": "MyCompany Inc",
-                      "email": "contact@mycompany.com"
+                      "email": "contact@mycompany.com",
+                      "external_identifier": "your-customers-unique-application-id"
                     }
                   }
                 }
@@ -399,7 +402,8 @@
                       "id": "0258cbc6-6020-430a-848e-aafacbadf4af",
                       "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
                       "name": "MyCompany Inc",
-                      "email": "contact@mycompany.com"
+                      "email": "contact@mycompany.com",
+                      "external_identifier": "your-customers-unique-application-id"
                     }
                   }
                 }
@@ -999,6 +1003,10 @@
             "type": "string",
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
           },
+          "external_identifier": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          },
           "name": {
             "type": "string",
             "example": "MyCompany Inc"
@@ -1018,7 +1026,8 @@
           "id",
           "application_id",
           "name",
-          "email"
+          "email",
+          "external_identifier"
         ]
       },
       "integration": {
@@ -1259,6 +1268,10 @@
             "type": "string",
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
           },
+          "external_identifier": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          },
           "name": {
             "type": "string",
             "example": "MyCompany Inc"
@@ -1271,7 +1284,8 @@
         "required": [
           "application_id",
           "name",
-          "email"
+          "email",
+          "external_identifier"
         ]
       },
       "create_update_integration": {

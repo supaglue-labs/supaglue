@@ -8,6 +8,7 @@ export type CustomerModelExpanded = CustomerModel & {
 
 export type BaseCustomer = {
   applicationId: string;
+  externalIdentifier: string;
   name: string;
   email: string;
 };
@@ -19,5 +20,4 @@ export type Customer = BaseCustomer & {
 
 export type BaseCustomerCreateParams = BaseCustomer;
 
-export type CustomerCreateParams = BaseCustomerCreateParams;
-export type CustomerUpdateParams = BaseCustomerCreateParams;
+export type CustomerUpsertParams = BaseCustomerCreateParams;

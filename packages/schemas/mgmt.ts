@@ -32,10 +32,10 @@ export type GetCustomersRequest = never;
 export type GetCustomersResponse =
   operations['getCustomers']['responses'][keyof operations['getCustomers']['responses']]['content']['application/json'];
 
-export type CreateCustomerPathParams = never;
-export type CreateCustomerRequest = operations['createCustomer']['requestBody']['content']['application/json'];
-export type CreateCustomerResponse =
-  operations['createCustomer']['responses'][keyof operations['createCustomer']['responses']]['content']['application/json'];
+export type UpsertCustomerPathParams = never;
+export type UpsertCustomerRequest = operations['upsertCustomer']['requestBody']['content']['application/json'];
+export type UpsertCustomerResponse =
+  operations['upsertCustomer']['responses'][keyof operations['upsertCustomer']['responses']]['content']['application/json'];
 
 export type GetCustomerPathParams =
   paths[`/applications/{application_id}/customers/{customer_id}`]['parameters']['path'];
