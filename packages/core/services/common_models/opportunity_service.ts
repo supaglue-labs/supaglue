@@ -1,6 +1,6 @@
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { POSTGRES_UPDATE_BATCH_SIZE } from '../../lib/constants';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../mappers';
@@ -148,8 +148,7 @@ export class OpportunityService extends CommonModelBaseService {
     customerId: string,
     remoteOpportunitiesReadable: Readable
   ): Promise<number> {
-    // TODO: Shouldn't be hard-coding the DB schema here.
-    const table = 'api.crm_opportunities';
+    const table = COMMON_MODEL_DB_TABLES['opportunities'];
     const tempTable = 'crm_opportunities_temp';
     const columnsWithoutId = [
       'remote_id',
@@ -181,61 +180,20 @@ export class OpportunityService extends CommonModelBaseService {
     );
   }
 
-  private async updateDanglingAccountsImpl(
-    connectionId: string,
-    limit: number,
-    cursor?: string
-  ): Promise<string | undefined> {
-    const opportunitiesWithDanglingAccounts = await this.prisma.crmOpportunity.findMany({
-      where: {
-        connectionId,
-        accountId: null,
-        NOT: {
-          remoteAccountId: null,
-        },
-      },
-      skip: cursor ? 1 : undefined,
-      take: limit,
-      cursor: cursor ? { id: cursor } : undefined,
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    if (!opportunitiesWithDanglingAccounts.length) {
-      return;
-    }
+  public async updateDanglingAccounts(connectionId: string): Promise<void> {
+    const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
+    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
-    const danglingRemoteAccountIds = opportunitiesWithDanglingAccounts.map(
-      ({ remoteAccountId }) => remoteAccountId
-    ) as string[];
-    const crmAccounts = await this.prisma.crmAccount.findMany({
-      where: {
-        connectionId,
-        remoteId: {
-          in: danglingRemoteAccountIds,
-        },
-      },
-    });
-    await Promise.all(
-      crmAccounts.map(({ remoteId, id }) => {
-        return this.prisma.crmOpportunity.updateMany({
-          where: {
-            connectionId,
-            remoteAccountId: remoteId,
-          },
-          data: {
-            accountId: id,
-          },
-        });
-      })
-    );
-    return opportunitiesWithDanglingAccounts[opportunitiesWithDanglingAccounts.length - 1].id;
-  }
-
-  public async updateDanglingAccounts(connectionId: string) {
-    let cursor = undefined;
-    do {
-      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_BATCH_SIZE, cursor);
-    } while (cursor);
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${opportunitiesTable} o
+      SET account_id = a.id
+      FROM ${accountsTable} a
+      WHERE
+        o.connection_id = '${connectionId}'
+        AND o.connection_id = a.connection_id
+        AND o.account_id IS NULL
+        AND o._remote_account_id IS NOT NULL
+        AND o._remote_account_id = a.remote_id
+      `);
   }
 }
