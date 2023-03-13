@@ -41,7 +41,8 @@ services:
         condition: service_started
       init:
         condition: service_completed_successfully
-
+    volumes:
+      - ${SUPAGLUE_CONFIG_DIR:-~/.supaglue}:/root/.supaglue
     environment:
       - NODE_ENV=production
       - SUPAGLUE_DATABASE_URL=${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}

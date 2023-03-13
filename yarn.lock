@@ -3965,6 +3965,7 @@ __metadata:
     pg-copy-streams: ^6.0.5
     pino: ^8.11.0
     pino-pretty: ^9.4.0
+    posthog-node: ^2.5.4
     typescript: ^4.9.5
     uuid: ^9.0.0
   languageName: unknown
@@ -4007,7 +4008,6 @@ __metadata:
     "@temporalio/client": ^1.6.0
     "@temporalio/workflow": ^1.6.0
     "@tsconfig/node18": ^1.0.1
-    posthog-node: ^2.5.4
     tsx: ^3.12.3
     typescript: ^4.9.5
   languageName: unknown
@@ -5697,7 +5697,6 @@ __metadata:
     express: ">=5.0.0-beta.1"
     express-openapi-validator: ^5.0.2
     pino-http: ^8.3.3
-    posthog-node: ^2.5.3
     simple-oauth2: ^5.0.0
     snakecase-keys: ^5.4.5
     ts-patch: ^2.1.0
@@ -14076,15 +14075,6 @@ __metadata:
   version: 2.0.0
   resolution: "posthog-docusaurus@npm:2.0.0"
   checksum: c190b0b28c35a839dfd5e0dfb0baf638d63ff14456b3125f25fce6618fd34b1e80d05622347efefac4532c2858828a9a6ad4a46a7cf6758e47f3034134ef17cd
-  languageName: node
-  linkType: hard
-
-"posthog-node@npm:^2.5.3":
-  version: 2.5.3
-  resolution: "posthog-node@npm:2.5.3"
-  dependencies:
-    axios: ^0.27.0
-  checksum: a0f10cb1891151ff83f066acab66afafbf687c14c6931e894f5d22034919b74ecd8e8383a191850403c75bbc13d18d494939e8e80c30023cb41d12110edebaf8
   languageName: node
   linkType: hard
 

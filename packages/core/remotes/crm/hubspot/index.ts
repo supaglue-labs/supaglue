@@ -39,6 +39,8 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100;
 
 const ASYNC_RETRY_OPTIONS = {
+  // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
+  // and will know that this activity is making progress.
   forever: true,
   factor: 2,
   minTimeout: 1000,

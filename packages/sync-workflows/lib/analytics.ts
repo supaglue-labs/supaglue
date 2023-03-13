@@ -1,24 +1,19 @@
+import { distinctId } from '@supaglue/core/lib/distinct_identifier';
+import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import { CommonModel, CRMProviderName } from '@supaglue/core/types';
-import fs from 'fs';
-import path from 'path';
-import { PostHog } from 'posthog-node';
-
-const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
-const analytics = new PostHog(process.env.SUPAGLUE_POSTHOG_API_KEY ?? 'dummy', { enable: true });
 
 export const logEvent = (
   eventName: string,
   providerName: CRMProviderName,
   modelName: CommonModel,
-  sessionId?: string,
   isSuccess = true
 ): void => {
-  if (!sessionId) {
+  if (!distinctId) {
     return;
   }
 
-  analytics.capture({
-    distinctId: sessionId,
+  posthogClient.capture({
+    distinctId,
     event: eventName,
     properties: {
       result: isSuccess ? 'success' : 'error',
@@ -27,12 +22,7 @@ export const logEvent = (
         providerName,
       },
       source: 'sync-workflows',
-      system: {
-        version,
-        arch: process.arch,
-        os: process.platform,
-        nodeVersion: process.version,
-      },
+      system: getSystemProperties(),
     },
   });
 };

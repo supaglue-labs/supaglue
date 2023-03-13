@@ -1,17 +1,18 @@
-import { distinctId } from '@/lib/distinct_identifier';
-import { client as posthogClient, posthogErrorMiddleware, posthogMiddleware } from '@/lib/posthog';
 import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import { HTTPError } from '@supaglue/core/errors';
 import { logger } from '@supaglue/core/lib';
+import { distinctId } from '@supaglue/core/lib/distinct_identifier';
+import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import pinoHttp from 'pino-http';
 import { v4 as uuidv4 } from 'uuid';
+import { posthogErrorMiddleware, posthogMiddleware } from './lib/posthog';
 
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
@@ -154,12 +155,7 @@ const server = app.listen(port, (): void => {
         result: 'success',
         isDevelopmentMode: process.env.NODE_ENV === 'development',
         source: 'api',
-        system: {
-          version,
-          arch: process.arch,
-          os: process.platform,
-          nodeVersion: process.version,
-        },
+        system: getSystemProperties(),
       },
     });
   }

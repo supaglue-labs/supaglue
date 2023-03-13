@@ -3,11 +3,15 @@ import { proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
 import type { createActivities } from '../activities';
 
-const { doSync, populateAssociations, logSyncStart, logSyncFinish, maybeSendSyncFinishWebhook } = proxyActivities<
-  ReturnType<typeof createActivities>
->({
+const { doSync, populateAssociations } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '30 seconds',
+});
+
+const { logSyncStart, logSyncFinish, maybeSendSyncFinishWebhook } = proxyActivities<
+  ReturnType<typeof createActivities>
+>({
+  startToCloseTimeout: '30 second',
 });
 
 export const getRunSyncsScheduleId = (connectionId: string): string => `run-syncs-cid-${connectionId}`;
@@ -15,15 +19,14 @@ export const getRunSyncsWorkflowId = (connectionId: string): string => `run-sync
 
 export type RunSyncsArgs = {
   connectionId: string;
-  sessionId?: string; // unique session id for analytics
 };
 
-export async function runSyncs({ connectionId, sessionId }: RunSyncsArgs): Promise<void> {
+export async function runSyncs({ connectionId }: RunSyncsArgs): Promise<void> {
   const historyIds = await Promise.all(
     CRM_COMMON_MODELS.map((commonModel) => logSyncStart({ connectionId, commonModel }))
   );
   const results = await Promise.allSettled(
-    CRM_COMMON_MODELS.map((commonModel) => doSync({ connectionId, commonModel, sessionId }))
+    CRM_COMMON_MODELS.map((commonModel) => doSync({ connectionId, commonModel }))
   );
   // technically the sync isn't really complete since we haven't populated associations
   // but we want the per-model granularity on the logs
