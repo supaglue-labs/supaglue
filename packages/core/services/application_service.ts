@@ -1,7 +1,10 @@
 import type { PrismaClient } from '@supaglue/db';
+import crypto from 'crypto';
 import { NotFoundError } from '../errors';
 import { fromApplicationModel } from '../mappers';
 import { Application, ApplicationCreateParams, ApplicationUpdateParams } from '../types';
+
+const { SUPAGLUE_API_KEY_SALT } = process.env;
 
 export class ApplicationService {
   #prisma: PrismaClient;
@@ -18,6 +21,29 @@ export class ApplicationService {
       throw new NotFoundError(`Can't find application with id: ${id}`);
     }
     return fromApplicationModel(application);
+  }
+
+  public async getByApiKey(apiKey: string): Promise<Application> {
+    const hashedApiKey = await crypto.scryptSync(apiKey, SUPAGLUE_API_KEY_SALT!, 64).toString('hex'); // TODO: remove bang by getting NodeJs ProcessEnv global interface working
+
+    const application = await this.#prisma.application.findMany({
+      where: {
+        config: {
+          path: ['apiKey'],
+          equals: hashedApiKey,
+        },
+      },
+    });
+
+    if (!application || application.length === 0) {
+      throw new NotFoundError(`Can't find application by api key`);
+    }
+
+    if (application.length > 1) {
+      throw new Error(`Found more than one application with the same api key`);
+    }
+
+    return fromApplicationModel(application[0]);
   }
 
   // TODO: paginate

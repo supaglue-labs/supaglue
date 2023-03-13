@@ -16,13 +16,13 @@ get:
                 id: e888cedf-e9d0-42c5-9485-2d72984faef4
                 name: my-app
                 config:
-                - webhook: 
-                  - url: http://localhost:8080
-                    request_type: POST
-                    notify_on_sync_success: true
-                    notify_on_sync_error: true
-                    notify_on_connection_success: true
-                    notify_on_connection_error: true
+                  - webhook:
+                      url: http://localhost:8080
+                      request_type: POST
+                      notify_on_sync_success: true
+                      notify_on_sync_error: true
+                      notify_on_connection_success: true
+                      notify_on_connection_error: true
 put:
   operationId: updateApplication
   summary: Update application
@@ -48,13 +48,13 @@ put:
                 id: 7fefba62-f90c-48f3-b44d-88298b68f831
                 name: my-app
                 config:
-                - webhook: 
-                  - url: http://localhost:8080
-                    request_type: POST
-                    notify_on_sync_success: true
-                    notify_on_sync_error: true
-                    notify_on_connection_success: true
-                    notify_on_connection_error: true
+                  - webhook:
+                      url: http://localhost:8080
+                      request_type: POST
+                      notify_on_sync_success: true
+                      notify_on_sync_error: true
+                      notify_on_connection_success: true
+                      notify_on_connection_error: true
 delete:
   operationId: deleteApplication
   summary: Delete application
@@ -73,13 +73,13 @@ delete:
                 id: 10072ab8-db4c-4e4f-9766-bbd846c9efbc
                 name: my-app
                 config:
-                - webhook: 
-                  - url: http://localhost:8080
-                    request_type: POST
-                    notify_on_sync_success: true
-                    notify_on_sync_error: true
-                    notify_on_connection_success: true
-                    notify_on_connection_error: true
+                  - webhook:
+                      url: http://localhost:8080
+                      request_type: POST
+                      notify_on_sync_success: true
+                      notify_on_sync_error: true
+                      notify_on_connection_success: true
+                      notify_on_connection_error: true
 parameters:
   - name: application_id
     in: path

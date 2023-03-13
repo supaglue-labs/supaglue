@@ -1,5 +1,8 @@
 type: object
 properties:
+  api_key:
+    type: string
+    nullable: true
   webhook:
     type: object
     nullable: true
@@ -33,4 +36,5 @@ properties:
       - notify_on_connection_success
       - notify_on_connection_error
 required:
+  - api_key
   - webhook

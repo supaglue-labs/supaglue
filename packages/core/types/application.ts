@@ -9,6 +9,7 @@ export type Application = BaseApplication & {
 
 export type ApplicationConfig = {
   webhook: WebhookConfig | null;
+  apiKey: string | null;
 };
 
 type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
