@@ -14,9 +14,6 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-  RemoteUser,
-  RemoteUserCreateParams,
-  RemoteUserUpdateParams,
 } from '../../../types';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 
@@ -90,18 +87,6 @@ class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteCl
   }
 
   public async listUsers(): Promise<Readable> {
-    throw new Error('Not implemented');
-  }
-
-  public async getUser(remoteId: string): Promise<RemoteUser> {
-    throw new Error('Not implemented');
-  }
-
-  public async createUser(params: RemoteUserCreateParams): Promise<RemoteUser> {
-    throw new Error('Not implemented');
-  }
-
-  public async updateUser(params: RemoteUserUpdateParams): Promise<RemoteUser> {
     throw new Error('Not implemented');
   }
 }

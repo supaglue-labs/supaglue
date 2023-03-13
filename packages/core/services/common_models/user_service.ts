@@ -3,7 +3,7 @@ import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromRemoteUserToDbUserParams, fromUserModel } from '../../mappers/user';
 import { ListParams, PaginatedResult } from '../../types/common';
-import { User, UserCreateParams, UserUpdateParams } from '../../types/crm';
+import { User } from '../../types/crm';
 import { CommonModelBaseService } from './base_service';
 
 export class UserService extends CommonModelBaseService {
@@ -49,52 +49,6 @@ export class UserService extends CommonModelBaseService {
       ...getPaginationResult(pageSize, cursor, results),
       results,
     };
-  }
-
-  public async create(customerId: string, connectionId: string, createParams: UserCreateParams): Promise<User> {
-    // TODO: We may want to have better guarantees that we update the record in both our DB
-    // and the external integration.
-    const remoteCreateParams = { ...createParams };
-    const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteUser = await remoteClient.createUser(remoteCreateParams);
-    const userModel = await this.prisma.crmUser.create({
-      data: {
-        customerId,
-        connectionId,
-        ...remoteUser,
-      },
-    });
-    return fromUserModel(userModel);
-  }
-
-  public async update(customerId: string, connectionId: string, updateParams: UserUpdateParams): Promise<User> {
-    // TODO: We may want to have better guarantees that we update the record in both our DB
-    // and the external integration.
-    const foundUserModel = await this.prisma.crmUser.findUniqueOrThrow({
-      where: {
-        id: updateParams.id,
-      },
-    });
-
-    if (foundUserModel.customerId !== customerId) {
-      throw new Error('User customerId does not match');
-    }
-
-    const remoteUpdateParams = { ...updateParams };
-
-    const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteUser = await remoteClient.updateUser({
-      ...remoteUpdateParams,
-      remoteId: foundUserModel.remoteId,
-    });
-
-    const userModel = await this.prisma.crmUser.update({
-      data: remoteUser,
-      where: {
-        id: updateParams.id,
-      },
-    });
-    return fromUserModel(userModel);
   }
 
   public async upsertRemoteUsers(

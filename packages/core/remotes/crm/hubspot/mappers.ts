@@ -1,6 +1,7 @@
 import { SimplePublicObjectWithAssociations as HubSpotCompany } from '@hubspot/api-client/lib/codegen/crm/companies';
 import { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
+import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
   EmailAddress,
   OpportunityStatus,
@@ -11,6 +12,7 @@ import {
   RemoteContactCreateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
+  RemoteUser,
 } from '../../../types';
 
 export const fromHubSpotCompanyToRemoteAccount = ({
@@ -193,6 +195,39 @@ export const fromHubSpotDealToRemoteOpportunity = ({
     stage: properties.dealstage,
     remoteWasDeleted: false,
   };
+};
+
+export const fromHubspotOwnerToRemoteUser = ({
+  id,
+  firstName,
+  lastName,
+  archived,
+  email,
+  createdAt,
+  updatedAt,
+}: HubspotOwner): RemoteUser => {
+  return {
+    remoteId: id,
+    name: getFullName(firstName, lastName),
+    email: email ?? null,
+    isActive: !archived,
+    remoteCreatedAt: createdAt,
+    remoteUpdatedAt: updatedAt,
+    remoteWasDeleted: false,
+  };
+};
+
+const getFullName = (firstName?: string, lastName?: string): string | null => {
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`;
+  }
+  if (firstName) {
+    return firstName;
+  }
+  if (lastName) {
+    return lastName;
+  }
+  return null;
 };
 
 export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams): Record<string, string> => {

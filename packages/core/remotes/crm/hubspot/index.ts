@@ -2,6 +2,7 @@ import { Client } from '@hubspot/api-client';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedCompanies } from '@hubspot/api-client/lib/codegen/crm/companies';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
+import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
 import { logger } from '../../../lib';
@@ -19,9 +20,6 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-  RemoteUser,
-  RemoteUserCreateParams,
-  RemoteUserUpdateParams,
 } from '../../../types/crm';
 import { Integration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
@@ -29,6 +27,7 @@ import {
   fromHubSpotCompanyToRemoteAccount,
   fromHubSpotContactToRemoteContact,
   fromHubSpotDealToRemoteOpportunity,
+  fromHubspotOwnerToRemoteUser,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
   toHubspotContactCreateParams,
@@ -385,19 +384,48 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
   }
 
   public async listUsers(): Promise<Readable> {
-    throw new Error('Not implemented');
+    const passThrough = new PassThrough({ objectMode: true });
+
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedOwners = await this.listUsersImpl(after);
+        const remoteAccounts = currResults.results.map(fromHubspotOwnerToRemoteUser);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteAccounts);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
+    return passThrough;
   }
 
-  public async getUser(remoteId: string): Promise<RemoteUser> {
-    throw new Error('Not implemented');
-  }
-
-  public async createUser(params: RemoteUserCreateParams): Promise<RemoteUser> {
-    throw new Error('Not implemented');
-  }
-
-  public async updateUser(params: RemoteUserUpdateParams): Promise<RemoteUser> {
-    throw new Error('Not implemented');
+  private async listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
+    const helper = async () => {
+      try {
+        await this.maybeRefreshAccessToken();
+        const owners = await this.#client.crm.owners.ownersApi.getPage(
+          /* email */ undefined,
+          after,
+          HUBSPOT_RECORD_LIMIT
+        );
+        return owners;
+      } catch (e: any) {
+        logger.error(`Error encountered: ${e}`);
+        throw e;
+      }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
   }
 }
 

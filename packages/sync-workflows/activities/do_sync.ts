@@ -5,6 +5,7 @@ import {
   LeadService,
   OpportunityService,
   RemoteService,
+  UserService,
 } from '@supaglue/core/services';
 import { CommonModel } from '@supaglue/core/types';
 import { Context } from '@temporalio/activity';
@@ -27,7 +28,8 @@ export function createDoSync(
   contactService: ContactService,
   remoteService: RemoteService,
   opportunityService: OpportunityService,
-  leadService: LeadService
+  leadService: LeadService,
+  userService: UserService
 ) {
   return async function doSync({ connectionId, commonModel, sessionId }: DoSyncArgs): Promise<DoSyncResult> {
     const connection = await connectionService.getById(connectionId);
@@ -70,6 +72,15 @@ export function createDoSync(
       case 'lead': {
         const readable = await client.listLeads();
         numRecordsSynced = await leadService.upsertRemoteLeads(
+          connection.id,
+          connection.customerId,
+          toHeartbeatingReadable(readable)
+        );
+        break;
+      }
+      case 'user': {
+        const readable = await client.listUsers();
+        numRecordsSynced = await userService.upsertRemoteUsers(
           connection.id,
           connection.customerId,
           toHeartbeatingReadable(readable)

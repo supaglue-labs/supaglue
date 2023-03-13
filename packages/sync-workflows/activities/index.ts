@@ -8,6 +8,7 @@ import {
   OpportunityService,
   RemoteService,
   SyncHistoryService,
+  UserService,
 } from '@supaglue/core/services';
 import { createDoSync } from './do_sync';
 import { createLogSyncFinish } from './log_sync_finish';
@@ -22,6 +23,7 @@ export const createActivities = ({
   remoteService,
   opportunityService,
   leadService,
+  userService,
   syncHistoryService,
   integrationService,
   applicationService,
@@ -32,6 +34,7 @@ export const createActivities = ({
   remoteService: RemoteService;
   opportunityService: OpportunityService;
   leadService: LeadService;
+  userService: UserService;
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
   applicationService: ApplicationService;
@@ -43,7 +46,8 @@ export const createActivities = ({
       contactService,
       remoteService,
       opportunityService,
-      leadService
+      leadService,
+      userService
     ),
     populateAssociations: createPopulateAssociations(contactService, opportunityService, leadService),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
