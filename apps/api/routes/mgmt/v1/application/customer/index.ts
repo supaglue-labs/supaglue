@@ -2,9 +2,6 @@ import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeys } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
 import {
-  CreateCustomerPathParams,
-  CreateCustomerRequest,
-  CreateCustomerResponse,
   DeleteCustomerPathParams,
   DeleteCustomerRequest,
   DeleteCustomerResponse,
@@ -14,6 +11,9 @@ import {
   GetCustomersPathParams,
   GetCustomersRequest,
   GetCustomersResponse,
+  UpsertCustomerPathParams,
+  UpsertCustomerRequest,
+  UpsertCustomerResponse,
 } from '@supaglue/schemas/mgmt';
 import { Request, Response, Router } from 'express';
 import connection from './connection';
@@ -34,13 +34,13 @@ export default function init(app: Router): void {
     }
   );
 
-  customerRouter.post(
+  customerRouter.put(
     '/',
     async (
-      req: Request<CreateCustomerPathParams, CreateCustomerResponse, CreateCustomerRequest>,
-      res: Response<CreateCustomerResponse>
+      req: Request<UpsertCustomerPathParams, UpsertCustomerResponse, UpsertCustomerRequest>,
+      res: Response<UpsertCustomerResponse>
     ) => {
-      const customer = await customerService.create(camelcaseKeys(req.body));
+      const customer = await customerService.upsert(camelcaseKeys(req.body));
       return res.status(201).send(snakecaseKeys(customer));
     }
   );
