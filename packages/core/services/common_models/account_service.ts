@@ -1,5 +1,6 @@
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
+import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
 import type {
@@ -19,6 +20,8 @@ export class AccountService extends CommonModelBaseService {
 
   // TODO: implement getParams
   public async getById(id: string, connectionId: string, getParams: GetParams): Promise<Account> {
+    const { expand } = getParams;
+    const expandedAssociations = getExpandedAssociations(expand);
     const model = await this.prisma.crmAccount.findUnique({
       where: { id },
     });
@@ -28,12 +31,13 @@ export class AccountService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromAccountModel(model);
+    return fromAccountModel(model, expandedAssociations);
   }
 
   // TODO: implement rest of list params
   public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Account>> {
-    const { page_size, cursor, created_after, created_before, updated_after, updated_before } = listParams;
+    const { page_size, cursor, created_after, created_before, updated_after, updated_before, expand } = listParams;
+    const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmAccount.findMany({
       ...getPaginationParams(pageSize, cursor),
@@ -52,7 +56,7 @@ export class AccountService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromAccountModel);
+    const results = models.map((model) => fromAccountModel(model, expandedAssociations));
     return {
       ...getPaginationResult(pageSize, cursor, results),
       results,

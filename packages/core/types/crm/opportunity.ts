@@ -1,9 +1,10 @@
-import type { CrmAccount, CrmOpportunity } from '@supaglue/db';
+import type { CrmAccount, CrmOpportunity, CrmUser } from '@supaglue/db';
 import type { Account } from './account';
 import { User } from './user';
 
 export type CrmOpportunityExpanded = CrmOpportunity & {
   account?: CrmAccount | null;
+  owner?: CrmUser | null;
 };
 
 export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;

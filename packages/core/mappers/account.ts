@@ -1,25 +1,31 @@
-import type { CrmAccount } from '@supaglue/db';
 import { v4 as uuidv4 } from 'uuid';
-import { Account, Address, PhoneNumber, RemoteAccount } from '../types';
+import { Account, Address, CrmAccountExpanded, PhoneNumber, RemoteAccount } from '../types';
+import { fromUserModel } from './user';
 
-export const fromAccountModel = ({
-  id,
-  remoteWasDeleted,
-  ownerId,
-  name,
-  description,
-  industry,
-  website,
-  numberOfEmployees,
-  addresses,
-  phoneNumbers,
-  lastActivityAt,
-  remoteCreatedAt,
-  remoteUpdatedAt,
-}: CrmAccount): Account => {
+export const fromAccountModel = (
+  {
+    id,
+    remoteWasDeleted,
+    ownerId,
+    owner,
+    name,
+    description,
+    industry,
+    website,
+    numberOfEmployees,
+    addresses,
+    phoneNumbers,
+    lastActivityAt,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+  }: CrmAccountExpanded,
+  expandedAssociations: string[] = []
+): Account => {
+  const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
     ownerId,
+    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     name,
     description,
     industry,

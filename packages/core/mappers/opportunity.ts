@@ -1,12 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CrmOpportunityExpanded, Opportunity, OpportunityStatus, RemoteOpportunity } from '../types';
 import { fromAccountModel } from './account';
+import { fromUserModel } from './user';
 
 export const fromOpportunityModel = (
   {
     id,
     remoteWasDeleted,
     ownerId,
+    owner,
     name,
     description,
     stage,
@@ -22,9 +24,11 @@ export const fromOpportunityModel = (
   expandedAssociations: string[] = []
 ): Opportunity => {
   const expandAccount = expandedAssociations.includes('account');
+  const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
     ownerId,
+    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     name,
     description,
     accountId,

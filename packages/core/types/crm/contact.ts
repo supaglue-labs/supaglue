@@ -1,9 +1,10 @@
-import type { CrmAccount, CrmContact } from '@supaglue/db';
+import type { CrmAccount, CrmContact, CrmUser } from '@supaglue/db';
 import type { Address, EmailAddress, PhoneNumber, User } from '..';
 import type { Account } from './account';
 
 export type CrmContactExpanded = CrmContact & {
   account?: CrmAccount | null;
+  owner?: CrmUser | null;
 };
 
 export type BaseContact = {

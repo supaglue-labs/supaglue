@@ -1,11 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Address, Contact, CrmContactExpanded, EmailAddress, PhoneNumber, RemoteContact } from '../types';
 import { fromAccountModel } from './account';
+import { fromUserModel } from './user';
 
 export const fromContactModel = (
   {
     id,
     ownerId,
+    owner,
     accountId,
     account,
     firstName,
@@ -20,12 +22,14 @@ export const fromContactModel = (
   }: CrmContactExpanded,
   expandedAssociations: string[] = []
 ): Contact => {
-  const expandContact = expandedAssociations.includes('account');
+  const expandAccount = expandedAssociations.includes('account');
+  const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
     ownerId,
+    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     accountId,
-    account: expandContact && account ? fromAccountModel(account) : undefined,
+    account: expandAccount && account ? fromAccountModel(account) : undefined,
     firstName,
     lastName,
     addresses: addresses as Address[],

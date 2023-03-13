@@ -27,6 +27,7 @@ export class OpportunityService extends CommonModelBaseService {
       where: { id },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
     });
     if (!model) {
@@ -58,6 +59,7 @@ export class OpportunityService extends CommonModelBaseService {
       },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
       orderBy: {
         id: 'asc',

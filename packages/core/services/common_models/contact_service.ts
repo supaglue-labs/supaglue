@@ -26,6 +26,7 @@ export class ContactService extends CommonModelBaseService {
       where: { id },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
     });
     if (!model) {

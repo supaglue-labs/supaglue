@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { fromAccountModel, fromContactModel } from '.';
+import { fromAccountModel, fromContactModel, fromUserModel } from '.';
 import { Address, CrmLeadExpanded, EmailAddress, Lead, PhoneNumber, RemoteLead } from '../types';
 
 export const fromLeadModel = (
@@ -7,6 +7,7 @@ export const fromLeadModel = (
     id,
     remoteWasDeleted,
     ownerId,
+    owner,
     leadSource,
     title,
     company,
@@ -27,9 +28,11 @@ export const fromLeadModel = (
 ): Lead => {
   const expandAccount = expandedAssociations.includes('converted_account');
   const expandContact = expandedAssociations.includes('converted_contact');
+  const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
     ownerId,
+    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     leadSource,
     title,
     company,
