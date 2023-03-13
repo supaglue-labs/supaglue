@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient({
-  // log: ['query'],
-});
+const prisma = new PrismaClient();
 
 export * from '@prisma/client';
 export default prisma;
@@ -13,4 +11,5 @@ export const COMMON_MODEL_DB_TABLES = {
   accounts: 'api.crm_accounts',
   leads: 'api.crm_leads',
   opportunities: 'api.crm_opportunities',
+  users: 'api.crm_users',
 };
