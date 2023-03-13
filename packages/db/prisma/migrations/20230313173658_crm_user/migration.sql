@@ -8,6 +8,10 @@ CREATE TABLE "crm_users" (
     "name" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "is_active" TEXT NOT NULL,
+    "remote_created_at" TIMESTAMP(3),
+    "remote_updated_at" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "crm_users_pkey" PRIMARY KEY ("id")
 );
