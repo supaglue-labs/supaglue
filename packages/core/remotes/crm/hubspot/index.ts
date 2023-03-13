@@ -20,7 +20,6 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-  RemoteUser,
 } from '../../../types/crm';
 import { Integration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
@@ -28,6 +27,7 @@ import {
   fromHubSpotCompanyToRemoteAccount,
   fromHubSpotContactToRemoteContact,
   fromHubSpotDealToRemoteOpportunity,
+  fromHubspotOwnerToRemoteUser,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
   toHubspotContactCreateParams,
@@ -384,7 +384,30 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
   }
 
   public async listUsers(): Promise<Readable> {
-    throw new Error('Not implemented');
+    const passThrough = new PassThrough({ objectMode: true });
+
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedOwners = await this.listUsersImpl(after);
+        const remoteAccounts = currResults.results.map(fromHubspotOwnerToRemoteUser);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteAccounts);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
+    return passThrough;
   }
 
   private async listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
@@ -403,10 +426,6 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
       }
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
-  }
-
-  public async getUser(remoteId: string): Promise<RemoteUser> {
-    throw new Error('Not implemented');
   }
 }
 
