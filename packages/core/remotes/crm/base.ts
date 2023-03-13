@@ -14,9 +14,6 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-  RemoteUser,
-  RemoteUserCreateParams,
-  RemoteUserUpdateParams,
 } from '../../types/crm';
 import { Integration } from '../../types/integration';
 import { RemoteClient } from '../base';
@@ -44,9 +41,8 @@ export interface CrmRemoteClient extends RemoteClient {
   createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity>;
   updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity>;
 
+  // Note: User creation/updates are not supported
   listUsers(): Promise<Readable>; // streams RemoteUser
-  createUser(params: RemoteUserCreateParams): Promise<RemoteUser>;
-  updateUser(params: RemoteUserUpdateParams): Promise<RemoteUser>;
 }
 
 export abstract class CrmRemoteClientEventEmitter extends EventEmitter {
