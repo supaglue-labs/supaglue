@@ -4,58 +4,10 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**create_customer**](CustomersApi.md#create_customer) | **POST** /applications/{application_id}/customers | Create customer
 [**delete_customer**](CustomersApi.md#delete_customer) | **DELETE** /applications/{application_id}/customers/{customer_id} | Delete customer
 [**get_customer**](CustomersApi.md#get_customer) | **GET** /applications/{application_id}/customers/{customer_id} | Get customer
 [**get_customers**](CustomersApi.md#get_customers) | **GET** /applications/{application_id}/customers | List customers
-
-# **create_customer**
-> Customer create_customer(body, application_id)
-
-Create customer
-
-### Example
-```python
-from __future__ import print_function
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-
-# create an instance of the API class
-api_instance = swagger_client.CustomersApi()
-body = swagger_client.CreateUpdateCustomer() # CreateUpdateCustomer | 
-application_id = 'application_id_example' # str | 
-
-try:
-    # Create customer
-    api_response = api_instance.create_customer(body, application_id)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling CustomersApi->create_customer: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | [**CreateUpdateCustomer**](CreateUpdateCustomer.md)|  | 
- **application_id** | **str**|  | 
-
-### Return type
-
-[**Customer**](Customer.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+[**upsert_customer**](CustomersApi.md#upsert_customer) | **PUT** /applications/{application_id}/customers | Upsert customer
 
 # **delete_customer**
 > Customer delete_customer(application_id, customer_id)
@@ -197,6 +149,54 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **upsert_customer**
+> Customer upsert_customer(body, application_id)
+
+Upsert customer
+
+### Example
+```python
+from __future__ import print_function
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.CustomersApi()
+body = swagger_client.CreateUpdateCustomer() # CreateUpdateCustomer | 
+application_id = 'application_id_example' # str | 
+
+try:
+    # Upsert customer
+    api_response = api_instance.upsert_customer(body, application_id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling CustomersApi->upsert_customer: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | [**CreateUpdateCustomer**](CreateUpdateCustomer.md)|  | 
+ **application_id** | **str**|  | 
+
+### Return type
+
+[**Customer**](Customer.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

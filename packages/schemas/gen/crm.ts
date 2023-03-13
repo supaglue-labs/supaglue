@@ -68,6 +68,23 @@ export interface paths {
       };
     };
   };
+  "/users": {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    get: operations["getUsers"];
+    
+  };
+  "/users/{user_id}": {
+    /** Get user */
+    get: operations["getUser"];
+    parameters: {
+      path: {
+        user_id: string;
+      };
+    };
+  };
   "/opportunities": {
     /**
      * List opportunities 
@@ -297,6 +314,23 @@ export interface components {
       stage?: string | null;
       /** @example OPEN */
       status?: string | null;
+    };
+    user: {
+      /** @example George Xing */
+      name?: string | null;
+      /** @example george@supaglue.com */
+      email?: string | null;
+      is_active?: boolean | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      created_at?: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      updated_at?: Date | null;
     };
     create_update_opportunity: {
       /** @example 100000 */
@@ -720,6 +754,33 @@ export interface operations {
             model?: components["schemas"]["lead"];
             warnings?: components["schemas"]["warnings"];
           };
+        };
+      };
+    };
+  };
+  getUsers: {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    responses: {
+      /** @description Users */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["user"])[];
+          };
+        };
+      };
+    };
+  };
+  getUser: {
+    /** Get user */
+    responses: {
+      /** @description User */
+      200: {
+        content: {
+          "application/json": components["schemas"]["user"];
         };
       };
     };

@@ -8,7 +8,7 @@ Method | HTTP request | Description
 [**get_sync_infos**](SyncApi.md#get_sync_infos) | **GET** /sync-info | Get Sync Info
 
 # **get_sync_history**
-> InlineResponse2004 get_sync_history(customer_id, provider_name, cursor=cursor, page_size=page_size, model=model)
+> InlineResponse2005 get_sync_history(customer_id, provider_name, cursor=cursor, page_size=page_size, model=model)
 
 Get Sync History
 
@@ -50,7 +50,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2004**](InlineResponse2004.md)
+[**InlineResponse2005**](InlineResponse2005.md)
 
 ### Authorization
 
@@ -64,7 +64,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_sync_infos**
-> list[InlineResponse2005] get_sync_infos(customer_id, provider_name)
+> list[InlineResponse2006] get_sync_infos(customer_id, provider_name)
 
 Get Sync Info
 
@@ -100,7 +100,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**list[InlineResponse2005]**](InlineResponse2005.md)
+[**list[InlineResponse2006]**](InlineResponse2006.md)
 
 ### Authorization
 

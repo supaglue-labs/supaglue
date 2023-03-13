@@ -4,55 +4,10 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**createCustomer**](CustomersApi.md#createCustomer) | **POST** /applications/{application_id}/customers | Create customer
 [**deleteCustomer**](CustomersApi.md#deleteCustomer) | **DELETE** /applications/{application_id}/customers/{customer_id} | Delete customer
 [**getCustomer**](CustomersApi.md#getCustomer) | **GET** /applications/{application_id}/customers/{customer_id} | Get customer
 [**getCustomers**](CustomersApi.md#getCustomers) | **GET** /applications/{application_id}/customers | List customers
-
-<a name="createCustomer"></a>
-# **createCustomer**
-> Customer createCustomer(body, applicationId)
-
-Create customer
-
-### Example
-```java
-// Import classes:
-//import io.swagger.client.ApiException;
-//import io.swagger.client.api.CustomersApi;
-
-
-CustomersApi apiInstance = new CustomersApi();
-CreateUpdateCustomer body = new CreateUpdateCustomer(); // CreateUpdateCustomer | 
-String applicationId = "applicationId_example"; // String | 
-try {
-    Customer result = apiInstance.createCustomer(body, applicationId);
-    System.out.println(result);
-} catch (ApiException e) {
-    System.err.println("Exception when calling CustomersApi#createCustomer");
-    e.printStackTrace();
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | [**CreateUpdateCustomer**](CreateUpdateCustomer.md)|  |
- **applicationId** | **String**|  |
-
-### Return type
-
-[**Customer**](Customer.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json
+[**upsertCustomer**](CustomersApi.md#upsertCustomer) | **PUT** /applications/{application_id}/customers | Upsert customer
 
 <a name="deleteCustomer"></a>
 # **deleteCustomer**
@@ -187,5 +142,50 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+<a name="upsertCustomer"></a>
+# **upsertCustomer**
+> Customer upsertCustomer(body, applicationId)
+
+Upsert customer
+
+### Example
+```java
+// Import classes:
+//import io.swagger.client.ApiException;
+//import io.swagger.client.api.CustomersApi;
+
+
+CustomersApi apiInstance = new CustomersApi();
+CreateUpdateCustomer body = new CreateUpdateCustomer(); // CreateUpdateCustomer | 
+String applicationId = "applicationId_example"; // String | 
+try {
+    Customer result = apiInstance.upsertCustomer(body, applicationId);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling CustomersApi#upsertCustomer");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | [**CreateUpdateCustomer**](CreateUpdateCustomer.md)|  |
+ **applicationId** | **String**|  |
+
+### Return type
+
+[**Customer**](Customer.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
