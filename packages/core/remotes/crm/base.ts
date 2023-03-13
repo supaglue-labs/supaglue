@@ -1,15 +1,21 @@
 import { EventEmitter } from 'events';
 import { Readable } from 'stream';
-import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../types/account';
 import { CRMConnection } from '../../types/connection';
-import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../types/contact';
-import { Integration } from '../../types/integration';
-import { RemoteLead, RemoteLeadCreateParams, RemoteLeadUpdateParams } from '../../types/lead';
 import {
+  RemoteAccount,
+  RemoteAccountCreateParams,
+  RemoteAccountUpdateParams,
+  RemoteContact,
+  RemoteContactCreateParams,
+  RemoteContactUpdateParams,
+  RemoteLead,
+  RemoteLeadCreateParams,
+  RemoteLeadUpdateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../types/opportunity';
+} from '../../types/crm';
+import { Integration } from '../../types/integration';
 import { RemoteClient } from '../base';
 
 interface CrmRemoteClientEvents {

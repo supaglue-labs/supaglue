@@ -1,5 +1,5 @@
 import type { CrmAccount, CrmContact, CrmLead } from '@supaglue/db';
-import type { Account, Address, Contact, EmailAddress, PhoneNumber } from '.';
+import type { Account, Address, Contact, EmailAddress, PhoneNumber } from '../index';
 
 export type CrmLeadExpanded = CrmLead & {
   convertedAccount?: CrmAccount | null;

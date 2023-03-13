@@ -5,16 +5,22 @@ import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as Hu
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
 import { logger } from '../../../lib';
-import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
-import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
-import { Integration } from '../../../types/integration';
-import { RemoteLead, RemoteLeadCreateParams, RemoteLeadUpdateParams } from '../../../types/lead';
 import {
+  RemoteAccount,
+  RemoteAccountCreateParams,
+  RemoteAccountUpdateParams,
+  RemoteContact,
+  RemoteContactCreateParams,
+  RemoteContactUpdateParams,
+  RemoteLead,
+  RemoteLeadCreateParams,
+  RemoteLeadUpdateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/opportunity';
+} from '../../../types/crm';
+import { Integration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
