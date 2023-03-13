@@ -5,16 +5,25 @@ import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as Hu
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
 import { logger } from '../../../lib';
-import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
-import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
-import { Integration } from '../../../types/integration';
-import { RemoteLead, RemoteLeadCreateParams, RemoteLeadUpdateParams } from '../../../types/lead';
 import {
+  RemoteAccount,
+  RemoteAccountCreateParams,
+  RemoteAccountUpdateParams,
+  RemoteContact,
+  RemoteContactCreateParams,
+  RemoteContactUpdateParams,
+  RemoteLead,
+  RemoteLeadCreateParams,
+  RemoteLeadUpdateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/opportunity';
+  RemoteUser,
+  RemoteUserCreateParams,
+  RemoteUserUpdateParams,
+} from '../../../types/crm';
+import { Integration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
@@ -373,6 +382,22 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
 
   public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
     throw new Error('Not supported');
+  }
+
+  public async listUsers(): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+
+  public async getUser(remoteId: string): Promise<RemoteUser> {
+    throw new Error('Not implemented');
+  }
+
+  public async createUser(params: RemoteUserCreateParams): Promise<RemoteUser> {
+    throw new Error('Not implemented');
+  }
+
+  public async updateUser(params: RemoteUserUpdateParams): Promise<RemoteUser> {
+    throw new Error('Not implemented');
   }
 }
 

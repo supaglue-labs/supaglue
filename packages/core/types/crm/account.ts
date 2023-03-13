@@ -1,4 +1,4 @@
-import type { Address, PhoneNumber } from '.';
+import type { Address, PhoneNumber } from '../index';
 
 type BaseAccount = {
   owner: string | null;
