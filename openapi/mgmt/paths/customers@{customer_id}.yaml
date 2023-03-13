@@ -17,6 +17,7 @@ get:
                 application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
                 name: MyCompany Inc
                 email: contact@mycompany.com
+                external_identifier: your-customers-unique-application-id
 delete:
   operationId: deleteCustomer
   summary: Delete customer
@@ -36,6 +37,7 @@ delete:
                 application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
                 name: MyCompany Inc
                 email: contact@mycompany.com
+                external_identifier: your-customers-unique-application-id
 parameters:
   - name: application_id
     in: path

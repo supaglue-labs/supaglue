@@ -153,7 +153,13 @@ async function seedCustomers() {
           id,
         },
         update: {},
-        create: { id, applicationId: APPLICATION_ID, name: `customer-${idx}`, email: `customer-${idx}@email.com` },
+        create: {
+          id,
+          applicationId: APPLICATION_ID,
+          name: `customer-${idx}`,
+          email: `customer-${idx}@email.com`,
+          externalIdentifier: `external-customer-${idx}`,
+        },
       })
     )
   );

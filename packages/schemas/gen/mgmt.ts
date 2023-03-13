@@ -33,8 +33,8 @@ export interface paths {
      * @description Get a list of customers
      */
     get: operations["getCustomers"];
-    /** Create customer */
-    post: operations["createCustomer"];
+    /** Upsert customer */
+    put: operations["upsertCustomer"];
     parameters: {
       path: {
         application_id: string;
@@ -118,6 +118,8 @@ export interface components {
       id: string;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
+      /** @example your-customers-unique-application-id */
+      external_identifier: string;
       /** @example MyCompany Inc */
       name: string;
       /** @example contact@mycompany.com */
@@ -235,6 +237,8 @@ export interface components {
     create_update_customer: {
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
+      /** @example your-customers-unique-application-id */
+      external_identifier: string;
       /** @example MyCompany Inc */
       name: string;
       /** @example contact@mycompany.com */
@@ -370,16 +374,16 @@ export interface operations {
       };
     };
   };
-  createCustomer: {
-    /** Create customer */
+  upsertCustomer: {
+    /** Upsert customer */
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_customer"];
       };
     };
     responses: {
-      /** @description Customer created */
-      201: {
+      /** @description Customer upserted */
+      200: {
         content: {
           "application/json": components["schemas"]["customer"];
         };
