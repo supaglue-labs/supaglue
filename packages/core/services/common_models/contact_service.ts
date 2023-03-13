@@ -26,6 +26,7 @@ export class ContactService extends CommonModelBaseService {
       where: { id },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
     });
     if (!model) {
@@ -56,6 +57,7 @@ export class ContactService extends CommonModelBaseService {
       },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
       orderBy: {
         id: 'asc',
@@ -154,6 +156,7 @@ export class ContactService extends CommonModelBaseService {
       'remote_updated_at',
       'remote_was_deleted',
       '_remote_account_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 
@@ -182,6 +185,23 @@ export class ContactService extends CommonModelBaseService {
         AND c.account_id IS NULL
         AND c._remote_account_id IS NOT NULL
         AND c._remote_account_id = a.remote_id
+      `);
+  }
+
+  public async updateDanglingOwners(connectionId: string): Promise<void> {
+    const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
+    const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${contactsTable} c
+      SET owner_id = u.id
+      FROM ${usersTable} u
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = u.connection_id
+        AND c.owner_id IS NULL
+        AND c._remote_owner_id IS NOT NULL
+        AND c._remote_owner_id = u.remote_id
       `);
   }
 }

@@ -1,8 +1,10 @@
-import type { CrmAccount, CrmOpportunity } from '@supaglue/db';
+import type { CrmAccount, CrmOpportunity, CrmUser } from '@supaglue/db';
 import type { Account } from './account';
+import { User } from './user';
 
 export type CrmOpportunityExpanded = CrmOpportunity & {
   account?: CrmAccount | null;
+  owner?: CrmUser | null;
 };
 
 export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
@@ -12,7 +14,6 @@ type BaseOpportunity = {
   name: string | null;
   description: string | null;
   amount: number | null;
-  owner: string | null;
   stage: string | null;
   status: OpportunityStatus | null;
   lastActivityAt: Date | null;
@@ -22,6 +23,8 @@ type BaseOpportunity = {
 export type Opportunity = BaseOpportunity & {
   accountId: string | null;
   account?: Account;
+  ownerId: string | null;
+  owner?: User;
   createdAt: Date | null;
   updatedAt: Date | null;
   wasDeleted: boolean;
@@ -32,6 +35,7 @@ export type Opportunity = BaseOpportunity & {
 export type RemoteOpportunity = BaseOpportunity & {
   remoteId: string;
   remoteAccountId: string | null;
+  remoteOwnerId: string | null;
   remoteCreatedAt: Date | null;
   remoteUpdatedAt: Date | null;
   remoteWasDeleted: boolean;

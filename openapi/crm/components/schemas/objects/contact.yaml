@@ -6,6 +6,12 @@ properties:
     example: fd089246-09b1-4e3b-a60a-7a76314bbcce 
   account: 
     $ref: ./account.yaml
+  owner_id:
+    type: string
+    nullable: true
+    example: 23e640fe-6105-4a11-a636-3aa6b6c6e762
+  owner:
+    $ref: ./user.yaml
   addresses:
     $ref: ./addresses.yaml
   email_addresses:

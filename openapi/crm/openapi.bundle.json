@@ -99,7 +99,7 @@
                           "last_activity_at": "2022-02-10T00:00:00Z",
                           "name": "Sample Customer",
                           "number_of_employees": 276000,
-                          "owner": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
+                          "owner_id": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
@@ -128,7 +128,7 @@
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Sample Customer",
                           "number_of_employees": 276000,
-                          "owner": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
+                          "owner_id": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
@@ -258,7 +258,7 @@
                       "last_activity_at": "2022-02-10T00:00:00Z",
                       "name": "Supaglue",
                       "number_of_employees": 276000,
-                      "owner": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
+                      "owner_id": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
                       "phone_numbers": [
                         {
                           "phone_number": "+14151234567",
@@ -736,7 +736,7 @@
                           "id": "62bd34b8-54fa-4628-ae75-5fd6be59e4b7",
                           "last_name": "Xing",
                           "lead_source": "API Blogger",
-                          "owner": "04363f99-e807-4f69-b233-3d31b92f9bb2",
+                          "owner_id": "04363f99-e807-4f69-b233-3d31b92f9bb2",
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
@@ -773,7 +773,7 @@
                           "id": "29b3e861-b1da-4f74-885a-e151c5759acf",
                           "last_name": "Xing",
                           "lead_source": "API Blogger",
-                          "owner": "71e01ac4-5f21-46e2-b021-46555ade976d",
+                          "owner_id": "71e01ac4-5f21-46e2-b021-46555ade976d",
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
@@ -1173,7 +1173,7 @@
                           "id": "700eaee7-0b1d-40d3-90a9-1ebf77943a2e",
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Needs third-party integrations",
-                          "owner": "475789f9-0df9-4a09-959e-c9f5eb7a541c",
+                          "owner_id": "475789f9-0df9-4a09-959e-c9f5eb7a541c",
                           "created_at": "2023-02-27T00:00:00Z",
                           "updated_at": "2023-02-27T00:00:00Z",
                           "stage": "Closed Won"
@@ -1188,7 +1188,7 @@
                           "id": "1e68260b-f250-427b-88f1-26ccc34c62d6",
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Needs third-party integrations",
-                          "owner": "64761ae1-8c42-461c-8778-9671f9d39997",
+                          "owner_id": "64761ae1-8c42-461c-8778-9671f9d39997",
                           "created_at": "2023-02-27T00:00:00Z",
                           "updated_at": "2023-02-27T00:00:00Z",
                           "stage": "Closed Lost"
@@ -1631,10 +1631,13 @@
             "nullable": true,
             "example": 276000
           },
-          "owner": {
+          "owner_id": {
             "type": "string",
             "nullable": true,
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/user"
           },
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
@@ -1706,6 +1709,14 @@
           },
           "account": {
             "$ref": "#/components/schemas/account"
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/user"
           },
           "addresses": {
             "$ref": "#/components/schemas/addresses"
@@ -1825,10 +1836,13 @@
             "nullable": true,
             "example": "API Blogger"
           },
-          "owner": {
+          "owner_id": {
             "type": "string",
             "nullable": true,
             "example": "62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/user"
           },
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
@@ -1933,10 +1947,13 @@
             "nullable": true,
             "example": "Needs third-party integrations"
           },
-          "owner": {
+          "owner_id": {
             "type": "string",
             "nullable": true,
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/user"
           },
           "created_at": {
             "type": "string",

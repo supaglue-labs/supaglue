@@ -67,6 +67,7 @@ const propertiesToFetch = {
   ],
   contact: [
     'Id',
+    'OwnerId',
     'AccountId',
     'FirstName',
     'LastName',

@@ -79,7 +79,6 @@ model CrmAccount {
   customerId        String           @map("customer_id")
   connectionId      String           @map("connection_id")
   remoteWasDeleted  Boolean          @default(false) @map("remote_was_deleted")
-  owner             String?
   name              String?
   description       String?
   industry          String?
@@ -97,6 +96,9 @@ model CrmAccount {
   contacts          CrmContact[]
   opportunities     CrmOpportunity[]
   leadsConverted    CrmLead[]
+  remoteOwnerId     String?          @map("_remote_owner_id")
+  ownerId           String?          @map("owner_id")
+  owner             CrmUser?         @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
   @@map("crm_accounts")
@@ -124,6 +126,9 @@ model CrmContact {
   accountId        String?     @map("account_id")
   account          CrmAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
   leadsConverted   CrmLead[]
+  remoteOwnerId    String?     @map("_remote_owner_id")
+  ownerId          String?     @map("owner_id")
+  owner            CrmUser?    @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
   @@map("crm_contacts")
@@ -135,7 +140,6 @@ model CrmLead {
   customerId               String      @map("customer_id")
   connectionId             String      @map("connection_id")
   remoteWasDeleted         Boolean     @default(false) @map("remote_was_deleted")
-  owner                    String?
   leadSource               String?     @map("lead_source")
   title                    String?
   company                  String?
@@ -157,6 +161,9 @@ model CrmLead {
   convertedRemoteContactId String?     @map("_converted_remote_contact_id")
   convertedContactId       String?     @map("converted_contact_id")
   convertedContact         CrmContact? @relation(fields: [convertedContactId], references: [id], onDelete: SetNull)
+  remoteOwnerId            String?     @map("_remote_owner_id")
+  ownerId                  String?     @map("owner_id")
+  owner                    CrmUser?    @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
   @@map("crm_leads")
@@ -168,7 +175,6 @@ model CrmOpportunity {
   customerId       String      @map("customer_id")
   connectionId     String      @map("connection_id")
   remoteWasDeleted Boolean     @default(false) @map("remote_was_deleted")
-  owner            String?
   name             String?
   description      String?
   amount           Int?
@@ -184,24 +190,31 @@ model CrmOpportunity {
   remoteAccountId  String?     @map("_remote_account_id")
   accountId        String?     @map("account_id")
   account          CrmAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  remoteOwnerId    String?     @map("_remote_owner_id")
+  ownerId          String?     @map("owner_id")
+  owner            CrmUser?    @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
   @@map("crm_opportunities")
 }
 
 model CrmUser {
-  id               String    @id @default(uuid())
-  remoteId         String    @map("remote_id")
-  customerId       String    @map("customer_id")
-  connectionId     String    @map("connection_id")
-  remoteWasDeleted Boolean   @default(false) @map("remote_was_deleted")
+  id               String           @id @default(uuid())
+  remoteId         String           @map("remote_id")
+  customerId       String           @map("customer_id")
+  connectionId     String           @map("connection_id")
+  remoteWasDeleted Boolean          @default(false) @map("remote_was_deleted")
   name             String?
   email            String?
-  isActive         Boolean?  @map("is_active")
-  remoteCreatedAt  DateTime? @map("remote_created_at")
-  remoteUpdatedAt  DateTime? @map("remote_updated_at")
-  createdAt        DateTime  @default(now()) @map("created_at")
-  updatedAt        DateTime  @updatedAt @map("updated_at")
+  isActive         Boolean?         @map("is_active")
+  remoteCreatedAt  DateTime?        @map("remote_created_at")
+  remoteUpdatedAt  DateTime?        @map("remote_updated_at")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  leads            CrmLead[]
+  opportunities    CrmOpportunity[]
+  contacts         CrmContact[]
+  accounts         CrmAccount[]
 
   @@unique([connectionId, remoteId])
   @@map("crm_users")

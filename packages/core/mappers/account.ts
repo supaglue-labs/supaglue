@@ -1,25 +1,31 @@
-import type { CrmAccount } from '@supaglue/db';
 import { v4 as uuidv4 } from 'uuid';
-import { Account, Address, PhoneNumber, RemoteAccount } from '../types';
+import { Account, Address, CrmAccountExpanded, PhoneNumber, RemoteAccount } from '../types';
+import { fromUserModel } from './user';
 
-export const fromAccountModel = ({
-  id,
-  remoteWasDeleted,
-  owner,
-  name,
-  description,
-  industry,
-  website,
-  numberOfEmployees,
-  addresses,
-  phoneNumbers,
-  lastActivityAt,
-  remoteCreatedAt,
-  remoteUpdatedAt,
-}: CrmAccount): Account => {
+export const fromAccountModel = (
+  {
+    id,
+    remoteWasDeleted,
+    ownerId,
+    owner,
+    name,
+    description,
+    industry,
+    website,
+    numberOfEmployees,
+    addresses,
+    phoneNumbers,
+    lastActivityAt,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+  }: CrmAccountExpanded,
+  expandedAssociations: string[] = []
+): Account => {
+  const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
-    owner,
+    ownerId,
+    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     name,
     description,
     industry,
@@ -42,7 +48,6 @@ export const fromRemoteAccountToDbAccountParams = (
 ) => {
   return {
     id: uuidv4(),
-    owner: remoteAccount.owner,
     name: remoteAccount.name,
     description: remoteAccount.description,
     industry: remoteAccount.industry,
@@ -55,6 +60,7 @@ export const fromRemoteAccountToDbAccountParams = (
     remote_created_at: remoteAccount.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteAccount.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteAccount.remoteWasDeleted,
+    _remote_owner_id: remoteAccount.remoteOwnerId,
     customer_id: customerId,
     connection_id: connectionId,
     updated_at: new Date().toISOString(),
