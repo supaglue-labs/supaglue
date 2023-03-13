@@ -7,3 +7,4 @@ export * from './integration';
 export * from './lead';
 export * from './opportunity';
 export * from './sync_history';
+export * from './user';
