@@ -1,4 +1,4 @@
-import { ContactService, LeadService, OpportunityService } from '@supaglue/core/services';
+import { AccountService, ContactService, LeadService, OpportunityService } from '@supaglue/core/services';
 import { Context } from '@temporalio/activity';
 
 export type PopulateAssociationsArgs = {
@@ -6,6 +6,7 @@ export type PopulateAssociationsArgs = {
 };
 
 export function createPopulateAssociations(
+  accountService: AccountService,
   contactService: ContactService,
   opportunityService: OpportunityService,
   leadService: LeadService
@@ -22,6 +23,18 @@ export function createPopulateAssociations(
     Context.current().heartbeat();
 
     await leadService.updateDanglingContacts(connectionId);
+    Context.current().heartbeat();
+
+    await accountService.updateDanglingOwners(connectionId);
+    Context.current().heartbeat();
+
+    await contactService.updateDanglingOwners(connectionId);
+    Context.current().heartbeat();
+
+    await leadService.updateDanglingOwners(connectionId);
+    Context.current().heartbeat();
+
+    await opportunityService.updateDanglingOwners(connectionId);
     Context.current().heartbeat();
   };
 }

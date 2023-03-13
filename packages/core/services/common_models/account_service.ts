@@ -1,3 +1,4 @@
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
@@ -142,5 +143,22 @@ export class AccountService extends CommonModelBaseService {
       columnsWithoutId,
       fromRemoteAccountToDbAccountParams
     );
+  }
+
+  public async updateDanglingOwners(connectionId: string): Promise<void> {
+    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
+    const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${accountsTable} c
+      SET owner_id = u.id
+      FROM ${usersTable} u
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = u.connection_id
+        AND c.owner_id IS NULL
+        AND c._remote_owner_id IS NOT NULL
+        AND c._remote_owner_id = u.remote_id
+      `);
   }
 }

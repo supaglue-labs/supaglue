@@ -183,4 +183,21 @@ export class LeadService extends CommonModelBaseService {
         AND l._converted_remote_contact_id = c.remote_id
       `);
   }
+
+  public async updateDanglingOwners(connectionId: string): Promise<void> {
+    const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
+    const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${leadsTable} c
+      SET owner_id = u.id
+      FROM ${usersTable} u
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = u.connection_id
+        AND c.owner_id IS NULL
+        AND c._remote_owner_id IS NOT NULL
+        AND c._remote_owner_id = u.remote_id
+      `);
+  }
 }
