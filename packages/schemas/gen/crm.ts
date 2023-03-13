@@ -68,6 +68,23 @@ export interface paths {
       };
     };
   };
+  "/users": {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    get: operations["getUsers"];
+    
+  };
+  "/users/{user_id}": {
+    /** Get user */
+    get: operations["getUser"];
+    parameters: {
+      path: {
+        user_id: string;
+      };
+    };
+  };
   "/opportunities": {
     /**
      * List opportunities 
@@ -111,68 +128,6 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /**
-     * @example [
-     *   {
-     *     "addresses": [
-     *       {
-     *         "address_type": "Shipping",
-     *         "city": "San Francisco",
-     *         "country": "US",
-     *         "postal_code": "94107",
-     *         "state": "CA",
-     *         "street_1": "525 Brannan",
-     *         "street_2": null
-     *       }
-     *     ],
-     *     "description": "Integration API",
-     *     "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
-     *     "industry": "APIs",
-     *     "last_activity_at": "2022-02-10T00:00:00Z",
-     *     "name": "Sample Customer",
-     *     "number_of_employees": 224,
-     *     "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-     *     "phone_numbers": [
-     *       {
-     *         "phone_number": "+14151234567",
-     *         "phone_number_type": "Mobile"
-     *       }
-     *     ],
-     *     "created_at": "2022-02-27T00:00:00Z",
-     *     "updated_at": "2022-02-27T00:00:00Z",
-     *     "website": "https://supaglue.com/"
-     *   },
-     *   {
-     *     "addresses": [
-     *       {
-     *         "address_type": "Shipping",
-     *         "city": "San Francisco",
-     *         "country": "US",
-     *         "postal_code": "94107",
-     *         "state": "CA",
-     *         "street_1": "525 Brannan",
-     *         "street_2": null
-     *       }
-     *     ],
-     *     "description": "Integration API",
-     *     "id": "3bde961a-90da-4daa-ab2e-cc4498c460f9",
-     *     "industry": "APIs",
-     *     "last_activity_at": "2022-02-27T00:00:00Z",
-     *     "name": "Sample Customer",
-     *     "number_of_employees": 1000,
-     *     "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-     *     "phone_numbers": [
-     *       {
-     *         "phone_number": "+14151234567",
-     *         "phone_number_type": "Mobile"
-     *       }
-     *     ],
-     *     "created_at": "2022-02-27T00:00:00Z",
-     *     "updated_at": "2022-02-27T00:00:00Z",
-     *     "website": "https://supaglue.com/"
-     *   }
-     * ]
-     */
     account: {
       addresses?: components["schemas"]["addresses"];
       /** @example Integration API */
@@ -359,6 +314,23 @@ export interface components {
       stage?: string | null;
       /** @example OPEN */
       status?: string | null;
+    };
+    user: {
+      /** @example George Xing */
+      name?: string | null;
+      /** @example george@supaglue.com */
+      email?: string | null;
+      is_active?: boolean | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      created_at?: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      updated_at?: Date | null;
     };
     create_update_opportunity: {
       /** @example 100000 */
@@ -782,6 +754,33 @@ export interface operations {
             model?: components["schemas"]["lead"];
             warnings?: components["schemas"]["warnings"];
           };
+        };
+      };
+    };
+  };
+  getUsers: {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    responses: {
+      /** @description Users */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["user"])[];
+          };
+        };
+      };
+    };
+  };
+  getUser: {
+    /** Get user */
+    responses: {
+      /** @description User */
+      200: {
+        content: {
+          "application/json": components["schemas"]["user"];
         };
       };
     };

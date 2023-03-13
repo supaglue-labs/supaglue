@@ -3070,9 +3070,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hubspot/api-client@npm:^8.6.0":
-  version: 8.6.0
-  resolution: "@hubspot/api-client@npm:8.6.0"
+"@hubspot/api-client@npm:8.3.2":
+  version: 8.3.2
+  resolution: "@hubspot/api-client@npm:8.3.2"
   dependencies:
     "@types/node-fetch": ^2.5.7
     bottleneck: ^2.19.5
@@ -3082,7 +3082,7 @@ __metadata:
     lodash.merge: ^4.6.2
     node-fetch: ^2.6.0
     url-parse: ^1.4.3
-  checksum: c1c2bdddd324a2fe00ce9680f57425819efede1c261ab4e17d7633c221b246d6dcb3f72a58774e30deb1a5677c3c8d5e34703373a8f5c3623ea927ffd492bbca
+  checksum: 965c25c5265f9dc43cce88291d3a8144f28fea12f90e0b1ec2ed04c0cc396da3d3994fc93041b3f04ff330f16b0ec1d26d83445e0f7de47069d5e1d2d9e9568c
   languageName: node
   linkType: hard
 
@@ -3949,7 +3949,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/core@workspace:packages/core"
   dependencies:
-    "@hubspot/api-client": ^8.6.0
+    "@hubspot/api-client": 8.3.2
     "@supaglue/db": "workspace:*"
     "@tsconfig/node18": ^1.0.1
     "@types/async-retry": ^1
@@ -3957,6 +3957,7 @@ __metadata:
     "@types/pg-copy-streams": ^1.2.2
     "@types/uuid": ^9.0.1
     async-retry: ^1.3.3
+    axios: ^1.3.4
     csv-parse: ^5.3.5
     csv-stringify: ^6.3.0
     jsforce: ^2.0.0-beta.20
@@ -5965,6 +5966,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.3.4":
+  version: 1.3.4
+  resolution: "axios@npm:1.3.4"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 7440edefcf8498bc3cdf39de00443e8101f249972c83b739c6e880d9d669fea9486372dbe8739e88b3bf8bb1ad15f6106693f206f078f4516fe8fd47b1c3093c
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^3.1.1":
   version: 3.1.1
   resolution: "axobject-query@npm:3.1.1"
@@ -6441,6 +6453,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"camelcase-keys@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "camelcase-keys@npm:8.0.2"
+  dependencies:
+    camelcase: ^7.0.0
+    map-obj: ^4.3.0
+    quick-lru: ^6.1.1
+    type-fest: ^2.13.0
+  checksum: 878fdaffa55737486101845232b2bc017fec95e06711d8a4133461cabf2432b55a59b20ff6afafce9b48a5629f25181bac3ecb10023032d3eb7cf3247c6e34f6
+  languageName: node
+  linkType: hard
+
 "camelcase@npm:^5.3.1":
   version: 5.3.1
   resolution: "camelcase@npm:5.3.1"
@@ -6452,6 +6476,13 @@ __metadata:
   version: 6.3.0
   resolution: "camelcase@npm:6.3.0"
   checksum: 8c96818a9076434998511251dcb2761a94817ea17dbdc37f47ac080bd088fc62c7369429a19e2178b993497132c8cbcf5cc1f44ba963e76782ba469c0474938d
+  languageName: node
+  linkType: hard
+
+"camelcase@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "camelcase@npm:7.0.1"
+  checksum: 86ab8f3ebf08bcdbe605a211a242f00ed30d8bfb77dab4ebb744dd36efbc84432d1c4adb28975ba87a1b8be40a80fbd1e60e2f06565315918fa7350011a26d3d
   languageName: node
   linkType: hard
 
@@ -9298,7 +9329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.7, follow-redirects@npm:^1.14.9":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.7, follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.0":
   version: 1.15.2
   resolution: "follow-redirects@npm:1.15.2"
   peerDependenciesMeta:
@@ -11809,7 +11840,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"map-obj@npm:^4.0.0, map-obj@npm:^4.1.0":
+"map-obj@npm:^4.0.0, map-obj@npm:^4.1.0, map-obj@npm:^4.3.0":
   version: 4.3.0
   resolution: "map-obj@npm:4.3.0"
   checksum: fbc554934d1a27a1910e842bc87b177b1a556609dd803747c85ece420692380827c6ae94a95cce4407c054fa0964be3bf8226f7f2cb2e9eeee432c7c1985684e
@@ -11978,6 +12009,7 @@ __metadata:
     "@types/react": 18.0.28
     "@types/react-dom": 18.0.11
     autoprefixer: ^10.4.13
+    camelcase-keys: ^8.0.2
     dayjs: ^1.11.7
     eslint: 8.35.0
     eslint-config-next: 13.2.3
@@ -11985,6 +12017,7 @@ __metadata:
     postcss: ^8.4.21
     react: 18.2.0
     react-dom: 18.2.0
+    snakecase-keys: ^5.4.5
     swr: ^2.1.0
     tailwindcss: ^3.2.7
     typescript: 4.9.5
@@ -14285,6 +14318,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proxy-from-env@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "proxy-from-env@npm:1.1.0"
+  checksum: ed7fcc2ba0a33404958e34d95d18638249a68c430e30fcb6c478497d72739ba64ce9810a24f53a7d921d0c065e5b78e3822759800698167256b04659366ca4d4
+  languageName: node
+  linkType: hard
+
 "psl@npm:^1.1.33":
   version: 1.9.0
   resolution: "psl@npm:1.9.0"
@@ -14396,6 +14436,13 @@ __metadata:
   version: 5.1.1
   resolution: "quick-lru@npm:5.1.1"
   checksum: a516faa25574be7947969883e6068dbe4aa19e8ef8e8e0fd96cddd6d36485e9106d85c0041a27153286b0770b381328f4072aa40d3b18a19f5f7d2b78b94b5ed
+  languageName: node
+  linkType: hard
+
+"quick-lru@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "quick-lru@npm:6.1.1"
+  checksum: a9c75bf1d208c1d207590e10403a75d037f9faf7857f2e0d38c294d92b40d8b400776bcb5d4dd516baa84e6f5e3baf2a16cf405e6fedc18107922f46aeae83ee
   languageName: node
   linkType: hard
 
@@ -17109,7 +17156,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^2.5.0, type-fest@npm:^2.5.2":
+"type-fest@npm:^2.13.0, type-fest@npm:^2.5.0, type-fest@npm:^2.5.2":
   version: 2.19.0
   resolution: "type-fest@npm:2.19.0"
   checksum: a4ef07ece297c9fba78fc1bd6d85dff4472fe043ede98bd4710d2615d15776902b595abf62bd78339ed6278f021235fb28a96361f8be86ed754f778973a0d278

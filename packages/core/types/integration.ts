@@ -6,16 +6,21 @@ export type BaseIntegration = {
   id: string;
   applicationId: string;
   authType: 'oauth2';
+  category: IntegrationCategory;
+  providerName: CRMProviderName;
+  isEnabled: boolean;
+};
+
+export type IncompleteCRMIntegration = BaseIntegration & {
+  config?: IntegrationConfig;
+};
+
+export type CRMIntegration = IncompleteCRMIntegration & {
   config: IntegrationConfig;
 };
 
-export type CRMIntegration = BaseIntegration & {
-  category: IntegrationCategory;
-  providerName: CRMProviderName;
-};
-
 export type IntegrationConfig = {
-  remoteProviderAppId: string;
+  providerAppId: string;
   oauth: OauthConfig;
   sync: SyncConfig;
 };
@@ -30,8 +35,9 @@ export type OauthCredentials = {
   oauthClientSecret: string;
 };
 
-type BaseCRMIntegrationCreateParams = Omit<CRMIntegration, 'id'>;
+type BaseCRMIntegrationCreateParams = Omit<IncompleteCRMIntegration, 'id'>;
+type BaseCRMIntegrationUpdateParams = Omit<IncompleteCRMIntegration, 'id'>;
 export type CRMIntegrationCreateParams = BaseCRMIntegrationCreateParams;
-export type CRMIntegrationUpdateParams = BaseCRMIntegrationCreateParams;
+export type CRMIntegrationUpdateParams = BaseCRMIntegrationUpdateParams;
 
 export type Integration = CRMIntegration;

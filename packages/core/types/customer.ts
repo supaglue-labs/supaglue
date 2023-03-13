@@ -1,14 +1,23 @@
-export type Customer = {
-  id: string;
-  applicationId: string;
-  createdAt: Date;
-  updatedAt: Date;
+import type { Customer as CustomerModel } from '@supaglue/db';
+import { Connection as ConnectionModel } from '@supaglue/db';
+import { Connection } from '../types/connection';
 
-  // TODO: add fields
+export type CustomerModelExpanded = CustomerModel & {
+  connections?: ConnectionModel[] | null;
 };
-export type BaseCustomer = Customer & {
-  // TODO: add fields
+
+export type BaseCustomer = {
+  applicationId: string;
+  externalIdentifier: string;
+  name: string;
+  email: string;
 };
-export type BaseCustomerCreateParams = Omit<Omit<Omit<BaseCustomer, 'id'>, 'createdAt'>, 'updatedAt'>;
-export type CustomerCreateParams = BaseCustomerCreateParams;
-export type CustomerUpdateParams = BaseCustomerCreateParams;
+
+export type Customer = BaseCustomer & {
+  id: string;
+  connections?: Connection[];
+};
+
+export type BaseCustomerCreateParams = BaseCustomer;
+
+export type CustomerUpsertParams = BaseCustomerCreateParams;

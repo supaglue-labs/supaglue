@@ -1,0 +1,58 @@
+get:
+  operationId: getApplications
+  tags:
+    - Applications
+  summary: List applications
+  description: >-
+    Get a list of applications
+  responses:
+    '200':
+      description: Applications
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/application.yaml
+          examples:
+            Example:
+              value:
+                - id: e888cedf-e9d0-42c5-9485-2d72984faef9
+                  name: my-app
+                  config:
+                  - webhook: 
+                    - url: http://localhost:8080
+                      request_type: POST
+                      notify_on_sync_success: true
+                      notify_on_sync_error: true
+                      notify_on_connection_success: true
+                      notify_on_connection_error: true
+                - id: 0623bf1c-3f71-4d53-ab11-f92ae72833c0
+                  name: my-app
+                  config:
+                  - webhook: 
+                    - url: http://localhost:8081
+                      request_type: POST
+                      notify_on_sync_success: true
+                      notify_on_sync_error: false
+                      notify_on_connection_success: true
+                      notify_on_connection_error: false
+post:
+  operationId: createApplication
+  summary: Create application
+  tags:
+    - Applications
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_update_application.yaml
+  responses:
+    '201':
+      description: Application created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/application.yaml

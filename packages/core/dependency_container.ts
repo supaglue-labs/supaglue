@@ -11,6 +11,7 @@ import {
   OpportunityService,
   RemoteService,
   SyncHistoryService,
+  UserService,
 } from './services';
 
 export type CoreDependencyContainer = {
@@ -28,6 +29,7 @@ export type CoreDependencyContainer = {
   contactService: ContactService;
   leadService: LeadService;
   opportunityService: OpportunityService;
+  userService: UserService;
   syncHistoryService: SyncHistoryService;
 };
 
@@ -51,6 +53,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const opportunityService = new OpportunityService(pgPool, prisma, remoteService);
   const contactService = new ContactService(pgPool, prisma, remoteService);
   const syncHistoryService = new SyncHistoryService(prisma);
+  const userService = new UserService(pgPool, prisma, remoteService);
 
   return {
     pgPool,
@@ -65,6 +68,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     accountService,
     leadService,
     opportunityService,
+    userService,
     syncHistoryService,
   };
 }

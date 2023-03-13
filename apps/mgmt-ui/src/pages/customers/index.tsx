@@ -1,18 +1,17 @@
 import CustomerCard from '@/components/customers/CustomerCard';
 import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
+import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
 import providerToIcon from '@/utils/providerToIcon';
 import { CloudUploadOutlined, Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
-import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import { useState } from 'react';
 
-const inter = Inter({ subsets: ['latin'] });
-
 export default function Home() {
   const { customers = [] } = useCustomers();
+  const { syncHistory = [] } = useSyncHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // TODO: count this on server?
@@ -48,7 +47,7 @@ export default function Home() {
               />
             </Grid>
             <Grid item xs={4}>
-              <MetricCard icon={<CloudUploadOutlined />} title="Total API requests/month" value="-- API requests" />
+              <MetricCard icon={<CloudUploadOutlined />} title="Total syncs" value={`${syncHistory.length} syncs`} />
             </Grid>
             <Grid item xs={4}>
               <MetricCard icon={<Link />} title="Total connections" value={`${totalConnections} connections`} />
@@ -59,11 +58,12 @@ export default function Home() {
           <Typography variant="subtitle2">A list of customers with connections linked to your application.</Typography>
           <Divider className="my-4" />
           <Stack spacing={2}>
+            {customers.length === 0 && 'No customers found.'}
             {customers.map((customer: any /* get type from monorepo */) => (
               <CustomerCard
                 key={customer.id}
-                email="customer@email.com"
-                company="Company"
+                email={customer.email}
+                company={customer.name}
                 metric={`${customer?.connections.length} connection(s)`}
                 id={customer.id}
                 icon={providerToIcon(customer?.connections[0]?.providerName)}

@@ -147,13 +147,19 @@ async function seedApplication() {
 async function seedCustomers() {
   // Create customers
   await Promise.all(
-    CUSTOMER_IDS.map((id) =>
+    CUSTOMER_IDS.map((id, idx) =>
       prisma.customer.upsert({
         where: {
           id,
         },
         update: {},
-        create: { id, applicationId: APPLICATION_ID },
+        create: {
+          id,
+          applicationId: APPLICATION_ID,
+          name: `customer-${idx}`,
+          email: `customer-${idx}@email.com`,
+          externalIdentifier: `external-customer-${idx}`,
+        },
       })
     )
   );
@@ -174,8 +180,9 @@ async function seedCRMIntegrations() {
           category: 'crm',
           providerName: SUPPORTED_CRM_CONNECTIONS[idx],
           authType: 'oauth2',
+          isEnabled: true,
           config: {
-            providerNameAppId: OAUTH_APP_IDS[idx],
+            providerAppId: OAUTH_APP_IDS[idx],
             oauth: {
               oauthScopes: OAUTH_SCOPES[idx]?.split(','),
               credentials: {

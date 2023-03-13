@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.3.3",
+    "version": "0.3.4",
     "title": "Supaglue CRM API",
     "contact": {
       "name": "Supaglue",
@@ -123,7 +123,7 @@
                             }
                           ],
                           "description": "Integration API",
-                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6b",
                           "industry": "APIs",
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Sample Customer",
@@ -253,7 +253,7 @@
                         }
                       ],
                       "description": "Integration API",
-                      "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                      "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6c",
                       "industry": "API's",
                       "last_activity_at": "2022-02-10T00:00:00Z",
                       "name": "Supaglue",
@@ -971,6 +971,138 @@
         }
       ]
     },
+    "/users": {
+      "get": {
+        "operationId": "getUsers",
+        "tags": [
+          "Users"
+        ],
+        "summary": "List users",
+        "description": "Get a list of users",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/updated_after"
+          },
+          {
+            "$ref": "#/components/parameters/updated_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/expand"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/user"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "name": "George Xing",
+                          "email": "george@supaglue.com",
+                          "is_active": true,
+                          "created_at": "2021-11-10T00:00:00Z",
+                          "updated_at": "2022-01-09T00:00:00Z"
+                        },
+                        {
+                          "id": "a0f8385c-4947-41d2-a276-740f792bb0e6",
+                          "name": "Thomas Chen",
+                          "email": "tom@supaglue.com",
+                          "is_active": true,
+                          "created_at": "2021-11-10T00:00:00Z",
+                          "updated_at": "2022-01-09T00:00:00Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        }
+      ]
+    },
+    "/users/{user_id}": {
+      "get": {
+        "operationId": "getUser",
+        "summary": "Get user",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/provider-name"
+        },
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/opportunities": {
       "get": {
         "operationId": "getOpportunities",
@@ -1453,6 +1585,10 @@
       "description": "The `Opportunity` Common Model is used to represent a \"deal opportunity\" in CRMs."
     },
     {
+      "name": "Users",
+      "description": "The `User` Common Model is used to represent a \"user\" that can login to CRMs."
+    },
+    {
       "name": "Sync",
       "description": "Get information and history for the sync process."
     }
@@ -1520,67 +1656,7 @@
             "nullable": true,
             "example": "https://supaglue.com/"
           }
-        },
-        "example": [
-          {
-            "addresses": [
-              {
-                "address_type": "Shipping",
-                "city": "San Francisco",
-                "country": "US",
-                "postal_code": "94107",
-                "state": "CA",
-                "street_1": "525 Brannan",
-                "street_2": null
-              }
-            ],
-            "description": "Integration API",
-            "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
-            "industry": "APIs",
-            "last_activity_at": "2022-02-10T00:00:00Z",
-            "name": "Sample Customer",
-            "number_of_employees": 224,
-            "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-            "phone_numbers": [
-              {
-                "phone_number": "+14151234567",
-                "phone_number_type": "Mobile"
-              }
-            ],
-            "created_at": "2022-02-27T00:00:00Z",
-            "updated_at": "2022-02-27T00:00:00Z",
-            "website": "https://supaglue.com/"
-          },
-          {
-            "addresses": [
-              {
-                "address_type": "Shipping",
-                "city": "San Francisco",
-                "country": "US",
-                "postal_code": "94107",
-                "state": "CA",
-                "street_1": "525 Brannan",
-                "street_2": null
-              }
-            ],
-            "description": "Integration API",
-            "id": "3bde961a-90da-4daa-ab2e-cc4498c460f9",
-            "industry": "APIs",
-            "last_activity_at": "2022-02-27T00:00:00Z",
-            "name": "Sample Customer",
-            "number_of_employees": 1000,
-            "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-            "phone_numbers": [
-              {
-                "phone_number": "+14151234567",
-                "phone_number_type": "Mobile"
-              }
-            ],
-            "created_at": "2022-02-27T00:00:00Z",
-            "updated_at": "2022-02-27T00:00:00Z",
-            "website": "https://supaglue.com/"
-          }
-        ]
+        }
       },
       "create_update_account": {
         "type": "object",
@@ -1883,6 +1959,37 @@
             "type": "string",
             "nullable": true,
             "example": "OPEN"
+          }
+        }
+      },
+      "user": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "George Xing"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "example": "george@supaglue.com"
+          },
+          "is_active": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
           }
         }
       },

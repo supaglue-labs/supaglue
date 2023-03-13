@@ -1,12 +1,15 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
 import type {
   AccountService,
+  ApplicationService,
   ConnectionService,
   ContactService,
+  IntegrationService,
   LeadService,
   OpportunityService,
   RemoteService,
   SyncHistoryService,
+  UserService,
 } from '@supaglue/core/services';
 import type { PrismaClient } from '@supaglue/db';
 
@@ -17,8 +20,11 @@ type DependencyContainer = {
   remoteService: RemoteService;
   accountService: AccountService;
   leadService: LeadService;
+  userService: UserService;
   opportunityService: OpportunityService;
   syncHistoryService: SyncHistoryService;
+  integrationService: IntegrationService;
+  applicationService: ApplicationService;
 };
 
 // global
@@ -32,8 +38,11 @@ function createDependencyContainer(): DependencyContainer {
     remoteService,
     accountService,
     leadService,
+    userService,
     opportunityService,
     syncHistoryService,
+    integrationService,
+    applicationService,
   } = getCoreDependencyContainer();
 
   return {
@@ -43,8 +52,11 @@ function createDependencyContainer(): DependencyContainer {
     remoteService,
     accountService,
     leadService,
+    userService,
     opportunityService,
     syncHistoryService,
+    integrationService,
+    applicationService,
   };
 }
 

@@ -2,24 +2,32 @@ import { Client } from '@hubspot/api-client';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedCompanies } from '@hubspot/api-client/lib/codegen/crm/companies';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
+import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
 import { logger } from '../../../lib';
-import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
-import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
-import { Integration } from '../../../types/integration';
-import { RemoteLead, RemoteLeadCreateParams, RemoteLeadUpdateParams } from '../../../types/lead';
 import {
+  RemoteAccount,
+  RemoteAccountCreateParams,
+  RemoteAccountUpdateParams,
+  RemoteContact,
+  RemoteContactCreateParams,
+  RemoteContactUpdateParams,
+  RemoteLead,
+  RemoteLeadCreateParams,
+  RemoteLeadUpdateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/opportunity';
+} from '../../../types/crm';
+import { Integration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
   fromHubSpotContactToRemoteContact,
   fromHubSpotDealToRemoteOpportunity,
+  fromHubspotOwnerToRemoteUser,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
   toHubspotContactCreateParams,
@@ -34,7 +42,7 @@ const ASYNC_RETRY_OPTIONS = {
   forever: true,
   factor: 2,
   minTimeout: 1000,
-  maxTimeout: 60 * 6000,
+  maxTimeout: 60 * 1000,
 };
 
 const propertiesToFetch = {
@@ -112,7 +120,6 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     const { accessToken } = credentials;
     this.#client = new Client({
       accessToken,
-      numberOfApiCallRetries: 1,
     });
     this.#credentials = credentials;
   }
@@ -145,7 +152,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     (async () => {
       let after = undefined;
       do {
-        const currResults: HubspotPaginatedDeals = await this.listAccountsImpl(after);
+        const currResults: HubspotPaginatedCompanies = await this.listAccountsImpl(after);
         const remoteAccounts = currResults.results.map(fromHubSpotCompanyToRemoteAccount);
         after = currResults.paging?.next?.after;
 
@@ -374,6 +381,51 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
 
   public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
     throw new Error('Not supported');
+  }
+
+  public async listUsers(): Promise<Readable> {
+    const passThrough = new PassThrough({ objectMode: true });
+
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedOwners = await this.listUsersImpl(after);
+        const remoteAccounts = currResults.results.map(fromHubspotOwnerToRemoteUser);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteAccounts);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
+    return passThrough;
+  }
+
+  private async listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
+    const helper = async () => {
+      try {
+        await this.maybeRefreshAccessToken();
+        const owners = await this.#client.crm.owners.ownersApi.getPage(
+          /* email */ undefined,
+          after,
+          HUBSPOT_RECORD_LIMIT
+        );
+        return owners;
+      } catch (e: any) {
+        logger.error(`Error encountered: ${e}`);
+        throw e;
+      }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
   }
 }
 

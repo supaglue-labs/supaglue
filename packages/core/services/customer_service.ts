@@ -1,7 +1,7 @@
-import type { Customer, PrismaClient } from '@supaglue/db';
+import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
 import { fromCustomerModel } from '../mappers/customer';
-import { CustomerCreateParams, CustomerUpdateParams } from '../types/customer';
+import { Customer, CustomerUpsertParams } from '../types/customer';
 
 export class CustomerService {
   #prisma: PrismaClient;
@@ -22,21 +22,24 @@ export class CustomerService {
 
   // TODO: paginate
   public async list(): Promise<Customer[]> {
-    const customers = await this.#prisma.customer.findMany();
-    return customers.map((customer) => fromCustomerModel(customer));
-  }
-
-  public async create(customer: CustomerCreateParams): Promise<Customer> {
-    const createdCustomer = await this.#prisma.customer.create({
-      data: customer,
+    const customers = await this.#prisma.customer.findMany({
+      include: {
+        connections: true,
+      },
     });
-    return fromCustomerModel(createdCustomer);
+    return customers.map((customer) => fromCustomerModel(customer, true));
   }
 
-  public async update(id: string, customer: CustomerUpdateParams): Promise<Customer> {
-    const updatedCustomer = await this.#prisma.customer.update({
-      where: { id },
-      data: customer,
+  public async upsert(customer: CustomerUpsertParams): Promise<Customer> {
+    const updatedCustomer = await this.#prisma.customer.upsert({
+      where: {
+        applicationId_externalIdentifier: {
+          applicationId: customer.applicationId,
+          externalIdentifier: customer.externalIdentifier,
+        },
+      }, // TODO: (SUP1-58) applicationId should come from the session for security
+      create: customer,
+      update: customer,
     });
     return fromCustomerModel(updatedCustomer);
   }

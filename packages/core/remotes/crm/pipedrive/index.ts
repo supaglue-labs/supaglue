@@ -85,6 +85,10 @@ class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteCl
   public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
     throw new Error('Not implemented');
   }
+
+  public async listUsers(): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection

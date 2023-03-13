@@ -5,16 +5,22 @@
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { PassThrough, pipeline, Readable, Transform } from 'stream';
-import { AccountCreateParams, RemoteAccount, RemoteAccountUpdateParams } from '../../../types/account';
 import { CRMConnection } from '../../../types/connection';
-import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
-import { Integration } from '../../../types/integration';
-import { RemoteLead, RemoteLeadCreateParams, RemoteLeadUpdateParams } from '../../../types/lead';
 import {
+  AccountCreateParams,
+  RemoteAccount,
+  RemoteAccountUpdateParams,
+  RemoteContact,
+  RemoteContactCreateParams,
+  RemoteContactUpdateParams,
+  RemoteLead,
+  RemoteLeadCreateParams,
+  RemoteLeadUpdateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/opportunity';
+} from '../../../types/crm';
+import { Integration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
@@ -464,6 +470,11 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
       throw new Error('Failed to update Salesforce lead');
     }
     return await this.getLead(response.id);
+  }
+
+  public async listUsers(): Promise<Readable> {
+    // TODO: Implement salesforce users
+    return Readable.from([]);
   }
 }
 

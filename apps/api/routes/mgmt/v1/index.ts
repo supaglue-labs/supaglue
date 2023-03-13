@@ -1,12 +1,13 @@
+import { openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
-import customer from './customer';
-import integration from './integration';
+import application from './application';
 
 export default function init(app: Router): void {
   const v1Router = Router();
 
-  customer(v1Router);
-  integration(v1Router);
+  v1Router.use(openapiMiddleware('mgmt'));
+
+  application(v1Router);
 
   app.use('/v1', v1Router);
 }

@@ -15,10 +15,10 @@ export default function StatusCodeSelect() {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth size="small">
-        <InputLabel id="demo-simple-select-label">Status Code</InputLabel>
+        <InputLabel id="status-code-select-label">Status Code</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          labelId="status-code-select-label"
+          id="status-code-select"
           value={code}
           label="Status Code"
           onChange={handleChange}

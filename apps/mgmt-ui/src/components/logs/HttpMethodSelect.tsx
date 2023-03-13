@@ -15,10 +15,10 @@ export default function HttpMethodSelect() {
   return (
     <Box sx={{ minWidth: 120 }}>
       <FormControl fullWidth size="small">
-        <InputLabel id="demo-simple-select-label">Http Method</InputLabel>
+        <InputLabel id="http-method-select-label">Http Method</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          labelId="http-method-select-label"
+          id="http-method-select"
           value={method}
           label="Http Method"
           onChange={handleChange}

@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supaglue}
 
   api:
-    image: supaglue/api:0.3.3
+    image: supaglue/api:0.3.4
     ports:
       - '8080:8080'
     depends_on:
@@ -29,7 +29,7 @@ services:
     restart: on-failure
 
   sync-worker:
-    image: supaglue/sync-worker:0.3.3
+    image: supaglue/sync-worker:0.3.4
     depends_on:
       postgres:
         condition: service_started

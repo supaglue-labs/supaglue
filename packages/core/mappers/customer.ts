@@ -1,10 +1,17 @@
-import type { Customer, Customer as CustomerModel } from '@supaglue/db';
+import { Customer, CustomerModelExpanded } from '../types/customer';
+import { fromConnectionModel } from './connection';
 
-export const fromCustomerModel = ({ id, applicationId, createdAt, updatedAt }: CustomerModel): Customer => {
+export const fromCustomerModel = (
+  { id, applicationId, externalIdentifier, name, email, connections }: CustomerModelExpanded,
+  includeRelations = false
+): Customer => {
   return {
     id,
     applicationId,
-    createdAt,
-    updatedAt,
-  } as Customer;
+    externalIdentifier,
+    name,
+    email,
+    connections:
+      includeRelations && connections ? connections.map((connection) => fromConnectionModel(connection)) : undefined,
+  };
 };

@@ -1,14 +1,15 @@
 {
   "name": "@supaglue/core",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "private": true,
   "index": "dist/index.js",
   "types": "index.ts",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
-    "@hubspot/api-client": "^8.6.0",
+    "@hubspot/api-client": "8.3.2",
     "@supaglue/db": "workspace:*",
     "async-retry": "^1.3.3",
+    "axios": "^1.3.4",
     "csv-parse": "^5.3.5",
     "csv-stringify": "^6.3.0",
     "jsforce": "^2.0.0-beta.20",
