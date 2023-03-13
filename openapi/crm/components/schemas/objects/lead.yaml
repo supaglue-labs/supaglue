@@ -44,6 +44,8 @@ properties:
     type: string
     nullable: true
     example: 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2
+  owner:
+    $ref: ./user.yaml
   phone_numbers:
     $ref: ./phone_numbers.yaml
   created_at:

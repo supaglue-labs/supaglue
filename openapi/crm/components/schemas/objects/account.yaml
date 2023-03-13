@@ -30,6 +30,8 @@ properties:
     type: string
     nullable: true
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+  owner:
+    $ref: ./user.yaml
   phone_numbers:
     $ref: './phone_numbers.yaml'
   created_at:
