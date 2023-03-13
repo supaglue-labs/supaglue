@@ -473,7 +473,8 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
   }
 
   public async listUsers(): Promise<Readable> {
-    throw new Error('Not implemented');
+    // TODO: Implement salesforce users
+    return Readable.from([]);
   }
 }
 
