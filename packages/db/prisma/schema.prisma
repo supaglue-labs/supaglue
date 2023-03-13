@@ -187,6 +187,24 @@ model CrmOpportunity {
   @@map("crm_opportunities")
 }
 
+model CrmUser {
+  id               String    @id @default(uuid())
+  remoteId         String    @map("remote_id")
+  customerId       String    @map("customer_id")
+  connectionId     String    @map("connection_id")
+  remoteWasDeleted Boolean   @default(false) @map("remote_was_deleted")
+  name             String?
+  email            String?
+  isActive         Boolean?  @map("is_active")
+  remoteCreatedAt  DateTime? @map("remote_created_at")
+  remoteUpdatedAt  DateTime? @map("remote_updated_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@unique([connectionId, remoteId])
+  @@map("crm_users")
+}
+
 model SyncHistory {
   id             Int        @id @default(autoincrement())
   // contact, lead, account, opportunity, etc.
