@@ -1,6 +1,6 @@
-import { ListParams } from '@/../../packages/core/types/common';
 import { getDependencyContainer } from '@/dependency_container';
 import { snakecaseKeys } from '@/lib/snakecase';
+import { ListParams } from '@supaglue/core/types/common';
 import {
   GetUserPathParams,
   GetUserRequest,
