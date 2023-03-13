@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeys } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
-import { ListParams } from '@supaglue/core/types';
+import { GetParams, ListParams } from '@supaglue/core/types';
 import {
   CreateContactPathParams,
   CreateContactRequest,
@@ -47,7 +47,7 @@ export default function init(app: Router): void {
   router.get(
     '/:contact_id',
     async (
-      req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, /* GetContactQueryParams */ ListParams>,
+      req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, /* GetContactQueryParams */ GetParams>,
       res: Response<GetContactResponse>
     ) => {
       const contact = await contactService.getById(req.params.contact_id, req.customerConnection.id, req.query);

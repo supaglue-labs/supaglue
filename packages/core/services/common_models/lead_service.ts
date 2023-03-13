@@ -21,6 +21,7 @@ export class LeadService extends CommonModelBaseService {
       include: {
         convertedAccount: expandedAssociations.includes('converted_account'),
         convertedContact: expandedAssociations.includes('converted_contact'),
+        owner: expandedAssociations.includes('owner'),
       },
     });
     if (!model) {

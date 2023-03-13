@@ -25,6 +25,9 @@ export class AccountService extends CommonModelBaseService {
     const expandedAssociations = getExpandedAssociations(expand);
     const model = await this.prisma.crmAccount.findUnique({
       where: { id },
+      include: {
+        owner: expandedAssociations.includes('owner'),
+      },
     });
     if (!model) {
       throw new NotFoundError(`Can't find account with id: ${id}`);
@@ -52,6 +55,9 @@ export class AccountService extends CommonModelBaseService {
           gt: updated_after,
           lt: updated_before,
         },
+      },
+      include: {
+        owner: expandedAssociations.includes('owner'),
       },
       orderBy: {
         id: 'asc',
