@@ -2,6 +2,7 @@ import { Client } from '@hubspot/api-client';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedCompanies } from '@hubspot/api-client/lib/codegen/crm/companies';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
+import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
 import { logger } from '../../../lib';
@@ -20,8 +21,6 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
   RemoteUser,
-  RemoteUserCreateParams,
-  RemoteUserUpdateParams,
 } from '../../../types/crm';
 import { Integration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
@@ -388,15 +387,25 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     throw new Error('Not implemented');
   }
 
+  private async listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
+    const helper = async () => {
+      try {
+        await this.maybeRefreshAccessToken();
+        const owners = await this.#client.crm.owners.ownersApi.getPage(
+          /* email */ undefined,
+          after,
+          HUBSPOT_RECORD_LIMIT
+        );
+        return owners;
+      } catch (e: any) {
+        logger.error(`Error encountered: ${e}`);
+        throw e;
+      }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
   public async getUser(remoteId: string): Promise<RemoteUser> {
-    throw new Error('Not implemented');
-  }
-
-  public async createUser(params: RemoteUserCreateParams): Promise<RemoteUser> {
-    throw new Error('Not implemented');
-  }
-
-  public async updateUser(params: RemoteUserUpdateParams): Promise<RemoteUser> {
     throw new Error('Not implemented');
   }
 }

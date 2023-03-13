@@ -187,6 +187,7 @@ export interface components {
      *           "crm.objects.contacts.read",
      *           "crm.objects.companies.read",
      *           "crm.objects.deals.read",
+     *           "crm.objects.owners.read",
      *           "crm.objects.contacts.write",
      *           "crm.objects.companies.write",
      *           "crm.objects.deals.write"
