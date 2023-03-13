@@ -34,6 +34,8 @@ export default function init(app: Router): void {
     }
   );
 
+  // TODO: do we want non-upsert create/update endpoints?
+
   customerRouter.put(
     '/',
     async (
@@ -45,6 +47,7 @@ export default function init(app: Router): void {
     }
   );
 
+  // TODO: consider fetching by external_identifier instead of internal id
   customerRouter.get(
     '/:customer_id',
     async (
@@ -56,6 +59,7 @@ export default function init(app: Router): void {
     }
   );
 
+  // TODO: consider fetching by external_identifier instead of internal id
   customerRouter.delete(
     '/:customer_id',
     async (
