@@ -58,7 +58,7 @@ No authorization required
 
 <a name="getOpportunities"></a>
 # **getOpportunities**
-> InlineResponse2003 getOpportunities(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
+> InlineResponse2004 getOpportunities(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
 
 List opportunities
 
@@ -82,7 +82,7 @@ String cursor = "cursor_example"; // String | The pagination cursor value
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 try {
-    InlineResponse2003 result = apiInstance.getOpportunities(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
+    InlineResponse2004 result = apiInstance.getOpportunities(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#getOpportunities");
@@ -106,7 +106,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**InlineResponse2004**](InlineResponse2004.md)
 
 ### Authorization
 

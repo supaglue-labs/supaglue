@@ -7,7 +7,8 @@ Name | Type | Description | Notes
 **category** | [**Category**](Category.md) |  | 
 **authType** | [**AuthTypeEnum**](#AuthTypeEnum) |  | 
 **providerName** | [**ProviderName**](ProviderName.md) |  | 
-**config** | [**IntegrationConfig**](IntegrationConfig.md) |  | 
+**config** | [**IntegrationConfig**](IntegrationConfig.md) |  |  [optional]
+**isEnabled** | **Boolean** |  | 
 
 <a name="AuthTypeEnum"></a>
 ## Enum: AuthTypeEnum

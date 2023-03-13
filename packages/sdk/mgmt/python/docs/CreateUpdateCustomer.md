@@ -4,6 +4,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **application_id** | **str** |  | 
+**external_identifier** | **str** |  | 
 **name** | **str** |  | 
 **email** | **str** |  | 
 

@@ -35,6 +35,10 @@ paths:
     $ref: paths/leads.yaml
   '/leads/{lead_id}':
     $ref: paths/leads@{lead_id}.yaml
+  '/users':
+    $ref: paths/users.yaml
+  '/users/{user_id}':
+    $ref: paths/users@{user_id}.yaml
   '/opportunities':
     $ref: paths/opportunities.yaml
   '/opportunities/{opportunity_id}':
@@ -52,6 +56,8 @@ tags:
     description: The `Lead` Common Model is used to represent a "potential customer" in CRMs.
   - name: Opportunities
     description: The `Opportunity` Common Model is used to represent a "deal opportunity" in CRMs.
+  - name: Users
+    description: The `User` Common Model is used to represent a "user" that can login to CRMs.
   - name: Sync
     description: Get information and history for the sync process.
 components:
@@ -70,6 +76,8 @@ components:
       $ref: ./components/schemas/create_update_lead.yaml
     opportunity:
       $ref: ./components/schemas/objects/opportunity.yaml
+    user:
+      $ref: ./components/schemas/objects/user.yaml
     create_update_opportunity:
       $ref: ./components/schemas/create_update_opportunity.yaml
     logs:

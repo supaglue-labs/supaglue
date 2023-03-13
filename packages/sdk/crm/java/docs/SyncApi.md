@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getSyncHistory"></a>
 # **getSyncHistory**
-> InlineResponse2004 getSyncHistory(customerId, providerName, cursor, pageSize, model)
+> InlineResponse2005 getSyncHistory(customerId, providerName, cursor, pageSize, model)
 
 Get Sync History
 
@@ -29,7 +29,7 @@ String cursor = "cursor_example"; // String | The pagination cursor value
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 String model = "model_example"; // String | The model name to filter by
 try {
-    InlineResponse2004 result = apiInstance.getSyncHistory(customerId, providerName, cursor, pageSize, model);
+    InlineResponse2005 result = apiInstance.getSyncHistory(customerId, providerName, cursor, pageSize, model);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling SyncApi#getSyncHistory");
@@ -49,7 +49,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2004**](InlineResponse2004.md)
+[**InlineResponse2005**](InlineResponse2005.md)
 
 ### Authorization
 
@@ -62,7 +62,7 @@ No authorization required
 
 <a name="getSyncInfos"></a>
 # **getSyncInfos**
-> List&lt;InlineResponse2005&gt; getSyncInfos(customerId, providerName)
+> List&lt;InlineResponse2006&gt; getSyncInfos(customerId, providerName)
 
 Get Sync Info
 
@@ -79,7 +79,7 @@ SyncApi apiInstance = new SyncApi();
 String customerId = "customerId_example"; // String | The customer ID
 String providerName = "providerName_example"; // String | The provider name
 try {
-    List<InlineResponse2005> result = apiInstance.getSyncInfos(customerId, providerName);
+    List<InlineResponse2006> result = apiInstance.getSyncInfos(customerId, providerName);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling SyncApi#getSyncInfos");
@@ -96,7 +96,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;InlineResponse2005&gt;**](InlineResponse2005.md)
+[**List&lt;InlineResponse2006&gt;**](InlineResponse2006.md)
 
 ### Authorization
 

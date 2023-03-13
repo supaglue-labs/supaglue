@@ -3,4 +3,4 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**results** | [**List&lt;InlineResponse2004Results&gt;**](InlineResponse2004Results.md) |  |  [optional]
+**results** | [**List&lt;Opportunity&gt;**](Opportunity.md) |  |  [optional]

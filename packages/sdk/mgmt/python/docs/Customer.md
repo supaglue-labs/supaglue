@@ -5,6 +5,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **str** |  | 
 **application_id** | **str** |  | 
+**external_identifier** | **str** |  | 
 **name** | **str** |  | 
 **email** | **str** |  | 
 **connections** | [**list[Connection]**](Connection.md) |  | [optional] 
