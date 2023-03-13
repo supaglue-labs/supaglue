@@ -23,17 +23,12 @@ ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
 # read version from package.json
 VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
 
-docker buildx build \
+depot build --project 2bljgst1rr \
   --platform linux/amd64,linux/arm64 \
   -f "./${WORKSPACE_PATH}/Dockerfile" \
   --tag "supaglue/${WORKSPACE_NAME}:${VERSION}" \
+  --tag "supaglue/${WORKSPACE_NAME}:latest" \
   --label "org.opencontainers.image.source=https://github.com/supaglue-labs/supaglue" \
   --push \
   ${ADDITIONAL_ARGS-} \
   .
-
-# add a tag for latest if not pre-release
-if [[ $VERSION != *"-"* ]]; then
-  docker tag "supaglue/${WORKSPACE_NAME}:${VERSION}" "supaglue/${WORKSPACE_NAME}:latest"
-  docker push "supaglue/${WORKSPACE_NAME}:latest"
-fi
