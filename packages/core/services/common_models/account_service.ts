@@ -116,7 +116,6 @@ export class AccountService extends CommonModelBaseService {
     const table = 'api.crm_accounts';
     const tempTable = 'crm_accounts_temp';
     const columnsWithoutId = [
-      'owner',
       'name',
       'description',
       'industry',
@@ -131,6 +130,7 @@ export class AccountService extends CommonModelBaseService {
       'remote_was_deleted',
       'customer_id',
       'connection_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 

@@ -97,7 +97,7 @@ model CrmAccount {
   opportunities     CrmOpportunity[]
   leadsConverted    CrmLead[]
   remoteOwnerId     String?          @map("_remote_owner_id")
-  ownerId           String?          @map("_owner_id")
+  ownerId           String?          @map("owner_id")
   owner             CrmUser?         @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
@@ -127,7 +127,7 @@ model CrmContact {
   account          CrmAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
   leadsConverted   CrmLead[]
   remoteOwnerId    String?     @map("_remote_owner_id")
-  ownerId          String?     @map("_owner_id")
+  ownerId          String?     @map("owner_id")
   owner            CrmUser?    @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
@@ -162,7 +162,7 @@ model CrmLead {
   convertedContactId       String?     @map("converted_contact_id")
   convertedContact         CrmContact? @relation(fields: [convertedContactId], references: [id], onDelete: SetNull)
   remoteOwnerId            String?     @map("_remote_owner_id")
-  ownerId                  String?     @map("_owner_id")
+  ownerId                  String?     @map("owner_id")
   owner                    CrmUser?    @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
@@ -191,7 +191,7 @@ model CrmOpportunity {
   accountId        String?     @map("account_id")
   account          CrmAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
   remoteOwnerId    String?     @map("_remote_owner_id")
-  ownerId          String?     @map("_owner_id")
+  ownerId          String?     @map("owner_id")
   owner            CrmUser?    @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])

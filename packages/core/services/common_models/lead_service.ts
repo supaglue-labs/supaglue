@@ -122,7 +122,6 @@ export class LeadService extends CommonModelBaseService {
       'customer_id',
       'connection_id',
       'remote_was_deleted',
-      'owner',
       'lead_source',
       'title',
       'company',
@@ -136,6 +135,7 @@ export class LeadService extends CommonModelBaseService {
       'converted_date',
       '_converted_remote_account_id',
       '_converted_remote_contact_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 

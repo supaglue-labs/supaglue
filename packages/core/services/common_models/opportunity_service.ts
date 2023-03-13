@@ -157,7 +157,6 @@ export class OpportunityService extends CommonModelBaseService {
       'customer_id',
       'connection_id',
       'remote_was_deleted',
-      'owner',
       'name',
       'description',
       'amount',
@@ -168,6 +167,7 @@ export class OpportunityService extends CommonModelBaseService {
       'remote_created_at',
       'remote_updated_at',
       '_remote_account_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 
