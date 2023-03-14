@@ -23,7 +23,7 @@ export const authOptions = {
         }
 
         const user = await authResponse.json();
-        console.log('xxx', user);
+
         return {
           ...user,
           name: user.username,
