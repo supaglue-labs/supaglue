@@ -1,5 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import crypto from 'crypto';
 import * as dotenv from 'dotenv';
+
+const algorithm = 'aes-256-cbc';
+const saltLength = 16;
+const ivLength = 16;
 
 const SUPPORTED_CRM_CONNECTIONS = [
   'salesforce',
@@ -46,6 +51,7 @@ const {
   DEV_CAPSULE_CLIENT_SECRET,
   DEV_CAPSULE_SCOPES,
   DEV_CAPSULE_APP_ID,
+  SUPAGLUE_API_ENCRYPTION_SECRET,
 } = process.env;
 
 const APPLICATION_ID = 'a4398523-03a2-42dd-9681-c91e3e2efaf4';
@@ -120,6 +126,29 @@ const INTEGRATION_IDS = [
   CAPSULE_INTEGRATION_ID,
 ];
 
+// Remove once we can stop seeding integrations
+function getKey(secret: string, salt: Buffer): Buffer {
+  return crypto.pbkdf2Sync(secret, salt, 100000, 32, 'sha512');
+}
+
+function encrypt(text: string): Buffer {
+  const salt = crypto.randomBytes(saltLength);
+  if (!SUPAGLUE_API_ENCRYPTION_SECRET) {
+    throw new Error('Cannot encrypt without a secret');
+  }
+  const key = getKey(SUPAGLUE_API_ENCRYPTION_SECRET, salt);
+  const iv = crypto.randomBytes(ivLength);
+
+  const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+  const encryptedData = Buffer.concat([cipher.update(text), cipher.final()]);
+
+  return Buffer.concat([salt, iv, encryptedData]);
+}
+
+function encryptAsString(text: string): string {
+  return encrypt(text).toString('base64');
+}
+
 async function seedApplication() {
   // Create application
   await prisma.application.upsert({
@@ -185,10 +214,12 @@ async function seedCRMIntegrations() {
             providerAppId: OAUTH_APP_IDS[idx],
             oauth: {
               oauthScopes: OAUTH_SCOPES[idx]?.split(','),
-              credentials: {
-                oauthClientId: OAUTH_CLIENT_IDS[idx],
-                oauthClientSecret: OAUTH_CLIENT_SECRETS[idx],
-              },
+              credentials: encryptAsString(
+                JSON.stringify({
+                  oauthClientId: OAUTH_CLIENT_IDS[idx],
+                  oauthClientSecret: OAUTH_CLIENT_SECRETS[idx],
+                })
+              ),
             },
             sync: {
               periodMs: SUPAGLUE_SYNC_PERIOD_MS,

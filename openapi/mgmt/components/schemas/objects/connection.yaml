@@ -17,8 +17,6 @@ properties:
   integration_id:
     type: string
     example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
-  credentials:
-    $ref: ./connection_credentials.yaml
   provider_name:
     $ref: ./provider_name.yaml
   category:
@@ -28,7 +26,6 @@ required:
   - status
   - customer_id
   - integration_id
-  - credentials
   - provider_name
   - category
 # ajv has issues with interpreting the id here as a schema id

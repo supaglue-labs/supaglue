@@ -13,7 +13,7 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
 
   const integration = await integrationService.getByProviderName(providerName);
 
-  req.customerConnection = await connectionService.getByCustomerIdAndIntegrationId({
+  req.customerConnection = await connectionService.getSafeByCustomerIdAndIntegrationId({
     customerId,
     integrationId: integration.id,
   });

@@ -1,5 +1,5 @@
 import { Customer, CustomerModelExpanded } from '../types/customer';
-import { fromConnectionModel } from './connection';
+import { fromConnectionModelToConnectionUnsafe } from './connection';
 
 export const fromCustomerModel = (
   { id, applicationId, externalIdentifier, name, email, connections }: CustomerModelExpanded,
@@ -12,6 +12,8 @@ export const fromCustomerModel = (
     name,
     email,
     connections:
-      includeRelations && connections ? connections.map((connection) => fromConnectionModel(connection)) : undefined,
+      includeRelations && connections
+        ? connections.map((connection) => fromConnectionModelToConnectionUnsafe(connection))
+        : undefined,
   };
 };

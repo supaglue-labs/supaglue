@@ -1,5 +1,13 @@
-import type { Integration as IntegrationModel } from '@supaglue/db';
-import { CRMProviderName, Integration, IntegrationCategory, IntegrationConfig } from '../types';
+import type { Integration as IntegrationModel, Prisma } from '@supaglue/db';
+import { decryptFromString, encryptAsString } from '../lib/crypt';
+import {
+  CRMIntegrationCreateParams,
+  CRMProviderName,
+  Integration,
+  IntegrationCategory,
+  IntegrationConfigDecrypted,
+  IntegrationConfigEncrypted,
+} from '../types';
 
 export const fromIntegrationModel = ({
   id,
@@ -16,6 +24,46 @@ export const fromIntegrationModel = ({
     category: category as IntegrationCategory,
     authType: 'oauth2',
     providerName: providerName as CRMProviderName,
-    config: config as IntegrationConfig,
+    config: fromIntegrationConfigModel(config),
+  };
+};
+
+export const fromIntegrationConfigModel = (config: Prisma.JsonValue | null): IntegrationConfigDecrypted | undefined => {
+  if (!config || typeof config !== 'object' || Array.isArray(config)) {
+    return;
+  }
+  const integrationConfig = config as unknown as IntegrationConfigEncrypted;
+  return {
+    ...integrationConfig,
+    oauth: {
+      ...integrationConfig.oauth,
+      credentials: JSON.parse(decryptFromString(integrationConfig.oauth.credentials)),
+    },
+  };
+};
+
+export const toIntegrationModel = ({
+  applicationId,
+  isEnabled,
+  category,
+  authType,
+  providerName,
+  config,
+}: CRMIntegrationCreateParams) => {
+  return {
+    applicationId,
+    isEnabled,
+    category,
+    authType,
+    providerName,
+    config: config
+      ? {
+          ...config,
+          oauth: {
+            ...config.oauth,
+            credentials: encryptAsString(JSON.stringify(config.oauth.credentials)),
+          },
+        }
+      : undefined,
   };
 };

@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { Readable } from 'stream';
-import { CRMConnection } from '../../types/connection';
+import { CRMConnectionUnsafe } from '../../types/connection';
 import {
   RemoteAccount,
   RemoteAccountCreateParams,
@@ -15,7 +15,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../types/crm';
-import { Integration } from '../../types/integration';
+import { CompleteIntegration } from '../../types/integration';
 import { RemoteClient } from '../base';
 
 interface CrmRemoteClientEvents {
@@ -60,5 +60,5 @@ export type ConnectorAuthConfig = {
 
 export type CrmConnectorConfig = {
   authConfig: ConnectorAuthConfig;
-  newClient: (connection: CRMConnection, integration: Integration) => CrmRemoteClient;
+  newClient: (connection: CRMConnectionUnsafe, integration: CompleteIntegration) => CrmRemoteClient;
 };

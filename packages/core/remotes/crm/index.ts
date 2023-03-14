@@ -1,6 +1,6 @@
-import { CRMConnection } from '../../types/connection';
+import { CRMConnectionUnsafe } from '../../types/connection';
 import { CRMProviderName } from '../../types/crm';
-import { Integration } from '../../types/integration';
+import { CompleteIntegration } from '../../types/integration';
 import { ConnectorAuthConfig, CrmConnectorConfig, CrmRemoteClient } from './base';
 import * as capsule from './capsule';
 import * as hubspot from './hubspot';
@@ -25,7 +25,7 @@ export function getConnectorAuthConfig(providerName: CRMProviderName): Connector
   return authConfig;
 }
 
-export function getCrmRemoteClient(connection: CRMConnection, integration: Integration): CrmRemoteClient {
+export function getCrmRemoteClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): CrmRemoteClient {
   const { newClient } = crmConnectorConfigMap[connection.providerName];
   return newClient(connection, integration);
 }

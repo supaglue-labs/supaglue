@@ -1,8 +1,8 @@
 import { Readable } from 'stream';
 import {
   AccountCreateParams,
-  CRMConnection,
-  Integration,
+  CompleteIntegration,
+  CRMConnectionUnsafe,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -88,7 +88,7 @@ class MsDynamics365Sales extends CrmRemoteClientEventEmitter implements CrmRemot
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnection, integration: Integration): MsDynamics365Sales {
+export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): MsDynamics365Sales {
   return new MsDynamics365Sales();
 }
 

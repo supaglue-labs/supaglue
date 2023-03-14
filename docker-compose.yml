@@ -32,6 +32,7 @@ services:
       - SUPAGLUE_DISABLE_ANALYTICS
       - SUPAGLUE_DISABLE_ERROR_REPORTING
       - SUPAGLUE_POSTHOG_API_KEY
+      - SUPAGLUE_API_ENCRYPTION_SECRET
     restart: on-failure
 
   sync-worker:
@@ -50,6 +51,7 @@ services:
       - SUPAGLUE_DISABLE_ANALYTICS
       - SUPAGLUE_DISABLE_ERROR_REPORTING
       - SUPAGLUE_POSTHOG_API_KEY
+      - SUPAGLUE_API_ENCRYPTION_SECRET
     restart: on-failure
 
   temporal:

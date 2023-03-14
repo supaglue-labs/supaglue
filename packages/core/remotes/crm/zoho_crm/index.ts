@@ -1,8 +1,8 @@
 import { Readable } from 'stream';
 import {
   AccountCreateParams,
-  CRMConnection,
-  Integration,
+  CompleteIntegration,
+  CRMConnectionUnsafe,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -88,7 +88,7 @@ class ZohoCrmClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnection, integration: Integration): ZohoCrmClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): ZohoCrmClient {
   return new ZohoCrmClient();
 }
 

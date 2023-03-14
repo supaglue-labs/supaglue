@@ -28,6 +28,10 @@ export default function init(app: Router): void {
 
       const integration = await integrationService.getByProviderName(providerName);
 
+      if (!integration.config) {
+        throw new Error('Integration is not configured');
+      }
+
       const { oauthScopes } = integration.config.oauth;
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
@@ -99,6 +103,11 @@ export default function init(app: Router): void {
       }
 
       const integration = await integrationService.getByProviderName(providerName);
+
+      if (!integration.config) {
+        throw new Error('Integration is not configured');
+      }
+
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
       const client = new simpleOauth2.AuthorizationCode({

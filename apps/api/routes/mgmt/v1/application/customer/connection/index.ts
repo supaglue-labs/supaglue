@@ -21,7 +21,7 @@ export default function init(app: Router): void {
       req: Request<GetConnectionsPathParams, GetConnectionsResponse, GetConnectionsResponse>,
       res: Response<GetConnectionsResponse>
     ) => {
-      const connections = await connectionService.list();
+      const connections = await connectionService.listSafe();
       return res.status(200).send(connections.map(snakecaseKeys));
     }
   );
@@ -34,7 +34,7 @@ export default function init(app: Router): void {
       req: Request<GetConnectionPathParams, GetConnectionResponse, GetConnectionResponse>,
       res: Response<GetConnectionResponse>
     ) => {
-      const connection = await connectionService.getById(req.params.connection_id);
+      const connection = await connectionService.getSafeById(req.params.connection_id);
       return res.status(200).send(snakecaseKeys(connection));
     }
   );
