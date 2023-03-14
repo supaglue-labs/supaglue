@@ -6,5 +6,5 @@ export default function init(app: Router): void {
 
   v1(internalRouter);
 
-  app.use('/mgmt', internalRouter);
+  app.use('/internal', internalRouter);
 }
