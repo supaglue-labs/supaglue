@@ -1,0 +1,5 @@
+type: object
+properties:
+  api_key:
+    type: string
+    nullable: true

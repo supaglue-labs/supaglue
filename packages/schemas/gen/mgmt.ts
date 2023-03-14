@@ -27,6 +27,24 @@ export interface paths {
       };
     };
   };
+  "/applications/{application_id}/_generate_api_key": {
+    /** Create application API key */
+    post: operations["createApplicationApiKey"];
+    parameters: {
+      path: {
+        application_id: string;
+      };
+    };
+  };
+  "/applications/{application_id}/_revoke_api_key": {
+    /** Delete Application API key */
+    post: operations["deleteApplicationApiKey"];
+    parameters: {
+      path: {
+        application_id: string;
+      };
+    };
+  };
   "/applications/{application_id}/customers": {
     /**
      * List customers 
@@ -156,43 +174,27 @@ export interface components {
     /** @enum {string} */
     category: "crm";
     /**
-     * @example [
-     *   {
-     *     "provider_app_id": "my_app_id"
+     * @example {
+     *   "provider_app_id": "my_app_id",
+     *   "oauth": {
+     *     "oauth_scopes": [
+     *       "crm.objects.contacts.read",
+     *       "crm.objects.companies.read",
+     *       "crm.objects.deals.read",
+     *       "crm.objects.owners.read",
+     *       "crm.objects.contacts.write",
+     *       "crm.objects.companies.write",
+     *       "crm.objects.deals.write"
+     *     ],
+     *     "credentials": {
+     *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+     *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+     *     }
      *   },
-     *   {
-     *     "oauth": [
-     *       {
-     *         "oauth_scopes": [
-     *           "crm.objects.contacts.read",
-     *           "crm.objects.companies.read",
-     *           "crm.objects.deals.read",
-     *           "crm.objects.owners.read",
-     *           "crm.objects.contacts.write",
-     *           "crm.objects.companies.write",
-     *           "crm.objects.deals.write"
-     *         ]
-     *       },
-     *       {
-     *         "credentials": [
-     *           {
-     *             "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1"
-     *           },
-     *           {
-     *             "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-     *           }
-     *         ]
-     *       }
-     *     ]
-     *   },
-     *   {
-     *     "sync": [
-     *       {
-     *         "period_ms": 60000
-     *       }
-     *     ]
+     *   "sync": {
+     *     "period_ms": 60000
      *   }
-     * ]
+     * }
      */
     integration_config: {
       /** @example my_app_id */
@@ -245,7 +247,11 @@ export interface components {
       name: string;
       config: components["schemas"]["application_config"];
     };
+    application_api_key: {
+      api_key?: string | null;
+    };
     application_config: {
+      api_key: string | null;
       webhook: ({
         url: string;
         /** @enum {string} */
@@ -335,6 +341,33 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["application"];
+        };
+      };
+    };
+  };
+  createApplicationApiKey: {
+    /** Create application API key */
+    requestBody: {
+      content: {
+        "application/json": Record<string, never>;
+      };
+    };
+    responses: {
+      /** @description Application API key created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["application_api_key"];
+        };
+      };
+    };
+  };
+  deleteApplicationApiKey: {
+    /** Delete Application API key */
+    responses: {
+      /** @description API key */
+      200: {
+        content: {
+          "application/json": components["schemas"]["application_api_key"];
         };
       };
     };

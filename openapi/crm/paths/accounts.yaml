@@ -2,6 +2,8 @@ get:
   operationId: getAccounts
   tags:
     - Accounts
+  security:
+    - ApiKeyAuth: []
   summary: List accounts
   description: >-
     Get a list of accounts
@@ -81,6 +83,8 @@ post:
   tags:
     - Accounts
   parameters: []
+  security:
+    - ApiKeyAuth: []
   requestBody:
     required: true
     content:
@@ -109,5 +113,5 @@ post:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml

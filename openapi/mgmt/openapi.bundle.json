@@ -46,38 +46,31 @@
                       {
                         "id": "e888cedf-e9d0-42c5-9485-2d72984faef9",
                         "name": "my-app",
-                        "config": [
-                          {
-                            "webhook": [
-                              {
-                                "url": "http://localhost:8080",
-                                "request_type": "POST",
-                                "notify_on_sync_success": true,
-                                "notify_on_sync_error": true,
-                                "notify_on_connection_success": true,
-                                "notify_on_connection_error": true
-                              }
-                            ]
+                        "config": {
+                          "api_key": "cgx3ElGtCfucNrqqh11ymQ5yjeSD6KTpPShEUU9fWUbJXCoVHGhzTi7DIb5zcwcYDnWRouyBLLMnCT4CmYowVg==",
+                          "webhook": {
+                            "url": "http://localhost:8080",
+                            "request_type": "POST",
+                            "notify_on_sync_success": true,
+                            "notify_on_sync_error": true,
+                            "notify_on_connection_success": true,
+                            "notify_on_connection_error": true
                           }
-                        ]
+                        }
                       },
                       {
                         "id": "0623bf1c-3f71-4d53-ab11-f92ae72833c0",
                         "name": "my-app",
-                        "config": [
-                          {
-                            "webhook": [
-                              {
-                                "url": "http://localhost:8081",
-                                "request_type": "POST",
-                                "notify_on_sync_success": true,
-                                "notify_on_sync_error": false,
-                                "notify_on_connection_success": true,
-                                "notify_on_connection_error": false
-                              }
-                            ]
+                        "config": {
+                          "webhook": {
+                            "url": "http://localhost:8081",
+                            "request_type": "POST",
+                            "notify_on_sync_success": true,
+                            "notify_on_sync_error": false,
+                            "notify_on_connection_success": true,
+                            "notify_on_connection_error": false
                           }
-                        ]
+                        }
                       }
                     ]
                   }
@@ -140,16 +133,14 @@
                       "name": "my-app",
                       "config": [
                         {
-                          "webhook": [
-                            {
-                              "url": "http://localhost:8080",
-                              "request_type": "POST",
-                              "notify_on_sync_success": true,
-                              "notify_on_sync_error": true,
-                              "notify_on_connection_success": true,
-                              "notify_on_connection_error": true
-                            }
-                          ]
+                          "webhook": {
+                            "url": "http://localhost:8080",
+                            "request_type": "POST",
+                            "notify_on_sync_success": true,
+                            "notify_on_sync_error": true,
+                            "notify_on_connection_success": true,
+                            "notify_on_connection_error": true
+                          }
                         }
                       ]
                     }
@@ -192,16 +183,14 @@
                       "name": "my-app",
                       "config": [
                         {
-                          "webhook": [
-                            {
-                              "url": "http://localhost:8080",
-                              "request_type": "POST",
-                              "notify_on_sync_success": true,
-                              "notify_on_sync_error": true,
-                              "notify_on_connection_success": true,
-                              "notify_on_connection_error": true
-                            }
-                          ]
+                          "webhook": {
+                            "url": "http://localhost:8080",
+                            "request_type": "POST",
+                            "notify_on_sync_success": true,
+                            "notify_on_sync_error": true,
+                            "notify_on_connection_success": true,
+                            "notify_on_connection_error": true
+                          }
                         }
                       ]
                     }
@@ -231,20 +220,105 @@
                     "value": {
                       "id": "10072ab8-db4c-4e4f-9766-bbd846c9efbc",
                       "name": "my-app",
-                      "config": [
-                        {
-                          "webhook": [
-                            {
-                              "url": "http://localhost:8080",
-                              "request_type": "POST",
-                              "notify_on_sync_success": true,
-                              "notify_on_sync_error": true,
-                              "notify_on_connection_success": true,
-                              "notify_on_connection_error": true
-                            }
-                          ]
+                      "config": {
+                        "webhook": {
+                          "url": "http://localhost:8080",
+                          "request_type": "POST",
+                          "notify_on_sync_success": true,
+                          "notify_on_sync_error": true,
+                          "notify_on_connection_success": true,
+                          "notify_on_connection_error": true
                         }
-                      ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "application_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
+          }
+        }
+      ]
+    },
+    "/applications/{application_id}/_generate_api_key": {
+      "post": {
+        "operationId": "createApplicationApiKey",
+        "summary": "Create application API key",
+        "tags": [
+          "API key"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "api_key": "cgx3ElGtCfucNrqqh11ymQ5yjeSD6KTpPShEUU9fWUbJXCoVHGhzTi7DIb5zcwcYDnWRouyBLLMnCT4CmYowVg=="
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Application API key created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/application_api_key"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "application_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
+          }
+        }
+      ]
+    },
+    "/applications/{application_id}/_revoke_api_key": {
+      "post": {
+        "operationId": "deleteApplicationApiKey",
+        "summary": "Delete Application API key",
+        "tags": [
+          "API key"
+        ],
+        "responses": {
+          "200": {
+            "description": "API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/application_api_key"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "api_key": null
                     }
                   }
                 }
@@ -270,6 +344,11 @@
         "operationId": "getCustomers",
         "tags": [
           "Customers"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "List customers",
         "description": "Get a list of customers",
@@ -315,6 +394,11 @@
         "tags": [
           "Customers"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -358,6 +442,11 @@
         "tags": [
           "Customers"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Customer",
@@ -387,6 +476,11 @@
         "summary": "Delete customer",
         "tags": [
           "Customers"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "responses": {
           "200": {
@@ -439,6 +533,11 @@
         "tags": [
           "Integrations"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "summary": "List integrations",
         "description": "Get a list of integrations",
         "responses": {
@@ -460,74 +559,54 @@
                         "category": "crm",
                         "auth_type": "oauth2",
                         "provider_name": "hubspot",
-                        "config": [
-                          {
-                            "provider_app_id": "my_app_id",
-                            "oauth": [
-                              {
-                                "oauth_scopes": [
-                                  "crm.objects.contacts.read",
-                                  "crm.objects.companies.read",
-                                  "crm.objects.deals.read",
-                                  "crm.objects.owners.read",
-                                  "crm.objects.contacts.write",
-                                  "crm.objects.companies.write",
-                                  "crm.objects.deals.write"
-                                ],
-                                "credentials": [
-                                  {
-                                    "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                                    "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                                  }
-                                ]
-                              }
-                            ]
+                        "config": {
+                          "provider_app_id": "my_app_id",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
                           },
-                          {
-                            "sync": [
-                              {
-                                "period_ms": 60000
-                              }
-                            ]
+                          "sync": {
+                            "period_ms": 60000
                           }
-                        ]
+                        }
                       },
                       {
                         "id": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
                         "category": "crm",
                         "auth_type": "oauth2",
                         "provider_name": "salesforce",
-                        "config": [
-                          {
-                            "provider_app_id": "my_app_id2",
-                            "oauth": [
-                              {
-                                "oauth_scopes": [
-                                  "crm.objects.contacts.read",
-                                  "crm.objects.companies.read",
-                                  "crm.objects.deals.read",
-                                  "crm.objects.owners.read",
-                                  "crm.objects.contacts.write",
-                                  "crm.objects.companies.write",
-                                  "crm.objects.deals.write"
-                                ],
-                                "credentials": [
-                                  {
-                                    "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                                    "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                                  }
-                                ]
-                              }
-                            ]
+                        "config": {
+                          "provider_app_id": "my_app_id2",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
                           },
-                          {
-                            "sync": [
-                              {
-                                "period_ms": 60000
-                              }
-                            ]
+                          "sync": {
+                            "period_ms": 60000
                           }
-                        ]
+                        }
                       }
                     ]
                   }
@@ -542,6 +621,11 @@
         "summary": "Create integration",
         "tags": [
           "Integrations"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [],
         "requestBody": {
@@ -586,6 +670,11 @@
         "tags": [
           "Integrations"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Integration",
@@ -601,37 +690,27 @@
                       "category": "crm",
                       "auth_type": "oauth2",
                       "provider_name": "hubspot",
-                      "config": [
-                        {
-                          "provider_app_id": "my_app_id",
-                          "oauth": [
-                            {
-                              "oauth_scopes": [
-                                "crm.objects.contacts.read",
-                                "crm.objects.companies.read",
-                                "crm.objects.deals.read",
-                                "crm.objects.owners.read",
-                                "crm.objects.contacts.write",
-                                "crm.objects.companies.write",
-                                "crm.objects.deals.write"
-                              ],
-                              "credentials": [
-                                {
-                                  "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                                  "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                                }
-                              ]
-                            }
-                          ]
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
                         },
-                        {
-                          "sync": [
-                            {
-                              "period_ms": 60000
-                            }
-                          ]
+                        "sync": {
+                          "period_ms": 60000
                         }
-                      ]
+                      }
                     }
                   }
                 }
@@ -672,37 +751,27 @@
                       "category": "crm",
                       "auth_type": "oauth2",
                       "provider_name": "hubspot",
-                      "config": [
-                        {
-                          "provider_app_id": "my_app_id",
-                          "oauth": [
-                            {
-                              "oauth_scopes": [
-                                "crm.objects.contacts.read",
-                                "crm.objects.companies.read",
-                                "crm.objects.deals.read",
-                                "crm.objects.owners.read",
-                                "crm.objects.contacts.write",
-                                "crm.objects.companies.write",
-                                "crm.objects.deals.write"
-                              ],
-                              "credentials": [
-                                {
-                                  "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                                  "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                                }
-                              ]
-                            }
-                          ]
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
                         },
-                        {
-                          "sync": [
-                            {
-                              "period_ms": 60000
-                            }
-                          ]
+                        "sync": {
+                          "period_ms": 60000
                         }
-                      ]
+                      }
                     }
                   }
                 }
@@ -716,6 +785,11 @@
         "summary": "Delete integration",
         "tags": [
           "Integrations"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "responses": {
           "200": {
@@ -732,37 +806,27 @@
                       "category": "crm",
                       "auth_type": "oauth2",
                       "provider_name": "hubspot",
-                      "config": [
-                        {
-                          "provider_app_id": "my_app_id",
-                          "oauth": [
-                            {
-                              "oauth_scopes": [
-                                "crm.objects.contacts.read",
-                                "crm.objects.companies.read",
-                                "crm.objects.deals.read",
-                                "crm.objects.owners.read",
-                                "crm.objects.contacts.write",
-                                "crm.objects.companies.write",
-                                "crm.objects.deals.write"
-                              ],
-                              "credentials": [
-                                {
-                                  "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                                  "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                                }
-                              ]
-                            }
-                          ]
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
                         },
-                        {
-                          "sync": [
-                            {
-                              "period_ms": 60000
-                            }
-                          ]
+                        "sync": {
+                          "period_ms": 60000
                         }
-                      ]
+                      }
                     }
                   }
                 }
@@ -797,6 +861,11 @@
         "operationId": "getConnections",
         "tags": [
           "Connections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "List connections",
         "description": "Get a list of connections",
@@ -866,6 +935,11 @@
         "tags": [
           "Connections"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Connection",
@@ -896,6 +970,11 @@
         "summary": "Delete connection",
         "tags": [
           "Connections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "responses": {
           "200": {
@@ -955,6 +1034,14 @@
   },
   "tags": [],
   "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header",
+        "description": "API key to allow developers to access the API"
+      }
+    },
     "schemas": {
       "customer": {
         "type": "object",
@@ -1138,43 +1225,27 @@
           "oauth",
           "sync"
         ],
-        "example": [
-          {
-            "provider_app_id": "my_app_id"
+        "example": {
+          "provider_app_id": "my_app_id",
+          "oauth": {
+            "oauth_scopes": [
+              "crm.objects.contacts.read",
+              "crm.objects.companies.read",
+              "crm.objects.deals.read",
+              "crm.objects.owners.read",
+              "crm.objects.contacts.write",
+              "crm.objects.companies.write",
+              "crm.objects.deals.write"
+            ],
+            "credentials": {
+              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+            }
           },
-          {
-            "oauth": [
-              {
-                "oauth_scopes": [
-                  "crm.objects.contacts.read",
-                  "crm.objects.companies.read",
-                  "crm.objects.deals.read",
-                  "crm.objects.owners.read",
-                  "crm.objects.contacts.write",
-                  "crm.objects.companies.write",
-                  "crm.objects.deals.write"
-                ]
-              },
-              {
-                "credentials": [
-                  {
-                    "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1"
-                  },
-                  {
-                    "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "sync": [
-              {
-                "period_ms": 60000
-              }
-            ]
+          "sync": {
+            "period_ms": 60000
           }
-        ]
+        }
       },
       "provider_name": {
         "type": "string",
@@ -1286,9 +1357,22 @@
           "config"
         ]
       },
+      "application_api_key": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "application_config": {
         "type": "object",
         "properties": {
+          "api_key": {
+            "type": "string",
+            "nullable": true
+          },
           "webhook": {
             "type": "object",
             "nullable": true,
@@ -1334,6 +1418,7 @@
           }
         },
         "required": [
+          "api_key",
           "webhook"
         ]
       }

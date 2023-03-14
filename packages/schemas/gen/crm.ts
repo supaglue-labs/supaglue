@@ -513,9 +513,9 @@ export interface components {
     /** @description Number of results to return per page */
     page_size: string;
     /** @description The customer ID */
-    "customer-id": string;
+    "x-customer-id": string;
     /** @description The provider name */
-    "provider-name": string;
+    "x-provider-name": string;
   };
   requestBodies: never;
   headers: never;

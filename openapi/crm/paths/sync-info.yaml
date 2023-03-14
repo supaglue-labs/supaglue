@@ -2,6 +2,8 @@ get:
   operationId: getSyncInfos
   tags:
     - Sync
+  security:
+    - ApiKeyAuth: []
   summary: Get Sync Info
   description: >-
     Get a list of Sync Info
@@ -26,5 +28,5 @@ get:
                   next_sync_start: 2023-02-22T20:50:17.559537Z
                   status: DONE
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml

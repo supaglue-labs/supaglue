@@ -52,6 +52,7 @@ const {
   DEV_CAPSULE_SCOPES,
   DEV_CAPSULE_APP_ID,
   SUPAGLUE_API_ENCRYPTION_SECRET,
+  SUPAGLUE_QUICKSTART_API_KEY,
 } = process.env;
 
 const APPLICATION_ID = 'a4398523-03a2-42dd-9681-c91e3e2efaf4';
@@ -149,7 +150,18 @@ function encryptAsString(text: string): string {
   return encrypt(text).toString('base64');
 }
 
+// NOTE: copied from crypt.ts (can be de-duplicated after seed becomes a script)
+export async function cryptoHash(text: string): Promise<{ original: string; hashed: string }> {
+  const hashedText = await crypto.scryptSync(text, SUPAGLUE_API_ENCRYPTION_SECRET!, 64).toString('hex');
+  return {
+    original: text,
+    hashed: hashedText,
+  };
+}
+
 async function seedApplication() {
+  const { hashed: hashedApiKey } = await cryptoHash(SUPAGLUE_QUICKSTART_API_KEY!);
+
   // Create application
   await prisma.application.upsert({
     where: {
@@ -160,6 +172,7 @@ async function seedApplication() {
       id: APPLICATION_ID,
       name: 'My App',
       config: {
+        api_key: hashedApiKey,
         webhook: {
           url: 'http://localhost:8080/webhook',
           notifyOnSyncSuccess: true,

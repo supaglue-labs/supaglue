@@ -2,6 +2,8 @@ get:
   operationId: getContacts
   tags:
     - Contacts
+  security:
+    - ApiKeyAuth: []
   summary: List contacts
   description: >-
     Get a list of contacts
@@ -78,6 +80,8 @@ post:
   summary: Create contact
   tags:
     - Contacts
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true
@@ -112,5 +116,5 @@ post:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml
