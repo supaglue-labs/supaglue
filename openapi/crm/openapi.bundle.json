@@ -1688,6 +1688,9 @@
             "type": "string",
             "nullable": true,
             "example": "https://supaglue.com/"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
           }
         },
         "example": {
@@ -1778,6 +1781,9 @@
             "type": "string",
             "nullable": true,
             "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
           }
         }
       },
@@ -1902,6 +1908,9 @@
             "type": "string",
             "nullable": true,
             "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
           }
         }
       },
@@ -2041,6 +2050,9 @@
             "type": "string",
             "nullable": true,
             "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
           }
         }
       },
@@ -2104,7 +2116,7 @@
           "properties": {
             "detail": {
               "type": "string",
-              "example": "custom_fields is a required field on model."
+              "example": "name is a required field on model."
             },
             "problem_type": {
               "type": "string",
@@ -2126,7 +2138,7 @@
           },
           "example": [
             {
-              "detail": "custom_fields is a required field on model.",
+              "detail": "name is a required field on model.",
               "problem_type": "MISSING_REQUIRED_FIELD",
               "source": {
                 "pointer": "irure consectetur"
@@ -2134,7 +2146,7 @@
               "title": "Missing Required Field"
             },
             {
-              "detail": "custom_fields is a required field on model.",
+              "detail": "name is a required field on model.",
               "problem_type": "MISSING_REQUIRED_FIELD",
               "source": {
                 "pointer": "et"
@@ -2306,6 +2318,11 @@
             "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
           }
         }
+      },
+      "custom_fields": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Custom properties to be inserted that is not covered by the common model. Object keys must match exactly to the corresponding provider API."
       }
     },
     "parameters": {

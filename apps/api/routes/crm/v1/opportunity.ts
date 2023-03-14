@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeys } from '@/lib/camelcase';
+import { camelcaseKeysSansCustomFields } from '@/lib/camelcase';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
 import { snakecaseKeys } from '@/lib/snakecase';
 import { GetParams, ListParams } from '@supaglue/core/types/common';
@@ -70,7 +70,7 @@ export default function init(app: Router): void {
       res: Response<CreateOpportunityResponse>
     ) => {
       const { customerId, id: connectionId } = req.customerConnection;
-      const originalParams = camelcaseKeys(req.body.model);
+      const originalParams = camelcaseKeysSansCustomFields(req.body.model);
       const opportunityCreateParams = {
         ...originalParams,
         closeDate: stringOrNullOrUndefinedToDate(originalParams.closeDate),
@@ -87,7 +87,7 @@ export default function init(app: Router): void {
       res: Response<UpdateOpportunityResponse>
     ) => {
       const { customerId, id: connectionId } = req.customerConnection;
-      const originalParams = camelcaseKeys(req.body.model);
+      const originalParams = camelcaseKeysSansCustomFields(req.body.model);
       const opportunityUpdateParams = {
         id: req.params.opportunity_id,
         ...originalParams,

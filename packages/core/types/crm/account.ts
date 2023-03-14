@@ -1,5 +1,5 @@
 import { CrmAccount, CrmUser } from '@supaglue/db';
-import type { Address, PhoneNumber, User } from '..';
+import type { Address, CustomFields, PhoneNumber, User } from '..';
 
 export type CrmAccountExpanded = CrmAccount & {
   owner?: CrmUser | null;
@@ -46,6 +46,7 @@ type BaseAccountCreateParams = {
 
   // TODO: Need extra permissions to create/update this derived field in SF
   // lastActivityAt?: Date | null;
+  customFields?: CustomFields;
 };
 
 export type AccountCreateParams = BaseAccountCreateParams;

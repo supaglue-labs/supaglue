@@ -1,4 +1,5 @@
 import type { CrmAccount, CrmOpportunity, CrmUser } from '@supaglue/db';
+import { CustomFields } from '.';
 import type { Account } from './account';
 import { User } from './user';
 
@@ -52,6 +53,8 @@ type BaseOpportunityCreateParams = {
   name?: string | null;
   stage?: string | null;
   accountId?: string | null;
+
+  customFields?: CustomFields;
 };
 
 export type OpportunityCreateParams = BaseOpportunityCreateParams;

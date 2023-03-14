@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeys } from '@/lib/camelcase';
+import { camelcaseKeysSansCustomFields } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
 import { GetParams, ListParams } from '@supaglue/core/types/common';
 import {
@@ -55,7 +55,7 @@ export default function init(app: Router): void {
       res: Response<CreateLeadResponse>
     ) => {
       const { customerId, id: connectionId } = req.customerConnection;
-      const lead = await leadService.create(customerId, connectionId, camelcaseKeys(req.body.model));
+      const lead = await leadService.create(customerId, connectionId, camelcaseKeysSansCustomFields(req.body.model));
       return res.status(200).send({ model: snakecaseKeys(lead) });
     }
   );
@@ -69,7 +69,7 @@ export default function init(app: Router): void {
       const { customerId, id: connectionId } = req.customerConnection;
       const lead = await leadService.update(customerId, connectionId, {
         id: req.params.lead_id,
-        ...camelcaseKeys(req.body.model),
+        ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: snakecaseKeys(lead) });
     }

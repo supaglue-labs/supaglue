@@ -183,6 +183,7 @@ export interface components {
       number_of_employees?: number | null;
       /** @example https://supaglue.com/ */
       website?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     contact: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
@@ -223,6 +224,7 @@ export interface components {
       last_name?: string | null;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       account_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     lead: {
       addresses?: components["schemas"]["addresses"];
@@ -280,6 +282,7 @@ export interface components {
       converted_account_id?: string | null;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       converted_contact_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     opportunity: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
@@ -351,6 +354,7 @@ export interface components {
       stage?: string;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       account_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     /**
      * @example [
@@ -389,7 +393,7 @@ export interface components {
         };
       })[];
     errors: ({
-        /** @example custom_fields is a required field on model. */
+        /** @example name is a required field on model. */
         detail?: string;
         /** @example MISSING_REQUIRED_FIELD */
         problem_type?: string;
@@ -494,6 +498,10 @@ export interface components {
       next?: string | null;
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous?: string | null;
+    };
+    /** @description Custom properties to be inserted that is not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+    custom_fields: {
+      [key: string]: unknown | undefined;
     };
   };
   responses: never;

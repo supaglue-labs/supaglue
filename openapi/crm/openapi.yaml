@@ -94,6 +94,8 @@ components:
       $ref: ./components/schemas/objects/phone_numbers.yaml
     pagination:
       $ref: ../common/components/schemas/pagination.yaml
+    custom_fields:
+      $ref: ./components/schemas/objects/custom_fields.yaml
   # TODO: uncomment when we implement API authentication
   # securitySchemes:
   #   api_key:
