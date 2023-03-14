@@ -16,7 +16,7 @@ import {
   UpsertCustomerResponse,
 } from '@supaglue/schemas/mgmt';
 import { Request, Response, Router } from 'express';
-import connection from './connection';
+import connection from './connection/index';
 
 const { customerService } = getDependencyContainer();
 
