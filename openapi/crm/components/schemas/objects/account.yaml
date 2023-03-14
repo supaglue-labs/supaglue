@@ -26,10 +26,12 @@ properties:
     type: integer
     nullable: true
     example: 276000
-  owner:
+  owner_id:
     type: string
     nullable: true
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+  owner:
+    $ref: ./user.yaml
   phone_numbers:
     $ref: './phone_numbers.yaml'
   created_at:
@@ -62,7 +64,7 @@ properties:
 #     last_activity_at: '2022-02-10T00:00:00Z'
 #     name: Sample Customer
 #     number_of_employees: 224
-#     owner: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+#     owner_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
 #     phone_numbers:
 #       - phone_number: '+14151234567'
 #         phone_number_type: Mobile
@@ -83,7 +85,7 @@ properties:
 #     last_activity_at: '2022-02-27T00:00:00Z'
 #     name: Sample Customer
 #     number_of_employees: 1000
-#     owner: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+#     owner_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
 #     phone_numbers:
 #       - phone_number: '+14151234567'
 #         phone_number_type: Mobile

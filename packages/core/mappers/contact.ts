@@ -1,10 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Address, Contact, CrmContactExpanded, EmailAddress, PhoneNumber, RemoteContact } from '../types';
 import { fromAccountModel } from './account';
+import { fromUserModel } from './user';
 
 export const fromContactModel = (
   {
     id,
+    ownerId,
+    owner,
     accountId,
     account,
     firstName,
@@ -19,11 +22,14 @@ export const fromContactModel = (
   }: CrmContactExpanded,
   expandedAssociations: string[] = []
 ): Contact => {
-  const expandContact = expandedAssociations.includes('account');
+  const expandAccount = expandedAssociations.includes('account');
+  const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
+    ownerId,
+    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     accountId,
-    account: expandContact && account ? fromAccountModel(account) : undefined,
+    account: expandAccount && account ? fromAccountModel(account) : undefined,
     firstName,
     lastName,
     addresses: addresses as Address[],
@@ -57,6 +63,7 @@ export const fromRemoteContactToDbContactParams = (
     remote_updated_at: remoteContact.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteContact.remoteWasDeleted,
     _remote_account_id: remoteContact.remoteAccountId,
+    _remote_owner_id: remoteContact.remoteOwnerId,
     updated_at: new Date().toISOString(),
   };
 };

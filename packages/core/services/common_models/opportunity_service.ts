@@ -27,6 +27,7 @@ export class OpportunityService extends CommonModelBaseService {
       where: { id },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
     });
     if (!model) {
@@ -58,6 +59,7 @@ export class OpportunityService extends CommonModelBaseService {
       },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
       orderBy: {
         id: 'asc',
@@ -155,7 +157,6 @@ export class OpportunityService extends CommonModelBaseService {
       'customer_id',
       'connection_id',
       'remote_was_deleted',
-      'owner',
       'name',
       'description',
       'amount',
@@ -166,6 +167,7 @@ export class OpportunityService extends CommonModelBaseService {
       'remote_created_at',
       'remote_updated_at',
       '_remote_account_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 
@@ -194,6 +196,23 @@ export class OpportunityService extends CommonModelBaseService {
         AND o.account_id IS NULL
         AND o._remote_account_id IS NOT NULL
         AND o._remote_account_id = a.remote_id
+      `);
+  }
+
+  public async updateDanglingOwners(connectionId: string): Promise<void> {
+    const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
+    const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${opportunitiesTable} c
+      SET owner_id = u.id
+      FROM ${usersTable} u
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = u.connection_id
+        AND c.owner_id IS NULL
+        AND c._remote_owner_id IS NOT NULL
+        AND c._remote_owner_id = u.remote_id
       `);
   }
 }

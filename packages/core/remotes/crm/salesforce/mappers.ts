@@ -77,7 +77,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     remoteId: record.Id,
     name: record.Name,
     description: record.Description ?? null,
-    owner: record.OwnerId ?? null,
+    remoteOwnerId: record.OwnerId ?? null,
     industry: record.Industry ?? null,
     website: record.Website ?? null,
     numberOfEmployees: record.NumberOfEmployees ? parseInt(record.NumberOfEmployees) : null,
@@ -186,8 +186,8 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
 
   return {
     remoteId: record.Id,
-    // TODO: Associations
     remoteAccountId: record.AccountId ?? null,
+    remoteOwnerId: record.OwnerId ?? null,
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
     addresses,
@@ -223,7 +223,7 @@ export const fromSalesforceLeadToRemoteLead = (
     remoteId: record.Id,
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
-    owner: record.OwnerId ?? null,
+    remoteOwnerId: record.OwnerId ?? null,
     title: record.Title ?? null,
     company: record.Company ?? null,
     convertedDate: record.ConvertedDate ? new Date(record.ConvertedDate) : null,
@@ -286,7 +286,7 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     remoteId: record.Id,
     name: record.Name,
     description: record.Description ?? null,
-    owner: record.OwnerId ?? null,
+    remoteOwnerId: record.OwnerId ?? null,
     status,
     stage: record.StageName,
     closeDate: record.CloseDate ? new Date(record.CloseDate) : null,

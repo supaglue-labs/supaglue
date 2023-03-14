@@ -1,17 +1,6 @@
+import { distinctId } from '@supaglue/core/lib/distinct_identifier';
+import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import { NextFunction, Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
-import { PostHog } from 'posthog-node';
-
-import { distinctId } from './distinct_identifier';
-
-const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
-
-const enable = Boolean(process.env.SUPAGLUE_DISABLE_ANALYTICS !== '1' && process.env.SUPAGLUE_POSTHOG_API_KEY);
-
-export const client = new PostHog(process.env.SUPAGLUE_POSTHOG_API_KEY ?? 'dummy', {
-  enable,
-});
 
 function getProviderNameFromRequest(req: Request) {
   let { providerName } = req.query;
@@ -29,7 +18,7 @@ function onResFinished(req: Request, res: Response, err?: any) {
 
   const error = err ?? res.locals.error;
 
-  client.capture({
+  posthogClient.capture({
     distinctId,
     event: 'API Call',
     properties: {
@@ -42,12 +31,7 @@ function onResFinished(req: Request, res: Response, err?: any) {
       error: error?.message,
       source: 'api',
       path: req.originalUrl,
-      system: {
-        version,
-        arch: process.arch,
-        os: process.platform,
-        nodeVersion: process.version,
-      },
+      system: getSystemProperties(),
     },
   });
   res.locals.analyticsLogged = true;

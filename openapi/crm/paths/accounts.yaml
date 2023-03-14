@@ -47,7 +47,7 @@ get:
                     last_activity_at: '2022-02-10T00:00:00Z'
                     name: Sample Customer
                     number_of_employees: 276000
-                    owner: cb40ff24-6587-4b24-82a3-9269a05d5dda
+                    owner_id: cb40ff24-6587-4b24-82a3-9269a05d5dda
                     phone_numbers:
                       - phone_number: '+14151234567'
                         phone_number_type: Mobile
@@ -68,7 +68,7 @@ get:
                     last_activity_at: '2023-02-27T00:00:00Z'
                     name: Sample Customer
                     number_of_employees: 276000
-                    owner: cb40ff24-6587-4b24-82a3-9269a05d5dda
+                    owner_id: cb40ff24-6587-4b24-82a3-9269a05d5dda
                     phone_numbers:
                       - phone_number: '+14151234567'
                         phone_number_type: Mobile

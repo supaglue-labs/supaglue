@@ -1,5 +1,7 @@
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
+import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
 import type {
@@ -19,8 +21,13 @@ export class AccountService extends CommonModelBaseService {
 
   // TODO: implement getParams
   public async getById(id: string, connectionId: string, getParams: GetParams): Promise<Account> {
+    const { expand } = getParams;
+    const expandedAssociations = getExpandedAssociations(expand);
     const model = await this.prisma.crmAccount.findUnique({
       where: { id },
+      include: {
+        owner: expandedAssociations.includes('owner'),
+      },
     });
     if (!model) {
       throw new NotFoundError(`Can't find account with id: ${id}`);
@@ -28,12 +35,13 @@ export class AccountService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromAccountModel(model);
+    return fromAccountModel(model, expandedAssociations);
   }
 
   // TODO: implement rest of list params
   public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Account>> {
-    const { page_size, cursor, created_after, created_before, updated_after, updated_before } = listParams;
+    const { page_size, cursor, created_after, created_before, updated_after, updated_before, expand } = listParams;
+    const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmAccount.findMany({
       ...getPaginationParams(pageSize, cursor),
@@ -48,11 +56,14 @@ export class AccountService extends CommonModelBaseService {
           lt: updated_before,
         },
       },
+      include: {
+        owner: expandedAssociations.includes('owner'),
+      },
       orderBy: {
         id: 'asc',
       },
     });
-    const results = models.map(fromAccountModel);
+    const results = models.map((model) => fromAccountModel(model, expandedAssociations));
     return {
       ...getPaginationResult(pageSize, cursor, results),
       results,
@@ -111,7 +122,6 @@ export class AccountService extends CommonModelBaseService {
     const table = 'api.crm_accounts';
     const tempTable = 'crm_accounts_temp';
     const columnsWithoutId = [
-      'owner',
       'name',
       'description',
       'industry',
@@ -126,6 +136,7 @@ export class AccountService extends CommonModelBaseService {
       'remote_was_deleted',
       'customer_id',
       'connection_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 
@@ -138,5 +149,22 @@ export class AccountService extends CommonModelBaseService {
       columnsWithoutId,
       fromRemoteAccountToDbAccountParams
     );
+  }
+
+  public async updateDanglingOwners(connectionId: string): Promise<void> {
+    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
+    const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${accountsTable} c
+      SET owner_id = u.id
+      FROM ${usersTable} u
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = u.connection_id
+        AND c.owner_id IS NULL
+        AND c._remote_owner_id IS NOT NULL
+        AND c._remote_owner_id = u.remote_id
+      `);
   }
 }

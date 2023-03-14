@@ -36,7 +36,7 @@ get:
                 last_activity_at: '2022-02-10T00:00:00Z'
                 name: Supaglue
                 number_of_employees: 276000
-                owner: 9377fd4d-d420-4e0b-93ea-789078a3eab4
+                owner_id: 9377fd4d-d420-4e0b-93ea-789078a3eab4
                 phone_numbers:
                   - phone_number: '+14151234567'
                     phone_number_type: Mobile
