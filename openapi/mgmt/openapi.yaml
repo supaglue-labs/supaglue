@@ -48,8 +48,6 @@ components:
       $ref: ./components/schemas/objects/integration.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
-    connection_credentials:
-      $ref: ./components/schemas/objects/connection_credentials.yaml
     category:
       $ref: ./components/schemas/objects/category.yaml
     integration_config:
