@@ -2,6 +2,8 @@ get:
   operationId: getSyncHistory
   tags:
     - Sync
+  security:
+    - ApiKeyAuth: []
   summary: Get Sync History
   description: >-
     Get a list of Sync History objects.
@@ -43,5 +45,5 @@ get:
                     status: ERROR
                     error_message: 'Error: Something went wrong'
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml

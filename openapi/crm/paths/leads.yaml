@@ -2,6 +2,8 @@ get:
   operationId: getLeads
   tags:
     - Leads
+  security:
+    - ApiKeyAuth: []
   summary: List leads
   description: >-
     Get a list of leads
@@ -90,6 +92,8 @@ post:
   summary: Create lead
   tags:
     - Leads
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true
@@ -126,5 +130,5 @@ post:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml

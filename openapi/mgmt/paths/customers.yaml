@@ -2,6 +2,8 @@ get:
   operationId: getCustomers
   tags:
     - Customers
+  security:
+    - ApiKeyAuth: []
   summary: List customers
   description: >-
     Get a list of customers
@@ -32,6 +34,8 @@ put:
   summary: Upsert customer
   tags:
     - Customers
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true

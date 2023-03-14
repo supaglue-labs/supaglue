@@ -33,6 +33,7 @@ services:
       - SUPAGLUE_DISABLE_ERROR_REPORTING
       - SUPAGLUE_POSTHOG_API_KEY
       - SUPAGLUE_API_ENCRYPTION_SECRET
+      - SUPAGLUE_API_KEY_SALT
     restart: on-failure
 
   sync-worker:

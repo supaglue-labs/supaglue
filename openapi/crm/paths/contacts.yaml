@@ -2,6 +2,8 @@ get:
   operationId: getContacts
   tags:
     - Contacts
+  security:
+    - ApiKeyAuth: []
   summary: List contacts
   description: >-
     Get a list of contacts
@@ -78,6 +80,8 @@ post:
   summary: Create contact
   tags:
     - Contacts
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true
@@ -91,10 +95,11 @@ post:
           required:
             - model
         example:
-          first_name: George
-          last_activity_at: '2022-02-10T00:00:00Z'
-          last_name: Xing
-          account_id: 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+          model:
+            first_name: George
+            last_activity_at: '2022-02-10T00:00:00Z'
+            last_name: Xing
+            account_id: 64571bff-48ea-4469-9fa0-ee1a0bab38bd
   responses:
     '201':
       description: Contact created
@@ -112,5 +117,5 @@ post:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml

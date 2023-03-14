@@ -61,6 +61,9 @@ tags:
   - name: Sync
     description: Get information and history for the sync process.
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: ../common/components/securitySchemes/x-api-key.yaml
   schemas:
     account:
       $ref: ./components/schemas/objects/account.yaml
@@ -96,13 +99,6 @@ components:
       $ref: ../common/components/schemas/pagination.yaml
     custom_fields:
       $ref: ./components/schemas/objects/custom_fields.yaml
-  # TODO: uncomment when we implement API authentication
-  # securitySchemes:
-  #   api_key:
-  #     type: apiKey
-  #     name: X-Account-Token
-  #     in: header
-  #     description: Token identifying the end user
   parameters:
     created_after:
       $ref: ../common/components/parameters/created_after.yaml
@@ -118,7 +114,7 @@ components:
       $ref: ../common/components/parameters/expand.yaml
     page_size:
       $ref: ../common/components/parameters/page_size.yaml
-    customer-id:
-      $ref: ../common/components/parameters/customer-id.yaml
-    provider-name:
-      $ref: ../common/components/parameters/provider-name.yaml
+    x-customer-id:
+      $ref: ../common/components/parameters/x-customer-id.yaml
+    x-provider-name:
+      $ref: ../common/components/parameters/x-provider-name.yaml

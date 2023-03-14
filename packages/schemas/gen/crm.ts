@@ -499,7 +499,7 @@ export interface components {
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous?: string | null;
     };
-    /** @description Custom properties to be inserted that is not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+    /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {
       [key: string]: unknown | undefined;
     };
@@ -521,9 +521,9 @@ export interface components {
     /** @description Number of results to return per page */
     page_size: string;
     /** @description The customer ID */
-    "customer-id": string;
+    "x-customer-id": string;
     /** @description The provider name */
-    "provider-name": string;
+    "x-provider-name": string;
   };
   requestBodies: never;
   headers: never;
@@ -629,10 +629,12 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "first_name": "George",
-         *   "last_activity_at": "2022-02-10T00:00:00Z",
-         *   "last_name": "Xing",
-         *   "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *   "model": {
+         *     "first_name": "George",
+         *     "last_activity_at": "2022-02-10T00:00:00Z",
+         *     "last_name": "Xing",
+         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *   }
          * }
          */
         "application/json": {

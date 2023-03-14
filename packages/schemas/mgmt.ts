@@ -26,6 +26,18 @@ export type DeleteApplicationRequest = never;
 export type DeleteApplicationResponse =
   operations['deleteApplication']['responses'][keyof operations['deleteApplication']['responses']]['content']['application/json'];
 
+export type CreateApplicationApiKeyPathParams =
+  paths[`/applications/{application_id}/_generate_api_key`]['parameters']['path'];
+export type CreateApplicationApiKeyRequest = never;
+export type CreateApplicationApiKeyResponse =
+  operations['createApplicationApiKey']['responses'][keyof operations['createApplicationApiKey']['responses']]['content']['application/json'];
+
+export type RevokeApplicationApiKeyPathParams =
+  paths[`/applications/{application_id}/_revoke_api_key`]['parameters']['path'];
+export type RevokeApplicationApiKeyRequest = never;
+export type RevokeApplicationApiKeyResponse =
+  operations['deleteApplicationApiKey']['responses'][keyof operations['deleteApplicationApiKey']['responses']]['content']['application/json'];
+
 export type GetCustomersPathParams = never;
 export type GetCustomersQueryParams = never;
 export type GetCustomersRequest = never;

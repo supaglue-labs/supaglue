@@ -27,6 +27,11 @@
         "tags": [
           "Accounts"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "summary": "List accounts",
         "description": "Get a list of accounts",
         "parameters": [
@@ -155,6 +160,11 @@
           "Accounts"
         ],
         "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -202,10 +212,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -215,6 +225,11 @@
         "summary": "Get account",
         "tags": [
           "Accounts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -282,6 +297,11 @@
         "tags": [
           "Accounts"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -330,10 +350,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "account_id",
@@ -351,6 +371,11 @@
         "operationId": "getContacts",
         "tags": [
           "Contacts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "List contacts",
         "description": "Get a list of contacts",
@@ -483,6 +508,11 @@
         "tags": [
           "Contacts"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -500,10 +530,12 @@
                 ]
               },
               "example": {
-                "first_name": "George",
-                "last_activity_at": "2022-02-10T00:00:00Z",
-                "last_name": "Xing",
-                "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+                "model": {
+                  "first_name": "George",
+                  "last_activity_at": "2022-02-10T00:00:00Z",
+                  "last_name": "Xing",
+                  "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+                }
               }
             }
           }
@@ -537,10 +569,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -550,6 +582,11 @@
         "summary": "Get contact",
         "tags": [
           "Contacts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -574,6 +611,11 @@
         "summary": "Update contact",
         "tags": [
           "Contacts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [],
         "requestBody": {
@@ -634,10 +676,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "contact_id",
@@ -655,6 +697,11 @@
         "operationId": "getLeads",
         "tags": [
           "Leads"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "List leads",
         "description": "Get a list of leads",
@@ -799,6 +846,11 @@
         "tags": [
           "Leads"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -856,10 +908,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -869,6 +921,11 @@
         "summary": "Get lead",
         "tags": [
           "Leads"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -893,6 +950,11 @@
         "summary": "Update lead",
         "tags": [
           "Leads"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [],
         "requestBody": {
@@ -955,10 +1017,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "lead_id",
@@ -976,6 +1038,11 @@
         "operationId": "getUsers",
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "List users",
         "description": "Get a list of users",
@@ -1058,10 +1125,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -1071,6 +1138,11 @@
         "summary": "Get user",
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "responses": {
           "200": {
@@ -1087,10 +1159,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "user_id",
@@ -1108,6 +1180,11 @@
         "operationId": "getOpportunities",
         "tags": [
           "Opportunities"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "List opportunities",
         "description": "Get a list of opportunities",
@@ -1208,6 +1285,11 @@
         "tags": [
           "Opportunities"
         ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1266,10 +1348,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -1279,6 +1361,11 @@
         "summary": "Get opportunity",
         "tags": [
           "Opportunities"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [
           {
@@ -1322,6 +1409,11 @@
         "summary": "Update opportunity",
         "tags": [
           "Opportunities"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "parameters": [],
         "requestBody": {
@@ -1371,10 +1463,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "opportunity_id",
@@ -1392,6 +1484,11 @@
         "operationId": "getSyncHistory",
         "tags": [
           "Sync"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "Get Sync History",
         "description": "Get a list of Sync History objects.",
@@ -1487,10 +1584,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -1499,6 +1596,11 @@
         "operationId": "getSyncInfos",
         "tags": [
           "Sync"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
         ],
         "summary": "Get Sync Info",
         "description": "Get a list of Sync Info",
@@ -1559,10 +1661,10 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/customer-id"
+          "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/provider-name"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     }
@@ -1594,6 +1696,14 @@
     }
   ],
   "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header",
+        "description": "API key to allow developers to access the API"
+      }
+    },
     "schemas": {
       "account": {
         "type": "object",
@@ -2322,7 +2432,7 @@
       "custom_fields": {
         "type": "object",
         "additionalProperties": true,
-        "description": "Custom properties to be inserted that is not covered by the common model. Object keys must match exactly to the corresponding provider API."
+        "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
       }
     },
     "parameters": {
@@ -2393,8 +2503,8 @@
         },
         "description": "Number of results to return per page"
       },
-      "customer-id": {
-        "name": "customer-id",
+      "x-customer-id": {
+        "name": "x-customer-id",
         "in": "header",
         "schema": {
           "type": "string",
@@ -2403,8 +2513,8 @@
         "description": "The customer ID",
         "required": true
       },
-      "provider-name": {
-        "name": "provider-name",
+      "x-provider-name": {
+        "name": "x-provider-name",
         "in": "header",
         "schema": {
           "type": "string",
