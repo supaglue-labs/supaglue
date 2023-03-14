@@ -153,27 +153,6 @@ export interface components {
       provider_name: components["schemas"]["provider_name"];
       category: components["schemas"]["category"];
     };
-    /**
-     * @example [
-     *   {
-     *     "type": "oauth2",
-     *     "access_token": "FILL THIS",
-     *     "refresh_token": "FILL THIS",
-     *     "instance_url": "https://myapp-dev-ed.develop.my.salesforce.com",
-     *     "expires_at": "2023-03-09T21:55:54.000Z"
-     *   }
-     * ]
-     */
-    connection_credentials: {
-      /** @example oauth2 */
-      type?: string;
-      access_token?: string;
-      refresh_token?: string;
-      /** @example https://myapp-dev-ed.develop.my.salesforce.com */
-      instance_url?: string;
-      /** @example 2023-03-09T21:55:54.000Z */
-      expires_at?: string | null;
-    };
     /** @enum {string} */
     category: "crm";
     /**
