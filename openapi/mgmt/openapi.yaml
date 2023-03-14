@@ -23,26 +23,20 @@ servers:
   - url: 'http://localhost:8080/mgmt/v1'
     description: Local Supaglue API
 paths:
-  '/applications':
-    $ref: paths/applications.yaml
-  '/applications/{application_id}':
-    $ref: paths/applications@{application_id}.yaml
-  '/applications/{application_id}/_generate_api_key':
-    $ref: paths/applications@{application_id}@_generate_api_key.yaml
-  '/applications/{application_id}/_revoke_api_key':
-    $ref: paths/applications@{application_id}@_revoke_api_key.yaml
-  '/applications/{application_id}/customers':
+  '/customers':
     $ref: paths/customers.yaml
-  '/applications/{application_id}/customers/{customer_id}':
+  '/customers/{customer_id}':
     $ref: paths/customers@{customer_id}.yaml
-  '/applications/{application_id}/integrations':
+  '/integrations':
     $ref: paths/integrations.yaml
-  '/applications/{application_id}/integrations/{integration_id}':
+  '/integrations/{integration_id}':
     $ref: paths/integrations@{integration_id}.yaml
-  '/applications/{application_id}/customers/{customer_id}/connections':
+  '/customers/{customer_id}/connections':
     $ref: paths/connections.yaml
-  '/applications/{application_id}/customers/{customer_id}/connections/{connection_id}':
+  '/customers/{customer_id}/connections/{connection_id}':
     $ref: paths/connections@{connection_id}.yaml
+  '/webhook':
+    $ref: paths/webhook.yaml
 tags: []
 components:
   securitySchemes:
@@ -65,11 +59,5 @@ components:
       $ref: ./components/schemas/create_update_customer.yaml
     create_update_integration:
       $ref: ./components/schemas/create_update_integration.yaml
-    create_update_application:
-      $ref: ./components/schemas/create_update_application.yaml
-    application:
-      $ref: ./components/schemas/objects/application.yaml
-    application_api_key:
-      $ref: ./components/schemas/objects/application_api_key.yaml
-    application_config:
-      $ref: ./components/schemas/objects/application_config.yaml
+    webhook:
+      $ref: ./components/schemas/objects/webhook.yaml

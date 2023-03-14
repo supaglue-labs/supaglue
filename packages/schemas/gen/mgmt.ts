@@ -5,47 +5,7 @@
 
 
 export interface paths {
-  "/applications": {
-    /**
-     * List applications 
-     * @description Get a list of applications
-     */
-    get: operations["getApplications"];
-    /** Create application */
-    post: operations["createApplication"];
-  };
-  "/applications/{application_id}": {
-    /** Get application */
-    get: operations["getApplication"];
-    /** Update application */
-    put: operations["updateApplication"];
-    /** Delete application */
-    delete: operations["deleteApplication"];
-    parameters: {
-      path: {
-        application_id: string;
-      };
-    };
-  };
-  "/applications/{application_id}/_generate_api_key": {
-    /** Create application API key */
-    post: operations["createApplicationApiKey"];
-    parameters: {
-      path: {
-        application_id: string;
-      };
-    };
-  };
-  "/applications/{application_id}/_revoke_api_key": {
-    /** Delete Application API key */
-    post: operations["deleteApplicationApiKey"];
-    parameters: {
-      path: {
-        application_id: string;
-      };
-    };
-  };
-  "/applications/{application_id}/customers": {
+  "/customers": {
     /**
      * List customers 
      * @description Get a list of customers
@@ -53,25 +13,19 @@ export interface paths {
     get: operations["getCustomers"];
     /** Upsert customer */
     put: operations["upsertCustomer"];
-    parameters: {
-      path: {
-        application_id: string;
-      };
-    };
   };
-  "/applications/{application_id}/customers/{customer_id}": {
+  "/customers/{customer_id}": {
     /** Get customer */
     get: operations["getCustomer"];
     /** Delete customer */
     delete: operations["deleteCustomer"];
     parameters: {
       path: {
-        application_id: string;
         customer_id: string;
       };
     };
   };
-  "/applications/{application_id}/integrations": {
+  "/integrations": {
     /**
      * List integrations 
      * @description Get a list of integrations
@@ -79,13 +33,8 @@ export interface paths {
     get: operations["getIntegrations"];
     /** Create integration */
     post: operations["createIntegration"];
-    parameters: {
-      path: {
-        application_id: string;
-      };
-    };
   };
-  "/applications/{application_id}/integrations/{integration_id}": {
+  "/integrations/{integration_id}": {
     /** Get integration */
     get: operations["getIntegration"];
     /** Update integration */
@@ -94,12 +43,11 @@ export interface paths {
     delete: operations["deleteIntegration"];
     parameters: {
       path: {
-        application_id: string;
         integration_id: string;
       };
     };
   };
-  "/applications/{application_id}/customers/{customer_id}/connections": {
+  "/customers/{customer_id}/connections": {
     /**
      * List connections 
      * @description Get a list of connections
@@ -107,23 +55,32 @@ export interface paths {
     get: operations["getConnections"];
     parameters: {
       path: {
-        application_id: string;
         customer_id: string;
       };
     };
   };
-  "/applications/{application_id}/customers/{customer_id}/connections/{connection_id}": {
+  "/customers/{customer_id}/connections/{connection_id}": {
     /** Get connection */
     get: operations["getConnection"];
     /** Delete connection */
     delete: operations["deleteConnection"];
     parameters: {
       path: {
-        application_id: string;
         customer_id: string;
         connection_id: string;
       };
     };
+  };
+  "/webhook": {
+    /**
+     * Get webhook 
+     * @description Get webhook details
+     */
+    get: operations["getWebhook"];
+    /** Create webhook */
+    post: operations["createWebhook"];
+    /** Delete webhook */
+    delete: operations["deleteWebhook"];
   };
 }
 
@@ -235,35 +192,17 @@ export interface components {
       config?: components["schemas"]["integration_config"];
       is_enabled: boolean;
     };
-    create_update_application: {
-      /** @example my-app */
-      name: string;
-      config: components["schemas"]["application_config"];
-    };
-    application: {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
-      /** @example my-app */
-      name: string;
-      config: components["schemas"]["application_config"];
-    };
-    application_api_key: {
-      api_key?: string | null;
-    };
-    application_config: {
-      api_key: string | null;
-      webhook: ({
-        url: string;
-        /** @enum {string} */
-        request_type: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-        notify_on_sync_success: boolean;
-        notify_on_sync_error: boolean;
-        notify_on_connection_success: boolean;
-        notify_on_connection_error: boolean;
-        headers?: {
-          [key: string]: unknown | undefined;
-        };
-      }) | null;
+    webhook: {
+      url: string;
+      /** @enum {string} */
+      request_type: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+      notify_on_sync_success: boolean;
+      notify_on_sync_error: boolean;
+      notify_on_connection_success: boolean;
+      notify_on_connection_error: boolean;
+      headers?: {
+        [key: string]: unknown | undefined;
+      };
     };
   };
   responses: never;
@@ -277,101 +216,6 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  getApplications: {
-    /**
-     * List applications 
-     * @description Get a list of applications
-     */
-    responses: {
-      /** @description Applications */
-      200: {
-        content: {
-          "application/json": (components["schemas"]["application"])[];
-        };
-      };
-    };
-  };
-  createApplication: {
-    /** Create application */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["create_update_application"];
-      };
-    };
-    responses: {
-      /** @description Application created */
-      201: {
-        content: {
-          "application/json": components["schemas"]["application"];
-        };
-      };
-    };
-  };
-  getApplication: {
-    /** Get application */
-    responses: {
-      /** @description Application */
-      200: {
-        content: {
-          "application/json": components["schemas"]["application"];
-        };
-      };
-    };
-  };
-  updateApplication: {
-    /** Update application */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["create_update_application"];
-      };
-    };
-    responses: {
-      /** @description Application */
-      200: {
-        content: {
-          "application/json": components["schemas"]["application"];
-        };
-      };
-    };
-  };
-  deleteApplication: {
-    /** Delete application */
-    responses: {
-      /** @description Application */
-      200: {
-        content: {
-          "application/json": components["schemas"]["application"];
-        };
-      };
-    };
-  };
-  createApplicationApiKey: {
-    /** Create application API key */
-    requestBody: {
-      content: {
-        "application/json": Record<string, never>;
-      };
-    };
-    responses: {
-      /** @description Application API key created */
-      201: {
-        content: {
-          "application/json": components["schemas"]["application_api_key"];
-        };
-      };
-    };
-  };
-  deleteApplicationApiKey: {
-    /** Delete Application API key */
-    responses: {
-      /** @description API key */
-      200: {
-        content: {
-          "application/json": components["schemas"]["application_api_key"];
-        };
-      };
-    };
-  };
   getCustomers: {
     /**
      * List customers 
@@ -526,6 +370,43 @@ export interface operations {
           "application/json": components["schemas"]["connection"];
         };
       };
+    };
+  };
+  getWebhook: {
+    /**
+     * Get webhook 
+     * @description Get webhook details
+     */
+    responses: {
+      /** @description Applications */
+      200: {
+        content: {
+          "application/json": components["schemas"]["webhook"];
+        };
+      };
+    };
+  };
+  createWebhook: {
+    /** Create webhook */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["webhook"];
+      };
+    };
+    responses: {
+      /** @description Webhook created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["webhook"];
+        };
+      };
+    };
+  };
+  deleteWebhook: {
+    /** Delete webhook */
+    responses: {
+      /** @description Webhook deleted */
+      200: never;
     };
   };
 }

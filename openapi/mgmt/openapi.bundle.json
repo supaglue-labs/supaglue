@@ -21,325 +21,7 @@
     }
   ],
   "paths": {
-    "/applications": {
-      "get": {
-        "operationId": "getApplications",
-        "tags": [
-          "Applications"
-        ],
-        "summary": "List applications",
-        "description": "Get a list of applications",
-        "responses": {
-          "200": {
-            "description": "Applications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/application"
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "id": "e888cedf-e9d0-42c5-9485-2d72984faef9",
-                        "name": "my-app",
-                        "config": {
-                          "api_key": "cgx3ElGtCfucNrqqh11ymQ5yjeSD6KTpPShEUU9fWUbJXCoVHGhzTi7DIb5zcwcYDnWRouyBLLMnCT4CmYowVg==",
-                          "webhook": {
-                            "url": "http://localhost:8080",
-                            "request_type": "POST",
-                            "notify_on_sync_success": true,
-                            "notify_on_sync_error": true,
-                            "notify_on_connection_success": true,
-                            "notify_on_connection_error": true
-                          }
-                        }
-                      },
-                      {
-                        "id": "0623bf1c-3f71-4d53-ab11-f92ae72833c0",
-                        "name": "my-app",
-                        "config": {
-                          "webhook": {
-                            "url": "http://localhost:8081",
-                            "request_type": "POST",
-                            "notify_on_sync_success": true,
-                            "notify_on_sync_error": false,
-                            "notify_on_connection_success": true,
-                            "notify_on_connection_error": false
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "operationId": "createApplication",
-        "summary": "Create application",
-        "tags": [
-          "Applications"
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/create_update_application"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Application created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/application"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/applications/{application_id}": {
-      "get": {
-        "operationId": "getApplication",
-        "summary": "Get application",
-        "tags": [
-          "Applications"
-        ],
-        "responses": {
-          "200": {
-            "description": "Application",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/application"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "e888cedf-e9d0-42c5-9485-2d72984faef4",
-                      "name": "my-app",
-                      "config": [
-                        {
-                          "webhook": {
-                            "url": "http://localhost:8080",
-                            "request_type": "POST",
-                            "notify_on_sync_success": true,
-                            "notify_on_sync_error": true,
-                            "notify_on_connection_success": true,
-                            "notify_on_connection_error": true
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "operationId": "updateApplication",
-        "summary": "Update application",
-        "tags": [
-          "Applications"
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/create_update_application"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Application",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/application"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "7fefba62-f90c-48f3-b44d-88298b68f831",
-                      "name": "my-app",
-                      "config": [
-                        {
-                          "webhook": {
-                            "url": "http://localhost:8080",
-                            "request_type": "POST",
-                            "notify_on_sync_success": true,
-                            "notify_on_sync_error": true,
-                            "notify_on_connection_success": true,
-                            "notify_on_connection_error": true
-                          }
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "operationId": "deleteApplication",
-        "summary": "Delete application",
-        "tags": [
-          "Applications"
-        ],
-        "responses": {
-          "200": {
-            "description": "Application",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/application"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "10072ab8-db4c-4e4f-9766-bbd846c9efbc",
-                      "name": "my-app",
-                      "config": {
-                        "webhook": {
-                          "url": "http://localhost:8080",
-                          "request_type": "POST",
-                          "notify_on_sync_success": true,
-                          "notify_on_sync_error": true,
-                          "notify_on_connection_success": true,
-                          "notify_on_connection_error": true
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        }
-      ]
-    },
-    "/applications/{application_id}/_generate_api_key": {
-      "post": {
-        "operationId": "createApplicationApiKey",
-        "summary": "Create application API key",
-        "tags": [
-          "API key"
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              },
-              "examples": {
-                "Example": {
-                  "value": {
-                    "api_key": "cgx3ElGtCfucNrqqh11ymQ5yjeSD6KTpPShEUU9fWUbJXCoVHGhzTi7DIb5zcwcYDnWRouyBLLMnCT4CmYowVg=="
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Application API key created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/application_api_key"
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        }
-      ]
-    },
-    "/applications/{application_id}/_revoke_api_key": {
-      "post": {
-        "operationId": "deleteApplicationApiKey",
-        "summary": "Delete Application API key",
-        "tags": [
-          "API key"
-        ],
-        "responses": {
-          "200": {
-            "description": "API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/application_api_key"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "api_key": null
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        }
-      ]
-    },
-    "/applications/{application_id}/customers": {
+    "/customers": {
       "get": {
         "operationId": "getCustomers",
         "tags": [
@@ -422,20 +104,9 @@
             }
           }
         }
-      },
-      "parameters": [
-        {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        }
-      ]
+      }
     },
-    "/applications/{application_id}/customers/{customer_id}": {
+    "/customers/{customer_id}": {
       "get": {
         "operationId": "getCustomer",
         "summary": "Get customer",
@@ -508,15 +179,6 @@
       },
       "parameters": [
         {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        },
-        {
           "name": "customer_id",
           "in": "path",
           "required": true,
@@ -527,7 +189,7 @@
         }
       ]
     },
-    "/applications/{application_id}/integrations": {
+    "/integrations": {
       "get": {
         "operationId": "getIntegrations",
         "tags": [
@@ -650,20 +312,9 @@
             }
           }
         }
-      },
-      "parameters": [
-        {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        }
-      ]
+      }
     },
-    "/applications/{application_id}/integrations/{integration_id}": {
+    "/integrations/{integration_id}": {
       "get": {
         "operationId": "getIntegration",
         "summary": "Get integration",
@@ -837,15 +488,6 @@
       },
       "parameters": [
         {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        },
-        {
           "name": "integration_id",
           "in": "path",
           "required": true,
@@ -856,7 +498,7 @@
         }
       ]
     },
-    "/applications/{application_id}/customers/{customer_id}/connections": {
+    "/customers/{customer_id}/connections": {
       "get": {
         "operationId": "getConnections",
         "tags": [
@@ -909,15 +551,6 @@
       },
       "parameters": [
         {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        },
-        {
           "name": "customer_id",
           "in": "path",
           "required": true,
@@ -928,7 +561,7 @@
         }
       ]
     },
-    "/applications/{application_id}/customers/{customer_id}/connections/{connection_id}": {
+    "/customers/{customer_id}/connections/{connection_id}": {
       "get": {
         "operationId": "getConnection",
         "summary": "Get connection",
@@ -1003,15 +636,6 @@
       },
       "parameters": [
         {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0623bf1c-3f71-4d53-ab11-f92ae72833c0"
-          }
-        },
-        {
           "name": "customer_id",
           "in": "path",
           "required": true,
@@ -1030,6 +654,98 @@
           }
         }
       ]
+    },
+    "/webhook": {
+      "get": {
+        "operationId": "getWebhook",
+        "tags": [
+          "Webhook"
+        ],
+        "summary": "Get webhook",
+        "description": "Get webhook details",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Applications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/webhook"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "url": "http://localhost:8080",
+                      "request_type": "POST",
+                      "notify_on_sync_success": true,
+                      "notify_on_sync_error": true,
+                      "notify_on_connection_success": true,
+                      "notify_on_connection_error": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createWebhook",
+        "summary": "Create webhook",
+        "tags": [
+          "Webhook"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/webhook"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/webhook"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteWebhook",
+        "summary": "Delete webhook",
+        "tags": [
+          "Webhook"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook deleted"
+          }
+        }
+      }
     }
   },
   "tags": [],
@@ -1320,106 +1036,46 @@
           "is_enabled"
         ]
       },
-      "create_update_application": {
+      "webhook": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "example": "my-app"
+          "url": {
+            "type": "string"
           },
-          "config": {
-            "$ref": "#/components/schemas/application_config"
-          }
-        },
-        "required": [
-          "name",
-          "config"
-        ]
-      },
-      "application": {
-        "type": "object",
-        "properties": {
-          "id": {
+          "request_type": {
             "type": "string",
-            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-          },
-          "name": {
-            "type": "string",
-            "example": "my-app"
-          },
-          "config": {
-            "$ref": "#/components/schemas/application_config"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "config"
-        ]
-      },
-      "application_api_key": {
-        "type": "object",
-        "properties": {
-          "api_key": {
-            "type": "string",
-            "nullable": true
-          }
-        }
-      },
-      "application_config": {
-        "type": "object",
-        "properties": {
-          "api_key": {
-            "type": "string",
-            "nullable": true
-          },
-          "webhook": {
-            "type": "object",
-            "nullable": true,
-            "properties": {
-              "url": {
-                "type": "string"
-              },
-              "request_type": {
-                "type": "string",
-                "enum": [
-                  "GET",
-                  "POST",
-                  "PUT",
-                  "DELETE",
-                  "PATCH"
-                ]
-              },
-              "notify_on_sync_success": {
-                "type": "boolean"
-              },
-              "notify_on_sync_error": {
-                "type": "boolean"
-              },
-              "notify_on_connection_success": {
-                "type": "boolean"
-              },
-              "notify_on_connection_error": {
-                "type": "boolean"
-              },
-              "headers": {
-                "type": "object",
-                "additionalProperties": true
-              }
-            },
-            "required": [
-              "url",
-              "request_type",
-              "notify_on_sync_success",
-              "notify_on_sync_error",
-              "notify_on_connection_success",
-              "notify_on_connection_error"
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "DELETE",
+              "PATCH"
             ]
+          },
+          "notify_on_sync_success": {
+            "type": "boolean"
+          },
+          "notify_on_sync_error": {
+            "type": "boolean"
+          },
+          "notify_on_connection_success": {
+            "type": "boolean"
+          },
+          "notify_on_connection_error": {
+            "type": "boolean"
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": true
           }
         },
         "required": [
-          "api_key",
-          "webhook"
+          "url",
+          "request_type",
+          "notify_on_sync_success",
+          "notify_on_sync_error",
+          "notify_on_connection_success",
+          "notify_on_connection_error"
         ]
       }
     }
