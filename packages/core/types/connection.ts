@@ -2,7 +2,7 @@ import type { CRMProviderName } from './crm';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
-export type ConnectionCredentials = {
+export type ConnectionCredentialsDecrypted = {
   type: string;
   accessToken: string;
   refreshToken: string;
@@ -13,7 +13,7 @@ export type ConnectionCredentials = {
 type BaseConnectionCreateParams = {
   customerId: string;
   integrationId: string;
-  credentials: ConnectionCredentials;
+  credentials: ConnectionCredentialsDecrypted;
 };
 
 type BaseConnection = BaseConnectionCreateParams & {
@@ -28,10 +28,11 @@ type CoreCRMConnectionParams = {
 
 export type CRMConnectionCreateParams = BaseConnectionCreateParams & CoreCRMConnectionParams;
 export type CRMConnectionUpsertParams = BaseConnectionCreateParams & CoreCRMConnectionParams;
-export type CRMConnection = BaseConnection & CoreCRMConnectionParams;
+export type CRMConnectionUnsafe = BaseConnection & CoreCRMConnectionParams;
 
 export type CRMConnectionUpdateParams = Pick<BaseConnectionCreateParams, 'credentials'>;
 
 export type ConnectionCreateParams = CRMConnectionCreateParams;
 export type ConnectionUpsertParams = CRMConnectionUpsertParams;
-export type Connection = CRMConnection;
+export type ConnectionUnsafe = CRMConnectionUnsafe;
+export type ConnectionSafe = Omit<CRMConnectionUnsafe, 'credentials'>;

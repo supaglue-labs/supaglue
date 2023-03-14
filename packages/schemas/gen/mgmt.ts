@@ -150,7 +150,6 @@ export interface components {
       customer_id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       integration_id: string;
-      credentials: components["schemas"]["connection_credentials"];
       provider_name: components["schemas"]["provider_name"];
       category: components["schemas"]["category"];
     };

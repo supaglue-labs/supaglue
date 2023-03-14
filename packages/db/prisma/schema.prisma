@@ -62,7 +62,7 @@ model Connection {
   // Salesforce, Hubspot, etc.
   providerName    String        @map("provider_name")
   status          String // available | added | authorized | callable
-  credentials     Json // {type, access_token, refresh_token, expires_at, raw}
+  credentials     Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
   customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId      String        @map("customer_id")
   createdAt       DateTime      @default(now()) @map("created_at")

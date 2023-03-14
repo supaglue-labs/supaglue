@@ -19,12 +19,6 @@ get:
                 integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
                 provider_name: salesforce
                 category: crm
-                credentials:
-                - type: oauth2
-                  access_token: FILL THIS
-                  refresh_token: FILL THIS
-                  instance_url: https://myapp-dev-ed.develop.my.salesforce.com
-                  expires_at: 2023-03-09T21:55:54Z
 delete:
   operationId: deleteConnection
   summary: Delete connection
@@ -46,12 +40,6 @@ delete:
                 integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
                 provider_name: salesforce
                 category: crm
-                credentials:
-                - type: oauth2
-                  access_token: FILL THIS
-                  refresh_token: FILL THIS
-                  instance_url: https://myapp-dev-ed.develop.my.salesforce.com
-                  expires_at: 2023-03-09T21:55:54Z
 parameters:
   - name: application_id
     in: path

@@ -1,10 +1,11 @@
 import { sendWebhookPayload } from '@supaglue/core/lib';
-import { fromConnectionModel } from '@supaglue/core/mappers/connection';
+import { encrypt } from '@supaglue/core/lib/crypt';
+import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, IntegrationService } from '@supaglue/core/services';
 import type {
-  Connection,
   ConnectionCreateParams,
   ConnectionStatus,
+  ConnectionUnsafe,
   ConnectionUpsertParams,
 } from '@supaglue/core/types/connection';
 import type { PrismaClient } from '@supaglue/db';
@@ -30,7 +31,7 @@ export class ConnectionWriterService {
     this.#applicationService = applicationService;
   }
 
-  public async upsert(params: ConnectionUpsertParams): Promise<Connection> {
+  public async upsert(params: ConnectionUpsertParams): Promise<ConnectionUnsafe> {
     const integration = await this.#prisma.integration.findUnique({
       where: {
         providerName: params.providerName,
@@ -45,13 +46,13 @@ export class ConnectionWriterService {
         ...params,
         integrationId: integration.id,
         status,
-        credentials: params.credentials,
+        credentials: encrypt(JSON.stringify(params.credentials)),
       },
       update: {
         ...params,
         integrationId: integration.id,
         status,
-        credentials: params.credentials,
+        credentials: encrypt(JSON.stringify(params.credentials)),
       },
       where: {
         customerId_integrationId: {
@@ -61,10 +62,10 @@ export class ConnectionWriterService {
       },
     });
 
-    return fromConnectionModel(connection);
+    return fromConnectionModelToConnectionUnsafe(connection);
   }
 
-  public async create(params: ConnectionCreateParams): Promise<Connection> {
+  public async create(params: ConnectionCreateParams): Promise<ConnectionUnsafe> {
     const integration = await this.#integrationService.getByProviderName(params.providerName);
     const application = await this.#applicationService.getById(integration.applicationId);
     let errored = false;
@@ -76,19 +77,21 @@ export class ConnectionWriterService {
           ...params,
           integrationId: integration.id,
           status,
-          credentials: params.credentials,
+          credentials: encrypt(JSON.stringify(params.credentials)),
         },
       });
 
-      // TODO: We need do this transactionally and not best-effort. Maybe transactionally write
-      // an event to another table and have a background job pick this up to guarantee
-      // that we start up syncs when connections are created.
-      // TODO: Do this for non-CRM models
-      await this.#syncService.createSyncsSchedule(
-        connection.id,
-        integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
-      );
-      return fromConnectionModel(connection);
+      if (integration.config) {
+        // TODO: We need do this transactionally and not best-effort. Maybe transactionally write
+        // an event to another table and have a background job pick this up to guarantee
+        // that we start up syncs when connections are created.
+        // TODO: Do this for non-CRM models
+        await this.#syncService.createSyncsSchedule(
+          connection.id,
+          integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
+        );
+      }
+      return fromConnectionModelToConnectionUnsafe(connection);
     } catch (e) {
       errored = true;
       throw e;

@@ -12,22 +12,33 @@ export type BaseIntegration = {
 };
 
 export type IncompleteCRMIntegration = BaseIntegration & {
-  config?: IntegrationConfig;
+  config?: IntegrationConfigDecrypted;
 };
 
 export type CRMIntegration = IncompleteCRMIntegration & {
-  config: IntegrationConfig;
+  config: IntegrationConfigDecrypted;
 };
 
-export type IntegrationConfig = {
+export type IntegrationConfigDecrypted = {
   providerAppId: string;
-  oauth: OauthConfig;
+  oauth: OauthConfigDecrypted;
   sync: SyncConfig;
 };
 
-export type OauthConfig = {
+export type IntegrationConfigEncrypted = {
+  providerAppId: string;
+  oauth: OauthConfigEncrypted;
+  sync: SyncConfig;
+};
+
+export type OauthConfigDecrypted = {
   oauthScopes: string[];
   credentials: OauthCredentials;
+};
+
+export type OauthConfigEncrypted = {
+  oauthScopes: string[];
+  credentials: string;
 };
 
 export type OauthCredentials = {
@@ -40,4 +51,7 @@ type BaseCRMIntegrationUpdateParams = Omit<IncompleteCRMIntegration, 'id'>;
 export type CRMIntegrationCreateParams = BaseCRMIntegrationCreateParams;
 export type CRMIntegrationUpdateParams = BaseCRMIntegrationUpdateParams;
 
-export type Integration = CRMIntegration;
+export type CompleteIntegration = CRMIntegration;
+export type IncompleteIntegration = IncompleteCRMIntegration;
+
+export type Integration = CompleteIntegration | IncompleteIntegration;

@@ -5,7 +5,7 @@
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { PassThrough, pipeline, Readable, Transform } from 'stream';
-import { CRMConnection } from '../../../types/connection';
+import { CRMConnectionUnsafe } from '../../../types/connection';
 import {
   AccountCreateParams,
   RemoteAccount,
@@ -20,7 +20,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types/crm';
-import { Integration } from '../../../types/integration';
+import { CompleteIntegration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
@@ -479,7 +479,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnection, integration: Integration): SalesforceClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,

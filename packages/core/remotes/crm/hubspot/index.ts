@@ -6,7 +6,7 @@ import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } 
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
 import { logger } from '../../../lib';
-import { CRMConnection } from '../../../types/connection';
+import { CRMConnectionUnsafe } from '../../../types/connection';
 import {
   RemoteAccount,
   RemoteAccountCreateParams,
@@ -21,7 +21,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types/crm';
-import { Integration } from '../../../types/integration';
+import { CompleteIntegration } from '../../../types/integration';
 import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
@@ -430,7 +430,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnection, integration: Integration): HubSpotClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,

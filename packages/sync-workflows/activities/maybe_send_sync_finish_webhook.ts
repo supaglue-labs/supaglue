@@ -23,7 +23,7 @@ export function createMaybeSendSyncFinishWebhook({
     numRecordsSynced: number;
     errorMessage?: string;
   }) {
-    const connection = await connectionService.getById(connectionId);
+    const connection = await connectionService.getSafeById(connectionId);
     const integration = await integrationService.getById(connection.integrationId);
     const { config } = await applicationService.getById(integration.applicationId);
     if (config.webhook) {

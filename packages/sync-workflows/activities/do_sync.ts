@@ -32,7 +32,7 @@ export function createDoSync(
   userService: UserService
 ) {
   return async function doSync({ connectionId, commonModel, sessionId }: DoSyncArgs): Promise<DoSyncResult> {
-    const connection = await connectionService.getById(connectionId);
+    const connection = await connectionService.getSafeById(connectionId);
     const client = await remoteService.getCrmRemoteClient(connectionId);
 
     let numRecordsSynced = 0;
