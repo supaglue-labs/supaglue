@@ -6,5 +6,6 @@ export * from './customer';
 export * from './integration';
 export * from './lead';
 export * from './opportunity';
+export * from './sg_user';
 export * from './sync_history';
 export * from './user';

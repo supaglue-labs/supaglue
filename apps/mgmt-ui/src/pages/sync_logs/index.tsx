@@ -2,11 +2,14 @@ import LogsTable from '@/components/logs/LogsTable';
 import ModelSelect from '@/components/logs/ModelSelect';
 import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
+import { getServerSideProps } from '@/pages';
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Head from 'next/head';
 import { useState } from 'react';
+
+export { getServerSideProps };
 
 export default function Home() {
   const { syncHistory = { results: [] } } = useSyncHistory();

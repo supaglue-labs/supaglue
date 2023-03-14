@@ -3,10 +3,30 @@ import DashboardCard from '@/components/dashboard/DashboardCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { CloudUploadOutlined, Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
+import { type GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth/next';
 import Head from 'next/head';
 import { useState } from 'react';
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+};
 
 export default function Home() {
   const { customers = [] } = useCustomers();
