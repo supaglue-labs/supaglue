@@ -10,6 +10,18 @@ function getKey(secret: string, salt: Buffer): Buffer {
   return crypto.pbkdf2Sync(secret, salt, 100000, 32, 'sha512');
 }
 
+export function generateApiKey(): string {
+  return crypto.randomBytes(64).toString('base64');
+}
+
+export async function cryptoHash(text: string): Promise<{ original: string; hashed: string }> {
+  const hashedText = await crypto.scryptSync(text, secret!, 64).toString('hex'); // TODO: remove bang by getting NodeJs ProcessEnv global interface working
+  return {
+    original: text,
+    hashed: hashedText,
+  };
+}
+
 export function encrypt(text: string): Buffer {
   const salt = crypto.randomBytes(saltLength);
   if (!secret) {

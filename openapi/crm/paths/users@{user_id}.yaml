@@ -3,6 +3,8 @@ get:
   summary: Get user
   tags:
     - Users
+  security:
+    - ApiKeyAuth: []
   responses:
     200:
       description: User
@@ -11,8 +13,8 @@ get:
           schema:
             $ref: ../components/schemas/objects/user.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml
   - name: user_id
     in: path
     required: true

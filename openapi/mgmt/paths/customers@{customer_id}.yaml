@@ -3,6 +3,8 @@ get:
   summary: Get customer
   tags:
     - Customers
+  security:
+    - ApiKeyAuth: []
   responses:
     200:
       description: Customer
@@ -23,6 +25,8 @@ delete:
   summary: Delete customer
   tags:
     - Customers
+  security:
+    - ApiKeyAuth: []
   responses:
     200:
       description: Customer

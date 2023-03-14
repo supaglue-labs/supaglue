@@ -25,7 +25,6 @@ import {
   UpdateApplicationRequest,
   UpdateApplicationResponse,
 } from '@supaglue/schemas/mgmt';
-import crypto from 'crypto';
 import { Request, Response, Router } from 'express';
 import customer from './customer';
 import integration from './integration';
@@ -107,18 +106,9 @@ export default function init(app: Router): void {
     ) => {
       const application = await applicationService.getById(req.params.application_id);
 
-      const apiKey = crypto.randomBytes(64).toString('base64');
-      const hashedApiKey = await crypto.scryptSync(apiKey, SUPAGLUE_API_KEY_SALT!, 64).toString('hex'); // TODO: remove bang by getting NodeJs ProcessEnv global interface working
-
       // TODO: move to its own object and support multiple API keys
-      await applicationService.update(req.params.application_id, {
-        ...application,
-        config: {
-          ...application.config,
-          apiKey: hashedApiKey,
-        },
-      });
-      return res.status(200).send(snakecaseKeys({ apiKey }));
+      const updatedApplication = await applicationService.createApiKey(req.params.application_id, application);
+      return res.status(200).send(snakecaseKeys({ apiKey: updatedApplication.config.apiKey }));
     }
   );
 
@@ -131,13 +121,7 @@ export default function init(app: Router): void {
       const application = await applicationService.getById(req.params.application_id);
 
       // TODO: move to its own object and support multiple API keys
-      await applicationService.update(req.params.application_id, {
-        ...application,
-        config: {
-          ...application.config,
-          apiKey: null,
-        },
-      });
+      await applicationService.deleteApiKey(req.params.application_id, application);
       return res.status(200).send(snakecaseKeys({ apiKey: null }));
     }
   );

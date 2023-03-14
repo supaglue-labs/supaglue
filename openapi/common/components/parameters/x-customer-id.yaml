@@ -1,4 +1,4 @@
-name: customer-id
+name: x-customer-id
 in: header
 schema:
   type: string

@@ -2,6 +2,8 @@ get:
   operationId: getOpportunities
   tags:
     - Opportunities
+  security:
+    - ApiKeyAuth: []
   summary: List opportunities
   description: >-
     Get a list of opportunities
@@ -63,6 +65,8 @@ post:
   summary: Create opportunity
   tags:
     - Opportunities
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true
@@ -100,5 +104,5 @@ post:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml

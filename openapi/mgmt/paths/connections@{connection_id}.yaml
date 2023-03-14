@@ -3,6 +3,8 @@ get:
   summary: Get connection
   tags:
     - Connections
+  security:
+    - ApiKeyAuth: []
   responses:
     200:
       description: Connection
@@ -24,6 +26,8 @@ delete:
   summary: Delete connection
   tags:
     - Connections
+  security:
+    - ApiKeyAuth: []
   responses:
     200:
       description: Connection

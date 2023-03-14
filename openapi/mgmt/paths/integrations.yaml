@@ -2,6 +2,8 @@ get:
   operationId: getIntegrations
   tags:
     - Integrations
+  security:
+    - ApiKeyAuth: []
   summary: List integrations
   description: >-
     Get a list of integrations
@@ -62,6 +64,8 @@ post:
   summary: Create integration
   tags:
     - Integrations
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true

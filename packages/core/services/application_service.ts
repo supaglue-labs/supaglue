@@ -1,10 +1,8 @@
 import type { PrismaClient } from '@supaglue/db';
-import crypto from 'crypto';
 import { NotFoundError } from '../errors';
+import { cryptoHash, generateApiKey } from '../lib/crypt';
 import { fromApplicationModel } from '../mappers';
 import { Application, ApplicationCreateParams, ApplicationUpdateParams } from '../types';
-
-const { SUPAGLUE_API_KEY_SALT } = process.env;
 
 export class ApplicationService {
   #prisma: PrismaClient;
@@ -24,12 +22,12 @@ export class ApplicationService {
   }
 
   public async getByApiKey(apiKey: string): Promise<Application> {
-    const hashedApiKey = await crypto.scryptSync(apiKey, SUPAGLUE_API_KEY_SALT!, 64).toString('hex'); // TODO: remove bang by getting NodeJs ProcessEnv global interface working
+    const { hashed: hashedApiKey } = await cryptoHash(apiKey);
 
     const application = await this.#prisma.application.findMany({
       where: {
         config: {
-          path: ['apiKey'],
+          path: ['api_key'],
           equals: hashedApiKey,
         },
       },
@@ -68,6 +66,39 @@ export class ApplicationService {
         ...application,
       },
     });
+    return fromApplicationModel(updatedApplication);
+  }
+
+  public async createApiKey(id: string, application: ApplicationUpdateParams): Promise<Application> {
+    const apiKey = generateApiKey();
+    const { hashed: hashedApiKey } = await cryptoHash(apiKey);
+
+    const updatedApplication = await this.#prisma.application.update({
+      where: { id },
+      data: {
+        ...application,
+        config: {
+          ...application.config,
+          apiKey: hashedApiKey,
+        },
+      },
+    });
+
+    return fromApplicationModel(updatedApplication);
+  }
+
+  public async deleteApiKey(id: string, application: ApplicationUpdateParams): Promise<Application> {
+    const updatedApplication = await this.#prisma.application.update({
+      where: { id },
+      data: {
+        ...application,
+        config: {
+          ...application.config,
+          apiKey: null,
+        },
+      },
+    });
+
     return fromApplicationModel(updatedApplication);
   }
 

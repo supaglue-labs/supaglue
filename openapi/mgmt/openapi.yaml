@@ -45,6 +45,9 @@ paths:
     $ref: paths/connections@{connection_id}.yaml
 tags: []
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: ../common/components/securitySchemes/x-api-key.yaml
   schemas:
     customer:
       $ref: ./components/schemas/objects/customer.yaml
