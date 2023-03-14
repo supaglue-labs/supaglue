@@ -35,14 +35,16 @@ paths:
     $ref: paths/leads.yaml
   '/leads/{lead_id}':
     $ref: paths/leads@{lead_id}.yaml
-  '/users':
-    $ref: paths/users.yaml
-  '/users/{user_id}':
-    $ref: paths/users@{user_id}.yaml
   '/opportunities':
     $ref: paths/opportunities.yaml
   '/opportunities/{opportunity_id}':
     $ref: paths/opportunities@{opportunity_id}.yaml
+  '/users':
+    $ref: paths/users.yaml
+  '/users/{user_id}':
+    $ref: paths/users@{user_id}.yaml
+  '/passthrough':
+    $ref: paths/passthrough.yaml
   '/sync-history':
     $ref: paths/sync-history.yaml
   '/sync-info':
@@ -60,6 +62,8 @@ tags:
     description: The `User` Common Model is used to represent a "user" that can login to CRMs.
   - name: Sync
     description: Get information and history for the sync process.
+  - name: Passthrough
+    description: Passthrough operations to underlying providers.
 components:
   securitySchemes:
     ApiKeyAuth:

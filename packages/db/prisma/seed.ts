@@ -152,7 +152,7 @@ function encryptAsString(text: string): string {
 
 // NOTE: copied from crypt.ts (can be de-duplicated after seed becomes a script)
 export async function cryptoHash(text: string): Promise<{ original: string; hashed: string }> {
-  const hashedText = await crypto.scryptSync(text, SUPAGLUE_API_ENCRYPTION_SECRET!, 64).toString('hex');
+  const hashedText = crypto.scryptSync(text, SUPAGLUE_API_ENCRYPTION_SECRET!, 64).toString('hex');
   return {
     original: text,
     hashed: hashedText,

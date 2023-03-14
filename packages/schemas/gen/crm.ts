@@ -68,23 +68,6 @@ export interface paths {
       };
     };
   };
-  "/users": {
-    /**
-     * List users 
-     * @description Get a list of users
-     */
-    get: operations["getUsers"];
-    
-  };
-  "/users/{user_id}": {
-    /** Get user */
-    get: operations["getUser"];
-    parameters: {
-      path: {
-        user_id: string;
-      };
-    };
-  };
   "/opportunities": {
     /**
      * List opportunities 
@@ -105,6 +88,31 @@ export interface paths {
         opportunity_id: string;
       };
     };
+  };
+  "/users": {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    get: operations["getUsers"];
+    
+  };
+  "/users/{user_id}": {
+    /** Get user */
+    get: operations["getUser"];
+    parameters: {
+      path: {
+        user_id: string;
+      };
+    };
+  };
+  "/passthrough": {
+    /**
+     * Send passthrough request 
+     * @description Send request directly to a provider
+     */
+    post: operations["sendPassthroughRequest"];
+    
   };
   "/sync-history": {
     /**
@@ -774,33 +782,6 @@ export interface operations {
       };
     };
   };
-  getUsers: {
-    /**
-     * List users 
-     * @description Get a list of users
-     */
-    responses: {
-      /** @description Users */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["user"])[];
-          };
-        };
-      };
-    };
-  };
-  getUser: {
-    /** Get user */
-    responses: {
-      /** @description User */
-      200: {
-        content: {
-          "application/json": components["schemas"]["user"];
-        };
-      };
-    };
-  };
   getOpportunities: {
     /**
      * List opportunities 
@@ -881,6 +862,91 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["opportunity"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getUsers: {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    responses: {
+      /** @description Users */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["user"])[];
+          };
+        };
+      };
+    };
+  };
+  getUser: {
+    /** Get user */
+    responses: {
+      /** @description User */
+      200: {
+        content: {
+          "application/json": components["schemas"]["user"];
+        };
+      };
+    };
+  };
+  sendPassthroughRequest: {
+    /**
+     * Send passthrough request 
+     * @description Send request directly to a provider
+     */
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description The path to send the request to (do not pass the domain) */
+          path: string;
+          /**
+           * @example GET 
+           * @enum {string}
+           */
+          method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+          /** @description Headers to pass to downstream */
+          headers?: {
+            [key: string]: string | undefined;
+          };
+          /** @description Query parameters to pass to downstream */
+          query?: {
+            [key: string]: string | undefined;
+          };
+          /** @description Body to pass to downstream */
+          body?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Passthrough response */
+      200: {
+        content: {
+          "application/json": {
+            /**
+             * @description The full URL the request was went to 
+             * @example https://customcrm.com/api/cars
+             */
+            url: string;
+            /**
+             * @description Status code from the downstream 
+             * @example 200
+             */
+            status: number;
+            /** @description The response headers from the downstream */
+            headers: {
+              [key: string]: string | undefined;
+            };
+            /** @description The body from the downstream */
+            body?: string | number | number | boolean | (({
+                [key: string]: unknown | undefined;
+              })[]) | ({
+              [key: string]: unknown | undefined;
+            });
           };
         };
       };

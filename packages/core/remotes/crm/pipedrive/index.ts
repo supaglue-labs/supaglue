@@ -15,11 +15,16 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types';
-import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
+import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 
-class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
+class PipedriveClient extends AbstractCrmRemoteClient {
   public constructor() {
-    super();
+    // TODO: Support baseUrl
+    super('missing-base-url');
+  }
+
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    throw new Error('Not implemented');
   }
 
   public async listAccounts(): Promise<Readable> {

@@ -21,6 +21,7 @@ export class RemoteService {
       throw new Error('Integration must have config');
     }
 
+    // TODO: don't cast `integration as CompleteIntegration`
     const client = getCrmRemoteClient(connection, integration as CompleteIntegration);
 
     // Persist the refreshed token

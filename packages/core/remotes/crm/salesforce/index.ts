@@ -21,7 +21,7 @@ import {
   RemoteOpportunityUpdateParams,
 } from '../../../types/crm';
 import { CompleteIntegration } from '../../../types/integration';
-import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
+import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
   fromSalesforceContactToRemoteContact,
@@ -161,7 +161,7 @@ function getBulk2QueryJobResultsFromResponse(response: Response): Readable {
   return pipeline(Readable.fromWeb(response.body as any), parser, () => {});
 }
 
-class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
+class SalesforceClient extends AbstractCrmRemoteClient {
   readonly #client: jsforce.Connection;
 
   readonly #instanceUrl: string;
@@ -181,7 +181,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     clientId: string;
     clientSecret: string;
   }) {
-    super();
+    super(instanceUrl);
 
     this.#instanceUrl = instanceUrl;
     this.#refreshToken = refreshToken;
@@ -199,6 +199,12 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     });
   }
 
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    return {
+      Authorization: `Bearer ${this.#accessToken}`,
+    };
+  }
+
   async #refreshAccessToken(): Promise<void> {
     // TODO: Shouldn't be relying on `jsforce` to do this.
     const token = await this.#client.oauth2.refreshToken(this.#refreshToken);
@@ -212,7 +218,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
         ...init,
         headers: {
           ...init.headers,
-          Authorization: `Bearer ${this.#accessToken}`,
+          ...this.getAuthHeadersForPassthroughRequest(),
         },
       });
     };

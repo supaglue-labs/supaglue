@@ -16,15 +16,9 @@ import {
   RemoteOpportunityUpdateParams,
 } from '../../types/crm';
 import { CompleteIntegration } from '../../types/integration';
-import { RemoteClient } from '../base';
-
-interface CrmRemoteClientEvents {
-  token_refreshed: (accessToken: string, expiresAt: string | null) => void;
-}
+import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface CrmRemoteClient extends RemoteClient {
-  on<U extends keyof CrmRemoteClientEvents>(event: U, listener: CrmRemoteClientEvents[U]): this;
-
   listAccounts(): Promise<Readable>; // streams RemoteAccount
   createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount>;
   updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount>;
@@ -45,11 +39,32 @@ export interface CrmRemoteClient extends RemoteClient {
   listUsers(): Promise<Readable>; // streams RemoteUser
 }
 
-export abstract class CrmRemoteClientEventEmitter extends EventEmitter {
-  public emit<U extends keyof CrmRemoteClientEvents>(event: U, ...args: Parameters<CrmRemoteClientEvents[U]>): boolean {
-    return super.emit(event, ...args);
+export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
+  public constructor(...args: ConstructorParameters<typeof AbstractRemoteClient>) {
+    super(...args);
   }
+
+  abstract listAccounts(): Promise<Readable>; // streams RemoteAccount
+  abstract createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount>;
+  abstract updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount>;
+
+  abstract listContacts(): Promise<Readable>; // streams RemoteContact
+  abstract createContact(params: RemoteContactCreateParams): Promise<RemoteContact>;
+  abstract updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact>;
+
+  abstract listLeads(): Promise<Readable>; // streams RemoteLead
+  abstract createLead(params: RemoteLeadCreateParams): Promise<RemoteLead>;
+  abstract updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead>;
+
+  abstract listOpportunities(): Promise<Readable>; // streams RemoteOpportunity
+  abstract createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity>;
+  abstract updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity>;
+
+  // Note: User creation/updates are not supported
+  abstract listUsers(): Promise<Readable>; // streams RemoteUser
 }
+
+export abstract class CrmRemoteClientEventEmitter extends EventEmitter {}
 
 export type ConnectorAuthConfig = {
   tokenHost: string;
@@ -60,5 +75,5 @@ export type ConnectorAuthConfig = {
 
 export type CrmConnectorConfig = {
   authConfig: ConnectorAuthConfig;
-  newClient: (connection: CRMConnectionUnsafe, integration: CompleteIntegration) => CrmRemoteClient;
+  newClient: (connection: CRMConnectionUnsafe, integration: CompleteIntegration) => AbstractCrmRemoteClient;
 };

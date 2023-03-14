@@ -22,7 +22,7 @@ import {
   RemoteOpportunityUpdateParams,
 } from '../../../types/crm';
 import { CompleteIntegration } from '../../../types/integration';
-import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
+import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
   fromHubSpotContactToRemoteContact,
@@ -114,17 +114,23 @@ type Credentials = {
   clientSecret: string;
 };
 
-class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
+class HubSpotClient extends AbstractCrmRemoteClient {
   readonly #client: Client;
   readonly #credentials: Credentials;
 
   public constructor(credentials: Credentials) {
-    super();
+    super('https://api.hubapi.com');
     const { accessToken } = credentials;
     this.#client = new Client({
       accessToken,
     });
     this.#credentials = credentials;
+  }
+
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    return {
+      Authorization: `Bearer ${this.#credentials.accessToken}`,
+    };
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {

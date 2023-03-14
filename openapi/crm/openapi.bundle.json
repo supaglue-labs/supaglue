@@ -1033,148 +1033,6 @@
         }
       ]
     },
-    "/users": {
-      "get": {
-        "operationId": "getUsers",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "List users",
-        "description": "Get a list of users",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/created_after"
-          },
-          {
-            "$ref": "#/components/parameters/created_before"
-          },
-          {
-            "$ref": "#/components/parameters/updated_after"
-          },
-          {
-            "$ref": "#/components/parameters/updated_before"
-          },
-          {
-            "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
-          },
-          {
-            "$ref": "#/components/parameters/page_size"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Users",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/pagination"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "results": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/user"
-                          }
-                        }
-                      }
-                    }
-                  ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
-                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
-                      "results": [
-                        {
-                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
-                          "name": "George Xing",
-                          "email": "george@supaglue.com",
-                          "is_active": true,
-                          "created_at": "2021-11-10T00:00:00Z",
-                          "updated_at": "2022-01-09T00:00:00Z"
-                        },
-                        {
-                          "id": "a0f8385c-4947-41d2-a276-740f792bb0e6",
-                          "name": "Thomas Chen",
-                          "email": "tom@supaglue.com",
-                          "is_active": true,
-                          "created_at": "2021-11-10T00:00:00Z",
-                          "updated_at": "2022-01-09T00:00:00Z"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
-    "/users/{user_id}": {
-      "get": {
-        "operationId": "getUser",
-        "summary": "Get user",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/user"
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        },
-        {
-          "name": "user_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
-        }
-      ]
-    },
     "/opportunities": {
       "get": {
         "operationId": "getOpportunities",
@@ -1479,6 +1337,290 @@
         }
       ]
     },
+    "/users": {
+      "get": {
+        "operationId": "getUsers",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List users",
+        "description": "Get a list of users",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/updated_after"
+          },
+          {
+            "$ref": "#/components/parameters/updated_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/expand"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/user"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "name": "George Xing",
+                          "email": "george@supaglue.com",
+                          "is_active": true,
+                          "created_at": "2021-11-10T00:00:00Z",
+                          "updated_at": "2022-01-09T00:00:00Z"
+                        },
+                        {
+                          "id": "a0f8385c-4947-41d2-a276-740f792bb0e6",
+                          "name": "Thomas Chen",
+                          "email": "tom@supaglue.com",
+                          "is_active": true,
+                          "created_at": "2021-11-10T00:00:00Z",
+                          "updated_at": "2022-01-09T00:00:00Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/users/{user_id}": {
+      "get": {
+        "operationId": "getUser",
+        "summary": "Get user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/passthrough": {
+      "post": {
+        "operationId": "sendPassthroughRequest",
+        "tags": [
+          "Passthrough"
+        ],
+        "summary": "Send passthrough request",
+        "description": "Send request directly to a provider",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "description": "The path to send the request to (do not pass the domain)"
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ],
+                    "example": "GET"
+                  },
+                  "headers": {
+                    "type": "object",
+                    "description": "Headers to pass to downstream",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "query": {
+                    "type": "object",
+                    "description": "Query parameters to pass to downstream",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "Body to pass to downstream"
+                  }
+                },
+                "required": [
+                  "path",
+                  "method"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Passthrough response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "The full URL the request was went to",
+                      "example": "https://customcrm.com/api/cars"
+                    },
+                    "status": {
+                      "type": "number",
+                      "description": "Status code from the downstream",
+                      "example": 200
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "The response headers from the downstream",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "body": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": true
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        }
+                      ],
+                      "description": "The body from the downstream"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "status",
+                    "headers"
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "url": "https://customcrm.com/api/cars",
+                      "status": 200,
+                      "headers": {
+                        "x-requests-limit": 96
+                      },
+                      "body": []
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/sync-history": {
       "get": {
         "operationId": "getSyncHistory",
@@ -1693,6 +1835,10 @@
     {
       "name": "Sync",
       "description": "Get information and history for the sync process."
+    },
+    {
+      "name": "Passthrough",
+      "description": "Passthrough operations to underlying providers."
     }
   ],
   "components": {
