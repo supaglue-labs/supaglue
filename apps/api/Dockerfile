@@ -39,15 +39,13 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 USER nodejs
 COPY --from=installer --chown=nodejs:nodejs /app/apps/api/dist .
-COPY --from=installer --chown=nodejs:nodejs /app/apps/api/node_modules ./node_modules
+COPY --from=installer --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=installer --chown=nodejs:nodejs /app/apps/api/package.json .
 COPY --from=installer --chown=nodejs:nodejs /app/packages/core/dist ./node_modules/@supaglue/core
-COPY --from=installer --chown=nodejs:nodejs /app/packages/core/node_modules ./node_modules/@supaglue/core/node_modules
 COPY --from=installer --chown=nodejs:nodejs /app/packages/db/dist ./node_modules/@supaglue/db
 COPY --from=installer --chown=nodejs:nodejs /app/packages/db/node_modules ./node_modules/@supaglue/db/node_modules
 COPY --from=installer --chown=nodejs:nodejs /app/packages/db/prisma ./prisma
 COPY --from=installer --chown=nodejs:nodejs /app/packages/sync-workflows/dist ./node_modules/@supaglue/sync-workflows
-COPY --from=installer --chown=nodejs:nodejs /app/packages/sync-workflows/node_modules ./node_modules/@supaglue/sync-workflows/node_modules
 COPY --from=installer --chown=nodejs:nodejs /app/openapi ./openapi
 
 CMD node ./index.js
