@@ -3508,16 +3508,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next-auth/prisma-adapter@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@next-auth/prisma-adapter@npm:1.0.5"
-  peerDependencies:
-    "@prisma/client": ">=2.26.0 || >=3"
-    next-auth: ^4
-  checksum: 5d03d623e60e719ea3ae91d7aecd57019eebc063a0711cbdb2917bf9675c29b6fcbdbc1724b584c346be995ad7bb6fbca533d08e4d43769023ba084e0aaae147
-  languageName: node
-  linkType: hard
-
 "@next/env@npm:13.2.3":
   version: 13.2.3
   resolution: "@next/env@npm:13.2.3"
@@ -12028,7 +12018,6 @@ __metadata:
     "@mui/material": ^5.11.12
     "@mui/x-data-grid": ^6.0.0
     "@mui/x-date-pickers": ^6.0.0
-    "@next-auth/prisma-adapter": ^1.0.5
     "@types/node": 18.14.6
     "@types/react": 18.0.28
     "@types/react-dom": 18.0.11
