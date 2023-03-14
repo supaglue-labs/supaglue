@@ -1,6 +1,6 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
 import { decrypt } from '../lib/crypt';
-import { ConnectionSafe, ConnectionStatus, ConnectionUnsafe, CRMConnectionUnsafe } from '../types';
+import { ConnectionSafe, ConnectionStatus, ConnectionUnsafe, CRMProviderName } from '../types';
 
 export const fromConnectionModelToConnectionUnsafe = ({
   id,
@@ -15,11 +15,11 @@ export const fromConnectionModelToConnectionUnsafe = ({
     id,
     customerId,
     integrationId,
-    category,
+    category: category as 'crm',
     status: status as ConnectionStatus,
-    providerName,
+    providerName: providerName as CRMProviderName,
     credentials: JSON.parse(decrypt(credentials)),
-  } as CRMConnectionUnsafe;
+  };
 };
 
 export const fromConnectionModelToConnectionSafe = ({
@@ -34,8 +34,8 @@ export const fromConnectionModelToConnectionSafe = ({
     id,
     customerId,
     integrationId,
-    category,
+    category: category as 'crm',
     status: status as ConnectionStatus,
-    providerName,
-  } as ConnectionSafe;
+    providerName: providerName as CRMProviderName,
+  };
 };
