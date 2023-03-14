@@ -20,6 +20,8 @@ properties:
     type: string
     nullable: true
     example: https://supaglue.com/
+  custom_fields:
+    $ref: ./objects/custom_fields.yaml
 example:
   description: Integration API
   industry: API's

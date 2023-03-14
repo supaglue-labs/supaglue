@@ -17,20 +17,3 @@ export type RemoteUser = BaseUser & {
   remoteUpdatedAt: Date | null;
   remoteWasDeleted: boolean;
 };
-
-type BaseUserCreateParams = {
-  name?: string | null;
-  email?: string | null;
-  isActive?: boolean | null;
-};
-
-export type UserCreateParams = BaseUserCreateParams;
-export type RemoteUserCreateParams = BaseUserCreateParams;
-
-export type UserUpdateParams = UserCreateParams & {
-  id: string;
-};
-
-export type RemoteUserUpdateParams = RemoteUserCreateParams & {
-  remoteId: string;
-};

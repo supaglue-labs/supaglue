@@ -1492,7 +1492,46 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/passthrough_request"
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "description": "The path to send the request to (do not pass the domain)"
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "GET",
+                      "POST",
+                      "PUT",
+                      "PATCH",
+                      "DELETE"
+                    ],
+                    "example": "GET"
+                  },
+                  "headers": {
+                    "type": "object",
+                    "description": "Headers to pass to downstream",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "query": {
+                    "type": "object",
+                    "description": "Query parameters to pass to downstream",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "Body to pass to downstream"
+                  }
+                },
+                "required": [
+                  "path",
+                  "method"
+                ]
               }
             }
           }
@@ -1503,7 +1542,58 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/passthrough_response"
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "The full URL the request was went to",
+                      "example": "https://customcrm.com/api/cars"
+                    },
+                    "status": {
+                      "type": "number",
+                      "description": "Status code from the downstream",
+                      "example": 200
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "The response headers from the downstream",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "body": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "additionalProperties": true
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": true
+                        }
+                      ],
+                      "description": "The body from the downstream"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "status",
+                    "headers"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -1854,6 +1944,9 @@
             "type": "string",
             "nullable": true,
             "example": "https://supaglue.com/"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
           }
         },
         "example": {
@@ -1944,6 +2037,9 @@
             "type": "string",
             "nullable": true,
             "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
           }
         }
       },
@@ -2068,6 +2164,9 @@
             "type": "string",
             "nullable": true,
             "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
           }
         }
       },
@@ -2207,6 +2306,9 @@
             "type": "string",
             "nullable": true,
             "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
           }
         }
       },
@@ -2270,7 +2372,7 @@
           "properties": {
             "detail": {
               "type": "string",
-              "example": "custom_fields is a required field on model."
+              "example": "name is a required field on model."
             },
             "problem_type": {
               "type": "string",
@@ -2292,7 +2394,7 @@
           },
           "example": [
             {
-              "detail": "custom_fields is a required field on model.",
+              "detail": "name is a required field on model.",
               "problem_type": "MISSING_REQUIRED_FIELD",
               "source": {
                 "pointer": "irure consectetur"
@@ -2300,7 +2402,7 @@
               "title": "Missing Required Field"
             },
             {
-              "detail": "custom_fields is a required field on model.",
+              "detail": "name is a required field on model.",
               "problem_type": "MISSING_REQUIRED_FIELD",
               "source": {
                 "pointer": "et"
@@ -2473,101 +2575,10 @@
           }
         }
       },
-      "passthrough_request": {
+      "custom_fields": {
         "type": "object",
-        "properties": {
-          "path": {
-            "type": "string",
-            "description": "The path to send the request to (do not pass the domain)"
-          },
-          "method": {
-            "type": "string",
-            "enum": [
-              "GET",
-              "POST",
-              "PUT",
-              "PATCH",
-              "DELETE"
-            ],
-            "example": "GET"
-          },
-          "headers": {
-            "type": "object",
-            "description": "Headers to pass to downstream",
-            "additionalProperties": {
-              "type": "string"
-            }
-          },
-          "query": {
-            "type": "object",
-            "description": "Query parameters to pass to downstream",
-            "additionalProperties": {
-              "type": "string"
-            }
-          },
-          "body": {
-            "type": "string",
-            "description": "Body to pass to downstream"
-          }
-        },
-        "required": [
-          "path",
-          "method"
-        ]
-      },
-      "passthrough_response": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "The full URL the request was went to",
-            "example": "https://customcrm.com/api/cars"
-          },
-          "status": {
-            "type": "number",
-            "description": "Status code from the downstream",
-            "example": 200
-          },
-          "headers": {
-            "type": "object",
-            "description": "The response headers from the downstream",
-            "additionalProperties": {
-              "type": "string"
-            }
-          },
-          "body": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "integer"
-              },
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "additionalProperties": true
-                }
-              },
-              {
-                "type": "object",
-                "additionalProperties": true
-              }
-            ],
-            "description": "The body from the downstream"
-          }
-        },
-        "required": [
-          "url",
-          "status",
-          "headers"
-        ]
+        "additionalProperties": true,
+        "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
       }
     },
     "parameters": {

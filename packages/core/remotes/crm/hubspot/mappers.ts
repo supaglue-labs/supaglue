@@ -238,6 +238,7 @@ export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams):
     description: params.description ?? '',
     website: params.website ?? '',
     numberofemployees: params.numberOfEmployees?.toString() ?? '',
+    ...params.customFields,
   };
 };
 
@@ -250,6 +251,7 @@ export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreate
     dealname: params.name ?? '',
     description: params.description ?? '',
     dealstage: params.stage ?? '',
+    ...params.customFields,
   };
 };
 export const toHubspotOpportunityUpdateParams = toHubspotOpportunityCreateParams;
@@ -258,6 +260,7 @@ export const toHubspotContactCreateParams = (params: RemoteContactCreateParams):
   return {
     firstname: params.firstName ?? '',
     lastname: params.lastName ?? '',
+    ...params.customFields,
   };
 };
 export const toHubspotContactUpdateParams = toHubspotContactCreateParams;

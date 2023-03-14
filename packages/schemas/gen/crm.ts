@@ -191,6 +191,7 @@ export interface components {
       number_of_employees?: number | null;
       /** @example https://supaglue.com/ */
       website?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     contact: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
@@ -231,6 +232,7 @@ export interface components {
       last_name?: string | null;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       account_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     lead: {
       addresses?: components["schemas"]["addresses"];
@@ -288,6 +290,7 @@ export interface components {
       converted_account_id?: string | null;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       converted_contact_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     opportunity: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
@@ -359,6 +362,7 @@ export interface components {
       stage?: string;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       account_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     /**
      * @example [
@@ -397,7 +401,7 @@ export interface components {
         };
       })[];
     errors: ({
-        /** @example custom_fields is a required field on model. */
+        /** @example name is a required field on model. */
         detail?: string;
         /** @example MISSING_REQUIRED_FIELD */
         problem_type?: string;
@@ -503,46 +507,9 @@ export interface components {
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous?: string | null;
     };
-    passthrough_request: {
-      /** @description The path to send the request to (do not pass the domain) */
-      path: string;
-      /**
-       * @example GET 
-       * @enum {string}
-       */
-      method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-      /** @description Headers to pass to downstream */
-      headers?: {
-        [key: string]: string | undefined;
-      };
-      /** @description Query parameters to pass to downstream */
-      query?: {
-        [key: string]: string | undefined;
-      };
-      /** @description Body to pass to downstream */
-      body?: string;
-    };
-    passthrough_response: {
-      /**
-       * @description The full URL the request was went to 
-       * @example https://customcrm.com/api/cars
-       */
-      url: string;
-      /**
-       * @description Status code from the downstream 
-       * @example 200
-       */
-      status: number;
-      /** @description The response headers from the downstream */
-      headers: {
-        [key: string]: string | undefined;
-      };
-      /** @description The body from the downstream */
-      body?: string | number | number | boolean | (({
-          [key: string]: unknown | undefined;
-        })[]) | ({
-        [key: string]: unknown | undefined;
-      });
+    /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+    custom_fields: {
+      [key: string]: unknown | undefined;
     };
   };
   responses: never;
@@ -934,14 +901,53 @@ export interface operations {
      */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["passthrough_request"];
+        "application/json": {
+          /** @description The path to send the request to (do not pass the domain) */
+          path: string;
+          /**
+           * @example GET 
+           * @enum {string}
+           */
+          method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+          /** @description Headers to pass to downstream */
+          headers?: {
+            [key: string]: string | undefined;
+          };
+          /** @description Query parameters to pass to downstream */
+          query?: {
+            [key: string]: string | undefined;
+          };
+          /** @description Body to pass to downstream */
+          body?: string;
+        };
       };
     };
     responses: {
       /** @description Passthrough response */
       200: {
         content: {
-          "application/json": components["schemas"]["passthrough_response"];
+          "application/json": {
+            /**
+             * @description The full URL the request was went to 
+             * @example https://customcrm.com/api/cars
+             */
+            url: string;
+            /**
+             * @description Status code from the downstream 
+             * @example 200
+             */
+            status: number;
+            /** @description The response headers from the downstream */
+            headers: {
+              [key: string]: string | undefined;
+            };
+            /** @description The body from the downstream */
+            body?: string | number | number | boolean | (({
+                [key: string]: unknown | undefined;
+              })[]) | ({
+              [key: string]: unknown | undefined;
+            });
+          };
         };
       };
     };

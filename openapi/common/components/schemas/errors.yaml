@@ -4,7 +4,7 @@ items:
   properties:
     detail:
       type: string
-      example: custom_fields is a required field on model.
+      example: name is a required field on model.
     problem_type:
       type: string
       example: MISSING_REQUIRED_FIELD
@@ -18,12 +18,12 @@ items:
       type: string
       example: Missing Required Field
   example:
-    - detail: custom_fields is a required field on model.
+    - detail: name is a required field on model.
       problem_type: MISSING_REQUIRED_FIELD
       source:
         pointer: irure consectetur
       title: Missing Required Field
-    - detail: custom_fields is a required field on model.
+    - detail: name is a required field on model.
       problem_type: MISSING_REQUIRED_FIELD
       source:
         pointer: et
