@@ -220,18 +220,16 @@
                     "value": {
                       "id": "10072ab8-db4c-4e4f-9766-bbd846c9efbc",
                       "name": "my-app",
-                      "config": [
-                        {
-                          "webhook": {
-                            "url": "http://localhost:8080",
-                            "request_type": "POST",
-                            "notify_on_sync_success": true,
-                            "notify_on_sync_error": true,
-                            "notify_on_connection_success": true,
-                            "notify_on_connection_error": true
-                          }
+                      "config": {
+                        "webhook": {
+                          "url": "http://localhost:8080",
+                          "request_type": "POST",
+                          "notify_on_sync_success": true,
+                          "notify_on_sync_error": true,
+                          "notify_on_connection_success": true,
+                          "notify_on_connection_error": true
                         }
-                      ]
+                      }
                     }
                   }
                 }
@@ -1174,12 +1172,9 @@
           "oauth",
           "sync"
         ],
-        "example": [
-          {
-            "provider_app_id": "my_app_id"
-          },
-          {
-            "oauth": null,
+        "example": {
+          "provider_app_id": "my_app_id",
+          "oauth": {
             "oauth_scopes": [
               "crm.objects.contacts.read",
               "crm.objects.companies.read",
@@ -1194,11 +1189,10 @@
               "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
             }
           },
-          {
-            "sync": null,
+          "sync": {
             "period_ms": 60000
           }
-        ]
+        }
       },
       "provider_name": {
         "type": "string",

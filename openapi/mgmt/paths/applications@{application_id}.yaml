@@ -73,13 +73,13 @@ delete:
                 id: 10072ab8-db4c-4e4f-9766-bbd846c9efbc
                 name: my-app
                 config:
-                  - webhook:
-                      url: http://localhost:8080
-                      request_type: POST
-                      notify_on_sync_success: true
-                      notify_on_sync_error: true
-                      notify_on_connection_success: true
-                      notify_on_connection_error: true
+                  webhook:
+                    url: http://localhost:8080
+                    request_type: POST
+                    notify_on_sync_success: true
+                    notify_on_sync_error: true
+                    notify_on_connection_success: true
+                    notify_on_connection_error: true
 parameters:
   - name: application_id
     in: path

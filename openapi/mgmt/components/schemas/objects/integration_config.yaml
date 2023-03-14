@@ -39,8 +39,8 @@ required:
   - oauth
   - sync
 example:
-  - provider_app_id: my_app_id
-  - oauth:
+  provider_app_id: my_app_id
+  oauth:
     oauth_scopes:
       - crm.objects.contacts.read
       - crm.objects.companies.read
@@ -52,5 +52,5 @@ example:
     credentials:
       oauth_client_id: 7393b5a4-5e20-4648-87af-b7b297793fd1
       oauth_client_secret: 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a
-  - sync:
+  sync:
     period_ms: 60000

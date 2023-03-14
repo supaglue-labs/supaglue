@@ -174,12 +174,9 @@ export interface components {
     /** @enum {string} */
     category: "crm";
     /**
-     * @example [
-     *   {
-     *     "provider_app_id": "my_app_id"
-     *   },
-     *   {
-     *     "oauth": null,
+     * @example {
+     *   "provider_app_id": "my_app_id",
+     *   "oauth": {
      *     "oauth_scopes": [
      *       "crm.objects.contacts.read",
      *       "crm.objects.companies.read",
@@ -194,11 +191,10 @@ export interface components {
      *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
      *     }
      *   },
-     *   {
-     *     "sync": null,
+     *   "sync": {
      *     "period_ms": 60000
      *   }
-     * ]
+     * }
      */
     integration_config: {
       /** @example my_app_id */
