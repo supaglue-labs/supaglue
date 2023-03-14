@@ -621,10 +621,12 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "first_name": "George",
-         *   "last_activity_at": "2022-02-10T00:00:00Z",
-         *   "last_name": "Xing",
-         *   "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *   "model": {
+         *     "first_name": "George",
+         *     "last_activity_at": "2022-02-10T00:00:00Z",
+         *     "last_name": "Xing",
+         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *   }
          * }
          */
         "application/json": {
