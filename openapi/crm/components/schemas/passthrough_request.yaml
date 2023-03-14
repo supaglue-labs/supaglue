@@ -1,0 +1,25 @@
+type: object
+properties:
+  path:
+    type: string
+    description: The path to send the request to (do not pass the domain)
+  method:
+    type: string
+    enum: [GET, POST, PUT, PATCH, DELETE] 
+    example: GET
+  headers:
+    type: object
+    description: Headers to pass to downstream
+    additionalProperties:
+      type: string
+  query:
+    type: object
+    description: Query parameters to pass to downstream
+    additionalProperties:
+      type: string
+  body:
+    type: string
+    description: Body to pass to downstream
+required:
+  - path
+  - method

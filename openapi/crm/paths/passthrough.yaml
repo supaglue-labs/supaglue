@@ -1,0 +1,31 @@
+post:
+  operationId: sendPassthroughRequest
+  tags:
+    - Passthrough
+  summary: Send passthrough request
+  description: >-
+    Send request directly to a provider
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/passthrough_request.yaml
+  responses:
+    '200':
+      description: Passthrough response
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/passthrough_response.yaml
+          examples:
+            Example:
+              value:
+                url: https://customcrm.com/api/cars
+                status: 200
+                headers:
+                  x-requests-limit: 96
+                body: []
+parameters:
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml
