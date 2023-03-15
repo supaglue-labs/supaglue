@@ -12,5 +12,11 @@ properties:
     type: string
     nullable: true
     example: 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+  addresses:
+    $ref: ./objects/addresses.yaml
+  email_addresses:
+    $ref: ./objects/email_addresses.yaml
+  phone_numbers:
+    $ref: ./objects/phone_numbers.yaml
   custom_fields:
     $ref: ./objects/custom_fields.yaml

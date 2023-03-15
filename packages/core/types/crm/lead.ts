@@ -49,6 +49,8 @@ type BaseLeadCreateParams = {
   title?: string | null;
   leadSource?: string | null;
   company?: string | null;
+  addresses?: Address[];
+  emailAddresses?: EmailAddress[];
 
   // TODO: Need extra permissions to create/update this derived field in SF
   // convertedDate?: Date | null;

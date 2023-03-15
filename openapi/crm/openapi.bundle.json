@@ -2245,17 +2245,15 @@
             "nullable": true,
             "example": "https://supaglue.com/"
           },
+          "addresses": {
+            "$ref": "#/components/schemas/addresses"
+          },
+          "phone_numbers": {
+            "$ref": "#/components/schemas/phone_numbers"
+          },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
           }
-        },
-        "example": {
-          "description": "Integration API",
-          "industry": "API's",
-          "last_activity_at": "2022-02-10T00:00:00Z",
-          "name": "Sample Customer",
-          "number_of_employees": 276000,
-          "website": "https://supaglue.com/"
         }
       },
       "contact": {
@@ -2337,6 +2335,15 @@
             "type": "string",
             "nullable": true,
             "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          },
+          "addresses": {
+            "$ref": "#/components/schemas/addresses"
+          },
+          "email_addresses": {
+            "$ref": "#/components/schemas/email_addresses"
+          },
+          "phone_numbers": {
+            "$ref": "#/components/schemas/phone_numbers"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
@@ -2455,15 +2462,11 @@
             "type": "string",
             "example": "Co-Founder"
           },
-          "converted_account_id": {
-            "type": "string",
-            "nullable": true,
-            "example": "ab849b1c-c36b-4d8b-9e45-679b48fc4de7"
+          "email_addresses": {
+            "$ref": "#/components/schemas/email_addresses"
           },
-          "converted_contact_id": {
-            "type": "string",
-            "nullable": true,
-            "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          "addresses": {
+            "$ref": "#/components/schemas/addresses"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"

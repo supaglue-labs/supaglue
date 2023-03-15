@@ -220,12 +220,15 @@ const getFullName = (firstName?: string, lastName?: string): string | null => {
 };
 
 export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams): Record<string, string> => {
+  const phoneParams = toHubspotPhoneCreateParams(params.phoneNumbers);
   return {
     name: params.name ?? '',
     industry: params.industry ?? '',
     description: params.description ?? '',
     website: params.website ?? '',
     numberofemployees: params.numberOfEmployees?.toString() ?? '',
+    phone: phoneParams.phone, // only primary phone is supported for hubspot accounts
+    ...toHubspotAddressCreateParams(params.addresses),
     ...params.customFields,
   };
 };
@@ -248,7 +251,51 @@ export const toHubspotContactCreateParams = (params: RemoteContactCreateParams):
   return {
     firstname: params.firstName ?? '',
     lastname: params.lastName ?? '',
+    ...toHubspotEmailCreateParams(params.emailAddresses),
+    ...toHubspotPhoneCreateParams(params.phoneNumbers),
+    ...toHubspotAddressCreateParams(params.addresses),
     ...params.customFields,
+  };
+};
+
+const toHubspotEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<string, string> => {
+  if (!emailAddresses) {
+    return {};
+  }
+  const primaryEmail = emailAddresses.find(({ emailAddressType }) => emailAddressType === 'primary');
+  const workEmail = emailAddresses.find(({ emailAddressType }) => emailAddressType === 'work');
+  return {
+    email: primaryEmail?.emailAddress ?? '',
+    work_email: workEmail?.emailAddress ?? '',
+  };
+};
+
+const toHubspotPhoneCreateParams = (phoneNumbers?: PhoneNumber[]): Record<string, string> => {
+  if (!phoneNumbers) {
+    return {};
+  }
+  const primaryPhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'primary');
+  const mobilePhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'mobile');
+  const faxPhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'fax');
+  return {
+    phone: primaryPhone?.phoneNumber ?? '',
+    mobile: mobilePhone?.phoneNumber ?? '',
+    fax: faxPhone?.phoneNumber ?? '',
+  };
+};
+
+const toHubspotAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
+  if (!addresses) {
+    return {};
+  }
+  const primary = addresses.find(({ addressType }) => addressType === 'primary');
+  return {
+    address: primary?.street1 ?? '',
+    address2: primary?.street2 ?? '',
+    city: primary?.city ?? '',
+    state: primary?.state ?? '',
+    zip: primary?.postalCode ?? '',
+    country: primary?.country ?? '',
   };
 };
 export const toHubspotContactUpdateParams = toHubspotContactCreateParams;
