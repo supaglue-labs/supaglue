@@ -8,7 +8,6 @@ export type BaseIntegration = {
   authType: 'oauth2';
   category: IntegrationCategory;
   providerName: CRMProviderName;
-  isEnabled: boolean;
 };
 
 export type IncompleteCRMIntegration = BaseIntegration & {

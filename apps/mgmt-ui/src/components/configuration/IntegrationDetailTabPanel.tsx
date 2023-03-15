@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { removeRemoteIntegration, updateRemoteIntegration } from '@/client';
-import { useIntegration } from '@/hooks/useIntegration';
+import { updateRemoteIntegration } from '@/client';
+import { useApplication } from '@/hooks/useApplication';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Box, Button, Stack, Switch, TextField, Typography } from '@mui/material';
@@ -15,13 +15,13 @@ export type IntegrationDetailTabPanelProps = {
 };
 
 export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPanelProps) {
+  const { applicationId } = useApplication();
   const { integration, integrationCardInfo } = props;
   const [clientId, setClientId] = useState('');
   const [clientSecret, setClientSecret] = useState('');
   const [oauthScopes, setOauthScopes] = useState('');
   const router = useRouter();
 
-  const { mutate: mutateIntegration } = useIntegration(integration?.id);
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
           </Stack>
         </Stack>
         <Box>
-          <Switch checked={integration?.isEnabled}></Switch>
+          <Switch disabled checked={true}></Switch>
         </Box>
       </Stack>
 
@@ -99,7 +99,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
               const newIntegration = {
                 ...integration,
                 config: {
-                  providerAppId: '',
+                  providerAppId: '', // TODO: add input field for this
                   ...integration?.config,
                   oauth: {
                     ...integration?.config?.oauth,
@@ -110,7 +110,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
                     oauthScopes: oauthScopes.split(','),
                   },
                   sync: {
-                    periodMs: 60 * 60 * 1000,
+                    periodMs: 60 * 60 * 1000, // TODO: add input field for this
                   },
                 },
               };
@@ -118,24 +118,15 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
                 ei.id === newIntegration.id ? newIntegration : ei
               );
 
+              updateRemoteIntegration(applicationId, newIntegration);
               mutate(updatedIntegrations, false);
-              mutateIntegration(updateRemoteIntegration(newIntegration), false);
             }}
           >
             Save
           </Button>
         </Stack>
         <Stack direction="row" className="gap-2">
-          <Button
-            variant="text"
-            color="error"
-            onClick={() => {
-              const updatedIntegrations = existingIntegrations.filter((ei: Integration) => ei.id !== integration.id);
-              mutate(updatedIntegrations, false);
-              mutateIntegration(removeRemoteIntegration(integration), false);
-              router.back();
-            }}
-          >
+          <Button disabled variant="text" color="error">
             Delete
           </Button>
         </Stack>

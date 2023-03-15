@@ -1,18 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { API_HOST, APPLICATION_ID, SG_INTERNAL_TOKEN } from '../..';
+import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
-  const result = await fetch(`${API_HOST}/internal/v1/customers`, {
-    method: 'GET',
+  const result = await fetch(`${API_HOST}/internal/v1/integrations/${req.body.id}`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'x-application-id': APPLICATION_ID,
+      'x-application-id': req.body.application_id,
       'x-sg-internal-token': SG_INTERNAL_TOKEN,
     },
+    body: JSON.stringify(req.body),
   });
 
   if (!result.ok) {
-    return res.status(500).json({ error: 'Failed to fetch' });
+    return res.status(500).json({ error: 'Failed to update' });
   }
 
   const r = await result.json();

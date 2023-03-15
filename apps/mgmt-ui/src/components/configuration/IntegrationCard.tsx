@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { useIntegration } from '@/hooks/useIntegration';
-import { useIntegrations } from '@/hooks/useIntegrations';
 import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Switch, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useRouter } from 'next/router';
@@ -8,9 +6,6 @@ import { Integration, IntegrationCardInfo } from './VerticalTabs';
 
 export default function IntegrationCard(props: { integration: Integration; integrationInfo: IntegrationCardInfo }) {
   const router = useRouter();
-  const { integration } = props;
-  const { integrations: existingIntegrations = [], mutate } = useIntegrations();
-  const { mutate: mutateIntegration } = useIntegration(integration?.id); // TODO: run this when there's an integration only
 
   const { icon, name, description, category, status, providerName } = props.integrationInfo;
 
@@ -29,36 +24,7 @@ export default function IntegrationCard(props: { integration: Integration; integ
               <Typography fontSize={12}>{status === 'auth-only' ? status : category.toUpperCase()}</Typography>
             </Stack>
           }
-          action={
-            <Switch
-              disabled={true}
-              checked={integration?.isEnabled}
-              // onClick={() => {
-              //   if (!integration) {
-              //     const newIntegration = {
-              //       authType: 'oauth2',
-              //       category,
-              //       providerName,
-              //       isEnabled: true, // TODO: we need another notion of live vs enabled
-              //       applicationId: APPLICATION_ID,
-              //     };
-              //     const updatedIntegrations = [...existingIntegrations, newIntegration];
-
-              //     mutate(updatedIntegrations, false);
-              //     mutateIntegration(createRemoteIntegration(newIntegration), false);
-              //     return;
-              //   }
-
-              //   const updatedIntegration = { ...integration, isEnabled: !integration?.isEnabled };
-              //   const updatedIntegrations = existingIntegrations.map((ei: Integration) =>
-              //     ei.id === updatedIntegration.id ? updatedIntegration : ei
-              //   );
-
-              //   mutate(updatedIntegrations, false);
-              //   mutateIntegration(updateRemoteIntegration(updatedIntegration), false);
-              // }}
-            ></Switch>
-          }
+          action={<Switch disabled={true} checked={true}></Switch>}
         />
         <CardContent
           classes={{

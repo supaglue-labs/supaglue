@@ -822,9 +822,6 @@
           },
           "config": {
             "$ref": "#/components/schemas/integration_config"
-          },
-          "is_enabled": {
-            "type": "boolean"
           }
         },
         "required": [
@@ -832,8 +829,7 @@
           "application_id",
           "category",
           "auth_type",
-          "provider_name",
-          "is_enabled"
+          "provider_name"
         ]
       },
       "connection": {
@@ -1023,17 +1019,13 @@
           },
           "config": {
             "$ref": "#/components/schemas/integration_config"
-          },
-          "is_enabled": {
-            "type": "boolean"
           }
         },
         "required": [
           "application_id",
           "category",
           "auth_type",
-          "provider_name",
-          "is_enabled"
+          "provider_name"
         ]
       },
       "webhook": {

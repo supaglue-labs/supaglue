@@ -13,11 +13,8 @@ properties:
     $ref: ./objects/provider_name.yaml
   config:
     $ref: ./objects/integration_config.yaml
-  is_enabled:
-    type: boolean
 required:
   - application_id
   - category
   - auth_type
   - provider_name
-  - is_enabled
