@@ -36,7 +36,7 @@ get:
                 previous: eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9
                 results:
                   - addresses:
-                      - address_type: Shipping
+                      - address_type: shipping
                         city: San Francisco
                         country: US
                         postal_code: '94107'
@@ -52,12 +52,12 @@ get:
                     owner_id: cb40ff24-6587-4b24-82a3-9269a05d5dda
                     phone_numbers:
                       - phone_number: '+14151234567'
-                        phone_number_type: Mobile
+                        phone_number_type: mobile
                     created_at: '2021-11-10T00:00:00Z'
                     updated_at: '2022-01-09T00:00:00Z'
                     website: https://supaglue.com/
                   - addresses:
-                      - address_type: Shipping
+                      - address_type: shipping
                         city: San Francisco
                         country: US
                         postal_code: '94107'
@@ -73,7 +73,7 @@ get:
                     owner_id: cb40ff24-6587-4b24-82a3-9269a05d5dda
                     phone_numbers:
                       - phone_number: '+14151234567'
-                        phone_number_type: Mobile
+                        phone_number_type: mobile
                     created_at: '2023-02-27T00:00:00Z'
                     updated_at: '2023-02-27T00:00:00Z'
                     website: https://supaglue.com/

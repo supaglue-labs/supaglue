@@ -41,7 +41,7 @@ get:
                 owner_id: 9377fd4d-d420-4e0b-93ea-789078a3eab4
                 phone_numbers:
                   - phone_number: '+14151234567'
-                    phone_number_type: Mobile
+                    phone_number_type: mobile
                 created_at: '2023-02-27T00:00:00Z'
                 updated_at: '2023-02-27T00:00:00Z'
                 website: https://supaglue.com/

@@ -89,7 +89,7 @@
                         {
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -108,7 +108,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2021-11-10T00:00:00Z",
@@ -118,7 +118,7 @@
                         {
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -137,7 +137,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2023-02-27T00:00:00Z",
@@ -294,7 +294,7 @@
                         {
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -313,7 +313,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2021-11-10T00:00:00Z",
@@ -323,7 +323,7 @@
                         {
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -342,7 +342,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2023-02-27T00:00:00Z",
@@ -425,7 +425,7 @@
                       "phone_numbers": [
                         {
                           "phone_number": "+14151234567",
-                          "phone_number_type": "Mobile"
+                          "phone_number_type": "mobile"
                         }
                       ],
                       "created_at": "2023-02-27T00:00:00Z",
@@ -583,7 +583,7 @@
                           "account_id": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -595,7 +595,7 @@
                           "email_addresses": [
                             {
                               "email_address": "hello@supaglue.com",
-                              "email_address_type": "Work"
+                              "email_address_type": "work"
                             }
                           ],
                           "first_name": "George",
@@ -605,7 +605,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2023-02-27T00:00:00Z"
@@ -614,7 +614,7 @@
                           "account": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -626,7 +626,7 @@
                           "email_addresses": [
                             {
                               "email_address": "hello@supaglue.com",
-                              "email_address_type": "Work"
+                              "email_address_type": "work"
                             }
                           ],
                           "first_name": "George",
@@ -636,7 +636,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2023-02-27T00:00:00Z"
@@ -800,7 +800,7 @@
                           "account_id": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -812,7 +812,7 @@
                           "email_addresses": [
                             {
                               "email_address": "hello@supaglue.com",
-                              "email_address_type": "Work"
+                              "email_address_type": "work"
                             }
                           ],
                           "first_name": "George",
@@ -822,7 +822,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2023-02-27T00:00:00Z"
@@ -831,7 +831,7 @@
                           "account": "9377fd4d-d420-4e0b-93ea-789078a3eab4",
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -843,7 +843,7 @@
                           "email_addresses": [
                             {
                               "email_address": "hello@supaglue.com",
-                              "email_address_type": "Work"
+                              "email_address_type": "work"
                             }
                           ],
                           "first_name": "George",
@@ -853,7 +853,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2023-02-27T00:00:00Z"
@@ -1060,7 +1060,7 @@
                         {
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -1076,7 +1076,7 @@
                           "email_addresses": [
                             {
                               "email_address": "hello@supaglue.com",
-                              "email_address_type": "Work"
+                              "email_address_type": "work"
                             }
                           ],
                           "first_name": "George",
@@ -1087,7 +1087,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2023-02-27T00:00:00Z",
@@ -1097,7 +1097,7 @@
                         {
                           "addresses": [
                             {
-                              "address_type": "Shipping",
+                              "address_type": "shipping",
                               "city": "San Francisco",
                               "country": "US",
                               "postal_code": "94107",
@@ -1113,7 +1113,7 @@
                           "email_addresses": [
                             {
                               "email_address": "hello@supaglue.com",
-                              "email_address_type": "Work"
+                              "email_address_type": "work"
                             }
                           ],
                           "first_name": "George",
@@ -1124,7 +1124,7 @@
                           "phone_numbers": [
                             {
                               "phone_number": "+14151234567",
-                              "phone_number_type": "Mobile"
+                              "phone_number_type": "mobile"
                             }
                           ],
                           "created_at": "2023-02-27T00:00:00Z",
@@ -2766,8 +2766,13 @@
           "properties": {
             "address_type": {
               "type": "string",
-              "nullable": true,
-              "example": "Shipping"
+              "enum": [
+                "primary",
+                "mailing",
+                "other",
+                "billing",
+                "shipping"
+              ]
             },
             "city": {
               "type": "string",
@@ -2803,7 +2808,7 @@
         },
         "example": [
           {
-            "address_type": "Shipping",
+            "address_type": "shipping",
             "city": "San Francisco",
             "country": "US",
             "postal_code": "94107",
@@ -2824,15 +2829,17 @@
             },
             "email_address_type": {
               "type": "string",
-              "nullable": true,
-              "example": "Work"
+              "enum": [
+                "primary",
+                "work"
+              ]
             }
           }
         },
         "example": [
           {
             "email_address": "hello@supaglue.com",
-            "email_address_type": "Work"
+            "email_address_type": "work"
           }
         ]
       },
@@ -2848,15 +2855,18 @@
             },
             "phone_number_type": {
               "type": "string",
-              "nullable": true,
-              "example": "Mobile"
+              "enum": [
+                "primary",
+                "mobile",
+                "fax"
+              ]
             }
           }
         },
         "example": [
           {
             "phone_number": "+14151234567",
-            "phone_number_type": "Mobile"
+            "phone_number_type": "primary"
           }
         ]
       },
