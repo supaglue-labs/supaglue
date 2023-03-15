@@ -25,10 +25,14 @@ servers:
 paths:
   '/accounts':
     $ref: paths/accounts.yaml
+  '/accounts/_search':
+    $ref: paths/accounts@_search.yaml
   '/accounts/{account_id}':
     $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
+  '/contacts/_search':
+    $ref: paths/contacts@_search.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
   '/leads':
@@ -103,6 +107,8 @@ components:
       $ref: ../common/components/schemas/pagination.yaml
     custom_fields:
       $ref: ./components/schemas/objects/custom_fields.yaml
+    filter:
+      $ref: ./components/schemas/filters.yaml#/filter
   parameters:
     created_after:
       $ref: ../common/components/parameters/created_after.yaml

@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeysSansCustomFields } from '@/lib/camelcase';
+import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
 import { GetParams, ListParams } from '@supaglue/core/types';
 import {
@@ -13,6 +13,9 @@ import {
   GetContactsPathParams,
   GetContactsRequest,
   GetContactsResponse,
+  SearchContactsPathParams,
+  SearchContactsRequest,
+  SearchContactsResponse,
   UpdateContactPathParams,
   UpdateContactQueryParams,
   UpdateContactRequest,
@@ -83,6 +86,26 @@ export default function init(app: Router): void {
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: snakecaseKeys(contact) });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchContactsPathParams, SearchContactsResponse, SearchContactsRequest>,
+      res: Response<SearchContactsResponse>
+    ) => {
+      const { next, previous, results } = await contactService.search(
+        req.customerConnection.id,
+        req.params,
+        camelcaseKeys(req.body.filters)
+      );
+
+      const snakeCaseKeysResults = results.map((result) => {
+        return snakecaseKeys(result);
+      });
+
+      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
 

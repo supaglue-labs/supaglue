@@ -1,5 +1,6 @@
 import { CrmAccount, CrmUser } from '@supaglue/db';
 import type { Address, CustomFields, PhoneNumber, User } from '..';
+import { Filter } from '../filter';
 
 export type CrmAccountExpanded = CrmAccount & {
   owner?: CrmUser | null;
@@ -58,4 +59,8 @@ export type AccountUpdateParams = AccountCreateParams & {
 
 export type RemoteAccountUpdateParams = RemoteAccountCreateParams & {
   remoteId: string;
+};
+
+export type AccountFilters = {
+  website?: Filter;
 };

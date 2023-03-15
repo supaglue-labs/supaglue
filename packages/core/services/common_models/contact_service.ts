@@ -7,10 +7,12 @@ import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mapp
 import type {
   Contact,
   ContactCreateParams,
+  ContactFilters,
   ContactUpdateParams,
   GetParams,
   ListParams,
   PaginatedResult,
+  PaginationParams,
 } from '../../types';
 import { CommonModelBaseService } from './base_service';
 
@@ -36,6 +38,35 @@ export class ContactService extends CommonModelBaseService {
       throw new UnauthorizedError('Unauthorized');
     }
     return fromContactModel(model, expandedAssociations);
+  }
+
+  public async search(
+    connectionId: string,
+    paginationParams: PaginationParams,
+    filters: ContactFilters
+  ): Promise<PaginatedResult<Contact>> {
+    const { page_size, cursor } = paginationParams;
+    const pageSize = page_size ? parseInt(page_size) : undefined;
+    const models = await this.prisma.crmContact.findMany({
+      ...getPaginationParams(pageSize, cursor),
+      where: {
+        connectionId,
+        emailAddresses:
+          filters.emailAddress?.type === 'equals'
+            ? {
+                array_contains: [{ emailAddress: filters.emailAddress.value }],
+              }
+            : undefined,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    const results = models.map((model) => fromContactModel(model));
+    return {
+      ...getPaginationResult(pageSize, cursor, results),
+      results,
+    };
   }
 
   public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Contact>> {

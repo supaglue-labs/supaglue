@@ -12,6 +12,9 @@ import {
   GetAccountsPathParams,
   GetAccountsRequest,
   GetAccountsResponse,
+  SearchAccountsPathParams,
+  SearchAccountsRequest,
+  SearchAccountsResponse,
   UpdateAccountPathParams,
   UpdateAccountRequest,
   UpdateAccountResponse,
@@ -83,6 +86,26 @@ export default function init(app: Router): void {
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: snakecaseKeys(account) });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchAccountsPathParams, SearchAccountsResponse, SearchAccountsRequest>,
+      res: Response<SearchAccountsResponse>
+    ) => {
+      const { next, previous, results } = await accountService.search(
+        req.customerConnection.id,
+        req.params,
+        req.body.filters
+      );
+
+      const snakeCaseKeysResults = results.map((result) => {
+        return snakecaseKeys(result);
+      });
+
+      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
 
