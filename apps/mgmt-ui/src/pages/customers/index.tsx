@@ -1,11 +1,10 @@
 import CustomerCard from '@/components/customers/CustomerCard';
 import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
-import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages';
 import providerToIcon from '@/utils/providerToIcon';
-import { CloudUploadOutlined, Link, PeopleAltOutlined } from '@mui/icons-material';
+import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';
@@ -14,7 +13,7 @@ export { getServerSideProps };
 
 export default function Home() {
   const { customers = [] } = useCustomers();
-  const { syncHistory = [] } = useSyncHistory();
+  // const { syncHistory = [] } = useSyncHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // TODO: count this on server?
@@ -42,17 +41,17 @@ export default function Home() {
           <Typography variant="subtitle2">An overview of total stats. The request count resets every month.</Typography>
           <Divider className="my-4" />
           <Grid container spacing={3} className="mb-8">
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <MetricCard
                 icon={<PeopleAltOutlined />}
                 title="Total customers"
                 value={`${customers.length} customers`}
               />
             </Grid>
-            <Grid item xs={4}>
+            {/* <Grid item xs={4}>
               <MetricCard icon={<CloudUploadOutlined />} title="Total syncs" value={`${syncHistory.length} syncs`} />
-            </Grid>
-            <Grid item xs={4}>
+            </Grid> */}
+            <Grid item xs={6}>
               <MetricCard icon={<Link />} title="Total connections" value={`${totalConnections} connections`} />
             </Grid>
           </Grid>
