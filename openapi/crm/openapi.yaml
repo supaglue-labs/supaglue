@@ -14,7 +14,7 @@ info:
     ### Base API URL
 
     ```
-    http://localhost:8080/api/crm/v1
+    http://localhost:8080/crm/v1
     ```
 externalDocs:
   description: Try out our API in Postman!
