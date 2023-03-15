@@ -2,6 +2,8 @@ import { API_HOST, APPLICATION_ID } from '@/client';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
+const sgInternalToken = process.env.SUPAGLUE_INTERNAL_TOKEN!;
+
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -12,6 +14,7 @@ export const authOptions = {
           headers: {
             'Content-Type': 'application/json',
             'x-application-id': APPLICATION_ID, // TODO: un-hardcode
+            'x-sg-internal-token': sgInternalToken,
           },
           body: JSON.stringify({
             ...credentials,

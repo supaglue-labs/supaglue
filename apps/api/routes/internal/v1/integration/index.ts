@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeys } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
-import { apiKeyHeaderMiddleware } from '@/middleware/api_key';
 import {
   CreateIntegrationPathParams,
   CreateIntegrationRequest,
@@ -25,8 +24,6 @@ const { integrationService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const integrationRouter = Router();
-
-  integrationRouter.use(apiKeyHeaderMiddleware);
 
   integrationRouter.get(
     '/',

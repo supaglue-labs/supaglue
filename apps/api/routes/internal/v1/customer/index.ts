@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeys } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
-import { apiKeyHeaderMiddleware } from '@/middleware/api_key';
 import {
   DeleteCustomerPathParams,
   DeleteCustomerRequest,
@@ -23,8 +22,6 @@ const { customerService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const customerRouter = Router();
-
-  customerRouter.use(apiKeyHeaderMiddleware);
 
   customerRouter.get(
     '/',
