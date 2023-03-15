@@ -9,8 +9,8 @@ export let theme = createTheme({
   palette: {
     primary: {
       light: '#63ccff',
-      main: '#7353FA',
-      dark: '#111013',
+      main: '#009be5',
+      dark: '#006db3',
     },
   },
   typography: {
@@ -43,7 +43,7 @@ theme = {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#111013',
+          backgroundColor: '#081627',
         },
       },
     },

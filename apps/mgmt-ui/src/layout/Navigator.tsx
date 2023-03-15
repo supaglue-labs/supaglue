@@ -13,7 +13,6 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import NavigatorMenu from './NavigatorMenu';
 
 type Category = {
   id: string;
@@ -27,7 +26,7 @@ const categories: {
   children: Category[];
 }[] = [
   {
-    id: 'internal',
+    id: 'Manage',
     children: [
       {
         id: 'Dashboard',
@@ -56,7 +55,7 @@ const categories: {
     ],
   },
   {
-    id: 'external',
+    id: 'Learn',
     children: [
       {
         id: 'API Explorer',
@@ -97,12 +96,12 @@ export default function Navigator(props: DrawerProps) {
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>Supaglue</ListItem>
-        <ListItem sx={{ ...itemCategory }}>
-          <NavigatorMenu />
-        </ListItem>
+
         {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: '#111013' }}>
-            <Divider sx={{ mb: 2 }} />
+          <Box key={id} sx={{ bgcolor: '#101F33' }}>
+            <ListItem sx={{ py: 2, px: 3 }}>
+              <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
+            </ListItem>
             {children.map(({ id: childId, icon, active, to }) => (
               <ListItem disablePadding key={childId}>
                 <ListItemButton
