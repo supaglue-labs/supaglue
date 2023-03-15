@@ -23,15 +23,15 @@ get:
                     country: CX
                     postal_code: '94107'
                     state: CA
-                    street_1: 525 Brannan
-                    street_2: ~
+                    street1: 525 Brannan
+                    street2: ~
                   - address_type: BILLING
                     city: San Francisco
                     country: US
                     postal_code: '94107'
                     state: CA
-                    street_1: 525 Brannan
-                    street_2: ~
+                    street1: 525 Brannan
+                    street2: ~
                 description: Integration API
                 id: 9572d08b-f19f-48cc-a992-1eb7031d3f6c
                 industry: API's

@@ -10,6 +10,9 @@ items:
       enum:
         - primary
         - work
+  required:
+    - email_address
+    - email_address_type
 example:
   - email_address: hello@supaglue.com
     email_address_type: work

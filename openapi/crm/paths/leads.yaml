@@ -41,8 +41,8 @@ get:
                         country: US
                         postal_code: '94107'
                         state: CA
-                        street_1: 525 Brannan
-                        street_2: ~
+                        street1: 525 Brannan
+                        street2: ~
                     company: Supaglue
                     converted_account_id: 5733a8b6-472d-45fa-8f10-e0b00727cced
                     converted_contact_id: 7f65f33c-e645-40f8-b87c-6148899caa8e
@@ -67,8 +67,8 @@ get:
                         country: US
                         postal_code: '94107'
                         state: CA
-                        street_1: 525 Brannan
-                        street_2: ~
+                        street1: 525 Brannan
+                        street2: ~
                     company: Supaglue
                     converted_account_id: c300123d-91e0-4519-b514-ff6d308eab47
                     converted_contact_id: 762b1d20-374b-41c9-a006-f6ed188a3e54

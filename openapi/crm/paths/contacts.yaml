@@ -42,8 +42,8 @@ get:
                         country: US
                         postal_code: '94107'
                         state: CA
-                        street_1: 525 Brannan
-                        street_2: ~
+                        street1: 525 Brannan
+                        street2: ~
                     email_addresses:
                       - email_address: hello@supaglue.com
                         email_address_type: work
@@ -62,8 +62,8 @@ get:
                         country: US
                         postal_code: '94107'
                         state: CA
-                        street_1: 525 Brannan
-                        street_2: ~
+                        street1: 525 Brannan
+                        street2: ~
                     email_addresses:
                       - email_address: hello@supaglue.com
                         email_address_type: work
