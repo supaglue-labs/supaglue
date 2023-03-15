@@ -1,10 +1,9 @@
 import MetricCard from '@/components/customers/MetricCard';
 import DashboardCard from '@/components/dashboard/DashboardCard';
 import { useCustomers } from '@/hooks/useCustomers';
-import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { CloudUploadOutlined, Link, PeopleAltOutlined } from '@mui/icons-material';
+import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
 import { type GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth/next';
@@ -30,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 export default function Home() {
   const { customers = [] } = useCustomers();
-  const { syncHistory = [] } = useSyncHistory();
+  // const { syncHistory = [] } = useSyncHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const totalConnections = customers
@@ -56,17 +55,17 @@ export default function Home() {
           <DashboardCard>Welcome to your Supaglue dashboard!</DashboardCard>
 
           <Grid container spacing={2}>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <MetricCard
                 icon={<PeopleAltOutlined />}
                 title="Total customers"
                 value={`${customers.length} customers`}
               />
             </Grid>
-            <Grid item xs={4}>
+            {/* <Grid item xs={4}>
               <MetricCard icon={<CloudUploadOutlined />} title="Total syncs" value={`${syncHistory.length} syncs`} />
-            </Grid>
-            <Grid item xs={4}>
+            </Grid> */}
+            <Grid item xs={6}>
               <MetricCard icon={<Link />} title="Total connections" value={`${totalConnections} connections`} />
             </Grid>
           </Grid>
