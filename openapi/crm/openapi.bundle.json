@@ -94,8 +94,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "description": "Integration API",
@@ -123,8 +123,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "description": "Integration API",
@@ -299,8 +299,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "description": "Integration API",
@@ -328,8 +328,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "description": "Integration API",
@@ -402,8 +402,8 @@
                           "country": "CX",
                           "postal_code": "94107",
                           "state": "CA",
-                          "street_1": "525 Brannan",
-                          "street_2": null
+                          "street1": "525 Brannan",
+                          "street2": null
                         },
                         {
                           "address_type": "BILLING",
@@ -411,8 +411,8 @@
                           "country": "US",
                           "postal_code": "94107",
                           "state": "CA",
-                          "street_1": "525 Brannan",
-                          "street_2": null
+                          "street1": "525 Brannan",
+                          "street2": null
                         }
                       ],
                       "description": "Integration API",
@@ -588,8 +588,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "email_addresses": [
@@ -619,8 +619,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "email_addresses": [
@@ -805,8 +805,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "email_addresses": [
@@ -836,8 +836,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "email_addresses": [
@@ -1065,8 +1065,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "company": "Supaglue",
@@ -1102,8 +1102,8 @@
                               "country": "US",
                               "postal_code": "94107",
                               "state": "CA",
-                              "street_1": "525 Brannan",
-                              "street_2": null
+                              "street1": "525 Brannan",
+                              "street2": null
                             }
                           ],
                           "company": "Supaglue",
@@ -2215,7 +2215,21 @@
             "nullable": true,
             "example": "https://supaglue.com/"
           }
-        }
+        },
+        "required": [
+          "addresses",
+          "description",
+          "id",
+          "industry",
+          "last_activity_at",
+          "name",
+          "number_of_employees",
+          "owner_id",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "website"
+        ]
       },
       "create_update_account": {
         "type": "object",
@@ -2797,17 +2811,26 @@
               "nullable": true,
               "example": "CA"
             },
-            "street_1": {
+            "street1": {
               "type": "string",
               "nullable": true,
               "example": "525 Brannan"
             },
-            "street_2": {
+            "street2": {
               "type": "string",
               "nullable": true,
               "example": null
             }
-          }
+          },
+          "required": [
+            "address_type",
+            "city",
+            "country",
+            "postal_code",
+            "state",
+            "street1",
+            "street2"
+          ]
         },
         "example": [
           {
@@ -2816,8 +2839,8 @@
             "country": "US",
             "postal_code": "94107",
             "state": "CA",
-            "street_1": "525 Brannan",
-            "street_2": null
+            "street1": "525 Brannan",
+            "street2": null
           }
         ]
       },
@@ -2837,7 +2860,11 @@
                 "work"
               ]
             }
-          }
+          },
+          "required": [
+            "email_address",
+            "email_address_type"
+          ]
         },
         "example": [
           {
@@ -2864,7 +2891,11 @@
                 "fax"
               ]
             }
-          }
+          },
+          "required": [
+            "phone_number",
+            "phone_number_type"
+          ]
         },
         "example": [
           {

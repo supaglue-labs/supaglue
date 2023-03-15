@@ -147,38 +147,38 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     account: {
-      addresses?: components["schemas"]["addresses"];
+      addresses: components["schemas"]["addresses"];
       /** @example Integration API */
-      description?: string | null;
+      description: string | null;
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id?: string;
+      id: string;
       /** @example API's */
-      industry?: string | null;
+      industry: string | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_activity_at?: Date | null;
+      last_activity_at: Date | null;
       /** @example Sample Customer */
-      name?: string | null;
+      name: string | null;
       /** @example 276000 */
-      number_of_employees?: number | null;
+      number_of_employees: number | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      owner_id?: string | null;
+      owner_id: string | null;
       owner?: components["schemas"]["user"];
-      phone_numbers?: components["schemas"]["phone_numbers"];
+      phone_numbers: components["schemas"]["phone_numbers"];
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      created_at?: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      updated_at?: Date | null;
+      updated_at: Date | null;
       /** @example https://supaglue.com/ */
-      website?: string | null;
+      website: string | null;
     };
     create_update_account: {
       /** @example Integration API */
@@ -455,26 +455,26 @@ export interface components {
      *     "country": "US",
      *     "postal_code": "94107",
      *     "state": "CA",
-     *     "street_1": "525 Brannan",
-     *     "street_2": null
+     *     "street1": "525 Brannan",
+     *     "street2": null
      *   }
      * ]
      */
     addresses: ({
         /** @enum {string} */
-        address_type?: "primary" | "mailing" | "other" | "billing" | "shipping";
+        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
         /** @example San Francisco */
-        city?: string | null;
+        city: string | null;
         /** @example USA */
-        country?: string | null;
+        country: string | null;
         /** @example 94107 */
-        postal_code?: string | null;
+        postal_code: string | null;
         /** @example CA */
-        state?: string | null;
+        state: string | null;
         /** @example 525 Brannan */
-        street_1?: string | null;
+        street1: string | null;
         /** @example null */
-        street_2?: string | null;
+        street2: string | null;
       })[];
     /**
      * @example [
@@ -486,9 +486,9 @@ export interface components {
      */
     email_addresses: ({
         /** @example hello@supaglue.com */
-        email_address?: string;
+        email_address: string;
         /** @enum {string} */
-        email_address_type?: "primary" | "work";
+        email_address_type: "primary" | "work";
       })[];
     /**
      * @example [
@@ -500,9 +500,9 @@ export interface components {
      */
     phone_numbers: ({
         /** @example +14151234567 */
-        phone_number?: string | null;
+        phone_number: string | null;
         /** @enum {string} */
-        phone_number_type?: "primary" | "mobile" | "fax";
+        phone_number_type: "primary" | "mobile" | "fax";
       })[];
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */

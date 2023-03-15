@@ -8,8 +8,6 @@ export type Address = {
   addressType: 'primary' | 'billing' | 'mailing' | 'other' | 'shipping';
 };
 
-export const FAX_PHONE_NUMBER_TYPE = 'Fax';
-
 export type PhoneNumber = {
   phoneNumber: string | null;
   phoneNumberType: 'primary' | 'mobile' | 'fax';
