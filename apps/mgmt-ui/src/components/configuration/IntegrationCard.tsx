@@ -32,7 +32,7 @@ export default function IntegrationCard(props: { integration: Integration; integ
           action={
             <Switch
               disabled={true}
-              checked={integration?.isEnabled}
+              checked={true}
               // onClick={() => {
               //   if (!integration) {
               //     const newIntegration = {

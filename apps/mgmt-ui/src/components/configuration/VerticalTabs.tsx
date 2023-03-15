@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import ActiveCampaignIcon from '@/assets/connector_icons/activecampaign.png';
-import CopperIcon from '@/assets/connector_icons/copper.png';
+// import ActiveCampaignIcon from '@/assets/connector_icons/activecampaign.png';
+// import CopperIcon from '@/assets/connector_icons/copper.png';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
-import MicrosoftDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';
-import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
+// import MicrosoftDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';
+// import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
-import ZendeskSellIcon from '@/assets/connector_icons/zendesk_sell.png';
+// import ZendeskSellIcon from '@/assets/connector_icons/zendesk_sell.png';
 import { useIntegrations } from '@/hooks/useIntegrations';
-import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import IntegrationCard from './IntegrationCard';
 import IntegrationDetailTabPanel from './IntegrationDetailTabPanel';
 import IntegrationTabPanel from './IntegrationTabPanel';
 
@@ -48,52 +46,52 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
     status: 'available',
     description: 'Hubspot is your all-in-one stop for all of your marketing software needs.',
   },
-  {
-    icon: <Image alt="pipedrive" src={PipedriveIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Pipedrive',
-    providerName: 'pipedrive',
-    category: 'crm',
-    status: 'auth-only',
-    description:
-      'Pipedrive is the easy-to-use, #1 user-rated CRM tool. Get more qualified leads and grow your business. Sign up for a 14-day free trial.',
-  },
-  {
-    icon: <Image alt="activecampaign" src={ActiveCampaignIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'ActiveCampaign',
-    providerName: 'activecampaign',
-    category: 'crm',
-    status: 'auth-only',
-    description:
-      'Integrated email marketing, marketing automation, and small business CRM. Save time while growing your business with sales automation.',
-  },
-  {
-    icon: <Image alt="copper" src={CopperIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Copper',
-    providerName: 'copper',
-    category: 'crm',
-    status: 'auth-only',
-    description:
-      'When you need CRM software that works with G Suite, you need Copper. Give us a try and see how we can help your business build stronger customer relationships.',
-  },
-  {
-    icon: (
-      <Image alt="ms_dynamics_365_sales" src={MicrosoftDynamics365SalesIcon} width={ICON_SIZE} height={ICON_SIZE} />
-    ),
-    name: 'Microsoft Dynamics 365 Sales',
-    providerName: 'ms_dynamics_365_sales',
-    category: 'crm',
-    status: 'auth-only',
-    description: 'Dynamics CRM is a leading customer resource management and enterprise resource planning software.',
-  },
-  {
-    icon: <Image alt="zendesk_sell" src={ZendeskSellIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Zendesk Sell',
-    providerName: 'zendesk_sell',
-    category: 'crm',
-    status: 'auth-only',
-    description:
-      'Zendesk Sell (formerly Base) is a sales automation tool to enhance productivity, processes, and pipeline visibility for sales teams.',
-  },
+  // {
+  //   icon: <Image alt="pipedrive" src={PipedriveIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  //   name: 'Pipedrive',
+  //   providerName: 'pipedrive',
+  //   category: 'crm',
+  //   status: 'auth-only',
+  //   description:
+  //     'Pipedrive is the easy-to-use, #1 user-rated CRM tool. Get more qualified leads and grow your business. Sign up for a 14-day free trial.',
+  // },
+  // {
+  //   icon: <Image alt="activecampaign" src={ActiveCampaignIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  //   name: 'ActiveCampaign',
+  //   providerName: 'activecampaign',
+  //   category: 'crm',
+  //   status: 'auth-only',
+  //   description:
+  //     'Integrated email marketing, marketing automation, and small business CRM. Save time while growing your business with sales automation.',
+  // },
+  // {
+  //   icon: <Image alt="copper" src={CopperIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  //   name: 'Copper',
+  //   providerName: 'copper',
+  //   category: 'crm',
+  //   status: 'auth-only',
+  //   description:
+  //     'When you need CRM software that works with G Suite, you need Copper. Give us a try and see how we can help your business build stronger customer relationships.',
+  // },
+  // {
+  //   icon: (
+  //     <Image alt="ms_dynamics_365_sales" src={MicrosoftDynamics365SalesIcon} width={ICON_SIZE} height={ICON_SIZE} />
+  //   ),
+  //   name: 'Microsoft Dynamics 365 Sales',
+  //   providerName: 'ms_dynamics_365_sales',
+  //   category: 'crm',
+  //   status: 'auth-only',
+  //   description: 'Dynamics CRM is a leading customer resource management and enterprise resource planning software.',
+  // },
+  // {
+  //   icon: <Image alt="zendesk_sell" src={ZendeskSellIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  //   name: 'Zendesk Sell',
+  //   providerName: 'zendesk_sell',
+  //   category: 'crm',
+  //   status: 'auth-only',
+  //   description:
+  //     'Zendesk Sell (formerly Base) is a sales automation tool to enhance productivity, processes, and pipeline visibility for sales teams.',
+  // },
 ];
 
 interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -123,16 +121,8 @@ type ConfigurationTab = {
 };
 const configurationTabs: ConfigurationTab[] = [
   {
-    label: 'Installed',
-    value: 'installed',
-  },
-  {
     label: 'CRM API',
     value: 'crm',
-  },
-  {
-    label: 'Auth Only',
-    value: 'authonly',
   },
 ];
 
@@ -191,26 +181,7 @@ export default function VerticalTabs() {
           <Tab key={configurationTab.value} label={configurationTab.label} {...a11yProps(i)} />
         ))}
       </Tabs>
-      <TabPanel value={value} index={0}>
-        {/* "Active" tab */}
-        <Grid container spacing={2}>
-          {existingIntegrations.length === 0 && <Box padding={2}>No active integrations.</Box>}
-          {existingIntegrations.map((integration: Integration) => {
-            const info = integrationCardsInfo.find((info) => info.providerName === integration.providerName);
-
-            if (!info) {
-              return null;
-            }
-
-            return (
-              <Grid key={info.name} item xs={6}>
-                <IntegrationCard integration={integration} integrationInfo={info} />
-              </Grid>
-            );
-          })}
-        </Grid>
-      </TabPanel>
-      <TabPanel value={value} index={1} className="w-full">
+      <TabPanel value={value} index={0} className="w-full">
         {tab.length === 1 && (
           <IntegrationTabPanel
             status="available"
@@ -225,13 +196,6 @@ export default function VerticalTabs() {
             integrationCardInfo={targetIntegrationCardInfo}
           />
         )}
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <IntegrationTabPanel
-          status="auth-only"
-          integrationCardsInfo={integrationCardsInfo}
-          existingIntegrations={existingIntegrations}
-        />
       </TabPanel>
     </Box>
   );

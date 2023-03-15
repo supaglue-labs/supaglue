@@ -1,4 +1,5 @@
-import { APPLICATION_ID, CUSTOMER_ID, PROVIDER_NAME } from '@/client';
+const CUSTOMER_ID = '9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677';
+const PROVIDER_NAME = 'salesforce';
 
 export const fetcher = (input: RequestInfo, init: RequestInit) => {
   const supaglueHeaders = new Headers();

@@ -36,7 +36,7 @@ const categories: {
       },
       {
         id: 'Configuration',
-        to: '/configuration/installed',
+        to: '/configuration/crm',
         icon: <Tune />,
         active: false,
       },

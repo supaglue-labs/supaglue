@@ -54,7 +54,6 @@ model Customer {
 
 model Integration {
   id            String       @id @default(uuid())
-  isEnabled     Boolean      @default(false) @map("is_enabled")
   applicationId String       @map("application_id")
   application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   authType      String       @map("auth_type") // [oauth2]
