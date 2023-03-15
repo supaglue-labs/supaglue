@@ -15,6 +15,11 @@ export interface paths {
     post: operations["createAccount"];
     
   };
+  "/accounts/_search": {
+    /** Search accounts */
+    post: operations["searchAccounts"];
+    
+  };
   "/accounts/{account_id}": {
     /** Get account */
     get: operations["getAccount"];
@@ -34,6 +39,11 @@ export interface paths {
     get: operations["getContacts"];
     /** Create contact */
     post: operations["createContact"];
+    
+  };
+  "/contacts/_search": {
+    /** Search contacts */
+    post: operations["searchContacts"];
     
   };
   "/contacts/{contact_id}": {
@@ -511,6 +521,11 @@ export interface components {
     custom_fields: {
       [key: string]: unknown | undefined;
     };
+    filter: {
+      /** @enum {string} */
+      type: "equals";
+      value: string;
+    };
   };
   responses: never;
   parameters: {
@@ -576,6 +591,28 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["account"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  searchAccounts: {
+    /** Search accounts */
+    requestBody: {
+      content: {
+        "application/json": {
+          filters: {
+            website?: components["schemas"]["filter"];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Accounts */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["account"])[];
           };
         };
       };
@@ -659,6 +696,28 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["contact"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  searchContacts: {
+    /** Search contacts */
+    requestBody: {
+      content: {
+        "application/json": {
+          filters: {
+            email_address?: components["schemas"]["filter"];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Contacts */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["contact"])[];
           };
         };
       };

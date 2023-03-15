@@ -7,10 +7,12 @@ import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mapp
 import type {
   Account,
   AccountCreateParams,
+  AccountFilters,
   AccountUpdateParams,
   GetParams,
   ListParams,
   PaginatedResult,
+  PaginationParams,
 } from '../../types/index';
 import { CommonModelBaseService } from './base_service';
 
@@ -36,6 +38,30 @@ export class AccountService extends CommonModelBaseService {
       throw new UnauthorizedError('Unauthorized');
     }
     return fromAccountModel(model, expandedAssociations);
+  }
+
+  public async search(
+    connectionId: string,
+    paginationParams: PaginationParams,
+    filters: AccountFilters
+  ): Promise<PaginatedResult<Account>> {
+    const { page_size, cursor } = paginationParams;
+    const pageSize = page_size ? parseInt(page_size) : undefined;
+    const models = await this.prisma.crmAccount.findMany({
+      ...getPaginationParams(pageSize, cursor),
+      where: {
+        connectionId,
+        website: filters.website?.type === 'equals' ? filters.website.value : undefined,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    const results = models.map((model) => fromAccountModel(model));
+    return {
+      ...getPaginationResult(pageSize, cursor, results),
+      results,
+    };
   }
 
   // TODO: implement rest of list params
