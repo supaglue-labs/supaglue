@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeys } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
-import { apiKeyHeaderMiddleware } from '@/middleware/api_key';
 import { NotFoundError } from '@supaglue/core/errors';
 import {
   CreateWebhookPathParams,
@@ -20,8 +19,6 @@ const { applicationService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const webhookRouter = Router();
-
-  webhookRouter.use(apiKeyHeaderMiddleware);
 
   webhookRouter.get(
     '/',

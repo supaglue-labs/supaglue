@@ -3,11 +3,14 @@ import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
+import { getServerSideProps } from '@/pages';
 import providerToIcon from '@/utils/providerToIcon';
 import { CloudUploadOutlined, Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Divider, Grid, Stack, Typography } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';
+
+export { getServerSideProps };
 
 export default function Home() {
   const { customers = [] } = useCustomers();

@@ -18,7 +18,7 @@ export async function internalMiddleware(req: Request, res: Response, next: Next
     throw new UnauthorizedError(`x-sg-internal-token header is not valid`);
   }
 
-  if (applicationId) {
+  if (!applicationId) {
     throw new BadRequestError('x-application-id must be set');
   }
 

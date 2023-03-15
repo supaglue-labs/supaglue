@@ -55,6 +55,7 @@ const {
   SUPAGLUE_QUICKSTART_API_KEY,
 } = process.env;
 
+const SG_USER_ID = 'd56b851b-5a36-4480-bc43-515d677f46e3';
 const APPLICATION_ID = 'a4398523-03a2-42dd-9681-c91e3e2efaf4';
 
 const SALESFORCE_CUSTOMER_ID = '9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677';
@@ -186,6 +187,23 @@ async function seedApplication() {
   });
 }
 
+async function seedSgUser() {
+  // Create sg user
+  await prisma.sgUser.upsert({
+    where: {
+      id: SG_USER_ID,
+    },
+    update: {},
+    create: {
+      id: SG_USER_ID,
+      applicationId: APPLICATION_ID,
+      authType: 'username/password',
+      username: 'admin',
+      password: 'admin',
+    },
+  });
+}
+
 async function seedCustomers() {
   // Create customers
   await Promise.all(
@@ -246,6 +264,7 @@ async function seedCRMIntegrations() {
 
 async function main() {
   await seedApplication();
+  await seedSgUser();
   await seedCustomers();
   await seedCRMIntegrations();
 }

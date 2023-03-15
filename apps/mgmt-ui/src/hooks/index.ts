@@ -1,16 +1,13 @@
-import { API_HOST } from '@/client';
+import { APPLICATION_ID, CUSTOMER_ID, PROVIDER_NAME, SG_INTERNAL_TOKEN } from '@/client';
 
 export const fetcher = (input: RequestInfo, init: RequestInit) => {
   const supaglueHeaders = new Headers();
 
-  // For /crm endpoints, add customer-id and provider-name headers
-  if (input.toString().startsWith(`${API_HOST}/crm`)) {
-    supaglueHeaders.append(
-      'customer-id',
-      '9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' // TODO: get this from the user's session
-    );
-    supaglueHeaders.append('provider-name', 'salesforce'); // TODO: get this from the user's session
-  }
+  // TODO: data drive these headers based on the active application context
+  supaglueHeaders.append('x-customer-id', CUSTOMER_ID);
+  supaglueHeaders.append('x-provider-name', PROVIDER_NAME);
+  supaglueHeaders.append('x-application-id', APPLICATION_ID);
+  supaglueHeaders.append('x-sg-internal-token', SG_INTERNAL_TOKEN);
 
   return fetch(input, { headers: supaglueHeaders, ...init }).then((res) => res.json());
 };

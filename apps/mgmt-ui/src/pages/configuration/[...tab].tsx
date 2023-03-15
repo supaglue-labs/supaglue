@@ -1,8 +1,11 @@
 import Header from '@/layout/Header';
+import { getServerSideProps } from '@/pages';
 import { Box, Divider, Tab, Tabs, Typography } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';
 import ConfigurationTabs from '../../components/configuration/VerticalTabs';
+
+export { getServerSideProps };
 
 export default function Home() {
   const [mobileOpen, setMobileOpen] = useState(false);

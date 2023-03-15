@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { BarChart, Biotech, MenuBook, Tune } from '@mui/icons-material';
+import { BarChart, Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
   Box,
@@ -46,12 +46,12 @@ const categories: {
         icon: <PeopleIcon />,
         active: false,
       },
-      // {
-      //   id: 'Sync Logs',
-      //   to: '/sync_logs',
-      //   icon: <FindInPage />,
-      //   active: false,
-      // },
+      {
+        id: 'Sync Logs',
+        to: '/sync_logs',
+        icon: <FindInPage />,
+        active: false,
+      },
     ],
   },
   {
