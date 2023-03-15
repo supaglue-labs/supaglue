@@ -20,4 +20,3 @@ required:
   - category
   - auth_type
   - provider_name
-  - is_enabled

@@ -99,7 +99,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
               const newIntegration = {
                 ...integration,
                 config: {
-                  providerAppId: '',
+                  providerAppId: '', // TODO: add input field for this
                   ...integration?.config,
                   oauth: {
                     ...integration?.config?.oauth,
@@ -110,7 +110,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
                     oauthScopes: oauthScopes.split(','),
                   },
                   sync: {
-                    periodMs: 60 * 60 * 1000,
+                    periodMs: 60 * 60 * 1000, // TODO: add input field for this
                   },
                 },
               };

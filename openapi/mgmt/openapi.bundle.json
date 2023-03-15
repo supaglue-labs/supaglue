@@ -832,8 +832,7 @@
           "application_id",
           "category",
           "auth_type",
-          "provider_name",
-          "is_enabled"
+          "provider_name"
         ]
       },
       "connection": {
@@ -1032,8 +1031,7 @@
           "application_id",
           "category",
           "auth_type",
-          "provider_name",
-          "is_enabled"
+          "provider_name"
         ]
       },
       "webhook": {

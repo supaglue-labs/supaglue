@@ -111,7 +111,7 @@ export interface components {
       auth_type: "oauth2";
       provider_name: components["schemas"]["provider_name"];
       config?: components["schemas"]["integration_config"];
-      is_enabled: boolean;
+      is_enabled?: boolean;
     };
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -190,7 +190,7 @@ export interface components {
       auth_type: "oauth2";
       provider_name: components["schemas"]["provider_name"];
       config?: components["schemas"]["integration_config"];
-      is_enabled: boolean;
+      is_enabled?: boolean;
     };
     webhook: {
       url: string;

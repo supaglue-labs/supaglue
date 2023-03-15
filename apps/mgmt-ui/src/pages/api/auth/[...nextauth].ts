@@ -11,7 +11,7 @@ export const authOptions = {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-application-id': APPLICATION_ID, // TODO: un-hardcode
+            'x-application-id': APPLICATION_ID, // TODO: shouldn't be logging into an application, but an organization
             'x-sg-internal-token': SG_INTERNAL_TOKEN,
           },
           body: JSON.stringify({

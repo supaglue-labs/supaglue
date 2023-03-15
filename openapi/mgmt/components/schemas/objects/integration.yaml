@@ -24,7 +24,6 @@ required:
   - category
   - auth_type
   - provider_name
-  - is_enabled
 # ajv has issues with interpreting the id here as a schema id
 # example:
 #   id: e888cedf-e9d0-42c5-9485-2d72984faef5

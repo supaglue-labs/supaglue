@@ -240,7 +240,6 @@ async function seedCRMIntegrations() {
           category: 'crm',
           providerName: SUPPORTED_CRM_CONNECTIONS[idx],
           authType: 'oauth2',
-          isEnabled: true,
           config: {
             providerAppId: OAUTH_APP_IDS[idx],
             oauth: {
