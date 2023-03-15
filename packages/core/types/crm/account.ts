@@ -44,6 +44,8 @@ type BaseAccountCreateParams = {
   industry?: string | null;
   website?: string | null;
   numberOfEmployees?: number | null;
+  addresses?: Address[];
+  phoneNumbers?: PhoneNumber[];
 
   // TODO: Need extra permissions to create/update this derived field in SF
   // lastActivityAt?: Date | null;

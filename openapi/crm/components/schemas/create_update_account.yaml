@@ -20,12 +20,9 @@ properties:
     type: string
     nullable: true
     example: https://supaglue.com/
+  addresses:
+    $ref: './objects/addresses.yaml'
+  phone_numbers:
+    $ref: './objects/phone_numbers.yaml'
   custom_fields:
     $ref: ./objects/custom_fields.yaml
-example:
-  description: Integration API
-  industry: API's
-  last_activity_at: '2022-02-10T00:00:00Z'
-  name: Sample Customer
-  number_of_employees: 276000
-  website: https://supaglue.com/

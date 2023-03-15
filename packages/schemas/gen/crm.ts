@@ -180,16 +180,6 @@ export interface components {
       /** @example https://supaglue.com/ */
       website?: string | null;
     };
-    /**
-     * @example {
-     *   "description": "Integration API",
-     *   "industry": "API's",
-     *   "last_activity_at": "2022-02-10T00:00:00Z",
-     *   "name": "Sample Customer",
-     *   "number_of_employees": 276000,
-     *   "website": "https://supaglue.com/"
-     * }
-     */
     create_update_account: {
       /** @example Integration API */
       description?: string | null;
@@ -201,6 +191,8 @@ export interface components {
       number_of_employees?: number | null;
       /** @example https://supaglue.com/ */
       website?: string | null;
+      addresses?: components["schemas"]["addresses"];
+      phone_numbers?: components["schemas"]["phone_numbers"];
       custom_fields?: components["schemas"]["custom_fields"];
     };
     contact: {
@@ -242,6 +234,9 @@ export interface components {
       last_name?: string | null;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       account_id?: string | null;
+      addresses?: components["schemas"]["addresses"];
+      email_addresses?: components["schemas"]["email_addresses"];
+      phone_numbers?: components["schemas"]["phone_numbers"];
       custom_fields?: components["schemas"]["custom_fields"];
     };
     lead: {
@@ -296,10 +291,8 @@ export interface components {
       lead_source?: string | null;
       /** @example Co-Founder */
       title?: string;
-      /** @example ab849b1c-c36b-4d8b-9e45-679b48fc4de7 */
-      converted_account_id?: string | null;
-      /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
-      converted_contact_id?: string | null;
+      email_addresses?: components["schemas"]["email_addresses"];
+      addresses?: components["schemas"]["addresses"];
       custom_fields?: components["schemas"]["custom_fields"];
     };
     opportunity: {
