@@ -45,7 +45,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
           </Stack>
         </Stack>
         <Box>
-          <Switch disabled checked={integration?.isEnabled}></Switch>
+          <Switch disabled checked={true}></Switch>
         </Box>
       </Stack>
 

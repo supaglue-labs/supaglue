@@ -12,7 +12,6 @@ import {
 export const fromIntegrationModel = ({
   id,
   applicationId,
-  isEnabled,
   category,
   providerName,
   config,
@@ -20,7 +19,6 @@ export const fromIntegrationModel = ({
   return {
     id,
     applicationId,
-    isEnabled,
     category: category as IntegrationCategory,
     authType: 'oauth2',
     providerName: providerName as CRMProviderName,
@@ -44,7 +42,6 @@ export const fromIntegrationConfigModel = (config: Prisma.JsonValue | null): Int
 
 export const toIntegrationModel = ({
   applicationId,
-  isEnabled,
   category,
   authType,
   providerName,
@@ -52,7 +49,6 @@ export const toIntegrationModel = ({
 }: CRMIntegrationCreateParams) => {
   return {
     applicationId,
-    isEnabled,
     category,
     authType,
     providerName,

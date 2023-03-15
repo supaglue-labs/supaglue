@@ -16,8 +16,6 @@ properties:
     $ref: ./provider_name.yaml
   config:
     $ref: ./integration_config.yaml
-  is_enabled:
-    type: boolean
 required:
   - id
   - application_id
