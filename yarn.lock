@@ -16700,6 +16700,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "sync-worker@workspace:apps/sync-worker"
   dependencies:
+    "@sentry/integrations": ^7.43.0
+    "@sentry/node": ^7.43.0
     "@supaglue/core": "workspace:*"
     "@supaglue/db": "workspace:*"
     "@supaglue/sync-workflows": "workspace:*"
