@@ -21,7 +21,7 @@ if (sentryEnabled) {
   Sentry.init({
     // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
     // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
-    dsn: 'https://168e6ed7afc74379ba0608da6173649c@o4504573112745984.ingest.sentry.io/4504844378505216',
+    dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
     integrations: [
       new RewriteFrames({
         root: __dirname,
