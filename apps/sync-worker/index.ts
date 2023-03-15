@@ -1,8 +1,34 @@
+import { RewriteFrames } from '@sentry/integrations';
+import * as Sentry from '@sentry/node';
 import { logger } from '@supaglue/core/lib';
+import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createActivities } from '@supaglue/sync-workflows';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { LogLevel, LogMetadata, NativeConnection, Runtime, Worker } from '@temporalio/worker';
+import fs from 'fs';
+import path from 'path';
 import { getDependencyContainer } from './dependency_container';
+
+const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
+const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
+
+if (sentryEnabled) {
+  Sentry.init({
+    dsn: 'https://168e6ed7afc74379ba0608da6173649c@o4504573112745984.ingest.sentry.io/4504844378505216',
+    integrations: [
+      new RewriteFrames({
+        root: __dirname,
+      }),
+    ],
+    release: version,
+    includeLocalVariables: true,
+    initialScope: {
+      user: {
+        id: distinctId,
+      },
+    },
+  });
+}
 
 async function run() {
   // pino expects errors to be placed under the `err` key. We're doing mapping here
