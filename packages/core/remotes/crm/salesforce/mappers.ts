@@ -1,10 +1,6 @@
 import {
   Address,
-  BILLING_ADDRESS_TYPE,
-  FAX_PHONE_NUMBER_TYPE,
-  MAILING_ADDRESS_TYPE,
   OpportunityStatus,
-  OTHER_ADDRESS_TYPE,
   PhoneNumber,
   RemoteAccount,
   RemoteAccountCreateParams,
@@ -18,7 +14,6 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-  SHIPPING_ADDRESS_TYPE,
 } from '../../../types';
 
 export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>): RemoteAccount => {
@@ -35,7 +30,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
           state: record.BillingState ?? null,
           postalCode: record.postalCode ?? null,
           country: record.country ?? null,
-          addressType: BILLING_ADDRESS_TYPE,
+          addressType: 'billing',
         }
       : null;
 
@@ -52,7 +47,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
           state: record.ShippingState ?? null,
           postalCode: record.postalCode ?? null,
           country: record.country ?? null,
-          addressType: SHIPPING_ADDRESS_TYPE,
+          addressType: 'shipping',
         }
       : null;
 
@@ -61,13 +56,13 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
   const phoneNumber: PhoneNumber | null = record.Phone
     ? {
         phoneNumber: record.Phone,
-        phoneNumberType: null,
+        phoneNumberType: 'primary',
       }
     : null;
   const faxPhoneNumber: PhoneNumber | null = record.Fax
     ? {
         phoneNumber: record.Fax,
-        phoneNumberType: FAX_PHONE_NUMBER_TYPE,
+        phoneNumberType: 'fax',
       }
     : null;
 
@@ -122,7 +117,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
           state: record.MailingState ?? null,
           postalCode: record.MailingPostalCode ?? null,
           country: record.MailingCountry ?? null,
-          addressType: MAILING_ADDRESS_TYPE,
+          addressType: 'mailing',
         }
       : null;
 
@@ -135,7 +130,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
           state: record.OtherState ?? null,
           postalCode: record.OtherPostalCode ?? null,
           country: record.OtherCountry ?? null,
-          addressType: OTHER_ADDRESS_TYPE,
+          addressType: 'other',
         }
       : null;
 
@@ -156,27 +151,6 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     });
   }
 
-  if (record.HomePhone) {
-    phoneNumbers.push({
-      phoneNumber: record.HomePhone,
-      phoneNumberType: 'home',
-    });
-  }
-
-  if (record.AssistantPhone) {
-    phoneNumbers.push({
-      phoneNumber: record.AssistantPhone,
-      phoneNumberType: 'assistant',
-    });
-  }
-
-  if (record.OtherPhone) {
-    phoneNumbers.push({
-      phoneNumber: record.OtherPhone,
-      phoneNumberType: 'other',
-    });
-  }
-
   if (record.Fax) {
     phoneNumbers.push({
       phoneNumber: record.Fax,
@@ -191,7 +165,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
     addresses,
-    emailAddresses: [{ emailAddress: record.Email, emailAddressType: null }],
+    emailAddresses: [{ emailAddress: record.Email, emailAddressType: 'primary' }],
     phoneNumbers,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
@@ -239,14 +213,14 @@ export const fromSalesforceLeadToRemoteLead = (
         state: record.State ?? null,
         country: record.Country ?? null,
         postalCode: record.PostalCode ?? null,
-        addressType: null,
+        addressType: 'primary',
       },
     ],
-    emailAddresses: [{ emailAddress: record.Email, emailAddressType: null }],
+    emailAddresses: [{ emailAddress: record.Email, emailAddressType: 'primary' }],
     phoneNumbers: [
       {
         phoneNumber: record.Phone ?? null,
-        phoneNumberType: null,
+        phoneNumberType: 'primary',
       },
     ],
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,

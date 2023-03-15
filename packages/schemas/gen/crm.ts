@@ -457,7 +457,7 @@ export interface components {
     /**
      * @example [
      *   {
-     *     "address_type": "Shipping",
+     *     "address_type": "shipping",
      *     "city": "San Francisco",
      *     "country": "US",
      *     "postal_code": "94107",
@@ -468,8 +468,8 @@ export interface components {
      * ]
      */
     addresses: ({
-        /** @example Shipping */
-        address_type?: string | null;
+        /** @enum {string} */
+        address_type?: "primary" | "mailing" | "other" | "billing" | "shipping";
         /** @example San Francisco */
         city?: string | null;
         /** @example USA */
@@ -487,29 +487,29 @@ export interface components {
      * @example [
      *   {
      *     "email_address": "hello@supaglue.com",
-     *     "email_address_type": "Work"
+     *     "email_address_type": "work"
      *   }
      * ]
      */
     email_addresses: ({
         /** @example hello@supaglue.com */
         email_address?: string;
-        /** @example Work */
-        email_address_type?: string | null;
+        /** @enum {string} */
+        email_address_type?: "primary" | "work";
       })[];
     /**
      * @example [
      *   {
      *     "phone_number": "+14151234567",
-     *     "phone_number_type": "Mobile"
+     *     "phone_number_type": "primary"
      *   }
      * ]
      */
     phone_numbers: ({
         /** @example +14151234567 */
         phone_number?: string | null;
-        /** @example Mobile */
-        phone_number_type?: string | null;
+        /** @enum {string} */
+        phone_number_type?: "primary" | "mobile" | "fax";
       })[];
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */

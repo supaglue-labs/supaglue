@@ -4,8 +4,12 @@ items:
   properties:
     address_type:
       type: string
-      nullable: true
-      example: Shipping
+      enum:
+        - primary
+        - mailing
+        - other
+        - billing
+        - shipping
     city:
       type: string
       nullable: true
@@ -31,7 +35,7 @@ items:
       nullable: true
       example: ~
 example:
-  - address_type: Shipping
+  - address_type: shipping
     city: San Francisco
     country: US
     postal_code: '94107'

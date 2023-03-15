@@ -3,6 +3,7 @@ import { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/a
 import { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
+  Address,
   EmailAddress,
   OpportunityStatus,
   PhoneNumber,
@@ -21,7 +22,7 @@ export const fromHubSpotCompanyToRemoteAccount = ({
   createdAt,
   updatedAt,
 }: HubSpotCompany): RemoteAccount => {
-  const addresses =
+  const addresses: Address[] =
     properties.address ||
     properties.address2 ||
     properties.city ||
@@ -36,16 +37,16 @@ export const fromHubSpotCompanyToRemoteAccount = ({
             state: properties.state ?? null,
             postalCode: properties.zip ?? null,
             country: properties.country ?? null,
-            addressType: null,
+            addressType: 'primary',
           },
         ]
       : [];
 
-  const phoneNumbers = properties.phone
+  const phoneNumbers: PhoneNumber[] = properties.phone
     ? [
         {
           phoneNumber: properties.phone ?? null,
-          phoneNumberType: null,
+          phoneNumberType: 'primary',
         },
       ]
     : [];
@@ -94,13 +95,6 @@ export const fromHubSpotContactToRemoteContact = ({
     remoteAccountId = associations.companies.results[0].id ?? null;
   }
 
-  // TODO: Handle hs_additional_emails
-  // if (properties.hs_additional_emails?.length) {
-  //   properties.hs_additional_emails.forEach((email) => {
-  //     emailAddresses.push({ emailAddress: email, emailAddressType: null });
-  //   });
-  // }
-
   const phoneNumbers = [
     properties.phone
       ? {
@@ -114,12 +108,6 @@ export const fromHubSpotContactToRemoteContact = ({
           phoneNumberType: 'mobile',
         }
       : null,
-    properties.hs_whatsapp_phone_number
-      ? {
-          phoneNumber: properties.hs_whatsapp_phone_number,
-          phoneNumberType: 'whatsapp',
-        }
-      : null,
     properties.fax
       ? {
           phoneNumber: properties.fax,
@@ -128,7 +116,7 @@ export const fromHubSpotContactToRemoteContact = ({
       : null,
   ].filter(Boolean) as PhoneNumber[];
 
-  const addresses =
+  const addresses: Address[] =
     properties.address ||
     properties.address2 ||
     properties.city ||
@@ -143,7 +131,7 @@ export const fromHubSpotContactToRemoteContact = ({
             state: properties.state ?? null,
             postalCode: properties.zip ?? null,
             country: properties.country ?? null,
-            addressType: null,
+            addressType: 'primary',
           },
         ]
       : [];

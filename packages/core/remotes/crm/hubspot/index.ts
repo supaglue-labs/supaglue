@@ -75,11 +75,9 @@ const propertiesToFetch = {
     'email',
     'fax',
     'firstname',
-    'hs_additional_emails',
     'hs_createdate', // TODO: Use this or createdate?
     'hs_is_contact', // TODO: distinguish from "visitor"?
     'hs_lastmodifieddate', // TODO: Use this or lastmodifieddate?
-    'hs_whatsapp_phone_number',
     'hubspot_owner_id',
     'lastmodifieddate',
     'lastname',
