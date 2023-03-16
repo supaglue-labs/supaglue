@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Switch, Typography } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useRouter } from 'next/router';
 import { Integration, IntegrationCardInfo } from './VerticalTabs';
@@ -21,10 +21,9 @@ export default function IntegrationCard(props: { integration: Integration; integ
           subheader={
             <Stack direction="column">
               <Typography>{name}</Typography>
-              <Typography fontSize={12}>{status === 'auth-only' ? status : category.toUpperCase()}</Typography>
+              <Typography fontSize={12}>{category.toUpperCase()}</Typography>
             </Stack>
           }
-          action={<Switch disabled={true} checked={true}></Switch>}
         />
         <CardContent
           classes={{
