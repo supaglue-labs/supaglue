@@ -3,6 +3,13 @@ import { Client, Connection } from '@temporalio/client';
 import { PassthroughService, SyncService } from './services';
 import { ConnectionWriterService } from './services/connection_writer_service';
 
+const TEMPORAL_ADDRESS =
+  process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
+    ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:${process.env.SUPAGLUE_TEMPORAL_PORT}`
+    : process.env.SUPAGLUE_TEMPORAL_HOST
+    ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:7233`
+    : 'temporal';
+
 type DependencyContainer = CoreDependencyContainer & {
   temporalClient: Client;
   syncService: SyncService;
@@ -19,7 +26,7 @@ function createDependencyContainer(): DependencyContainer {
 
   const temporalClient = new Client({
     connection: Connection.lazy({
-      address: 'temporal',
+      address: TEMPORAL_ADDRESS,
     }),
   });
 

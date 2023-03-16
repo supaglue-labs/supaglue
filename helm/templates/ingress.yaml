@@ -1,0 +1,81 @@
+{{- if .Values.ingress.enabled -}}
+  {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+apiVersion: networking.k8s.io/v1
+  {{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+apiVersion: networking.k8s.io/v1beta1
+  {{- else if .Capabilities.APIVersions.Has "extensions/v1beta1" }}
+apiVersion: extensions/v1beta1
+  {{- end }}
+kind: Ingress
+metadata:
+  name: {{ include "supaglue.componentname" (list . "api") }}
+  labels:
+    app.kubernetes.io/name: {{ include "supaglue.name" . }}
+    helm.sh/chart: {{ include "supaglue.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+  {{- if not (empty (coalesce .Values.ingress.annotations .Values.managedCertificate.enabled)) }}
+  annotations:
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if .Values.managedCertificate.enabled }}
+    networking.gke.io/managed-certificates: {{ .Values.managedCertificate.name }}
+    {{- end }}
+    {{- end }}
+spec:
+  {{- with .Values.ingress.className }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+      - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+      {{- end }}
+      {{- end }}
+  rules:
+    {{- range .Values.api.ingressHosts }}
+    {{- $url := splitList "/" . }}
+      - host: {{ first $url }}
+        http:
+          paths:
+            - path: /*
+              {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+              pathType: ImplementationSpecific
+              backend:
+                service:
+                  name: {{ include "supaglue.fullname" $ }}-api
+                  port:
+                    number: {{ $.Values.api.service.port }}
+              {{- else if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+              backend:
+                serviceName: {{ include "supaglue.fullname" $ }}-api
+                servicePort: {{ $.Values.api.service.port }}
+              {{- end }}
+      {{- end}}
+      {{- range .Values.management.ingressHosts }}
+      {{- $url := splitList "/" . }}
+      - host: {{ first $url }}
+        http:
+          paths:
+            - path: /*
+              {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+              pathType: ImplementationSpecific
+              backend:
+                service:
+                  name: {{ include "supaglue.fullname" $ }}-management
+                  port:
+                    number: {{ $.Values.management.service.port }}
+              {{- else if $.Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" }}
+              backend:
+                serviceName: {{ include "supaglue.fullname" $ }}-management
+                servicePort: {{ $.Values.management.service.port }}
+              {{- end }}
+      {{- end }}
+    {{- end }}

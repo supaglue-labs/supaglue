@@ -8,7 +8,7 @@ export const posthogClient = new PostHog(process.env.SUPAGLUE_POSTHOG_API_KEY ??
   enable,
 });
 
-const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 
 export function getSystemProperties() {
   return {

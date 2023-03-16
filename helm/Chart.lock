@@ -1,0 +1,12 @@
+dependencies:
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.2.2
+- name: temporal
+  repository: file://charts/temporal
+  version: 0.20.0
+- name: common
+  repository: https://charts.bitnami.com/bitnami
+  version: 2.2.4
+digest: sha256:2d138305c6da37152b654ffd599597b33b0b087db914bc86b190301057270985
+generated: "2023-03-13T14:36:48.523504-07:00"

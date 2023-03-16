@@ -1,0 +1,31 @@
+{{- if $.Values.api.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "supaglue.componentname" (list . "api") }}
+  labels:
+    app.kubernetes.io/name: {{ include "supaglue.name" . }}
+    helm.sh/chart: {{ include "supaglue.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+  {{- if .Values.api.service.annotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.api.service.annotations "context" .) | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.api.service.type }}
+  ports:
+    - port: {{ .Values.api.service.port }}
+      targetPort: {{ .Values.api.service.port }}
+      protocol: TCP
+      name: http
+      {{- if hasKey .Values.api.service "nodePort" }}
+      nodePort: {{ .Values.api.service.nodePort }}
+      {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "supaglue.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: api
+{{- end }}

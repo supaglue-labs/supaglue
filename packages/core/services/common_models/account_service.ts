@@ -1,4 +1,4 @@
-import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
+import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
@@ -165,8 +165,7 @@ export class AccountService extends CommonModelBaseService {
     customerId: string,
     remoteAccountsReadable: Readable
   ): Promise<number> {
-    // TODO: Shouldn't be hard-coding the DB schema here.
-    const table = 'api.crm_accounts';
+    const table = `${schemaPrefix}crm_accounts`;
     const tempTable = 'crm_accounts_temp';
     const columnsWithoutId = [
       'name',

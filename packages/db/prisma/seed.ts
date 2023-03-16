@@ -52,6 +52,7 @@ const {
   DEV_CAPSULE_SCOPES,
   DEV_CAPSULE_APP_ID,
   SUPAGLUE_API_ENCRYPTION_SECRET,
+  ADMIN_PASSWORD,
   SUPAGLUE_QUICKSTART_API_KEY,
 } = process.env;
 
@@ -161,27 +162,29 @@ export async function cryptoHash(text: string): Promise<{ original: string; hash
 }
 
 async function seedApplication() {
-  const { hashed: hashedApiKey } = await cryptoHash(SUPAGLUE_QUICKSTART_API_KEY!);
+  let hashedApiKey = '';
+  if (SUPAGLUE_QUICKSTART_API_KEY) {
+    ({ hashed: hashedApiKey } = await cryptoHash(SUPAGLUE_QUICKSTART_API_KEY));
+  }
 
   // Create application
   await prisma.application.upsert({
     where: {
       id: APPLICATION_ID,
     },
-    update: {},
+    update: {
+      name: 'My App',
+      config: {
+        api_key: hashedApiKey,
+        webhook: {},
+      },
+    },
     create: {
       id: APPLICATION_ID,
       name: 'My App',
       config: {
-        apiKey: hashedApiKey,
-        webhook: {
-          url: 'http://localhost:8080/webhook',
-          notifyOnSyncSuccess: true,
-          notifyOnSyncError: true,
-          notifyOnConnectionSuccess: true,
-          notifyOnConnectionError: true,
-          requestType: 'POST',
-        },
+        api_key: hashedApiKey,
+        webhook: {},
       },
     },
   });
@@ -193,18 +196,27 @@ async function seedSgUser() {
     where: {
       id: SG_USER_ID,
     },
-    update: {},
+    update: {
+      applicationId: APPLICATION_ID,
+      authType: 'username/password',
+      username: 'admin',
+      password: ADMIN_PASSWORD ?? 'admin',
+    },
     create: {
       id: SG_USER_ID,
       applicationId: APPLICATION_ID,
       authType: 'username/password',
       username: 'admin',
-      password: 'admin',
+      password: ADMIN_PASSWORD ?? 'admin',
     },
   });
 }
 
 async function seedCustomers() {
+  if (process.env.NODE_ENV === 'production') {
+    return;
+  }
+
   // Create customers
   await Promise.all(
     CUSTOMER_IDS.map((id, idx) =>
@@ -228,36 +240,42 @@ async function seedCustomers() {
 async function seedCRMIntegrations() {
   // Create integrations
   await Promise.all(
-    SUPPORTED_CRM_CONNECTIONS.map((_, idx) =>
-      prisma.integration.upsert({
+    SUPPORTED_CRM_CONNECTIONS.map(async (_, idx) => {
+      const create = {
+        id: INTEGRATION_IDS[idx],
+        applicationId: APPLICATION_ID,
+        category: 'crm',
+        providerName: SUPPORTED_CRM_CONNECTIONS[idx],
+        authType: 'oauth2',
+        config: {
+          providerAppId: OAUTH_APP_IDS[idx],
+          oauth: {
+            oauthScopes: OAUTH_SCOPES[idx]?.split(','),
+            credentials: encryptAsString(
+              JSON.stringify({
+                oauthClientId: OAUTH_CLIENT_IDS[idx],
+                oauthClientSecret: OAUTH_CLIENT_SECRETS[idx],
+              })
+            ),
+          },
+          sync: {
+            periodMs: SUPAGLUE_SYNC_PERIOD_MS,
+          },
+        },
+      };
+      // eslint-disable-next-line prefer-const
+      let { id: __, ...update } = create;
+      if (process.env.NODE_ENV === 'production') {
+        update = {} as any;
+      }
+      await prisma.integration.upsert({
         where: {
           providerName: SUPPORTED_CRM_CONNECTIONS[idx],
         },
-        update: {},
-        create: {
-          id: INTEGRATION_IDS[idx],
-          applicationId: APPLICATION_ID,
-          category: 'crm',
-          providerName: SUPPORTED_CRM_CONNECTIONS[idx],
-          authType: 'oauth2',
-          config: {
-            providerAppId: OAUTH_APP_IDS[idx],
-            oauth: {
-              oauthScopes: OAUTH_SCOPES[idx]?.split(','),
-              credentials: encryptAsString(
-                JSON.stringify({
-                  oauthClientId: OAUTH_CLIENT_IDS[idx],
-                  oauthClientSecret: OAUTH_CLIENT_SECRETS[idx],
-                })
-              ),
-            },
-            sync: {
-              periodMs: SUPAGLUE_SYNC_PERIOD_MS,
-            },
-          },
-        },
-      })
-    )
+        update,
+        create,
+      });
+    })
   );
 }
 
