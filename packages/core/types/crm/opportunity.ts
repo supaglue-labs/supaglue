@@ -53,6 +53,7 @@ type BaseOpportunityCreateParams = {
   name?: string | null;
   stage?: string | null;
   accountId?: string | null;
+  ownerId?: string | null;
 
   customFields?: CustomFields;
 };

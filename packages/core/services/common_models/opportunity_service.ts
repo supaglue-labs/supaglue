@@ -84,6 +84,18 @@ export class OpportunityService extends CommonModelBaseService {
     return crmAccount.remoteId;
   }
 
+  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
+    const crmUser = await this.prisma.crmUser.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
+    if (!crmUser) {
+      throw new NotFoundError(`User ${ownerId} not found`);
+    }
+    return crmUser.remoteId;
+  }
+
   public async create(
     customerId: string,
     connectionId: string,
@@ -95,6 +107,9 @@ export class OpportunityService extends CommonModelBaseService {
     if (createParams.accountId) {
       remoteCreateParams.accountId = await this.getAssociatedAccountRemoteId(createParams.accountId);
     }
+    if (createParams.ownerId) {
+      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
+    }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteOpportunity = await remoteClient.createOpportunity(remoteCreateParams);
     const opportunityModel = await this.prisma.crmOpportunity.create({
@@ -103,6 +118,7 @@ export class OpportunityService extends CommonModelBaseService {
         connectionId,
         ...remoteOpportunity,
         accountId: createParams.accountId,
+        ownerId: createParams.ownerId,
       },
     });
     return fromOpportunityModel(opportunityModel);
@@ -129,6 +145,9 @@ export class OpportunityService extends CommonModelBaseService {
     if (updateParams.accountId) {
       remoteUpdateParams.accountId = await this.getAssociatedAccountRemoteId(updateParams.accountId);
     }
+    if (updateParams.ownerId) {
+      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+    }
 
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteOpportunity = await remoteClient.updateOpportunity({
@@ -137,7 +156,7 @@ export class OpportunityService extends CommonModelBaseService {
     });
 
     const opportunityModel = await this.prisma.crmOpportunity.update({
-      data: { ...remoteOpportunity, accountId: updateParams.accountId },
+      data: { ...remoteOpportunity, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
       where: {
         id: updateParams.id,
       },

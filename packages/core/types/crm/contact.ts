@@ -42,6 +42,7 @@ type BaseContactCreateParams = {
   firstName?: string | null;
   lastName?: string | null;
   accountId?: string | null;
+  ownerId?: string | null;
   addresses?: Address[];
   emailAddresses?: EmailAddress[];
   phoneNumbers?: PhoneNumber[];

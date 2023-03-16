@@ -251,6 +251,7 @@ export const toHubspotContactCreateParams = (params: RemoteContactCreateParams):
   return {
     firstname: params.firstName ?? '',
     lastname: params.lastName ?? '',
+    hubspot_owner_id: params.ownerId ?? '',
     ...toHubspotEmailCreateParams(params.emailAddresses),
     ...toHubspotPhoneCreateParams(params.phoneNumbers),
     ...toHubspotAddressCreateParams(params.addresses),

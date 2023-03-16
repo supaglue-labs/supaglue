@@ -67,16 +67,33 @@ export class LeadService extends CommonModelBaseService {
     };
   }
 
+  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
+    const crmUser = await this.prisma.crmUser.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
+    if (!crmUser) {
+      throw new NotFoundError(`User ${ownerId} not found`);
+    }
+    return crmUser.remoteId;
+  }
+
   public async create(customerId: string, connectionId: string, createParams: LeadCreateParams): Promise<Lead> {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
+    const remoteCreateParams = { ...createParams };
+    if (createParams.ownerId) {
+      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
+    }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteLead = await remoteClient.createLead(createParams);
+    const remoteLead = await remoteClient.createLead(remoteCreateParams);
     const leadModel = await this.prisma.crmLead.create({
       data: {
         customerId,
         connectionId,
         ...remoteLead,
+        ownerId: createParams.ownerId,
       },
     });
     return fromLeadModel(leadModel);
@@ -95,14 +112,19 @@ export class LeadService extends CommonModelBaseService {
       throw new Error('Lead customerId does not match');
     }
 
+    const remoteUpdateParams = { ...updateParams };
+    if (updateParams.ownerId) {
+      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+    }
+
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteLead = await remoteClient.updateLead({
-      ...updateParams,
+      ...remoteUpdateParams,
       remoteId: foundLeadModel.remoteId,
     });
 
     const leadModel = await this.prisma.crmLead.update({
-      data: remoteLead,
+      data: { ...remoteLead, ownerId: updateParams.ownerId },
       where: {
         id: updateParams.id,
       },
