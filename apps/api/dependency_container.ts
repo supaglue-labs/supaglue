@@ -7,7 +7,7 @@ const TEMPORAL_ADDRESS =
   process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
     ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:${process.env.SUPAGLUE_TEMPORAL_PORT}`
     : process.env.SUPAGLUE_TEMPORAL_HOST
-    ? 'temporal:7233'
+    ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:7233`
     : 'temporal';
 
 type DependencyContainer = CoreDependencyContainer & {
