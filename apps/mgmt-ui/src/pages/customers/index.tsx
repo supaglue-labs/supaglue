@@ -2,6 +2,7 @@ import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages';
+import providerToIcon from '@/utils/providerToIcon';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -24,6 +25,45 @@ export default function Home() {
     setMobileOpen(!mobileOpen);
   };
 
+  // const columns: GridColDef[] = [
+  //   { field: 'id', headerName: 'ID', width: 300 },
+  //   { field: 'name', headerName: 'Name', width: 250 },
+  //   { field: 'email', headerName: 'Email', width: 250 },
+  //   {
+  //     field: 'connections',
+  //     headerName: 'Connections',
+  //     width: 300,
+  //     renderCell: (params) => {
+  //       return providerToIcon(params.value);
+  //     },
+  //   },
+  // ];
+
+  // const rows = customers.map((customer: any) => ({
+  //   id: customer.id,
+  //   email: customer.email,
+  //   name: customer.name,
+  //   connections: customer?.connections[0]?.providerName, // todo: show all connections
+  // }));
+
+  // const columns: GridColDef[] = [
+  //   { field: 'id', headerName: 'ID', width: 300 },
+  //   { field: 'name', headerName: 'Name', width: 250 },
+  //   { field: 'email', headerName: 'Email', width: 250 },
+  //   {
+  //     field: 'connections',
+  //     headerName: 'Connections',
+  //     width: 300,
+  //     renderCell: (params) => {
+  //       <>
+  //         {params.value.map((connection: any) => (
+  //           <span key={connection?.providerName}>{providerToIcon(connection.providerName)}</span>
+  //         ))}
+  //       </>;
+  //     },
+  //   },
+  // ];
+
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 300 },
     { field: 'name', headerName: 'Name', width: 250 },
@@ -32,15 +72,18 @@ export default function Home() {
       field: 'connections',
       headerName: 'Connections',
       width: 300,
+      renderCell: (params) => {
+        return params.value.map((connection: any) => providerToIcon(connection.providerName));
+      },
     },
   ];
+
   const rows = customers.map((customer: any) => ({
     id: customer.id,
     email: customer.email,
     name: customer.name,
-    connections: `${customer?.connections.length} connection(s)`,
+    connections: customer?.connections, // include the entire connections array
   }));
-
   return (
     <>
       <Head>
@@ -59,7 +102,7 @@ export default function Home() {
                 <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
               </Grid>
               {/* <Grid item xs={4}>
-              <MetricCard icon={<CloudUploadOutlined />} title="Total syncs" value={`${syncHistory.length} syncs`} />
+              <MetricCard icon={<CloudUploadOutlined />} value={`${syncHistory.length} syncs`} />
             </Grid> */}
               <Grid item xs={6}>
                 <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
