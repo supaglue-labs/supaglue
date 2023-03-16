@@ -42,7 +42,7 @@ const categories: {
       },
       {
         id: 'Configuration',
-        to: '/configuration/crm',
+        to: '/configuration/integrations/crm',
         icon: <Tune />,
         active: false,
       },

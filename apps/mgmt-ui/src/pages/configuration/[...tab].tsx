@@ -1,14 +1,75 @@
+import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPane';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages';
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Divider, Tab, Tabs, Typography } from '@mui/material';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import { useState } from 'react';
-import ConfigurationTabs from '../../components/configuration/VerticalTabs';
+import VerticalTabs from '../../components/configuration/VerticalTabs';
 
 export { getServerSideProps };
 
+type ConfigurationHeaderTab = {
+  label: string;
+  value: string;
+};
+const configurationHeaderTabs: ConfigurationHeaderTab[] = [
+  {
+    label: 'Integrations',
+    value: 'integrations',
+  },
+  {
+    label: 'API Keys',
+    value: 'api_keys',
+  },
+];
+
+interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`horizontal-tabpanel-${index}`}
+      aria-labelledby={`horizontal-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
 export default function Home() {
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { tab = [] } = router.query;
+  const [value, setValue] = React.useState(0);
+
+  React.useEffect(() => {
+    const tabIndex = configurationHeaderTabs.findIndex(
+      (configurationHeaderTab) => configurationHeaderTab.value === tab[0]
+    );
+    setValue(tabIndex);
+  }, [tab]);
+
+  const handleChange = async (event: React.SyntheticEvent, newValue: number) => {
+    let tab = configurationHeaderTabs[newValue].value;
+
+    // default to crm
+    if (newValue === 0) {
+      tab += '/crm';
+    }
+
+    await router.push(`/configuration/${tab}`);
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -26,19 +87,25 @@ export default function Home() {
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header
           tabs={
-            <Tabs value={0} textColor="inherit">
+            <Tabs value={value} textColor="inherit" onChange={handleChange}>
               <Tab label="Integrations" />
-              {/* <Tab label="API Keys" /> */}
+              <Tab label="API Key" />
             </Tabs>
           }
           title="Configuration"
           onDrawerToggle={handleDrawerToggle}
         />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          {/* <Typography variant="h5">Overview</Typography>
-          <Typography variant="subtitle1">List of connectors that have been added.</Typography>
-          <Divider className="my-4" /> */}
-          <ConfigurationTabs />
+          <Typography variant="h6">Overview</Typography>
+          {value === 0 && <Typography variant="subtitle2">List of integrations that have been added.</Typography>}
+          {value === 1 && <Typography variant="subtitle2">Manage your API keys.</Typography>}
+          <Divider className="my-4" />
+          <TabPanel value={value} index={0} className="w-full">
+            <VerticalTabs />
+          </TabPanel>
+          <TabPanel value={value} index={1} className="w-full">
+            <ApiKeyTabPanel />
+          </TabPanel>
         </Box>
       </Box>
     </>
