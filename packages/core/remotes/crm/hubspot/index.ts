@@ -191,7 +191,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         );
         return companies;
       } catch (e: any) {
-        logger.error(`Error encountered: ${e}`);
+        logger.error(e, 'Error encountered');
         throw e;
       }
     };
@@ -258,7 +258,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         );
         return deals;
       } catch (e: any) {
-        logger.error(`Error encountered: ${e}`);
+        logger.error(e, 'Error encountered');
         throw e;
       }
     };
@@ -335,7 +335,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         );
         return contacts;
       } catch (e: any) {
-        logger.error(`Error encountered: ${e}`);
+        logger.error(e, 'Error encountered');
         throw e;
       }
     };
@@ -428,7 +428,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         );
         return owners;
       } catch (e: any) {
-        logger.error(`Error encountered: ${e}`);
+        logger.error(e, 'Error encountered');
         throw e;
       }
     };
