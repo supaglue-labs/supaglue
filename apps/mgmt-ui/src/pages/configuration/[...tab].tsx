@@ -1,7 +1,7 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPane';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages';
-import { Box, Divider, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -96,10 +96,6 @@ export default function Home() {
           onDrawerToggle={handleDrawerToggle}
         />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          <Typography variant="h6">Overview</Typography>
-          {value === 0 && <Typography variant="subtitle2">List of integrations that have been added.</Typography>}
-          {value === 1 && <Typography variant="subtitle2">Manage your API keys.</Typography>}
-          <Divider className="my-4" />
           <TabPanel value={value} index={0} className="w-full">
             <VerticalTabs />
           </TabPanel>
