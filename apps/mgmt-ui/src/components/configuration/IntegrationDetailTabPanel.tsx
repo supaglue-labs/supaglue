@@ -27,10 +27,18 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
 
   useEffect(() => {
-    setClientId(integration?.config?.oauth?.credentials?.oauthClientId ?? '');
-    setClientSecret(integration?.config?.oauth?.credentials?.oauthClientSecret ?? '');
-    setOauthScopes(integration?.config?.oauth?.oauthScopes?.join(',') ?? '');
-    setSyncPeriodSecs(integration?.config.sync?.periodMs / 1000 ?? 3600);
+    if (!clientId) {
+      setClientId(integration?.config?.oauth?.credentials?.oauthClientId ?? '');
+    }
+    if (!clientSecret) {
+      setClientSecret(integration?.config?.oauth?.credentials?.oauthClientSecret ?? '');
+    }
+    if (!oauthScopes) {
+      setOauthScopes(integration?.config?.oauth?.oauthScopes?.join(',') ?? '');
+    }
+    if (!syncPeriodSecs) {
+      setSyncPeriodSecs(integration?.config.sync?.periodMs / 1000 ?? 3600);
+    }
   }, [integration]);
 
   return (
