@@ -27,7 +27,7 @@ export class ApplicationService {
     const application = await this.#prisma.application.findMany({
       where: {
         config: {
-          path: ['api_key'],
+          path: ['apiKey'],
           equals: hashedApiKey,
         },
       },
@@ -72,7 +72,6 @@ export class ApplicationService {
   public async createApiKey(id: string, application: ApplicationUpdateParams): Promise<Application> {
     const apiKey = generateApiKey();
     const { hashed: hashedApiKey } = await cryptoHash(apiKey);
-
     const updatedApplication = await this.#prisma.application.update({
       where: { id },
       data: {
@@ -84,7 +83,13 @@ export class ApplicationService {
       },
     });
 
-    return fromApplicationModel(updatedApplication);
+    return fromApplicationModel({
+      ...updatedApplication,
+      config: {
+        ...application.config,
+        apiKey, // return the unhashed api key upon creation
+      },
+    });
   }
 
   public async deleteApiKey(id: string, application: ApplicationUpdateParams): Promise<Application> {

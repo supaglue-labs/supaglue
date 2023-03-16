@@ -127,31 +127,29 @@ export default function VerticalTabs() {
   const { integrations: existingIntegrations = [] } = useIntegrations();
 
   const targetIntegration = existingIntegrations.find(
-    (existingIntegration: Integration) => existingIntegration.providerName === tab[1]
+    (existingIntegration: Integration) => existingIntegration.providerName === tab[2]
   );
 
   const targetIntegrationCardInfo = integrationCardsInfo.find(
-    (integrationCardInfo) => integrationCardInfo.providerName === tab[1]
+    (integrationCardInfo) => integrationCardInfo.providerName === tab[2]
   );
 
   return (
-    <Box>
-      <TabPanel value={value} index={0} className="w-full">
-        {tab.length === 1 && (
-          <IntegrationTabPanel
-            status="available"
-            integrationCardsInfo={integrationCardsInfo}
-            existingIntegrations={existingIntegrations}
-          />
-        )}
-        {tab.length === 2 && targetIntegrationCardInfo && (
-          <IntegrationDetailTabPanel
-            status="available"
-            integration={targetIntegration}
-            integrationCardInfo={targetIntegrationCardInfo}
-          />
-        )}
-      </TabPanel>
-    </Box>
+    <TabPanel value={value} index={0} className="w-full">
+      {tab.length === 2 && (
+        <IntegrationTabPanel
+          status="available"
+          integrationCardsInfo={integrationCardsInfo}
+          existingIntegrations={existingIntegrations}
+        />
+      )}
+      {tab.length === 3 && targetIntegrationCardInfo && (
+        <IntegrationDetailTabPanel
+          status="available"
+          integration={targetIntegration}
+          integrationCardInfo={targetIntegrationCardInfo}
+        />
+      )}
+    </TabPanel>
   );
 }
