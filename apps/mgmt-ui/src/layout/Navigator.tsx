@@ -6,13 +6,13 @@ import {
   Divider,
   Drawer,
   DrawerProps,
+  Link,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { useRouter } from 'next/router';
 
 type Category = {
   id: string;
@@ -90,7 +90,6 @@ const itemCategory = {
 
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
-  const router = useRouter();
 
   return (
     <Drawer variant="permanent" {...other}>
@@ -104,16 +103,12 @@ export default function Navigator(props: DrawerProps) {
             </ListItem>
             {children.map(({ id: childId, icon, active, to }) => (
               <ListItem disablePadding key={childId}>
-                <ListItemButton
-                  selected={active}
-                  sx={item}
-                  onClick={() => {
-                    router.push(to);
-                  }}
-                >
-                  <ListItemIcon>{icon}</ListItemIcon>
-                  <ListItemText>{childId}</ListItemText>
-                </ListItemButton>
+                <Link href={to} sx={{ width: '100%', 'text-decoration': 'none' }}>
+                  <ListItemButton selected={active} sx={item}>
+                    <ListItemIcon>{icon}</ListItemIcon>
+                    <ListItemText>{childId}</ListItemText>
+                  </ListItemButton>
+                </Link>
               </ListItem>
             ))}
             <Divider sx={{ mt: 2 }} />
