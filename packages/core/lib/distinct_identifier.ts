@@ -29,5 +29,5 @@ if (fs.existsSync(configPath)) {
   fs.writeFileSync(configPath, JSON.stringify({ distinctIdentifier }));
 }
 
-// The distinctIdentifier "session" lives from the time a developer runs docker compose to the time that they delete `session.json` from their home directory on the filesystem. Locally, tt persists across docker compose up/down/restart and updates.
+// The distinctIdentifier "session" lives from the time a developer runs docker compose to the time that they delete `session.json` from their home directory on the filesystem. Locally, it persists across docker compose up/down/restart and updates.
 export const distinctId = distinctIdentifier && `session:${distinctIdentifier}`;
