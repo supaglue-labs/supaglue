@@ -161,18 +161,6 @@ export async function cryptoHash(text: string): Promise<{ original: string; hash
 }
 
 async function seedApplication() {
-  let webhook = {};
-
-  if (process.env.NODE_ENV === 'development') {
-    webhook = {
-      url: 'http://localhost:8080/webhook',
-      notifyOnSyncSuccess: true,
-      notifyOnSyncError: true,
-      notifyOnConnectionSuccess: true,
-      notifyOnConnectionError: true,
-      requestType: 'POST',
-    };
-  }
   // Create application
   await prisma.application.upsert({
     where: {
@@ -182,7 +170,7 @@ async function seedApplication() {
       name: 'My App',
       config: {
         api_key: '',
-        webhook,
+        webhook: {},
       },
     },
     create: {
@@ -190,7 +178,7 @@ async function seedApplication() {
       name: 'My App',
       config: {
         api_key: '',
-        webhook,
+        webhook: {},
       },
     },
   });
