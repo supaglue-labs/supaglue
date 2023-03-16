@@ -221,8 +221,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   public async listOpportunities(): Promise<Readable> {
     const passThrough = new PassThrough({ objectMode: true });
 
-    throw new Error('listopps err');
-
     (async () => {
       let after = undefined;
       do {
