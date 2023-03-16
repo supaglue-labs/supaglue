@@ -1,6 +1,6 @@
 import type { Customer as CustomerModel } from '@supaglue/db';
 import { Connection as ConnectionModel } from '@supaglue/db';
-import { ConnectionUnsafe } from '../types/connection';
+import { ConnectionSafe } from '../types/connection';
 
 export type CustomerModelExpanded = CustomerModel & {
   connections?: ConnectionModel[] | null;
@@ -15,7 +15,10 @@ export type BaseCustomer = {
 
 export type Customer = BaseCustomer & {
   id: string;
-  connections?: ConnectionUnsafe[];
+};
+
+export type CustomerExpandedSafe = Customer & {
+  connections: ConnectionSafe[];
 };
 
 export type BaseCustomerCreateParams = BaseCustomer;

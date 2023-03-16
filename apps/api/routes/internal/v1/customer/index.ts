@@ -10,7 +10,6 @@ import {
   GetCustomerResponse,
   GetCustomersPathParams,
   GetCustomersRequest,
-  GetCustomersResponse,
   UpsertCustomerPathParams,
   UpsertCustomerRequest,
   UpsertCustomerResponse,
@@ -26,10 +25,11 @@ export default function init(app: Router): void {
   customerRouter.get(
     '/',
     async (
-      req: Request<GetCustomersPathParams, GetCustomersResponse, GetCustomersRequest>,
-      res: Response<GetCustomersResponse>
+      req: Request<GetCustomersPathParams, any, GetCustomersRequest>,
+      res: Response // TODO: this response differs from the public /mgmt because we return a joined relation.
+      // We need to decide if we want openapi for internal endpoints or use something like tRPC or GraphQL
     ) => {
-      const customers = await customerService.list();
+      const customers = await customerService.listExpandedSafe();
       return res.status(200).send(customers.map(snakecaseKeys));
     }
   );
