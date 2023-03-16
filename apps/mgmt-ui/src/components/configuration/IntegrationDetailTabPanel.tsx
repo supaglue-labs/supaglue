@@ -90,7 +90,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
             variant="outlined"
             type="number"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setSyncPeriodSecs(parseInt(event.target.value, 3600));
+              setSyncPeriodSecs(parseInt(event.target.value, 10));
             }}
           />
         </Stack>
