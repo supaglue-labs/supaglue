@@ -17,6 +17,8 @@ export default function AccountMenu() {
   };
   const handleClose = async () => {
     setAnchorEl(null);
+  };
+  const handleLogout = async () => {
     await signOut();
   };
   return (
@@ -89,7 +91,7 @@ export default function AccountMenu() {
           </ListItemIcon>
           Settings
         </MenuItem> */}
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
