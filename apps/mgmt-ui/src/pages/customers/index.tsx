@@ -25,45 +25,6 @@ export default function Home() {
     setMobileOpen(!mobileOpen);
   };
 
-  // const columns: GridColDef[] = [
-  //   { field: 'id', headerName: 'ID', width: 300 },
-  //   { field: 'name', headerName: 'Name', width: 250 },
-  //   { field: 'email', headerName: 'Email', width: 250 },
-  //   {
-  //     field: 'connections',
-  //     headerName: 'Connections',
-  //     width: 300,
-  //     renderCell: (params) => {
-  //       return providerToIcon(params.value);
-  //     },
-  //   },
-  // ];
-
-  // const rows = customers.map((customer: any) => ({
-  //   id: customer.id,
-  //   email: customer.email,
-  //   name: customer.name,
-  //   connections: customer?.connections[0]?.providerName, // todo: show all connections
-  // }));
-
-  // const columns: GridColDef[] = [
-  //   { field: 'id', headerName: 'ID', width: 300 },
-  //   { field: 'name', headerName: 'Name', width: 250 },
-  //   { field: 'email', headerName: 'Email', width: 250 },
-  //   {
-  //     field: 'connections',
-  //     headerName: 'Connections',
-  //     width: 300,
-  //     renderCell: (params) => {
-  //       <>
-  //         {params.value.map((connection: any) => (
-  //           <span key={connection?.providerName}>{providerToIcon(connection.providerName)}</span>
-  //         ))}
-  //       </>;
-  //     },
-  //   },
-  // ];
-
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 300 },
     { field: 'name', headerName: 'Name', width: 250 },
@@ -82,7 +43,7 @@ export default function Home() {
     id: customer.id,
     email: customer.email,
     name: customer.name,
-    connections: customer?.connections, // include the entire connections array
+    connections: customer?.connections,
   }));
   return (
     <>
