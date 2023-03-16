@@ -121,7 +121,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
                       oauthScopes: oauthScopes.split(','),
                     },
                     sync: {
-                      periodMs: syncPeriodSecs * 1000,
+                      periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : 3600,
                     },
                   },
                 };
