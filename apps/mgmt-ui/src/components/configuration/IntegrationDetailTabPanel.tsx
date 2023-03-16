@@ -88,8 +88,9 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
             size="small"
             label="Sync every (in seconds)"
             variant="outlined"
+            type="number"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setSyncPeriodSecs(parseInt(event.target.value));
+              setSyncPeriodSecs(parseInt(event.target.value, 3600));
             }}
           />
         </Stack>
