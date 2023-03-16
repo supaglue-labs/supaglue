@@ -96,16 +96,33 @@ export class AccountService extends CommonModelBaseService {
     };
   }
 
+  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
+    const crmUser = await this.prisma.crmUser.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
+    if (!crmUser) {
+      throw new NotFoundError(`User ${ownerId} not found`);
+    }
+    return crmUser.remoteId;
+  }
+
   public async create(customerId: string, connectionId: string, createParams: AccountCreateParams): Promise<Account> {
     // TODO: We may want to have better guarantees that we create the record in both our DB
     // and the external integration.
+    const remoteCreateParams = { ...createParams };
+    if (createParams.ownerId) {
+      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
+    }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteAccount = await remoteClient.createAccount(createParams);
+    const remoteAccount = await remoteClient.createAccount(remoteCreateParams);
     const accountModel = await this.prisma.crmAccount.create({
       data: {
         customerId,
         connectionId,
         ...remoteAccount,
+        ownerId: createParams.ownerId,
       },
     });
     return fromAccountModel(accountModel);
@@ -124,14 +141,18 @@ export class AccountService extends CommonModelBaseService {
       throw new Error('Account customerId does not match');
     }
 
+    const remoteUpdateParams = { ...updateParams };
+    if (updateParams.ownerId) {
+      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+    }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteAccount = await remoteClient.updateAccount({
-      ...updateParams,
+      ...remoteUpdateParams,
       remoteId: foundAccountModel.remoteId,
     });
 
     const accountModel = await this.prisma.crmAccount.update({
-      data: remoteAccount,
+      data: { ...remoteAccount, ownerId: updateParams.ownerId },
       where: {
         id: updateParams.id,
       },

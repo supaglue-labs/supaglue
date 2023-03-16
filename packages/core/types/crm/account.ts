@@ -47,6 +47,8 @@ type BaseAccountCreateParams = {
   addresses?: Address[];
   phoneNumbers?: PhoneNumber[];
 
+  ownerId?: string | null;
+
   // TODO: Need extra permissions to create/update this derived field in SF
   // lastActivityAt?: Date | null;
   customFields?: CustomFields;
