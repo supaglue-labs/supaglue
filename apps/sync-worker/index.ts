@@ -72,6 +72,8 @@ async function run() {
 
   const worker = await Worker.create({
     workflowsPath: require.resolve('@supaglue/sync-workflows/workflows'),
+    // When interceptors.activityInbound is not registered, Temporal by default registers
+    // ActivityInboundLogInterceptor and WorkflowInboundLogInterceptor
     activities: createActivities(getDependencyContainer()),
     taskQueue: SYNC_TASK_QUEUE,
     connection,
