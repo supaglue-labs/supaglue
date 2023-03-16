@@ -173,7 +173,7 @@ async function seedApplication() {
       id: APPLICATION_ID,
       name: 'My App',
       config: {
-        api_key: hashedApiKey,
+        apiKey: hashedApiKey,
         webhook: {
           url: 'http://localhost:8080/webhook',
           notifyOnSyncSuccess: true,

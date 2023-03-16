@@ -39,10 +39,10 @@ export default function IntegrationCard(props: { integration: Integration; integ
           <Button
             variant="text"
             onClick={() => {
-              router.push(`/configuration/${category}/${providerName}`);
+              router.push(`/configuration/integrations/${category}/${providerName}`);
             }}
           >
-            View
+            Configure
           </Button>
         </Grid>
       </Box>
