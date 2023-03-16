@@ -53,6 +53,7 @@ const {
   DEV_CAPSULE_APP_ID,
   SUPAGLUE_API_ENCRYPTION_SECRET,
   ADMIN_PASSWORD,
+  SUPAGLUE_QUICKSTART_API_KEY,
 } = process.env;
 
 const SG_USER_ID = 'd56b851b-5a36-4480-bc43-515d677f46e3';
@@ -161,6 +162,11 @@ export async function cryptoHash(text: string): Promise<{ original: string; hash
 }
 
 async function seedApplication() {
+  let hashedApiKey = '';
+  if (SUPAGLUE_QUICKSTART_API_KEY) {
+    ({ hashed: hashedApiKey } = await cryptoHash(SUPAGLUE_QUICKSTART_API_KEY));
+  }
+
   // Create application
   await prisma.application.upsert({
     where: {
@@ -169,7 +175,7 @@ async function seedApplication() {
     update: {
       name: 'My App',
       config: {
-        api_key: '',
+        api_key: hashedApiKey,
         webhook: {},
       },
     },
@@ -177,7 +183,7 @@ async function seedApplication() {
       id: APPLICATION_ID,
       name: 'My App',
       config: {
-        api_key: '',
+        api_key: hashedApiKey,
         webhook: {},
       },
     },
