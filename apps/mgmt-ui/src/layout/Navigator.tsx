@@ -6,13 +6,14 @@ import {
   Divider,
   Drawer,
   DrawerProps,
-  Link,
+  Link as MUILink,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import NextLink from 'next/link';
 
 type Category = {
   id: string;
@@ -103,12 +104,12 @@ export default function Navigator(props: DrawerProps) {
             </ListItem>
             {children.map(({ id: childId, icon, active, to }) => (
               <ListItem disablePadding key={childId}>
-                <Link href={to} sx={{ width: '100%', 'text-decoration': 'none' }}>
+                <MUILink href={to} component={NextLink} sx={{ width: '100%', 'text-decoration': 'none' }}>
                   <ListItemButton selected={active} sx={item}>
                     <ListItemIcon>{icon}</ListItemIcon>
                     <ListItemText>{childId}</ListItemText>
                   </ListItemButton>
-                </Link>
+                </MUILink>
               </ListItem>
             ))}
             <Divider sx={{ mt: 2 }} />
