@@ -1,0 +1,21 @@
+{{- if .Values.managedCertificate.enabled -}}
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: {{ default "supaglue-api-cert" .Values.managedCertificate.name }}
+  labels:
+    app.kubernetes.io/name: {{ include "supaglue.name" . }}
+    helm.sh/chart: {{ include "supaglue.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  domains:
+  {{- with .Values.api.ingressHosts }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.management.ingressHosts }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{end -}}

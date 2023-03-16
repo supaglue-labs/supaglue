@@ -1,0 +1,31 @@
+{{- if $.Values.management.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "supaglue.componentname" (list . "management") }}
+  labels:
+    app.kubernetes.io/name: {{ include "supaglue.name" . }}
+    helm.sh/chart: {{ include "supaglue.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: management
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+  {{- if .Values.management.service.annotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.management.service.annotations "context" .) | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.management.service.type }}
+  ports:
+    - port: {{ .Values.management.service.port }}
+      targetPort: {{ .Values.management.service.port }}
+      protocol: TCP
+      name: http
+      {{- if hasKey .Values.management.service "nodePort" }}
+      nodePort: {{ .Values.management.service.nodePort }}
+      {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "supaglue.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: management
+{{- end }}

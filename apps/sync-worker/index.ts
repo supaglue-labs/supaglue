@@ -32,6 +32,13 @@ if (sentryEnabled) {
   });
 }
 
+const TEMPORAL_ADDRESS =
+  process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
+    ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:${process.env.SUPAGLUE_TEMPORAL_PORT}`
+    : process.env.SUPAGLUE_TEMPORAL_HOST
+    ? 'temporal:7233'
+    : 'temporal';
+
 async function run() {
   // pino expects errors to be placed under the `err` key. We're doing mapping here
   // instead of configuring it in `logger.ts` because we may use the pino logger
@@ -67,7 +74,7 @@ async function run() {
   });
 
   const connection = await NativeConnection.connect({
-    address: 'temporal',
+    address: TEMPORAL_ADDRESS,
   });
 
   const worker = await Worker.create({

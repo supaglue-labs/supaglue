@@ -1,3 +1,4 @@
+import { schemaPrefix } from '@supaglue/db';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
@@ -56,8 +57,7 @@ export class UserService extends CommonModelBaseService {
     customerId: string,
     remoteUsersReadable: Readable
   ): Promise<number> {
-    // TODO: Shouldn't be hard-coding the DB schema here.
-    const table = 'api.crm_users';
+    const table = `${schemaPrefix}crm_users`;
     const tempTable = 'crm_users_temp';
     const columnsWithoutId = [
       'remote_id',
