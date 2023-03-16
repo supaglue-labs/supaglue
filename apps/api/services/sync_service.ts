@@ -45,7 +45,8 @@ export class SyncService {
           intervals: [
             {
               every: syncPeriodMs,
-              offset: 0,
+              // so that not everybody is refreshing and hammering the DB at the same time
+              offset: Math.random() * syncPeriodMs,
             },
           ],
         },
