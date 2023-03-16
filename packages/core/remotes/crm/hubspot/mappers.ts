@@ -228,6 +228,7 @@ export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams):
     website: params.website ?? '',
     numberofemployees: params.numberOfEmployees?.toString() ?? '',
     phone: phoneParams.phone, // only primary phone is supported for hubspot accounts
+    hubspot_owner_id: params.ownerId ?? '',
     ...toHubspotAddressCreateParams(params.addresses),
     ...params.customFields,
   };
@@ -242,6 +243,7 @@ export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreate
     dealname: params.name ?? '',
     description: params.description ?? '',
     dealstage: params.stage ?? '',
+    hubspot_owner_id: params.ownerId ?? '',
     ...params.customFields,
   };
 };
