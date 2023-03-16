@@ -1,0 +1,155 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+
+# Getting Started
+
+Use this guide to get up and running with Supaglue with your application.
+
+Here's a quick overview of the steps:
+
+1. Self-host Supaglue on your infrastructure.
+2. Enable connectors you want to offer to your customers.
+3. Obtain your Supaglue API key.
+4. Create a customer.
+5. Add an Embedded Link in your application.
+6. As a mock customer: OAuth with a provider to create a connection.
+7. Make API calls.
+
+### 1. Host the Supaglue platform
+
+**Cloud:**
+Interested in a cloud version? [Sign up here](https://form.typeform.com/to/jv9ucMZR).
+
+**Self-host:**
+We've provided a Helm Chart so you can self-host Supaglue on your infrastructure. You can find the Helm Chart [here](#) and a guide for [GCP here](#).
+
+Throughout this guide we'll reference the Backend API domain as `{BACKEND_HOST}` and Management Portal domain as `{MANAGEMENT_HOST}`. If you're running Supaglue locally, these will be `http://localhost:8080` and `http://localhost:3000` respectively.
+
+### 2. Enable connectors you want to offer to your customers
+
+Navigate to `{MANAGEMENT_HOST}` and login with the following credentials:
+
+- username: `admin`
+- password: `admin` (you should change this)
+
+Click on the "Configurations" tab to configure the connectors you want to offer your customers:
+
+<BrowserWindow url="http://localhost:3000/configuration/crm">
+
+![image](/img/configurations-ui.png)
+
+</BrowserWindow>
+
+Click on "Configure" and enter OAuth2-related credentials for your Hubspot or Salesforce Connected App.
+
+<BrowserWindow url="http://localhost:3000/configuration/crm/salesforce">
+
+![image](/img/configuration-ui.png)
+
+</BrowserWindow>
+
+You can obtain the credentials by following these guides:
+
+- [Salesforce](#)
+- [Hubspot](#)
+
+### 3. Obtain your Supaglue API key
+
+Next, you will need an API key to make API calls to Supaglue. You can use the Management Portal to obtain an API key. In the Management Portal, click on the "Configuration" tab in the sidebar and then the "API Keys" tab in the header.
+
+![image](/img/configuration-api-key.png)
+
+Click on the "Regenerate" button and safely store the API key. Note: You will not be able to see it again unless you rotate it by regenerating a new key.
+
+### 4. Create a customer
+
+Use the [`Management API's Create Customer`](/api/mgmt#tag/Customers/operation/createCustomer) to create customers. A customer is an end-user in your application. You can create a customer when they signup for your application or update their profile in your application. You can also backfill your existing end-users by running a script hitting this endpoint.
+
+You will need four pieces of information when hitting this endpoint:
+
+- **external_identifier (unique)**: the primary key you use in your application to uniquely identify this customer.
+- **application_id**: your Supaglue application id: `a4398523-03a2-42dd-9681-c91e3e2efaf4`.
+- **name**: the full name of the customer.
+- **email**: the email associated with the customer.
+
+Note: this endpoint is idempotent.
+
+Once a customer has been created, save its Supaglue ID onto your customer's blob in your application. You will need to access this for using an Embedded Link below.
+
+### 5. Add an Embedded Link in your application
+
+In your frontend application, add an [Embedded Link](/embedded-links) which is a HTTP redirect link that will allow a customer to connect their third-party CRM to your application using Supaglue. The link looks like:
+
+`{PROTOCOL}{DOMAIN}`/oauth/connect?customerId=`{CUSTOMER_ID}`&providerName=`{PROVIDER_NAME}`&returnUrl=`{RETURN_URL}`
+
+- **{PROTOCOL}**: `http://` if running locally or `https://` if hosted in the cloud
+- **{DOMAIN}**: the domain in which your Supaglue Backend API is hosted, e.g. `localhost:8080` if running locally
+- **{CUSTOMER_ID}**: the Supaglue customer ID (from step 5 above) that is associated with the logged-in end-user in your application
+- **{PROVIDER_NAME}**: this name of the third-party CRM (e.g. `salesforce` or `hubspot`) you want customers to create a connection for
+- **{RETURN_URL}**: where customers should be redirected after a successful OAuth login
+
+You can add an Embedded Link to any UI component in your application.
+
+### 6. As a mock customer: install your CRM Connected App
+
+Simulate a customer installing your CRM Connected App by clicking on the Embedded Link you added in step 5 in your application. As an alternative, you can construct the URL and navigate to it in your browser.
+
+You will be prompted to login to your CRM and authorize Supaglue to access your CRM data based on the scopes declared in Step 2 above.
+
+Upon a successful login, the mock customer's CRM objects (Account, Opportunity, Lead, Contact, User), will begin to sync to your Supaglue instance every fifteen minutes.
+
+You can use the [CRM API's Sync-History](/api/crm#tag/Sync/operation/getSyncHistory) to check the status of the syncs.
+
+```bash
+curl {BACKEND_HOST}/crm/v1/sync-history \
+  -H 'x-api-key: {API_KEY}' \
+  -H 'x-customer-id: {CUSTOMER_ID}' \
+  -H 'x-provider-name: {PROVIDER_NAME}'
+```
+
+- **{BACKEND_HOST}**: `http://localhost:8080` if running locally or the domain in which your Supaglue Backend API is hosted
+- **{API_KEY}**: API Key from Step 3
+- **{CUSTOMER_ID}**: Supaglue customer ID (a UUID) from Step 4
+- **{PROVIDER_NAME}**: third-party CRM name (`hubspot` or `salesforce`) from Step 2
+
+### 7. Make API calls
+
+Once syncs have completed, you can make API calls to Supaglue to access the customer's CRM objects. The following example curl lists all customer accounts:
+
+```bash
+curl {BACKEND_HOST}/crm/v1/accounts \
+  -H 'x-api-key: {API_KEY}' \
+  -H 'x-customer-id: {CUSTOMER_ID}' \
+  -H 'x-provider-name: {PROVIDER_NAME}'
+```
+
+View the complete [CRM API reference](/api/crm) to view all endpoints.
+
+# Advanced
+
+### Filtering
+
+Accounts can be [filtered by website](/api/crm#tag/Accounts/operation/searchAccounts).
+
+Contacts can be [filtered by email](/api/crm#tag/Contacts/operation/searchContacts)
+
+### Writes
+
+You can perform POST and PATCH on Accounts, Contacts, Leads, and Opportunities. See the [CRM API reference](/api/crm) for more details.
+
+### Pagination
+
+On the "List" CRM API endpoints, if you specify `page_size`, the response will include `next` and `previous` cursor values for you to retrieve the next and previous pages of results. Pass these values into the `cursor` query parameter to retrieve the next or previous page of results.
+
+### Passthrough
+
+_Docs to be added..._
+
+### Custom fields
+
+_Docs to be added..._

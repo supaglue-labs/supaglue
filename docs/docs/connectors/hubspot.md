@@ -13,7 +13,7 @@ Status: Alpha
 | Reads: Incremental refresh | No        |
 | Creates                    | Yes       |
 | Updates                    | Yes       |
-| Handles rate limits        | No        |
+| Handles rate limits        | Yes       |
 
 Supported object types:
 
