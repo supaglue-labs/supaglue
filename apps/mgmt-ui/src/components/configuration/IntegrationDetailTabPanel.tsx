@@ -21,6 +21,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
   const [clientId, setClientId] = useState('');
   const [clientSecret, setClientSecret] = useState('');
   const [oauthScopes, setOauthScopes] = useState('');
+  const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const router = useRouter();
 
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
@@ -29,6 +30,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
     setClientId(integration?.config?.oauth?.credentials?.oauthClientId);
     setClientSecret(integration?.config?.oauth?.credentials?.oauthClientSecret);
     setOauthScopes(integration?.config?.oauth?.oauthScopes?.join(','));
+    setSyncPeriodSecs(integration?.config.sync?.periodMs / 1000);
   }, [integration]);
 
   return (
@@ -78,6 +80,20 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
             }}
           />
         </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Sync frequency</Typography>
+          <TextField
+            value={syncPeriodSecs}
+            size="small"
+            label="Sync every (in seconds)"
+            variant="outlined"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setSyncPeriodSecs(parseInt(event.target.value));
+            }}
+          />
+        </Stack>
+
         <Stack direction="row" className="gap-2 justify-between">
           <Stack direction="row" className="gap-2">
             <Button
@@ -105,7 +121,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
                       oauthScopes: oauthScopes.split(','),
                     },
                     sync: {
-                      periodMs: 60 * 60 * 1000, // TODO: add input field for this
+                      periodMs: syncPeriodSecs * 1000,
                     },
                   },
                 };
@@ -115,7 +131,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
 
                 updateRemoteIntegration(applicationId, newIntegration);
                 mutate(updatedIntegrations, false);
-                router.push(`/configuration/${newIntegration.category}`);
+                router.push(`/configuration/integrations/${newIntegration.category}`);
               }}
             >
               Save
