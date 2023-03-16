@@ -8,8 +8,6 @@ import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
 // import ZendeskSellIcon from '@/assets/connector_icons/zendesk_sell.png';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -35,16 +33,15 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
     providerName: 'salesforce',
     category: 'crm',
     status: 'available',
-    description:
-      'CRM software solutions and enterprise cloud computing from Salesforce, the leader in customer relationship management (CRM) and PaaS. Free 30 day trial.',
+    description: 'Configure your Salesforce integration.',
   },
   {
     icon: <Image alt="hubspot" src={HubspotIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Hubspot',
+    name: 'HubSpot',
     providerName: 'hubspot',
     category: 'crm',
     status: 'available',
-    description: 'Hubspot is your all-in-one stop for all of your marketing software needs.',
+    description: 'Configure your HubSpot integration.',
   },
   // {
   //   icon: <Image alt="pipedrive" src={PipedriveIcon} width={ICON_SIZE} height={ICON_SIZE} />,
@@ -115,16 +112,6 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-type ConfigurationTab = {
-  label: string;
-  value: string;
-};
-const configurationTabs: ConfigurationTab[] = [
-  {
-    label: 'CRM API',
-    value: 'crm',
-  },
-];
 
 function a11yProps(index: number) {
   return {
@@ -139,15 +126,6 @@ export default function VerticalTabs() {
   const [value, setValue] = React.useState(0);
   const { integrations: existingIntegrations = [] } = useIntegrations();
 
-  React.useEffect(() => {
-    const tabIndex = configurationTabs.findIndex((configurationTab) => configurationTab.value === tab[0]);
-    setValue(tabIndex);
-  }, [tab]);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    router.push(`/configuration/${configurationTabs[newValue].value}`);
-  };
-
   const targetIntegration = existingIntegrations.find(
     (existingIntegration: Integration) => existingIntegration.providerName === tab[1]
   );
@@ -157,30 +135,7 @@ export default function VerticalTabs() {
   );
 
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        bgcolor: 'background.paper',
-        display: 'flex',
-        height: 'full',
-      }}
-    >
-      <Tabs
-        orientation="vertical"
-        variant="scrollable"
-        value={value}
-        onChange={handleChange}
-        aria-label="Vertical tabs example"
-        sx={{
-          borderRight: 1,
-          borderColor: 'divider',
-          flexShrink: 0,
-        }}
-      >
-        {configurationTabs.map((configurationTab, i) => (
-          <Tab key={configurationTab.value} label={configurationTab.label} {...a11yProps(i)} />
-        ))}
-      </Tabs>
+    <Box>
       <TabPanel value={value} index={0} className="w-full">
         {tab.length === 1 && (
           <IntegrationTabPanel
