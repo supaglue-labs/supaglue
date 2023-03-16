@@ -1,19 +1,31 @@
-import { Customer, CustomerModelExpanded } from '../types/customer';
-import { fromConnectionModelToConnectionUnsafe } from './connection';
+import type { Customer as CustomerModel } from '@supaglue/db';
+import { Customer, CustomerExpandedSafe, CustomerModelExpanded } from '../types/customer';
+import { fromConnectionModelToConnectionSafe } from './connection';
 
-export const fromCustomerModel = (
-  { id, applicationId, externalIdentifier, name, email, connections }: CustomerModelExpanded,
-  includeRelations = false
-): Customer => {
+export const fromCustomerModel = ({ id, applicationId, externalIdentifier, name, email }: CustomerModel): Customer => {
   return {
     id,
     applicationId,
     externalIdentifier,
     name,
     email,
-    connections:
-      includeRelations && connections
-        ? connections.map((connection) => fromConnectionModelToConnectionUnsafe(connection))
-        : undefined,
+  };
+};
+
+export const fromCustomerModelExpandedUnsafe = ({
+  id,
+  applicationId,
+  externalIdentifier,
+  name,
+  email,
+  connections,
+}: CustomerModelExpanded): CustomerExpandedSafe => {
+  return {
+    id,
+    applicationId,
+    externalIdentifier,
+    name,
+    email,
+    connections: connections ? connections.map((connection) => fromConnectionModelToConnectionSafe(connection)) : [],
   };
 };
