@@ -193,6 +193,8 @@ export interface components {
       website?: string | null;
       addresses?: components["schemas"]["addresses"];
       phone_numbers?: components["schemas"]["phone_numbers"];
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     contact: {
@@ -237,6 +239,8 @@ export interface components {
       addresses?: components["schemas"]["addresses"];
       email_addresses?: components["schemas"]["email_addresses"];
       phone_numbers?: components["schemas"]["phone_numbers"];
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     lead: {
@@ -293,6 +297,8 @@ export interface components {
       title?: string;
       email_addresses?: components["schemas"]["email_addresses"];
       addresses?: components["schemas"]["addresses"];
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     opportunity: {
@@ -365,6 +371,8 @@ export interface components {
       stage?: string;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       account_id?: string | null;
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     /**

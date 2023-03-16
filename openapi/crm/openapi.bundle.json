@@ -2265,6 +2265,11 @@
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
           },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
+          },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
           }
@@ -2358,6 +2363,11 @@
           },
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
@@ -2481,6 +2491,11 @@
           },
           "addresses": {
             "$ref": "#/components/schemas/addresses"
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
@@ -2623,6 +2638,11 @@
             "type": "string",
             "nullable": true,
             "example": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"

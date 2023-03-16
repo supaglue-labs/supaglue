@@ -24,5 +24,9 @@ properties:
     $ref: './objects/addresses.yaml'
   phone_numbers:
     $ref: './objects/phone_numbers.yaml'
+  owner_id:
+    type: string
+    nullable: true
+    example: 9f3e97fd-4d5d-4efc-959d-bbebfac079f5
   custom_fields:
     $ref: ./objects/custom_fields.yaml
