@@ -20,7 +20,6 @@
     "express-openapi-validator": "^5.0.2",
     "pino-http": "^8.3.3",
     "simple-oauth2": "^5.0.0",
-    "snakecase-keys": "^5.4.5",
     "tslib": "^2.5.0",
     "uuid": "^9.0.0"
   },
