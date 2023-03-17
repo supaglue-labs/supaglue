@@ -10,25 +10,37 @@ export class CustomerService {
     this.#prisma = prisma;
   }
 
-  public async getById(id: string): Promise<Customer> {
+  public async getByExternalId(applicationId: string, externalId: string): Promise<Customer> {
     const customer = await this.#prisma.customer.findUnique({
-      where: { id },
+      where: {
+        applicationId_externalIdentifier: {
+          applicationId,
+          externalIdentifier: externalId,
+        },
+      },
     });
     if (!customer) {
-      throw new NotFoundError(`Can't find customer with id: ${id}`);
+      throw new NotFoundError(`Can't find customer with externalId: ${externalId}`);
     }
     return fromCustomerModel(customer);
   }
 
   // TODO: paginate
-  public async list(): Promise<Customer[]> {
-    const customers = await this.#prisma.customer.findMany();
+  public async list(applicationId: string): Promise<Customer[]> {
+    const customers = await this.#prisma.customer.findMany({
+      where: {
+        applicationId,
+      },
+    });
     return customers.map((customer) => fromCustomerModel(customer));
   }
 
   // TODO: paginate
-  public async listExpandedSafe(): Promise<CustomerExpandedSafe[]> {
+  public async listExpandedSafe(applicationId: string): Promise<CustomerExpandedSafe[]> {
     const customers = await this.#prisma.customer.findMany({
+      where: {
+        applicationId,
+      },
       include: {
         connections: true,
       },
@@ -50,9 +62,14 @@ export class CustomerService {
     return fromCustomerModel(updatedCustomer);
   }
 
-  public async delete(id: string): Promise<Customer> {
+  public async delete(applicationId: string, externalId: string): Promise<Customer> {
     const deletedCustomer = await this.#prisma.customer.delete({
-      where: { id },
+      where: {
+        applicationId_externalIdentifier: {
+          applicationId,
+          externalIdentifier: externalId,
+        },
+      },
     });
     return fromCustomerModel(deletedCustomer);
   }
