@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { snakecaseKeys } from '@/lib/snakecase';
+import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import { GetSyncInfosPathParams, GetSyncInfosRequest, GetSyncInfosResponse } from '@supaglue/schemas/crm';
 import { Request, Response, Router } from 'express';
 

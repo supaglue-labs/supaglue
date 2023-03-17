@@ -9,21 +9,21 @@ oneOf:
       payload:
         type: object
         properties:
-          connectionId:
+          connection_id:
             type: string
-          historyId:
+          history_id:
             type: string
-          numRecordsSynced:
+          num_records_synced:
             type: integer
-          commonModel:
+          common_model:
             type: string
-          errorMessage:
+          error_message:
             type: string
         required:
-          - connectionId
-          - historyId
-          - numRecordsSynced
-          - commonModel
+          - connection_id
+          - history_id
+          - num_records_synced
+          - common_model
     required:
       - type
       - payload
@@ -37,19 +37,19 @@ oneOf:
       payload:
         type: object
         properties:
-          customerId:
+          customer_id:
             type: string
-          integrationId:
+          integration_id:
             type: string
           category:
             type: string
-          providerName:
+          provider_name:
             type: string
         required:
-          - customerId
-          - integrationId
+          - customer_id
+          - integration_id
           - category
-          - providerName
+          - provider_name
     required:
       - type
       - payload

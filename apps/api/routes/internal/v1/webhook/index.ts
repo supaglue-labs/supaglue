@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeys } from '@/lib/camelcase';
-import { snakecaseKeys } from '@/lib/snakecase';
 import { NotFoundError } from '@supaglue/core/errors';
+import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import {
   CreateWebhookPathParams,
   CreateWebhookRequest,

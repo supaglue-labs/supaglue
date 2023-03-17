@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeysSansCustomFields } from '@/lib/camelcase';
-import { snakecaseKeys } from '@/lib/snakecase';
+import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import { GetParams, ListParams } from '@supaglue/core/types/common';
 import {
   CreateAccountPathParams,

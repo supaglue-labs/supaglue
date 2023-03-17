@@ -216,20 +216,20 @@ export interface components {
       /** @enum {unknown} */
       type: "SYNC_SUCCESS" | "SYNC_ERROR";
       payload: {
-        connectionId: string;
-        historyId: string;
-        numRecordsSynced: number;
-        commonModel: string;
-        errorMessage?: string;
+        connection_id: string;
+        history_id: string;
+        num_records_synced: number;
+        common_model: string;
+        error_message?: string;
       };
     }, {
       /** @enum {unknown} */
       type: "CONNECTION_SUCCESS" | "CONNECTION_ERROR";
       payload: {
-        customerId: string;
-        integrationId: string;
+        customer_id: string;
+        integration_id: string;
         category: string;
-        providerName: string;
+        provider_name: string;
       };
     }]>;
   };
