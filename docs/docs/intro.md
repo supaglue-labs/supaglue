@@ -28,11 +28,14 @@ Supaglue is an open source unified API for CRMs. It handles authentication, cach
 
 ## How it works
 
-There are 3 main steps for developers to integrate with Supaglue:
+Developers can integrate with Supaglue in an hour or less:
 
-1. Embed authentication link into your application. This allows your customers to authenticate with their CRM.
-2. Upon authentication, Supaglue syncs data from your customers' CRMs into Supaglue's database, where it is cached, mapped to a common data model, and exposed through a unified REST API.
-3. Developers access the Supaglue API from within their application, to read data from and write data to their customers' CRMs.
+1. Create a Supaglue Cloud account or spin up Supaglue locally, and get your API key.
+2. Configure your integration scopes and OAuth credentials.
+3. Add an Embedded Link in your application.
+4. Create Supaglue customers for each customer using your application.
+5. Your customers connect their CRMs to your app, and Supaglue syncs their datainto Supaglue's backend, where it is cached, mapped to a common data model, and exposed through a unified REST API.
+6. You access the Supaglue API from within your application, to help read data from and write data to your customers' CRMs.
 
 Supaglue consists of the following components:
 
