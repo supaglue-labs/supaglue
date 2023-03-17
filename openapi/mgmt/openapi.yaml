@@ -65,16 +65,4 @@ components:
       $ref: './components/schemas/webhook-payload.yaml'
 webhooks:
   webhook:
-    post:
-      operationId: webhook
-      summary: Webhook
-      tags:
-        - Webhook
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: './components/schemas/webhook-payload.yaml'
-      responses:
-        '200':
-          description: Return a 200 status to indicate that the data was received successfully
+    $ref: ./webhooks/webhook.yaml
