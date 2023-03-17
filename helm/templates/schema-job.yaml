@@ -37,8 +37,8 @@ spec:
           command: ['sh', '-c', 'until nc -z -v -w30 {{ template "supaglue.databaseHost" . }} {{ template "supaglue.databasePort" $ }}; do echo waiting for database; sleep 2; done;']
       containers:
         - name: schema-update
-          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
-          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          image: "{{ default "api" .Values.api.image.repository }}:{{ default .Chart.AppVersion .Values.api.image.tag }}"
+          imagePullPolicy: {{ default "IfNotPresent" .Values.api.image.pullPolicy }}
           env:
             - name: SUPAGLUE_DATABASE_URL
               valueFrom:

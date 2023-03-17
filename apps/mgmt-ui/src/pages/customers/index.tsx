@@ -2,6 +2,7 @@ import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages';
+import providerToIcon from '@/utils/providerToIcon';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -32,15 +33,18 @@ export default function Home() {
       field: 'connections',
       headerName: 'Connections',
       width: 300,
+      renderCell: (params) => {
+        return params.value.map((connection: any) => providerToIcon(connection.providerName));
+      },
     },
   ];
+
   const rows = customers.map((customer: any) => ({
     id: customer.id,
     email: customer.email,
     name: customer.name,
-    connections: `${customer?.connections.length} connection(s)`,
+    connections: customer?.connections,
   }));
-
   return (
     <>
       <Head>
@@ -59,7 +63,7 @@ export default function Home() {
                 <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
               </Grid>
               {/* <Grid item xs={4}>
-              <MetricCard icon={<CloudUploadOutlined />} title="Total syncs" value={`${syncHistory.length} syncs`} />
+              <MetricCard icon={<CloudUploadOutlined />} value={`${syncHistory.length} syncs`} />
             </Grid> */}
               <Grid item xs={6}>
                 <MetricCard icon={<Link />} value={`${totalConnections} connections`} />

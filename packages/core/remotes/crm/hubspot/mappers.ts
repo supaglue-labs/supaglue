@@ -117,16 +117,11 @@ export const fromHubSpotContactToRemoteContact = ({
   ].filter(Boolean) as PhoneNumber[];
 
   const addresses: Address[] =
-    properties.address ||
-    properties.address2 ||
-    properties.city ||
-    properties.state ||
-    properties.zip ||
-    properties.country
+    properties.address || properties.city || properties.state || properties.zip || properties.country
       ? [
           {
             street1: properties.address ?? null,
-            street2: properties.address2 ?? null,
+            street2: null,
             city: properties.city ?? null,
             state: properties.state ?? null,
             postalCode: properties.zip ?? null,
@@ -290,7 +285,7 @@ const toHubspotPhoneCreateParams = (phoneNumbers?: PhoneNumber[]): Record<string
   // Explicitly null-out other phones if they don't exist.
   return {
     phone: primaryPhone?.phoneNumber ?? '',
-    mobile: mobilePhone?.phoneNumber ?? '',
+    mobilephone: mobilePhone?.phoneNumber ?? '',
     fax: faxPhone?.phoneNumber ?? '',
   };
 };
@@ -302,7 +297,7 @@ const toHubspotAddressCreateParams = (addresses?: Address[]): Record<string, str
   const primary = addresses.find(({ addressType }) => addressType === 'primary');
   return {
     address: primary?.street1 ?? '',
-    address2: primary?.street2 ?? '',
+    // TODO: Support address2 for companies only
     city: primary?.city ?? '',
     state: primary?.state ?? '',
     zip: primary?.postalCode ?? '',

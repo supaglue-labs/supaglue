@@ -59,8 +59,8 @@ spec:
               value: {{ template "supaglue.temporalHost" . }}:{{ include "supaglue.temporalPort" . }}
       containers:
         - name: {{ $.Chart.Name }}-sync-worker
-          image: "{{ .Values.syncWorker.image.repository }}:{{ .Values.syncWorker.image.tag }}"
-          imagePullPolicy: {{ .Values.syncWorker.image.pullPolicy }}
+          image: "{{ default "sync-worker" .Values.syncWorker.image.repository }}:{{ default .Chart.AppVersion .Values.syncWorker.image.tag }}"
+          imagePullPolicy: {{ default "IfNotPresent" .Values.syncWorker.image.pullPolicy }}
           env:
             - name: NODE_ENV
               value: production

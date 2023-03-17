@@ -8,9 +8,9 @@ syncWorker:
   replicaCount: 2
   logLevel: 'info'
   image:
-    repository: supaglue/sync-worker
-    tag: 0.3.5
-    pullPolicy: IfNotPresent
+    repository: ~
+    tag: ~
+    pullPolicy: ~
   metrics:
     annotations:
       enabled: false
@@ -27,9 +27,9 @@ management:
   replicaCount: 1
   frontendUrl: ''
   image:
-    repository: supaglue/mgmt-ui
-    tag: 0.3.5
-    pullPolicy: IfNotPresent
+    repository: ~
+    tag: ~
+    pullPolicy: ~
   service:
     type: ClusterIP
     port: 3000
@@ -52,9 +52,9 @@ api:
   oauthReturnUrl: ''
   corsOrigin: ''
   image:
-    repository: supaglue/api
-    tag: 0.3.5
-    pullPolicy: IfNotPresent
+    repository: ~
+    tag: ~
+    pullPolicy: ~
   service:
     type: ClusterIP
     port: 8080

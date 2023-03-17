@@ -21,6 +21,7 @@ export CLUSTER_NAME=<your GKE cluster>
 export API_HOST=supaglue-api.<your domain>
 export MANAGEMENT_HOST=supaglue-management.<your domain>
 export OAUTH_RETURN_URL=<the url you want users to return to by default after auth (usually your app)>
+export POSTGRES_PASSWORD=<a strong password for the postgres database>
 ```
 
 Get your kubeconfig
@@ -71,7 +72,7 @@ helm upgrade --install --namespace supaglue --create-namespace \
   --set "temporal.cassandra.resources.limits.memory=4Gi" \
   --set "temporal.cassandra.config.max_heap_size=2G" \
   --set "temporal.cassandra.config.heap_new_size=400M" \
-  --set 'global.postgresql.auth.password=<a strong password for the postgres database>' \
+  --set "global.postgresql.auth.password=$POSTGRES_PASSWORD" \
   --set api.oauthReturnUrl=$OAUTH_RETURN_URL \
   --set "deploymentId=$DEPLOYMENT_ID" \
   --set "api.image.tag=testing" \

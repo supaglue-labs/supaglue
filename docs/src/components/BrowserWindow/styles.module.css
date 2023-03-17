@@ -79,10 +79,13 @@
     background-color: var(--ifm-background-color);
     border-bottom-left-radius: inherit;
     border-bottom-right-radius: inherit;
-    padding: 1rem;
+    padding: 0rem;
   }
   
   .browserWindowBody > *:last-child {
     margin-bottom: 0;
   }
   
+  .browserWindowBody img {
+    margin-bottom: -8px;
+  }

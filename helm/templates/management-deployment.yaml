@@ -39,8 +39,8 @@ spec:
       {{ include "supaglue.serviceAccount" . }}
       containers:
         - name: {{ .Chart.Name }}-management
-          image: "{{ .Values.management.image.repository }}:{{ .Values.management.image.tag }}"
-          imagePullPolicy: {{ .Values.management.image.pullPolicy }}
+          image: "{{ default "supaglue/mgmt-ui" .Values.management.image.repository }}:{{ default .Chart.AppVersion .Values.management.image.tag }}"
+          imagePullPolicy: {{ default "IfNotPresent" .Values.management.image.pullPolicy }}
           env:
             - name: SUPAGLUE_API_HOST
               value: {{ .Values.api.serverUrl }}

@@ -39,6 +39,7 @@ export async function runSyncs({ connectionId }: RunSyncsArgs): Promise<void> {
           status: 'SYNC_SUCCESS',
           connectionId,
           numRecordsSynced: result.value.numRecordsSynced,
+          commonModel: CRM_COMMON_MODELS[idx],
         });
       } else {
         await logSyncFinish({
@@ -52,6 +53,7 @@ export async function runSyncs({ connectionId }: RunSyncsArgs): Promise<void> {
           connectionId,
           // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
           numRecordsSynced: 0,
+          commonModel: CRM_COMMON_MODELS[idx],
           errorMessage: result.reason.message ?? 'Unknown error',
         });
       }
