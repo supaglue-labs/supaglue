@@ -4,8 +4,8 @@ post:
   tags:
     - Accounts
   parameters:
-    - $ref: ../../common/components/parameters/cursor.yaml
-    - $ref: ../../common/components/parameters/page_size.yaml
+    - $ref: ../../common/components/parameters/query/cursor.yaml
+    - $ref: ../../common/components/parameters/query/page_size.yaml
   security:
     - ApiKeyAuth: []
   requestBody:
@@ -85,5 +85,5 @@ post:
                     updated_at: '2023-02-27T00:00:00Z'
                     website: https://supaglue.com/
 parameters:
-  - $ref: ../../common/components/parameters/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/x-provider-name.yaml
+  - $ref: ../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/header/x-provider-name.yaml

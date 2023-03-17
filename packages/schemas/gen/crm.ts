@@ -124,22 +124,6 @@ export interface paths {
     post: operations["sendPassthroughRequest"];
     
   };
-  "/sync-history": {
-    /**
-     * Get Sync History 
-     * @description Get a list of Sync History objects.
-     */
-    get: operations["getSyncHistory"];
-    
-  };
-  "/sync-info": {
-    /**
-     * Get Sync Info 
-     * @description Get a list of Sync Info
-     */
-    get: operations["getSyncInfos"];
-    
-  };
 }
 
 export type webhooks = Record<string, never>;
@@ -1008,61 +992,6 @@ export interface operations {
               [key: string]: unknown | undefined;
             });
           };
-        };
-      };
-    };
-  };
-  getSyncHistory: {
-    /**
-     * Get Sync History 
-     * @description Get a list of Sync History objects.
-     */
-    parameters?: {
-        /** @description The model name to filter by */
-      query?: {
-        model?: string;
-      };
-    };
-    responses: {
-      /** @description Sync History */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & ({
-            results?: ({
-                /** @example Account */
-                model_name?: string;
-                error_message?: string | null;
-                /** @example 2023-02-22T19:55:17.559Z */
-                start_timestamp?: string;
-                /** @example 2023-02-22T20:55:17.559Z */
-                end_timestamp?: string | null;
-                /** @example IN_PROGRESS */
-                status?: string;
-              })[];
-          });
-        };
-      };
-    };
-  };
-  getSyncInfos: {
-    /**
-     * Get Sync Info 
-     * @description Get a list of Sync Info
-     */
-    responses: {
-      /** @description Sync Info List */
-      200: {
-        content: {
-          "application/json": ({
-              /** @example Account */
-              model_name?: string;
-              /** @example 2023-02-22T19:55:17.559Z */
-              last_sync_start?: string | null;
-              /** @example 2023-02-22T20:55:17.559Z */
-              next_sync_start?: string | null;
-              /** @example SYNCING */
-              status?: string | null;
-            })[];
         };
       };
     };

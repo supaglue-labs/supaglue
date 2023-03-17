@@ -1,19 +1,23 @@
 import type { PrismaClient } from '@supaglue/db';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { fromSyncHistoryModel } from '../mappers';
+import { fromSyncHistoryModelAndConnection } from '../mappers';
 import type {
   PaginatedResult,
   PaginationParams,
   SyncHistory,
   SyncHistoryCreateParams,
+  SyncHistoryModelExpanded,
   SyncHistoryStatus,
 } from '../types';
+import { ConnectionService } from './connection_service';
 
 export class SyncHistoryService {
   #prisma: PrismaClient;
+  #connectionService: ConnectionService;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: PrismaClient, connectionService: ConnectionService) {
     this.#prisma = prisma;
+    this.#connectionService = connectionService;
   }
 
   public async create({
@@ -23,7 +27,7 @@ export class SyncHistoryService {
     connectionId: string;
     createParams: SyncHistoryCreateParams;
   }): Promise<SyncHistory> {
-    const created = await this.#prisma.syncHistory.create({
+    const created: SyncHistoryModelExpanded = await this.#prisma.syncHistory.create({
       data: {
         ...createParams,
         connectionId,
@@ -33,7 +37,7 @@ export class SyncHistoryService {
       },
     });
 
-    return fromSyncHistoryModel(created);
+    return fromSyncHistoryModelAndConnection(created);
   }
 
   public async update({
@@ -51,7 +55,7 @@ export class SyncHistoryService {
       },
     });
 
-    return fromSyncHistoryModel(model);
+    return fromSyncHistoryModelAndConnection(model);
   }
 
   public async logFinish({
@@ -88,28 +92,37 @@ export class SyncHistoryService {
   }
 
   public async list({
-    connectionId,
+    applicationId,
     paginationParams,
     model,
+    customerId,
+    providerName,
   }: {
-    connectionId: string;
+    applicationId: string;
     paginationParams: PaginationParams;
     model?: string;
+    customerId?: string;
+    providerName?: string;
   }): Promise<PaginatedResult<SyncHistory>> {
+    const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
+    const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;
-    const models: any[] = await this.#prisma.syncHistory.findMany({
+    const models = await this.#prisma.syncHistory.findMany({
       ...getPaginationParams<number>(pageSize, cursor),
       where: {
-        connectionId,
+        connectionId: { in: connectionIds },
         model,
+      },
+      include: {
+        connection: true,
       },
       orderBy: {
         id: 'desc',
       },
     });
 
-    const results = models.map(fromSyncHistoryModel);
+    const results = models.map(fromSyncHistoryModelAndConnection);
 
     return {
       ...getPaginationResult<number>(pageSize, cursor, results),

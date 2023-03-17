@@ -15,4 +15,7 @@ properties:
     example: 2023-02-22T20:55:17.559537Z
   status:
     type: string # TODO enum?
-    example: IN_PROGRESS
+    enum:
+      - SUCCESS
+      - IN_PROGRESS
+      - FAILURE

@@ -1,6 +1,11 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { snakecaseKeys } from '@/lib/snakecase';
-import { GetSyncInfosPathParams, GetSyncInfosRequest, GetSyncInfosResponse } from '@supaglue/schemas/crm';
+import {
+  GetSyncInfosPathParams,
+  GetSyncInfosQueryParams,
+  GetSyncInfosRequest,
+  GetSyncInfosResponse,
+} from '@supaglue/schemas/mgmt';
 import { Request, Response, Router } from 'express';
 
 const { syncService } = getDependencyContainer();
@@ -11,10 +16,14 @@ export default function init(app: Router): void {
   router.get(
     '/',
     async (
-      req: Request<GetSyncInfosPathParams, GetSyncInfosResponse, GetSyncInfosRequest>,
+      req: Request<GetSyncInfosPathParams, GetSyncInfosResponse, GetSyncInfosRequest, GetSyncInfosQueryParams>,
       res: Response<GetSyncInfosResponse>
     ) => {
-      const syncInfoList = await syncService.getSyncInfoList(req.customerConnection.id);
+      const syncInfoList = await syncService.getSyncInfoList(
+        req.supaglueApplication.id,
+        req.query?.customer_id,
+        req.query?.provider_name
+      );
       const syncInfoListRes = syncInfoList.map((syncInfo) =>
         snakecaseKeys({
           ...syncInfo,

@@ -8,13 +8,13 @@ get:
   description: >-
     Get a list of users
   parameters:
-    - $ref: ../../common/components/parameters/created_after.yaml
-    - $ref: ../../common/components/parameters/created_before.yaml
-    - $ref: ../../common/components/parameters/updated_after.yaml
-    - $ref: ../../common/components/parameters/updated_before.yaml
-    - $ref: ../../common/components/parameters/cursor.yaml
-    - $ref: ../../common/components/parameters/expand.yaml
-    - $ref: ../../common/components/parameters/page_size.yaml
+    - $ref: ../../common/components/parameters/query/created_after.yaml
+    - $ref: ../../common/components/parameters/query/created_before.yaml
+    - $ref: ../../common/components/parameters/query/updated_after.yaml
+    - $ref: ../../common/components/parameters/query/updated_before.yaml
+    - $ref: ../../common/components/parameters/query/cursor.yaml
+    - $ref: ../../common/components/parameters/query/expand.yaml
+    - $ref: ../../common/components/parameters/query/page_size.yaml
   responses:
     '200':
       description: Users
@@ -48,5 +48,5 @@ get:
                     created_at: '2021-11-10T00:00:00Z'
                     updated_at: '2022-01-09T00:00:00Z'
 parameters:
-  - $ref: ../../common/components/parameters/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/x-provider-name.yaml
+  - $ref: ../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/header/x-provider-name.yaml

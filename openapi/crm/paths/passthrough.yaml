@@ -81,5 +81,5 @@ post:
                   x-requests-limit: 96
                 body: []
 parameters:
-  - $ref: ../../common/components/parameters/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/x-provider-name.yaml
+  - $ref: ../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/header/x-provider-name.yaml

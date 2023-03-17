@@ -13,8 +13,8 @@ get:
           schema:
             $ref: ../components/schemas/objects/user.yaml
 parameters:
-  - $ref: ../../common/components/parameters/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/x-provider-name.yaml
+  - $ref: ../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
   - name: user_id
     in: path
     required: true

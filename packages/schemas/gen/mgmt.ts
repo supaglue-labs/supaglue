@@ -82,6 +82,20 @@ export interface paths {
     /** Delete webhook */
     delete: operations["deleteWebhook"];
   };
+  "/sync-history": {
+    /**
+     * Get Sync History 
+     * @description Get a list of Sync History objects.
+     */
+    get: operations["getSyncHistory"];
+  };
+  "/sync-info": {
+    /**
+     * Get Sync Info 
+     * @description Get a list of Sync Info
+     */
+    get: operations["getSyncInfos"];
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -202,9 +216,39 @@ export interface components {
         [key: string]: unknown | undefined;
       };
     };
+    sync_info: {
+      /** @example Account */
+      model_name?: string;
+      /** @example 2023-02-22T19:55:17.559Z */
+      last_sync_start?: string | null;
+      /** @example 2023-02-22T20:55:17.559Z */
+      next_sync_start?: string | null;
+      /** @enum {string|null} */
+      status?: "SYNCING" | "DONE" | null;
+    };
+    sync_history: {
+      /** @example Account */
+      model_name?: string;
+      error_message?: string | null;
+      /** @example 2023-02-22T19:55:17.559Z */
+      start_timestamp?: string;
+      /** @example 2023-02-22T20:55:17.559Z */
+      end_timestamp?: string | null;
+      /** @enum {string} */
+      status?: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
+    };
   };
   responses: never;
-  parameters: never;
+  parameters: {
+    /** @description The pagination cursor value */
+    cursor: string;
+    /** @description Number of results to return per page */
+    page_size: string;
+    /** @description The customer ID */
+    customer_id: string;
+    /** @description The provider name */
+    provider_name: string;
+  };
   requestBodies: never;
   headers: never;
   pathItems: never;
@@ -405,6 +449,63 @@ export interface operations {
     responses: {
       /** @description Webhook deleted */
       200: never;
+    };
+  };
+  getSyncHistory: {
+    /**
+     * Get Sync History 
+     * @description Get a list of Sync History objects.
+     */
+    parameters?: {
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+        /** @description The customer ID */
+        /** @description The provider name */
+        /** @description The model name to filter by */
+      query?: {
+        cursor?: string;
+        page_size?: string;
+        customer_id?: string;
+        provider_name?: string;
+        model?: string;
+      };
+    };
+    responses: {
+      /** @description Sync History */
+      200: {
+        content: {
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & {
+            results?: (components["schemas"]["sync_history"])[];
+          };
+        };
+      };
+    };
+  };
+  getSyncInfos: {
+    /**
+     * Get Sync Info 
+     * @description Get a list of Sync Info
+     */
+    parameters?: {
+        /** @description The customer ID */
+        /** @description The provider name */
+      query?: {
+        customer_id?: string;
+        provider_name?: string;
+      };
+    };
+    responses: {
+      /** @description Sync Info List */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["sync_info"])[];
+        };
+      };
     };
   };
 }

@@ -33,8 +33,8 @@ export class IntegrationService {
   }
 
   // TODO: paginate
-  public async list(): Promise<Integration[]> {
-    const integrations = await this.#prisma.integration.findMany();
+  public async list(applicationId: string): Promise<Integration[]> {
+    const integrations = await this.#prisma.integration.findMany({ where: { applicationId } });
     return integrations.map((integration) => fromIntegrationModel(integration));
   }
 

@@ -21,7 +21,7 @@ export default function init(app: Router): void {
       req: Request<GetConnectionsPathParams, GetConnectionsResponse, GetConnectionsResponse>,
       res: Response<GetConnectionsResponse>
     ) => {
-      const connections = await connectionService.listSafe();
+      const connections = await connectionService.listSafe(req.supaglueApplication.id);
       return res.status(200).send(connections.map(snakecaseKeys));
     }
   );
