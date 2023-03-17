@@ -71,7 +71,6 @@ webhooks:
       tags:
         - Webhook
       requestBody:
-        description: Information about a sync that has finished
         content:
           application/json:
             schema:

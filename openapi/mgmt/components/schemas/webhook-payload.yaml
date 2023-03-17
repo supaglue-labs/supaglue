@@ -4,8 +4,6 @@ oneOf:
     properties:
       type:
         enum:
-          - CONNECTION_SUCCESS
-          - CONNECTION_ERROR
           - SYNC_SUCCESS
           - SYNC_ERROR
       payload:
@@ -21,6 +19,14 @@ oneOf:
             type: string
           errorMessage:
             type: string
+        required:
+          - connectionId
+          - historyId
+          - numRecordsSynced
+          - commonModel
+    required:
+      - type
+      - payload
   - type: object
     title: Connection Created Event
     properties:
@@ -39,3 +45,11 @@ oneOf:
             type: string
           providerName:
             type: string
+        required:
+          - customerId
+          - integrationId
+          - category
+          - providerName
+    required:
+      - type
+      - payload

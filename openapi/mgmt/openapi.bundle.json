@@ -1078,8 +1078,6 @@
             "properties": {
               "type": {
                 "enum": [
-                  "CONNECTION_SUCCESS",
-                  "CONNECTION_ERROR",
                   "SYNC_SUCCESS",
                   "SYNC_ERROR"
                 ]
@@ -1102,9 +1100,19 @@
                   "errorMessage": {
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "connectionId",
+                  "historyId",
+                  "numRecordsSynced",
+                  "commonModel"
+                ]
               }
-            }
+            },
+            "required": [
+              "type",
+              "payload"
+            ]
           },
           {
             "type": "object",
@@ -1131,9 +1139,19 @@
                   "providerName": {
                     "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "customerId",
+                  "integrationId",
+                  "category",
+                  "providerName"
+                ]
               }
-            }
+            },
+            "required": [
+              "type",
+              "payload"
+            ]
           }
         ]
       }
@@ -1148,7 +1166,6 @@
           "Webhook"
         ],
         "requestBody": {
-          "description": "Information about a sync that has finished",
           "content": {
             "application/json": {
               "schema": {

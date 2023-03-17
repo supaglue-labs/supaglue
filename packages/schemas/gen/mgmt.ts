@@ -214,22 +214,22 @@ export interface components {
     };
     "webhook-payload": OneOf<[{
       /** @enum {unknown} */
-      type?: "CONNECTION_SUCCESS" | "CONNECTION_ERROR" | "SYNC_SUCCESS" | "SYNC_ERROR";
-      payload?: {
-        connectionId?: string;
-        historyId?: string;
-        numRecordsSynced?: number;
-        commonModel?: string;
+      type: "SYNC_SUCCESS" | "SYNC_ERROR";
+      payload: {
+        connectionId: string;
+        historyId: string;
+        numRecordsSynced: number;
+        commonModel: string;
         errorMessage?: string;
       };
     }, {
       /** @enum {unknown} */
-      type?: "CONNECTION_SUCCESS" | "CONNECTION_ERROR";
-      payload?: {
-        customerId?: string;
-        integrationId?: string;
-        category?: string;
-        providerName?: string;
+      type: "CONNECTION_SUCCESS" | "CONNECTION_ERROR";
+      payload: {
+        customerId: string;
+        integrationId: string;
+        category: string;
+        providerName: string;
       };
     }]>;
   };
@@ -439,7 +439,6 @@ export interface operations {
   };
   webhook: {
     /** Webhook */
-    /** @description Information about a sync that has finished */
     requestBody?: {
       content: {
         "application/json": components["schemas"]["webhook-payload"];
