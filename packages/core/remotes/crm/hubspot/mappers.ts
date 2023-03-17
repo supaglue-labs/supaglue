@@ -216,44 +216,50 @@ const getFullName = (firstName?: string, lastName?: string): string | null => {
 
 export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams): Record<string, string> => {
   const phoneParams = toHubspotPhoneCreateParams(params.phoneNumbers);
-  return {
-    name: params.name ?? '',
-    industry: params.industry ?? '',
-    description: params.description ?? '',
-    website: params.website ?? '',
-    numberofemployees: params.numberOfEmployees?.toString() ?? '',
+  const out = {
+    name: nullToEmptyString(params.name),
+    industry: nullToEmptyString(params.industry),
+    description: nullToEmptyString(params.description),
+    website: nullToEmptyString(params.website),
+    numberofemployees: nullToEmptyString(params.numberOfEmployees?.toString()),
     phone: phoneParams.phone, // only primary phone is supported for hubspot accounts
-    hubspot_owner_id: params.ownerId ?? '',
+    hubspot_owner_id: nullToEmptyString(params.ownerId),
     ...toHubspotAddressCreateParams(params.addresses),
     ...params.customFields,
   };
+  removeUndefinedValues(out);
+  return out as Record<string, string>;
 };
 
 export const toHubspotAccountUpdateParams = toHubspotAccountCreateParams;
 
 export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreateParams): Record<string, string> => {
-  return {
-    amount: params.amount?.toString() ?? '',
-    closedate: params.closeDate?.toISOString() ?? '',
-    dealname: params.name ?? '',
-    description: params.description ?? '',
-    dealstage: params.stage ?? '',
-    hubspot_owner_id: params.ownerId ?? '',
+  const out = {
+    amount: nullToEmptyString(params.amount?.toString()),
+    closedate: nullToEmptyString(params.closeDate?.toISOString()),
+    dealname: nullToEmptyString(params.name),
+    description: nullToEmptyString(params.description),
+    dealstage: nullToEmptyString(params.stage),
+    hubspot_owner_id: nullToEmptyString(params.ownerId),
     ...params.customFields,
   };
+  removeUndefinedValues(out);
+  return out as Record<string, string>;
 };
 export const toHubspotOpportunityUpdateParams = toHubspotOpportunityCreateParams;
 
 export const toHubspotContactCreateParams = (params: RemoteContactCreateParams): Record<string, string> => {
-  return {
-    firstname: params.firstName ?? '',
-    lastname: params.lastName ?? '',
-    hubspot_owner_id: params.ownerId ?? '',
+  const out = {
+    firstname: nullToEmptyString(params.firstName),
+    lastname: nullToEmptyString(params.lastName),
+    hubspot_owner_id: nullToEmptyString(params.ownerId),
     ...toHubspotEmailCreateParams(params.emailAddresses),
     ...toHubspotPhoneCreateParams(params.phoneNumbers),
     ...toHubspotAddressCreateParams(params.addresses),
     ...params.customFields,
   };
+  removeUndefinedValues(out);
+  return out as Record<string, string>;
 };
 
 const toHubspotEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<string, string> => {
@@ -262,6 +268,7 @@ const toHubspotEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<str
   }
   const primaryEmail = emailAddresses.find(({ emailAddressType }) => emailAddressType === 'primary');
   const workEmail = emailAddresses.find(({ emailAddressType }) => emailAddressType === 'work');
+  // Explicitly null-out other emails if they don't exist.
   return {
     email: primaryEmail?.emailAddress ?? '',
     work_email: workEmail?.emailAddress ?? '',
@@ -275,6 +282,7 @@ const toHubspotPhoneCreateParams = (phoneNumbers?: PhoneNumber[]): Record<string
   const primaryPhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'primary');
   const mobilePhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'mobile');
   const faxPhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'fax');
+  // Explicitly null-out other phones if they don't exist.
   return {
     phone: primaryPhone?.phoneNumber ?? '',
     mobilephone: mobilePhone?.phoneNumber ?? '',
@@ -297,3 +305,11 @@ const toHubspotAddressCreateParams = (addresses?: Address[]): Record<string, str
   };
 };
 export const toHubspotContactUpdateParams = toHubspotContactCreateParams;
+
+export const nullToEmptyString = (value: string | undefined | null): string | undefined => {
+  return value === null ? '' : value;
+};
+
+export const removeUndefinedValues = (obj: Record<string, string | undefined>): void => {
+  Object.keys(obj).forEach((key) => (obj[key] === undefined ? delete obj[key] : {}));
+};
