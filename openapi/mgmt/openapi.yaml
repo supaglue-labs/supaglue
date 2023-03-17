@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.3.4
+  version: 0.4.0
   title: Supaglue Management API
   contact:
     name: Supaglue

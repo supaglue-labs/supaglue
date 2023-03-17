@@ -9,7 +9,7 @@ syncWorker:
   logLevel: 'info'
   image:
     repository: supaglue/sync-worker
-    tag: 0.3.5
+    tag: 0.4.0
     pullPolicy: IfNotPresent
   metrics:
     annotations:
@@ -28,7 +28,7 @@ management:
   frontendUrl: ''
   image:
     repository: supaglue/mgmt-ui
-    tag: 0.3.5
+    tag: 0.4.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -53,7 +53,7 @@ api:
   corsOrigin: ''
   image:
     repository: supaglue/api
-    tag: 0.3.5
+    tag: 0.4.0
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
