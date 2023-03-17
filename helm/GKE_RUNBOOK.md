@@ -74,13 +74,7 @@ helm upgrade --install --namespace supaglue --create-namespace \
   --set "temporal.cassandra.config.heap_new_size=400M" \
   --set "global.postgresql.auth.password=$POSTGRES_PASSWORD" \
   --set api.oauthReturnUrl=$OAUTH_RETURN_URL \
-  --set "deploymentId=$DEPLOYMENT_ID" \
-  --set "api.image.tag=testing" \
-  --set "syncWorker.image.tag=testing" \
-  --set "management.image.tag=testing" \
-  --set "api.image.pullPolicy=Always" \
-  --set "syncWorker.image.pullPolicy=Always" \
-  --set "management.image.pullPolicy=Always"
+  --set "deploymentId=$DEPLOYMENT_ID"
 ```
 
 Monitor the deployment:
