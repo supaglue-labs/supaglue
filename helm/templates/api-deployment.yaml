@@ -51,7 +51,7 @@ spec:
           command: ['sh', '-c', 'until nc -z -v -w30 {{ template "supaglue.temporalHost" . }} {{ template "supaglue.temporalPort" $ }}; do echo waiting for temporal; sleep 2; done;']
       containers:
         - name: {{ .Chart.Name }}-api
-          image: "{{ default "api" .Values.api.image.repository }}:{{ default .Chart.AppVersion .Values.api.image.tag }}"
+          image: "{{ default "supaglue/api" .Values.api.image.repository }}:{{ default .Chart.AppVersion .Values.api.image.tag }}"
           imagePullPolicy: {{ default "IfNotPresent" .Values.api.image.pullPolicy }}
           env:
             - name: NODE_ENV
