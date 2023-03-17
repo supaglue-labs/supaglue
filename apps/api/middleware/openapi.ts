@@ -13,6 +13,9 @@ export const openapiMiddleware = (specDir: string) => {
     apiSpec,
     // TODO: switch to true when we support X-Account-Token
     validateSecurity: false,
+    validateRequests: {
+      removeAdditional: 'all',
+    },
   });
 };
 
