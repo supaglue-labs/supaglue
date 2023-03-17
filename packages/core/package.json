@@ -6,7 +6,7 @@
   "types": "index.ts",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
-    "@hubspot/api-client": "8.3.2",
+    "@hubspot/api-client": "8.8.0",
     "@sentry/integrations": "^7.43.0",
     "@sentry/node": "^7.43.0",
     "@supaglue/db": "workspace:*",
