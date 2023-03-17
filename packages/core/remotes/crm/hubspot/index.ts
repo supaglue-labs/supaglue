@@ -198,14 +198,18 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await retry(helper, ASYNC_RETRY_OPTIONS);
   }
 
+  private async getAccount(remoteId: string): Promise<RemoteAccount> {
+    await this.maybeRefreshAccessToken();
+    const company = await this.#client.crm.companies.basicApi.getById(remoteId, propertiesToFetch.company);
+    return fromHubSpotCompanyToRemoteAccount(company);
+  }
+
   public async createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount> {
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.create({
       properties: toHubspotAccountCreateParams(params),
     });
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotCompanyToRemoteAccount(company);
+    return await this.getAccount(company.id);
   }
 
   public async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
@@ -213,9 +217,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const company = await this.#client.crm.companies.basicApi.update(params.remoteId, {
       properties: toHubspotAccountUpdateParams(params),
     });
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotCompanyToRemoteAccount(company);
+    return await this.getAccount(company.id);
   }
 
   public async listOpportunities(): Promise<Readable> {
@@ -265,6 +267,17 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await retry(helper, ASYNC_RETRY_OPTIONS);
   }
 
+  private async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
+    await this.maybeRefreshAccessToken();
+    const deal = await this.#client.crm.deals.basicApi.getById(
+      remoteId,
+      propertiesToFetch.deal,
+      /* propertiesWithHistory */ undefined,
+      /* associations */ ['company']
+    );
+    return fromHubSpotDealToRemoteOpportunity(deal);
+  }
+
   public async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.create({
@@ -275,9 +288,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
       ]);
     }
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotDealToRemoteOpportunity(deal);
+    return await this.getOpportunity(deal.id);
   }
 
   public async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
@@ -290,9 +301,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
       ]);
     }
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotDealToRemoteOpportunity(deal);
+    return await this.getOpportunity(deal.id);
   }
 
   public async listContacts(): Promise<Readable> {
@@ -342,6 +351,17 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await retry(helper, ASYNC_RETRY_OPTIONS);
   }
 
+  private async getContact(remoteId: string): Promise<RemoteContact> {
+    await this.maybeRefreshAccessToken();
+    const contact = await this.#client.crm.contacts.basicApi.getById(
+      remoteId,
+      propertiesToFetch.contact,
+      /* propertiesWithHistory */ undefined,
+      /* associations */ ['company']
+    );
+    return fromHubSpotContactToRemoteContact(contact);
+  }
+
   public async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.create({
@@ -355,9 +375,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
       );
     }
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotContactToRemoteContact(contact);
+    return await this.getContact(contact.id);
   }
 
   public async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
@@ -373,9 +391,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
       );
     }
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotContactToRemoteContact(contact);
+    return await this.getContact(contact.id);
   }
 
   public async listLeads(limit?: number): Promise<Readable> {
