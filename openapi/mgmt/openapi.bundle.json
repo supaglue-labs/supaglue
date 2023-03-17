@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "version": "0.4.1",
     "title": "Supaglue Management API",
@@ -1069,6 +1069,99 @@
           "notify_on_connection_success",
           "notify_on_connection_error"
         ]
+      },
+      "webhook-payload": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "Sync Finished Event",
+            "properties": {
+              "type": {
+                "enum": [
+                  "CONNECTION_SUCCESS",
+                  "CONNECTION_ERROR",
+                  "SYNC_SUCCESS",
+                  "SYNC_ERROR"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "connectionId": {
+                    "type": "string"
+                  },
+                  "historyId": {
+                    "type": "string"
+                  },
+                  "numRecordsSynced": {
+                    "type": "integer"
+                  },
+                  "commonModel": {
+                    "type": "string"
+                  },
+                  "errorMessage": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "Connection Created Event",
+            "properties": {
+              "type": {
+                "enum": [
+                  "CONNECTION_SUCCESS",
+                  "CONNECTION_ERROR"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "customerId": {
+                    "type": "string"
+                  },
+                  "integrationId": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "providerName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "webhooks": {
+    "webhook": {
+      "post": {
+        "operationId": "webhook",
+        "summary": "Webhook",
+        "tags": [
+          "Webhook"
+        ],
+        "requestBody": {
+          "description": "Information about a sync that has finished",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/webhook-payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
       }
     }
   }

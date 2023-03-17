@@ -1,0 +1,41 @@
+oneOf:
+  - type: object
+    title: Sync Finished Event
+    properties:
+      type:
+        enum:
+          - CONNECTION_SUCCESS
+          - CONNECTION_ERROR
+          - SYNC_SUCCESS
+          - SYNC_ERROR
+      payload:
+        type: object
+        properties:
+          connectionId:
+            type: string
+          historyId:
+            type: string
+          numRecordsSynced:
+            type: integer
+          commonModel:
+            type: string
+          errorMessage:
+            type: string
+  - type: object
+    title: Connection Created Event
+    properties:
+      type:
+        enum:
+          - CONNECTION_SUCCESS
+          - CONNECTION_ERROR
+      payload:
+        type: object
+        properties:
+          customerId:
+            type: string
+          integrationId:
+            type: string
+          category:
+            type: string
+          providerName:
+            type: string

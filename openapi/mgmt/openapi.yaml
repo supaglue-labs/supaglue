@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   version: 0.4.1
   title: Supaglue Management API
@@ -61,3 +61,21 @@ components:
       $ref: ./components/schemas/create_update_integration.yaml
     webhook:
       $ref: ./components/schemas/objects/webhook.yaml
+    webhook-payload:
+      $ref: './components/schemas/webhook-payload.yaml'
+webhooks:
+  webhook:
+    post:
+      operationId: webhook
+      summary: Webhook
+      tags:
+        - Webhook
+      requestBody:
+        description: Information about a sync that has finished
+        content:
+          application/json:
+            schema:
+              $ref: './components/schemas/webhook-payload.yaml'
+      responses:
+        '200':
+          description: Return a 200 status to indicate that the data was received successfully

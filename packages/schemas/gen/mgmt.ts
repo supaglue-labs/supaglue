@@ -4,6 +4,11 @@
  */
 
 
+/** Type helpers */
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
+
 export interface paths {
   "/customers": {
     /**
@@ -84,7 +89,12 @@ export interface paths {
   };
 }
 
-export type webhooks = Record<string, never>;
+export interface webhooks {
+  "webhook": {
+    /** Webhook */
+    post: operations["webhook"];
+  };
+}
 
 export interface components {
   schemas: {
@@ -202,6 +212,26 @@ export interface components {
         [key: string]: unknown | undefined;
       };
     };
+    "webhook-payload": OneOf<[{
+      /** @enum {unknown} */
+      type?: "CONNECTION_SUCCESS" | "CONNECTION_ERROR" | "SYNC_SUCCESS" | "SYNC_ERROR";
+      payload?: {
+        connectionId?: string;
+        historyId?: string;
+        numRecordsSynced?: number;
+        commonModel?: string;
+        errorMessage?: string;
+      };
+    }, {
+      /** @enum {unknown} */
+      type?: "CONNECTION_SUCCESS" | "CONNECTION_ERROR";
+      payload?: {
+        customerId?: string;
+        integrationId?: string;
+        category?: string;
+        providerName?: string;
+      };
+    }]>;
   };
   responses: never;
   parameters: never;
@@ -404,6 +434,19 @@ export interface operations {
     /** Delete webhook */
     responses: {
       /** @description Webhook deleted */
+      200: never;
+    };
+  };
+  webhook: {
+    /** Webhook */
+    /** @description Information about a sync that has finished */
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["webhook-payload"];
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
       200: never;
     };
   };
