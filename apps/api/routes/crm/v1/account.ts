@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeys } from '@/lib/camelcase';
+import { camelcaseKeysSansCustomFields } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
 import { GetParams, ListParams } from '@supaglue/core/types/common';
 import {
@@ -12,6 +12,9 @@ import {
   GetAccountsPathParams,
   GetAccountsRequest,
   GetAccountsResponse,
+  SearchAccountsPathParams,
+  SearchAccountsRequest,
+  SearchAccountsResponse,
   UpdateAccountPathParams,
   UpdateAccountRequest,
   UpdateAccountResponse,
@@ -62,7 +65,11 @@ export default function init(app: Router): void {
       res: Response<CreateAccountResponse>
     ) => {
       const { customerId, id: connectionId } = req.customerConnection;
-      const account = await accountService.create(customerId, connectionId, camelcaseKeys(req.body.model));
+      const account = await accountService.create(
+        customerId,
+        connectionId,
+        camelcaseKeysSansCustomFields(req.body.model)
+      );
       return res.status(200).send({ model: snakecaseKeys(account) });
     }
   );
@@ -76,9 +83,29 @@ export default function init(app: Router): void {
       const { customerId, id: connectionId } = req.customerConnection;
       const account = await accountService.update(customerId, connectionId, {
         id: req.params.account_id,
-        ...camelcaseKeys(req.body.model),
+        ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: snakecaseKeys(account) });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchAccountsPathParams, SearchAccountsResponse, SearchAccountsRequest>,
+      res: Response<SearchAccountsResponse>
+    ) => {
+      const { next, previous, results } = await accountService.search(
+        req.customerConnection.id,
+        req.params,
+        req.body.filters
+      );
+
+      const snakeCaseKeysResults = results.map((result) => {
+        return snakecaseKeys(result);
+      });
+
+      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
 

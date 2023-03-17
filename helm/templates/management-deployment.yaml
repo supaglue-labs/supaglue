@@ -1,0 +1,108 @@
+{{- if .Values.management.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "supaglue.componentname" (list . "management") }}
+  labels:
+    app.kubernetes.io/name: {{ include "supaglue.name" . }}
+    helm.sh/chart: {{ include "supaglue.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: management
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.management.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "supaglue.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: management
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "supaglue.name" . }}
+        helm.sh/chart: {{ include "supaglue.chart" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+        app.kubernetes.io/component: management
+        app.kubernetes.io/part-of: {{ .Chart.Name }}
+        {{- with .Values.management.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.management.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{ include "supaglue.serviceAccount" . }}
+      containers:
+        - name: {{ .Chart.Name }}-management
+          image: "{{ default "supaglue/mgmt-ui" .Values.management.image.repository }}:{{ default .Chart.AppVersion .Values.management.image.tag }}"
+          imagePullPolicy: {{ default "IfNotPresent" .Values.management.image.pullPolicy }}
+          env:
+            - name: SUPAGLUE_API_HOST
+              value: {{ .Values.api.serverUrl }}
+            - name: SUPAGLUE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "supaglue.secretName" . }}
+                  key: {{ .Values.secretKeys.jwtSecret }}
+            - name: SUPAGLUE_INTERNAL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "supaglue.secretName" . }}
+                  key: {{ .Values.secretKeys.internalApiToken }}
+            - name: NEXTAUTH_URL
+              value: {{ required "management.frontendUrl is required" .Values.management.frontendUrl }}
+            - name: SUPAGLUE_DEPLOYMENT_ID
+              value: {{ include "supaglue.deploymentId" . }}
+            {{- with .Values.management.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.management.service.port }}
+              protocol: TCP
+          livenessProbe:
+              initialDelaySeconds: 30
+              httpGet:
+                path: /api/health
+                port: http
+          readinessProbe:
+              initialDelaySeconds: 30
+              httpGet:
+                path: /api/health
+                port: http
+          volumeMounts:
+            {{- if .Values.management.additionalVolumeMounts }}
+            {{- toYaml .Values.management.additionalVolumeMounts | nindent 12}}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.management.resources | nindent 12 }}
+        {{- if .Values.management.sidecarContainers }}
+        {{- toYaml .Values.management.sidecarContainers | nindent 8 }}
+        {{- end }}
+
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if .Values.management.additionalVolumes }}
+        {{- toYaml .Values.management.additionalVolumes | nindent 8}}
+        {{- end }}
+      {{- with .Values.management.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.management.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.management.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

@@ -32,6 +32,14 @@ export type UpdateAccountRequest = operations['updateAccount']['requestBody']['c
 export type UpdateAccountResponse =
   operations['updateAccount']['responses'][keyof operations['updateAccount']['responses']]['content']['application/json'];
 
+export type SearchAccountsPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type SearchAccountsQueryParams = Required<operations['searchAccounts']>['parameters']['query'];
+export type SearchAccountsQueryParams = any;
+export type SearchAccountsRequest = operations['searchAccounts']['requestBody']['content']['application/json'];
+export type SearchAccountsResponse =
+  operations['searchAccounts']['responses'][keyof operations['searchAccounts']['responses']]['content']['application/json'];
+
 export type GetContactsPathParams = never;
 // TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
 // export type GetContactsQueryParams = Required<operations['getContacts']>['parameters']['query'];
@@ -63,6 +71,14 @@ export type UpdateContactQueryParams = any;
 export type UpdateContactRequest = operations['updateContact']['requestBody']['content']['application/json'];
 export type UpdateContactResponse =
   operations['updateContact']['responses'][keyof operations['updateContact']['responses']]['content']['application/json'];
+
+export type SearchContactsPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type SearchContactsQueryParams = Required<operations['searchContacts']>['parameters']['query'];
+export type SearchContactsQueryParams = any;
+export type SearchContactsRequest = operations['searchContacts']['requestBody']['content']['application/json'];
+export type SearchContactsResponse =
+  operations['searchContacts']['responses'][keyof operations['searchContacts']['responses']]['content']['application/json'];
 
 export type GetLeadsPathParams = never;
 // TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
@@ -143,3 +159,28 @@ export type GetSyncHistoryQueryParams = any;
 export type GetSyncHistoryRequest = never;
 export type GetSyncHistoryResponse =
   operations['getSyncHistory']['responses'][keyof operations['getSyncHistory']['responses']]['content']['application/json'];
+
+export type GetUsersPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type GetUsersQueryParams = Required<operations['getUsers']>['parameters']['query'];
+export type GetUsersQueryParams = any;
+export type GetUsersRequest = never;
+export type GetUsersResponse =
+  operations['getUsers']['responses'][keyof operations['getUsers']['responses']]['content']['application/json'];
+
+export type GetUserPathParams = paths[`/users/{user_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type GetUserQueryParams = Required<operations['getUser']>['parameters']['query'];
+export type GetUserQueryParams = any;
+export type GetUserRequest = never;
+export type GetUserResponse =
+  operations['getUser']['responses'][keyof operations['getUser']['responses']]['content']['application/json'];
+
+export type SendPassthroughRequestPathParams = any;
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type SendPassthroughRequestQueryParams = Required<operations['getUser']>['parameters']['query'];
+export type SendPassthroughRequestQueryParams = any;
+export type SendPassthroughRequestRequest =
+  operations['sendPassthroughRequest']['requestBody']['content']['application/json'];
+export type SendPassthroughRequestResponse =
+  operations['sendPassthroughRequest']['responses'][keyof operations['sendPassthroughRequest']['responses']]['content']['application/json'];

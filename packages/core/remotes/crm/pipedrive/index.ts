@@ -1,8 +1,8 @@
 import { Readable } from 'stream';
 import {
   AccountCreateParams,
-  CRMConnection,
-  Integration,
+  CompleteIntegration,
+  CRMConnectionUnsafe,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -15,11 +15,16 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types';
-import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
+import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 
-class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
+class PipedriveClient extends AbstractCrmRemoteClient {
   public constructor() {
-    super();
+    // TODO: Support baseUrl
+    super('missing-base-url');
+  }
+
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    throw new Error('Not implemented');
   }
 
   public async listAccounts(): Promise<Readable> {
@@ -85,10 +90,14 @@ class PipedriveClient extends CrmRemoteClientEventEmitter implements CrmRemoteCl
   public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
     throw new Error('Not implemented');
   }
+
+  public async listUsers(): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnection, integration: Integration): PipedriveClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): PipedriveClient {
   return new PipedriveClient();
 }
 

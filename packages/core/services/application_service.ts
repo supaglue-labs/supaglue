@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
+import { cryptoHash, generateApiKey } from '../lib/crypt';
 import { fromApplicationModel } from '../mappers';
 import { Application, ApplicationCreateParams, ApplicationUpdateParams } from '../types';
 
@@ -18,6 +19,29 @@ export class ApplicationService {
       throw new NotFoundError(`Can't find application with id: ${id}`);
     }
     return fromApplicationModel(application);
+  }
+
+  public async getByApiKey(apiKey: string): Promise<Application> {
+    const { hashed: hashedApiKey } = await cryptoHash(apiKey);
+
+    const application = await this.#prisma.application.findMany({
+      where: {
+        config: {
+          path: ['apiKey'],
+          equals: hashedApiKey,
+        },
+      },
+    });
+
+    if (!application || application.length === 0) {
+      throw new NotFoundError(`Can't find application by api key`);
+    }
+
+    if (application.length > 1) {
+      throw new Error(`Found more than one application with the same api key`);
+    }
+
+    return fromApplicationModel(application[0]);
   }
 
   // TODO: paginate
@@ -42,6 +66,44 @@ export class ApplicationService {
         ...application,
       },
     });
+    return fromApplicationModel(updatedApplication);
+  }
+
+  public async createApiKey(id: string, application: ApplicationUpdateParams): Promise<Application> {
+    const apiKey = generateApiKey();
+    const { hashed: hashedApiKey } = await cryptoHash(apiKey);
+    const updatedApplication = await this.#prisma.application.update({
+      where: { id },
+      data: {
+        ...application,
+        config: {
+          ...application.config,
+          apiKey: hashedApiKey,
+        },
+      },
+    });
+
+    return fromApplicationModel({
+      ...updatedApplication,
+      config: {
+        ...application.config,
+        apiKey, // return the unhashed api key upon creation
+      },
+    });
+  }
+
+  public async deleteApiKey(id: string, application: ApplicationUpdateParams): Promise<Application> {
+    const updatedApplication = await this.#prisma.application.update({
+      where: { id },
+      data: {
+        ...application,
+        config: {
+          ...application.config,
+          apiKey: null,
+        },
+      },
+    });
+
     return fromApplicationModel(updatedApplication);
   }
 

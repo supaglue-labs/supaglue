@@ -3,6 +3,8 @@ get:
   summary: Get account
   tags:
     - Accounts
+  security:
+    - ApiKeyAuth: []
   parameters:
     - $ref: ../../common/components/parameters/expand.yaml
   responses:
@@ -21,25 +23,25 @@ get:
                     country: CX
                     postal_code: '94107'
                     state: CA
-                    street_1: 525 Brannan
-                    street_2: ~
+                    street1: 525 Brannan
+                    street2: ~
                   - address_type: BILLING
                     city: San Francisco
                     country: US
                     postal_code: '94107'
                     state: CA
-                    street_1: 525 Brannan
-                    street_2: ~
+                    street1: 525 Brannan
+                    street2: ~
                 description: Integration API
-                id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                id: 9572d08b-f19f-48cc-a992-1eb7031d3f6c
                 industry: API's
                 last_activity_at: '2022-02-10T00:00:00Z'
                 name: Supaglue
                 number_of_employees: 276000
-                owner: 9377fd4d-d420-4e0b-93ea-789078a3eab4
+                owner_id: 9377fd4d-d420-4e0b-93ea-789078a3eab4
                 phone_numbers:
                   - phone_number: '+14151234567'
-                    phone_number_type: Mobile
+                    phone_number_type: mobile
                 created_at: '2023-02-27T00:00:00Z'
                 updated_at: '2023-02-27T00:00:00Z'
                 website: https://supaglue.com/
@@ -48,6 +50,8 @@ patch:
   summary: Update account
   tags:
     - Accounts
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true
@@ -77,8 +81,8 @@ patch:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml
   - name: account_id
     in: path
     required: true

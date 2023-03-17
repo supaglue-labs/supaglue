@@ -1,13 +1,12 @@
 {
   "name": "@supaglue/sync-workflows",
-  "version": "0.3.3",
+  "version": "0.4.1",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "@supaglue/core": "workspace:*",
     "@temporalio/activity": "^1.6.0",
     "@temporalio/client": "^1.6.0",
-    "@temporalio/workflow": "^1.6.0",
-    "posthog-node": "^2.5.4"
+    "@temporalio/workflow": "^1.6.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",

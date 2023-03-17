@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
-import { fromAccountModel, fromContactModel } from '.';
+import { fromAccountModel, fromContactModel, fromUserModel } from '.';
 import { Address, CrmLeadExpanded, EmailAddress, Lead, PhoneNumber, RemoteLead } from '../types';
 
 export const fromLeadModel = (
   {
     id,
     remoteWasDeleted,
+    ownerId,
     owner,
     leadSource,
     title,
@@ -27,9 +28,11 @@ export const fromLeadModel = (
 ): Lead => {
   const expandAccount = expandedAssociations.includes('converted_account');
   const expandContact = expandedAssociations.includes('converted_contact');
+  const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
-    owner,
+    ownerId,
+    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     leadSource,
     title,
     company,
@@ -57,7 +60,6 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     connection_id: connectionId,
     customer_id: customerId,
     remote_was_deleted: remoteLead.remoteWasDeleted,
-    owner: remoteLead.owner,
     lead_source: remoteLead.leadSource,
     title: remoteLead.title,
     company: remoteLead.company,
@@ -70,6 +72,7 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     converted_date: remoteLead.convertedDate?.toISOString(),
     _converted_remote_account_id: remoteLead.convertedRemoteAccountId,
     _converted_remote_contact_id: remoteLead.convertedRemoteContactId,
+    _remote_owner_id: remoteLead.remoteOwnerId,
     updated_at: new Date().toISOString(),
   };
 };

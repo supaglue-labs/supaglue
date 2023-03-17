@@ -1,0 +1,141 @@
+schema:
+  update:
+    enabled: true
+    backoffLimit: 100
+
+syncWorker:
+  enabled: true
+  replicaCount: 2
+  logLevel: 'info'
+  image:
+    repository: ~
+    tag: ~
+    pullPolicy: ~
+  metrics:
+    annotations:
+      enabled: false
+  env: []
+  podAnnotations: {}
+  podLabels: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+management:
+  enabled: true
+  replicaCount: 1
+  frontendUrl: ''
+  image:
+    repository: ~
+    tag: ~
+    pullPolicy: ~
+  service:
+    type: ClusterIP
+    port: 3000
+    annotations: {} # Evaluated as template
+  env: []
+  podAnnotations: {}
+  podLabels: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  ingressHosts: []
+  #  - "supaglue.domain.com"
+
+api:
+  enabled: true
+  replicaCount: 2
+  logLevel: 'info'
+  serverUrl: ''
+  oauthReturnUrl: ''
+  corsOrigin: ''
+  image:
+    repository: ~
+    tag: ~
+    pullPolicy: ~
+  service:
+    type: ClusterIP
+    port: 8080
+    annotations: {} # Evaluated as template
+  metrics:
+    annotations:
+      enabled: false
+  env: []
+  podAnnotations: {}
+  podLabels: {}
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  ingressHosts: []
+  #  - "supaglue.domain.com"
+
+managedCertificate:
+  enabled: false
+  name: supaglue-api-cert
+
+ingress:
+  enabled: true
+  # className: nginx
+  annotations:
+    {}
+    # assign to a static IP in GCP
+    # kubernetes.io/ingress.global-static-ip-name: supaglue-ip
+    # assign a Managed Certificate in GCP
+    # networking.gke.io/managed-certificates: supaglue-cert
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+# Custom Service account management
+serviceAccount:
+  # Whether to create service account or not
+  create: false
+  # Name of the service account, default: supaglue.fullname
+  name:
+  extraAnnotations:
+
+existingSecret: ~
+
+secretKeys:
+  databaseUrl: database-url
+  dbEncryptionSecret: db-encryption-secret
+  apiKeySalt: api-key-salt
+  jwtSecret: jwt-secret
+  internalApiToken: internal-api-token
+  adminPassword: admin-password
+
+apiKeySalt: ''
+dbEncryptionSecret: ''
+jwtSecret: ''
+internalApiToken: ''
+adminPassword: ''
+
+deploymentId: ''
+
+temporal:
+  enabled: true
+  grafana:
+    enabled: false
+  elasticsearch:
+    enabled: false
+  prometheus:
+    enabled: false
+  cassandra:
+    persistence:
+      enabled: true
+
+postgresql:
+  enabled: true
+  auth:
+    database: supaglue
+    username: supaglue
+  primary:
+    resources:
+      limits: {}
+      requests:
+        memory: 2Gi
+        cpu: 1

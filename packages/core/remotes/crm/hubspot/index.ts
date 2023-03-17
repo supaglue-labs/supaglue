@@ -2,24 +2,32 @@ import { Client } from '@hubspot/api-client';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedCompanies } from '@hubspot/api-client/lib/codegen/crm/companies';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
+import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
 import { logger } from '../../../lib';
-import { RemoteAccount, RemoteAccountCreateParams, RemoteAccountUpdateParams } from '../../../types/account';
-import { CRMConnection } from '../../../types/connection';
-import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
-import { Integration } from '../../../types/integration';
-import { RemoteLead, RemoteLeadCreateParams, RemoteLeadUpdateParams } from '../../../types/lead';
+import { CRMConnectionUnsafe } from '../../../types/connection';
 import {
+  RemoteAccount,
+  RemoteAccountCreateParams,
+  RemoteAccountUpdateParams,
+  RemoteContact,
+  RemoteContactCreateParams,
+  RemoteContactUpdateParams,
+  RemoteLead,
+  RemoteLeadCreateParams,
+  RemoteLeadUpdateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/opportunity';
-import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
+} from '../../../types/crm';
+import { CompleteIntegration } from '../../../types/integration';
+import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
   fromHubSpotContactToRemoteContact,
   fromHubSpotDealToRemoteOpportunity,
+  fromHubspotOwnerToRemoteUser,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
   toHubspotContactCreateParams,
@@ -31,10 +39,12 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100;
 
 const ASYNC_RETRY_OPTIONS = {
+  // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
+  // and will know that this activity is making progress.
   forever: true,
   factor: 2,
   minTimeout: 1000,
-  maxTimeout: 60 * 6000,
+  maxTimeout: 60 * 1000,
 };
 
 const propertiesToFetch = {
@@ -65,11 +75,10 @@ const propertiesToFetch = {
     'email',
     'fax',
     'firstname',
-    'hs_additional_emails',
     'hs_createdate', // TODO: Use this or createdate?
     'hs_is_contact', // TODO: distinguish from "visitor"?
     'hs_lastmodifieddate', // TODO: Use this or lastmodifieddate?
-    'hs_whatsapp_phone_number',
+    'hubspot_owner_id',
     'lastmodifieddate',
     'lastname',
     'mobilephone',
@@ -103,18 +112,23 @@ type Credentials = {
   clientSecret: string;
 };
 
-class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
+class HubSpotClient extends AbstractCrmRemoteClient {
   readonly #client: Client;
   readonly #credentials: Credentials;
 
   public constructor(credentials: Credentials) {
-    super();
+    super('https://api.hubapi.com');
     const { accessToken } = credentials;
     this.#client = new Client({
       accessToken,
-      numberOfApiCallRetries: 1,
     });
     this.#credentials = credentials;
+  }
+
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    return {
+      Authorization: `Bearer ${this.#credentials.accessToken}`,
+    };
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {
@@ -145,7 +159,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     (async () => {
       let after = undefined;
       do {
-        const currResults: HubspotPaginatedDeals = await this.listAccountsImpl(after);
+        const currResults: HubspotPaginatedCompanies = await this.listAccountsImpl(after);
         const remoteAccounts = currResults.results.map(fromHubSpotCompanyToRemoteAccount);
         after = currResults.paging?.next?.after;
 
@@ -177,11 +191,17 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         );
         return companies;
       } catch (e: any) {
-        logger.error(`Error encountered: ${e}`);
+        logger.error(e, 'Error encountered');
         throw e;
       }
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  private async getAccount(remoteId: string): Promise<RemoteAccount> {
+    await this.maybeRefreshAccessToken();
+    const company = await this.#client.crm.companies.basicApi.getById(remoteId, propertiesToFetch.company);
+    return fromHubSpotCompanyToRemoteAccount(company);
   }
 
   public async createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount> {
@@ -189,9 +209,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     const company = await this.#client.crm.companies.basicApi.create({
       properties: toHubspotAccountCreateParams(params),
     });
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotCompanyToRemoteAccount(company);
+    return await this.getAccount(company.id);
   }
 
   public async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
@@ -199,9 +217,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
     const company = await this.#client.crm.companies.basicApi.update(params.remoteId, {
       properties: toHubspotAccountUpdateParams(params),
     });
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotCompanyToRemoteAccount(company);
+    return await this.getAccount(company.id);
   }
 
   public async listOpportunities(): Promise<Readable> {
@@ -244,11 +260,22 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         );
         return deals;
       } catch (e: any) {
-        logger.error(`Error encountered: ${e}`);
+        logger.error(e, 'Error encountered');
         throw e;
       }
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  private async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
+    await this.maybeRefreshAccessToken();
+    const deal = await this.#client.crm.deals.basicApi.getById(
+      remoteId,
+      propertiesToFetch.deal,
+      /* propertiesWithHistory */ undefined,
+      /* associations */ ['company']
+    );
+    return fromHubSpotDealToRemoteOpportunity(deal);
   }
 
   public async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
@@ -261,9 +288,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
       ]);
     }
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotDealToRemoteOpportunity(deal);
+    return await this.getOpportunity(deal.id);
   }
 
   public async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
@@ -276,9 +301,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
       ]);
     }
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotDealToRemoteOpportunity(deal);
+    return await this.getOpportunity(deal.id);
   }
 
   public async listContacts(): Promise<Readable> {
@@ -321,11 +344,22 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         );
         return contacts;
       } catch (e: any) {
-        logger.error(`Error encountered: ${e}`);
+        logger.error(e, 'Error encountered');
         throw e;
       }
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  private async getContact(remoteId: string): Promise<RemoteContact> {
+    await this.maybeRefreshAccessToken();
+    const contact = await this.#client.crm.contacts.basicApi.getById(
+      remoteId,
+      propertiesToFetch.contact,
+      /* propertiesWithHistory */ undefined,
+      /* associations */ ['company']
+    );
+    return fromHubSpotContactToRemoteContact(contact);
   }
 
   public async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
@@ -341,9 +375,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
       );
     }
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotContactToRemoteContact(contact);
+    return await this.getContact(contact.id);
   }
 
   public async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
@@ -359,9 +391,7 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
         [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
       );
     }
-    // TODO: when we support associations on creates/updates, we should fetch
-    // for associations. The current returned object doesn't have associations.
-    return fromHubSpotContactToRemoteContact(contact);
+    return await this.getContact(contact.id);
   }
 
   public async listLeads(limit?: number): Promise<Readable> {
@@ -375,10 +405,55 @@ class HubSpotClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
   public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
     throw new Error('Not supported');
   }
+
+  public async listUsers(): Promise<Readable> {
+    const passThrough = new PassThrough({ objectMode: true });
+
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedOwners = await this.listUsersImpl(after);
+        const remoteAccounts = currResults.results.map(fromHubspotOwnerToRemoteUser);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteAccounts);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
+    return passThrough;
+  }
+
+  private async listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
+    const helper = async () => {
+      try {
+        await this.maybeRefreshAccessToken();
+        const owners = await this.#client.crm.owners.ownersApi.getPage(
+          /* email */ undefined,
+          after,
+          HUBSPOT_RECORD_LIMIT
+        );
+        return owners;
+      } catch (e: any) {
+        logger.error(e, 'Error encountered');
+        throw e;
+      }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnection, integration: Integration): HubSpotClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,

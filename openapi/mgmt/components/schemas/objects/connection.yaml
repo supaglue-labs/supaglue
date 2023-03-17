@@ -1,0 +1,44 @@
+type: object
+properties:
+  id:
+    type: string
+    example: e888cedf-e9d0-42c5-9485-2d72984faef2
+  status:
+    type: string
+    enum:
+      - available
+      - added
+      - authorized
+      - callable
+    example: available
+  customer_id:
+    type: string
+    example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+  integration_id:
+    type: string
+    example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+  provider_name:
+    $ref: ./provider_name.yaml
+  category:
+    $ref: ./category.yaml
+required:
+  - id
+  - status
+  - customer_id
+  - integration_id
+  - provider_name
+  - category
+# ajv has issues with interpreting the id here as a schema id
+# example:
+#   id: e888cedf-e9d0-42c5-9485-2d72984faef3
+#   customer_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+#   status: available
+#   integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+#   provider_name: salesforce
+#   category: crm
+#   credentials:
+#   - type: oauth2
+#     access_token: FILL THIS
+#     refresh_token: FILL THIS
+#     instance_url: https://myapp-dev-ed.develop.my.salesforce.com
+#     expires_at: 2023-03-09T21:55:54Z

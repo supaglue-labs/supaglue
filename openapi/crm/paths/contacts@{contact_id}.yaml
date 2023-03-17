@@ -3,6 +3,8 @@ get:
   summary: Get contact
   tags:
     - Contacts
+  security:
+    - ApiKeyAuth: []
   parameters:
     - $ref: ../../common/components/parameters/expand.yaml
   responses:
@@ -17,6 +19,8 @@ patch:
   summary: Update contact
   tags:
     - Contacts
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true
@@ -53,8 +57,8 @@ patch:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml
   - name: contact_id
     in: path
     required: true

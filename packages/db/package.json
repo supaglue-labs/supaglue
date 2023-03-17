@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/db",
-  "version": "0.3.3",
+  "version": "0.4.1",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "index": "dist/index.js",
@@ -27,5 +27,8 @@
   ],
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
   }
 }

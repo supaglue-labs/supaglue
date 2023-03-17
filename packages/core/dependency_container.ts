@@ -10,13 +10,17 @@ import {
   LeadService,
   OpportunityService,
   RemoteService,
+  SgUserService,
   SyncHistoryService,
+  UserService,
 } from './services';
 
 export type CoreDependencyContainer = {
   pgPool: Pool;
   prisma: PrismaClient;
 
+  // mgmt
+  sgUserService: SgUserService;
   applicationService: ApplicationService;
   connectionService: ConnectionService;
   integrationService: IntegrationService;
@@ -28,6 +32,7 @@ export type CoreDependencyContainer = {
   contactService: ContactService;
   leadService: LeadService;
   opportunityService: OpportunityService;
+  userService: UserService;
   syncHistoryService: SyncHistoryService;
 };
 
@@ -39,6 +44,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     connectionString: process.env.SUPAGLUE_DATABASE_URL,
   });
 
+  // mgmt
+  const sgUserService = new SgUserService(prisma);
   const applicationService = new ApplicationService(prisma);
   const connectionService = new ConnectionService(prisma);
   const integrationService = new IntegrationService(prisma);
@@ -51,10 +58,13 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const opportunityService = new OpportunityService(pgPool, prisma, remoteService);
   const contactService = new ContactService(pgPool, prisma, remoteService);
   const syncHistoryService = new SyncHistoryService(prisma);
+  const userService = new UserService(pgPool, prisma, remoteService);
 
   return {
     pgPool,
     prisma,
+    // mgmt
+    sgUserService,
     applicationService,
     connectionService,
     customerService,
@@ -65,6 +75,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     accountService,
     leadService,
     opportunityService,
+    userService,
     syncHistoryService,
   };
 }

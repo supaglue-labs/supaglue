@@ -15,6 +15,11 @@ export interface paths {
     post: operations["createAccount"];
     
   };
+  "/accounts/_search": {
+    /** Search accounts */
+    post: operations["searchAccounts"];
+    
+  };
   "/accounts/{account_id}": {
     /** Get account */
     get: operations["getAccount"];
@@ -34,6 +39,11 @@ export interface paths {
     get: operations["getContacts"];
     /** Create contact */
     post: operations["createContact"];
+    
+  };
+  "/contacts/_search": {
+    /** Search contacts */
+    post: operations["searchContacts"];
     
   };
   "/contacts/{contact_id}": {
@@ -89,6 +99,31 @@ export interface paths {
       };
     };
   };
+  "/users": {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    get: operations["getUsers"];
+    
+  };
+  "/users/{user_id}": {
+    /** Get user */
+    get: operations["getUser"];
+    parameters: {
+      path: {
+        user_id: string;
+      };
+    };
+  };
+  "/passthrough": {
+    /**
+     * Send passthrough request 
+     * @description Send request directly to a provider
+     */
+    post: operations["sendPassthroughRequest"];
+    
+  };
   "/sync-history": {
     /**
      * Get Sync History 
@@ -111,111 +146,40 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /**
-     * @example [
-     *   {
-     *     "addresses": [
-     *       {
-     *         "address_type": "Shipping",
-     *         "city": "San Francisco",
-     *         "country": "US",
-     *         "postal_code": "94107",
-     *         "state": "CA",
-     *         "street_1": "525 Brannan",
-     *         "street_2": null
-     *       }
-     *     ],
-     *     "description": "Integration API",
-     *     "id": "e888cedf-e9d0-42c5-9485-2d72984faef2",
-     *     "industry": "APIs",
-     *     "last_activity_at": "2022-02-10T00:00:00Z",
-     *     "name": "Sample Customer",
-     *     "number_of_employees": 224,
-     *     "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-     *     "phone_numbers": [
-     *       {
-     *         "phone_number": "+14151234567",
-     *         "phone_number_type": "Mobile"
-     *       }
-     *     ],
-     *     "created_at": "2022-02-27T00:00:00Z",
-     *     "updated_at": "2022-02-27T00:00:00Z",
-     *     "website": "https://supaglue.com/"
-     *   },
-     *   {
-     *     "addresses": [
-     *       {
-     *         "address_type": "Shipping",
-     *         "city": "San Francisco",
-     *         "country": "US",
-     *         "postal_code": "94107",
-     *         "state": "CA",
-     *         "street_1": "525 Brannan",
-     *         "street_2": null
-     *       }
-     *     ],
-     *     "description": "Integration API",
-     *     "id": "3bde961a-90da-4daa-ab2e-cc4498c460f9",
-     *     "industry": "APIs",
-     *     "last_activity_at": "2022-02-27T00:00:00Z",
-     *     "name": "Sample Customer",
-     *     "number_of_employees": 1000,
-     *     "owner": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-     *     "phone_numbers": [
-     *       {
-     *         "phone_number": "+14151234567",
-     *         "phone_number_type": "Mobile"
-     *       }
-     *     ],
-     *     "created_at": "2022-02-27T00:00:00Z",
-     *     "updated_at": "2022-02-27T00:00:00Z",
-     *     "website": "https://supaglue.com/"
-     *   }
-     * ]
-     */
     account: {
-      addresses?: components["schemas"]["addresses"];
+      addresses: components["schemas"]["addresses"];
       /** @example Integration API */
-      description?: string | null;
+      description: string | null;
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id?: string;
+      id: string;
       /** @example API's */
-      industry?: string | null;
+      industry: string | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_activity_at?: Date | null;
+      last_activity_at: Date | null;
       /** @example Sample Customer */
-      name?: string | null;
+      name: string | null;
       /** @example 276000 */
-      number_of_employees?: number | null;
+      number_of_employees: number | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      owner?: string | null;
-      phone_numbers?: components["schemas"]["phone_numbers"];
+      owner_id: string | null;
+      owner?: components["schemas"]["user"];
+      phone_numbers: components["schemas"]["phone_numbers"];
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      created_at?: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      updated_at?: Date | null;
+      updated_at: Date | null;
       /** @example https://supaglue.com/ */
-      website?: string | null;
+      website: string | null;
     };
-    /**
-     * @example {
-     *   "description": "Integration API",
-     *   "industry": "API's",
-     *   "last_activity_at": "2022-02-10T00:00:00Z",
-     *   "name": "Sample Customer",
-     *   "number_of_employees": 276000,
-     *   "website": "https://supaglue.com/"
-     * }
-     */
     create_update_account: {
       /** @example Integration API */
       description?: string | null;
@@ -227,11 +191,19 @@ export interface components {
       number_of_employees?: number | null;
       /** @example https://supaglue.com/ */
       website?: string | null;
+      addresses?: components["schemas"]["addresses"];
+      phone_numbers?: components["schemas"]["phone_numbers"];
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     contact: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
       account_id?: string | null;
       account?: components["schemas"]["account"];
+      /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+      owner_id?: string | null;
+      owner?: components["schemas"]["user"];
       addresses?: components["schemas"]["addresses"];
       email_addresses?: components["schemas"]["email_addresses"];
       /** @example George */
@@ -264,6 +236,12 @@ export interface components {
       last_name?: string | null;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       account_id?: string | null;
+      addresses?: components["schemas"]["addresses"];
+      email_addresses?: components["schemas"]["email_addresses"];
+      phone_numbers?: components["schemas"]["phone_numbers"];
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     lead: {
       addresses?: components["schemas"]["addresses"];
@@ -290,7 +268,8 @@ export interface components {
       /** @example API Blogger */
       lead_source?: string | null;
       /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
-      owner?: string | null;
+      owner_id?: string | null;
+      owner?: components["schemas"]["user"];
       phone_numbers?: components["schemas"]["phone_numbers"];
       /**
        * Format: date-time 
@@ -316,10 +295,11 @@ export interface components {
       lead_source?: string | null;
       /** @example Co-Founder */
       title?: string;
-      /** @example ab849b1c-c36b-4d8b-9e45-679b48fc4de7 */
-      converted_account_id?: string | null;
-      /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
-      converted_contact_id?: string | null;
+      email_addresses?: components["schemas"]["email_addresses"];
+      addresses?: components["schemas"]["addresses"];
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     opportunity: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
@@ -344,7 +324,8 @@ export interface components {
       /** @example Needs third-party integrations */
       name?: string | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      owner?: string | null;
+      owner_id?: string | null;
+      owner?: components["schemas"]["user"];
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
@@ -360,6 +341,23 @@ export interface components {
       /** @example OPEN */
       status?: string | null;
     };
+    user: {
+      /** @example George Xing */
+      name?: string | null;
+      /** @example george@supaglue.com */
+      email?: string | null;
+      is_active?: boolean | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      created_at?: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      updated_at?: Date | null;
+    };
     create_update_opportunity: {
       /** @example 100000 */
       amount?: number | null;
@@ -373,6 +371,9 @@ export interface components {
       stage?: string;
       /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
       account_id?: string | null;
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     /**
      * @example [
@@ -411,7 +412,7 @@ export interface components {
         };
       })[];
     errors: ({
-        /** @example custom_fields is a required field on model. */
+        /** @example name is a required field on model. */
         detail?: string;
         /** @example MISSING_REQUIRED_FIELD */
         problem_type?: string;
@@ -457,65 +458,74 @@ export interface components {
     /**
      * @example [
      *   {
-     *     "address_type": "Shipping",
+     *     "address_type": "shipping",
      *     "city": "San Francisco",
      *     "country": "US",
      *     "postal_code": "94107",
      *     "state": "CA",
-     *     "street_1": "525 Brannan",
-     *     "street_2": null
+     *     "street1": "525 Brannan",
+     *     "street2": null
      *   }
      * ]
      */
     addresses: ({
-        /** @example Shipping */
-        address_type?: string | null;
+        /** @enum {string} */
+        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
         /** @example San Francisco */
-        city?: string | null;
+        city: string | null;
         /** @example USA */
-        country?: string | null;
+        country: string | null;
         /** @example 94107 */
-        postal_code?: string | null;
+        postal_code: string | null;
         /** @example CA */
-        state?: string | null;
+        state: string | null;
         /** @example 525 Brannan */
-        street_1?: string | null;
+        street1: string | null;
         /** @example null */
-        street_2?: string | null;
+        street2: string | null;
       })[];
     /**
      * @example [
      *   {
      *     "email_address": "hello@supaglue.com",
-     *     "email_address_type": "Work"
+     *     "email_address_type": "work"
      *   }
      * ]
      */
     email_addresses: ({
         /** @example hello@supaglue.com */
-        email_address?: string;
-        /** @example Work */
-        email_address_type?: string | null;
+        email_address: string;
+        /** @enum {string} */
+        email_address_type: "primary" | "work";
       })[];
     /**
      * @example [
      *   {
      *     "phone_number": "+14151234567",
-     *     "phone_number_type": "Mobile"
+     *     "phone_number_type": "primary"
      *   }
      * ]
      */
     phone_numbers: ({
         /** @example +14151234567 */
-        phone_number?: string | null;
-        /** @example Mobile */
-        phone_number_type?: string | null;
+        phone_number: string | null;
+        /** @enum {string} */
+        phone_number_type: "primary" | "mobile" | "fax";
       })[];
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
       next?: string | null;
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous?: string | null;
+    };
+    /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+    custom_fields: {
+      [key: string]: unknown | undefined;
+    };
+    filter: {
+      /** @enum {string} */
+      type: "equals";
+      value: string;
     };
   };
   responses: never;
@@ -535,9 +545,9 @@ export interface components {
     /** @description Number of results to return per page */
     page_size: string;
     /** @description The customer ID */
-    "customer-id": string;
+    "x-customer-id": string;
     /** @description The provider name */
-    "provider-name": string;
+    "x-provider-name": string;
   };
   requestBodies: never;
   headers: never;
@@ -582,6 +592,28 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["account"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  searchAccounts: {
+    /** Search accounts */
+    requestBody: {
+      content: {
+        "application/json": {
+          filters: {
+            website?: components["schemas"]["filter"];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Accounts */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["account"])[];
           };
         };
       };
@@ -643,10 +675,12 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "first_name": "George",
-         *   "last_activity_at": "2022-02-10T00:00:00Z",
-         *   "last_name": "Xing",
-         *   "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *   "model": {
+         *     "first_name": "George",
+         *     "last_activity_at": "2022-02-10T00:00:00Z",
+         *     "last_name": "Xing",
+         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *   }
          * }
          */
         "application/json": {
@@ -663,6 +697,28 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["contact"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  searchContacts: {
+    /** Search contacts */
+    requestBody: {
+      content: {
+        "application/json": {
+          filters: {
+            email_address?: components["schemas"]["filter"];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Contacts */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["contact"])[];
           };
         };
       };
@@ -866,6 +922,91 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["opportunity"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getUsers: {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    responses: {
+      /** @description Users */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["user"])[];
+          };
+        };
+      };
+    };
+  };
+  getUser: {
+    /** Get user */
+    responses: {
+      /** @description User */
+      200: {
+        content: {
+          "application/json": components["schemas"]["user"];
+        };
+      };
+    };
+  };
+  sendPassthroughRequest: {
+    /**
+     * Send passthrough request 
+     * @description Send request directly to a provider
+     */
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description The path to send the request to (do not pass the domain) */
+          path: string;
+          /**
+           * @example GET 
+           * @enum {string}
+           */
+          method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+          /** @description Headers to pass to downstream */
+          headers?: {
+            [key: string]: string | undefined;
+          };
+          /** @description Query parameters to pass to downstream */
+          query?: {
+            [key: string]: string | undefined;
+          };
+          /** @description Body to pass to downstream */
+          body?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Passthrough response */
+      200: {
+        content: {
+          "application/json": {
+            /**
+             * @description The full URL the request was went to 
+             * @example https://customcrm.com/api/cars
+             */
+            url: string;
+            /**
+             * @description Status code from the downstream 
+             * @example 200
+             */
+            status: number;
+            /** @description The response headers from the downstream */
+            headers: {
+              [key: string]: string | undefined;
+            };
+            /** @description The body from the downstream */
+            body?: string | number | number | boolean | (({
+                [key: string]: unknown | undefined;
+              })[]) | ({
+              [key: string]: unknown | undefined;
+            });
           };
         };
       };

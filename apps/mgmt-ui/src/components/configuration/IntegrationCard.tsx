@@ -1,20 +1,14 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { sendRequest } from '@/sendRequests';
-import { Button, Card, CardContent, CardHeader, Divider, Grid, Switch } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useRouter } from 'next/router';
-import useSWRMutation from 'swr/mutation';
 import { Integration, IntegrationCardInfo } from './VerticalTabs';
 
-export default function IntegrationCard(props: {
-  integration: Integration;
-  integrationInfo: IntegrationCardInfo;
-  enabled: boolean;
-}) {
+export default function IntegrationCard(props: { integration: Integration; integrationInfo: IntegrationCardInfo }) {
   const router = useRouter();
-  const { trigger } = useSWRMutation('/mgmt/v1/integrations', sendRequest);
-  const { enabled, integration } = props;
-  const { icon, name, description, category, providerName } = props.integrationInfo;
+
+  const { icon, name, description, category, status, providerName } = props.integrationInfo;
+
   return (
     <Card
       classes={{
@@ -24,14 +18,11 @@ export default function IntegrationCard(props: {
       <Box>
         <CardHeader
           avatar={icon}
-          subheader={name}
-          action={
-            <Switch
-              checked={enabled}
-              onClick={() => {
-                trigger({ ...integration, enabled: !enabled });
-              }}
-            ></Switch>
+          subheader={
+            <Stack direction="column">
+              <Typography>{name}</Typography>
+              <Typography fontSize={12}>{category.toUpperCase()}</Typography>
+            </Stack>
           }
         />
         <CardContent
@@ -48,10 +39,10 @@ export default function IntegrationCard(props: {
           <Button
             variant="text"
             onClick={() => {
-              router.push(`/configuration/${category}/${providerName}`);
+              router.push(`/configuration/integrations/${category}/${providerName}`);
             }}
           >
-            View
+            Configure
           </Button>
         </Grid>
       </Box>

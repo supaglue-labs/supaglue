@@ -2,15 +2,16 @@ import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
 import { Box, CssBaseline, useMediaQuery } from '@mui/material';
 import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 export let theme = createTheme({
   palette: {
     primary: {
       light: '#63ccff',
-      main: '#7353FA',
-      dark: '#111013',
+      main: '#009be5',
+      dark: '#006db3',
     },
   },
   typography: {
@@ -43,7 +44,7 @@ theme = {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#111013',
+          backgroundColor: '#081627',
         },
       },
     },
@@ -150,7 +151,21 @@ theme = {
 
 const drawerWidth = 256;
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  return (
+    <SessionProvider session={session}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <InnerApp>
+            <Component {...pageProps} />
+          </InnerApp>
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </SessionProvider>
+  );
+}
+
+function InnerApp({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -159,24 +174,20 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-          <CssBaseline />
-          <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
-            {isSmUp ? null : (
-              <Navigator
-                PaperProps={{ style: { width: drawerWidth } }}
-                variant="temporary"
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-              />
-            )}
-            <Navigator PaperProps={{ style: { width: drawerWidth } }} sx={{ display: { sm: 'block', xs: 'none' } }} />
-          </Box>
-          <Component {...pageProps} />
-        </Box>
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <CssBaseline />
+      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
+        {isSmUp ? null : (
+          <Navigator
+            PaperProps={{ style: { width: drawerWidth } }}
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+          />
+        )}
+        <Navigator PaperProps={{ style: { width: drawerWidth } }} sx={{ display: { sm: 'block', xs: 'none' } }} />
+      </Box>
+      {children}
+    </Box>
   );
 }

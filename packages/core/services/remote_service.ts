@@ -1,5 +1,6 @@
 import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
+import { CompleteIntegration } from '../types/integration';
 import type { ConnectionService } from './connection_service';
 import type { IntegrationService } from './integration_service';
 
@@ -13,10 +14,15 @@ export class RemoteService {
   }
 
   public async getCrmRemoteClient(connectionId: string): Promise<CrmRemoteClient> {
-    const connection = await this.#connectionService.getById(connectionId);
+    const connection = await this.#connectionService.getUnsafeById(connectionId);
     const integration = await this.#integrationService.getById(connection.integrationId);
 
-    const client = getCrmRemoteClient(connection, integration);
+    if (!integration.config) {
+      throw new Error('Integration must have config');
+    }
+
+    // TODO: don't cast `integration as CompleteIntegration`
+    const client = getCrmRemoteClient(connection, integration as CompleteIntegration);
 
     // Persist the refreshed token
     client.on('token_refreshed', (accessToken: string, expiresAt: string | null) => {

@@ -5,12 +5,11 @@ type BaseApplication = {
 
 export type Application = BaseApplication & {
   id: string;
-  name: string;
-  config: ApplicationConfig;
 };
 
 export type ApplicationConfig = {
   webhook: WebhookConfig | null;
+  apiKey: string | null;
 };
 
 type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';

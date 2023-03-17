@@ -1,6 +1,7 @@
-import { CRMConnection } from '../../types/connection';
+import { logger } from '../../lib/logger';
+import { CRMConnectionUnsafe } from '../../types/connection';
 import { CRMProviderName } from '../../types/crm';
-import { Integration } from '../../types/integration';
+import { CompleteIntegration } from '../../types/integration';
 import { ConnectorAuthConfig, CrmConnectorConfig, CrmRemoteClient } from './base';
 import * as capsule from './capsule';
 import * as hubspot from './hubspot';
@@ -25,7 +26,53 @@ export function getConnectorAuthConfig(providerName: CRMProviderName): Connector
   return authConfig;
 }
 
-export function getCrmRemoteClient(connection: CRMConnection, integration: Integration): CrmRemoteClient {
+export function getCrmRemoteClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): CrmRemoteClient {
   const { newClient } = crmConnectorConfigMap[connection.providerName];
-  return newClient(connection, integration);
+  const client = newClient(connection, integration);
+
+  // Intercept and log errors to remotes
+  return new Proxy(client, {
+    get(target, p) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const v = target[p];
+      if (typeof v !== 'function') {
+        return v;
+      }
+
+      return new Proxy(v, {
+        apply(_target, thisArg, argArray) {
+          try {
+            const res = v.apply(target, argArray);
+            if (Promise.resolve(res) === res) {
+              // if it's a promise
+              return (res as Promise<unknown>).catch((err) => {
+                logger.error(
+                  {
+                    error: err,
+                    client: target.constructor.name,
+                    method: p,
+                    args: argArray,
+                  },
+                  'remote client error'
+                );
+                throw err;
+              });
+            }
+          } catch (err: unknown) {
+            logger.error(
+              {
+                error: err,
+                client: target.constructor.name,
+                method: p,
+                args: argArray,
+              },
+              'remote client error'
+            );
+            throw err;
+          }
+        },
+      });
+    },
+  });
 }

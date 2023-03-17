@@ -1,41 +1,80 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { customerMiddleware } from '@/middleware/customer';
-import { openapiMiddleware } from '@/middleware/openapi';
+import { camelcaseKeys } from '@/lib/camelcase';
+import { snakecaseKeys } from '@/lib/snakecase';
+import {
+  DeleteCustomerPathParams,
+  DeleteCustomerRequest,
+  DeleteCustomerResponse,
+  GetCustomerPathParams,
+  GetCustomerRequest,
+  GetCustomerResponse,
+  GetCustomersPathParams,
+  GetCustomersRequest,
+  GetCustomersResponse,
+  UpsertCustomerPathParams,
+  UpsertCustomerRequest,
+  UpsertCustomerResponse,
+} from '@supaglue/schemas/mgmt';
 import { Request, Response, Router } from 'express';
-import connection from './connection';
+import connection from './connection/index';
 
 const { customerService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const customerRouter = Router();
-  customerRouter.use(openapiMiddleware('customer'));
 
-  app.get('/customers', async (req: Request, res: Response) => {
-    const customers = await customerService.list();
-    return res.status(200).send(customers);
-  });
+  customerRouter.get(
+    '/',
+    async (
+      req: Request<GetCustomersPathParams, GetCustomersResponse, GetCustomersRequest>,
+      res: Response<GetCustomersResponse>
+    ) => {
+      const customers = await customerService.list();
+      return res.status(200).send(customers.map(snakecaseKeys));
+    }
+  );
 
-  app.post('/customers', async (req: Request, res: Response) => {
-    const customer = await customerService.create(req.body);
-    return res.status(201).send(customer);
-  });
+  // TODO: do we want non-upsert create/update endpoints?
 
-  customerRouter.get('/', async (req: Request, res: Response) => {
-    const customer = await customerService.getById(req.sg.customerId);
-    return res.status(200).send(customer);
-  });
+  customerRouter.put(
+    '/',
+    async (
+      req: Request<UpsertCustomerPathParams, UpsertCustomerResponse, UpsertCustomerRequest>,
+      res: Response<UpsertCustomerResponse>
+    ) => {
+      const customer = await customerService.upsert(camelcaseKeys(req.body));
+      return res.status(201).send(snakecaseKeys(customer));
+    }
+  );
 
-  customerRouter.put('/', async (req: Request, res: Response) => {
-    const customer = await customerService.update(req.sg.customerId, req.body);
-    return res.status(200).send(customer);
-  });
+  // TODO: consider fetching by external_identifier instead of internal id
+  customerRouter.get(
+    '/:customer_id',
+    async (
+      req: Request<GetCustomerPathParams, GetCustomerResponse, GetCustomerRequest>,
+      res: Response<GetCustomerResponse>
+    ) => {
+      const customer = await customerService.getById(req.params.customer_id);
+      return res.status(200).send(snakecaseKeys(customer));
+    }
+  );
 
-  customerRouter.delete('/', async (req: Request, res: Response) => {
-    const customer = await customerService.delete(req.sg.customerId);
-    return res.status(200).send(customer);
-  });
+  // TODO: consider fetching by external_identifier instead of internal id
+  customerRouter.delete(
+    '/:customer_id',
+    async (
+      req: Request<DeleteCustomerPathParams, DeleteCustomerResponse, DeleteCustomerRequest>,
+      res: Response<DeleteCustomerResponse>
+    ) => {
+      const customer = await customerService.delete(req.params.customer_id);
+      return res.status(200).send(snakecaseKeys(customer));
+    }
+  );
 
-  connection(customerRouter);
+  app.use('/customers', customerRouter);
 
-  app.use('/customers/:customer_id', customerMiddleware, customerRouter);
+  const perCustomerRouter = Router({ mergeParams: true });
+
+  connection(perCustomerRouter);
+  customerRouter.use('/:customer_id', perCustomerRouter);
 }

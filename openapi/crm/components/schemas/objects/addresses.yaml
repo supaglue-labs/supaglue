@@ -4,8 +4,12 @@ items:
   properties:
     address_type:
       type: string
-      nullable: true
-      example: Shipping
+      enum:
+        - primary
+        - mailing
+        - other
+        - billing
+        - shipping
     city:
       type: string
       nullable: true
@@ -22,19 +26,27 @@ items:
       type: string
       nullable: true
       example: CA
-    street_1:
+    street1:
       type: string
       nullable: true
       example: 525 Brannan
-    street_2:
+    street2:
       type: string
       nullable: true
       example: ~
+  required:
+    - address_type
+    - city
+    - country
+    - postal_code
+    - state
+    - street1
+    - street2
 example:
-  - address_type: Shipping
+  - address_type: shipping
     city: San Francisco
     country: US
     postal_code: '94107'
     state: CA
-    street_1: 525 Brannan
-    street_2: ~
+    street1: 525 Brannan
+    street2: ~

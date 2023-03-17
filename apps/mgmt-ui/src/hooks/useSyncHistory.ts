@@ -1,11 +1,12 @@
+import { camelcaseKeys } from '@/utils/camelcase';
 import useSWR from 'swr';
-import { API_HOST, fetcher } from '.';
+import { fetcher } from '.';
 
 export function useSyncHistory() {
-  const { data, error, isLoading } = useSWR(`${API_HOST}/crm/v1/sync-history`, fetcher);
+  const { data, error, isLoading } = useSWR(`/api/internal/sync-history`, fetcher);
 
   return {
-    syncHistory: data,
+    syncHistory: data ? camelcaseKeys(data) : undefined,
     isLoading,
     isError: error,
   };

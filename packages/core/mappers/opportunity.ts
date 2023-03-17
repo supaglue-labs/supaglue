@@ -1,11 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CrmOpportunityExpanded, Opportunity, OpportunityStatus, RemoteOpportunity } from '../types';
 import { fromAccountModel } from './account';
+import { fromUserModel } from './user';
 
 export const fromOpportunityModel = (
   {
     id,
     remoteWasDeleted,
+    ownerId,
     owner,
     name,
     description,
@@ -22,9 +24,11 @@ export const fromOpportunityModel = (
   expandedAssociations: string[] = []
 ): Opportunity => {
   const expandAccount = expandedAssociations.includes('account');
+  const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
-    owner,
+    ownerId,
+    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     name,
     description,
     accountId,
@@ -52,7 +56,6 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     connection_id: connectionId,
     customer_id: customerId,
     remote_was_deleted: remoteOpportunity.remoteWasDeleted,
-    owner: remoteOpportunity.owner,
     name: remoteOpportunity.name,
     description: remoteOpportunity.description,
     amount: remoteOpportunity.amount,
@@ -63,6 +66,7 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     remote_created_at: remoteOpportunity.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteOpportunity.remoteUpdatedAt?.toISOString(),
     _remote_account_id: remoteOpportunity.remoteAccountId,
+    _remote_owner_id: remoteOpportunity.remoteOwnerId,
     updated_at: new Date().toISOString(),
   };
 };

@@ -2,6 +2,8 @@ get:
   operationId: getAccounts
   tags:
     - Accounts
+  security:
+    - ApiKeyAuth: []
   summary: List accounts
   description: >-
     Get a list of accounts
@@ -34,44 +36,44 @@ get:
                 previous: eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9
                 results:
                   - addresses:
-                      - address_type: Shipping
+                      - address_type: shipping
                         city: San Francisco
                         country: US
                         postal_code: '94107'
                         state: CA
-                        street_1: 525 Brannan
-                        street_2: ~
+                        street1: 525 Brannan
+                        street2: ~
                     description: Integration API
                     id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
                     industry: APIs
                     last_activity_at: '2022-02-10T00:00:00Z'
                     name: Sample Customer
                     number_of_employees: 276000
-                    owner: cb40ff24-6587-4b24-82a3-9269a05d5dda
+                    owner_id: cb40ff24-6587-4b24-82a3-9269a05d5dda
                     phone_numbers:
                       - phone_number: '+14151234567'
-                        phone_number_type: Mobile
+                        phone_number_type: mobile
                     created_at: '2021-11-10T00:00:00Z'
                     updated_at: '2022-01-09T00:00:00Z'
                     website: https://supaglue.com/
                   - addresses:
-                      - address_type: Shipping
+                      - address_type: shipping
                         city: San Francisco
                         country: US
                         postal_code: '94107'
                         state: CA
-                        street_1: 525 Brannan
-                        street_2: ~
+                        street1: 525 Brannan
+                        street2: ~
                     description: Integration API
-                    id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                    id: 9572d08b-f19f-48cc-a992-1eb7031d3f6b
                     industry: APIs
                     last_activity_at: '2023-02-27T00:00:00Z'
                     name: Sample Customer
                     number_of_employees: 276000
-                    owner: cb40ff24-6587-4b24-82a3-9269a05d5dda
+                    owner_id: cb40ff24-6587-4b24-82a3-9269a05d5dda
                     phone_numbers:
                       - phone_number: '+14151234567'
-                        phone_number_type: Mobile
+                        phone_number_type: mobile
                     created_at: '2023-02-27T00:00:00Z'
                     updated_at: '2023-02-27T00:00:00Z'
                     website: https://supaglue.com/
@@ -81,6 +83,8 @@ post:
   tags:
     - Accounts
   parameters: []
+  security:
+    - ApiKeyAuth: []
   requestBody:
     required: true
     content:
@@ -109,5 +113,5 @@ post:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml

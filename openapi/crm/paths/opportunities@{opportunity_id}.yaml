@@ -3,6 +3,8 @@ get:
   summary: Get opportunity
   tags:
     - Opportunities
+  security:
+    - ApiKeyAuth: []
   parameters:
     - $ref: ../../common/components/parameters/expand.yaml
   responses:
@@ -32,6 +34,8 @@ patch:
   summary: Update opportunity
   tags:
     - Opportunities
+  security:
+    - ApiKeyAuth: []
   parameters: []
   requestBody:
     required: true
@@ -61,8 +65,8 @@ patch:
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
-  - $ref: ../../common/components/parameters/customer-id.yaml
-  - $ref: ../../common/components/parameters/provider-name.yaml
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml
   - name: opportunity_id
     in: path
     required: true

@@ -1,8 +1,3 @@
-export const BILLING_ADDRESS_TYPE = 'BILLING';
-export const MAILING_ADDRESS_TYPE = 'MAILING';
-export const OTHER_ADDRESS_TYPE = 'OTHER';
-export const SHIPPING_ADDRESS_TYPE = 'SHIPPING';
-
 export type Address = {
   street1: string | null;
   street2: string | null;
@@ -10,17 +5,15 @@ export type Address = {
   state: string | null;
   postalCode: string | null;
   country: string | null;
-  addressType: string | null;
+  addressType: 'primary' | 'billing' | 'mailing' | 'other' | 'shipping';
 };
-
-export const FAX_PHONE_NUMBER_TYPE = 'Fax';
 
 export type PhoneNumber = {
   phoneNumber: string | null;
-  phoneNumberType: string | null;
+  phoneNumberType: 'primary' | 'mobile' | 'fax';
 };
 
 export type EmailAddress = {
   emailAddress: string;
-  emailAddressType: string | null;
+  emailAddressType: 'primary' | 'work';
 };

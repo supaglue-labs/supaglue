@@ -1,0 +1,125 @@
+{{- if $.Values.syncWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "supaglue.componentname" (list . "sync-worker") }}
+  labels:
+    app.kubernetes.io/name: {{ include "supaglue.name" . }}
+    helm.sh/chart: {{ include "supaglue.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+    app.kubernetes.io/component: sync-worker
+    app.kubernetes.io/part-of: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.syncWorker.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "supaglue.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: sync-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "supaglue.name" . }}
+        helm.sh/chart: {{ include "supaglue.chart" . }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | replace "+" "_" }}
+        app.kubernetes.io/component: sync-worker
+        app.kubernetes.io/part-of: {{ .Chart.Name }}
+        {{- with .Values.syncWorker.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- if .Values.syncWorker.metrics.annotations.enabled }}
+        prometheus.io/job: {{ .Chart.Name }}-sync-worker
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9090'
+        {{- end }}
+        {{- with .Values.syncWorker.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{ include "supaglue.serviceAccount" . }}
+      initContainers:
+        - name: wait-for-database
+          image: busybox
+          command: ['sh', '-c', 'until nc -z -v -w30 {{ template "supaglue.databaseHost" . }} {{ template "supaglue.databasePort" $ }}; do echo waiting for database; sleep 2; done;']
+        - name: wait-for-temporal
+          image: busybox
+          command: ['sh', '-c', 'until nc -z -v -w30 {{ template "supaglue.temporalHost" . }} {{ template "supaglue.temporalPort" $ }}; do echo waiting for temporal; sleep 2; done;']
+        - name: create-temporal-namespace
+          # keep this up to date with the temporal chart
+          image: temporalio/admin-tools:1.20.0
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', 'tctl --namespace default namespace describe || tctl --namespace default namespace register']
+          env:
+            - name: TEMPORAL_CLI_ADDRESS
+              value: {{ template "supaglue.temporalHost" . }}:{{ include "supaglue.temporalPort" . }}
+      containers:
+        - name: {{ $.Chart.Name }}-sync-worker
+          image: "{{ default "supaglue/sync-worker" .Values.syncWorker.image.repository }}:{{ default .Chart.AppVersion .Values.syncWorker.image.tag }}"
+          imagePullPolicy: {{ default "IfNotPresent" .Values.syncWorker.image.pullPolicy }}
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: DISABLE_BANNER
+              value: "1"
+            - name: SUPAGLUE_LOG_LEVEL
+              value: {{ .Values.api.logLevel }}
+            - name: SUPAGLUE_TEMPORAL_HOST
+              value: {{ template "supaglue.temporalHost" . }}
+            - name: SUPAGLUE_TEMPORAL_PORT
+              value: {{ include "supaglue.temporalPort" . | quote }}
+            - name: SUPAGLUE_API_ENCRYPTION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "supaglue.secretName" . }}
+                  key: {{ .Values.secretKeys.dbEncryptionSecret }}
+            - name: SUPAGLUE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "supaglue.secretName" }}
+                  key: {{ .Values.secretKeys.databaseUrl }}
+            - name: SUPAGLUE_DEPLOYMENT_ID
+              value: {{ include "supaglue.deploymentId" . }}
+            {{- with .Values.syncWorker.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          ports: []
+            # TODO uncomment when we are producing metrics
+            # - name: metrics
+            #   containerPort: 9090
+            #   protocol: TCP
+          volumeMounts:
+            {{- if .Values.syncWorker.additionalVolumeMounts }}
+            {{- toYaml .Values.syncWorker.additionalVolumeMounts | nindent 12}}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.syncWorker.resources | nindent 12 }}
+        {{- if .Values.syncWorker.sidecarContainers }}
+        {{- toYaml .Values.syncWorker.sidecarContainers | nindent 8 }}
+        {{- end }}
+
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if .Values.syncWorker.additionalVolumes }}
+        {{- toYaml .Values.syncWorker.additionalVolumes | nindent 8}}
+        {{- end }}
+      {{- with .Values.syncWorker.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.syncWorker.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.syncWorker.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

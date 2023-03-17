@@ -25,7 +25,7 @@ In less than 5 minutes, sync data from HubSpot or Salesforce into Supaglue and q
 Clone our repo, run our setup script which will create an `.env` file for this quickstart, and run the Supaglue stack locally using docker compose:
 
 ```shell
-git clone -b v0.3.3 https://github.com/supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.4.1 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
 docker compose up
 ```
@@ -123,8 +123,9 @@ Make a `GET` request to get a list of accounts:
 
 ```shell
 curl localhost:8080/crm/v1/accounts \
-  -H 'customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
-  -H 'provider-name: salesforce'
+  -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
+  -H 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
+  -H 'x-provider-name: salesforce'
 ```
 
 </TabItem>
@@ -132,8 +133,9 @@ curl localhost:8080/crm/v1/accounts \
 
 ```shell
 curl localhost:8080/crm/v1/accounts \
-  -H 'customer-id: ea3039fa-27de-4535-90d8-db2bab0c0252' \
-  -H 'provider-name: hubspot'
+  -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
+  -H 'x-customer-id: ea3039fa-27de-4535-90d8-db2bab0c0252' \
+  -H 'x-provider-name: hubspot'
 ```
 
 </TabItem>
@@ -168,8 +170,9 @@ If the curl in step 3 did not work, you can curl the `/crm/v1/sync-info` endpoin
 
 ```shell
 curl localhost:8080/crm/v1/sync-info \
-  -H 'customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
-  -H 'provider-name: salesforce'
+  -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
+  -H 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
+  -H 'x-provider-name: salesforce'
 ```
 
 </TabItem>
@@ -177,8 +180,9 @@ curl localhost:8080/crm/v1/sync-info \
 
 ```shell
 curl localhost:8080/crm/v1/sync-info \
-  -H 'customer-id: ea3039fa-27de-4535-90d8-db2bab0c0252' \
-  -H 'provider-name: hubspot'
+  -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
+  -H 'x-customer-id: ea3039fa-27de-4535-90d8-db2bab0c0252' \
+  -H 'x-provider-name: hubspot'
 ```
 
 </TabItem>
@@ -200,7 +204,7 @@ Example result:
 
 ## References
 
-- Visit the [API Reference](/api/crm) to view supported objects and HTTP methods.
+- Visit the [API Reference](/api) to view supported objects and HTTP methods.
 - Visit the [Supaglue Postman Collection](https://www.postman.com/supaglue/workspace/supaglue-public/overview) to make HTTP requests against your instance of Supaglue.
 
 ## Use your own Salesforce or HubSpot App

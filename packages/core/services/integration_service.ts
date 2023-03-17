@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
-import { fromIntegrationModel } from '../mappers';
+import { fromIntegrationModel, toIntegrationModel } from '../mappers';
 import type { CRMIntegrationCreateParams, CRMIntegrationUpdateParams, Integration } from '../types';
 
 export class IntegrationService {
@@ -40,10 +40,7 @@ export class IntegrationService {
 
   public async create(integration: CRMIntegrationCreateParams): Promise<Integration> {
     const createdIntegration = await this.#prisma.integration.create({
-      data: {
-        ...integration,
-        category: 'crm',
-      },
+      data: toIntegrationModel(integration),
     });
     return fromIntegrationModel(createdIntegration);
   }
@@ -51,10 +48,7 @@ export class IntegrationService {
   public async update(id: string, integration: CRMIntegrationUpdateParams): Promise<Integration> {
     const updatedIntegration = await this.#prisma.integration.update({
       where: { id },
-      data: {
-        ...integration,
-        category: 'crm',
-      },
+      data: toIntegrationModel(integration),
     });
     return fromIntegrationModel(updatedIntegration);
   }

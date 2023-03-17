@@ -5,17 +5,23 @@
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { PassThrough, pipeline, Readable, Transform } from 'stream';
-import { AccountCreateParams, RemoteAccount, RemoteAccountUpdateParams } from '../../../types/account';
-import { CRMConnection } from '../../../types/connection';
-import { RemoteContact, RemoteContactCreateParams, RemoteContactUpdateParams } from '../../../types/contact';
-import { Integration } from '../../../types/integration';
-import { RemoteLead, RemoteLeadCreateParams, RemoteLeadUpdateParams } from '../../../types/lead';
+import { CRMConnectionUnsafe } from '../../../types/connection';
 import {
+  AccountCreateParams,
+  RemoteAccount,
+  RemoteAccountUpdateParams,
+  RemoteContact,
+  RemoteContactCreateParams,
+  RemoteContactUpdateParams,
+  RemoteLead,
+  RemoteLeadCreateParams,
+  RemoteLeadUpdateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/opportunity';
-import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
+} from '../../../types/crm';
+import { CompleteIntegration } from '../../../types/integration';
+import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
   fromSalesforceContactToRemoteContact,
@@ -61,6 +67,7 @@ const propertiesToFetch = {
   ],
   contact: [
     'Id',
+    'OwnerId',
     'AccountId',
     'FirstName',
     'LastName',
@@ -69,8 +76,6 @@ const propertiesToFetch = {
     'Fax',
     'HomePhone',
     'MobilePhone',
-    'OtherPhone',
-    'AssistantPhone',
     'CreatedDate',
     'LastActivityDate',
     // We may not need all of these fields in order to map to common model
@@ -154,7 +159,7 @@ function getBulk2QueryJobResultsFromResponse(response: Response): Readable {
   return pipeline(Readable.fromWeb(response.body as any), parser, () => {});
 }
 
-class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
+class SalesforceClient extends AbstractCrmRemoteClient {
   readonly #client: jsforce.Connection;
 
   readonly #instanceUrl: string;
@@ -174,7 +179,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     clientId: string;
     clientSecret: string;
   }) {
-    super();
+    super(instanceUrl);
 
     this.#instanceUrl = instanceUrl;
     this.#refreshToken = refreshToken;
@@ -192,6 +197,12 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     });
   }
 
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    return {
+      Authorization: `Bearer ${this.#accessToken}`,
+    };
+  }
+
   async #refreshAccessToken(): Promise<void> {
     // TODO: Shouldn't be relying on `jsforce` to do this.
     const token = await this.#client.oauth2.refreshToken(this.#refreshToken);
@@ -205,7 +216,7 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
         ...init,
         headers: {
           ...init.headers,
-          Authorization: `Bearer ${this.#accessToken}`,
+          ...this.getAuthHeadersForPassthroughRequest(),
         },
       });
     };
@@ -465,10 +476,15 @@ class SalesforceClient extends CrmRemoteClientEventEmitter implements CrmRemoteC
     }
     return await this.getLead(response.id);
   }
+
+  public async listUsers(): Promise<Readable> {
+    // TODO: Implement salesforce users
+    return Readable.from([]);
+  }
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnection, integration: Integration): SalesforceClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,

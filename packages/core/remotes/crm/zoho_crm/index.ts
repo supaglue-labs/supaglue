@@ -1,8 +1,8 @@
 import { Readable } from 'stream';
 import {
   AccountCreateParams,
-  CRMConnection,
-  Integration,
+  CompleteIntegration,
+  CRMConnectionUnsafe,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -15,9 +15,18 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '../../../types';
-import { ConnectorAuthConfig, CrmRemoteClient, CrmRemoteClientEventEmitter } from '../base';
+import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 
-class ZohoCrmClient extends CrmRemoteClientEventEmitter implements CrmRemoteClient {
+class ZohoCrmClient extends AbstractCrmRemoteClient {
+  public constructor() {
+    // TODO: Support baseUrl
+    super('missing-base-url');
+  }
+
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    throw new Error('Not implemented');
+  }
+
   public async listAccounts(): Promise<Readable> {
     throw new Error('Not implemented');
   }
@@ -81,10 +90,14 @@ class ZohoCrmClient extends CrmRemoteClientEventEmitter implements CrmRemoteClie
   public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
     throw new Error('Not implemented');
   }
+
+  public async listUsers(): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnection, integration: Integration): ZohoCrmClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): ZohoCrmClient {
   return new ZohoCrmClient();
 }
 

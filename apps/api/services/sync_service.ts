@@ -1,4 +1,3 @@
-import { distinctId } from '@/lib/distinct_identifier';
 import { CRM_COMMON_MODELS } from '@supaglue/core/types/';
 import { CommonModel } from '@supaglue/core/types/common';
 import { SyncInfo } from '@supaglue/core/types/sync_info';
@@ -46,7 +45,8 @@ export class SyncService {
           intervals: [
             {
               every: syncPeriodMs,
-              offset: 0,
+              // so that not everybody is refreshing and hammering the DB at the same time
+              offset: Math.random() * syncPeriodMs,
             },
           ],
         },
@@ -55,7 +55,7 @@ export class SyncService {
           workflowType: runSyncs,
           workflowId: getRunSyncsWorkflowId(connectionId),
           taskQueue: SYNC_TASK_QUEUE,
-          args: [{ connectionId, sessionId: distinctId }],
+          args: [{ connectionId }],
         },
         state: {
           triggerImmediately: true,

@@ -19,11 +19,13 @@ properties:
   title:
     type: string
     example: Co-Founder
-  converted_account_id:
+  email_addresses:
+    $ref: ./objects/email_addresses.yaml
+  addresses:
+    $ref: ./objects/addresses.yaml
+  owner_id:
     type: string
     nullable: true
-    example: ab849b1c-c36b-4d8b-9e45-679b48fc4de7
-  converted_contact_id:
-    type: string
-    nullable: true
-    example: 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+    example: 9f3e97fd-4d5d-4efc-959d-bbebfac079f5
+  custom_fields:
+    $ref: ./objects/custom_fields.yaml

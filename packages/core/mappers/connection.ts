@@ -1,7 +1,8 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
-import { Connection, ConnectionCredentials, ConnectionStatus, CRMConnection } from '../types';
+import { decrypt } from '../lib/crypt';
+import { ConnectionSafe, ConnectionStatus, ConnectionUnsafe, CRMProviderName } from '../types';
 
-export const fromConnectionModel = ({
+export const fromConnectionModelToConnectionUnsafe = ({
   id,
   customerId,
   category,
@@ -9,14 +10,32 @@ export const fromConnectionModel = ({
   providerName,
   status,
   credentials,
-}: ConnectionModel): Connection => {
+}: ConnectionModel): ConnectionUnsafe => {
   return {
     id,
     customerId,
     integrationId,
-    category,
+    category: category as 'crm',
     status: status as ConnectionStatus,
-    providerName,
-    credentials: credentials as ConnectionCredentials,
-  } as CRMConnection;
+    providerName: providerName as CRMProviderName,
+    credentials: JSON.parse(decrypt(credentials)),
+  };
+};
+
+export const fromConnectionModelToConnectionSafe = ({
+  id,
+  customerId,
+  category,
+  integrationId,
+  providerName,
+  status,
+}: ConnectionModel): ConnectionSafe => {
+  return {
+    id,
+    customerId,
+    integrationId,
+    category: category as 'crm',
+    status: status as ConnectionStatus,
+    providerName: providerName as CRMProviderName,
+  };
 };

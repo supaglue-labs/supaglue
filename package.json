@@ -1,6 +1,6 @@
 {
   "name": "supaglue",
-  "version": "0.3.3",
+  "version": "0.4.1",
   "packageManager": "yarn@3.4.1",
   "private": true,
   "workspaces": [
@@ -15,7 +15,7 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "generate": "turbo run generate",
-    "bundle-openapi": "tsx scripts/validate_and_bundle_openapi.ts openapi/crm/openapi.yaml openapi/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/customer/openapi.yaml openapi/customer/openapi.bundle.json"
+    "bundle-openapi": "tsx scripts/validate_and_bundle_openapi.ts openapi/crm/openapi.yaml openapi/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/mgmt/openapi.yaml openapi/mgmt/openapi.bundle.json"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit",

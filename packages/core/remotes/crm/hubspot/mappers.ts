@@ -1,7 +1,9 @@
 import { SimplePublicObjectWithAssociations as HubSpotCompany } from '@hubspot/api-client/lib/codegen/crm/companies';
 import { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
+import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
+  Address,
   EmailAddress,
   OpportunityStatus,
   PhoneNumber,
@@ -11,6 +13,7 @@ import {
   RemoteContactCreateParams,
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
+  RemoteUser,
 } from '../../../types';
 
 export const fromHubSpotCompanyToRemoteAccount = ({
@@ -19,7 +22,7 @@ export const fromHubSpotCompanyToRemoteAccount = ({
   createdAt,
   updatedAt,
 }: HubSpotCompany): RemoteAccount => {
-  const addresses =
+  const addresses: Address[] =
     properties.address ||
     properties.address2 ||
     properties.city ||
@@ -34,16 +37,16 @@ export const fromHubSpotCompanyToRemoteAccount = ({
             state: properties.state ?? null,
             postalCode: properties.zip ?? null,
             country: properties.country ?? null,
-            addressType: null,
+            addressType: 'primary',
           },
         ]
       : [];
 
-  const phoneNumbers = properties.phone
+  const phoneNumbers: PhoneNumber[] = properties.phone
     ? [
         {
           phoneNumber: properties.phone ?? null,
-          phoneNumberType: null,
+          phoneNumberType: 'primary',
         },
       ]
     : [];
@@ -52,7 +55,7 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     remoteId: id,
     name: properties.name ?? null,
     description: properties.description ?? null,
-    owner: properties.hubspot_owner_id ?? null,
+    remoteOwnerId: properties.hubspot_owner_id ?? null,
     industry: properties.industry ?? null,
     website: properties.website ?? null,
     numberOfEmployees: properties.numberofemployees ? parseInt(properties.numberofemployees) : null,
@@ -92,13 +95,6 @@ export const fromHubSpotContactToRemoteContact = ({
     remoteAccountId = associations.companies.results[0].id ?? null;
   }
 
-  // TODO: Handle hs_additional_emails
-  // if (properties.hs_additional_emails?.length) {
-  //   properties.hs_additional_emails.forEach((email) => {
-  //     emailAddresses.push({ emailAddress: email, emailAddressType: null });
-  //   });
-  // }
-
   const phoneNumbers = [
     properties.phone
       ? {
@@ -112,12 +108,6 @@ export const fromHubSpotContactToRemoteContact = ({
           phoneNumberType: 'mobile',
         }
       : null,
-    properties.hs_whatsapp_phone_number
-      ? {
-          phoneNumber: properties.hs_whatsapp_phone_number,
-          phoneNumberType: 'whatsapp',
-        }
-      : null,
     properties.fax
       ? {
           phoneNumber: properties.fax,
@@ -126,22 +116,17 @@ export const fromHubSpotContactToRemoteContact = ({
       : null,
   ].filter(Boolean) as PhoneNumber[];
 
-  const addresses =
-    properties.address ||
-    properties.address2 ||
-    properties.city ||
-    properties.state ||
-    properties.zip ||
-    properties.country
+  const addresses: Address[] =
+    properties.address || properties.city || properties.state || properties.zip || properties.country
       ? [
           {
             street1: properties.address ?? null,
-            street2: properties.address2 ?? null,
+            street2: null,
             city: properties.city ?? null,
             state: properties.state ?? null,
             postalCode: properties.zip ?? null,
             country: properties.country ?? null,
-            addressType: null,
+            addressType: 'primary',
           },
         ]
       : [];
@@ -149,6 +134,7 @@ export const fromHubSpotContactToRemoteContact = ({
   return {
     remoteId: id,
     remoteAccountId,
+    remoteOwnerId: properties.hubspot_owner_id ?? null,
     firstName: properties.firstname ?? null,
     lastName: properties.lastname ?? null,
     addresses,
@@ -182,7 +168,7 @@ export const fromHubSpotDealToRemoteOpportunity = ({
     remoteId: id,
     name: properties.dealname ?? null,
     description: properties.description ?? null,
-    owner: properties.hubspot_owner_id ?? null,
+    remoteOwnerId: properties.hubspot_owner_id ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     remoteCreatedAt: createdAt,
     remoteUpdatedAt: updatedAt,
@@ -195,33 +181,135 @@ export const fromHubSpotDealToRemoteOpportunity = ({
   };
 };
 
-export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams): Record<string, string> => {
+export const fromHubspotOwnerToRemoteUser = ({
+  id,
+  firstName,
+  lastName,
+  archived,
+  email,
+  createdAt,
+  updatedAt,
+}: HubspotOwner): RemoteUser => {
   return {
-    name: params.name ?? '',
-    industry: params.industry ?? '',
-    description: params.description ?? '',
-    website: params.website ?? '',
-    numberofemployees: params.numberOfEmployees?.toString() ?? '',
+    remoteId: id,
+    name: getFullName(firstName, lastName),
+    email: email ?? null,
+    isActive: !archived,
+    remoteCreatedAt: createdAt,
+    remoteUpdatedAt: updatedAt,
+    remoteWasDeleted: false,
   };
+};
+
+const getFullName = (firstName?: string, lastName?: string): string | null => {
+  if (firstName && lastName) {
+    return `${firstName} ${lastName}`;
+  }
+  if (firstName) {
+    return firstName;
+  }
+  if (lastName) {
+    return lastName;
+  }
+  return null;
+};
+
+export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams): Record<string, string> => {
+  const phoneParams = toHubspotPhoneCreateParams(params.phoneNumbers);
+  const out = {
+    name: nullToEmptyString(params.name),
+    industry: nullToEmptyString(params.industry),
+    description: nullToEmptyString(params.description),
+    website: nullToEmptyString(params.website),
+    numberofemployees: nullToEmptyString(params.numberOfEmployees?.toString()),
+    phone: phoneParams.phone, // only primary phone is supported for hubspot accounts
+    hubspot_owner_id: nullToEmptyString(params.ownerId),
+    ...toHubspotAddressCreateParams(params.addresses),
+    ...params.customFields,
+  };
+  removeUndefinedValues(out);
+  return out as Record<string, string>;
 };
 
 export const toHubspotAccountUpdateParams = toHubspotAccountCreateParams;
 
 export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreateParams): Record<string, string> => {
-  return {
-    amount: params.amount?.toString() ?? '',
-    closedate: params.closeDate?.toISOString() ?? '',
-    dealname: params.name ?? '',
-    description: params.description ?? '',
-    dealstage: params.stage ?? '',
+  const out = {
+    amount: nullToEmptyString(params.amount?.toString()),
+    closedate: nullToEmptyString(params.closeDate?.toISOString()),
+    dealname: nullToEmptyString(params.name),
+    description: nullToEmptyString(params.description),
+    dealstage: nullToEmptyString(params.stage),
+    hubspot_owner_id: nullToEmptyString(params.ownerId),
+    ...params.customFields,
   };
+  removeUndefinedValues(out);
+  return out as Record<string, string>;
 };
 export const toHubspotOpportunityUpdateParams = toHubspotOpportunityCreateParams;
 
 export const toHubspotContactCreateParams = (params: RemoteContactCreateParams): Record<string, string> => {
+  const out = {
+    firstname: nullToEmptyString(params.firstName),
+    lastname: nullToEmptyString(params.lastName),
+    hubspot_owner_id: nullToEmptyString(params.ownerId),
+    ...toHubspotEmailCreateParams(params.emailAddresses),
+    ...toHubspotPhoneCreateParams(params.phoneNumbers),
+    ...toHubspotAddressCreateParams(params.addresses),
+    ...params.customFields,
+  };
+  removeUndefinedValues(out);
+  return out as Record<string, string>;
+};
+
+const toHubspotEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<string, string> => {
+  if (!emailAddresses) {
+    return {};
+  }
+  const primaryEmail = emailAddresses.find(({ emailAddressType }) => emailAddressType === 'primary');
+  const workEmail = emailAddresses.find(({ emailAddressType }) => emailAddressType === 'work');
+  // Explicitly null-out other emails if they don't exist.
   return {
-    firstname: params.firstName ?? '',
-    lastname: params.lastName ?? '',
+    email: primaryEmail?.emailAddress ?? '',
+    work_email: workEmail?.emailAddress ?? '',
+  };
+};
+
+const toHubspotPhoneCreateParams = (phoneNumbers?: PhoneNumber[]): Record<string, string> => {
+  if (!phoneNumbers) {
+    return {};
+  }
+  const primaryPhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'primary');
+  const mobilePhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'mobile');
+  const faxPhone = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'fax');
+  // Explicitly null-out other phones if they don't exist.
+  return {
+    phone: primaryPhone?.phoneNumber ?? '',
+    mobilephone: mobilePhone?.phoneNumber ?? '',
+    fax: faxPhone?.phoneNumber ?? '',
+  };
+};
+
+const toHubspotAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
+  if (!addresses) {
+    return {};
+  }
+  const primary = addresses.find(({ addressType }) => addressType === 'primary');
+  return {
+    address: primary?.street1 ?? '',
+    // TODO: Support address2 for companies only
+    city: primary?.city ?? '',
+    state: primary?.state ?? '',
+    zip: primary?.postalCode ?? '',
+    country: primary?.country ?? '',
   };
 };
 export const toHubspotContactUpdateParams = toHubspotContactCreateParams;
+
+export const nullToEmptyString = (value: string | undefined | null): string | undefined => {
+  return value === null ? '' : value;
+};
+
+export const removeUndefinedValues = (obj: Record<string, string | undefined>): void => {
+  Object.keys(obj).forEach((key) => (obj[key] === undefined ? delete obj[key] : {}));
+};

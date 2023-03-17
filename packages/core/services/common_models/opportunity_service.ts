@@ -1,6 +1,6 @@
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { POSTGRES_UPDATE_BATCH_SIZE } from '../../lib/constants';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../mappers';
@@ -27,6 +27,7 @@ export class OpportunityService extends CommonModelBaseService {
       where: { id },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
     });
     if (!model) {
@@ -58,6 +59,7 @@ export class OpportunityService extends CommonModelBaseService {
       },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
       orderBy: {
         id: 'asc',
@@ -82,6 +84,18 @@ export class OpportunityService extends CommonModelBaseService {
     return crmAccount.remoteId;
   }
 
+  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
+    const crmUser = await this.prisma.crmUser.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
+    if (!crmUser) {
+      throw new NotFoundError(`User ${ownerId} not found`);
+    }
+    return crmUser.remoteId;
+  }
+
   public async create(
     customerId: string,
     connectionId: string,
@@ -93,6 +107,9 @@ export class OpportunityService extends CommonModelBaseService {
     if (createParams.accountId) {
       remoteCreateParams.accountId = await this.getAssociatedAccountRemoteId(createParams.accountId);
     }
+    if (createParams.ownerId) {
+      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
+    }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteOpportunity = await remoteClient.createOpportunity(remoteCreateParams);
     const opportunityModel = await this.prisma.crmOpportunity.create({
@@ -101,6 +118,7 @@ export class OpportunityService extends CommonModelBaseService {
         connectionId,
         ...remoteOpportunity,
         accountId: createParams.accountId,
+        ownerId: createParams.ownerId,
       },
     });
     return fromOpportunityModel(opportunityModel);
@@ -127,6 +145,9 @@ export class OpportunityService extends CommonModelBaseService {
     if (updateParams.accountId) {
       remoteUpdateParams.accountId = await this.getAssociatedAccountRemoteId(updateParams.accountId);
     }
+    if (updateParams.ownerId) {
+      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+    }
 
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteOpportunity = await remoteClient.updateOpportunity({
@@ -135,7 +156,7 @@ export class OpportunityService extends CommonModelBaseService {
     });
 
     const opportunityModel = await this.prisma.crmOpportunity.update({
-      data: { ...remoteOpportunity, accountId: updateParams.accountId },
+      data: { ...remoteOpportunity, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
       where: {
         id: updateParams.id,
       },
@@ -148,15 +169,13 @@ export class OpportunityService extends CommonModelBaseService {
     customerId: string,
     remoteOpportunitiesReadable: Readable
   ): Promise<number> {
-    // TODO: Shouldn't be hard-coding the DB schema here.
-    const table = 'api.crm_opportunities';
+    const table = COMMON_MODEL_DB_TABLES['opportunities'];
     const tempTable = 'crm_opportunities_temp';
     const columnsWithoutId = [
       'remote_id',
       'customer_id',
       'connection_id',
       'remote_was_deleted',
-      'owner',
       'name',
       'description',
       'amount',
@@ -167,6 +186,7 @@ export class OpportunityService extends CommonModelBaseService {
       'remote_created_at',
       'remote_updated_at',
       '_remote_account_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 
@@ -181,61 +201,37 @@ export class OpportunityService extends CommonModelBaseService {
     );
   }
 
-  private async updateDanglingAccountsImpl(
-    connectionId: string,
-    limit: number,
-    cursor?: string
-  ): Promise<string | undefined> {
-    const opportunitiesWithDanglingAccounts = await this.prisma.crmOpportunity.findMany({
-      where: {
-        connectionId,
-        accountId: null,
-        NOT: {
-          remoteAccountId: null,
-        },
-      },
-      skip: cursor ? 1 : undefined,
-      take: limit,
-      cursor: cursor ? { id: cursor } : undefined,
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    if (!opportunitiesWithDanglingAccounts.length) {
-      return;
-    }
+  public async updateDanglingAccounts(connectionId: string): Promise<void> {
+    const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
+    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
-    const danglingRemoteAccountIds = opportunitiesWithDanglingAccounts.map(
-      ({ remoteAccountId }) => remoteAccountId
-    ) as string[];
-    const crmAccounts = await this.prisma.crmAccount.findMany({
-      where: {
-        connectionId,
-        remoteId: {
-          in: danglingRemoteAccountIds,
-        },
-      },
-    });
-    await Promise.all(
-      crmAccounts.map(({ remoteId, id }) => {
-        return this.prisma.crmOpportunity.updateMany({
-          where: {
-            connectionId,
-            remoteAccountId: remoteId,
-          },
-          data: {
-            accountId: id,
-          },
-        });
-      })
-    );
-    return opportunitiesWithDanglingAccounts[opportunitiesWithDanglingAccounts.length - 1].id;
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${opportunitiesTable} o
+      SET account_id = a.id
+      FROM ${accountsTable} a
+      WHERE
+        o.connection_id = '${connectionId}'
+        AND o.connection_id = a.connection_id
+        AND o.account_id IS NULL
+        AND o._remote_account_id IS NOT NULL
+        AND o._remote_account_id = a.remote_id
+      `);
   }
 
-  public async updateDanglingAccounts(connectionId: string) {
-    let cursor = undefined;
-    do {
-      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_BATCH_SIZE, cursor);
-    } while (cursor);
+  public async updateDanglingOwners(connectionId: string): Promise<void> {
+    const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
+    const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${opportunitiesTable} c
+      SET owner_id = u.id
+      FROM ${usersTable} u
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = u.connection_id
+        AND c.owner_id IS NULL
+        AND c._remote_owner_id IS NOT NULL
+        AND c._remote_owner_id = u.remote_id
+      `);
   }
 }

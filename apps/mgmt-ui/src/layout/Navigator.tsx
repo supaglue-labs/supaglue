@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { BarChart, Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
+import { Biotech, MenuBook, Tune } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
   Box,
   Divider,
   Drawer,
   DrawerProps,
+  Link as MUILink,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { useRouter } from 'next/router';
-import NavigatorMenu from './NavigatorMenu';
+import NextLink from 'next/link';
 
 type Category = {
   id: string;
@@ -27,20 +27,14 @@ const categories: {
   children: Category[];
 }[] = [
   {
-    id: 'internal',
+    id: 'Manage',
     children: [
-      {
-        id: 'Dashboard',
-        to: '/dashboard',
-        icon: <BarChart />,
-        active: false,
-      },
-      {
-        id: 'Configuration',
-        to: '/configuration/active',
-        icon: <Tune />,
-        active: false,
-      },
+      // {
+      //   id: 'Dashboard',
+      //   to: '/',
+      //   icon: <BarChart />,
+      //   active: false,
+      // },
       {
         id: 'Customers',
         to: '/customers',
@@ -48,19 +42,25 @@ const categories: {
         active: false,
       },
       {
-        id: 'Sync Logs',
-        to: '/sync_logs',
-        icon: <FindInPage />,
+        id: 'Configuration',
+        to: '/configuration/integrations/crm',
+        icon: <Tune />,
         active: false,
       },
+      // {
+      //   id: 'Sync Logs',
+      //   to: '/sync_logs',
+      //   icon: <FindInPage />,
+      //   active: false,
+      // },
     ],
   },
   {
-    id: 'external',
+    id: 'Learn',
     children: [
       {
         id: 'API Explorer',
-        to: 'https://docs.supaglue.com/api/crm',
+        to: 'https://docs.supaglue.com/api',
         icon: <Biotech />,
         active: false,
       },
@@ -91,30 +91,25 @@ const itemCategory = {
 
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
-  const router = useRouter();
 
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>Supaglue</ListItem>
-        <ListItem sx={{ ...itemCategory }}>
-          <NavigatorMenu />
-        </ListItem>
+
         {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: '#111013' }}>
-            <Divider sx={{ mb: 2 }} />
+          <Box key={id} sx={{ bgcolor: '#101F33' }}>
+            <ListItem sx={{ py: 2, px: 3 }}>
+              <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
+            </ListItem>
             {children.map(({ id: childId, icon, active, to }) => (
               <ListItem disablePadding key={childId}>
-                <ListItemButton
-                  selected={active}
-                  sx={item}
-                  onClick={() => {
-                    router.push(to);
-                  }}
-                >
-                  <ListItemIcon>{icon}</ListItemIcon>
-                  <ListItemText>{childId}</ListItemText>
-                </ListItemButton>
+                <MUILink href={to} component={NextLink} sx={{ width: '100%', 'text-decoration': 'none' }}>
+                  <ListItemButton selected={active} sx={item}>
+                    <ListItemIcon>{icon}</ListItemIcon>
+                    <ListItemText>{childId}</ListItemText>
+                  </ListItemButton>
+                </MUILink>
               </ListItem>
             ))}
             <Divider sx={{ mt: 2 }} />

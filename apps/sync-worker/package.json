@@ -1,8 +1,10 @@
 {
   "name": "sync-worker",
-  "version": "0.3.3",
+  "version": "0.4.1",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
+    "@sentry/integrations": "^7.43.0",
+    "@sentry/node": "^7.43.0",
     "@supaglue/core": "workspace:*",
     "@supaglue/db": "workspace:*",
     "@supaglue/sync-workflows": "workspace:*",

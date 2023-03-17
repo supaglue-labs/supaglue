@@ -1,6 +1,6 @@
+import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { POSTGRES_UPDATE_BATCH_SIZE } from '../../lib/constants';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
@@ -21,6 +21,7 @@ export class LeadService extends CommonModelBaseService {
       include: {
         convertedAccount: expandedAssociations.includes('converted_account'),
         convertedContact: expandedAssociations.includes('converted_contact'),
+        owner: expandedAssociations.includes('owner'),
       },
     });
     if (!model) {
@@ -53,6 +54,7 @@ export class LeadService extends CommonModelBaseService {
       include: {
         convertedAccount: expandedAssociations.includes('converted_account'),
         convertedContact: expandedAssociations.includes('converted_contact'),
+        owner: expandedAssociations.includes('owner'),
       },
       orderBy: {
         id: 'asc',
@@ -65,16 +67,33 @@ export class LeadService extends CommonModelBaseService {
     };
   }
 
+  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
+    const crmUser = await this.prisma.crmUser.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
+    if (!crmUser) {
+      throw new NotFoundError(`User ${ownerId} not found`);
+    }
+    return crmUser.remoteId;
+  }
+
   public async create(customerId: string, connectionId: string, createParams: LeadCreateParams): Promise<Lead> {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
+    const remoteCreateParams = { ...createParams };
+    if (createParams.ownerId) {
+      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
+    }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteLead = await remoteClient.createLead(createParams);
+    const remoteLead = await remoteClient.createLead(remoteCreateParams);
     const leadModel = await this.prisma.crmLead.create({
       data: {
         customerId,
         connectionId,
         ...remoteLead,
+        ownerId: createParams.ownerId,
       },
     });
     return fromLeadModel(leadModel);
@@ -93,14 +112,19 @@ export class LeadService extends CommonModelBaseService {
       throw new Error('Lead customerId does not match');
     }
 
+    const remoteUpdateParams = { ...updateParams };
+    if (updateParams.ownerId) {
+      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+    }
+
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteLead = await remoteClient.updateLead({
-      ...updateParams,
+      ...remoteUpdateParams,
       remoteId: foundLeadModel.remoteId,
     });
 
     const leadModel = await this.prisma.crmLead.update({
-      data: remoteLead,
+      data: { ...remoteLead, ownerId: updateParams.ownerId },
       where: {
         id: updateParams.id,
       },
@@ -113,15 +137,13 @@ export class LeadService extends CommonModelBaseService {
     customerId: string,
     remoteLeadsReadable: Readable
   ): Promise<number> {
-    // TODO: Shouldn't be hard-coding the DB schema here.
-    const table = 'api.crm_leads';
+    const table = `${schemaPrefix}crm_leads`;
     const tempTable = 'crm_leads_temp';
     const columnsWithoutId = [
       'remote_id',
       'customer_id',
       'connection_id',
       'remote_was_deleted',
-      'owner',
       'lead_source',
       'title',
       'company',
@@ -135,6 +157,7 @@ export class LeadService extends CommonModelBaseService {
       'converted_date',
       '_converted_remote_account_id',
       '_converted_remote_contact_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 
@@ -149,119 +172,54 @@ export class LeadService extends CommonModelBaseService {
     );
   }
 
-  private async updateDanglingAccountsImpl(
-    connectionId: string,
-    limit: number,
-    cursor?: string
-  ): Promise<string | undefined> {
-    const leadsWithDanglingAccounts = await this.prisma.crmLead.findMany({
-      where: {
-        connectionId,
-        convertedAccountId: null,
-        NOT: {
-          convertedRemoteAccountId: null,
-        },
-      },
-      skip: cursor ? 1 : undefined,
-      take: limit,
-      cursor: cursor ? { id: cursor } : undefined,
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    if (!leadsWithDanglingAccounts.length) {
-      return;
-    }
+  public async updateDanglingAccounts(connectionId: string): Promise<void> {
+    const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
+    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
-    const danglingRemoteAccountIds = leadsWithDanglingAccounts.map(
-      ({ convertedRemoteAccountId }) => convertedRemoteAccountId
-    ) as string[];
-    const crmAccounts = await this.prisma.crmAccount.findMany({
-      where: {
-        connectionId,
-        remoteId: {
-          in: danglingRemoteAccountIds,
-        },
-      },
-    });
-    await Promise.all(
-      crmAccounts.map(({ remoteId, id }) => {
-        return this.prisma.crmLead.updateMany({
-          where: {
-            connectionId,
-            convertedRemoteAccountId: remoteId,
-          },
-          data: {
-            convertedAccountId: id,
-          },
-        });
-      })
-    );
-    return leadsWithDanglingAccounts[leadsWithDanglingAccounts.length - 1].id;
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${leadsTable} l
+      SET converted_account_id = a.id
+      FROM ${accountsTable} a
+      WHERE
+        l.connection_id = '${connectionId}'
+        AND l.connection_id = a.connection_id
+        AND l.converted_account_id IS NULL
+        AND l._converted_remote_account_id IS NOT NULL
+        AND l._converted_remote_account_id = a.remote_id
+      `);
   }
 
-  public async updateDanglingAccounts(connectionId: string) {
-    let cursor = undefined;
-    do {
-      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_BATCH_SIZE, cursor);
-    } while (cursor);
+  public async updateDanglingContacts(connectionId: string): Promise<void> {
+    const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
+    const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
+
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${leadsTable} l
+      SET converted_contact_id = c.id
+      FROM ${contactsTable} c
+      WHERE
+        l.connection_id = '${connectionId}'
+        AND l.connection_id = c.connection_id
+        AND l.converted_contact_id IS NULL
+        AND l._converted_remote_contact_id IS NOT NULL
+        AND l._converted_remote_contact_id = c.remote_id
+      `);
   }
 
-  private async updateDanglingContactsImpl(
-    connectionId: string,
-    limit: number,
-    cursor?: string
-  ): Promise<string | undefined> {
-    const leadsWithDanglingContacts = await this.prisma.crmLead.findMany({
-      where: {
-        connectionId,
-        convertedContactId: null,
-        NOT: {
-          convertedRemoteContactId: null,
-        },
-      },
-      skip: cursor ? 1 : undefined,
-      take: limit,
-      cursor: cursor ? { id: cursor } : undefined,
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    if (!leadsWithDanglingContacts.length) {
-      return;
-    }
+  public async updateDanglingOwners(connectionId: string): Promise<void> {
+    const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
+    const usersTable = COMMON_MODEL_DB_TABLES['users'];
 
-    const danglingRemoteContactIds = leadsWithDanglingContacts.map(
-      ({ convertedRemoteContactId }) => convertedRemoteContactId
-    ) as string[];
-    const crmContacts = await this.prisma.crmContact.findMany({
-      where: {
-        connectionId,
-        remoteId: {
-          in: danglingRemoteContactIds,
-        },
-      },
-    });
-    await Promise.all(
-      crmContacts.map(({ remoteId, id }) => {
-        return this.prisma.crmLead.updateMany({
-          where: {
-            connectionId,
-            convertedRemoteContactId: remoteId,
-          },
-          data: {
-            convertedContactId: id,
-          },
-        });
-      })
-    );
-    return leadsWithDanglingContacts[leadsWithDanglingContacts.length - 1].id;
-  }
-
-  public async updateDanglingContacts(connectionId: string) {
-    let cursor = undefined;
-    do {
-      cursor = await this.updateDanglingContactsImpl(connectionId, POSTGRES_UPDATE_BATCH_SIZE, cursor);
-    } while (cursor);
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${leadsTable} c
+      SET owner_id = u.id
+      FROM ${usersTable} u
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = u.connection_id
+        AND c.owner_id IS NULL
+        AND c._remote_owner_id IS NOT NULL
+        AND c._remote_owner_id = u.remote_id
+      `);
   }
 }

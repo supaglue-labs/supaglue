@@ -1,16 +1,18 @@
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { POSTGRES_UPDATE_BATCH_SIZE } from '../../lib/constants';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
 import type {
   Contact,
   ContactCreateParams,
+  ContactFilters,
   ContactUpdateParams,
   GetParams,
   ListParams,
   PaginatedResult,
+  PaginationParams,
 } from '../../types';
 import { CommonModelBaseService } from './base_service';
 
@@ -26,6 +28,7 @@ export class ContactService extends CommonModelBaseService {
       where: { id },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
     });
     if (!model) {
@@ -35,6 +38,35 @@ export class ContactService extends CommonModelBaseService {
       throw new UnauthorizedError('Unauthorized');
     }
     return fromContactModel(model, expandedAssociations);
+  }
+
+  public async search(
+    connectionId: string,
+    paginationParams: PaginationParams,
+    filters: ContactFilters
+  ): Promise<PaginatedResult<Contact>> {
+    const { page_size, cursor } = paginationParams;
+    const pageSize = page_size ? parseInt(page_size) : undefined;
+    const models = await this.prisma.crmContact.findMany({
+      ...getPaginationParams(pageSize, cursor),
+      where: {
+        connectionId,
+        emailAddresses:
+          filters.emailAddress?.type === 'equals'
+            ? {
+                array_contains: [{ emailAddress: filters.emailAddress.value }],
+              }
+            : undefined,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    const results = models.map((model) => fromContactModel(model));
+    return {
+      ...getPaginationResult(pageSize, cursor, results),
+      results,
+    };
   }
 
   public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Contact>> {
@@ -56,6 +88,7 @@ export class ContactService extends CommonModelBaseService {
       },
       include: {
         account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
       },
       orderBy: {
         id: 'asc',
@@ -80,12 +113,27 @@ export class ContactService extends CommonModelBaseService {
     return crmAccount.remoteId;
   }
 
+  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
+    const crmUser = await this.prisma.crmUser.findUnique({
+      where: {
+        id: ownerId,
+      },
+    });
+    if (!crmUser) {
+      throw new NotFoundError(`User ${ownerId} not found`);
+    }
+    return crmUser.remoteId;
+  }
+
   public async create(customerId: string, connectionId: string, createParams: ContactCreateParams): Promise<Contact> {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
     const remoteCreateParams = { ...createParams };
     if (createParams.accountId) {
       remoteCreateParams.accountId = await this.getAssociatedAccountRemoteId(createParams.accountId);
+    }
+    if (createParams.ownerId) {
+      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteContact = await remoteClient.createContact(remoteCreateParams);
@@ -95,6 +143,7 @@ export class ContactService extends CommonModelBaseService {
         connectionId,
         ...remoteContact,
         accountId: createParams.accountId,
+        ownerId: createParams.ownerId,
       },
     });
     return fromContactModel(contactModel);
@@ -117,6 +166,9 @@ export class ContactService extends CommonModelBaseService {
     if (updateParams.accountId) {
       remoteUpdateParams.accountId = await this.getAssociatedAccountRemoteId(updateParams.accountId);
     }
+    if (updateParams.ownerId) {
+      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+    }
 
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteContact = await remoteClient.updateContact({
@@ -125,7 +177,7 @@ export class ContactService extends CommonModelBaseService {
     });
 
     const contactModel = await this.prisma.crmContact.update({
-      data: { ...remoteContact, accountId: updateParams.accountId },
+      data: { ...remoteContact, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
       where: {
         id: updateParams.id,
       },
@@ -138,8 +190,7 @@ export class ContactService extends CommonModelBaseService {
     customerId: string,
     remoteContactsReadable: Readable
   ): Promise<number> {
-    // TODO: Shouldn't be hard-coding the DB schema here.
-    const table = 'api.crm_contacts';
+    const table = COMMON_MODEL_DB_TABLES['contacts'];
     const tempTable = 'crm_contacts_temp';
     const columnsWithoutId = [
       'remote_id',
@@ -155,6 +206,7 @@ export class ContactService extends CommonModelBaseService {
       'remote_updated_at',
       'remote_was_deleted',
       '_remote_account_id',
+      '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 
@@ -169,61 +221,37 @@ export class ContactService extends CommonModelBaseService {
     );
   }
 
-  private async updateDanglingAccountsImpl(
-    connectionId: string,
-    limit: number,
-    cursor?: string
-  ): Promise<string | undefined> {
-    const contactsWithDanglingAccounts = await this.prisma.crmContact.findMany({
-      where: {
-        connectionId,
-        accountId: null,
-        NOT: {
-          remoteAccountId: null,
-        },
-      },
-      skip: cursor ? 1 : undefined,
-      take: limit,
-      cursor: cursor ? { id: cursor } : undefined,
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    if (!contactsWithDanglingAccounts.length) {
-      return;
-    }
+  public async updateDanglingAccounts(connectionId: string): Promise<void> {
+    const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
+    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
-    const danglingRemoteAccountIds = contactsWithDanglingAccounts.map(
-      ({ remoteAccountId }) => remoteAccountId
-    ) as string[];
-    const crmAccounts = await this.prisma.crmAccount.findMany({
-      where: {
-        connectionId,
-        remoteId: {
-          in: danglingRemoteAccountIds,
-        },
-      },
-    });
-    await Promise.all(
-      crmAccounts.map(({ remoteId, id }) => {
-        return this.prisma.crmContact.updateMany({
-          where: {
-            connectionId,
-            remoteAccountId: remoteId,
-          },
-          data: {
-            accountId: id,
-          },
-        });
-      })
-    );
-    return contactsWithDanglingAccounts[contactsWithDanglingAccounts.length - 1].id;
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${contactsTable} c
+      SET account_id = a.id
+      FROM ${accountsTable} a
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = a.connection_id
+        AND c.account_id IS NULL
+        AND c._remote_account_id IS NOT NULL
+        AND c._remote_account_id = a.remote_id
+      `);
   }
 
-  public async updateDanglingAccounts(connectionId: string) {
-    let cursor = undefined;
-    do {
-      cursor = await this.updateDanglingAccountsImpl(connectionId, POSTGRES_UPDATE_BATCH_SIZE, cursor);
-    } while (cursor);
+  public async updateDanglingOwners(connectionId: string): Promise<void> {
+    const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
+    const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.$executeRawUnsafe(`
+      UPDATE ${contactsTable} c
+      SET owner_id = u.id
+      FROM ${usersTable} u
+      WHERE
+        c.connection_id = '${connectionId}'
+        AND c.connection_id = u.connection_id
+        AND c.owner_id IS NULL
+        AND c._remote_owner_id IS NOT NULL
+        AND c._remote_owner_id = u.remote_id
+      `);
   }
 }

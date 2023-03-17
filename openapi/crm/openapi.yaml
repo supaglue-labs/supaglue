@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.3.3
+  version: 0.4.1
   title: Supaglue CRM API
   contact:
     name: Supaglue
@@ -14,7 +14,7 @@ info:
     ### Base API URL
 
     ```
-    http://localhost:8080/api/crm/v1
+    http://localhost:8080/crm/v1
     ```
 externalDocs:
   description: Try out our API in Postman!
@@ -25,10 +25,14 @@ servers:
 paths:
   '/accounts':
     $ref: paths/accounts.yaml
+  '/accounts/_search':
+    $ref: paths/accounts@_search.yaml
   '/accounts/{account_id}':
     $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
+  '/contacts/_search':
+    $ref: paths/contacts@_search.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
   '/leads':
@@ -39,6 +43,12 @@ paths:
     $ref: paths/opportunities.yaml
   '/opportunities/{opportunity_id}':
     $ref: paths/opportunities@{opportunity_id}.yaml
+  '/users':
+    $ref: paths/users.yaml
+  '/users/{user_id}':
+    $ref: paths/users@{user_id}.yaml
+  '/passthrough':
+    $ref: paths/passthrough.yaml
   '/sync-history':
     $ref: paths/sync-history.yaml
   '/sync-info':
@@ -52,9 +62,16 @@ tags:
     description: The `Lead` Common Model is used to represent a "potential customer" in CRMs.
   - name: Opportunities
     description: The `Opportunity` Common Model is used to represent a "deal opportunity" in CRMs.
+  - name: Users
+    description: The `User` Common Model is used to represent a "user" that can login to CRMs.
   - name: Sync
     description: Get information and history for the sync process.
+  - name: Passthrough
+    description: Passthrough operations to underlying providers.
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: ../common/components/securitySchemes/x-api-key.yaml
   schemas:
     account:
       $ref: ./components/schemas/objects/account.yaml
@@ -70,6 +87,8 @@ components:
       $ref: ./components/schemas/create_update_lead.yaml
     opportunity:
       $ref: ./components/schemas/objects/opportunity.yaml
+    user:
+      $ref: ./components/schemas/objects/user.yaml
     create_update_opportunity:
       $ref: ./components/schemas/create_update_opportunity.yaml
     logs:
@@ -86,13 +105,10 @@ components:
       $ref: ./components/schemas/objects/phone_numbers.yaml
     pagination:
       $ref: ../common/components/schemas/pagination.yaml
-  # TODO: uncomment when we implement API authentication
-  # securitySchemes:
-  #   api_key:
-  #     type: apiKey
-  #     name: X-Account-Token
-  #     in: header
-  #     description: Token identifying the end user
+    custom_fields:
+      $ref: ./components/schemas/objects/custom_fields.yaml
+    filter:
+      $ref: ./components/schemas/filters.yaml#/filter
   parameters:
     created_after:
       $ref: ../common/components/parameters/created_after.yaml
@@ -108,7 +124,7 @@ components:
       $ref: ../common/components/parameters/expand.yaml
     page_size:
       $ref: ../common/components/parameters/page_size.yaml
-    customer-id:
-      $ref: ../common/components/parameters/customer-id.yaml
-    provider-name:
-      $ref: ../common/components/parameters/provider-name.yaml
+    x-customer-id:
+      $ref: ../common/components/parameters/x-customer-id.yaml
+    x-provider-name:
+      $ref: ../common/components/parameters/x-provider-name.yaml

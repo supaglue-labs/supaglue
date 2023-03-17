@@ -1,4 +1,3 @@
-import { ArrowForwardIos } from '@mui/icons-material';
 import { Avatar, Card, CardContent, Grid, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
@@ -33,7 +32,6 @@ export default function CustomerCard(props: CustomerCardProps) {
           </Grid>
           <Grid item xs={2} container justifyContent="end" alignItems="center">
             {icon}
-            <ArrowForwardIos />
           </Grid>
         </Grid>
       </CardContent>

@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeys } from '@/lib/camelcase';
+import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@/lib/camelcase';
 import { snakecaseKeys } from '@/lib/snakecase';
-import { ListParams } from '@supaglue/core/types';
+import { GetParams, ListParams } from '@supaglue/core/types';
 import {
   CreateContactPathParams,
   CreateContactRequest,
@@ -13,6 +13,9 @@ import {
   GetContactsPathParams,
   GetContactsRequest,
   GetContactsResponse,
+  SearchContactsPathParams,
+  SearchContactsRequest,
+  SearchContactsResponse,
   UpdateContactPathParams,
   UpdateContactQueryParams,
   UpdateContactRequest,
@@ -47,7 +50,7 @@ export default function init(app: Router): void {
   router.get(
     '/:contact_id',
     async (
-      req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, /* GetContactQueryParams */ ListParams>,
+      req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, /* GetContactQueryParams */ GetParams>,
       res: Response<GetContactResponse>
     ) => {
       const contact = await contactService.getById(req.params.contact_id, req.customerConnection.id, req.query);
@@ -62,7 +65,11 @@ export default function init(app: Router): void {
       res: Response<CreateContactResponse>
     ) => {
       const { customerId, id: connectionId } = req.customerConnection;
-      const contact = await contactService.create(customerId, connectionId, camelcaseKeys(req.body.model));
+      const contact = await contactService.create(
+        customerId,
+        connectionId,
+        camelcaseKeysSansCustomFields(req.body.model)
+      );
       return res.status(200).send({ model: snakecaseKeys(contact) });
     }
   );
@@ -76,9 +83,29 @@ export default function init(app: Router): void {
       const { customerId, id: connectionId } = req.customerConnection;
       const contact = await contactService.update(customerId, connectionId, {
         id: req.params.contact_id,
-        ...camelcaseKeys(req.body.model),
+        ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: snakecaseKeys(contact) });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchContactsPathParams, SearchContactsResponse, SearchContactsRequest>,
+      res: Response<SearchContactsResponse>
+    ) => {
+      const { next, previous, results } = await contactService.search(
+        req.customerConnection.id,
+        req.params,
+        camelcaseKeys(req.body.filters)
+      );
+
+      const snakeCaseKeysResults = results.map((result) => {
+        return snakecaseKeys(result);
+      });
+
+      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
 

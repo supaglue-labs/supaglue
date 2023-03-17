@@ -1,12 +1,14 @@
+import { camelcaseKeys } from '@/utils/camelcase';
 import useSWR from 'swr';
-import { API_HOST, fetcher } from '.';
+import { fetcher } from '.';
 
 export function useIntegrations() {
-  const { data, error, isLoading } = useSWR(`${API_HOST}/mgmt/v1/integrations`, fetcher);
+  const { data, error, isLoading, ...rest } = useSWR(`/api/internal/integrations`, fetcher);
 
   return {
-    integrations: data,
+    integrations: data ? camelcaseKeys(data) : undefined,
     isLoading,
     isError: error,
+    ...rest,
   };
 }

@@ -6,6 +6,16 @@
       "outputs": ["dist/**"]
     },
     "docs#build": {
+      "dependsOn": ["//#bundle-openapi"],
+      "inputs": [
+        "docs/**/*",
+        "src/**/*",
+        "static/**/*",
+        "*.config.js",
+        "sidebars.js",
+        "package.json",
+        "../openapi/**/openapi.bundle.json"
+      ],
       "outputs": ["build/**"]
     },
     "lint-staged": {},

@@ -7,8 +7,12 @@ items:
       example: hello@supaglue.com
     email_address_type:
       type: string
-      nullable: true
-      example: Work
+      enum:
+        - primary
+        - work
+  required:
+    - email_address
+    - email_address_type
 example:
   - email_address: hello@supaglue.com
-    email_address_type: Work
+    email_address_type: work
