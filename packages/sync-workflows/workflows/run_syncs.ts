@@ -28,8 +28,7 @@ export async function runSyncs({ connectionId }: RunSyncsArgs): Promise<void> {
   const results = await Promise.allSettled(
     CRM_COMMON_MODELS.map((commonModel) => doSync({ connectionId, commonModel }))
   );
-  // technically the sync isn't really complete since we haven't populated associations
-  // but we want the per-model granularity on the logs
+  await populateAssociations({ connectionId });
   await Promise.all(
     results.map(async (result, idx) => {
       if (result.status === 'fulfilled') {
@@ -59,5 +58,4 @@ export async function runSyncs({ connectionId }: RunSyncsArgs): Promise<void> {
       }
     })
   );
-  await populateAssociations({ connectionId });
 }
