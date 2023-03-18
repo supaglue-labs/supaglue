@@ -1,4 +1,6 @@
-openapi: 3.0.3
+# NOTE: Using 3.1.0 because we want to document webhooks.
+# Other than the `webhooks` key, we should not use 3.1.0 features since the validation middleware doesn't support it yet
+openapi: 3.1.0
 info:
   version: 0.4.1
   title: Supaglue Management API
@@ -69,6 +71,8 @@ components:
       $ref: ./components/schemas/sync_info.yaml
     sync_history: 
       $ref: ./components/schemas/sync_history.yaml
+    webhook-payload:
+      $ref: './components/schemas/webhook-payload.yaml'
   parameters:
     cursor:
       $ref: ../common/components/parameters/query/cursor.yaml
@@ -78,3 +82,6 @@ components:
       $ref: ../common/components/parameters/query/customer_id.yaml
     provider_name:
       $ref: ../common/components/parameters/query/provider_name.yaml
+webhooks:
+  webhook:
+    $ref: ./webhooks/webhook.yaml

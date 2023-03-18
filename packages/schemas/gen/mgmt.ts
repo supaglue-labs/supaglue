@@ -4,6 +4,11 @@
  */
 
 
+/** Type helpers */
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
+
 export interface paths {
   "/customers": {
     /**
@@ -98,7 +103,12 @@ export interface paths {
   };
 }
 
-export type webhooks = Record<string, never>;
+export interface webhooks {
+  "webhook": {
+    /** Webhook */
+    post: operations["webhook"];
+  };
+}
 
 export interface components {
   schemas: {
@@ -237,6 +247,26 @@ export interface components {
       /** @enum {string} */
       status?: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
     };
+    "webhook-payload": OneOf<[{
+      /** @enum {unknown} */
+      type: "SYNC_SUCCESS" | "SYNC_ERROR";
+      payload: {
+        connection_id: string;
+        history_id: string;
+        num_records_synced: number;
+        common_model: string;
+        error_message?: string;
+      };
+    }, {
+      /** @enum {unknown} */
+      type: "CONNECTION_SUCCESS" | "CONNECTION_ERROR";
+      payload: {
+        customer_id: string;
+        integration_id: string;
+        category: string;
+        provider_name: string;
+      };
+    }]>;
   };
   responses: never;
   parameters: {
@@ -506,6 +536,18 @@ export interface operations {
           "application/json": (components["schemas"]["sync_info"])[];
         };
       };
+    };
+  };
+  webhook: {
+    /** Webhook */
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["webhook-payload"];
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
     };
   };
 }

@@ -38,7 +38,8 @@ export type GetIntegrationResponse =
   operations['getIntegration']['responses'][keyof operations['getIntegration']['responses']]['content']['application/json'];
 
 export type UpdateIntegrationPathParams = paths[`/integrations/{integration_id}`]['parameters']['path'];
-export type UpdateIntegrationRequest = never;
+export type UpdateIntegrationRequest =
+  operations['updateIntegration']['requestBody'][keyof operations['updateIntegration']['requestBody']]['application/json'];
 export type UpdateIntegrationResponse =
   operations['updateIntegration']['responses'][keyof operations['updateIntegration']['responses']]['content']['application/json'];
 

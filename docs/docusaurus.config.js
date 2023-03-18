@@ -277,6 +277,21 @@ const config = {
         };
       },
     }),
+    () => ({
+      name: 'webpack-watch-external-files',
+      configureWebpack(config) {
+        /** @type any - needed so ts doesn't complain */
+        const WatchExternalFilesPlugin = require('webpack-watch-external-files-plugin');
+        return {
+          plugins: [
+            ...config.plugins,
+            new WatchExternalFilesPlugin({
+              files: ['../openapi/mgmt/openapi.bundle.json', '../openapi/crm/openapi.bundle.json'],
+            }),
+          ],
+        };
+      },
+    }),
   ],
 };
 

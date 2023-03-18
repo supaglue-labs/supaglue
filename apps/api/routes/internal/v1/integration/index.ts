@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeys } from '@/lib/camelcase';
-import { snakecaseKeys } from '@/lib/snakecase';
+import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import {
   CreateIntegrationPathParams,
   CreateIntegrationRequest,

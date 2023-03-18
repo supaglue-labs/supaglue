@@ -13,6 +13,6 @@
     "openapi-generator"
   ],
   "scripts": {
-    "generate:clients": "./scripts/generate_sdks.sh"
+    "generate:clients": "sh -c './scripts/generate_sdks.sh'"
   }
 }

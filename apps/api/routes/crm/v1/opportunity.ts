@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeysSansCustomFields } from '@/lib/camelcase';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
-import { snakecaseKeys } from '@/lib/snakecase';
+import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import { GetParams, ListParams } from '@supaglue/core/types/common';
 import {
   CreateOpportunityPathParams,
