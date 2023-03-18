@@ -19,18 +19,6 @@ cp docker-compose.override.dev.yml docker-compose.override.yml
 docker-compose up
 ```
 
-### Mgmt-ui
-
-```shell
-cp apps/mgmt-ui/.env.sample apps/mgmt-ui/.env
-```
-
-Ensure your `SUPAGLUE_INTERNAL_TOKEN` matches between `.env` and `apps/mgmt-ui/.env`. Then, start it:
-
-```shell
-yarn workspace mgmt-ui dev
-```
-
 ### Environment variables
 
 `.env`:
