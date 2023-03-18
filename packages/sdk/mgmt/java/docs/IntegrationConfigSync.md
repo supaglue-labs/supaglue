@@ -3,4 +3,4 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**periodMs** | **Integer** |  | 
+**periodMs** | **Object** |  | 

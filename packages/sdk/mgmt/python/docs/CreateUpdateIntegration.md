@@ -3,12 +3,11 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**application_id** | **str** |  | 
+**application_id** | **object** |  | 
 **category** | [**Category**](Category.md) |  | 
-**auth_type** | **str** |  | 
+**auth_type** | **object** |  | 
 **provider_name** | [**ProviderName**](ProviderName.md) |  | 
 **config** | [**IntegrationConfig**](IntegrationConfig.md) |  | [optional] 
-**is_enabled** | **bool** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

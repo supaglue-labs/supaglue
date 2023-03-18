@@ -4,29 +4,37 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteCustomer**](CustomersApi.md#deleteCustomer) | **DELETE** /applications/{application_id}/customers/{customer_id} | Delete customer
-[**getCustomer**](CustomersApi.md#getCustomer) | **GET** /applications/{application_id}/customers/{customer_id} | Get customer
-[**getCustomers**](CustomersApi.md#getCustomers) | **GET** /applications/{application_id}/customers | List customers
-[**upsertCustomer**](CustomersApi.md#upsertCustomer) | **PUT** /applications/{application_id}/customers | Upsert customer
+[**deleteCustomer**](CustomersApi.md#deleteCustomer) | **DELETE** /customers/{customer_id} | Delete customer
+[**getCustomer**](CustomersApi.md#getCustomer) | **GET** /customers/{customer_id} | Get customer
+[**getCustomers**](CustomersApi.md#getCustomers) | **GET** /customers | List customers
+[**upsertCustomer**](CustomersApi.md#upsertCustomer) | **PUT** /customers | Upsert customer
 
 <a name="deleteCustomer"></a>
 # **deleteCustomer**
-> Customer deleteCustomer(applicationId, customerId)
+> Customer deleteCustomer()
 
 Delete customer
 
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.CustomersApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 CustomersApi apiInstance = new CustomersApi();
-String applicationId = "applicationId_example"; // String | 
-String customerId = "customerId_example"; // String | 
 try {
-    Customer result = apiInstance.deleteCustomer(applicationId, customerId);
+    Customer result = apiInstance.deleteCustomer();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling CustomersApi#deleteCustomer");
@@ -35,11 +43,7 @@ try {
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **applicationId** | **String**|  |
- **customerId** | **String**|  |
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -47,7 +51,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -56,22 +60,30 @@ No authorization required
 
 <a name="getCustomer"></a>
 # **getCustomer**
-> Customer getCustomer(applicationId, customerId)
+> Customer getCustomer()
 
 Get customer
 
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.CustomersApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 CustomersApi apiInstance = new CustomersApi();
-String applicationId = "applicationId_example"; // String | 
-String customerId = "customerId_example"; // String | 
 try {
-    Customer result = apiInstance.getCustomer(applicationId, customerId);
+    Customer result = apiInstance.getCustomer();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling CustomersApi#getCustomer");
@@ -80,11 +92,7 @@ try {
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **applicationId** | **String**|  |
- **customerId** | **String**|  |
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -92,7 +100,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -101,7 +109,7 @@ No authorization required
 
 <a name="getCustomers"></a>
 # **getCustomers**
-> List&lt;Customer&gt; getCustomers(applicationId)
+> Object getCustomers()
 
 List customers
 
@@ -110,14 +118,23 @@ Get a list of customers
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.CustomersApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 CustomersApi apiInstance = new CustomersApi();
-String applicationId = "applicationId_example"; // String | 
 try {
-    List<Customer> result = apiInstance.getCustomers(applicationId);
+    Object result = apiInstance.getCustomers();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling CustomersApi#getCustomers");
@@ -126,18 +143,15 @@ try {
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **applicationId** | **String**|  |
+This endpoint does not need any parameter.
 
 ### Return type
 
-[**List&lt;Customer&gt;**](Customer.md)
+**Object**
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -146,22 +160,31 @@ No authorization required
 
 <a name="upsertCustomer"></a>
 # **upsertCustomer**
-> Customer upsertCustomer(body, applicationId)
+> Customer upsertCustomer(body)
 
 Upsert customer
 
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.CustomersApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 CustomersApi apiInstance = new CustomersApi();
 CreateUpdateCustomer body = new CreateUpdateCustomer(); // CreateUpdateCustomer | 
-String applicationId = "applicationId_example"; // String | 
 try {
-    Customer result = apiInstance.upsertCustomer(body, applicationId);
+    Customer result = apiInstance.upsertCustomer(body);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling CustomersApi#upsertCustomer");
@@ -174,7 +197,6 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**CreateUpdateCustomer**](CreateUpdateCustomer.md)|  |
- **applicationId** | **String**|  |
 
 ### Return type
 
@@ -182,7 +204,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 

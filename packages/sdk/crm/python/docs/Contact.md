@@ -5,6 +5,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **account_id** | **str** |  | [optional] 
 **account** | [**Account**](Account.md) |  | [optional] 
+**owner_id** | **str** |  | [optional] 
+**owner** | [**User**](User.md) |  | [optional] 
 **addresses** | [**Addresses**](Addresses.md) |  | [optional] 
 **email_addresses** | [**EmailAddresses**](EmailAddresses.md) |  | [optional] 
 **first_name** | **str** |  | [optional] 

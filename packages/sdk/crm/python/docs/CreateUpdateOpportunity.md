@@ -9,6 +9,8 @@ Name | Type | Description | Notes
 **name** | **str** |  | [optional] 
 **stage** | **str** |  | [optional] 
 **account_id** | **str** |  | [optional] 
+**owner_id** | **str** |  | [optional] 
+**custom_fields** | [**CustomFields**](CustomFields.md) |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -3,16 +3,9 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** |  | 
-**applicationId** | **String** |  | 
+**id** | **Object** |  | 
+**applicationId** | **Object** |  | 
 **category** | [**Category**](Category.md) |  | 
-**authType** | [**AuthTypeEnum**](#AuthTypeEnum) |  | 
+**authType** | **Object** |  | 
 **providerName** | [**ProviderName**](ProviderName.md) |  | 
 **config** | [**IntegrationConfig**](IntegrationConfig.md) |  |  [optional]
-**isEnabled** | **Boolean** |  | 
-
-<a name="AuthTypeEnum"></a>
-## Enum: AuthTypeEnum
-Name | Value
----- | -----
-OAUTH2 | &quot;oauth2&quot;

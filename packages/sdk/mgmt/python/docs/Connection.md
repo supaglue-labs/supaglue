@@ -3,11 +3,10 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **str** |  | 
-**status** | **str** |  | 
-**customer_id** | **str** |  | 
-**integration_id** | **str** |  | 
-**credentials** | [**ConnectionCredentials**](ConnectionCredentials.md) |  | 
+**id** | **object** |  | 
+**status** | **object** |  | 
+**customer_id** | **object** |  | 
+**integration_id** | **object** |  | 
 **provider_name** | [**ProviderName**](ProviderName.md) |  | 
 **category** | [**Category**](Category.md) |  | 
 

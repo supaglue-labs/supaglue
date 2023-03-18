@@ -4,14 +4,14 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**create_integration**](IntegrationsApi.md#create_integration) | **POST** /applications/{application_id}/integrations | Create integration
-[**delete_integration**](IntegrationsApi.md#delete_integration) | **DELETE** /applications/{application_id}/integrations/{integration_id} | Delete integration
-[**get_integration**](IntegrationsApi.md#get_integration) | **GET** /applications/{application_id}/integrations/{integration_id} | Get integration
-[**get_integrations**](IntegrationsApi.md#get_integrations) | **GET** /applications/{application_id}/integrations | List integrations
-[**update_integration**](IntegrationsApi.md#update_integration) | **PUT** /applications/{application_id}/integrations/{integration_id} | Update integration
+[**create_integration**](IntegrationsApi.md#create_integration) | **POST** /integrations | Create integration
+[**delete_integration**](IntegrationsApi.md#delete_integration) | **DELETE** /integrations/{integration_id} | Delete integration
+[**get_integration**](IntegrationsApi.md#get_integration) | **GET** /integrations/{integration_id} | Get integration
+[**get_integrations**](IntegrationsApi.md#get_integrations) | **GET** /integrations | List integrations
+[**update_integration**](IntegrationsApi.md#update_integration) | **PUT** /integrations/{integration_id} | Update integration
 
 # **create_integration**
-> Integration create_integration(body, application_id)
+> Integration create_integration(body)
 
 Create integration
 
@@ -23,14 +23,19 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure API key authorization: ApiKeyAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['x-api-key'] = 'Bearer'
+
 # create an instance of the API class
-api_instance = swagger_client.IntegrationsApi()
+api_instance = swagger_client.IntegrationsApi(swagger_client.ApiClient(configuration))
 body = swagger_client.CreateUpdateIntegration() # CreateUpdateIntegration | 
-application_id = 'application_id_example' # str | 
 
 try:
     # Create integration
-    api_response = api_instance.create_integration(body, application_id)
+    api_response = api_instance.create_integration(body)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling IntegrationsApi->create_integration: %s\n" % e)
@@ -41,7 +46,6 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**CreateUpdateIntegration**](CreateUpdateIntegration.md)|  | 
- **application_id** | **str**|  | 
 
 ### Return type
 
@@ -49,7 +53,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -59,7 +63,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_integration**
-> Integration delete_integration(application_id, integration_id)
+> Integration delete_integration()
 
 Delete integration
 
@@ -71,25 +75,25 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure API key authorization: ApiKeyAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['x-api-key'] = 'Bearer'
+
 # create an instance of the API class
-api_instance = swagger_client.IntegrationsApi()
-application_id = 'application_id_example' # str | 
-integration_id = 'integration_id_example' # str | 
+api_instance = swagger_client.IntegrationsApi(swagger_client.ApiClient(configuration))
 
 try:
     # Delete integration
-    api_response = api_instance.delete_integration(application_id, integration_id)
+    api_response = api_instance.delete_integration()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling IntegrationsApi->delete_integration: %s\n" % e)
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **application_id** | **str**|  | 
- **integration_id** | **str**|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -97,7 +101,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -107,7 +111,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_integration**
-> Integration get_integration(application_id, integration_id)
+> Integration get_integration()
 
 Get integration
 
@@ -119,25 +123,25 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure API key authorization: ApiKeyAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['x-api-key'] = 'Bearer'
+
 # create an instance of the API class
-api_instance = swagger_client.IntegrationsApi()
-application_id = 'application_id_example' # str | 
-integration_id = 'integration_id_example' # str | 
+api_instance = swagger_client.IntegrationsApi(swagger_client.ApiClient(configuration))
 
 try:
     # Get integration
-    api_response = api_instance.get_integration(application_id, integration_id)
+    api_response = api_instance.get_integration()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling IntegrationsApi->get_integration: %s\n" % e)
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **application_id** | **str**|  | 
- **integration_id** | **str**|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -145,7 +149,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -155,7 +159,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_integrations**
-> list[Integration] get_integrations(application_id)
+> object get_integrations()
 
 List integrations
 
@@ -169,31 +173,33 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure API key authorization: ApiKeyAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['x-api-key'] = 'Bearer'
+
 # create an instance of the API class
-api_instance = swagger_client.IntegrationsApi()
-application_id = 'application_id_example' # str | 
+api_instance = swagger_client.IntegrationsApi(swagger_client.ApiClient(configuration))
 
 try:
     # List integrations
-    api_response = api_instance.get_integrations(application_id)
+    api_response = api_instance.get_integrations()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling IntegrationsApi->get_integrations: %s\n" % e)
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **application_id** | **str**|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
-[**list[Integration]**](Integration.md)
+**object**
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -203,7 +209,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **update_integration**
-> Integration update_integration(body, application_id, integration_id)
+> Integration update_integration(body, integration_id)
 
 Update integration
 
@@ -218,12 +224,11 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.IntegrationsApi()
 body = swagger_client.CreateUpdateIntegration() # CreateUpdateIntegration | 
-application_id = 'application_id_example' # str | 
-integration_id = 'integration_id_example' # str | 
+integration_id = NULL # object | 
 
 try:
     # Update integration
-    api_response = api_instance.update_integration(body, application_id, integration_id)
+    api_response = api_instance.update_integration(body, integration_id)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling IntegrationsApi->update_integration: %s\n" % e)
@@ -234,8 +239,7 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**CreateUpdateIntegration**](CreateUpdateIntegration.md)|  | 
- **application_id** | **str**|  | 
- **integration_id** | **str**|  | 
+ **integration_id** | [**object**](.md)|  | 
 
 ### Return type
 

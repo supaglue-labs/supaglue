@@ -9,3 +9,5 @@ Name | Type | Description | Notes
 **name** | **String** |  |  [optional]
 **stage** | **String** |  |  [optional]
 **accountId** | **String** |  |  [optional]
+**ownerId** | **String** |  |  [optional]
+**customFields** | [**CustomFields**](CustomFields.md) |  |  [optional]

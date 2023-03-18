@@ -3,10 +3,20 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**addressType** | **String** |  |  [optional]
-**city** | **String** |  |  [optional]
-**country** | **String** |  |  [optional]
-**postalCode** | **String** |  |  [optional]
-**state** | **String** |  |  [optional]
-**street1** | **String** |  |  [optional]
-**street2** | **String** |  |  [optional]
+**addressType** | [**AddressTypeEnum**](#AddressTypeEnum) |  | 
+**city** | **String** |  | 
+**country** | **String** |  | 
+**postalCode** | **String** |  | 
+**state** | **String** |  | 
+**street1** | **String** |  | 
+**street2** | **String** |  | 
+
+<a name="AddressTypeEnum"></a>
+## Enum: AddressTypeEnum
+Name | Value
+---- | -----
+PRIMARY | &quot;primary&quot;
+MAILING | &quot;mailing&quot;
+OTHER | &quot;other&quot;
+BILLING | &quot;billing&quot;
+SHIPPING | &quot;shipping&quot;

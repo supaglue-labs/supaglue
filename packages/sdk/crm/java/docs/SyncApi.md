@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 <a name="getSyncHistory"></a>
 # **getSyncHistory**
-> InlineResponse2005 getSyncHistory(customerId, providerName, cursor, pageSize, model)
+> InlineResponse2006 getSyncHistory(xCustomerId, xProviderName, cursor, pageSize, model)
 
 Get Sync History
 
@@ -18,18 +18,28 @@ Get a list of Sync History objects.
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.SyncApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 SyncApi apiInstance = new SyncApi();
-String customerId = "customerId_example"; // String | The customer ID
-String providerName = "providerName_example"; // String | The provider name
+String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xProviderName = "xProviderName_example"; // String | The provider name
 String cursor = "cursor_example"; // String | The pagination cursor value
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 String model = "model_example"; // String | The model name to filter by
 try {
-    InlineResponse2005 result = apiInstance.getSyncHistory(customerId, providerName, cursor, pageSize, model);
+    InlineResponse2006 result = apiInstance.getSyncHistory(xCustomerId, xProviderName, cursor, pageSize, model);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling SyncApi#getSyncHistory");
@@ -41,19 +51,19 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **customerId** | **String**| The customer ID |
- **providerName** | **String**| The provider name |
+ **xCustomerId** | **String**| The customer ID |
+ **xProviderName** | **String**| The provider name |
  **cursor** | **String**| The pagination cursor value | [optional]
  **pageSize** | **String**| Number of results to return per page | [optional]
  **model** | **String**| The model name to filter by | [optional]
 
 ### Return type
 
-[**InlineResponse2005**](InlineResponse2005.md)
+[**InlineResponse2006**](InlineResponse2006.md)
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -62,7 +72,7 @@ No authorization required
 
 <a name="getSyncInfos"></a>
 # **getSyncInfos**
-> List&lt;InlineResponse2006&gt; getSyncInfos(customerId, providerName)
+> List&lt;InlineResponse2007&gt; getSyncInfos(xCustomerId, xProviderName)
 
 Get Sync Info
 
@@ -71,15 +81,25 @@ Get a list of Sync Info
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.SyncApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 SyncApi apiInstance = new SyncApi();
-String customerId = "customerId_example"; // String | The customer ID
-String providerName = "providerName_example"; // String | The provider name
+String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xProviderName = "xProviderName_example"; // String | The provider name
 try {
-    List<InlineResponse2006> result = apiInstance.getSyncInfos(customerId, providerName);
+    List<InlineResponse2007> result = apiInstance.getSyncInfos(xCustomerId, xProviderName);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling SyncApi#getSyncInfos");
@@ -91,16 +111,16 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **customerId** | **String**| The customer ID |
- **providerName** | **String**| The provider name |
+ **xCustomerId** | **String**| The customer ID |
+ **xProviderName** | **String**| The provider name |
 
 ### Return type
 
-[**List&lt;InlineResponse2006&gt;**](InlineResponse2006.md)
+[**List&lt;InlineResponse2007&gt;**](InlineResponse2007.md)
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 

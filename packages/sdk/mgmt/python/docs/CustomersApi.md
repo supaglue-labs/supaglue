@@ -4,13 +4,13 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**delete_customer**](CustomersApi.md#delete_customer) | **DELETE** /applications/{application_id}/customers/{customer_id} | Delete customer
-[**get_customer**](CustomersApi.md#get_customer) | **GET** /applications/{application_id}/customers/{customer_id} | Get customer
-[**get_customers**](CustomersApi.md#get_customers) | **GET** /applications/{application_id}/customers | List customers
-[**upsert_customer**](CustomersApi.md#upsert_customer) | **PUT** /applications/{application_id}/customers | Upsert customer
+[**delete_customer**](CustomersApi.md#delete_customer) | **DELETE** /customers/{customer_id} | Delete customer
+[**get_customer**](CustomersApi.md#get_customer) | **GET** /customers/{customer_id} | Get customer
+[**get_customers**](CustomersApi.md#get_customers) | **GET** /customers | List customers
+[**upsert_customer**](CustomersApi.md#upsert_customer) | **PUT** /customers | Upsert customer
 
 # **delete_customer**
-> Customer delete_customer(application_id, customer_id)
+> Customer delete_customer()
 
 Delete customer
 
@@ -22,25 +22,25 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure API key authorization: ApiKeyAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['x-api-key'] = 'Bearer'
+
 # create an instance of the API class
-api_instance = swagger_client.CustomersApi()
-application_id = 'application_id_example' # str | 
-customer_id = 'customer_id_example' # str | 
+api_instance = swagger_client.CustomersApi(swagger_client.ApiClient(configuration))
 
 try:
     # Delete customer
-    api_response = api_instance.delete_customer(application_id, customer_id)
+    api_response = api_instance.delete_customer()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling CustomersApi->delete_customer: %s\n" % e)
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **application_id** | **str**|  | 
- **customer_id** | **str**|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -48,7 +48,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -58,7 +58,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_customer**
-> Customer get_customer(application_id, customer_id)
+> Customer get_customer()
 
 Get customer
 
@@ -70,25 +70,25 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure API key authorization: ApiKeyAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['x-api-key'] = 'Bearer'
+
 # create an instance of the API class
-api_instance = swagger_client.CustomersApi()
-application_id = 'application_id_example' # str | 
-customer_id = 'customer_id_example' # str | 
+api_instance = swagger_client.CustomersApi(swagger_client.ApiClient(configuration))
 
 try:
     # Get customer
-    api_response = api_instance.get_customer(application_id, customer_id)
+    api_response = api_instance.get_customer()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling CustomersApi->get_customer: %s\n" % e)
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **application_id** | **str**|  | 
- **customer_id** | **str**|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -96,7 +96,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -106,7 +106,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_customers**
-> list[Customer] get_customers(application_id)
+> object get_customers()
 
 List customers
 
@@ -120,31 +120,33 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure API key authorization: ApiKeyAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['x-api-key'] = 'Bearer'
+
 # create an instance of the API class
-api_instance = swagger_client.CustomersApi()
-application_id = 'application_id_example' # str | 
+api_instance = swagger_client.CustomersApi(swagger_client.ApiClient(configuration))
 
 try:
     # List customers
-    api_response = api_instance.get_customers(application_id)
+    api_response = api_instance.get_customers()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling CustomersApi->get_customers: %s\n" % e)
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **application_id** | **str**|  | 
+This endpoint does not need any parameter.
 
 ### Return type
 
-[**list[Customer]**](Customer.md)
+**object**
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -154,7 +156,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **upsert_customer**
-> Customer upsert_customer(body, application_id)
+> Customer upsert_customer(body)
 
 Upsert customer
 
@@ -166,14 +168,19 @@ import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
 
+# Configure API key authorization: ApiKeyAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['x-api-key'] = 'Bearer'
+
 # create an instance of the API class
-api_instance = swagger_client.CustomersApi()
+api_instance = swagger_client.CustomersApi(swagger_client.ApiClient(configuration))
 body = swagger_client.CreateUpdateCustomer() # CreateUpdateCustomer | 
-application_id = 'application_id_example' # str | 
 
 try:
     # Upsert customer
-    api_response = api_instance.upsert_customer(body, application_id)
+    api_response = api_instance.upsert_customer(body)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling CustomersApi->upsert_customer: %s\n" % e)
@@ -184,7 +191,6 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**CreateUpdateCustomer**](CreateUpdateCustomer.md)|  | 
- **application_id** | **str**|  | 
 
 ### Return type
 
@@ -192,7 +198,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 

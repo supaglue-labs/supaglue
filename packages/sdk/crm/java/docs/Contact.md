@@ -5,6 +5,8 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **accountId** | **String** |  |  [optional]
 **account** | [**Account**](Account.md) |  |  [optional]
+**ownerId** | **String** |  |  [optional]
+**owner** | [**User**](User.md) |  |  [optional]
 **addresses** | [**Addresses**](Addresses.md) |  |  [optional]
 **emailAddresses** | [**EmailAddresses**](EmailAddresses.md) |  |  [optional]
 **firstName** | **String** |  |  [optional]
