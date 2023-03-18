@@ -1,7 +1,8 @@
+import { UpdateIntegrationResponse } from '@supaglue/schemas/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<UpdateIntegrationResponse | null>) {
   const result = await fetch(`${API_HOST}/internal/v1/integrations/${req.body.id}`, {
     method: 'PUT',
     headers: {
@@ -13,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   if (!result.ok) {
-    return res.status(500).json({ error: 'Failed to update' });
+    return res.status(500).json(null);
   }
 
   const r = await result.json();

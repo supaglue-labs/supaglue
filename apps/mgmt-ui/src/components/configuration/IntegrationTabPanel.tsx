@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
+import { Integration } from '@supaglue/core/types';
 import IntegrationCard from './IntegrationCard';
-import { Integration, IntegrationCardInfo } from './VerticalTabs';
+import { IntegrationCardInfo } from './VerticalTabs';
 
 export type IntegrationTabPanelProps = {
   integrationCardsInfo: IntegrationCardInfo[];
@@ -19,6 +20,10 @@ export default function IntegrationTabPanel(props: IntegrationTabPanelProps) {
           const existingIntegration = existingIntegrations.find(
             (integration: Integration) => info.providerName === integration.providerName
           );
+
+          if (!existingIntegration) {
+            return null;
+          }
 
           return (
             <Grid key={info.name} item xs={6}>

@@ -1,4 +1,5 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { SyncHistory } from '@supaglue/core/types';
 
 const columns: GridColDef[] = [
   { field: 'model', headerName: 'Model', width: 150 },
@@ -11,15 +12,10 @@ const columns: GridColDef[] = [
     headerName: 'Error Message',
     width: 90,
   },
-  //   {
-  //     field: "customer-id",
-  //     headerName: "Customer ID",
-  //     width: 160,
-  //   },
 ];
 
 export type LogsTableProps = {
-  data: any[]; // TODO: get type from monorepo
+  data: SyncHistory[];
 };
 
 export default function LogsTable(props: LogsTableProps) {

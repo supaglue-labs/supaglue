@@ -5,9 +5,10 @@ import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
+import { Integration } from '@supaglue/core/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Integration, IntegrationCardInfo } from './VerticalTabs';
+import { IntegrationCardInfo } from './VerticalTabs';
 
 export type IntegrationDetailTabPanelProps = {
   integration: Integration;
@@ -37,7 +38,7 @@ export default function IntegrationDetailTabPanel(props: IntegrationDetailTabPan
       setOauthScopes(integration?.config?.oauth?.oauthScopes?.join(',') ?? '');
     }
     if (!syncPeriodSecs) {
-      setSyncPeriodSecs(integration?.config.sync?.periodMs / 1000 ?? 3600);
+      setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
     }
   }, [integration]);
 

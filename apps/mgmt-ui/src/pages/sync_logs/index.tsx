@@ -12,7 +12,7 @@ import { useState } from 'react';
 export { getServerSideProps };
 
 export default function Home() {
-  const { syncHistory = { results: [] } } = useSyncHistory();
+  const { syncHistories = [] } = useSyncHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -58,7 +58,7 @@ export default function Home() {
           </Grid>
 
           <Divider className="my-4" />
-          <LogsTable data={syncHistory.results} />
+          <LogsTable data={syncHistories} />
         </Box>
       </Box>
     </>

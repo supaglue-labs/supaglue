@@ -1,11 +1,5 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-// import ActiveCampaignIcon from '@/assets/connector_icons/activecampaign.png';
-// import CopperIcon from '@/assets/connector_icons/copper.png';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
-// import MicrosoftDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';
-// import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
-// import ZendeskSellIcon from '@/assets/connector_icons/zendesk_sell.png';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import Box from '@mui/material/Box';
 import Image from 'next/image';
@@ -13,8 +7,6 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import IntegrationDetailTabPanel from './IntegrationDetailTabPanel';
 import IntegrationTabPanel from './IntegrationTabPanel';
-
-export type Integration = any /* TODO: use type from monorepo */;
 
 const ICON_SIZE = 35;
 
@@ -43,52 +35,6 @@ const integrationCardsInfo: IntegrationCardInfo[] = [
     status: 'available',
     description: 'Configure your HubSpot integration.',
   },
-  // {
-  //   icon: <Image alt="pipedrive" src={PipedriveIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-  //   name: 'Pipedrive',
-  //   providerName: 'pipedrive',
-  //   category: 'crm',
-  //   status: 'auth-only',
-  //   description:
-  //     'Pipedrive is the easy-to-use, #1 user-rated CRM tool. Get more qualified leads and grow your business. Sign up for a 14-day free trial.',
-  // },
-  // {
-  //   icon: <Image alt="activecampaign" src={ActiveCampaignIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-  //   name: 'ActiveCampaign',
-  //   providerName: 'activecampaign',
-  //   category: 'crm',
-  //   status: 'auth-only',
-  //   description:
-  //     'Integrated email marketing, marketing automation, and small business CRM. Save time while growing your business with sales automation.',
-  // },
-  // {
-  //   icon: <Image alt="copper" src={CopperIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-  //   name: 'Copper',
-  //   providerName: 'copper',
-  //   category: 'crm',
-  //   status: 'auth-only',
-  //   description:
-  //     'When you need CRM software that works with G Suite, you need Copper. Give us a try and see how we can help your business build stronger customer relationships.',
-  // },
-  // {
-  //   icon: (
-  //     <Image alt="ms_dynamics_365_sales" src={MicrosoftDynamics365SalesIcon} width={ICON_SIZE} height={ICON_SIZE} />
-  //   ),
-  //   name: 'Microsoft Dynamics 365 Sales',
-  //   providerName: 'ms_dynamics_365_sales',
-  //   category: 'crm',
-  //   status: 'auth-only',
-  //   description: 'Dynamics CRM is a leading customer resource management and enterprise resource planning software.',
-  // },
-  // {
-  //   icon: <Image alt="zendesk_sell" src={ZendeskSellIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-  //   name: 'Zendesk Sell',
-  //   providerName: 'zendesk_sell',
-  //   category: 'crm',
-  //   status: 'auth-only',
-  //   description:
-  //     'Zendesk Sell (formerly Base) is a sales automation tool to enhance productivity, processes, and pipeline visibility for sales teams.',
-  // },
 ];
 
 interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -113,13 +59,6 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-function a11yProps(index: number) {
-  return {
-    id: `vertical-tab-${index}`,
-    'aria-controls': `vertical-tabpanel-${index}`,
-  };
-}
-
 export default function VerticalTabs() {
   const router = useRouter();
   const { tab = [] } = router.query;
@@ -127,7 +66,7 @@ export default function VerticalTabs() {
   const { integrations: existingIntegrations = [] } = useIntegrations();
 
   const targetIntegration = existingIntegrations.find(
-    (existingIntegration: Integration) => existingIntegration.providerName === tab[2]
+    (existingIntegration) => existingIntegration.providerName === tab[2]
   );
 
   const targetIntegrationCardInfo = integrationCardsInfo.find(
@@ -143,7 +82,7 @@ export default function VerticalTabs() {
           existingIntegrations={existingIntegrations}
         />
       )}
-      {tab.length === 3 && targetIntegrationCardInfo && (
+      {tab.length === 3 && targetIntegration && targetIntegrationCardInfo && (
         <IntegrationDetailTabPanel
           status="available"
           integration={targetIntegration}

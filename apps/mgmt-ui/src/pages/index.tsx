@@ -28,11 +28,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 export default function Home() {
   const { customers = [] } = useCustomers();
-  // const { syncHistory = [] } = useSyncHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const totalConnections = customers
-    ?.map((customer: any /* TODO: @supaglue/core/types */) => customer.connections.length)
+    ?.map((customer) => customer.connections.length)
     .reduce((a: number, b: number) => a + b, 0);
 
   const handleDrawerToggle = () => {
@@ -55,71 +54,10 @@ export default function Home() {
             <Grid item xs={6}>
               <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
             </Grid>
-            {/* <Grid item xs={4}>
-              <MetricCard icon={<CloudUploadOutlined />} title="Total syncs" value={`${syncHistory.length} syncs`} />
-            </Grid> */}
             <Grid item xs={6}>
               <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
             </Grid>
           </Grid>
-          {/*
-          <Card>
-            <CardHeader title={<Typography variant="h6">Client SDKs</Typography>} />
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Card>
-                        <CardContent>Typescript</CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Card>
-                        <CardContent>Python</CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Card>
-                        <CardContent>PHP</CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Card>
-                        <CardContent>.NET</CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Card>
-                        <CardContent>Ruby</CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Card>
-                        <CardContent>Go</CardContent>
-                      </Card>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <Card>
-                        <CardContent>Code block 1</CardContent>
-                      </Card>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Card>
-                        <CardContent>Code block 2</CardContent>
-                      </Card>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        */}
         </Box>
       </Box>
     </>
