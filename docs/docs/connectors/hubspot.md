@@ -1,6 +1,6 @@
 # HubSpot
 
-### Third-party provider information
+## Overview
 
 Supaglue interfaces with the HubSpot V3 API using Hubspot's official nodejs client and its getAll() functionality.
 
@@ -21,7 +21,7 @@ Supported object types:
 - Contact
 - Deal
 
-### Common Model sync frequencies
+## Common Model sync frequencies
 
 _The default sync frequency is 15 minutes (900000 ms)._
 
