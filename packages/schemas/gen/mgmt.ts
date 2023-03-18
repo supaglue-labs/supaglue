@@ -26,7 +26,7 @@ export interface paths {
     delete: operations["deleteCustomer"];
     parameters: {
       path: {
-        customer_id: string;
+        external_id: string;
       };
     };
   };
@@ -99,8 +99,6 @@ export interface webhooks {
 export interface components {
   schemas: {
     customer: {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
       /** @example your-customers-unique-application-id */

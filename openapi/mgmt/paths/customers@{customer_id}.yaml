@@ -15,7 +15,6 @@ get:
           examples:
             Example:
               value:
-                id: 0258cbc6-6020-430a-848e-aafacbadf4ae
                 application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
                 name: MyCompany Inc
                 email: contact@mycompany.com
@@ -37,15 +36,14 @@ delete:
           examples:
             Example:
               value:
-                id: 0258cbc6-6020-430a-848e-aafacbadf4af
                 application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
                 name: MyCompany Inc
                 email: contact@mycompany.com
                 external_identifier: your-customers-unique-application-id
 parameters:
-  - name: customer_id
+  - name: external_id
     in: path
     required: true
     schema:
       type: string
-      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
+      example: your-customers-unique-application-id

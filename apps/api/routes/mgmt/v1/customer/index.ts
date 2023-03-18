@@ -29,12 +29,10 @@ export default function init(app: Router): void {
       req: Request<GetCustomersPathParams, GetCustomersResponse, GetCustomersRequest>,
       res: Response<GetCustomersResponse>
     ) => {
-      const customers = await customerService.list();
+      const customers = await customerService.list(req.supaglueApplication.id);
       return res.status(200).send(customers.map(snakecaseKeys));
     }
   );
-
-  // TODO: do we want non-upsert create/update endpoints?
 
   customerRouter.put(
     '/',
@@ -47,26 +45,24 @@ export default function init(app: Router): void {
     }
   );
 
-  // TODO: consider fetching by external_identifier instead of internal id
   customerRouter.get(
-    '/:customer_id',
+    '/:external_id',
     async (
       req: Request<GetCustomerPathParams, GetCustomerResponse, GetCustomerRequest>,
       res: Response<GetCustomerResponse>
     ) => {
-      const customer = await customerService.getById(req.params.customer_id);
+      const customer = await customerService.getByExternalId(req.supaglueApplication.id, req.params.external_id);
       return res.status(200).send(snakecaseKeys(customer));
     }
   );
 
-  // TODO: consider fetching by external_identifier instead of internal id
   customerRouter.delete(
-    '/:customer_id',
+    '/:external_id',
     async (
       req: Request<DeleteCustomerPathParams, DeleteCustomerResponse, DeleteCustomerRequest>,
       res: Response<DeleteCustomerResponse>
     ) => {
-      const customer = await customerService.delete(req.params.customer_id);
+      const customer = await customerService.delete(req.supaglueApplication.id, req.params.external_id);
       return res.status(200).send(snakecaseKeys(customer));
     }
   );
