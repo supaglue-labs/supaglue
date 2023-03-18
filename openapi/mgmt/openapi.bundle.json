@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "version": "0.4.1",
     "title": "Supaglue Management API",
@@ -1069,6 +1069,116 @@
           "notify_on_connection_success",
           "notify_on_connection_error"
         ]
+      },
+      "webhook-payload": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "Sync Finished Event",
+            "properties": {
+              "type": {
+                "enum": [
+                  "SYNC_SUCCESS",
+                  "SYNC_ERROR"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "connection_id": {
+                    "type": "string"
+                  },
+                  "history_id": {
+                    "type": "string"
+                  },
+                  "num_records_synced": {
+                    "type": "integer"
+                  },
+                  "common_model": {
+                    "type": "string"
+                  },
+                  "error_message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "connection_id",
+                  "history_id",
+                  "num_records_synced",
+                  "common_model"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "payload"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "Connection Created Event",
+            "properties": {
+              "type": {
+                "enum": [
+                  "CONNECTION_SUCCESS",
+                  "CONNECTION_ERROR"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "customer_id": {
+                    "type": "string"
+                  },
+                  "integration_id": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "provider_name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "customer_id",
+                  "integration_id",
+                  "category",
+                  "provider_name"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "payload"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "webhooks": {
+    "webhook": {
+      "post": {
+        "operationId": "webhook",
+        "summary": "Webhook",
+        "tags": [
+          "Webhook"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/webhook-payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
       }
     }
   }

@@ -3976,6 +3976,7 @@ __metadata:
     pino-abstract-transport: ^1.0.0
     pino-pretty: ^9.4.0
     posthog-node: ^2.5.4
+    snakecase-keys: ^5.4.5
     typescript: ^4.9.5
     uuid: ^9.0.0
   languageName: unknown
@@ -5717,7 +5718,6 @@ __metadata:
     express-openapi-validator: ^5.0.2
     pino-http: ^8.3.3
     simple-oauth2: ^5.0.0
-    snakecase-keys: ^5.4.5
     ts-patch: ^2.1.0
     tslib: ^2.5.0
     tsx: ^3.12.3
@@ -7993,6 +7993,7 @@ __metadata:
     redocusaurus: ^1.6.0
     tailwindcss: ^3.2.7
     typescript: ^4.7.4
+    webpack-watch-external-files-plugin: ^2.0.0
   languageName: unknown
   linkType: soft
 
@@ -9807,6 +9808,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"glob@npm:8.1.0, glob@npm:^8.0.0, glob@npm:^8.0.1, glob@npm:^8.0.3":
+  version: 8.1.0
+  resolution: "glob@npm:8.1.0"
+  dependencies:
+    fs.realpath: ^1.0.0
+    inflight: ^1.0.4
+    inherits: 2
+    minimatch: ^5.0.1
+    once: ^1.3.0
+  checksum: 92fbea3221a7d12075f26f0227abac435de868dd0736a17170663783296d0dd8d3d532a5672b4488a439bf5d7fb85cdd07c11185d6cd39184f0385cbdfb86a47
+  languageName: node
+  linkType: hard
+
 "glob@npm:^7.0.0, glob@npm:^7.0.5, glob@npm:^7.1.4, glob@npm:^7.1.6":
   version: 7.2.3
   resolution: "glob@npm:7.2.3"
@@ -9818,19 +9832,6 @@ __metadata:
     once: ^1.3.0
     path-is-absolute: ^1.0.0
   checksum: 29452e97b38fa704dabb1d1045350fb2467cf0277e155aa9ff7077e90ad81d1ea9d53d3ee63bd37c05b09a065e90f16aec4a65f5b8de401d1dac40bc5605d133
-  languageName: node
-  linkType: hard
-
-"glob@npm:^8.0.0, glob@npm:^8.0.1, glob@npm:^8.0.3":
-  version: 8.1.0
-  resolution: "glob@npm:8.1.0"
-  dependencies:
-    fs.realpath: ^1.0.0
-    inflight: ^1.0.4
-    inherits: 2
-    minimatch: ^5.0.1
-    once: ^1.3.0
-  checksum: 92fbea3221a7d12075f26f0227abac435de868dd0736a17170663783296d0dd8d3d532a5672b4488a439bf5d7fb85cdd07c11185d6cd39184f0385cbdfb86a47
   languageName: node
   linkType: hard
 
@@ -13503,6 +13504,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"path@npm:0.12.7":
+  version: 0.12.7
+  resolution: "path@npm:0.12.7"
+  dependencies:
+    process: ^0.11.1
+    util: ^0.10.3
+  checksum: 5dedb71e78fc008fcba797defc0b4e1cf06c1f18e0a631e03ba5bb505136f587ff017afc14f9a3d481cbe77aeedff7dc0c1d2ce4d820c1ebf3c4281ca49423a1
+  languageName: node
+  linkType: hard
+
 "perfect-scrollbar@npm:^1.5.5":
   version: 1.5.5
   resolution: "perfect-scrollbar@npm:1.5.5"
@@ -14471,7 +14482,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"process@npm:^0.11.10":
+"process@npm:^0.11.1, process@npm:^0.11.10":
   version: 0.11.10
   resolution: "process@npm:0.11.10"
   checksum: bfcce49814f7d172a6e6a14d5fa3ac92cc3d0c3b9feb1279774708a719e19acd673995226351a082a9ae99978254e320ccda4240ddc474ba31a76c79491ca7c3
@@ -17951,6 +17962,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"util@npm:^0.10.3":
+  version: 0.10.4
+  resolution: "util@npm:0.10.4"
+  dependencies:
+    inherits: 2.0.3
+  checksum: 913f9a90d05a60e91f91af01b8bd37e06bca4cc02d7b49e01089f9d5b78be2fffd61fb1a41b517de7238c5fc7337fa939c62d1fb4eb82e014894c7bee6637aaf
+  languageName: node
+  linkType: hard
+
 "utila@npm:~0.4":
   version: 0.4.0
   resolution: "utila@npm:0.4.0"
@@ -18191,6 +18211,18 @@ __metadata:
   version: 3.2.3
   resolution: "webpack-sources@npm:3.2.3"
   checksum: 989e401b9fe3536529e2a99dac8c1bdc50e3a0a2c8669cbafad31271eadd994bc9405f88a3039cd2e29db5e6d9d0926ceb7a1a4e7409ece021fe79c37d9c4607
+  languageName: node
+  linkType: hard
+
+"webpack-watch-external-files-plugin@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "webpack-watch-external-files-plugin@npm:2.0.0"
+  dependencies:
+    glob: 8.1.0
+    path: 0.12.7
+  peerDependencies:
+    webpack: ^4 || ^5
+  checksum: 61e74e8d8c9b2c7316efba7e3e0a97f33fe798df3c8964d2f193ec006c31591a467ccd24cda6b1d0cc63304688e7a1b781ef75e221aa7a93a7b6b0e74c35f8b2
   languageName: node
   linkType: hard
 

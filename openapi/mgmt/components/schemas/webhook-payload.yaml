@@ -1,0 +1,55 @@
+oneOf:
+  - type: object
+    title: Sync Finished Event
+    properties:
+      type:
+        enum:
+          - SYNC_SUCCESS
+          - SYNC_ERROR
+      payload:
+        type: object
+        properties:
+          connection_id:
+            type: string
+          history_id:
+            type: string
+          num_records_synced:
+            type: integer
+          common_model:
+            type: string
+          error_message:
+            type: string
+        required:
+          - connection_id
+          - history_id
+          - num_records_synced
+          - common_model
+    required:
+      - type
+      - payload
+  - type: object
+    title: Connection Created Event
+    properties:
+      type:
+        enum:
+          - CONNECTION_SUCCESS
+          - CONNECTION_ERROR
+      payload:
+        type: object
+        properties:
+          customer_id:
+            type: string
+          integration_id:
+            type: string
+          category:
+            type: string
+          provider_name:
+            type: string
+        required:
+          - customer_id
+          - integration_id
+          - category
+          - provider_name
+    required:
+      - type
+      - payload

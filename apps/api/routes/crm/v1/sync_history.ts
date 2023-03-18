@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { snakecaseKeys } from '@/lib/snakecase';
+import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import {
   GetSyncHistoryPathParams,
   GetSyncHistoryQueryParams,

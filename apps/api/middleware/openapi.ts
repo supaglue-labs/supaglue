@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as OpenApiValidator from 'express-openapi-validator';
+import fs from 'fs';
 import path from 'path';
 
 export const openapiMiddleware = (specDir: string) => {
@@ -9,8 +10,16 @@ export const openapiMiddleware = (specDir: string) => {
     apiSpec = path.join(process.cwd(), `../../openapi/${specDir}/openapi.bundle.json`);
   }
 
+  const jsonApiSpec = JSON.parse(fs.readFileSync(apiSpec, 'utf8'));
+
+  // hacks so validator doesn't complain
+  // TODO remove this after validator support openapi 3.1.0
+
+  jsonApiSpec.openapi = '3.0.3';
+  delete jsonApiSpec.webhooks;
+
   return OpenApiValidator.middleware({
-    apiSpec,
+    apiSpec: jsonApiSpec,
     // TODO: switch to true when we support X-Account-Token
     validateSecurity: false,
     validateRequests: {

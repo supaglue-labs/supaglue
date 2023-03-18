@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { WebhookConfig } from '../types';
 import { logger } from './logger';
+import { snakecaseKeys } from './snakecase';
 
 export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SYNC_SUCCESS' | 'SYNC_ERROR';
 
@@ -13,10 +14,10 @@ export const sendWebhookPayload = async (
   // TODO: Make webhooks more durable
   try {
     const { url, requestType, headers } = config;
-    const axiosRequest = {
+    const axiosRequest = snakecaseKeys({
       data: { type: payloadType, payload },
       headers,
-    };
+    });
 
     switch (requestType) {
       case 'GET':
