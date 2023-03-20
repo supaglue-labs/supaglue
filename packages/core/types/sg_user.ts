@@ -1,7 +1,6 @@
 type BaseSgUser = {
   username: string;
   password: string;
-  applicationId: string;
   authType: string;
 };
 

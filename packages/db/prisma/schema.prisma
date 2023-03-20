@@ -11,16 +11,13 @@ datasource db {
 }
 
 model SgUser {
-  id            String      @id @default(uuid())
-  authType      String      @map("auth_type") // [username-password]
-  username      String
-  password      String
-  applicationId String      @map("application_id")
-  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  id        String   @id @default(uuid())
+  authType  String   @map("auth_type") // [username-password]
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@unique([applicationId, username])
   @@map("sg_users")
 }
 
@@ -32,7 +29,6 @@ model Application {
   updatedAt   DateTime      @updatedAt @map("updated_at")
   Customer    Customer[]
   Integration Integration[]
-  SgUser      SgUser[]
 
   @@map("applications")
 }
