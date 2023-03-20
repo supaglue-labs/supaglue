@@ -27,112 +27,112 @@ li > a.menu__link {
   justify-content: flex-start;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/activecampaign"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/activecampaign"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/activecampaign.png);
+  background-image: url(/static/img/connector_icons/activecampaign.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/capsule"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/capsule"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/capsule.png);
+  background-image: url(/static/img/connector_icons/capsule.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/copper"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/copper"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/copper.png);
+  background-image: url(/static/img/connector_icons/copper.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/hubspot"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/hubspot"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/hubspot.png);
+  background-image: url(/static/img/connector_icons/hubspot.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/keap"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/keap"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/keap.png);
+  background-image: url(/static/img/connector_icons/keap.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/ms_dynamics_365_sales"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/ms_dynamics_365_sales"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/ms_dynamics_365_sales.png);
+  background-image: url(/static/img/connector_icons/ms_dynamics_365_sales.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/pipedrive"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/pipedrive"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/pipedrive.png);
+  background-image: url(/static/img/connector_icons/pipedrive.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/salesforce"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/salesforce"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/salesforce.png);
+  background-image: url(/static/img/connector_icons/salesforce.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/zendesk_sell"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/zendesk_sell"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/zendesk_sell.png);
+  background-image: url(/static/img/connector_icons/zendesk_sell.png);
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href="/connectors/zoho_crm"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/zoho_crm"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
-  width: 20px; 
+  width: 20px;
   height: 20px;
   content:"";
-  background-image: url(../../static/img/connector_icons/zoho_crm.png);
+  background-image: url(/static/img/connector_icons/zoho_crm.png);
   background-repeat: no-repeat;
 }

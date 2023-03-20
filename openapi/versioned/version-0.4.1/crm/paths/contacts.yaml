@@ -1,0 +1,121 @@
+get:
+  operationId: getContacts
+  tags:
+    - Contacts
+  security:
+    - ApiKeyAuth: []
+  summary: List contacts
+  description: >-
+    Get a list of contacts
+  parameters:
+    - $ref: ../../common/components/parameters/created_after.yaml
+    - $ref: ../../common/components/parameters/created_before.yaml
+    - $ref: ../../common/components/parameters/updated_after.yaml
+    - $ref: ../../common/components/parameters/updated_before.yaml
+    - $ref: ../../common/components/parameters/cursor.yaml
+    - $ref: ../../common/components/parameters/expand.yaml
+    - $ref: ../../common/components/parameters/page_size.yaml
+  responses:
+    '200':
+      description: Contacts
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../common/components/schemas/pagination.yaml
+              - type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/objects/contact.yaml
+          examples:
+            Example:
+              value:
+                next: eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==
+                previous: eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9
+                results:
+                  - account_id: 9377fd4d-d420-4e0b-93ea-789078a3eab4
+                    addresses:
+                      - address_type: shipping
+                        city: San Francisco
+                        country: US
+                        postal_code: '94107'
+                        state: CA
+                        street1: 525 Brannan
+                        street2: ~
+                    email_addresses:
+                      - email_address: hello@supaglue.com
+                        email_address_type: work
+                    first_name: George
+                    id: 43a45011-c55e-42f3-81a1-99158c956775
+                    last_activity_at: '2023-02-27T00:00:00Z'
+                    last_name: Xing
+                    phone_numbers:
+                      - phone_number: '+14151234567'
+                        phone_number_type: mobile
+                    created_at: '2023-02-27T00:00:00Z'
+                  - account: 9377fd4d-d420-4e0b-93ea-789078a3eab4
+                    addresses:
+                      - address_type: shipping
+                        city: San Francisco
+                        country: US
+                        postal_code: '94107'
+                        state: CA
+                        street1: 525 Brannan
+                        street2: ~
+                    email_addresses:
+                      - email_address: hello@supaglue.com
+                        email_address_type: work
+                    first_name: George
+                    id: 5733a8b6-472d-45fa-8f10-e0b00727cced
+                    last_activity_at: '2023-02-27T00:00:00Z'
+                    last_name: Xing
+                    phone_numbers:
+                      - phone_number: '+14151234567'
+                        phone_number_type: mobile
+                    created_at: '2023-02-27T00:00:00Z'
+post:
+  operationId: createContact
+  summary: Create contact
+  tags:
+    - Contacts
+  security:
+    - ApiKeyAuth: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            model:
+              $ref: ../components/schemas/create_update_contact.yaml
+          required:
+            - model
+        example:
+          model:
+            first_name: George
+            last_activity_at: '2022-02-10T00:00:00Z'
+            last_name: Xing
+            account_id: 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+  responses:
+    '201':
+      description: Contact created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../common/components/schemas/logs.yaml
+              model:
+                $ref: ../components/schemas/objects/contact.yaml
+              warnings:
+                $ref: ../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../common/components/parameters/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/x-provider-name.yaml
