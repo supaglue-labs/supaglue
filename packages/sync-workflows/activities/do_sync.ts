@@ -15,6 +15,7 @@ import { logEvent } from '../lib/analytics';
 export type DoSyncArgs = {
   connectionId: string;
   commonModel: CommonModel;
+  syncId: string;
 };
 
 export type DoSyncResult = {
@@ -30,13 +31,13 @@ export function createDoSync(
   leadService: LeadService,
   userService: UserService
 ) {
-  return async function doSync({ connectionId, commonModel }: DoSyncArgs): Promise<DoSyncResult> {
+  return async function doSync({ connectionId, commonModel, syncId }: DoSyncArgs): Promise<DoSyncResult> {
     const connection = await connectionService.getSafeById(connectionId);
     const client = await remoteService.getCrmRemoteClient(connectionId);
 
     let numRecordsSynced = 0;
 
-    logEvent('Start Sync', connection.providerName, commonModel);
+    logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: commonModel });
 
     switch (commonModel) {
       case 'account': {
@@ -86,7 +87,7 @@ export function createDoSync(
       }
     }
 
-    logEvent('Completed Sync', connection.providerName, commonModel);
+    logEvent({ eventName: 'Completed Sync', syncId, providerName: connection.providerName, modelName: commonModel });
 
     return {
       numRecordsSynced,
