@@ -3,5 +3,5 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**oauthScopes** | **List&lt;String&gt;** |  | 
+**oauthScopes** | **Object** |  | 
 **credentials** | [**IntegrationConfigOauthCredentials**](IntegrationConfigOauthCredentials.md) |  | 

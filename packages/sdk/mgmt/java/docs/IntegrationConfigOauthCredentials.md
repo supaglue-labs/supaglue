@@ -3,5 +3,5 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**oauthClientId** | **String** |  | 
-**oauthClientSecret** | **String** |  | 
+**oauthClientId** | **Object** |  | 
+**oauthClientSecret** | **Object** |  | 

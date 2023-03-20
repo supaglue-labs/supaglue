@@ -3,7 +3,4 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**modelName** | **String** |  |  [optional]
-**lastSyncStart** | **String** |  |  [optional]
-**nextSyncStart** | **String** |  |  [optional]
-**status** | **String** |  |  [optional]
+**results** | [**List&lt;InlineResponse2006Results&gt;**](InlineResponse2006Results.md) |  |  [optional]

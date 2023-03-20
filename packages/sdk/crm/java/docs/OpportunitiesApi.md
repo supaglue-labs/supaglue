@@ -11,23 +11,33 @@ Method | HTTP request | Description
 
 <a name="createOpportunity"></a>
 # **createOpportunity**
-> InlineResponse2013 createOpportunity(body, customerId, providerName)
+> InlineResponse2013 createOpportunity(body, xCustomerId, xProviderName)
 
 Create opportunity
 
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.OpportunitiesApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 OpportunitiesApi apiInstance = new OpportunitiesApi();
 OpportunitiesBody body = new OpportunitiesBody(); // OpportunitiesBody | 
-String customerId = "customerId_example"; // String | The customer ID
-String providerName = "providerName_example"; // String | The provider name
+String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xProviderName = "xProviderName_example"; // String | The provider name
 try {
-    InlineResponse2013 result = apiInstance.createOpportunity(body, customerId, providerName);
+    InlineResponse2013 result = apiInstance.createOpportunity(body, xCustomerId, xProviderName);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#createOpportunity");
@@ -40,8 +50,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**OpportunitiesBody**](OpportunitiesBody.md)|  |
- **customerId** | **String**| The customer ID |
- **providerName** | **String**| The provider name |
+ **xCustomerId** | **String**| The customer ID |
+ **xProviderName** | **String**| The provider name |
 
 ### Return type
 
@@ -49,7 +59,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -58,7 +68,7 @@ No authorization required
 
 <a name="getOpportunities"></a>
 # **getOpportunities**
-> InlineResponse2004 getOpportunities(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
+> InlineResponse2003 getOpportunities(xCustomerId, xProviderName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
 
 List opportunities
 
@@ -67,13 +77,23 @@ Get a list of opportunities
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.OpportunitiesApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 OpportunitiesApi apiInstance = new OpportunitiesApi();
-String customerId = "customerId_example"; // String | The customer ID
-String providerName = "providerName_example"; // String | The provider name
+String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xProviderName = "xProviderName_example"; // String | The provider name
 OffsetDateTime createdAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created after this datetime
 OffsetDateTime createdBefore = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created before this datetime
 OffsetDateTime updatedAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified after this datetime
@@ -82,7 +102,7 @@ String cursor = "cursor_example"; // String | The pagination cursor value
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 try {
-    InlineResponse2004 result = apiInstance.getOpportunities(customerId, providerName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
+    InlineResponse2003 result = apiInstance.getOpportunities(xCustomerId, xProviderName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#getOpportunities");
@@ -94,8 +114,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **customerId** | **String**| The customer ID |
- **providerName** | **String**| The provider name |
+ **xCustomerId** | **String**| The customer ID |
+ **xProviderName** | **String**| The provider name |
  **createdAfter** | **OffsetDateTime**| If provided, will only return objects created after this datetime | [optional]
  **createdBefore** | **OffsetDateTime**| If provided, will only return objects created before this datetime | [optional]
  **updatedAfter** | **OffsetDateTime**| If provided, will only return objects modified after this datetime | [optional]
@@ -106,11 +126,11 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2004**](InlineResponse2004.md)
+[**InlineResponse2003**](InlineResponse2003.md)
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -119,24 +139,34 @@ No authorization required
 
 <a name="getOpportunity"></a>
 # **getOpportunity**
-> Opportunity getOpportunity(customerId, providerName, opportunityId, expand)
+> Opportunity getOpportunity(xCustomerId, xProviderName, opportunityId, expand)
 
 Get opportunity
 
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.OpportunitiesApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 OpportunitiesApi apiInstance = new OpportunitiesApi();
-String customerId = "customerId_example"; // String | The customer ID
-String providerName = "providerName_example"; // String | The provider name
+String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xProviderName = "xProviderName_example"; // String | The provider name
 String opportunityId = "opportunityId_example"; // String | 
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 try {
-    Opportunity result = apiInstance.getOpportunity(customerId, providerName, opportunityId, expand);
+    Opportunity result = apiInstance.getOpportunity(xCustomerId, xProviderName, opportunityId, expand);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#getOpportunity");
@@ -148,8 +178,8 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **customerId** | **String**| The customer ID |
- **providerName** | **String**| The provider name |
+ **xCustomerId** | **String**| The customer ID |
+ **xProviderName** | **String**| The provider name |
  **opportunityId** | **String**|  |
  **expand** | **String**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional]
 
@@ -159,7 +189,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -168,24 +198,34 @@ No authorization required
 
 <a name="updateOpportunity"></a>
 # **updateOpportunity**
-> InlineResponse2013 updateOpportunity(body, customerId, providerName, opportunityId)
+> InlineResponse2013 updateOpportunity(body, xCustomerId, xProviderName, opportunityId)
 
 Update opportunity
 
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.OpportunitiesApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 OpportunitiesApi apiInstance = new OpportunitiesApi();
 OpportunitiesOpportunityIdBody body = new OpportunitiesOpportunityIdBody(); // OpportunitiesOpportunityIdBody | 
-String customerId = "customerId_example"; // String | The customer ID
-String providerName = "providerName_example"; // String | The provider name
+String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xProviderName = "xProviderName_example"; // String | The provider name
 String opportunityId = "opportunityId_example"; // String | 
 try {
-    InlineResponse2013 result = apiInstance.updateOpportunity(body, customerId, providerName, opportunityId);
+    InlineResponse2013 result = apiInstance.updateOpportunity(body, xCustomerId, xProviderName, opportunityId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling OpportunitiesApi#updateOpportunity");
@@ -198,8 +238,8 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**OpportunitiesOpportunityIdBody**](OpportunitiesOpportunityIdBody.md)|  |
- **customerId** | **String**| The customer ID |
- **providerName** | **String**| The provider name |
+ **xCustomerId** | **String**| The customer ID |
+ **xProviderName** | **String**| The provider name |
  **opportunityId** | **String**|  |
 
 ### Return type
@@ -208,7 +248,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 

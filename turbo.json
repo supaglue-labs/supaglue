@@ -40,6 +40,11 @@
     },
     "@supaglue/db#generate": {
       "inputs": ["prisma/schema.prisma"]
+    },
+    "@supaglue/sdk#generate:clients": {
+      "dependsOn": ["//#bundle-openapi"],
+      "inputs": ["../../openapi/**/*.yaml"],
+      "outputs": ["crm", "mgmt"]
     }
   },
   "globalDependencies": [

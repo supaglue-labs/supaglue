@@ -4,29 +4,36 @@ All URIs are relative to *http://localhost:8080/mgmt/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteConnection**](ConnectionsApi.md#deleteConnection) | **DELETE** /applications/{application_id}/customers/{customer_id}/connections/{connection_id} | Delete connection
-[**getConnection**](ConnectionsApi.md#getConnection) | **GET** /applications/{application_id}/customers/{customer_id}/connections/{connection_id} | Get connection
-[**getConnections**](ConnectionsApi.md#getConnections) | **GET** /applications/{application_id}/customers/{customer_id}/connections | List connections
+[**deleteConnection**](ConnectionsApi.md#deleteConnection) | **DELETE** /customers/{customer_id}/connections/{connection_id} | Delete connection
+[**getConnection**](ConnectionsApi.md#getConnection) | **GET** /customers/{customer_id}/connections/{connection_id} | Get connection
+[**getConnections**](ConnectionsApi.md#getConnections) | **GET** /customers/{customer_id}/connections | List connections
 
 <a name="deleteConnection"></a>
 # **deleteConnection**
-> Connection deleteConnection(applicationId, customerId, connectionId)
+> Connection deleteConnection()
 
 Delete connection
 
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.ConnectionsApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 ConnectionsApi apiInstance = new ConnectionsApi();
-String applicationId = "applicationId_example"; // String | 
-String customerId = "customerId_example"; // String | 
-String connectionId = "connectionId_example"; // String | 
 try {
-    Connection result = apiInstance.deleteConnection(applicationId, customerId, connectionId);
+    Connection result = apiInstance.deleteConnection();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConnectionsApi#deleteConnection");
@@ -35,12 +42,7 @@ try {
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **applicationId** | **String**|  |
- **customerId** | **String**|  |
- **connectionId** | **String**|  |
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -48,7 +50,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -57,23 +59,30 @@ No authorization required
 
 <a name="getConnection"></a>
 # **getConnection**
-> Connection getConnection(applicationId, customerId, connectionId)
+> Connection getConnection()
 
 Get connection
 
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.ConnectionsApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 ConnectionsApi apiInstance = new ConnectionsApi();
-String applicationId = "applicationId_example"; // String | 
-String customerId = "customerId_example"; // String | 
-String connectionId = "connectionId_example"; // String | 
 try {
-    Connection result = apiInstance.getConnection(applicationId, customerId, connectionId);
+    Connection result = apiInstance.getConnection();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConnectionsApi#getConnection");
@@ -82,12 +91,7 @@ try {
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **applicationId** | **String**|  |
- **customerId** | **String**|  |
- **connectionId** | **String**|  |
+This endpoint does not need any parameter.
 
 ### Return type
 
@@ -95,7 +99,7 @@ Name | Type | Description  | Notes
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
@@ -104,7 +108,7 @@ No authorization required
 
 <a name="getConnections"></a>
 # **getConnections**
-> List&lt;Connection&gt; getConnections(applicationId, customerId)
+> Object getConnections()
 
 List connections
 
@@ -113,15 +117,23 @@ Get a list of connections
 ### Example
 ```java
 // Import classes:
+//import io.swagger.client.ApiClient;
 //import io.swagger.client.ApiException;
+//import io.swagger.client.Configuration;
+//import io.swagger.client.auth.*;
 //import io.swagger.client.api.ConnectionsApi;
 
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+// Configure API key authorization: ApiKeyAuth
+ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+ApiKeyAuth.setApiKey("YOUR API KEY");
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//ApiKeyAuth.setApiKeyPrefix("Token");
 
 ConnectionsApi apiInstance = new ConnectionsApi();
-String applicationId = "applicationId_example"; // String | 
-String customerId = "customerId_example"; // String | 
 try {
-    List<Connection> result = apiInstance.getConnections(applicationId, customerId);
+    Object result = apiInstance.getConnections();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ConnectionsApi#getConnections");
@@ -130,19 +142,15 @@ try {
 ```
 
 ### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **applicationId** | **String**|  |
- **customerId** | **String**|  |
+This endpoint does not need any parameter.
 
 ### Return type
 
-[**List&lt;Connection&gt;**](Connection.md)
+**Object**
 
 ### Authorization
 
-No authorization required
+[ApiKeyAuth](../README.md#ApiKeyAuth)
 
 ### HTTP request headers
 
