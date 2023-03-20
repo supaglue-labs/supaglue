@@ -272,7 +272,7 @@ export interface components {
     cursor: string;
     /** @description Number of results to return per page */
     page_size: string;
-    /** @description The customer ID */
+    /** @description The customer ID that uniquely identifies the customer in your application */
     customer_id: string;
     /** @description The provider name */
     provider_name: string;
@@ -487,7 +487,7 @@ export interface operations {
     parameters?: {
         /** @description The pagination cursor value */
         /** @description Number of results to return per page */
-        /** @description The customer ID */
+        /** @description The customer ID that uniquely identifies the customer in your application */
         /** @description The provider name */
         /** @description The model name to filter by */
       query?: {
@@ -520,7 +520,7 @@ export interface operations {
      * @description Get a list of Sync Info
      */
     parameters?: {
-        /** @description The customer ID */
+        /** @description The customer ID that uniquely identifies the customer in your application */
         /** @description The provider name */
       query?: {
         customer_id?: string;
