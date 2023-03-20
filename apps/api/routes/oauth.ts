@@ -5,7 +5,7 @@ import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/core/types
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
-const { integrationService, connectionWriterService } = getDependencyContainer();
+const { integrationService, connectionWriterService, customerService } = getDependencyContainer();
 
 const SERVER_URL = process.env.SUPAGLUE_SERVER_URL ?? 'http://localhost:8080';
 const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
@@ -16,8 +16,15 @@ export default function init(app: Router): void {
 
   publicOauthRouter.get(
     '/connect',
-    async (req: Request<never, any, never, any, { customerId: string; providerName: string }>, res: Response) => {
-      const { customerId, providerName, returnUrl } = req.query;
+    async (
+      req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
+      res: Response
+    ) => {
+      const { applicationId, customerId, providerName, returnUrl } = req.query;
+
+      if (!applicationId) {
+        throw new Error('Missing applicationId');
+      }
 
       if (!customerId) {
         throw new Error('Missing customerId');
@@ -55,7 +62,8 @@ export default function init(app: Router): void {
         scope: oauthScopes.join(' '),
         state: JSON.stringify({
           returnUrl: returnUrl ?? RETURN_URL,
-          customerId,
+          applicationId,
+          externalCustomerId: customerId,
           providerName,
           scope: oauthScopes.join(' '), // TODO: this should be in a session
         }),
@@ -83,12 +91,14 @@ export default function init(app: Router): void {
         returnUrl,
         scope,
         providerName,
-        customerId,
+        externalCustomerId,
+        applicationId,
       }: {
         returnUrl: string;
         scope?: string;
+        applicationId?: string;
         providerName?: CRMProviderName;
-        customerId?: string;
+        externalCustomerId?: string;
       } = JSON.parse(decodeURIComponent(state));
 
       if (!providerName || !SUPPORTED_CRM_CONNECTIONS.includes(providerName)) {
@@ -99,8 +109,12 @@ export default function init(app: Router): void {
         throw new Error('No scope on state object');
       }
 
-      if (!customerId) {
-        throw new Error('No customerId on state object');
+      if (!applicationId) {
+        throw new Error('No applicationId on state object');
+      }
+
+      if (!externalCustomerId) {
+        throw new Error('No externalCustomerId on state object');
       }
 
       const integration = await integrationService.getByProviderName(providerName);
@@ -108,6 +122,8 @@ export default function init(app: Router): void {
       if (!integration.config) {
         throw new Error('Integration is not configured');
       }
+
+      const customer = await customerService.getByExternalId(applicationId, externalCustomerId);
 
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
@@ -134,7 +150,7 @@ export default function init(app: Router): void {
       const payload: ConnectionCreateParams | ConnectionUpsertParams = {
         category: 'crm',
         providerName,
-        customerId,
+        customerId: customer.id,
         integrationId: integration.id,
         credentials: {
           type: 'oauth2',
