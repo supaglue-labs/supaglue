@@ -11,6 +11,11 @@ on:
     paths:
       - apps/api/**
 
+concurrency:
+  group: ${{ github.repository }}-api-${{ github.event.number || github.head_ref ||
+    github.sha }}-${{ github.workflow }}-${{ github.event_name }}
+  cancel-in-progress: true
+
 jobs:
   build_and_push:
     name: Build and push Docker image

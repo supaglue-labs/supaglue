@@ -45,7 +45,7 @@ jobs:
         run: corepack enable
 
       - name: Docker meta
-        if: "!env.ACT"
+        if: '!env.ACT'
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -84,7 +84,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
-          push: false
+          push: ${{ !env.ACT }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |

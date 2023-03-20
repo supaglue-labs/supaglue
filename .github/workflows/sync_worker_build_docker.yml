@@ -9,7 +9,12 @@ on:
       - apps/sync-worker/**
   pull_request:
     paths:
-      - apps/async-workerpi/**
+      - apps/sync-worker/**
+
+concurrency:
+  group: ${{ github.repository }}-sync_worker-${{ github.event.number || github.head_ref ||
+    github.sha }}-${{ github.workflow }}-${{ github.event_name }}
+  cancel-in-progress: true
 
 jobs:
   build_and_push:
