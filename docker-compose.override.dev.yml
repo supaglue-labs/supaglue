@@ -34,6 +34,8 @@ services:
 
   init:
     image: node:18
+    environment:
+      <<: *common-env
     volumes:
       - .:/app
     working_dir: /app
