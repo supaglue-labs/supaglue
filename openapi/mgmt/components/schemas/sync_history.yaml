@@ -13,9 +13,35 @@ properties:
     type: string
     nullable: true
     example: 2023-02-22T20:55:17.559537Z
+  application_id:
+    type: string
+    example: 974125fa-ffb6-47fc-b12f-44c566fc5da1
+  customer_id:
+    type: string
+    example: my-customer-1
+  provider_name:
+    type: string
+    example: hubspot
+  category:
+    type: string
+    enum: [crm]
+  connection_id:
+    type: string
+    example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
   status:
     type: string # TODO enum?
     enum:
       - SUCCESS
       - IN_PROGRESS
       - FAILURE
+required:
+  - model_name
+  - start_timestamp
+  - end_timestamp
+  - application_id
+  - customer_id
+  - status
+  - error_message
+  - provider_name
+  - category
+  - connection_id

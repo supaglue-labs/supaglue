@@ -57,7 +57,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const leadService = new LeadService(pgPool, prisma, remoteService);
   const opportunityService = new OpportunityService(pgPool, prisma, remoteService);
   const contactService = new ContactService(pgPool, prisma, remoteService);
-  const syncHistoryService = new SyncHistoryService(prisma, connectionService, customerService);
+  const syncHistoryService = new SyncHistoryService(prisma, connectionService);
   const userService = new UserService(pgPool, prisma, remoteService);
 
   return {

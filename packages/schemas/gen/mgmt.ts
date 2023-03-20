@@ -143,6 +143,8 @@ export interface components {
        */
       status: "available" | "added" | "authorized" | "callable";
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+      application_id: string;
+      /** @example my-customer-1 */
       customer_id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       integration_id: string;
@@ -226,24 +228,44 @@ export interface components {
     };
     sync_info: {
       /** @example Account */
-      model_name?: string;
+      model_name: string;
       /** @example 2023-02-22T19:55:17.559Z */
-      last_sync_start?: string | null;
+      last_sync_start: string | null;
       /** @example 2023-02-22T20:55:17.559Z */
-      next_sync_start?: string | null;
+      next_sync_start: string | null;
       /** @enum {string|null} */
-      status?: "SYNCING" | "DONE" | null;
+      status: "SYNCING" | "DONE" | null;
+      /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
+      application_id: string;
+      /** @example my-customer-1 */
+      customer_id: string;
+      /** @example hubspot */
+      provider_name: string;
+      /** @enum {string} */
+      category: "crm";
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
     };
     sync_history: {
       /** @example Account */
-      model_name?: string;
-      error_message?: string | null;
+      model_name: string;
+      error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
-      start_timestamp?: string;
+      start_timestamp: string;
       /** @example 2023-02-22T20:55:17.559Z */
-      end_timestamp?: string | null;
+      end_timestamp: string | null;
+      /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
+      application_id: string;
+      /** @example my-customer-1 */
+      customer_id: string;
+      /** @example hubspot */
+      provider_name: string;
       /** @enum {string} */
-      status?: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
+      category: "crm";
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @enum {string} */
+      status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
     };
     "webhook-payload": OneOf<[{
       /** @enum {unknown} */

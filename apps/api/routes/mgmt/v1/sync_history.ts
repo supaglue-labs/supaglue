@@ -29,7 +29,7 @@ export default function init(app: Router) {
         snakecaseKeys({
           ...result,
           startTimestamp: result.startTimestamp.toISOString(),
-          endTimestamp: result.endTimestamp?.toISOString(),
+          endTimestamp: result.endTimestamp?.toISOString() ?? null,
         })
       );
       return res.status(200).send({ next, previous, results: snakeCaseResults });

@@ -1,5 +1,6 @@
 import { sendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
+import { getCustomerId } from '@supaglue/core/lib/customerid';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, IntegrationService } from '@supaglue/core/services';
 import type {
@@ -44,12 +45,14 @@ export class ConnectionWriterService {
     const connection = await this.#prisma.connection.upsert({
       create: {
         ...params,
+        customerId: getCustomerId(params.applicationId, params.customerId),
         integrationId: integration.id,
         status,
         credentials: encrypt(JSON.stringify(params.credentials)),
       },
       update: {
         ...params,
+        customerId: getCustomerId(params.applicationId, params.customerId),
         integrationId: integration.id,
         status,
         credentials: encrypt(JSON.stringify(params.credentials)),
@@ -75,6 +78,7 @@ export class ConnectionWriterService {
       const connection = await this.#prisma.connection.create({
         data: {
           ...params,
+          customerId: getCustomerId(params.applicationId, params.customerId),
           integrationId: integration.id,
           status,
           credentials: encrypt(JSON.stringify(params.credentials)),

@@ -34,7 +34,7 @@ model Application {
 }
 
 model Customer {
-  id                 String       @id @default(uuid())
+  id                 String       @id // `applicationId:externalIdentifier`
   externalIdentifier String       @map("external_identifier")
   applicationId      String       @map("application_id")
   application        Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)

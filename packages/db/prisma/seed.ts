@@ -59,19 +59,20 @@ const {
 const SG_USER_ID = 'd56b851b-5a36-4480-bc43-515d677f46e3';
 const APPLICATION_ID = 'a4398523-03a2-42dd-9681-c91e3e2efaf4';
 
-const SALESFORCE_CUSTOMER_ID = '9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677';
-const HUBSPOT_CUSTOMER_ID = 'ea3039fa-27de-4535-90d8-db2bab0c0252';
+const SALESFORCE_CUSTOMER_ID = 'external-customer-salesforce';
+const HUBSPOT_CUSTOMER_ID = 'external-customer-hubspot';
+const PIPEDRIVE_CUSTOMER_ID = 'external-customer-pipedrive';
+const ZENDESK_SELL_CUSTOMER_ID = 'external-customer-zendesk';
+const MS_DYNAMICS_365_SELL_CUSTOMER_ID = 'external-customer-ms-dynamics-365';
+const ZOHO_CRM_CUSTOMER_ID = 'external-customer-zoho';
+const CAPSULE_CUSTOMER_ID = 'external-customer-capsule';
+
 const SALESFORCE_INTEGRATION_ID = '9b725cc5-98f8-4cf7-bda4-c72242b456e2';
 const HUBSPOT_INTEGRATION_ID = '7ba1d794-8b15-476e-b81a-790513c287e9';
-const PIPEDRIVE_CUSTOMER_ID = 'eee222cf-6591-4195-a6da-a1b4a491fa8a';
 const PIPEDRIVE_INTEGRATION_ID = 'cbf33d3c-f798-4321-842f-d6f9cf56a27c';
-const ZENDESK_SELL_CUSTOMER_ID = 'c46667c3-fc64-4d92-9c89-582fb2ca6de1';
 const ZENDESK_SELL_INTEGRATION_ID = '767619f8-ecc9-487a-97f9-1e06f3702d4f';
-const MS_DYNAMICS_365_SELL_CUSTOMER_ID = '1d2c8f45-42df-44be-a18a-414cbbf5a8ec';
 const MS_DYNAMICS_365_SELL_INTEGRATION_ID = '59c80887-9326-43bd-bf66-dc6bd07f0a96';
-const ZOHO_CRM_CUSTOMER_ID = '313a5e13-5db8-44fb-b6b7-06a23e5fe25a';
 const ZOHO_CRM_INTEGRATION_ID = 'a86d14f9-d0ec-4e10-bdf1-65fafbd771d2';
-const CAPSULE_CUSTOMER_ID = 'e523cd5a-e044-4593-981b-ef07fc7a7f09';
 const CAPSULE_INTEGRATION_ID = 'f7e8ea69-f19d-4b61-8301-c1dd791757c4';
 
 const OAUTH_CLIENT_IDS = [
@@ -110,7 +111,7 @@ const OAUTH_APP_IDS = [
   DEV_ZOHO_CRM_APP_ID,
   DEV_CAPSULE_APP_ID,
 ];
-const CUSTOMER_IDS = [
+const EXTERNAL_CUSTOMER_IDS = [
   SALESFORCE_CUSTOMER_ID,
   HUBSPOT_CUSTOMER_ID,
   PIPEDRIVE_CUSTOMER_ID,
@@ -217,18 +218,23 @@ async function seedCustomers() {
 
   // Create customers
   await Promise.all(
-    CUSTOMER_IDS.map((id, idx) =>
+    EXTERNAL_CUSTOMER_IDS.map((externalCustomerId, idx) =>
       prisma.customer.upsert({
         where: {
-          id,
+          id: `${APPLICATION_ID}:${externalCustomerId}`,
         },
-        update: {},
-        create: {
-          id,
+        update: {
           applicationId: APPLICATION_ID,
           name: `customer-${idx}`,
           email: `customer-${idx}@email.com`,
-          externalIdentifier: `external-customer-${idx}`,
+          externalIdentifier: externalCustomerId,
+        },
+        create: {
+          id: `${APPLICATION_ID}:${externalCustomerId}`,
+          applicationId: APPLICATION_ID,
+          name: `customer-${idx}`,
+          email: `customer-${idx}@email.com`,
+          externalIdentifier: externalCustomerId,
         },
       })
     )

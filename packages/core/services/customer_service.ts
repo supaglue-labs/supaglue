@@ -56,7 +56,10 @@ export class CustomerService {
           externalIdentifier: customer.customerId,
         },
       }, // TODO: (SUP1-58) applicationId should come from the session for security
-      create: toCustomerModelCreateParams(customer),
+      create: {
+        ...toCustomerModelCreateParams(customer),
+        id: `${customer.applicationId}:${customer.customerId}`,
+      },
       update: toCustomerModelCreateParams(customer),
     });
     return fromCustomerModel(updatedCustomer);

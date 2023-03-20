@@ -63,7 +63,7 @@ export default function init(app: Router): void {
         state: JSON.stringify({
           returnUrl: returnUrl ?? RETURN_URL,
           applicationId,
-          externalCustomerId: customerId,
+          customerId,
           providerName,
           scope: oauthScopes.join(' '), // TODO: this should be in a session
         }),
@@ -91,14 +91,14 @@ export default function init(app: Router): void {
         returnUrl,
         scope,
         providerName,
-        externalCustomerId,
+        customerId,
         applicationId,
       }: {
         returnUrl: string;
         scope?: string;
         applicationId?: string;
         providerName?: CRMProviderName;
-        externalCustomerId?: string;
+        customerId?: string;
       } = JSON.parse(decodeURIComponent(state));
 
       if (!providerName || !SUPPORTED_CRM_CONNECTIONS.includes(providerName)) {
@@ -113,8 +113,8 @@ export default function init(app: Router): void {
         throw new Error('No applicationId on state object');
       }
 
-      if (!externalCustomerId) {
-        throw new Error('No externalCustomerId on state object');
+      if (!customerId) {
+        throw new Error('No customerId on state object');
       }
 
       const integration = await integrationService.getByProviderName(providerName);
@@ -122,8 +122,6 @@ export default function init(app: Router): void {
       if (!integration.config) {
         throw new Error('Integration is not configured');
       }
-
-      const customer = await customerService.getByExternalId(applicationId, externalCustomerId);
 
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
@@ -150,7 +148,8 @@ export default function init(app: Router): void {
       const payload: ConnectionCreateParams | ConnectionUpsertParams = {
         category: 'crm',
         providerName,
-        customerId: customer.id,
+        applicationId,
+        customerId,
         integrationId: integration.id,
         credentials: {
           type: 'oauth2',

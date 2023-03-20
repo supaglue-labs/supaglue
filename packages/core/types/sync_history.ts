@@ -10,14 +10,16 @@ export type SyncHistoryModelExpanded = SyncHistoryModel & {
 
 export type SyncHistory = {
   id: number;
-  model: string;
+  modelName: string;
   status: SyncHistoryStatus;
   errorMessage: string | null;
   startTimestamp: Date;
   endTimestamp: Date | null;
+  applicationId: string;
+  // External Id
   customerId: string;
   providerName: string;
-  category: string;
+  category: 'crm';
   connectionId: string;
 };
 
