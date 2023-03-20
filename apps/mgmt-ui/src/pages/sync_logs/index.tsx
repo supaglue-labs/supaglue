@@ -1,18 +1,15 @@
 import LogsTable from '@/components/logs/LogsTable';
-import ModelSelect from '@/components/logs/ModelSelect';
 import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages';
-import { Box, Divider, Grid, Typography } from '@mui/material';
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Box, Divider, Typography } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';
 
 export { getServerSideProps };
 
 export default function Home() {
-  const { syncHistories = [] } = useSyncHistory();
+  const { syncHistories } = useSyncHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -34,31 +31,8 @@ export default function Home() {
           <Typography variant="h6">Overview</Typography>
           <Typography variant="subtitle1">Logs of syncs running for your customers.</Typography>
 
-          <Grid className="my-4 gap-2" container direction="row" justifyContent="start" alignItems="center">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateTimePicker
-                label="Start date"
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
-              />
-              <DateTimePicker
-                label="End date"
-                slotProps={{
-                  textField: {
-                    size: 'small',
-                  },
-                }}
-              />
-            </LocalizationProvider>
-
-            <ModelSelect />
-          </Grid>
-
           <Divider className="my-4" />
-          <LogsTable data={syncHistories} />
+          <LogsTable data={syncHistories?.results ?? []} />
         </Box>
       </Box>
     </>

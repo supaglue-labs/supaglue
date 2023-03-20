@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { Biotech, MenuBook, Tune } from '@mui/icons-material';
+import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
   Box,
@@ -47,12 +47,12 @@ const categories: {
         icon: <Tune />,
         active: false,
       },
-      // {
-      //   id: 'Sync Logs',
-      //   to: '/sync_logs',
-      //   icon: <FindInPage />,
-      //   active: false,
-      // },
+      {
+        id: 'Sync Logs',
+        to: '/sync_logs',
+        icon: <FindInPage />,
+        active: false,
+      },
     ],
   },
   {
