@@ -14,7 +14,7 @@ export const fromCustomerModel = ({ id, applicationId, externalIdentifier, name,
 
 export const toCustomerModelCreateParams = ({
   applicationId,
-  customerId: customerId,
+  customerId,
   name,
   email,
 }: CustomerUpsertParams): Omit<CustomerModel, 'id' | 'createdAt' | 'updatedAt'> => {
