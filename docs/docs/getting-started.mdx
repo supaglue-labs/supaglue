@@ -40,6 +40,7 @@ Once Supaglue is running locally, open the [management portal](http://localhost:
 You can self-host Supaglue on your own infrastructure. See our self-hosting guide for more details.
 
 Once Supaglue is up and running on your infrastructure, navigate to the management portal and login with the following credentials:
+
 - username: `admin`
 - password: `admin` (you should change this)
 
@@ -91,7 +92,7 @@ Create a Supaglue customer using the [Management API](/api/mgmt#tag/Customers/op
 
 You will need four pieces of information when hitting this endpoint:
 
-- **external_identifier (unique)**: the primary key you use in your application to uniquely identify this customer.
+- **customer_id (unique)**: the primary key you use in your application to uniquely identify this customer.
 - **application_id**: your Supaglue application id: `a4398523-03a2-42dd-9681-c91e3e2efaf4`.
 - **name**: the name of the customer.
 - **email**: the email associated with the customer.
@@ -203,6 +204,7 @@ curl http://localhost:8080/crm/v1/accounts \
   -H 'x-customer-id: {CUSTOMER_ID}' \
   -H 'x-provider-name: {PROVIDER_NAME}'
 ```
+
 </TabItem>
 
 <TabItem value="self-host" label="Self-host">

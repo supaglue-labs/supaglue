@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
-import { fromCustomerModel, fromCustomerModelExpandedUnsafe } from '../mappers/customer';
+import { fromCustomerModel, fromCustomerModelExpandedUnsafe, toCustomerModelCreateParams } from '../mappers/customer';
 import { Customer, CustomerExpandedSafe, CustomerUpsertParams } from '../types/customer';
 
 export class CustomerService {
@@ -53,11 +53,11 @@ export class CustomerService {
       where: {
         applicationId_externalIdentifier: {
           applicationId: customer.applicationId,
-          externalIdentifier: customer.externalIdentifier,
+          externalIdentifier: customer.customerId,
         },
       }, // TODO: (SUP1-58) applicationId should come from the session for security
-      create: customer,
-      update: customer,
+      create: toCustomerModelCreateParams(customer),
+      update: toCustomerModelCreateParams(customer),
     });
     return fromCustomerModel(updatedCustomer);
   }

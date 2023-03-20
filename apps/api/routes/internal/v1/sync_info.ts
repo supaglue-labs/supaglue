@@ -19,11 +19,11 @@ export default function init(app: Router): void {
       req: Request<GetSyncInfosPathParams, GetSyncInfosResponse, GetSyncInfosRequest, GetSyncInfosQueryParams>,
       res: Response<GetSyncInfosResponse>
     ) => {
-      const syncInfoList = await syncService.getSyncInfoList(
-        req.supaglueApplication.id,
-        req.query?.customer_id,
-        req.query?.provider_name
-      );
+      const syncInfoList = await syncService.getSyncInfoList({
+        applicationId: req.supaglueApplication.id,
+        externalCustomerId: req.query?.customer_id,
+        providerName: req.query?.provider_name,
+      });
       const syncInfoListRes = syncInfoList.map((syncInfo) =>
         snakecaseKeys({
           ...syncInfo,

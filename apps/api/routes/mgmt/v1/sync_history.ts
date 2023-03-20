@@ -21,7 +21,7 @@ export default function init(app: Router) {
         applicationId: req.supaglueApplication.id,
         paginationParams: { page_size: req.query?.page_size, cursor: req.query?.cursor },
         model: req.query?.model,
-        customerId: req.query?.customer_id,
+        externalCustomerId: req.query?.customer_id,
         providerName: req.query?.provider_name,
       });
 
