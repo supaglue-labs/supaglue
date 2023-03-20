@@ -4,6 +4,8 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
+const LATEST_VERSION = '0.4.1';
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Supaglue Docs',
@@ -38,12 +40,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          lastVersion: 'current',
-          versions: {
-            current: {
-              label: '0.3.x - alpha',
-            },
-          },
+          lastVersion: LATEST_VERSION,
           sidebarCollapsed: false,
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
@@ -68,12 +65,20 @@ const config = {
         // Plugin Options for loading OpenAPI files
         specs: [
           {
-            spec: '../openapi/crm/openapi.bundle.json',
+            spec: '../openapi/versioned/version-0.4.1/crm/openapi.bundle.json',
             route: '/api/crm',
           },
           {
-            spec: '../openapi/mgmt/openapi.bundle.json',
+            spec: '../openapi/versioned/version-0.4.1/mgmt/openapi.bundle.json',
             route: '/api/mgmt',
+          },
+          {
+            spec: '../openapi/crm/openapi.bundle.json',
+            route: '/next/api/crm',
+          },
+          {
+            spec: '../openapi/mgmt/openapi.bundle.json',
+            route: '/next/api/mgmt',
           },
         ],
         // Theme Options for modifying how redoc renders them
@@ -116,7 +121,12 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          { to: '/api', label: 'API Reference', position: 'left' },
+          {
+            type: 'doc',
+            docId: 'api',
+            position: 'left',
+            label: 'API Reference',
+          },
           { type: 'docsVersionDropdown', position: 'left' },
           {
             type: 'custom-githubButton',
