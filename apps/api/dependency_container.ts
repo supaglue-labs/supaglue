@@ -22,7 +22,8 @@ let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
   const coreDependencyContainer = getCoreDependencyContainer();
-  const { prisma, integrationService, remoteService, applicationService, connectionService } = coreDependencyContainer;
+  const { prisma, integrationService, remoteService, applicationService, connectionService, customerService } =
+    coreDependencyContainer;
 
   const temporalClient = new Client({
     connection: Connection.lazy({
@@ -30,7 +31,7 @@ function createDependencyContainer(): DependencyContainer {
     }),
   });
 
-  const syncService = new SyncService(temporalClient, connectionService);
+  const syncService = new SyncService(temporalClient, connectionService, customerService);
   const connectionWriterService = new ConnectionWriterService(
     prisma,
     syncService,

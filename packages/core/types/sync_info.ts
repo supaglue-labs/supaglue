@@ -11,3 +11,9 @@ export type SyncInfo = {
   category: string;
   connectionId: string;
 };
+
+export type SyncInfoFilter = {
+  applicationId: string;
+  externalCustomerId?: string;
+  providerName?: string;
+};

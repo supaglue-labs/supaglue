@@ -26,7 +26,7 @@ export interface paths {
     delete: operations["deleteCustomer"];
     parameters: {
       path: {
-        external_id: string;
+        customer_id: string;
       };
     };
   };
@@ -116,7 +116,7 @@ export interface components {
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
       /** @example your-customers-unique-application-id */
-      external_identifier: string;
+      customer_id: string;
       /** @example MyCompany Inc */
       name: string;
       /** @example contact@mycompany.com */
@@ -197,7 +197,7 @@ export interface components {
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
       /** @example your-customers-unique-application-id */
-      external_identifier: string;
+      customer_id: string;
       /** @example MyCompany Inc */
       name: string;
       /** @example contact@mycompany.com */

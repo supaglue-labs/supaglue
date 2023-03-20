@@ -46,23 +46,23 @@ export default function init(app: Router): void {
   );
 
   customerRouter.get(
-    '/:external_id',
+    '/:customer_id',
     async (
       req: Request<GetCustomerPathParams, GetCustomerResponse, GetCustomerRequest>,
       res: Response<GetCustomerResponse>
     ) => {
-      const customer = await customerService.getByExternalId(req.supaglueApplication.id, req.params.external_id);
+      const customer = await customerService.getByExternalId(req.supaglueApplication.id, req.params.customer_id);
       return res.status(200).send(snakecaseKeys(customer));
     }
   );
 
   customerRouter.delete(
-    '/:external_id',
+    '/:customer_id',
     async (
       req: Request<DeleteCustomerPathParams, DeleteCustomerResponse, DeleteCustomerRequest>,
       res: Response<DeleteCustomerResponse>
     ) => {
-      const customer = await customerService.delete(req.supaglueApplication.id, req.params.external_id);
+      const customer = await customerService.delete(req.supaglueApplication.id, req.params.customer_id);
       return res.status(200).send(snakecaseKeys(customer));
     }
   );

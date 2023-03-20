@@ -3,7 +3,7 @@ properties:
   application_id:
     type: string
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
-  external_identifier:
+  customer_id:
     type: string
     example: your-customers-unique-application-id
   name:
@@ -20,7 +20,7 @@ required:
   - application_id
   - name
   - email
-  - external_identifier
+  - customer_id
 # ajv has issues with interpreting the id here as a schema id
 # example:
 #   id: e888cedf-e9d0-42c5-9485-2d72984faefc

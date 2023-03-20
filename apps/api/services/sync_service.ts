@@ -1,7 +1,8 @@
 import { ConnectionService } from '@supaglue/core/services/connection_service';
+import { CustomerService } from '@supaglue/core/services/customer_service';
 import { ConnectionSafe, CRM_COMMON_MODELS } from '@supaglue/core/types/';
 import { CommonModel } from '@supaglue/core/types/common';
-import { SyncInfo } from '@supaglue/core/types/sync_info';
+import { SyncInfo, SyncInfoFilter } from '@supaglue/core/types/sync_info';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { getRunSyncsScheduleId, getRunSyncsWorkflowId, runSyncs } from '@supaglue/sync-workflows/workflows/run_syncs';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
@@ -9,13 +10,24 @@ import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 export class SyncService {
   #temporalClient: Client;
   #connectionService: ConnectionService;
+  #customerService: CustomerService;
 
-  public constructor(temporalClient: Client, connectionService: ConnectionService) {
+  public constructor(temporalClient: Client, connectionService: ConnectionService, customerService: CustomerService) {
     this.#temporalClient = temporalClient;
     this.#connectionService = connectionService;
+    this.#customerService = customerService;
   }
 
-  public async getSyncInfoList(applicationId: string, customerId?: string, providerName?: string): Promise<SyncInfo[]> {
+  public async getSyncInfoList({
+    applicationId,
+    externalCustomerId,
+    providerName,
+  }: SyncInfoFilter): Promise<SyncInfo[]> {
+    let customerId = undefined;
+    if (externalCustomerId) {
+      const customer = await this.#customerService.getByExternalId(applicationId, externalCustomerId);
+      customerId = customer.id;
+    }
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const out = await Promise.all(connections.flatMap((connection) => this.getSyncInfoListFromConnection(connection)));
     return out.flat();

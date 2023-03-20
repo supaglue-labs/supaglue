@@ -8,7 +8,7 @@ export type CustomerModelExpanded = CustomerModel & {
 
 export type BaseCustomer = {
   applicationId: string;
-  externalIdentifier: string;
+  customerId: string;
   name: string;
   email: string;
 };
