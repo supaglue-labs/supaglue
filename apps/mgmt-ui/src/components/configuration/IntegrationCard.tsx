@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { Integration } from '@supaglue/core/types';
 import { useRouter } from 'next/router';
-import { Integration, IntegrationCardInfo } from './VerticalTabs';
+import { IntegrationCardInfo } from './IntegrationTabPanelContainer';
 
 export default function IntegrationCard(props: { integration: Integration; integrationInfo: IntegrationCardInfo }) {
   const router = useRouter();
 
-  const { icon, name, description, category, status, providerName } = props.integrationInfo;
+  const { icon, name, description, category, providerName } = props.integrationInfo;
 
   return (
     <Card

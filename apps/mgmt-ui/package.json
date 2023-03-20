@@ -15,6 +15,8 @@
     "@mui/material": "^5.11.12",
     "@mui/x-data-grid": "^6.0.0",
     "@mui/x-date-pickers": "^6.0.0",
+    "@supaglue/core": "workspace:^",
+    "@supaglue/schemas": "workspace:^",
     "@types/node": "18.14.6",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",

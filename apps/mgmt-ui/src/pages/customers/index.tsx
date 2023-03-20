@@ -6,6 +6,7 @@ import providerToIcon from '@/utils/providerToIcon';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { ConnectionSafe } from '@supaglue/core/types';
 import Head from 'next/head';
 import { useState } from 'react';
 
@@ -13,12 +14,11 @@ export { getServerSideProps };
 
 export default function Home() {
   const { customers = [] } = useCustomers();
-  // const { syncHistory = [] } = useSyncHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // TODO: count this on server?
   const totalConnections = customers
-    ?.map((customer: any /* TODO: @supaglue/core/types */) => customer.connections.length)
+    ?.map((customer) => customer.connections.length)
     .reduce((a: number, b: number) => a + b, 0);
 
   const handleDrawerToggle = () => {
@@ -34,12 +34,12 @@ export default function Home() {
       headerName: 'Connections',
       width: 300,
       renderCell: (params) => {
-        return params.value.map((connection: any) => providerToIcon(connection.providerName));
+        return params.value.map((connection: ConnectionSafe) => providerToIcon(connection.providerName));
       },
     },
   ];
 
-  const rows = customers.map((customer: any) => ({
+  const rows = customers.map((customer) => ({
     id: customer.id,
     email: customer.email,
     name: customer.name,
@@ -62,9 +62,6 @@ export default function Home() {
               <Grid item xs={6}>
                 <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
               </Grid>
-              {/* <Grid item xs={4}>
-              <MetricCard icon={<CloudUploadOutlined />} value={`${syncHistory.length} syncs`} />
-            </Grid> */}
               <Grid item xs={6}>
                 <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
               </Grid>

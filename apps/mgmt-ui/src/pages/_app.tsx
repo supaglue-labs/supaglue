@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactNode, useState } from 'react';
 
+// Note: from material-ui template. Eventually consolidate between styled props, sx, and tailwindcss
 export let theme = createTheme({
   palette: {
     primary: {
