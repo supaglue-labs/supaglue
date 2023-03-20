@@ -4,7 +4,6 @@ import { fromConnectionModelToConnectionSafe } from './connection';
 
 export const fromCustomerModel = ({ id, applicationId, externalIdentifier, name, email }: CustomerModel): Customer => {
   return {
-    id,
     applicationId,
     customerId: externalIdentifier,
     name,
@@ -27,7 +26,6 @@ export const toCustomerModelCreateParams = ({
 };
 
 export const fromCustomerModelExpandedUnsafe = ({
-  id,
   applicationId,
   externalIdentifier,
   name,
@@ -35,7 +33,6 @@ export const fromCustomerModelExpandedUnsafe = ({
   connections,
 }: CustomerModelExpanded): CustomerExpandedSafe => {
   return {
-    id,
     applicationId,
     customerId: externalIdentifier,
     name,

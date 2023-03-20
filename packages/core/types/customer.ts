@@ -14,9 +14,7 @@ export type BaseCustomer = {
   email: string;
 };
 
-export type Customer = BaseCustomer & {
-  id: string;
-};
+export type Customer = BaseCustomer;
 
 export type CustomerExpandedSafe = Customer & {
   connections: ConnectionSafe[];
