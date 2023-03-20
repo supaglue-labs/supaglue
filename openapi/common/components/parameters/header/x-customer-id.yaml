@@ -2,6 +2,6 @@ name: x-customer-id
 in: header
 schema:
   type: string
-  example: E85AC5CD-BFEE-47C9-B7E8-6112F6CDC51A
+  example: my-customer-1 
 description: The customer ID that uniquely identifies the customer in your application
 required: true
