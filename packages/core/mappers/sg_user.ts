@@ -1,12 +1,11 @@
 import type { SgUser as SgUserModel } from '@supaglue/db';
 import { SgUser } from '../types';
 
-export const fromSgUserModel = ({ id, authType, username, password, applicationId }: SgUserModel): SgUser => {
+export const fromSgUserModel = ({ id, authType, username, password }: SgUserModel): SgUser => {
   return {
     id,
     authType,
     username,
     password,
-    applicationId,
   };
 };
