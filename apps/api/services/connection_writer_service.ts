@@ -42,24 +42,25 @@ export class ConnectionWriterService {
       throw new Error(`No integration found for ${params.providerName}`);
     }
     const status: ConnectionStatus = 'added';
+    const customerId = getCustomerId(params.applicationId, params.customerId);
     const connection = await this.#prisma.connection.upsert({
       create: {
         ...params,
-        customerId: getCustomerId(params.applicationId, params.customerId),
+        customerId,
         integrationId: integration.id,
         status,
         credentials: encrypt(JSON.stringify(params.credentials)),
       },
       update: {
         ...params,
-        customerId: getCustomerId(params.applicationId, params.customerId),
+        customerId,
         integrationId: integration.id,
         status,
         credentials: encrypt(JSON.stringify(params.credentials)),
       },
       where: {
         customerId_integrationId: {
-          customerId: params.customerId,
+          customerId: customerId,
           integrationId: integration.id,
         },
       },
