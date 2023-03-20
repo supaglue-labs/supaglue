@@ -6,6 +6,7 @@ export type SyncInfo = {
   nextSyncStart: Date | null;
   status: SyncStatus | null;
   // isInitialSync: boolean;
+  // This is the external customer ID
   customerId: string;
   providerName: string;
   category: string;

@@ -23,12 +23,12 @@ export class SyncService {
     externalCustomerId,
     providerName,
   }: SyncInfoFilter): Promise<SyncInfo[]> {
-    let customerId = undefined;
+    let internalCustomerId = undefined;
     if (externalCustomerId) {
       const customer = await this.#customerService.getByExternalId(applicationId, externalCustomerId);
-      customerId = customer.id;
+      internalCustomerId = customer.id;
     }
-    const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
+    const connections = await this.#connectionService.listSafe(applicationId, internalCustomerId, providerName);
     const out = await Promise.all(connections.flatMap((connection) => this.getSyncInfoListFromConnection(connection)));
     return out.flat();
   }
