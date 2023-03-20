@@ -10,21 +10,10 @@ export class SgUserService {
     this.#prisma = prisma;
   }
 
-  public async login({
-    applicationId,
-    username,
-    password,
-  }: {
-    applicationId: string;
-    username: string;
-    password: string;
-  }): Promise<SgUser | null> {
+  public async login({ username, password }: { username: string; password: string }): Promise<SgUser | null> {
     const sgUserModel = await this.#prisma.sgUser.findUnique({
       where: {
-        applicationId_username: {
-          applicationId,
-          username,
-        },
+        username,
       },
     });
 

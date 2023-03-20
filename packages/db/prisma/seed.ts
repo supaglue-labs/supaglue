@@ -197,14 +197,12 @@ async function seedSgUser() {
       id: SG_USER_ID,
     },
     update: {
-      applicationId: APPLICATION_ID,
       authType: 'username/password',
       username: 'admin',
       password: ADMIN_PASSWORD ?? 'admin',
     },
     create: {
       id: SG_USER_ID,
-      applicationId: APPLICATION_ID,
       authType: 'username/password',
       username: 'admin',
       password: ADMIN_PASSWORD ?? 'admin',
