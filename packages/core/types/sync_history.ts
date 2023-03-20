@@ -15,7 +15,6 @@ export type SyncHistory = {
   errorMessage: string | null;
   startTimestamp: Date;
   endTimestamp: Date | null;
-  // External customer Id
   customerId: string;
   providerName: string;
   category: string;
