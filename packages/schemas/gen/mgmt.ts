@@ -10,24 +10,6 @@ type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> &
 type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
 
 export interface paths {
-  "/applications": {
-    /**
-     * List applications 
-     * @description Get a list of applications
-     */
-    get: operations["getApplications"];
-    /** Create application */
-    post: operations["createApplication"];
-  };
-  "/applications/{application_id}": {
-    /** Get application */
-    get: operations["getApplication"];
-    parameters: {
-      path: {
-        application_id: string;
-      };
-    };
-  };
   "/customers": {
     /**
      * List customers 
@@ -315,55 +297,6 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  getApplications: {
-    /**
-     * List applications 
-     * @description Get a list of applications
-     */
-    responses: {
-      /** @description Applications */
-      200: {
-        content: {
-          "application/json": (paths["/applications"]["post"]["responses"]["201"]["content"]["application/json"]["schema"])[];
-        };
-      };
-    };
-  };
-  createApplication: {
-    /** Create application */
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @example My Production App */
-          name: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Application created */
-      201: {
-        content: {
-          "application/json": {
-            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-            id: string;
-            /** @example My Production App */
-            name: string;
-          };
-        };
-      };
-    };
-  };
-  getApplication: {
-    /** Get application */
-    responses: {
-      /** @description Application */
-      200: {
-        content: {
-          "application/json": paths["/applications"]["post"]["responses"]["201"]["content"]["application/json"]["schema"];
-        };
-      };
-    };
-  };
   getCustomers: {
     /**
      * List customers 

@@ -25,10 +25,6 @@ servers:
   - url: 'http://localhost:8080/mgmt/v1'
     description: Local Supaglue API
 paths:
-  '/applications':
-    $ref: paths/applications.yaml
-  '/applications/{application_id}':
-    $ref: paths/applications@{application_id}.yaml
   '/customers':
     $ref: paths/customers.yaml
   '/customers/{customer_id}':

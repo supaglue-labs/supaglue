@@ -1,7 +1,6 @@
 import { apiKeyHeaderMiddleware } from '@/middleware/api_key';
 import { openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
-import application from './application';
 import customer from './customer';
 import integration from './integration';
 import syncHistory from './sync_history';
@@ -14,7 +13,6 @@ export default function init(app: Router): void {
   v1Router.use(openapiMiddleware('mgmt'));
   v1Router.use(apiKeyHeaderMiddleware);
 
-  application(v1Router);
   customer(v1Router);
   integration(v1Router);
   webhook(v1Router);

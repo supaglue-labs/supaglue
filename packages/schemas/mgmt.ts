@@ -1,21 +1,5 @@
 import type { operations, paths } from './gen/mgmt';
 
-export type GetApplicationsPathParams = never;
-export type GetApplicationsQueryParams = never;
-export type GetApplicationsRequest = never;
-export type GetApplicationsResponse =
-  operations['getApplications']['responses'][keyof operations['getApplications']['responses']]['content']['application/json'];
-
-export type CreateApplicationPathParams = never;
-export type CreateApplicationRequest = operations['createApplication']['requestBody']['content']['application/json'];
-export type CreateApplicationResponse =
-  operations['createApplication']['responses'][keyof operations['createApplication']['responses']]['content']['application/json'];
-
-export type GetApplicationPathParams = paths[`/applications/{application_id}`]['parameters']['path'];
-export type GetApplicationRequest = never;
-export type GetApplicationResponse =
-  operations['getApplication']['responses'][keyof operations['getApplication']['responses']]['content']['application/json'];
-
 export type GetCustomersPathParams = never;
 export type GetCustomersQueryParams = never;
 export type GetCustomersRequest = never;

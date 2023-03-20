@@ -1,6 +1,7 @@
 import { internalMiddleware } from '@/middleware/internal';
 import { Router } from 'express';
 import apiKey from './api_key';
+import application from './application';
 import auth from './auth';
 import customer from './customer';
 import integration from './integration';
@@ -14,6 +15,7 @@ export default function init(app: Router): void {
 
   auth(v1Router);
   apiKey(v1Router);
+  application(v1Router);
   customer(v1Router);
   integration(v1Router);
   webhook(v1Router);
