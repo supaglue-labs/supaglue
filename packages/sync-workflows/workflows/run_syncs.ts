@@ -1,5 +1,5 @@
 import { CRM_COMMON_MODELS } from '@supaglue/core/types/crm';
-import { proxyActivities } from '@temporalio/workflow';
+import { proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
 import type { createActivities } from '../activities';
 
@@ -22,11 +22,12 @@ export type RunSyncsArgs = {
 };
 
 export async function runSyncs({ connectionId }: RunSyncsArgs): Promise<void> {
+  const syncId = uuid4();
   const historyIds = await Promise.all(
     CRM_COMMON_MODELS.map((commonModel) => logSyncStart({ connectionId, commonModel }))
   );
   const results = await Promise.allSettled(
-    CRM_COMMON_MODELS.map((commonModel) => doSync({ connectionId, commonModel }))
+    CRM_COMMON_MODELS.map((commonModel) => doSync({ connectionId, commonModel, syncId }))
   );
   await populateAssociations({ connectionId });
   await Promise.all(
