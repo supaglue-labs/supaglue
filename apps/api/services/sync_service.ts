@@ -1,4 +1,5 @@
-import { CRM_COMMON_MODELS } from '@supaglue/core/types/';
+import { ConnectionService } from '@supaglue/core/services/connection_service';
+import { ConnectionSafe, CRM_COMMON_MODELS } from '@supaglue/core/types/';
 import { CommonModel } from '@supaglue/core/types/common';
 import { SyncInfo } from '@supaglue/core/types/sync_info';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
@@ -7,12 +8,23 @@ import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 
 export class SyncService {
   #temporalClient: Client;
+  #connectionService: ConnectionService;
 
-  public constructor(temporalClient: Client) {
+  public constructor(temporalClient: Client, connectionService: ConnectionService) {
     this.#temporalClient = temporalClient;
+    this.#connectionService = connectionService;
   }
 
-  public async getSyncInfo(connectionId: string, commonModel: CommonModel): Promise<SyncInfo> {
+  public async getSyncInfoList(applicationId: string, customerId?: string, providerName?: string): Promise<SyncInfo[]> {
+    const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
+    const out = await Promise.all(connections.flatMap((connection) => this.getSyncInfoListFromConnection(connection)));
+    return out.flat();
+  }
+
+  private async getSyncInfoFromConnectionAndCommonModel(
+    { id: connectionId, customerId, category, providerName }: ConnectionSafe,
+    commonModel: CommonModel
+  ): Promise<SyncInfo> {
     const scheduleId = getRunSyncsScheduleId(connectionId);
     const handle = this.#temporalClient.schedule.getHandle(scheduleId);
     const description = await handle.describe();
@@ -28,12 +40,18 @@ export class SyncService {
       lastSyncStart,
       nextSyncStart,
       status,
+      connectionId,
+      customerId,
+      category,
+      providerName,
     };
   }
 
-  public async getSyncInfoList(connectionId: string): Promise<SyncInfo[]> {
+  private async getSyncInfoListFromConnection(connection: ConnectionSafe): Promise<SyncInfo[]> {
     // TODO: Support other IntegrationCategory types
-    return await Promise.all(CRM_COMMON_MODELS.map((commonModel) => this.getSyncInfo(connectionId, commonModel)));
+    return await Promise.all(
+      CRM_COMMON_MODELS.map((commonModel) => this.getSyncInfoFromConnectionAndCommonModel(connection, commonModel))
+    );
   }
 
   // TODO: Create CommonModel type

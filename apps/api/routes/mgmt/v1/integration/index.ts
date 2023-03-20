@@ -31,7 +31,7 @@ export default function init(app: Router): void {
       req: Request<GetIntegrationsPathParams, GetIntegrationsResponse, GetIntegrationsRequest>,
       res: Response<GetIntegrationsResponse>
     ) => {
-      const integrations = await integrationService.list();
+      const integrations = await integrationService.list(req.supaglueApplication.id);
       return res.status(200).send(integrations.map(snakecaseKeys));
     }
   );

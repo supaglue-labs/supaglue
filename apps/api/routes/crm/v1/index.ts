@@ -5,8 +5,6 @@ import contacts from './contact';
 import leads from './lead';
 import opportunities from './opportunity';
 import passthrough from './passthrough';
-import syncHistory from './sync_history';
-import syncInfo from './sync_info';
 import users from './user';
 
 export default function init(app: Router): void {
@@ -21,9 +19,6 @@ export default function init(app: Router): void {
   users(v1Router);
 
   passthrough(v1Router);
-
-  syncInfo(v1Router);
-  syncHistory(v1Router);
 
   v1Router.use(openApiErrorHandlerMiddleware);
 

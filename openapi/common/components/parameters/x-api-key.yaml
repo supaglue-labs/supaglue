@@ -1,5 +1,0 @@
-ApiKeyAuth:
-  type: apiKey
-  name: x-api-key
-  in: header
-  description: API key to allow developers to access the API

@@ -49,10 +49,6 @@ paths:
     $ref: paths/users@{user_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
-  '/sync-history':
-    $ref: paths/sync-history.yaml
-  '/sync-info':
-    $ref: paths/sync-info.yaml
 tags:
   - name: Accounts
     description: The `Account` Common Model is used to represent a "company" in CRMs.
@@ -111,20 +107,20 @@ components:
       $ref: ./components/schemas/filters.yaml#/filter
   parameters:
     created_after:
-      $ref: ../common/components/parameters/created_after.yaml
+      $ref: ../common/components/parameters/query/created_after.yaml
     created_before:
-      $ref: ../common/components/parameters/created_before.yaml
+      $ref: ../common/components/parameters/query/created_before.yaml
     updated_after:
-      $ref: ../common/components/parameters/updated_after.yaml
+      $ref: ../common/components/parameters/query/updated_after.yaml
     updated_before:
-      $ref: ../common/components/parameters/updated_before.yaml
+      $ref: ../common/components/parameters/query/updated_before.yaml
     cursor:
-      $ref: ../common/components/parameters/cursor.yaml
+      $ref: ../common/components/parameters/query/cursor.yaml
     expand:
-      $ref: ../common/components/parameters/expand.yaml
+      $ref: ../common/components/parameters/query/expand.yaml
     page_size:
-      $ref: ../common/components/parameters/page_size.yaml
+      $ref: ../common/components/parameters/query/page_size.yaml
     x-customer-id:
-      $ref: ../common/components/parameters/x-customer-id.yaml
+      $ref: ../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:
-      $ref: ../common/components/parameters/x-provider-name.yaml
+      $ref: ../common/components/parameters/header/x-provider-name.yaml

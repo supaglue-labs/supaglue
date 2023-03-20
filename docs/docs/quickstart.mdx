@@ -163,26 +163,22 @@ Example result:
 
 ## 4. Check sync status (optional)
 
-If the curl in step 3 did not work, you can curl the `/crm/v1/sync-info` endpoint to check on the status of the syncs.
+If the curl in step 3 did not work, you can curl the `/mgmt/v1/sync-info` endpoint to check on the status of the syncs.
 
 <Tabs>
 <TabItem value="salesforce" label="Salesforce" default>
 
 ```shell
-curl localhost:8080/crm/v1/sync-info \
+curl localhost:8080/mgmt/v1/sync-info \
   -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
-  -H 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
-  -H 'x-provider-name: salesforce'
 ```
 
 </TabItem>
 <TabItem value="hubspot" label="HubSpot">
 
 ```shell
-curl localhost:8080/crm/v1/sync-info \
+curl localhost:8080/mgmt/v1/sync-info \
   -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
-  -H 'x-customer-id: ea3039fa-27de-4535-90d8-db2bab0c0252' \
-  -H 'x-provider-name: hubspot'
 ```
 
 </TabItem>

@@ -39,6 +39,10 @@ paths:
     $ref: paths/connections@{connection_id}.yaml
   '/webhook':
     $ref: paths/webhook.yaml
+  '/sync-history':
+    $ref: paths/sync_history.yaml
+  '/sync-info':
+    $ref: paths/sync_info.yaml
 tags: []
 components:
   securitySchemes:
@@ -63,8 +67,21 @@ components:
       $ref: ./components/schemas/create_update_integration.yaml
     webhook:
       $ref: ./components/schemas/objects/webhook.yaml
+    sync_info: 
+      $ref: ./components/schemas/sync_info.yaml
+    sync_history: 
+      $ref: ./components/schemas/sync_history.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
+  parameters:
+    cursor:
+      $ref: ../common/components/parameters/query/cursor.yaml
+    page_size:
+      $ref: ../common/components/parameters/query/page_size.yaml
+    customer_id:
+      $ref: ../common/components/parameters/query/customer_id.yaml
+    provider_name:
+      $ref: ../common/components/parameters/query/provider_name.yaml
 webhooks:
   webhook:
     $ref: ./webhooks/webhook.yaml

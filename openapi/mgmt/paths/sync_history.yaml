@@ -8,8 +8,30 @@ get:
   description: >-
     Get a list of Sync History objects.
   parameters:
-    - $ref: ../../common/components/parameters/cursor.yaml
-    - $ref: ../../common/components/parameters/page_size.yaml
+    - name: cursor
+      in: query
+      schema:
+        type: string
+        example: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+      description: The pagination cursor value
+    - name: page_size
+      in: query
+      schema:
+        type: string
+        example: '3804695'
+      description: Number of results to return per page
+    - name: customer_id
+      in: query
+      schema:
+        type: string
+        example: 1bae5050-b8ff-472e-8b9f-01f29a81d1ee
+      description: The customer ID
+    - name: provider_name
+      in: query
+      schema:
+        type: string
+        example: salesforce
+      description: The provider name
     - name: model
       in: query
       schema:
@@ -29,7 +51,7 @@ get:
                   results:
                     type: array
                     items:
-                      $ref: ../components/schemas/sync-history.yaml
+                      $ref: ../components/schemas/sync_history.yaml
           examples:
             Example:
               value:
@@ -44,6 +66,3 @@ get:
                     end_timestamp: 2023-02-22T20:50:17.559537Z
                     status: ERROR
                     error_message: 'Error: Something went wrong'
-parameters:
-  - $ref: ../../common/components/parameters/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/x-provider-name.yaml

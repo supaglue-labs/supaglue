@@ -14,4 +14,6 @@ properties:
   status:
     type: string # TODO enum?
     nullable: true
-    example: SYNCING
+    enum:
+      - SYNCING
+      - DONE

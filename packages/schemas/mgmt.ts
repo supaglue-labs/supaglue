@@ -79,3 +79,15 @@ export type GetWebhookResponse =
 export type DeleteWebhookPathParams = never;
 export type DeleteWebhookRequest = never;
 export type DeleteWebhookResponse = never;
+
+export type GetSyncInfosPathParams = never;
+export type GetSyncInfosQueryParams = Required<operations['getSyncInfos']>['parameters']['query'];
+export type GetSyncInfosRequest = never;
+export type GetSyncInfosResponse =
+  operations['getSyncInfos']['responses'][keyof operations['getSyncInfos']['responses']]['content']['application/json'];
+
+export type GetSyncHistoryPathParams = never;
+export type GetSyncHistoryQueryParams = Required<operations['getSyncHistory']>['parameters']['query'];
+export type GetSyncHistoryRequest = never;
+export type GetSyncHistoryResponse =
+  operations['getSyncHistory']['responses'][keyof operations['getSyncHistory']['responses']]['content']['application/json'];

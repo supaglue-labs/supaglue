@@ -3,42 +3,43 @@ import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
 import type { ConnectionCredentialsDecrypted, ConnectionSafe, ConnectionUnsafe } from '../types';
+import { IntegrationService } from './integration_service';
 
 export class ConnectionService {
   #prisma: PrismaClient;
+  #integrationService: IntegrationService;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: PrismaClient, integrationService: IntegrationService) {
     this.#prisma = prisma;
+    this.#integrationService = integrationService;
   }
 
   public async getUnsafeById(id: string): Promise<ConnectionUnsafe> {
-    const integration = await this.#prisma.connection.findUnique({
+    const connection = await this.#prisma.connection.findUnique({
       where: { id },
     });
-    if (!integration) {
-      throw new NotFoundError(`Can't find integration with id: ${id}`);
+    if (!connection) {
+      throw new NotFoundError(`Can't find connection with id: ${id}`);
     }
-    return fromConnectionModelToConnectionUnsafe(integration);
+    return fromConnectionModelToConnectionUnsafe(connection);
   }
 
   public async getSafeById(id: string): Promise<ConnectionSafe> {
-    const integration = await this.#prisma.connection.findUnique({
+    const connection = await this.#prisma.connection.findUnique({
       where: { id },
     });
-    if (!integration) {
-      throw new NotFoundError(`Can't find integration with id: ${id}`);
+    if (!connection) {
+      throw new NotFoundError(`Can't find connection with id: ${id}`);
     }
-    return fromConnectionModelToConnectionSafe(integration);
+    return fromConnectionModelToConnectionSafe(connection);
   }
 
-  // TODO: paginate
-  public async listUnsafe(): Promise<ConnectionUnsafe[]> {
-    const connections = await this.#prisma.connection.findMany();
-    return connections.map((connection) => fromConnectionModelToConnectionUnsafe(connection));
-  }
-
-  public async listSafe(): Promise<ConnectionSafe[]> {
-    const connections = await this.#prisma.connection.findMany();
+  public async listSafe(applicationId: string, customerId?: string, providerName?: string): Promise<ConnectionSafe[]> {
+    const integrations = await this.#integrationService.list(applicationId);
+    const integrationIds = integrations.map(({ id }) => id);
+    const connections = await this.#prisma.connection.findMany({
+      where: { integrationId: { in: integrationIds }, customerId: customerId, providerName: providerName },
+    });
     return connections.map((connection) => fromConnectionModelToConnectionSafe(connection));
   }
 

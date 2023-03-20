@@ -1,14 +1,14 @@
-import type { SyncHistory as SyncHistoryModel } from '@supaglue/db';
-import { SyncHistory, SyncHistoryStatus } from '../types';
+import { SyncHistory, SyncHistoryModelExpanded, SyncHistoryStatus } from '../types';
 
-export const fromSyncHistoryModel = ({
+export const fromSyncHistoryModelAndConnection = ({
   id,
   model,
   status,
   errorMessage,
   startTimestamp,
   endTimestamp,
-}: SyncHistoryModel): SyncHistory => {
+  connection,
+}: SyncHistoryModelExpanded): SyncHistory => {
   return {
     id,
     model,
@@ -16,5 +16,9 @@ export const fromSyncHistoryModel = ({
     errorMessage,
     startTimestamp,
     endTimestamp,
+    connectionId: connection.id,
+    customerId: connection.customerId,
+    providerName: connection.providerName,
+    category: connection.category,
   };
 };

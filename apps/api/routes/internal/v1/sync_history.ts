@@ -5,7 +5,7 @@ import {
   GetSyncHistoryQueryParams,
   GetSyncHistoryRequest,
   GetSyncHistoryResponse,
-} from '@supaglue/schemas/crm';
+} from '@supaglue/schemas/mgmt';
 import { Request, Response, Router } from 'express';
 
 const { syncHistoryService } = getDependencyContainer();
@@ -18,9 +18,11 @@ export default function init(app: Router) {
       res: Response<GetSyncHistoryResponse>
     ) => {
       const { next, previous, results } = await syncHistoryService.list({
-        connectionId: req.customerConnection.id,
-        paginationParams: req.query,
-        model: req.query.model,
+        applicationId: req.supaglueApplication.id,
+        paginationParams: { page_size: req.query?.page_size, cursor: req.query?.cursor },
+        model: req.query?.model,
+        customerId: req.query?.customer_id,
+        providerName: req.query?.provider_name,
       });
 
       const snakeCaseResults = results.map((result) =>

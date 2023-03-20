@@ -742,6 +742,197 @@
           }
         }
       }
+    },
+    "/sync-history": {
+      "get": {
+        "operationId": "getSyncHistory",
+        "tags": [
+          "Sync"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Get Sync History",
+        "description": "Get a list of Sync History objects.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee"
+            },
+            "description": "The customer ID"
+          },
+          {
+            "name": "provider_name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "salesforce"
+            },
+            "description": "The provider name"
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The model name to filter by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync History",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/sync_history"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "sjkflwbajkbbkajwbcs",
+                      "previous": null,
+                      "results": [
+                        {
+                          "model_name": "account",
+                          "start_timestamp": "2023-02-22T19:55:17.559Z",
+                          "status": "IN_PROGRESS"
+                        },
+                        {
+                          "model_name": "contact",
+                          "start_timestamp": "2023-02-22T19:50:17.559Z",
+                          "end_timestamp": "2023-02-22T20:50:17.559Z",
+                          "status": "ERROR",
+                          "error_message": "Error: Something went wrong"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sync-info": {
+      "get": {
+        "operationId": "getSyncInfos",
+        "tags": [
+          "Sync"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Get Sync Info",
+        "description": "Get a list of Sync Info",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee"
+            },
+            "description": "The customer ID"
+          },
+          {
+            "name": "provider_name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "salesforce"
+            },
+            "description": "The provider name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync Info List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/sync_info"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "model_name": "account",
+                        "last_sync_start": "2023-02-22T19:55:17.559Z",
+                        "next_sync_start": "2023-02-22T20:55:17.559Z",
+                        "status": "SYNCING"
+                      },
+                      {
+                        "model_name": "contact",
+                        "last_sync_start": "2023-02-22T19:50:17.559Z",
+                        "next_sync_start": "2023-02-22T20:50:17.559Z",
+                        "status": "DONE"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "tags": [],
@@ -1061,6 +1252,63 @@
           "notify_on_connection_error"
         ]
       },
+      "sync_info": {
+        "type": "object",
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "example": "Account"
+          },
+          "last_sync_start": {
+            "type": "string",
+            "nullable": true,
+            "example": "2023-02-22T19:55:17.559Z"
+          },
+          "next_sync_start": {
+            "type": "string",
+            "nullable": true,
+            "example": "2023-02-22T20:55:17.559Z"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "SYNCING",
+              "DONE"
+            ]
+          }
+        }
+      },
+      "sync_history": {
+        "type": "object",
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "example": "Account"
+          },
+          "error_message": {
+            "type": "string",
+            "nullable": true
+          },
+          "start_timestamp": {
+            "type": "string",
+            "example": "2023-02-22T19:55:17.559Z"
+          },
+          "end_timestamp": {
+            "type": "string",
+            "nullable": true,
+            "example": "2023-02-22T20:55:17.559Z"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUCCESS",
+              "IN_PROGRESS",
+              "FAILURE"
+            ]
+          }
+        }
+      },
       "webhook-payload": {
         "oneOf": [
           {
@@ -1145,6 +1393,44 @@
             ]
           }
         ]
+      }
+    },
+    "parameters": {
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+        },
+        "description": "The pagination cursor value"
+      },
+      "page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "3804695"
+        },
+        "description": "Number of results to return per page"
+      },
+      "customer_id": {
+        "name": "customer_id",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee"
+        },
+        "description": "The customer ID"
+      },
+      "provider_name": {
+        "name": "provider_name",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name"
       }
     }
   },
