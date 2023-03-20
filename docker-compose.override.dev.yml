@@ -1,10 +1,14 @@
+x-common-env:
+  &common-env
+  NODE_ENV: development
+  SUPAGLUE_PRETTY_LOGS: 1
+  SUPAGLUE_DISABLE_ERROR_REPORTING: 1
+
 services:
   api:
     image: node:18
     environment:
-      - NODE_ENV=development
-      - SUPAGLUE_PRETTY_LOGS=1
-      - SUPAGLUE_DISABLE_ERROR_REPORTING=1
+      <<: *common-env
     volumes:
       - .:/app
     working_dir: /app
@@ -13,10 +17,24 @@ services:
   sync-worker:
     image: node:18
     environment:
-      - NODE_ENV=development
-      - SUPAGLUE_PRETTY_LOGS=1
-      - SUPAGLUE_DISABLE_ERROR_REPORTING=1
+      <<: *common-env
     volumes:
       - .:/app
     working_dir: /app
     command: /bin/sh -c "./apps/sync-worker/scripts/start_dev.sh"
+
+  mgmt-ui:
+    image: node:18
+    environment:
+      <<: *common-env
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/sh -c "./apps/mgmt-ui/scripts/start_dev.sh"
+
+  init:
+    image: node:18
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/sh -c "yarn workspace @supaglue/db prisma migrate dev && yarn workspace @supaglue/db prisma db seed"
