@@ -249,20 +249,31 @@ export interface components {
       /** @enum {unknown} */
       type: "SYNC_SUCCESS" | "SYNC_ERROR";
       payload: {
+        /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
         connection_id: string;
+        /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
         history_id: string;
+        /** @example 100 */
         num_records_synced: number;
-        common_model: string;
+        /**
+         * @example contact 
+         * @enum {string}
+         */
+        common_model: "opportunity" | "contact" | "account" | "lead" | "user";
         error_message?: string;
       };
     }, {
       /** @enum {unknown} */
       type: "CONNECTION_SUCCESS" | "CONNECTION_ERROR";
       payload: {
+        /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
         customer_id: string;
+        /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
         integration_id: string;
-        category: string;
-        provider_name: string;
+        /** @enum {string} */
+        category: "crm";
+        /** @enum {string} */
+        provider_name: "hubspot" | "salesforce";
       };
     }]>;
   };
