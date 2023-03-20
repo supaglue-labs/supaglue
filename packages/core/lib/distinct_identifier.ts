@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -9,8 +8,8 @@ const configPath = path.join(os.homedir(), '.supaglue', 'session.json');
 let distinctIdentifier: string | undefined = undefined;
 
 function generateDistinctId() {
-  const suffix = crypto.randomBytes(4).toString('hex');
-  return sgDeploymentId ? `${sgDeploymentId}-${suffix}` : uuidv4();
+  // Note: use coordination by naming convention for distinct ids between different supaglue services in the same deployment. We can add a suffix to avoid collisions down the road
+  return sgDeploymentId ? sgDeploymentId : uuidv4();
 }
 
 // read distinctId from config file or write it if it doesn't exist
