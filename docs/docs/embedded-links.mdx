@@ -18,11 +18,9 @@ An Embedded Link takes the following form:
 | ----------------- | ---------------------------------------------------------------------------------------- | -------- |
 | `{PROTOCOL}`      | `http://` if running locally or `https://` if hosted on the cloud                        | Yes      |
 | `{DOMAIN}`        | The domain at which the Supaglue backend is hosted (e.g. `localhost:8080`)               | Yes      |
-| `{CUSTOMER_ID}`   | The UUID of a customer in Supaglue. This maps 1-1 to a customer in your application      | Yes      |
+| `{CUSTOMER_ID}`   | The unique identifier for a customer in your application                                 | Yes      |
 | `{PROVIDER_NAME}` | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                | Yes      |
 | `{RETURN_URL}`    | The URL to return to once the OAuth connection is complete, note: this can be uriEncoded | No       |
-
-To obtain a `{CUSTOMER_ID}` for a customer, use the [Supaglue API](/api/crm) to create a new customer when they sign up for your application.
 
 To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](/api/crm) to create new integrations for your customers to have available for them to connect to.
 

@@ -528,7 +528,7 @@ export interface components {
     expand: string;
     /** @description Number of results to return per page */
     page_size: string;
-    /** @description The customer ID */
+    /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
     /** @description The provider name */
     "x-provider-name": string;

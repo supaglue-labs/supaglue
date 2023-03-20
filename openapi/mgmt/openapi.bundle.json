@@ -782,7 +782,7 @@
               "type": "string",
               "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee"
             },
-            "description": "The customer ID"
+            "description": "The customer ID that uniquely identifies the customer in your application"
           },
           {
             "name": "provider_name",
@@ -887,7 +887,7 @@
               "type": "string",
               "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee"
             },
-            "description": "The customer ID"
+            "description": "The customer ID that uniquely identifies the customer in your application"
           },
           {
             "name": "provider_name",
@@ -1441,7 +1441,7 @@
           "type": "string",
           "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee"
         },
-        "description": "The customer ID"
+        "description": "The customer ID that uniquely identifies the customer in your application"
       },
       "provider_name": {
         "name": "provider_name",
