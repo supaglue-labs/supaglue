@@ -1325,16 +1325,27 @@
                 "type": "object",
                 "properties": {
                   "connection_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
                   },
                   "history_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
                   },
                   "num_records_synced": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                   },
                   "common_model": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "opportunity",
+                      "contact",
+                      "account",
+                      "lead",
+                      "user"
+                    ],
+                    "example": "contact"
                   },
                   "error_message": {
                     "type": "string"
@@ -1367,16 +1378,25 @@
                 "type": "object",
                 "properties": {
                   "customer_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
                   },
                   "integration_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
                   },
                   "category": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "crm"
+                    ]
                   },
                   "provider_name": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "hubspot",
+                      "salesforce"
+                    ]
                   }
                 },
                 "required": [
