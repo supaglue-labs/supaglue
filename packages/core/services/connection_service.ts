@@ -19,7 +19,7 @@ export class ConnectionService {
       where: { id },
     });
     if (!connection) {
-      throw new NotFoundError(`Can't find integration with id: ${id}`);
+      throw new NotFoundError(`Can't find connection with id: ${id}`);
     }
     return fromConnectionModelToConnectionUnsafe(connection);
   }
@@ -29,7 +29,7 @@ export class ConnectionService {
       where: { id },
     });
     if (!connection) {
-      throw new NotFoundError(`Can't find integration with id: ${id}`);
+      throw new NotFoundError(`Can't find connection with id: ${id}`);
     }
     return fromConnectionModelToConnectionSafe(connection);
   }

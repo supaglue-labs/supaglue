@@ -35,7 +35,7 @@ export class IntegrationService {
   // TODO: paginate
   public async list(applicationId: string): Promise<Integration[]> {
     const integrations = await this.#prisma.integration.findMany({ where: { applicationId } });
-    return integrations.map((integration) => fromIntegrationModel(integration));
+    return integrations.map(fromIntegrationModel);
   }
 
   public async create(integration: CRMIntegrationCreateParams): Promise<Integration> {
