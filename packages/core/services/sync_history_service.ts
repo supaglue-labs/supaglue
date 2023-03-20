@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
-import { getCustomerId } from '../lib/customerid';
+import { getCustomerIdPk } from '../lib/customer_id';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromSyncHistoryModelAndConnection } from '../mappers';
 import type {
@@ -99,7 +99,7 @@ export class SyncHistoryService {
     externalCustomerId,
     providerName,
   }: SyncHistoryFilter): Promise<PaginatedResult<SyncHistory>> {
-    const customerId = externalCustomerId ? getCustomerId(applicationId, externalCustomerId) : undefined;
+    const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;

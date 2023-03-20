@@ -1,4 +1,4 @@
-import { getCustomerId } from '@supaglue/core/lib/customerid';
+import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
 import { ConnectionSafe, CRM_COMMON_MODELS } from '@supaglue/core/types/';
 import { CommonModel } from '@supaglue/core/types/common';
@@ -21,7 +21,7 @@ export class SyncService {
     externalCustomerId,
     providerName,
   }: SyncInfoFilter): Promise<SyncInfo[]> {
-    const customerId = externalCustomerId ? getCustomerId(applicationId, externalCustomerId) : undefined;
+    const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const out = await Promise.all(connections.flatMap((connection) => this.getSyncInfoListFromConnection(connection)));
     return out.flat();

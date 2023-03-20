@@ -1,5 +1,5 @@
 import { UnauthorizedError } from '@supaglue/core/errors';
-import { getCustomerId } from '@supaglue/core/lib/customerid';
+import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { NextFunction, Request, Response } from 'express';
 import { getDependencyContainer } from '../dependency_container';
 
@@ -12,7 +12,7 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
     throw new UnauthorizedError(`x-customer-id and x-provider-name headers must be set`);
   }
 
-  const customerId = getCustomerId(req.supaglueApplication.id, externalCustomerId);
+  const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
 
   const integration = await integrationService.getByProviderName(providerName);
 
