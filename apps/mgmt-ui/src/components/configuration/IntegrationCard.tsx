@@ -3,7 +3,7 @@ import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography
 import { Box } from '@mui/system';
 import { Integration } from '@supaglue/core/types';
 import { useRouter } from 'next/router';
-import { IntegrationCardInfo } from './VerticalTabs';
+import { IntegrationCardInfo } from './IntegrationTabPanelContainer';
 
 export default function IntegrationCard(props: { integration: Integration; integrationInfo: IntegrationCardInfo }) {
   const router = useRouter();

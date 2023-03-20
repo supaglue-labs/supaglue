@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import IntegrationDetailTabPanel from './IntegrationDetailTabPanel';
+import IntegrationsTabPanel from './IntegrationsTabPanel';
 import IntegrationTabPanel from './IntegrationTabPanel';
 
 const ICON_SIZE = 35;
@@ -59,7 +59,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-export default function VerticalTabs() {
+export default function IntegrationTabPanelContainer() {
   const router = useRouter();
   const { tab = [] } = router.query;
   const [value, setValue] = React.useState(0);
@@ -76,14 +76,14 @@ export default function VerticalTabs() {
   return (
     <TabPanel value={value} index={0} className="w-full">
       {tab.length === 2 && (
-        <IntegrationTabPanel
+        <IntegrationsTabPanel
           status="available"
           integrationCardsInfo={integrationCardsInfo}
           existingIntegrations={existingIntegrations}
         />
       )}
       {tab.length === 3 && targetIntegration && targetIntegrationCardInfo && (
-        <IntegrationDetailTabPanel
+        <IntegrationTabPanel
           status="available"
           integration={targetIntegration}
           integrationCardInfo={targetIntegrationCardInfo}

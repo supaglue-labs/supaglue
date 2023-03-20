@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useState } from 'react';
-import VerticalTabs from '../../components/configuration/VerticalTabs';
+import IntegrationTabPanelContainer from '../../components/configuration/IntegrationTabPanelContainer';
 
 export { getServerSideProps };
 
@@ -97,7 +97,7 @@ export default function Home() {
         />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
           <TabPanel value={value} index={0} className="w-full">
-            <VerticalTabs />
+            <IntegrationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={1} className="w-full">
             <ApiKeyTabPanel />
