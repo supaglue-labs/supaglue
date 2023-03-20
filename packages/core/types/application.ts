@@ -24,5 +24,7 @@ export type WebhookConfig = {
   headers?: Record<string, string | number | boolean>; // Authorization header etc.
 };
 
-export type ApplicationCreateParams = BaseApplication;
+export type ApplicationCreateParams = {
+  name: string;
+};
 export type ApplicationUpdateParams = Partial<BaseApplication>;
