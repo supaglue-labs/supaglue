@@ -18,7 +18,8 @@ export type IntegrationCardInfo = {
   status: 'available' | 'auth-only';
   description: string;
 };
-const integrationCardsInfo: IntegrationCardInfo[] = [
+
+export const integrationCardsInfo: IntegrationCardInfo[] = [
   {
     icon: <Image alt="salesforce" src={SalesforceIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'Salesforce',
@@ -62,33 +63,22 @@ function TabPanel(props: TabPanelProps) {
 export default function IntegrationTabPanelContainer() {
   const router = useRouter();
   const { tab = [] } = router.query;
-  const [value, setValue] = React.useState(0);
+  const [_, category, providerName] = Array.isArray(tab) ? tab : [tab];
   const { integrations: existingIntegrations = [] } = useIntegrations();
 
-  const targetIntegration = existingIntegrations.find(
-    (existingIntegration) => existingIntegration.providerName === tab[2]
-  );
-
-  const targetIntegrationCardInfo = integrationCardsInfo.find(
-    (integrationCardInfo) => integrationCardInfo.providerName === tab[2]
-  );
+  const isListPage = tab.length === 2;
+  const isDetailPage = tab.length === 3;
 
   return (
-    <TabPanel value={value} index={0} className="w-full">
-      {tab.length === 2 && (
+    <TabPanel value={0} index={0} className="w-full">
+      {isListPage && (
         <IntegrationsTabPanel
           status="available"
           integrationCardsInfo={integrationCardsInfo}
           existingIntegrations={existingIntegrations}
         />
       )}
-      {tab.length === 3 && targetIntegration && targetIntegrationCardInfo && (
-        <IntegrationTabPanel
-          status="available"
-          integration={targetIntegration}
-          integrationCardInfo={targetIntegrationCardInfo}
-        />
-      )}
+      {isDetailPage && <IntegrationTabPanel status="available" category={category} providerName={providerName} />}
     </TabPanel>
   );
 }

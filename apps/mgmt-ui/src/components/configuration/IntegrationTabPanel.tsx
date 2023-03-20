@@ -8,24 +8,36 @@ import Card from '@mui/material/Card';
 import { Integration } from '@supaglue/core/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IntegrationCardInfo } from './IntegrationTabPanelContainer';
+import { integrationCardsInfo } from './IntegrationTabPanelContainer';
 
 export type IntegrationDetailTabPanelProps = {
-  integration: Integration;
-  integrationCardInfo: IntegrationCardInfo;
+  category: string;
+  providerName: string;
   status: string;
 };
 
 export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProps) {
   const { applicationId } = useApplication();
-  const { integration, integrationCardInfo } = props;
-  const [clientId, setClientId] = useState('');
-  const [clientSecret, setClientSecret] = useState('');
-  const [oauthScopes, setOauthScopes] = useState('');
+  const { providerName } = props;
+  const [clientId, setClientId] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const [oauthScopes, setOauthScopes] = useState<string>('');
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const router = useRouter();
 
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
+
+  const integration = existingIntegrations.find(
+    (existingIntegration) => existingIntegration.providerName === providerName
+  );
+
+  const integrationCardInfo = integrationCardsInfo.find(
+    (integrationCardInfo) => integrationCardInfo.providerName === providerName
+  );
+
+  if (!integration || !integrationCardInfo) {
+    return null;
+  }
 
   useEffect(() => {
     if (!clientId) {
