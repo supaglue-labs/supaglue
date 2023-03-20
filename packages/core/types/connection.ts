@@ -11,6 +11,8 @@ export type ConnectionCredentialsDecrypted = {
 };
 
 type BaseConnectionCreateParams = {
+  applicationId: string;
+  // External customer Id
   customerId: string;
   integrationId: string;
   credentials: ConnectionCredentialsDecrypted;

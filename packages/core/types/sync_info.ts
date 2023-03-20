@@ -6,9 +6,11 @@ export type SyncInfo = {
   nextSyncStart: Date | null;
   status: SyncStatus | null;
   // isInitialSync: boolean;
+  applicationId: string;
+  // External Id
   customerId: string;
   providerName: string;
-  category: string;
+  category: 'crm';
   connectionId: string;
 };
 

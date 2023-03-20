@@ -12,8 +12,33 @@ properties:
     nullable: true
     example: 2023-02-22T20:55:17.559537Z
   status:
-    type: string # TODO enum?
+    type: string
     nullable: true
     enum:
       - SYNCING
       - DONE
+  application_id:
+    type: string
+    example: 974125fa-ffb6-47fc-b12f-44c566fc5da1
+  customer_id:
+    type: string
+    example: my-customer-1
+  provider_name:
+    type: string
+    example: hubspot
+  category:
+    type: string
+    enum: [crm]
+  connection_id:
+    type: string
+    example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
+required:
+  - model_name
+  - last_sync_start
+  - next_sync_start
+  - status
+  - application_id
+  - customer_id
+  - provider_name
+  - category
+  - connection_id

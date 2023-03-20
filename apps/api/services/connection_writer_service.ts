@@ -1,5 +1,6 @@
 import { sendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
+import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, IntegrationService } from '@supaglue/core/services';
 import type {
@@ -41,22 +42,27 @@ export class ConnectionWriterService {
       throw new Error(`No integration found for ${params.providerName}`);
     }
     const status: ConnectionStatus = 'added';
+    const customerId = getCustomerIdPk(params.applicationId, params.customerId);
     const connection = await this.#prisma.connection.upsert({
       create: {
-        ...params,
+        category: params.category,
+        providerName: params.providerName,
+        customerId,
         integrationId: integration.id,
         status,
         credentials: encrypt(JSON.stringify(params.credentials)),
       },
       update: {
-        ...params,
+        category: params.category,
+        providerName: params.providerName,
+        customerId,
         integrationId: integration.id,
         status,
         credentials: encrypt(JSON.stringify(params.credentials)),
       },
       where: {
         customerId_integrationId: {
-          customerId: params.customerId,
+          customerId: customerId,
           integrationId: integration.id,
         },
       },
@@ -69,12 +75,15 @@ export class ConnectionWriterService {
     const integration = await this.#integrationService.getByProviderName(params.providerName);
     const application = await this.#applicationService.getById(integration.applicationId);
     let errored = false;
+
     try {
       // TODO: Is this the correct status?
       const status: ConnectionStatus = 'added';
       const connection = await this.#prisma.connection.create({
         data: {
-          ...params,
+          category: params.category,
+          providerName: params.providerName,
+          customerId: getCustomerIdPk(params.applicationId, params.customerId),
           integrationId: integration.id,
           status,
           credentials: encrypt(JSON.stringify(params.credentials)),

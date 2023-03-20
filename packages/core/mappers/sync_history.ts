@@ -1,3 +1,4 @@
+import { parseCustomerIdPk } from '../lib/customer_id';
 import { SyncHistory, SyncHistoryModelExpanded, SyncHistoryStatus } from '../types';
 
 export const fromSyncHistoryModelAndConnection = ({
@@ -9,16 +10,18 @@ export const fromSyncHistoryModelAndConnection = ({
   endTimestamp,
   connection,
 }: SyncHistoryModelExpanded): SyncHistory => {
+  const { applicationId, externalCustomerId } = parseCustomerIdPk(connection.customerId);
   return {
     id,
-    model,
+    modelName: model,
     status: status as SyncHistoryStatus,
     errorMessage,
     startTimestamp,
     endTimestamp,
     connectionId: connection.id,
-    customerId: connection.customerId,
+    applicationId,
+    customerId: externalCustomerId,
     providerName: connection.providerName,
-    category: connection.category,
+    category: connection.category as 'crm',
   };
 };
