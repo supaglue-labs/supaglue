@@ -6,6 +6,11 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+concurrency:
+  group: ${{ github.repository }}-${{ github.event.number || github.head_ref ||
+    github.sha }}-${{ github.workflow }}-${{ github.event_name }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build and Test
