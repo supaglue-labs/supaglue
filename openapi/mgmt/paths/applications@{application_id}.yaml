@@ -1,0 +1,26 @@
+get:
+  operationId: getApplication
+  summary: Get application
+  tags:
+    - Applications
+  security:
+    - ApiKeyAuth: []
+  responses:
+    200:
+      description: Application
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/application.yaml
+          examples:
+            Example:
+              value:
+                application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+                name: My App
+parameters:
+  - name: application_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: your-applications-unique-application-id

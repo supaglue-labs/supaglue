@@ -50,10 +50,14 @@ export class ApplicationService {
     return applications.map(fromApplicationModel);
   }
 
-  public async create(application: ApplicationCreateParams): Promise<Application> {
+  public async create(createParams: ApplicationCreateParams): Promise<Application> {
     const createdApplication = await this.#prisma.application.create({
       data: {
-        ...application,
+        ...createParams,
+        config: {
+          apiKey: null,
+          webhook: null,
+        },
       },
     });
     return fromApplicationModel(createdApplication);
@@ -105,12 +109,5 @@ export class ApplicationService {
     });
 
     return fromApplicationModel(updatedApplication);
-  }
-
-  public async delete(id: string): Promise<Application> {
-    const deletedApplication = await this.#prisma.application.delete({
-      where: { id },
-    });
-    return fromApplicationModel(deletedApplication);
   }
 }
