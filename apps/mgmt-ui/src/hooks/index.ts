@@ -2,7 +2,10 @@ export const fetcher = <T>(input: RequestInfo, init: RequestInit): Promise<T> =>
   return fetch(input, init).then<T>((res) => res.json());
 };
 
-export const fetcherWithApplication = <T>(input: RequestInfo, init: RequestInit): Promise<T> => {
+export const fetcherWithApplication = <T>(
+  input: { path: string; applicationId: string },
+  init: RequestInit
+): Promise<T> => {
   // TODO: type
   const { path, applicationId } = input;
   const supaglueHeaders = new Headers();
