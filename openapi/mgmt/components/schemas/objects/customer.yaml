@@ -21,7 +21,3 @@ required:
   - name
   - email
   - customer_id
-# ajv has issues with interpreting the id here as a schema id
-# example:
-#   id: e888cedf-e9d0-42c5-9485-2d72984faefc
-#   application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69

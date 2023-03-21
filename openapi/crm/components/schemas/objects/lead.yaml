@@ -65,3 +65,18 @@ properties:
     type: string
     nullable: true
     example: Co-Founder
+required:
+  - addresses
+  - company
+  - converted_account_id
+  - converted_contact_id
+  - converted_date
+  - id
+  - remote_id
+  - last_name
+  - lead_source
+  - owner_id
+  - phone_numbers
+  - created_at
+  - updated_at
+  - title

@@ -2293,7 +2293,22 @@
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
-        }
+        },
+        "required": [
+          "account_id",
+          "owner_id",
+          "description",
+          "id",
+          "remote_id",
+          "addresses",
+          "email_addresses",
+          "first_name",
+          "last_activity_at",
+          "last_name",
+          "phone_numbers",
+          "created_at",
+          "updated_at"
+        ]
       },
       "create_update_contact": {
         "type": "object",
@@ -2419,7 +2434,23 @@
             "nullable": true,
             "example": "Co-Founder"
           }
-        }
+        },
+        "required": [
+          "addresses",
+          "company",
+          "converted_account_id",
+          "converted_contact_id",
+          "converted_date",
+          "id",
+          "remote_id",
+          "last_name",
+          "lead_source",
+          "owner_id",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "title"
+        ]
       },
       "create_update_lead": {
         "type": "object",
@@ -2540,7 +2571,21 @@
             "nullable": true,
             "example": "OPEN"
           }
-        }
+        },
+        "required": [
+          "account_id",
+          "amount",
+          "description",
+          "id",
+          "remote_id",
+          "last_activity_at",
+          "name",
+          "owner_id",
+          "created_at",
+          "updated_at",
+          "stage",
+          "status"
+        ]
       },
       "user": {
         "type": "object",
@@ -2579,7 +2624,16 @@
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
-        }
+        },
+        "required": [
+          "id",
+          "remote_id",
+          "name",
+          "email",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ]
       },
       "create_update_opportunity": {
         "type": "object",
