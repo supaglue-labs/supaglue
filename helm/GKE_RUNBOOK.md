@@ -122,3 +122,49 @@ Create a test customer using postman.
 
 Go to
 <https://$API_HOST/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-1&returnUrl=https://$MANAGEMENT_HOST>
+
+## Upgrading
+
+### Upgrading to 0.5.x
+
+We have some backward-incompatible changes in 0.5.x. You will need to run the following process to upgrade.
+
+```shell
+kubectl port-forward deployment/supaglue-temporal-web 8080:8080 -n supaglue
+```
+
+Log into <http://localhost:8080/> and terminate any running workflows.
+
+ctrl-C to kill the port-forward process.
+
+```shell
+brew install postgresql
+kubectl port-forward statefulset/supaglue-postgresql 5432:5432 -n supaglue
+```
+
+Then in a new terminal:
+
+```shell
+export PGPASSWORD=$(kubectl get secrets supaglue-postgresql -n supaglue -o jsonpath='{.data.password}' | base64 --decode)
+psql -U supaglue -d supaglue -h localhost -c "TRUNCATE customers CASCADE;"
+```
+
+This will remove all your customers from the system, so be sure to re-add them after the upgrade.
+
+Then follow the standard upgrade process below.
+
+### Standard upgrade process
+
+Pull the latest `supaglue` repo:
+
+```shell
+git pull
+```
+
+Then deploy the latest helm chart:
+
+```shell
+helm upgrade --namespace supaglue \
+  supaglue ./helm \
+  --reuse-values
+```
