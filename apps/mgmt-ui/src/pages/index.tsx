@@ -22,6 +22,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
+  // This is the same call as in apps/mgmt-ui/src/pages/api/internal/applications/index.ts
   // Get applications to set active application
   const result = await fetch(`${API_HOST}/internal/v1/applications`, {
     method: 'GET',

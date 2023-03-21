@@ -16,6 +16,7 @@ export default function init(app: Router): void {
   v1ApplicationRouter.use(internalMiddleware);
 
   application(v1ApplicationRouter);
+  auth(v1ApplicationRouter);
 
   app.use('/v1', v1ApplicationRouter);
 
@@ -24,7 +25,6 @@ export default function init(app: Router): void {
   v1Router.use(internalMiddleware);
   v1Router.use(applicationMiddleware);
 
-  auth(v1Router);
   apiKey(v1Router);
   customer(v1Router);
   integration(v1Router);

@@ -10,7 +10,14 @@ type ActiveApplicationContextType = {
 type useActiveApplicationType = () => ActiveApplicationContextType;
 
 const ActiveApplicationContext = createContext<ActiveApplicationContextType>({
-  activeApplication: null!,
+  activeApplication: {
+    id: '',
+    name: '',
+    config: {
+      webhook: null,
+      apiKey: null,
+    },
+  },
   setActiveApplication: () => {
     throw new Error('Not implemented');
   },

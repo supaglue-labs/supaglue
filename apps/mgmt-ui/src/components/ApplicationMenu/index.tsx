@@ -1,7 +1,7 @@
 import { useActiveApplication } from '@/context/activeApplication';
 import { useApplications } from '@/hooks/useApplications';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -52,8 +52,8 @@ export default function ApplicationMenu() {
         endIcon={<KeyboardArrowDownIcon />}
       >
         <Box>
-          <div style={{ fontSize: 12 }}>Application</div>
-          <div style={{ fontSize: 20, lineHeight: 1 }}>{activeApplication.name}</div>
+          <Typography sx={{ fontSize: 12 }}>Application</Typography>
+          <Typography sx={{ fontSize: 20, lineHeight: 1 }}>{activeApplication.name}</Typography>
         </Box>
       </Button>
       <Menu
