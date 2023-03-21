@@ -2,9 +2,14 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const fs = require('fs');
+const path = require('path');
+
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
-const LATEST_VERSION = '0.4.1';
+const LATEST_VERSION = '0.5.0';
+
+const versions = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -64,14 +69,18 @@ const config = {
       {
         // Plugin Options for loading OpenAPI files
         specs: [
-          {
-            spec: '../openapi/versioned/version-0.4.1/crm/openapi.bundle.json',
-            route: '/api/crm',
-          },
-          {
-            spec: '../openapi/versioned/version-0.4.1/mgmt/openapi.bundle.json',
-            route: '/api/mgmt',
-          },
+          ...versions
+            .map((version) => [
+              {
+                spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
+                route: version === LATEST_VERSION ? '/api/crm' : `/${version}/api/crm`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
+                route: version === LATEST_VERSION ? '/api/mgmt' : `/${version}/api/mgmt`,
+              },
+            ])
+            .flat(),
           {
             spec: '../openapi/crm/openapi.bundle.json',
             route: '/next/api/crm',
