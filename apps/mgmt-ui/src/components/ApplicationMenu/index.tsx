@@ -41,7 +41,7 @@ export default function ApplicationMenu() {
 
   const onAddApplication = async (name: string) => {
     const newApplication = await addApplication(name);
-    mutate([...applications, newApplication]);
+    await mutate([...applications, newApplication]);
     handleClose();
     setActiveApplication(newApplication);
   };
