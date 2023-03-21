@@ -117,9 +117,7 @@ export default function init(app: Router): void {
         camelcaseKeys(req.body.filters)
       );
 
-      const snakeCaseKeysResults = results.map((result) => {
-        return snakecaseKeys(result);
-      });
+      const snakeCaseKeysResults = results.map(snakecaseKeys);
 
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
