@@ -1,4 +1,4 @@
-import { Integration } from '@supaglue/core/types';
+import { Application, Integration } from '@supaglue/core/types';
 import { snakecaseKeys } from './utils/snakecase';
 
 // TODO: use Supaglue TS client
@@ -37,6 +37,19 @@ export async function updateRemoteIntegration(applicationId: string, data: Integ
       'x-application-id': applicationId,
     },
     body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  const r = await result.json();
+  return r;
+}
+
+export async function addApplication(name: string): Promise<Application> {
+  const result = await fetch(`/api/internal/applications`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name }),
   });
 
   const r = await result.json();
