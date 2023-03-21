@@ -19,6 +19,7 @@ export type BaseContact = {
 
 export type Contact = BaseContact & {
   id: string;
+  remoteId: string;
   ownerId: string | null;
   owner?: User;
   accountId: string | null;

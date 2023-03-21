@@ -100,6 +100,7 @@
                           ],
                           "description": "Integration API",
                           "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "remote_id": 1234,
                           "industry": "APIs",
                           "last_activity_at": "2022-02-10T00:00:00Z",
                           "name": "Sample Customer",
@@ -129,6 +130,7 @@
                           ],
                           "description": "Integration API",
                           "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6b",
+                          "remote_id": 1235,
                           "industry": "APIs",
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Sample Customer",
@@ -305,6 +307,7 @@
                           ],
                           "description": "Integration API",
                           "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "remote_id": 1234,
                           "industry": "APIs",
                           "last_activity_at": "2022-02-10T00:00:00Z",
                           "name": "Sample Customer",
@@ -334,6 +337,7 @@
                           ],
                           "description": "Integration API",
                           "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6b",
+                          "remote_id": 1235,
                           "industry": "APIs",
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Sample Customer",
@@ -417,6 +421,7 @@
                       ],
                       "description": "Integration API",
                       "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6c",
+                      "remote_id": 1234,
                       "industry": "API's",
                       "last_activity_at": "2022-02-10T00:00:00Z",
                       "name": "Supaglue",
@@ -600,6 +605,7 @@
                           ],
                           "first_name": "George",
                           "id": "43a45011-c55e-42f3-81a1-99158c956775",
+                          "remote_id": 1234,
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "last_name": "Xing",
                           "phone_numbers": [
@@ -631,6 +637,7 @@
                           ],
                           "first_name": "George",
                           "id": "5733a8b6-472d-45fa-8f10-e0b00727cced",
+                          "remote_id": 1235,
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "last_name": "Xing",
                           "phone_numbers": [
@@ -817,6 +824,7 @@
                           ],
                           "first_name": "George",
                           "id": "43a45011-c55e-42f3-81a1-99158c956775",
+                          "remote_id": 1234,
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "last_name": "Xing",
                           "phone_numbers": [
@@ -848,6 +856,7 @@
                           ],
                           "first_name": "George",
                           "id": "5733a8b6-472d-45fa-8f10-e0b00727cced",
+                          "remote_id": 1235,
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "last_name": "Xing",
                           "phone_numbers": [
@@ -1081,6 +1090,7 @@
                           ],
                           "first_name": "George",
                           "id": "62bd34b8-54fa-4628-ae75-5fd6be59e4b7",
+                          "remote_id": 1234,
                           "last_name": "Xing",
                           "lead_source": "API Blogger",
                           "owner_id": "04363f99-e807-4f69-b233-3d31b92f9bb2",
@@ -1118,6 +1128,7 @@
                           ],
                           "first_name": "George",
                           "id": "29b3e861-b1da-4f74-885a-e151c5759acf",
+                          "remote_id": 1235,
                           "last_name": "Xing",
                           "lead_source": "API Blogger",
                           "owner_id": "71e01ac4-5f21-46e2-b021-46555ade976d",
@@ -1406,6 +1417,7 @@
                           "close_date": "2023-02-27T00:00:00Z",
                           "description": "Wants to use open source unified API for third-party integrations",
                           "id": "700eaee7-0b1d-40d3-90a9-1ebf77943a2e",
+                          "remote_id": 1234,
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Needs third-party integrations",
                           "owner_id": "475789f9-0df9-4a09-959e-c9f5eb7a541c",
@@ -1421,6 +1433,7 @@
                           "close_date": "2023-02-27T00:00:00Z",
                           "description": "Wants to use open source unified API for third-party integrations",
                           "id": "1e68260b-f250-427b-88f1-26ccc34c62d6",
+                          "remote_id": 1235,
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Needs third-party integrations",
                           "owner_id": "64761ae1-8c42-461c-8778-9671f9d39997",
@@ -1593,6 +1606,7 @@
                           "close_date": "2023-02-27T00:00:00Z",
                           "description": "Wants to use open source unified API for third-party integrations",
                           "id": "37704671-1955-47b3-b7a8-6ca814fa5005",
+                          "remote_id": 1234,
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Needs third-party integrations",
                           "owner_id": "475789f9-0df9-4a09-959e-c9f5eb7a541c",
@@ -1608,6 +1622,7 @@
                           "close_date": "2023-02-27T00:00:00Z",
                           "description": "Wants to use open source unified API for third-party integrations",
                           "id": "1e68260b-f250-427b-88f1-26ccc34c62d6",
+                          "remote_id": 1235,
                           "last_activity_at": "2023-02-27T00:00:00Z",
                           "name": "Needs third-party integrations",
                           "owner_id": "64761ae1-8c42-461c-8778-9671f9d39997",
@@ -1668,6 +1683,7 @@
                       "close_date": "2023-02-27T00:00:00Z",
                       "description": "Wants to use open source unified API for third-party integrations",
                       "id": "3bde961a-90da-4daa-ab2e-cc4498c460f9",
+                      "remote_id": 1234,
                       "last_activity_at": "2023-02-27T00:00:00Z",
                       "name": "Needs third-party integrations",
                       "owner": "93b0c2b5-26a8-4b92-b4e5-05d764eb1119",
@@ -1824,6 +1840,7 @@
                       "results": [
                         {
                           "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "remote_id": 1234,
                           "name": "George Xing",
                           "email": "george@supaglue.com",
                           "is_active": true,
@@ -1832,6 +1849,7 @@
                         },
                         {
                           "id": "a0f8385c-4947-41d2-a276-740f792bb0e6",
+                          "remote_id": 1235,
                           "name": "Thomas Chen",
                           "email": "tom@supaglue.com",
                           "is_active": true,
@@ -2097,6 +2115,10 @@
             "type": "string",
             "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
           },
+          "remote_id": {
+            "type": "string",
+            "example": 1234
+          },
           "industry": {
             "type": "string",
             "nullable": true,
@@ -2151,6 +2173,7 @@
           "addresses",
           "description",
           "id",
+          "remote_id",
           "industry",
           "last_activity_at",
           "name",
@@ -2239,6 +2262,10 @@
           "id": {
             "type": "string",
             "example": "88cc44ca-7a34-4e8b-b0da-51c3aae34daf"
+          },
+          "remote_id": {
+            "type": "string",
+            "example": 54312
           },
           "last_activity_at": {
             "type": "string",
@@ -2349,6 +2376,10 @@
           "id": {
             "type": "string",
             "example": "e774484c-4ff2-421f-adfa-12f66ed75b91"
+          },
+          "remote_id": {
+            "type": "string",
+            "example": 54312
           },
           "last_name": {
             "type": "string",
@@ -2464,6 +2495,10 @@
             "type": "string",
             "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
           },
+          "remote_id": {
+            "type": "string",
+            "example": 54312
+          },
           "last_activity_at": {
             "type": "string",
             "nullable": true,
@@ -2510,6 +2545,14 @@
       "user": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          "remote_id": {
+            "type": "string",
+            "example": 54312
+          },
           "name": {
             "type": "string",
             "nullable": true,

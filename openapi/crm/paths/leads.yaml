@@ -52,6 +52,7 @@ get:
                         email_address_type: work
                     first_name: George
                     id: 62bd34b8-54fa-4628-ae75-5fd6be59e4b7
+                    remote_id: 1234
                     last_name: Xing
                     lead_source: API Blogger
                     owner_id: 04363f99-e807-4f69-b233-3d31b92f9bb2
@@ -78,6 +79,7 @@ get:
                         email_address_type: work
                     first_name: George
                     id: 29b3e861-b1da-4f74-885a-e151c5759acf
+                    remote_id: 1235
                     last_name: Xing
                     lead_source: API Blogger
                     owner_id: 71e01ac4-5f21-46e2-b021-46555ade976d

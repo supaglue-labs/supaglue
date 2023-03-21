@@ -22,6 +22,9 @@ properties:
   id:
     type: string
     example: e888cedf-e9d0-42c5-9485-2d72984faef2
+  remote_id:
+    type: string
+    example: 54312
   last_activity_at:
     type: string
     nullable: true

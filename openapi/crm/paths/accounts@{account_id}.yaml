@@ -34,6 +34,7 @@ get:
                     street2: ~
                 description: Integration API
                 id: 9572d08b-f19f-48cc-a992-1eb7031d3f6c
+                remote_id: 1234
                 industry: API's
                 last_activity_at: '2022-02-10T00:00:00Z'
                 name: Supaglue

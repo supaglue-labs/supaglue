@@ -23,6 +23,7 @@ get:
                 close_date: '2023-02-27T00:00:00Z'
                 description: Wants to use open source unified API for third-party integrations
                 id: 3bde961a-90da-4daa-ab2e-cc4498c460f9
+                remote_id: 1234
                 last_activity_at: '2023-02-27T00:00:00Z'
                 name: Needs third-party integrations
                 owner: 93b0c2b5-26a8-4b92-b4e5-05d764eb1119

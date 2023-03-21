@@ -49,6 +49,7 @@ get:
                         email_address_type: work
                     first_name: George
                     id: 43a45011-c55e-42f3-81a1-99158c956775
+                    remote_id: 1234
                     last_activity_at: '2023-02-27T00:00:00Z'
                     last_name: Xing
                     phone_numbers:
@@ -69,6 +70,7 @@ get:
                         email_address_type: work
                     first_name: George
                     id: 5733a8b6-472d-45fa-8f10-e0b00727cced
+                    remote_id: 1235
                     last_activity_at: '2023-02-27T00:00:00Z'
                     last_name: Xing
                     phone_numbers:

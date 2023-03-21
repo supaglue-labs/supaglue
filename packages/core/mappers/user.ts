@@ -4,6 +4,7 @@ import { RemoteUser, User } from '../types/crm';
 
 export const fromUserModel = ({
   id,
+  remoteId,
   name,
   email,
   isActive,
@@ -13,6 +14,7 @@ export const fromUserModel = ({
 }: CrmUser): User => {
   return {
     id,
+    remoteId,
     name,
     email,
     isActive,

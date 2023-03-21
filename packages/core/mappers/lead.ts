@@ -5,6 +5,7 @@ import { Address, CrmLeadExpanded, EmailAddress, Lead, PhoneNumber, RemoteLead }
 export const fromLeadModel = (
   {
     id,
+    remoteId,
     remoteWasDeleted,
     ownerId,
     owner,
@@ -31,6 +32,7 @@ export const fromLeadModel = (
   const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
+    remoteId,
     ownerId,
     owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     leadSource,
