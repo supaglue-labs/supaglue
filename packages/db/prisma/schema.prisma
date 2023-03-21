@@ -23,7 +23,7 @@ model SgUser {
 
 model Application {
   id          String        @id @default(uuid())
-  name        String
+  name        String        @unique
   config      Json
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
