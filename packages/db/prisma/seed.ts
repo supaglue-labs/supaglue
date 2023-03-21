@@ -176,7 +176,7 @@ async function seedApplication() {
     update: {
       name: 'My App',
       config: {
-        api_key: hashedApiKey,
+        apiKey: hashedApiKey,
         webhook: null,
       },
     },
@@ -184,7 +184,7 @@ async function seedApplication() {
       id: APPLICATION_ID,
       name: 'My App',
       config: {
-        api_key: hashedApiKey,
+        apiKey: hashedApiKey,
         webhook: null,
       },
     },
