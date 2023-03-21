@@ -155,7 +155,7 @@ const drawerWidth = 256;
 
 export default function App({ Component, pageProps: { session, activeApplication, ...pageProps } }: AppProps) {
   if (!activeApplication) {
-    throw new Error('Missing active application');
+    return null;
   }
 
   return (

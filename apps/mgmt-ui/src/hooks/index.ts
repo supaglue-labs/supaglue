@@ -6,7 +6,6 @@ export const fetcherWithApplication = <T>(
   input: { path: string; applicationId: string },
   init: RequestInit
 ): Promise<T> => {
-  // TODO: type
   const { path, applicationId } = input;
   const supaglueHeaders = new Headers();
 
