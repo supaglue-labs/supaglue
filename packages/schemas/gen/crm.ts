@@ -190,37 +190,37 @@ export interface components {
     };
     contact: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
-      account_id?: string | null;
+      account_id: string | null;
       account?: components["schemas"]["account"];
       /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
-      owner_id?: string | null;
+      owner_id: string | null;
       owner?: components["schemas"]["user"];
-      addresses?: components["schemas"]["addresses"];
-      email_addresses?: components["schemas"]["email_addresses"];
+      addresses: components["schemas"]["addresses"];
+      email_addresses: components["schemas"]["email_addresses"];
       /** @example George */
-      first_name?: string | null;
+      first_name: string | null;
       /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
-      id?: string;
+      id: string;
       /** @example 54312 */
-      remote_id?: string;
+      remote_id: string;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_activity_at?: Date | null;
+      last_activity_at: Date | null;
       /** @example Xing */
-      last_name?: string | null;
-      phone_numbers?: components["schemas"]["phone_numbers"];
+      last_name: string | null;
+      phone_numbers: components["schemas"]["phone_numbers"];
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      created_at?: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      updated_at?: Date | null;
+      updated_at: Date | null;
     };
     create_update_contact: {
       /** @example George */
@@ -237,47 +237,47 @@ export interface components {
       custom_fields?: components["schemas"]["custom_fields"];
     };
     lead: {
-      addresses?: components["schemas"]["addresses"];
+      addresses: components["schemas"]["addresses"];
       /** @example Supaglue */
-      company?: string | null;
+      company: string | null;
       /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
-      converted_account_id?: string | null;
+      converted_account_id: string | null;
       converted_account?: components["schemas"]["account"];
       /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
-      converted_contact_id?: string | null;
+      converted_contact_id: string | null;
       converted_contact?: components["schemas"]["contact"];
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      converted_date?: Date | null;
+      converted_date: Date | null;
       email_addresses?: components["schemas"]["email_addresses"];
       /** @example George */
       first_name?: string | null;
       /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
-      id?: string;
+      id: string;
       /** @example 54312 */
-      remote_id?: string;
+      remote_id: string;
       /** @example Xing */
-      last_name?: string | null;
+      last_name: string | null;
       /** @example API Blogger */
-      lead_source?: string | null;
+      lead_source: string | null;
       /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
-      owner_id?: string | null;
+      owner_id: string | null;
       owner?: components["schemas"]["user"];
-      phone_numbers?: components["schemas"]["phone_numbers"];
+      phone_numbers: components["schemas"]["phone_numbers"];
       /**
        * Format: date-time 
        * @example 2023-02-10T00:00:00Z
        */
-      created_at?: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2023-02-10T00:00:00Z
        */
-      updated_at?: Date | null;
+      updated_at: Date | null;
       /** @example Co-Founder */
-      title?: string | null;
+      title: string | null;
     };
     create_update_lead: {
       /** @example Supaglue */
@@ -298,66 +298,66 @@ export interface components {
     };
     opportunity: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
-      account_id?: string | null;
+      account_id: string | null;
       account?: components["schemas"]["account"];
       /** @example 100000 */
-      amount?: number | null;
+      amount: number | null;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
       close_date?: Date | null;
       /** @example Wants to use open source unified API for third-party integrations */
-      description?: string | null;
+      description: string | null;
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id?: string;
+      id: string;
       /** @example 54312 */
-      remote_id?: string;
+      remote_id: string;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      last_activity_at?: Date | null;
+      last_activity_at: Date | null;
       /** @example Needs third-party integrations */
-      name?: string | null;
+      name: string | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      owner_id?: string | null;
+      owner_id: string | null;
       owner?: components["schemas"]["user"];
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      created_at?: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      updated_at?: Date | null;
+      updated_at: Date | null;
       /** @example Closed Won */
-      stage?: string | null;
+      stage: string | null;
       /** @example OPEN */
-      status?: string | null;
+      status: string | null;
     };
     user: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id?: string;
+      id: string;
       /** @example 54312 */
-      remote_id?: string;
+      remote_id: string;
       /** @example George Xing */
-      name?: string | null;
+      name: string | null;
       /** @example george@supaglue.com */
-      email?: string | null;
-      is_active?: boolean | null;
+      email: string | null;
+      is_active: boolean | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      created_at?: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      updated_at?: Date | null;
+      updated_at: Date | null;
     };
     create_update_opportunity: {
       /** @example 100000 */

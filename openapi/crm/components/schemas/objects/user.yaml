@@ -27,3 +27,11 @@ properties:
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'  
+required:
+  - id
+  - remote_id
+  - name
+  - email
+  - is_active
+  - created_at
+  - updated_at

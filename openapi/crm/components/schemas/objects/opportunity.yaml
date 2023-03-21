@@ -58,3 +58,16 @@ properties:
     type: string # TODO: enum
     nullable: true
     example: OPEN
+required:
+  - account_id
+  - amount
+  - description
+  - id
+  - remote_id
+  - last_activity_at
+  - name
+  - owner_id
+  - created_at
+  - updated_at
+  - stage
+  - status

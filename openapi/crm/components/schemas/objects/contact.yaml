@@ -47,3 +47,17 @@ properties:
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
+required:
+  - account_id
+  - owner_id
+  - description
+  - id
+  - remote_id
+  - addresses
+  - email_addresses
+  - first_name
+  - last_activity_at
+  - last_name
+  - phone_numbers
+  - created_at
+  - updated_at
