@@ -11,22 +11,26 @@ datasource db {
 }
 
 model SgUser {
-  id        String   @id @default(uuid())
-  authType  String   @map("auth_type") // [username-password]
-  username  String   @unique
+  id        String       @id @default(uuid())
+  authType  String       @map("auth_type") // [username-password]
+  username  String       @unique
   password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  orgId     String       @map("org_id")
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
   @@map("sg_users")
 }
 
 model Organization {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  slug      String   @unique
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           String        @id @default(uuid())
+  name         String        @unique
+  slug         String        @unique
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  applications Application[]
+  sgUsers      SgUser[]
 
   @@map("organizations")
 }
@@ -37,6 +41,8 @@ model Application {
   config      Json
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
+  orgId       String        @map("org_id")
+  org         Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
   Customer    Customer[]
   Integration Integration[]
 

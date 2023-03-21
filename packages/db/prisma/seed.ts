@@ -201,6 +201,7 @@ async function seedApplication() {
         apiKey: hashedApiKey,
         webhook: null,
       },
+      orgId: ORGANIZATION_ID,
     },
     create: {
       id: APPLICATION_ID,
@@ -209,6 +210,7 @@ async function seedApplication() {
         apiKey: hashedApiKey,
         webhook: null,
       },
+      orgId: ORGANIZATION_ID,
     },
   });
 }
@@ -223,12 +225,14 @@ async function seedSgUser() {
       authType: 'username/password',
       username: 'admin',
       password: ADMIN_PASSWORD ?? 'admin',
+      orgId: ORGANIZATION_ID,
     },
     create: {
       id: SG_USER_ID,
       authType: 'username/password',
       username: 'admin',
       password: ADMIN_PASSWORD ?? 'admin',
+      orgId: ORGANIZATION_ID,
     },
   });
 }
