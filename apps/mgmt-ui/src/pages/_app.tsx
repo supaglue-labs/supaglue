@@ -1,3 +1,4 @@
+import { ActiveApplicationManager } from '@/context/activeApplication';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
 import { Box, CssBaseline, useMediaQuery } from '@mui/material';
@@ -152,14 +153,20 @@ theme = {
 
 const drawerWidth = 256;
 
-export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+export default function App({ Component, pageProps: { session, activeApplication, ...pageProps } }: AppProps) {
+  if (!activeApplication) {
+    return null;
+  }
+
   return (
     <SessionProvider session={session}>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <InnerApp>
-            <Component {...pageProps} />
-          </InnerApp>
+          <ActiveApplicationManager initialActiveApplication={activeApplication}>
+            <InnerApp>
+              <Component {...pageProps} />
+            </InnerApp>
+          </ActiveApplicationManager>
         </ThemeProvider>
       </StyledEngineProvider>
     </SessionProvider>
