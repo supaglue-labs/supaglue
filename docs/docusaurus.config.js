@@ -4,7 +4,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
-const LATEST_VERSION = '0.4.1';
+const LATEST_VERSION = '0.5.0';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -65,12 +65,20 @@ const config = {
         // Plugin Options for loading OpenAPI files
         specs: [
           {
-            spec: '../openapi/versioned/version-0.4.1/crm/openapi.bundle.json',
+            spec: '../openapi/versioned/version-0.5.0/crm/openapi.bundle.json',
             route: '/api/crm',
           },
           {
-            spec: '../openapi/versioned/version-0.4.1/mgmt/openapi.bundle.json',
+            spec: '../openapi/versioned/version-0.5.0/mgmt/openapi.bundle.json',
             route: '/api/mgmt',
+          },
+          {
+            spec: '../openapi/versioned/version-0.4.1/crm/openapi.bundle.json',
+            route: '/0.4.1/api/crm',
+          },
+          {
+            spec: '../openapi/versioned/version-0.4.1/mgmt/openapi.bundle.json',
+            route: '/0.4.1/api/mgmt',
           },
           {
             spec: '../openapi/crm/openapi.bundle.json',

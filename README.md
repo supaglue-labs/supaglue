@@ -29,7 +29,7 @@ https://user-images.githubusercontent.com/1925713/223279162-c53ceb43-b51e-4d78-9
 ### Run Supaglue locally
 
 ```shell
-git clone -b v0.4.1 https://github.com/supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.5.0 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
 docker compose up
 ```
