@@ -40,7 +40,7 @@ export default function Home() {
   ];
 
   const rows = customers.map((customer) => ({
-    id: customer.id,
+    id: customer.customerId,
     email: customer.email,
     name: customer.name,
     connections: customer?.connections,
