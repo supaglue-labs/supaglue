@@ -41,6 +41,8 @@ paths:
     $ref: paths/leads@{lead_id}.yaml
   '/opportunities':
     $ref: paths/opportunities.yaml
+  '/opportunities/_search':
+    $ref: paths/opportunities@_search.yaml
   '/opportunities/{opportunity_id}':
     $ref: paths/opportunities@{opportunity_id}.yaml
   '/users':

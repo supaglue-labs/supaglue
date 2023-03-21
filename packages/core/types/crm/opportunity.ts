@@ -1,5 +1,6 @@
 import type { CrmAccount, CrmOpportunity, CrmUser } from '@supaglue/db';
 import { CustomFields } from '.';
+import { Filter } from '../filter';
 import type { Account } from './account';
 import { User } from './user';
 
@@ -67,4 +68,8 @@ export type OpportunityUpdateParams = OpportunityCreateParams & {
 
 export type RemoteOpportunityUpdateParams = RemoteOpportunityCreateParams & {
   remoteId: string;
+};
+
+export type OpportunityFilters = {
+  accountId?: Filter;
 };
