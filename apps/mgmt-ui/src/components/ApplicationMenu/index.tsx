@@ -1,14 +1,21 @@
+import { addApplication } from '@/client';
 import { useActiveApplication } from '@/context/activeApplication';
 import { useApplications } from '@/hooks/useApplications';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import TextField from '@mui/material/TextField';
 import * as React from 'react';
 
 export default function ApplicationMenu() {
-  const { applications = [], isLoading, error } = useApplications();
+  const { applications = [], isLoading, error, mutate } = useApplications();
   const { activeApplication, setActiveApplication } = useActiveApplication();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -30,6 +37,13 @@ export default function ApplicationMenu() {
     }
 
     setActiveApplication(foundApplication);
+  };
+
+  const onAddApplication = async (name: string) => {
+    const newApplication = await addApplication(name);
+    await mutate([...applications, newApplication]);
+    handleClose();
+    setActiveApplication(newApplication);
   };
 
   return (
@@ -71,7 +85,63 @@ export default function ApplicationMenu() {
             {name}
           </MenuItem>
         ))}
+        <Divider />
+        <NewApplication onCreate={onAddApplication} />
       </Menu>
+    </>
+  );
+}
+
+function NewApplication({ onCreate }: { onCreate: (name: string) => void }) {
+  const [applicationName, setApplicationName] = React.useState('');
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setApplicationName('');
+  };
+
+  return (
+    <>
+      <MenuItem onClick={handleClickOpen}>New Application</MenuItem>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>New Application</DialogTitle>
+        {/* TODO: Add icon for New Application */}
+        <DialogContent>
+          <DialogContentText>Enter a name for the new application.</DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="applicationName"
+            label="Name"
+            type="text"
+            fullWidth
+            value={applicationName}
+            onChange={(e) => {
+              setApplicationName(e.target.value);
+            }}
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            onClick={() => {
+              onCreate(applicationName);
+              // TODO: error state
+              // TODO: Validate application name (e.g. empty)
+              handleClose();
+            }}
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
