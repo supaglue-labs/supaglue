@@ -56,6 +56,10 @@ const {
   SUPAGLUE_QUICKSTART_API_KEY,
 } = process.env;
 
+const ORGANIZATION_ID = 'e7070cc8-36e7-43e2-81fc-ad57713cf2d3';
+const ORGANIZATION_NAME = 'My Org';
+const ORGANIZATION_SLUG = 'my-org';
+
 const SG_USER_ID = 'd56b851b-5a36-4480-bc43-515d677f46e3';
 const APPLICATION_ID = 'a4398523-03a2-42dd-9681-c91e3e2efaf4';
 
@@ -160,6 +164,24 @@ export async function cryptoHash(text: string): Promise<{ original: string; hash
     original: text,
     hashed: hashedText,
   };
+}
+
+async function seedOrganiziation() {
+  // Create application
+  await prisma.organization.upsert({
+    where: {
+      id: ORGANIZATION_ID,
+    },
+    update: {
+      name: ORGANIZATION_NAME,
+      slug: ORGANIZATION_SLUG,
+    },
+    create: {
+      id: ORGANIZATION_ID,
+      name: ORGANIZATION_NAME,
+      slug: ORGANIZATION_SLUG,
+    },
+  });
 }
 
 async function seedApplication() {
@@ -284,6 +306,7 @@ async function seedCRMIntegrations() {
 }
 
 async function main() {
+  await seedOrganiziation();
   await seedApplication();
   await seedSgUser();
   await seedCustomers();
