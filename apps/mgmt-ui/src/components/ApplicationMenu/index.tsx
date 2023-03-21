@@ -101,6 +101,7 @@ function NewApplication({ onCreate }: { onCreate: (name: string) => void }) {
 
   const handleClose = () => {
     setOpen(false);
+    setApplicationName('');
   };
 
   return (
@@ -133,7 +134,6 @@ function NewApplication({ onCreate }: { onCreate: (name: string) => void }) {
               // TODO: error state
               // TODO: Validate application name (e.g. empty)
               handleClose();
-              setApplicationName('');
             }}
           >
             Create
