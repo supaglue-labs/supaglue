@@ -1,5 +1,5 @@
+import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { CustomerService } from '@supaglue/core/services/customer_service';
 import { ConnectionSafe, CRM_COMMON_MODELS } from '@supaglue/core/types/';
 import { CommonModel } from '@supaglue/core/types/common';
 import { SyncInfo, SyncInfoFilter } from '@supaglue/core/types/sync_info';
@@ -10,12 +10,10 @@ import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 export class SyncService {
   #temporalClient: Client;
   #connectionService: ConnectionService;
-  #customerService: CustomerService;
 
-  public constructor(temporalClient: Client, connectionService: ConnectionService, customerService: CustomerService) {
+  public constructor(temporalClient: Client, connectionService: ConnectionService) {
     this.#temporalClient = temporalClient;
     this.#connectionService = connectionService;
-    this.#customerService = customerService;
   }
 
   public async getSyncInfoList({
@@ -23,18 +21,14 @@ export class SyncService {
     externalCustomerId,
     providerName,
   }: SyncInfoFilter): Promise<SyncInfo[]> {
-    let customerId = undefined;
-    if (externalCustomerId) {
-      const customer = await this.#customerService.getByExternalId(applicationId, externalCustomerId);
-      customerId = customer.id;
-    }
+    const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const out = await Promise.all(connections.flatMap((connection) => this.getSyncInfoListFromConnection(connection)));
     return out.flat();
   }
 
   private async getSyncInfoFromConnectionAndCommonModel(
-    { id: connectionId, customerId, category, providerName }: ConnectionSafe,
+    { id: connectionId, applicationId, customerId, category, providerName }: ConnectionSafe,
     commonModel: CommonModel
   ): Promise<SyncInfo> {
     const scheduleId = getRunSyncsScheduleId(connectionId);
@@ -53,6 +47,7 @@ export class SyncService {
       nextSyncStart,
       status,
       connectionId,
+      applicationId,
       customerId,
       category,
       providerName,

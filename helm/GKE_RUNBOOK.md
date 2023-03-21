@@ -121,7 +121,7 @@ Log into the management UI at `https://$MANAGEMENT_HOST` with the 'admin' user a
 Create a test customer using postman.
 
 Go to
-<https://$API_HOST/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-1&returnUrl=https://$MANAGEMENT_HOST>
+<https://$API_HOST/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&returnUrl=https://$MANAGEMENT_HOST>
 
 ## Upgrading
 

@@ -27,8 +27,8 @@ export default function init(app: Router): void {
       const syncInfoListRes = syncInfoList.map((syncInfo) =>
         snakecaseKeys({
           ...syncInfo,
-          lastSyncStart: syncInfo.lastSyncStart?.toISOString(),
-          nextSyncStart: syncInfo.nextSyncStart?.toISOString(),
+          lastSyncStart: syncInfo.lastSyncStart?.toISOString() ?? null,
+          nextSyncStart: syncInfo.nextSyncStart?.toISOString() ?? null,
         })
       );
       return res.status(200).send(syncInfoListRes);

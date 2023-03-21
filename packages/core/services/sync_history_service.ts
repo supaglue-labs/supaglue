@@ -1,4 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
+import { getCustomerIdPk } from '../lib/customer_id';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromSyncHistoryModelAndConnection } from '../mappers';
 import type {
@@ -10,17 +11,14 @@ import type {
   SyncHistoryStatus,
 } from '../types';
 import { ConnectionService } from './connection_service';
-import { CustomerService } from './customer_service';
 
 export class SyncHistoryService {
   #prisma: PrismaClient;
   #connectionService: ConnectionService;
-  #customerService: CustomerService;
 
-  constructor(prisma: PrismaClient, connectionService: ConnectionService, customerService: CustomerService) {
+  constructor(prisma: PrismaClient, connectionService: ConnectionService) {
     this.#prisma = prisma;
     this.#connectionService = connectionService;
-    this.#customerService = customerService;
   }
 
   public async create({
@@ -101,11 +99,7 @@ export class SyncHistoryService {
     externalCustomerId,
     providerName,
   }: SyncHistoryFilter): Promise<PaginatedResult<SyncHistory>> {
-    let customerId = undefined;
-    if (externalCustomerId) {
-      const customer = await this.#customerService.getByExternalId(applicationId, externalCustomerId);
-      customerId = customer.id;
-    }
+    const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;

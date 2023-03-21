@@ -3,25 +3,26 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { SyncHistory } from '@supaglue/core/types';
 
 const columns: GridColDef[] = [
-  { field: 'providerName', headerName: 'Provider', width: 150 },
-  { field: 'model', headerName: 'Model', width: 150 },
-  { field: 'status', headerName: 'Status', width: 150 },
+  { field: 'customerId', headerName: 'Customer Id', width: 200 },
+  { field: 'providerName', headerName: 'Provider', width: 120 },
+  { field: 'modelName', headerName: 'Model', width: 120 },
+  { field: 'status', headerName: 'Status', width: 120 },
   {
     field: 'startTimestamp',
     headerName: 'Start Time',
-    width: 240,
+    width: 180,
     valueGetter: ({ value }) => relativeDateFromISOString(value),
   },
   {
     field: 'endTimestamp',
     headerName: 'End Time',
-    width: 240,
+    width: 180,
     valueGetter: ({ value }) => relativeDateFromISOString(value),
   },
   {
     field: 'errorMessage',
     headerName: 'Error Message',
-    width: 90,
+    width: 240,
   },
 ];
 

@@ -23,9 +23,9 @@ To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](/api/crm) to create new in
 
 Examples:
 
-- [http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-1&providerName=hubspot](http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-1&providerName=hubspot)
+- [http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot](http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot)
 
-- [http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-1&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api](http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-1&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api)
+- [http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api](http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api)
 
 export const IntegrationCard = ({ icon, provider, description, to }) => (
   <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
@@ -53,14 +53,14 @@ Embedded Links can be used in any UI components in your frontend application. Fo
   icon="/img/salesforce.svg"
   provider="Salesforce"
   description="Sync your leads in and out of Salesforce"
-  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-0&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-salesforce&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
 />
 
 <IntegrationCard
   icon="/img/hubspot.svg"
   provider="Hubspot"
   description="Sync your leads in and out of Hubspot"
-  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-1&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
 />
 </div>
 
