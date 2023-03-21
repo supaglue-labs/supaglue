@@ -1,15 +1,14 @@
 import { camelcaseKeys } from '@/utils/camelcase';
 import { Integration } from '@supaglue/core/types';
-import useSWR from 'swr';
-import { fetcher } from '.';
+import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useIntegrations() {
-  const { data, error, isLoading, ...rest } = useSWR(`/api/internal/integrations`, fetcher<Integration[]>);
+  const { data, isLoading, error, ...rest } = useSWRWithApplication<Integration[]>('/api/internal/integrations');
 
   return {
     integrations: data ? camelcaseKeys(data) : undefined,
     isLoading,
-    isError: error,
+    error,
     ...rest,
   };
 }

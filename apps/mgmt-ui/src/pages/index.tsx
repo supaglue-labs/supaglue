@@ -8,6 +8,7 @@ import { type GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth/next';
 import Head from 'next/head';
 import { useState } from 'react';
+import { API_HOST, SG_INTERNAL_TOKEN } from './api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getServerSession(req, res, authOptions);
@@ -21,8 +22,29 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
+  // Get applications to set active application
+  const result = await fetch(`${API_HOST}/internal/v1/applications`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-sg-internal-token': SG_INTERNAL_TOKEN,
+    },
+  });
+
+  if (!result.ok) {
+    throw new Error('Errored while fetching applications');
+  }
+
+  const applications = await result.json();
+
+  // Pick one application at random
+  // TODO: Make it not random
+  if (!applications.length) {
+    throw new Error('No applications found');
+  }
+
   return {
-    props: { session },
+    props: { session, activeApplication: applications[0] },
   };
 };
 

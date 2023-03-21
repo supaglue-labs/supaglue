@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { updateRemoteIntegration } from '@/client';
-import { useApplication } from '@/hooks/useApplication';
+import { useActiveApplication } from '@/context/activeApplication';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
@@ -17,7 +17,7 @@ export type IntegrationDetailTabPanelProps = {
 };
 
 export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProps) {
-  const { applicationId } = useApplication();
+  const { activeApplication } = useActiveApplication();
   const { providerName } = props;
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
@@ -151,7 +151,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
                   ei.id === newIntegration.id ? newIntegration : ei
                 );
 
-                updateRemoteIntegration(applicationId, newIntegration);
+                updateRemoteIntegration(activeApplication.id, newIntegration);
                 mutate(updatedIntegrations, false);
                 router.push(`/configuration/integrations/${newIntegration.category}`);
               }}

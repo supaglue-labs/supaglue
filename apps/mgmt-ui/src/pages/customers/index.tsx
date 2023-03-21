@@ -45,6 +45,7 @@ export default function Home() {
     name: customer.name,
     connections: customer?.connections,
   }));
+
   return (
     <>
       <Head>

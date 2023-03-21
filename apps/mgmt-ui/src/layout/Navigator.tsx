@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
+import ApplicationMenu from '@/components/ApplicationMenu';
 import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
@@ -83,20 +84,15 @@ const item = {
   },
 };
 
-const itemCategory = {
-  boxShadow: '0 -1px 0 rgb(255,255,255,0.1) inset',
-  py: 1.5,
-  px: 3,
-};
-
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
 
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
-        <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>Supaglue</ListItem>
-
+        <ListItem sx={{ p: 0, fontSize: 22, color: '#fff' }}>
+          <ApplicationMenu />
+        </ListItem>
         {categories.map(({ id, children }) => (
           <Box key={id} sx={{ bgcolor: '#101F33' }}>
             <ListItem sx={{ py: 2, px: 3 }}>

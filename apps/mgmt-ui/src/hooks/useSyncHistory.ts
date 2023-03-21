@@ -1,14 +1,13 @@
 import { camelcaseKeys } from '@/utils/camelcase';
 import { PaginatedResult, SyncHistory } from '@supaglue/core/types';
-import useSWR from 'swr';
-import { fetcher } from '.';
+import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useSyncHistory() {
-  const { data, error, isLoading } = useSWR(`/api/internal/sync-history`, fetcher<PaginatedResult<SyncHistory>>);
+  const { data, isLoading, error } = useSWRWithApplication<PaginatedResult<SyncHistory>>('/api/internal/sync-history');
 
   return {
     syncHistories: data ? camelcaseKeys(data) : undefined,
     isLoading,
-    isError: error,
+    error,
   };
 }
