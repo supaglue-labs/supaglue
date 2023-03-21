@@ -6,6 +6,7 @@ import { fromUserModel } from './user';
 export const fromOpportunityModel = (
   {
     id,
+    remoteId,
     remoteWasDeleted,
     ownerId,
     owner,
@@ -27,6 +28,7 @@ export const fromOpportunityModel = (
   const expandOwner = expandedAssociations.includes('owner');
   return {
     id,
+    remoteId,
     ownerId,
     owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     name,

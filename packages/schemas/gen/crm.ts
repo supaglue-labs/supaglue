@@ -141,6 +141,8 @@ export interface components {
       description: string | null;
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
+      /** @example 1234 */
+      remote_id: string;
       /** @example API's */
       industry: string | null;
       /**
@@ -199,6 +201,8 @@ export interface components {
       first_name?: string | null;
       /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
       id?: string;
+      /** @example 54312 */
+      remote_id?: string;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -252,6 +256,8 @@ export interface components {
       first_name?: string | null;
       /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
       id?: string;
+      /** @example 54312 */
+      remote_id?: string;
       /** @example Xing */
       last_name?: string | null;
       /** @example API Blogger */
@@ -305,6 +311,8 @@ export interface components {
       description?: string | null;
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id?: string;
+      /** @example 54312 */
+      remote_id?: string;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
@@ -331,6 +339,10 @@ export interface components {
       status?: string | null;
     };
     user: {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id?: string;
+      /** @example 54312 */
+      remote_id?: string;
       /** @example George Xing */
       name?: string | null;
       /** @example george@supaglue.com */

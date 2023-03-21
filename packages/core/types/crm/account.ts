@@ -19,6 +19,7 @@ type BaseAccount = {
 
 export type Account = BaseAccount & {
   id: string;
+  remoteId: string;
   ownerId: string | null;
   owner?: User;
   createdAt: Date | null;

@@ -36,12 +36,14 @@ get:
                 previous: eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9
                 results:
                   - id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                    remote_id: 1234
                     name: George Xing
                     email: george@supaglue.com
                     is_active: true
                     created_at: '2021-11-10T00:00:00Z'
                     updated_at: '2022-01-09T00:00:00Z'
                   - id: a0f8385c-4947-41d2-a276-740f792bb0e6
+                    remote_id: 1235
                     name: Thomas Chen
                     email: tom@supaglue.com
                     is_active: true

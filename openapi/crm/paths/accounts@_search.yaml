@@ -52,6 +52,7 @@ post:
                         street2: ~
                     description: Integration API
                     id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                    remote_id: 1234
                     industry: APIs
                     last_activity_at: '2022-02-10T00:00:00Z'
                     name: Sample Customer
@@ -73,6 +74,7 @@ post:
                         street2: ~
                     description: Integration API
                     id: 9572d08b-f19f-48cc-a992-1eb7031d3f6b
+                    remote_id: 1235
                     industry: APIs
                     last_activity_at: '2023-02-27T00:00:00Z'
                     name: Sample Customer

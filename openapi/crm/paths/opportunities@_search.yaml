@@ -48,6 +48,7 @@ post:
                     close_date: '2023-02-27T00:00:00Z'
                     description: Wants to use open source unified API for third-party integrations
                     id: 37704671-1955-47b3-b7a8-6ca814fa5005
+                    remote_id: 1234
                     last_activity_at: '2023-02-27T00:00:00Z'
                     name: Needs third-party integrations
                     owner_id: 475789f9-0df9-4a09-959e-c9f5eb7a541c
@@ -60,6 +61,7 @@ post:
                     close_date: '2023-02-27T00:00:00Z'
                     description: Wants to use open source unified API for third-party integrations
                     id: 1e68260b-f250-427b-88f1-26ccc34c62d6
+                    remote_id: 1235
                     last_activity_at: '2023-02-27T00:00:00Z'
                     name: Needs third-party integrations
                     owner_id: 64761ae1-8c42-461c-8778-9671f9d39997

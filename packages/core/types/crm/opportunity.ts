@@ -31,6 +31,7 @@ export type Opportunity = BaseOpportunity & {
   updatedAt: Date | null;
   wasDeleted: boolean;
   id: string;
+  remoteId: string;
   // Support field mappings + remote data etc
 };
 

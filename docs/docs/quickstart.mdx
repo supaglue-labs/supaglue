@@ -123,7 +123,7 @@ Make a `GET` request to get a list of accounts:
 
 ```shell
 curl localhost:8080/crm/v1/accounts \
-  -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
+  -H 'x-api-key: some-api-key' \
   -H 'x-customer-id: external-customer-salesforce' \
   -H 'x-provider-name: salesforce'
 ```
@@ -133,7 +133,7 @@ curl localhost:8080/crm/v1/accounts \
 
 ```shell
 curl localhost:8080/crm/v1/accounts \
-  -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
+  -H 'x-api-key: some-api-key' \
   -H 'x-customer-id: external-customer-hubspot' \
   -H 'x-provider-name: hubspot'
 ```
@@ -148,7 +148,8 @@ Example result:
   "results": [
     {
       "id": "4019000e-8743-4603-9a0e-69633289666d",
-      "owner": "005Dn000002DY8AIAW",
+      "remote_id": "15134512387",
+      "owner_id": "005Dn000002DY8AIAW",
       "name": "Supaglue",
       "description": "open source unified api",
       "industry": "software",
@@ -170,7 +171,7 @@ If the curl in step 3 did not work, you can curl the `/mgmt/v1/sync-info` endpoi
 
 ```shell
 curl localhost:8080/mgmt/v1/sync-info \
-  -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
+  -H 'x-api-key: some-api-key' \
 ```
 
 </TabItem>
@@ -178,7 +179,7 @@ curl localhost:8080/mgmt/v1/sync-info \
 
 ```shell
 curl localhost:8080/mgmt/v1/sync-info \
-  -H 'x-api-key: 8o2kGDTHwTY6zcQV8gx7ep8vV7F2JNdeu95OR75MY7dlQJhzOiM4Ha/dKwXOTfDzDxVo+a6tZBrVxYfzJFIrgw==' \
+  -H 'x-api-key: some-api-key' \
 ```
 
 </TabItem>
@@ -192,7 +193,12 @@ Example result:
     "model_name": "account",
     "last_sync_start": "2023-02-24T07:52:00.076Z",
     "next_sync_start": "2023-02-24T07:53:00.000Z",
-    "status": "DONE"
+    "status": "DONE",
+    "connection_id": "1c36e9c1-1ed7-4055-ba00-41caf5b8875a",
+    "application_id": "a4398523-03a2-42dd-9681-c91e3e2efaf4",
+    "customer_id": "external-customer-hubspot",
+    "category": "crm",
+    "provider_name": "hubspot"
   },
   ...
 ]

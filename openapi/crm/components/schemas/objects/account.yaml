@@ -9,6 +9,9 @@ properties:
   id:
     type: string
     example: e888cedf-e9d0-42c5-9485-2d72984faef2
+  remote_id:
+    type: string
+    example: 1234
   industry:
     type: string
     nullable: true
@@ -52,6 +55,7 @@ required:
   - addresses
   - description
   - id
+  - remote_id
   - industry
   - last_activity_at
   - name
