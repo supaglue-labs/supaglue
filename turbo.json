@@ -2,8 +2,14 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["generate", "^build"],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**"]
+    },
+    "@supaglue/db#build": {
+      "dependsOn": ["@supaglue/db#generate"]
+    },
+    "@supaglue/schemas#build": {
+      "dependsOn": ["@supaglue/schemas#generate"]
     },
     "docs#build": {
       "dependsOn": ["//#bundle-openapi"],

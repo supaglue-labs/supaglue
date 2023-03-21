@@ -19,6 +19,8 @@ RUN --mount=type=cache,target=/app/.yarn/cache yarn install
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
+COPY scripts/validate_and_bundle_openapi.ts scripts/validate_and_bundle_openapi.ts
+COPY openapi openapi
 
 WORKDIR /app
 RUN --mount=type=cache,target=/app/.yarn/cache yarn dlx turbo run build --filter=mgmt-ui...
