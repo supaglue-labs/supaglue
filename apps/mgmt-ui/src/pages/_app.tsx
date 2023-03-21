@@ -7,8 +7,6 @@ import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactNode, useState } from 'react';
 
-export { getServerSideProps } from '.';
-
 // Note: from material-ui template. Eventually consolidate between styled props, sx, and tailwindcss
 export let theme = createTheme({
   palette: {
@@ -156,6 +154,10 @@ theme = {
 const drawerWidth = 256;
 
 export default function App({ Component, pageProps: { session, activeApplication, ...pageProps } }: AppProps) {
+  if (!activeApplication) {
+    throw new Error('Missing active application');
+  }
+
   return (
     <SessionProvider session={session}>
       <StyledEngineProvider injectFirst>
