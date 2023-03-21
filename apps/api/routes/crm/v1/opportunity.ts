@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeysSansCustomFields } from '@/lib/camelcase';
+import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@/lib/camelcase';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
 import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import { GetParams, ListParams } from '@supaglue/core/types/common';
@@ -13,6 +13,9 @@ import {
   GetOpportunityPathParams,
   GetOpportunityRequest,
   GetOpportunityResponse,
+  SearchOpportunitiesPathParams,
+  SearchOpportunitiesRequest,
+  SearchOpportunitiesResponse,
   UpdateOpportunityPathParams,
   UpdateOpportunityRequest,
   UpdateOpportunityResponse,
@@ -93,14 +96,32 @@ export default function init(app: Router): void {
         ...originalParams,
         closeDate: stringOrNullOrUndefinedToDate(originalParams.closeDate),
       };
-      const account = await opportunityService.update(customerId, connectionId, opportunityUpdateParams);
-      return res.status(200).send({ model: snakecaseKeys(account) });
+      const opportunity = await opportunityService.update(customerId, connectionId, opportunityUpdateParams);
+      return res.status(200).send({ model: snakecaseKeys(opportunity) });
     }
   );
 
   router.delete('/:opportunity_id', () => {
     throw new Error('Not implemented');
   });
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchOpportunitiesPathParams, SearchOpportunitiesResponse, SearchOpportunitiesRequest>,
+      res: Response<SearchOpportunitiesResponse>
+    ) => {
+      const { next, previous, results } = await opportunityService.search(
+        req.customerConnection.id,
+        req.params,
+        camelcaseKeys(req.body.filters)
+      );
+
+      const snakeCaseKeysResults = results.map(snakecaseKeys);
+
+      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
+    }
+  );
 
   app.use('/opportunities', router);
 }

@@ -9,8 +9,10 @@ import type {
   ListParams,
   Opportunity,
   OpportunityCreateParams,
+  OpportunityFilters,
   OpportunityUpdateParams,
   PaginatedResult,
+  PaginationParams,
 } from '../../types';
 import { CommonModelBaseService } from './base_service';
 
@@ -66,6 +68,30 @@ export class OpportunityService extends CommonModelBaseService {
       },
     });
     const results = models.map((model) => fromOpportunityModel(model, expandedAssociations));
+    return {
+      ...getPaginationResult(pageSize, cursor, results),
+      results,
+    };
+  }
+
+  public async search(
+    connectionId: string,
+    paginationParams: PaginationParams,
+    filters: OpportunityFilters
+  ): Promise<PaginatedResult<Opportunity>> {
+    const { page_size, cursor } = paginationParams;
+    const pageSize = page_size ? parseInt(page_size) : undefined;
+    const models = await this.prisma.crmOpportunity.findMany({
+      ...getPaginationParams(pageSize, cursor),
+      where: {
+        connectionId,
+        accountId: filters.accountId?.type === 'equals' ? filters.accountId.value : undefined,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    const results = models.map((model) => fromOpportunityModel(model));
     return {
       ...getPaginationResult(pageSize, cursor, results),
       results,

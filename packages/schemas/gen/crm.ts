@@ -88,6 +88,11 @@ export interface paths {
     post: operations["createOpportunity"];
     
   };
+  "/opportunities/_search": {
+    /** Search Opportunities */
+    post: operations["searchOpportunities"];
+    
+  };
   "/opportunities/{opportunity_id}": {
     /** Get opportunity */
     get: operations["getOpportunity"];
@@ -872,6 +877,28 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["opportunity"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  searchOpportunities: {
+    /** Search Opportunities */
+    requestBody: {
+      content: {
+        "application/json": {
+          filters: {
+            account_id?: components["schemas"]["filter"];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Opportunities */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["opportunity"])[];
           };
         };
       };

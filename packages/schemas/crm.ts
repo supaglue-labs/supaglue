@@ -144,6 +144,15 @@ export type UpdateOpportunityRequest = operations['updateOpportunity']['requestB
 export type UpdateOpportunityResponse =
   operations['updateOpportunity']['responses'][keyof operations['updateOpportunity']['responses']]['content']['application/json'];
 
+export type SearchOpportunitiesPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type SearchOpportunitiesQueryParams = Required<operations['searchOpportunities']>['parameters']['query'];
+export type SearchOpportunitiesQueryParams = any;
+export type SearchOpportunitiesRequest =
+  operations['searchOpportunities']['requestBody']['content']['application/json'];
+export type SearchOpportunitiesResponse =
+  operations['searchOpportunities']['responses'][keyof operations['searchOpportunities']['responses']]['content']['application/json'];
+
 export type GetUsersPathParams = never;
 // TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
 // export type GetUsersQueryParams = Required<operations['getUsers']>['parameters']['query'];
