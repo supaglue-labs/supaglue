@@ -60,8 +60,8 @@ Go to the "Configurations" tab to configure the integrations your customers will
 
 Click on "Configure" and enter OAuth2 credentials for your HubSpot or Salesforce Connected Apps. You can find the credentials by following these guides:
 
-- [Salesforce](/references/salesforce)
-- [Hubspot](/references/hubspot)
+- [Salesforce](references/salesforce)
+- [Hubspot](references/hubspot)
 
 Add the scopes your application needs from your application.
 
@@ -110,7 +110,7 @@ curl --location --request PUT 'http://localhost:8080/mgmt/v1/customers' \
  "application_id": "{{applicationId}}",
  "name": "Customer 1",
  "email": "customer-1@email.com",
- "external_identifier": "0001"
+ "customer_id": "0001"
 }'
 ```
 
