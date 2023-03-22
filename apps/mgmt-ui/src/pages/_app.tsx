@@ -1,7 +1,8 @@
+import { ActiveApplicationManager } from '@/context/activeApplication';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
-import { Box, CssBaseline, useMediaQuery } from '@mui/material';
+import { Box, CssBaseline, StyledEngineProvider, ThemeProvider, useMediaQuery } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import { ReactNode, useState } from 'react';
@@ -160,15 +161,15 @@ export default function App({ Component, pageProps: { activeApplication, ...page
 
   return (
     <ClerkProvider {...pageProps}>
-      {/* <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}> */}
-      {/* <ActiveApplicationManager initialActiveApplication={activeApplication}> */}
-      {/* <InnerApp> */}
-      <Component {...pageProps} />
-      {/* </InnerApp> */}
-      {/* </ActiveApplicationManager> */}
-      {/* </ThemeProvider>
-      </StyledEngineProvider> */}
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <ActiveApplicationManager initialActiveApplication={activeApplication}>
+            <InnerApp>
+              <Component {...pageProps} />
+            </InnerApp>
+          </ActiveApplicationManager>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </ClerkProvider>
   );
 }
