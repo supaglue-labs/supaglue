@@ -2,7 +2,7 @@ import LogsTable from '@/components/logs/LogsTable';
 import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages';
-import { Box, Divider, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';
 
@@ -28,10 +28,6 @@ export default function Home() {
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header title="Sync Logs" onDrawerToggle={handleDrawerToggle} />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          <Typography variant="h6">Overview</Typography>
-          <Typography variant="subtitle1">Logs of syncs running for your customers.</Typography>
-
-          <Divider className="my-4" />
           <LogsTable data={syncHistories?.results ?? []} />
         </Box>
       </Box>
