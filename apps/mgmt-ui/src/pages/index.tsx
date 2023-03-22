@@ -1,15 +1,41 @@
 import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { getAuth } from '@clerk/nextjs/server';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
 import { type GetServerSideProps } from 'next';
+import { getServerSession, Session } from 'next-auth';
 import Head from 'next/head';
 import { useState } from 'react';
-import { API_HOST, SG_INTERNAL_TOKEN } from './api';
+import { API_HOST, IS_CLOUD, SG_INTERNAL_TOKEN } from './api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  console.log(`calling getServerSideProps`);
+  let session: Session | null = null;
+
+  if (!IS_CLOUD) {
+    session = await getServerSession(req, res, authOptions);
+
+    if (!session) {
+      return {
+        redirect: {
+          destination: '/api/auth/signin',
+          permanent: false,
+        },
+      };
+    }
+  } else {
+    const user = getAuth(req);
+
+    if (!user.userId) {
+      return {
+        props: { session, activeApplication: null },
+      };
+    }
+    // TODO: Get org from user and use that to fetch application
+  }
+
   // This is the same call as in apps/mgmt-ui/src/pages/api/internal/applications/index.ts
   // Get applications to set active application
   const result = await fetch(`${API_HOST}/internal/v1/applications`, {
@@ -33,7 +59,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 
   return {
-    props: { activeApplication: applications[0] },
+    props: { session, activeApplication: applications[0] },
   };
 };
 

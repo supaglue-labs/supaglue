@@ -1,6 +1,7 @@
 import { getAuth, withClerkMiddleware } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { IS_CLOUD } from './pages/api';
 
 // Set the paths that don't require the user to be signed in
 const publicPaths = ['/sign-in*', '/sign-up*'];
@@ -10,12 +11,13 @@ const isPublic = (path: string) => {
 };
 
 export default withClerkMiddleware((request: NextRequest) => {
-  console.log(`request.nextUrl.pathname: ${request.nextUrl.pathname}`);
-  if (isPublic(request.nextUrl.pathname)) {
-    console.log('public');
+  if (!IS_CLOUD) {
     return NextResponse.next();
   }
-  console.log(`request.url: ${request.url}`);
+
+  if (isPublic(request.nextUrl.pathname)) {
+    return NextResponse.next();
+  }
   // if the user is not signed in redirect them to the sign in page.
   const { userId } = getAuth(request);
 
