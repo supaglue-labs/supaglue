@@ -1,27 +1,15 @@
 import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
 import { type GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth/next';
 import Head from 'next/head';
 import { useState } from 'react';
 import { API_HOST, SG_INTERNAL_TOKEN } from './api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await getServerSession(req, res, authOptions);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/api/auth/signin',
-        permanent: false,
-      },
-    };
-  }
-
+  console.log(`calling getServerSideProps`);
   // This is the same call as in apps/mgmt-ui/src/pages/api/internal/applications/index.ts
   // Get applications to set active application
   const result = await fetch(`${API_HOST}/internal/v1/applications`, {
@@ -45,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 
   return {
-    props: { session, activeApplication: applications[0] },
+    props: { activeApplication: applications[0] },
   };
 };
 

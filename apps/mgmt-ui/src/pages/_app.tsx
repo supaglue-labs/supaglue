@@ -1,9 +1,8 @@
-import { ActiveApplicationManager } from '@/context/activeApplication';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
+import { ClerkProvider } from '@clerk/nextjs';
 import { Box, CssBaseline, useMediaQuery } from '@mui/material';
-import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
-import { SessionProvider } from 'next-auth/react';
+import { createTheme } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import { ReactNode, useState } from 'react';
 
@@ -153,23 +152,24 @@ theme = {
 
 const drawerWidth = 256;
 
-export default function App({ Component, pageProps: { session, activeApplication, ...pageProps } }: AppProps) {
+export default function App({ Component, pageProps: { activeApplication, ...pageProps } }: AppProps) {
+  console.log(`activeApplication: `, activeApplication);
   if (!activeApplication) {
     return null;
   }
 
   return (
-    <SessionProvider session={session}>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <ActiveApplicationManager initialActiveApplication={activeApplication}>
-            <InnerApp>
-              <Component {...pageProps} />
-            </InnerApp>
-          </ActiveApplicationManager>
-        </ThemeProvider>
-      </StyledEngineProvider>
-    </SessionProvider>
+    <ClerkProvider {...pageProps}>
+      {/* <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}> */}
+      {/* <ActiveApplicationManager initialActiveApplication={activeApplication}> */}
+      {/* <InnerApp> */}
+      <Component {...pageProps} />
+      {/* </InnerApp> */}
+      {/* </ActiveApplicationManager> */}
+      {/* </ThemeProvider>
+      </StyledEngineProvider> */}
+    </ClerkProvider>
   );
 }
 
