@@ -21,6 +21,16 @@ model SgUser {
   @@map("sg_users")
 }
 
+model Organization {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("organizations")
+}
+
 model Application {
   id          String        @id @default(uuid())
   name        String        @unique
