@@ -47,6 +47,5 @@ COPY --from=installer --chown=nodejs:nodejs /app/packages/db/node_modules ./node
 COPY --from=installer --chown=nodejs:nodejs /app/packages/db/prisma ./prisma
 COPY --from=installer --chown=nodejs:nodejs /app/packages/sync-workflows/dist ./node_modules/@supaglue/sync-workflows
 COPY --from=installer --chown=nodejs:nodejs /app/openapi ./openapi
-COPY --from=installer --chown=nodejs:nodejs /app/init_scripts ./init_scripts
 
 CMD node ./index.js
