@@ -85,7 +85,7 @@ export class ConnectionWriterService {
     try {
       // TODO: Is this the correct status?
       const status: ConnectionStatus = 'added';
-      const connection = await this.#prisma.connection.create({
+      const connectionModel = await this.#prisma.connection.create({
         data: {
           category: params.category,
           providerName: params.providerName,
@@ -95,18 +95,16 @@ export class ConnectionWriterService {
           credentials: encrypt(JSON.stringify(params.credentials)),
         },
       });
+      const connection = fromConnectionModelToConnectionUnsafe(connectionModel);
 
       if (integration.config) {
         // TODO: We need do this transactionally and not best-effort. Maybe transactionally write
         // an event to another table and have a background job pick this up to guarantee
         // that we start up syncs when connections are created.
         // TODO: Do this for non-CRM models
-        await this.#syncService.createSyncsSchedule(
-          connection.id,
-          integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
-        );
+        await this.#syncService.createSyncsSchedule(connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
       }
-      return fromConnectionModelToConnectionUnsafe(connection);
+      return connection;
     } catch (e) {
       errored = true;
       throw e;

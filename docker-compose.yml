@@ -93,7 +93,7 @@ services:
         condition: service_started
     volumes:
       - .env:/app/.env
-    command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js'
+    command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js'
 
 volumes:
   pgdata:
