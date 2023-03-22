@@ -33,7 +33,7 @@ export default async function handler(
         },
         body: JSON.stringify({
           name: req.body.name,
-          orgId: ORGANIZATION_ID,
+          org_id: ORGANIZATION_ID,
         }),
       });
 
