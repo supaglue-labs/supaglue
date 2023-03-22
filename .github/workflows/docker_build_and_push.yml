@@ -52,7 +52,7 @@ jobs:
           github-token: ${{ github.token }}
           # list of Docker images to use as base name for tags
           images: |
-            supaglue-labs/${{ inputs.image-name }}
+            supaglue/${{ inputs.image-name }}
           tags: |
             type=ref,event=pr
             type=ref,event=branch,prefix=branch-,enable=${{ github.ref != 'refs/heads/main' }}

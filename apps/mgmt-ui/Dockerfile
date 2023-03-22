@@ -7,6 +7,7 @@ RUN --mount=type=cache,target=/app/.yarn/cache yarn dlx turbo prune --scope=mgmt
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:18-slim AS installer
 WORKDIR /app
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # First install the dependencies (as they change less often)
 COPY .gitignore .gitignore
