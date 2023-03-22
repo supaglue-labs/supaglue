@@ -5,6 +5,7 @@ type BaseApplication = {
 
 export type Application = BaseApplication & {
   id: string;
+  orgId: string;
 };
 
 export type ApplicationConfig = {
@@ -26,5 +27,6 @@ export type WebhookConfig = {
 
 export type ApplicationCreateParams = {
   name: string;
+  orgId: string;
 };
 export type ApplicationUpdateParams = Partial<BaseApplication>;
