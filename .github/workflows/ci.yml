@@ -49,7 +49,7 @@ jobs:
 
       - name: Build changed workspaces
         if: github.ref != 'refs/heads/main'
-        run: yarn build "--filter=[origin/main...HEAD]"
+        run: yarn build "--filter=...[origin/main...HEAD]"
 
       - name: Build
         if: github.ref == 'refs/heads/main'
@@ -57,7 +57,7 @@ jobs:
 
       - name: Test changed workspaces
         if: github.ref != 'refs/heads/main'
-        run: yarn test "--filter=[origin/main...HEAD]"
+        run: yarn test "--filter=...[origin/main...HEAD]"
 
       - name: Test
         if: github.ref == 'refs/heads/main'
