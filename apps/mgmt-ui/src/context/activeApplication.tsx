@@ -13,6 +13,7 @@ const ActiveApplicationContext = createContext<ActiveApplicationContextType>({
   activeApplication: {
     id: '',
     name: '',
+    orgId: '',
     config: {
       webhook: null,
       apiKey: null,
