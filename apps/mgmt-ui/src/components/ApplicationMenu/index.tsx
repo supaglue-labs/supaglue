@@ -12,6 +12,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
+import { Stack } from '@mui/system';
 import * as React from 'react';
 
 export default function ApplicationMenu() {
@@ -47,7 +48,7 @@ export default function ApplicationMenu() {
   };
 
   return (
-    <>
+    <Stack direction="column" textAlign="center" sx={{ width: '100%' }}>
       <Button
         id="basic-button"
         aria-controls={open ? 'basic-menu' : undefined}
@@ -70,6 +71,7 @@ export default function ApplicationMenu() {
           <Typography sx={{ fontSize: 20, lineHeight: 1 }}>{activeApplication.name}</Typography>
         </Box>
       </Button>
+      <Typography fontSize={8}>ID: {activeApplication.id}</Typography>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
@@ -88,7 +90,7 @@ export default function ApplicationMenu() {
         <Divider />
         <NewApplication onCreate={onAddApplication} />
       </Menu>
-    </>
+    </Stack>
   );
 }
 
