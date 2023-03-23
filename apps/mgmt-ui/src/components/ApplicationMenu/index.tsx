@@ -30,6 +30,10 @@ export default function ApplicationMenu() {
   const onChangeApplication = (applicationId: string) => {
     handleClose();
 
+    if (applicationId === activeApplication.id) {
+      return;
+    }
+
     const foundApplication = applications.find(({ id }) => id === applicationId);
     if (!foundApplication) {
       // TODO: error?
@@ -42,8 +46,7 @@ export default function ApplicationMenu() {
   const onAddApplication = async (name: string) => {
     const newApplication = await addApplication(name);
     await mutate([...applications, newApplication]);
-    handleClose();
-    setActiveApplication(newApplication);
+    onChangeApplication(newApplication.id);
   };
 
   return (
