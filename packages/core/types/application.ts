@@ -30,3 +30,9 @@ export type ApplicationCreateParams = {
   orgId: string;
 };
 export type ApplicationUpdateParams = Partial<BaseApplication>;
+
+export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SYNC_SUCCESS' | 'SYNC_ERROR';
+
+export type WebhookPayload = {
+  customerId: string;
+} & Record<string, any>;

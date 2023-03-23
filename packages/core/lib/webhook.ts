@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { WebhookConfig } from '../types';
+import { WebhookConfig, WebhookPayload } from '../types';
 import { logger } from './logger';
 import { snakecaseKeys } from './snakecase';
 
@@ -8,7 +8,7 @@ export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SY
 export const sendWebhookPayload = async (
   config: WebhookConfig,
   payloadType: WebhookPayloadType,
-  payload: Record<string, any>
+  payload: WebhookPayload
 ) => {
   // Note: this is best effort.
   // TODO: Make webhooks more durable
