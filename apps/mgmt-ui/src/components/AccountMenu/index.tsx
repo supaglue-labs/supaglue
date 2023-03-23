@@ -1,18 +1,12 @@
-import { IS_CLOUD } from '@/pages/api';
-import { useClerk } from '@clerk/nextjs';
-import Logout from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
-import { signOut } from 'next-auth/react';
 import * as React from 'react';
+import { Logout } from '../Logout';
 
 export default function AccountMenu() {
-  const { signOut: clerkSignOut } = useClerk();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -20,12 +14,6 @@ export default function AccountMenu() {
   };
   const handleClose = async () => {
     setAnchorEl(null);
-  };
-  const handleLogout = async () => {
-    if (!IS_CLOUD) {
-      await signOut();
-    }
-    await clerkSignOut();
   };
   return (
     <React.Fragment>
@@ -78,12 +66,7 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleLogout}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
-          </ListItemIcon>
-          Logout
-        </MenuItem>
+        <Logout />
       </Menu>
     </React.Fragment>
   );
