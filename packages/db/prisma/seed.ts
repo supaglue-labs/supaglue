@@ -300,7 +300,10 @@ async function seedCRMIntegrations() {
       }
       await prisma.integration.upsert({
         where: {
-          providerName: SUPPORTED_CRM_CONNECTIONS[idx],
+          applicationId_providerName: {
+            applicationId: APPLICATION_ID,
+            providerName: SUPPORTED_CRM_CONNECTIONS[idx],
+          },
         },
         update,
         create,
