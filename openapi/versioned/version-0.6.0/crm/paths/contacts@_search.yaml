@@ -1,0 +1,89 @@
+post:
+  operationId: searchContacts
+  summary: Search contacts
+  tags:
+    - Contacts
+  parameters:
+    - $ref: ../../common/components/parameters/query/cursor.yaml
+    - $ref: ../../common/components/parameters/query/page_size.yaml
+  security:
+    - ApiKeyAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            filters:
+              type: object
+              properties:
+                email_address:
+                  $ref: ../components/schemas/filters.yaml#/filter
+          required:
+            - filters
+  responses:
+    '200':
+      description: Contacts
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../common/components/schemas/pagination.yaml
+              - type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/objects/contact.yaml
+          examples:
+            Example:
+              value:
+                next: eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==
+                previous: eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9
+                results:
+                  - account_id: 9377fd4d-d420-4e0b-93ea-789078a3eab4
+                    addresses:
+                      - address_type: shipping
+                        city: San Francisco
+                        country: US
+                        postal_code: '94107'
+                        state: CA
+                        street1: 525 Brannan
+                        street2: ~
+                    email_addresses:
+                      - email_address: hello@supaglue.com
+                        email_address_type: work
+                    first_name: George
+                    id: 43a45011-c55e-42f3-81a1-99158c956775
+                    remote_id: 1234
+                    last_activity_at: '2023-02-27T00:00:00Z'
+                    last_name: Xing
+                    phone_numbers:
+                      - phone_number: '+14151234567'
+                        phone_number_type: mobile
+                    created_at: '2023-02-27T00:00:00Z'
+                  - account: 9377fd4d-d420-4e0b-93ea-789078a3eab4
+                    addresses:
+                      - address_type: shipping
+                        city: San Francisco
+                        country: US
+                        postal_code: '94107'
+                        state: CA
+                        street1: 525 Brannan
+                        street2: ~
+                    email_addresses:
+                      - email_address: hello@supaglue.com
+                        email_address_type: work
+                    first_name: George
+                    id: 5733a8b6-472d-45fa-8f10-e0b00727cced
+                    remote_id: 1235
+                    last_activity_at: '2023-02-27T00:00:00Z'
+                    last_name: Xing
+                    phone_numbers:
+                      - phone_number: '+14151234567'
+                        phone_number_type: mobile
+                    created_at: '2023-02-27T00:00:00Z'
+parameters:
+  - $ref: ../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
