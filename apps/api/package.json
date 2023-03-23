@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "packageManager": "yarn@3.4.1",
   "type": "commonjs",
   "dependencies": {
@@ -40,7 +40,8 @@
     "build": "tsc -p tsconfig.json",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
-    "prepare": "ts-patch install -s"
+    "prepare": "ts-patch install -s",
+    "init-temporal": "tsx ./init_scripts/init_temporal.ts"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit types/express.d.ts",

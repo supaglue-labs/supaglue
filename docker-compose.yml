@@ -32,7 +32,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supaglue}
 
   api:
-    image: supaglue/api:0.5.0
+    image: supaglue/api:0.6.0
     ports:
       - '8080:8080'
     depends_on:
@@ -50,7 +50,7 @@ services:
     restart: on-failure
 
   sync-worker:
-    image: supaglue/sync-worker:0.5.0
+    image: supaglue/sync-worker:0.6.0
     depends_on:
       postgres:
         condition: service_started
@@ -63,7 +63,7 @@ services:
     restart: on-failure
 
   mgmt-ui:
-    image: supaglue/mgmt-ui:0.5.0
+    image: supaglue/mgmt-ui:0.6.0
     ports:
       - '3000:3000'
     depends_on:
@@ -88,7 +88,7 @@ services:
       - temporalitedata:/data
 
   init:
-    image: supaglue/api:0.5.0
+    image: supaglue/api:0.6.0
     environment:
       <<: *common-env
       SUPAGLUE_QUICKSTART_API_KEY: ${SUPAGLUE_QUICKSTART_API_KEY:-some-api-key}
@@ -97,7 +97,7 @@ services:
         condition: service_started
     volumes:
       - .env:/app/.env
-    command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js'
+    command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js'
 
 volumes:
   pgdata:

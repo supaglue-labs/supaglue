@@ -3,6 +3,7 @@ x-common-env:
   NODE_ENV: development
   SUPAGLUE_PRETTY_LOGS: 1
   SUPAGLUE_DISABLE_ERROR_REPORTING: 1
+  NEXT_PUBLIC_SUPAGLUE_DISABLE_ERROR_REPORTING: 1
 
 services:
   api:
@@ -39,4 +40,4 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    command: /bin/sh -c "yarn workspace @supaglue/db prisma migrate dev && yarn workspace @supaglue/db prisma db seed"
+    command: /bin/sh -c "yarn workspace @supaglue/db prisma migrate dev && yarn workspace @supaglue/db prisma db seed && yarn workspace api init-temporal"

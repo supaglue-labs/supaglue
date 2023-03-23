@@ -1,0 +1,82 @@
+type: object
+properties:
+  addresses:
+    $ref: ./addresses.yaml
+  company:
+    type: string
+    nullable: true
+    example: Supaglue
+  converted_account_id:
+    type: string
+    nullable: true
+    example: 88cc44ca-7a34-4e8b-b0da-51c3aae34daf
+  converted_account:
+    $ref: './account.yaml'
+  converted_contact_id:
+    type: string
+    nullable: true
+    example: 8c8de778-a219-4d6c-848c-1d57b52149f6
+  converted_contact:
+    $ref: './contact.yaml'
+  converted_date:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2023-02-27T00:00:00Z'
+  email_addresses:
+    $ref: ./email_addresses.yaml
+  first_name:
+    type: string
+    nullable: true
+    example: George
+  id:
+    type: string
+    example: e774484c-4ff2-421f-adfa-12f66ed75b91
+  remote_id:
+    type: string
+    example: 54312
+  last_name:
+    type: string
+    nullable: true
+    example: Xing
+  lead_source:
+    type: string
+    nullable: true
+    example: API Blogger
+  owner_id:
+    type: string
+    nullable: true
+    example: 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2
+  owner:
+    $ref: ./user.yaml
+  phone_numbers:
+    $ref: ./phone_numbers.yaml
+  created_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2023-02-10T00:00:00Z'
+  updated_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2023-02-10T00:00:00Z'
+  title:
+    type: string
+    nullable: true
+    example: Co-Founder
+required:
+  - addresses
+  - company
+  - converted_account_id
+  - converted_contact_id
+  - converted_date
+  - id
+  - remote_id
+  - last_name
+  - lead_source
+  - owner_id
+  - phone_numbers
+  - created_at
+  - updated_at
+  - title

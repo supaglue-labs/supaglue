@@ -7,7 +7,7 @@ const path = require('path');
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
-const LATEST_VERSION = '0.5.0';
+const LATEST_VERSION = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8')).version;
 
 const versions = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
 
