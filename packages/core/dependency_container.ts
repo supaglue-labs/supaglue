@@ -45,7 +45,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   });
 
   // mgmt
-  const sgUserService = new SgUserService(prisma);
+  const sgUserService = new SgUserService();
   const applicationService = new ApplicationService(prisma);
   const integrationService = new IntegrationService(prisma);
   const connectionService = new ConnectionService(prisma, integrationService);

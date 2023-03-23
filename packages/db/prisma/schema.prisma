@@ -10,39 +10,14 @@ datasource db {
   url      = env("SUPAGLUE_DATABASE_URL")
 }
 
-model SgUser {
-  id        String       @id @default(uuid())
-  authType  String       @map("auth_type") // [username-password]
-  username  String       @unique
-  password  String
-  createdAt DateTime     @default(now()) @map("created_at")
-  updatedAt DateTime     @updatedAt @map("updated_at")
-  orgId     String       @map("org_id")
-  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-
-  @@map("sg_users")
-}
-
-model Organization {
-  id           String        @id @default(uuid())
-  name         String        @unique
-  slug         String        @unique
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  applications Application[]
-  sgUsers      SgUser[]
-
-  @@map("organizations")
-}
-
 model Application {
   id          String        @id @default(uuid())
   name        String        @unique
   config      Json
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
-  orgId       String        @map("org_id")
-  org         Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  // This ought to be required, but making it optional for backwards compatibility.
+  orgId       String?       @map("org_id")
   Customer    Customer[]
   Integration Integration[]
 

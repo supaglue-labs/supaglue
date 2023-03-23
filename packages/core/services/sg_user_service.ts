@@ -1,33 +1,24 @@
-import type { PrismaClient } from '@supaglue/db';
 import { NotFoundError } from '../errors';
-import { fromSgUserModel } from '../mappers/index';
 import { SgUser } from '../types/index';
 
+const SG_USER_ID = 'd56b851b-5a36-4480-bc43-515d677f46e3';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin';
+
 export class SgUserService {
-  #prisma: PrismaClient;
-
-  constructor(prisma: PrismaClient) {
-    this.#prisma = prisma;
-  }
-
   public async login({ username, password }: { username: string; password: string }): Promise<SgUser | null> {
-    const sgUserModel = await this.#prisma.sgUser.findUnique({
-      where: {
-        username,
-      },
-    });
-
-    if (!sgUserModel) {
+    if (username !== 'admin') {
       throw new NotFoundError(`Can't find sg user with username: ${username}`);
     }
 
-    const sgUser = fromSgUserModel(sgUserModel);
-
-    // TODO: check against hashed password
-    if (password !== sgUser.password) {
+    if (password !== ADMIN_PASSWORD) {
       return null;
     }
 
-    return sgUser;
+    return {
+      id: SG_USER_ID,
+      username: 'admin',
+      password: ADMIN_PASSWORD,
+      authType: 'username/password',
+    };
   }
 }

@@ -1,1 +1,2 @@
 export const POSTGRES_UPDATE_BATCH_SIZE = 1000;
+export const ORGANIZATION_ID = 'e7070cc8-36e7-43e2-81fc-ad57713cf2d3';
