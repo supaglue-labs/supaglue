@@ -21,7 +21,7 @@ async function run() {
     )
   );
 
-  if (!searchAttributesAndTypesToAdd.length) {
+  if (!Object.keys(searchAttributesAndTypesToAdd).length) {
     // eslint-disable-next-line no-console
     console.log('No new Search Attributes to add to Temporal Server');
     return;
