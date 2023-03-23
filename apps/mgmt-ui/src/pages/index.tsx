@@ -5,6 +5,7 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getAuth } from '@clerk/nextjs/server';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
+import { ORGANIZATION_ID } from '@supaglue/core/lib';
 import { type GetServerSideProps } from 'next';
 import { getServerSession, Session } from 'next-auth';
 import Head from 'next/head';
@@ -13,6 +14,8 @@ import { API_HOST, IS_CLOUD, SG_INTERNAL_TOKEN } from './api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   let session: Session | null = null;
+
+  let orgId: string = ORGANIZATION_ID;
 
   if (!IS_CLOUD) {
     session = await getServerSession(req, res, authOptions);
@@ -33,6 +36,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         props: { session, activeApplication: null },
       };
     }
+    ({ orgId } = user);
     // TODO: Get org from user and use that to fetch application
   }
 
@@ -43,6 +47,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     headers: {
       'Content-Type': 'application/json',
       'x-sg-internal-token': SG_INTERNAL_TOKEN,
+      'x-org-id': orgId,
     },
   });
 

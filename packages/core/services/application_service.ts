@@ -21,6 +21,16 @@ export class ApplicationService {
     return fromApplicationModel(application);
   }
 
+  public async getByIdAndOrgId(id: string, orgId: string): Promise<Application> {
+    const application = await this.#prisma.application.findFirst({
+      where: { id, orgId },
+    });
+    if (!application) {
+      throw new NotFoundError(`Can't find application with id: ${id} and orgId: ${orgId}`);
+    }
+    return fromApplicationModel(application);
+  }
+
   public async getByApiKey(apiKey: string): Promise<Application> {
     const { hashed: hashedApiKey } = await cryptoHash(apiKey);
 
@@ -45,8 +55,8 @@ export class ApplicationService {
   }
 
   // TODO: paginate
-  public async list(): Promise<Application[]> {
-    const applications = await this.#prisma.application.findMany();
+  public async list(orgId: string): Promise<Application[]> {
+    const applications = await this.#prisma.application.findMany({ where: { orgId } });
     return applications.map(fromApplicationModel);
   }
 

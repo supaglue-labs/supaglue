@@ -1,3 +1,4 @@
+import { getOrgId } from '@/utils/org';
 import { Application } from '@supaglue/core/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
@@ -8,6 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     headers: {
       'Content-Type': 'application/json',
       'x-sg-internal-token': SG_INTERNAL_TOKEN,
+      'x-org-id': getOrgId(req),
     },
   });
 
