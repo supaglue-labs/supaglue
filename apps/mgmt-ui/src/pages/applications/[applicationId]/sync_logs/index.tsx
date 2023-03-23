@@ -1,7 +1,7 @@
 import LogsTable from '@/components/logs/LogsTable';
 import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
-import { getServerSideProps } from '@/pages';
+import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { Box } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import ApplicationMenu from '@/components/ApplicationMenu';
+import { useActiveApplication } from '@/context/activeApplication';
 import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
@@ -87,6 +88,8 @@ const item = {
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
 
+  const { activeApplication } = useActiveApplication();
+
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
@@ -100,7 +103,11 @@ export default function Navigator(props: DrawerProps) {
             </ListItem>
             {children.map(({ id: childId, icon, active, to }) => (
               <ListItem disablePadding key={childId}>
-                <MUILink href={to} component={NextLink} sx={{ width: '100%', 'text-decoration': 'none' }}>
+                <MUILink
+                  href={`/applications/${activeApplication.id}${to}`}
+                  component={NextLink}
+                  sx={{ width: '100%', 'text-decoration': 'none' }}
+                >
                   <ListItemButton selected={active} sx={item}>
                     <ListItemIcon>{icon}</ListItemIcon>
                     <ListItemText>{childId}</ListItemText>
