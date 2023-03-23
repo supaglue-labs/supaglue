@@ -57,5 +57,5 @@ spec:
                 secretKeyRef:
                   name: {{ template "supaglue.secretName" . }}
                   key: {{ .Values.secretKeys.adminPassword }}
-          command: ['sh', '-c', 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js']
+          command: ['sh', '-c', 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js']
 {{ end }}
