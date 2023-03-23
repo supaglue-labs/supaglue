@@ -196,8 +196,6 @@ export interface components {
     /** @enum {string} */
     provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     create_update_customer: {
-      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      application_id: string;
       /** @example your-customers-unique-application-id */
       customer_id: string;
       /** @example MyCompany Inc */
@@ -206,8 +204,6 @@ export interface components {
       email: string;
     };
     create_update_integration: {
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-      application_id: string;
       category: components["schemas"]["category"];
       /** @enum {string} */
       auth_type: "oauth2";
@@ -468,11 +464,7 @@ export interface operations {
     /** Delete connection */
     responses: {
       /** @description Connection */
-      200: {
-        content: {
-          "application/json": components["schemas"]["connection"];
-        };
-      };
+      204: never;
     };
   };
   getWebhook: {

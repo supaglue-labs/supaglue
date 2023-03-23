@@ -34,7 +34,7 @@ export default function init(app: Router): void {
         throw new Error('Missing providerName');
       }
 
-      const integration = await integrationService.getByProviderName(providerName);
+      const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
 
       if (!integration.config) {
         throw new Error('Integration is not configured');
@@ -117,7 +117,7 @@ export default function init(app: Router): void {
         throw new Error('No customerId on state object');
       }
 
-      const integration = await integrationService.getByProviderName(providerName);
+      const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
 
       if (!integration.config) {
         throw new Error('Integration is not configured');

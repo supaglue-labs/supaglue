@@ -1,8 +1,5 @@
 type: object
 properties:
-  application_id:
-    type: string
-    example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
   customer_id:
     type: string
     example: your-customers-unique-application-id
@@ -13,7 +10,6 @@ properties:
     type: string
     example: contact@mycompany.com
 required:
-  - application_id
   - name
   - email
   - customer_id

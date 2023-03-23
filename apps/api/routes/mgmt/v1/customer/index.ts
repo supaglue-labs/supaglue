@@ -40,7 +40,10 @@ export default function init(app: Router): void {
       req: Request<UpsertCustomerPathParams, UpsertCustomerResponse, UpsertCustomerRequest>,
       res: Response<UpsertCustomerResponse>
     ) => {
-      const customer = await customerService.upsert(camelcaseKeys(req.body));
+      const customer = await customerService.upsert({
+        applicationId: req.supaglueApplication.id,
+        ...camelcaseKeys(req.body),
+      });
       return res.status(201).send(snakecaseKeys(customer));
     }
   );

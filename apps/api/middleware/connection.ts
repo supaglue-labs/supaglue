@@ -9,12 +9,15 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
   const externalCustomerId = req.headers['x-customer-id'] as string;
   const providerName = req.headers['x-provider-name'] as string;
   if (!externalCustomerId || !providerName) {
-    throw new UnauthorizedError(`x-customer-id and x-provider-name headers must be set`);
+    throw new UnauthorizedError('x-customer-id and x-provider-name headers must be set');
   }
 
   const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
 
-  const integration = await integrationService.getByProviderName(providerName);
+  const integration = await integrationService.getByProviderNameAndApplicationId(
+    providerName,
+    req.supaglueApplication.id
+  );
 
   req.customerConnection = await connectionService.getSafeByCustomerIdAndIntegrationId({
     customerId,

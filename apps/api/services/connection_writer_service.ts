@@ -35,7 +35,10 @@ export class ConnectionWriterService {
   public async upsert(params: ConnectionUpsertParams): Promise<ConnectionUnsafe> {
     const integration = await this.#prisma.integration.findUnique({
       where: {
-        providerName: params.providerName,
+        applicationId_providerName: {
+          applicationId: params.applicationId,
+          providerName: params.providerName,
+        },
       },
     });
     if (!integration) {
@@ -72,7 +75,10 @@ export class ConnectionWriterService {
   }
 
   public async create(params: ConnectionCreateParams): Promise<ConnectionUnsafe> {
-    const integration = await this.#integrationService.getByProviderName(params.providerName);
+    const integration = await this.#integrationService.getByProviderNameAndApplicationId(
+      params.providerName,
+      params.applicationId
+    );
     const application = await this.#applicationService.getById(integration.applicationId);
     let errored = false;
 
