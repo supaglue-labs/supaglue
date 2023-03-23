@@ -1,3 +1,4 @@
+import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@/temporal/index';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
 import { ConnectionSafe, CRM_COMMON_MODELS } from '@supaglue/core/types/';
@@ -62,10 +63,10 @@ export class SyncService {
   }
 
   // TODO: Create CommonModel type
-  public async createSyncsSchedule(connectionId: string, syncPeriodMs: number): Promise<void> {
+  public async createSyncsSchedule(connection: ConnectionSafe, syncPeriodMs: number): Promise<void> {
     try {
       await this.#temporalClient.schedule.create({
-        scheduleId: getRunSyncsScheduleId(connectionId),
+        scheduleId: getRunSyncsScheduleId(connection.id),
         spec: {
           intervals: [
             {
@@ -78,9 +79,17 @@ export class SyncService {
         action: {
           type: 'startWorkflow',
           workflowType: runSyncs,
-          workflowId: getRunSyncsWorkflowId(connectionId),
+          workflowId: getRunSyncsWorkflowId(connection.id),
           taskQueue: SYNC_TASK_QUEUE,
-          args: [{ connectionId }],
+          args: [{ connectionId: connection.id }],
+          searchAttributes: {
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+          },
         },
         state: {
           triggerImmediately: true,

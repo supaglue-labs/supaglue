@@ -39,4 +39,4 @@ services:
     volumes:
       - .:/app
     working_dir: /app
-    command: /bin/sh -c "yarn workspace @supaglue/db prisma migrate dev && yarn workspace @supaglue/db prisma db seed"
+    command: /bin/sh -c "yarn workspace @supaglue/db prisma migrate dev && yarn workspace @supaglue/db prisma db seed && yarn workspace api init-temporal"
