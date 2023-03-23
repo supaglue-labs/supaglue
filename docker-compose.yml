@@ -8,6 +8,7 @@ x-common-env:
   SUPAGLUE_DISABLE_ANALYTICS:
   SUPAGLUE_DISABLE_ERROR_REPORTING:
   SUPAGLUE_DEPLOYMENT_ID:
+  IS_CLOUD: ${IS_CLOUD:-false}
 
 
 x-fe-api-common-env:
@@ -15,7 +16,7 @@ x-fe-api-common-env:
   SUPAGLUE_INTERNAL_TOKEN: some-internal-token
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-some-key}
   CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-some-key}
-  NEXT_PUBLIC_IS_CLOUD: ${NEXT_PUBLIC_IS_CLOUD:-true}
+  NEXT_PUBLIC_IS_CLOUD: ${NEXT_PUBLIC_IS_CLOUD:-false}
 
 services:
   postgres:
@@ -61,20 +62,20 @@ services:
       <<: *common-env
     restart: on-failure
 
-  # mgmt-ui:
-  #   image: supaglue/mgmt-ui:0.5.0
-  #   ports:
-  #     - '3000:3000'
-  #   depends_on:
-  #     api:
-  #       condition: service_started
-  #   environment:
-  #     <<: *fe-api-common-env
-  #     SUPAGLUE_API_HOST: ${SUPAGLUE_API_HOST:-http://api:8080}
-  #     SUPAGLUE_JWT_SECRET: ${SUPAGLUE_JWT_SECRET:-a-secret-to-change}
-  #     NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
-  #     SUPAGLUE_DEPLOYMENT_ID:
-  #   restart: on-failure
+  mgmt-ui:
+    image: supaglue/mgmt-ui:0.5.0
+    ports:
+      - '3000:3000'
+    depends_on:
+      api:
+        condition: service_started
+    environment:
+      <<: *fe-api-common-env
+      SUPAGLUE_API_HOST: ${SUPAGLUE_API_HOST:-http://api:8080}
+      SUPAGLUE_JWT_SECRET: ${SUPAGLUE_JWT_SECRET:-a-secret-to-change}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      SUPAGLUE_DEPLOYMENT_ID:
+    restart: on-failure
 
   temporal:
     image: slamdev/temporalite:0.3.0 # TODO: we should replace this with one hosted by us later

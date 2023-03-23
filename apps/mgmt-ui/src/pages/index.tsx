@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   } else {
     const user = getAuth(req);
 
-    if (!user.userId) {
+    if (!user.userId || !user.orgId) {
       return {
         props: { session, activeApplication: null },
       };
