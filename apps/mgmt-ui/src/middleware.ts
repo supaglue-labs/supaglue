@@ -6,20 +6,30 @@ import { IS_CLOUD } from './pages/api';
 // Set the paths that don't require the user to be signed in
 const publicPaths = ['/sign-in*', '/sign-up*'];
 
-const isPublic = (path: string) => {
+const cloudPaths = ['/sign-in*/', '/sign-up*'];
+
+const isCloudPublicPath = (path: string) => {
   return publicPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
+};
+
+const isCloudPath = (path: string) => {
+  return cloudPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
 };
 
 export default withClerkMiddleware((request: NextRequest) => {
   if (!IS_CLOUD) {
+    if (isCloudPath(request.nextUrl.pathname)) {
+      const selfHostedSignInUrl = new URL('/api/auth/signin', request.url);
+      return NextResponse.redirect(selfHostedSignInUrl);
+    }
     return NextResponse.next();
   }
 
-  if (isPublic(request.nextUrl.pathname)) {
+  if (isCloudPublicPath(request.nextUrl.pathname)) {
     return NextResponse.next();
   }
   // if the user is not signed in redirect them to the sign in page.
-  const { userId } = getAuth(request);
+  const { userId, orgId } = getAuth(request);
 
   if (!userId) {
     // redirect the users to /pages/sign-in/[[...index]].ts

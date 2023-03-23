@@ -4,7 +4,11 @@ import { getServerSideProps } from '..';
 export { getServerSideProps };
 
 const SignInPage = () => {
-  return <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />;
+  return (
+    <div className="m-auto">
+      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+    </div>
+  );
 };
 
 export default SignInPage;

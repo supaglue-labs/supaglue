@@ -1,7 +1,7 @@
 import { ActiveApplicationManager } from '@/context/activeApplication';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
-import { ClerkProvider, useClerk } from '@clerk/nextjs';
+import { ClerkProvider } from '@clerk/nextjs';
 import { Box, CssBaseline, StyledEngineProvider, ThemeProvider, useMediaQuery } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { SessionProvider } from 'next-auth/react';
@@ -156,10 +156,10 @@ theme = {
 const drawerWidth = 256;
 
 export default function App({ Component, pageProps: { session, activeApplication, ...pageProps } }: AppProps) {
-  if (!activeApplication) {
-    return null;
-  }
   if (!IS_CLOUD) {
+    if (!activeApplication) {
+      return null;
+    }
     return (
       <SessionProvider session={session}>
         <StyledEngineProvider injectFirst>
@@ -188,11 +188,6 @@ export default function App({ Component, pageProps: { session, activeApplication
       </StyledEngineProvider>
     </ClerkProvider>
   );
-}
-
-function ClerkComponent({ Component, pageProps }: AppProps) {
-  const clerk = useClerk();
-  return <Component {...pageProps} clerk={clerk} />;
 }
 
 function InnerApp({ signedIn, children }: { signedIn: boolean; children: ReactNode }) {
