@@ -55,11 +55,6 @@ spec:
                 secretKeyRef:
                   name: {{ template "supaglue.secretName" . }}
                   key: {{ .Values.secretKeys.dbEncryptionSecret }}
-            - name: ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "supaglue.secretName" . }}
-                  key: {{ .Values.secretKeys.adminPassword }}
             - name: SUPAGLUE_TEMPORAL_HOST
               value: {{ template "supaglue.temporalHost" . }}
             - name: SUPAGLUE_TEMPORAL_PORT
