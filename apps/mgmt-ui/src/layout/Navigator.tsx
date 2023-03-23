@@ -24,58 +24,6 @@ type Category = {
   active: boolean;
 };
 
-const categories: {
-  id: string;
-  children: Category[];
-}[] = [
-  {
-    id: 'Manage',
-    children: [
-      // {
-      //   id: 'Dashboard',
-      //   to: '/',
-      //   icon: <BarChart />,
-      //   active: false,
-      // },
-      {
-        id: 'Customers',
-        to: '/customers',
-        icon: <PeopleIcon />,
-        active: false,
-      },
-      {
-        id: 'Configuration',
-        to: '/configuration/integrations/crm',
-        icon: <Tune />,
-        active: false,
-      },
-      {
-        id: 'Sync Logs',
-        to: '/sync_logs',
-        icon: <FindInPage />,
-        active: false,
-      },
-    ],
-  },
-  {
-    id: 'Learn',
-    children: [
-      {
-        id: 'API Explorer',
-        to: 'https://docs.supaglue.com/api',
-        icon: <Biotech />,
-        active: false,
-      },
-      {
-        id: 'Documentation',
-        to: 'https://docs.supaglue.com',
-        icon: <MenuBook />,
-        active: false,
-      },
-    ],
-  },
-];
-
 const item = {
   py: '2px',
   px: 3,
@@ -90,6 +38,58 @@ export default function Navigator(props: DrawerProps) {
 
   const { activeApplication } = useActiveApplication();
 
+  const categories: {
+    id: string;
+    children: Category[];
+  }[] = [
+    {
+      id: 'Manage',
+      children: [
+        // {
+        //   id: 'Dashboard',
+        //   to: '/',
+        //   icon: <BarChart />,
+        //   active: false,
+        // },
+        {
+          id: 'Customers',
+          to: `/applications/${activeApplication.id}/customers`,
+          icon: <PeopleIcon />,
+          active: false,
+        },
+        {
+          id: 'Configuration',
+          to: `/applications/${activeApplication.id}/configuration/integrations/crm`,
+          icon: <Tune />,
+          active: false,
+        },
+        {
+          id: 'Sync Logs',
+          to: `/applications/${activeApplication.id}/sync_logs`,
+          icon: <FindInPage />,
+          active: false,
+        },
+      ],
+    },
+    {
+      id: 'Learn',
+      children: [
+        {
+          id: 'API Explorer',
+          to: 'https://docs.supaglue.com/api',
+          icon: <Biotech />,
+          active: false,
+        },
+        {
+          id: 'Documentation',
+          to: 'https://docs.supaglue.com',
+          icon: <MenuBook />,
+          active: false,
+        },
+      ],
+    },
+  ];
+
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
@@ -103,11 +103,7 @@ export default function Navigator(props: DrawerProps) {
             </ListItem>
             {children.map(({ id: childId, icon, active, to }) => (
               <ListItem disablePadding key={childId}>
-                <MUILink
-                  href={`/applications/${activeApplication.id}${to}`}
-                  component={NextLink}
-                  sx={{ width: '100%', 'text-decoration': 'none' }}
-                >
+                <MUILink href={to} component={NextLink} sx={{ width: '100%', 'text-decoration': 'none' }}>
                   <ListItemButton selected={active} sx={item}>
                     <ListItemIcon>{icon}</ListItemIcon>
                     <ListItemText>{childId}</ListItemText>
