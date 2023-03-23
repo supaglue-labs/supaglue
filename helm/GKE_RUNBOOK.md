@@ -125,31 +125,33 @@ Go to
 
 ## Upgrading
 
-### Upgrading to 0.5.x
+### Upgrading to 0.6.x
 
-We have some backward-incompatible changes in 0.5.x. You will need to run the following process to upgrade.
+We have some backward-incompatible changes in 0.6.x. You will need to run the following process to upgrade.
 
 ```shell
-kubectl port-forward deployment/supaglue-temporal-web 8080:8080 -n supaglue
+kubectl port-forward svc/supaglue-temporal-web 8080:8080 -n supaglue
 ```
 
-Log into <http://localhost:8080/> and terminate any running workflows.
+Log into <http://localhost:8080/>. Do the following, in order:
 
-ctrl-C to kill the port-forward process.
+1. First, terminate all schedules.
+1. Next, terminate any running workflows.
+1. ctrl-C to kill the port-forward process.
 
 ```shell
 brew install postgresql
-kubectl port-forward statefulset/supaglue-postgresql 5432:5432 -n supaglue
+kubectl port-forward svc/supaglue-postgresql 5432:5432 -n supaglue
 ```
 
 Then in a new terminal:
 
 ```shell
 export PGPASSWORD=$(kubectl get secrets supaglue-postgresql -n supaglue -o jsonpath='{.data.password}' | base64 --decode)
-psql -U supaglue -d supaglue -h localhost -c "TRUNCATE customers CASCADE;"
+psql -U supaglue -d supaglue -h localhost -c "DROP SCHEMA public CASCADE;"
 ```
 
-This will remove all your customers from the system, so be sure to re-add them after the upgrade.
+This will completely reset your Supaglue instance, so be sure to follow the "Getting Started" guide in the docs after the upgrade.
 
 Then follow the standard upgrade process below.
 
