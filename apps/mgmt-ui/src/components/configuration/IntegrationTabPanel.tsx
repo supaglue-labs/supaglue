@@ -48,7 +48,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
     if (!syncPeriodSecs) {
       setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
     }
-  }, [integration]);
+  }, []);
 
   if (!integration || !integrationCardInfo) {
     return null;
