@@ -35,6 +35,9 @@ spec:
         - name: wait-for-database
           image: busybox
           command: ['sh', '-c', 'until nc -z -v -w30 {{ template "supaglue.databaseHost" . }} {{ template "supaglue.databasePort" $ }}; do echo waiting for database; sleep 2; done;']
+        - name: wait-for-temporal
+          image: busybox
+          command: ['sh', '-c', 'until nc -z -v -w30 {{ template "supaglue.temporalHost" . }} {{ template "supaglue.temporalPort" $ }}; do echo waiting for temporal; sleep 2; done;']
       containers:
         - name: schema-update
           image: "{{ default "supaglue/api" .Values.api.image.repository }}:{{ default .Chart.AppVersion .Values.api.image.tag }}"
@@ -57,5 +60,9 @@ spec:
                 secretKeyRef:
                   name: {{ template "supaglue.secretName" . }}
                   key: {{ .Values.secretKeys.adminPassword }}
+            - name: SUPAGLUE_TEMPORAL_HOST
+              value: {{ template "supaglue.temporalHost" . }}
+            - name: SUPAGLUE_TEMPORAL_PORT
+              value: {{ include "supaglue.temporalPort" . | quote }}
           command: ['sh', '-c', 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js']
 {{ end }}
