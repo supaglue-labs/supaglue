@@ -20,6 +20,16 @@ export class IntegrationService {
     return fromIntegrationModel(integration);
   }
 
+  public async getByIdAndApplicationId(id: string, applicationId: string): Promise<Integration> {
+    const integration = await this.#prisma.integration.findUnique({
+      where: { id },
+    });
+    if (!integration || integration.applicationId !== applicationId) {
+      throw new NotFoundError(`Can't find integration with id: ${id}`);
+    }
+    return fromIntegrationModel(integration);
+  }
+
   public async getByProviderName(providerName: string): Promise<Integration> {
     const integration = await this.#prisma.integration.findUnique({
       where: {
@@ -53,10 +63,9 @@ export class IntegrationService {
     return fromIntegrationModel(updatedIntegration);
   }
 
-  public async delete(id: string): Promise<Integration> {
-    const deletedIntegration = await this.#prisma.integration.delete({
-      where: { id },
+  public async delete(id: string, applicationId: string): Promise<void> {
+    await this.#prisma.integration.deleteMany({
+      where: { id, applicationId },
     });
-    return fromIntegrationModel(deletedIntegration);
   }
 }

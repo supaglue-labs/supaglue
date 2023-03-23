@@ -46,6 +46,7 @@ export type OauthCredentials = {
 };
 
 type BaseCRMIntegrationCreateParams = Omit<IncompleteCRMIntegration, 'id'>;
+// TODO: Update params should not contain applicationId even if create params does.
 type BaseCRMIntegrationUpdateParams = Omit<IncompleteCRMIntegration, 'id'>;
 export type CRMIntegrationCreateParams = BaseCRMIntegrationCreateParams;
 export type CRMIntegrationUpdateParams = BaseCRMIntegrationUpdateParams;

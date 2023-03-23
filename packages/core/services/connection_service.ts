@@ -34,6 +34,22 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connection);
   }
 
+  public async getSafeByIdAndApplicationId(id: string, applicationId: string): Promise<ConnectionSafe> {
+    const connections = await this.#prisma.connection.findMany({
+      where: {
+        id,
+        integration: {
+          applicationId,
+        },
+      },
+    });
+    if (!connections.length) {
+      throw new NotFoundError(`Can't find connection with id: ${id}`);
+    }
+
+    return fromConnectionModelToConnectionSafe(connections[0]);
+  }
+
   public async listSafe(applicationId: string, customerId?: string, providerName?: string): Promise<ConnectionSafe[]> {
     const integrations = await this.#integrationService.list(applicationId);
     const integrationIds = integrations.map(({ id }) => id);
@@ -43,11 +59,15 @@ export class ConnectionService {
     return connections.map((connection) => fromConnectionModelToConnectionSafe(connection));
   }
 
-  public async delete(id: string): Promise<ConnectionSafe> {
-    const deletedConnection = await this.#prisma.connection.delete({
-      where: { id },
+  public async delete(id: string, applicationId: string): Promise<void> {
+    await this.#prisma.connection.deleteMany({
+      where: {
+        id,
+        integration: {
+          applicationId,
+        },
+      },
     });
-    return fromConnectionModelToConnectionSafe(deletedConnection);
   }
 
   public async getSafeByCustomerIdAndIntegrationId({

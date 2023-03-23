@@ -2,10 +2,13 @@ import { getDependencyContainer } from '@/dependency_container';
 import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import {
   DeleteConnectionPathParams,
+  DeleteConnectionRequest,
   DeleteConnectionResponse,
   GetConnectionPathParams,
+  GetConnectionRequest,
   GetConnectionResponse,
   GetConnectionsPathParams,
+  GetConnectionsRequest,
   GetConnectionsResponse,
 } from '@supaglue/schemas/mgmt';
 import { Request, Response, Router } from 'express';
@@ -18,7 +21,7 @@ export default function init(app: Router): void {
   connectionRouter.get(
     '/',
     async (
-      req: Request<GetConnectionsPathParams, GetConnectionsResponse, GetConnectionsResponse>,
+      req: Request<GetConnectionsPathParams, GetConnectionsResponse, GetConnectionsRequest>,
       res: Response<GetConnectionsResponse>
     ) => {
       const connections = await connectionService.listSafe(req.supaglueApplication.id);
@@ -31,10 +34,13 @@ export default function init(app: Router): void {
   connectionRouter.get(
     '/:connection_id',
     async (
-      req: Request<GetConnectionPathParams, GetConnectionResponse, GetConnectionResponse>,
+      req: Request<GetConnectionPathParams, GetConnectionResponse, GetConnectionRequest>,
       res: Response<GetConnectionResponse>
     ) => {
-      const connection = await connectionService.getSafeById(req.params.connection_id);
+      const connection = await connectionService.getSafeByIdAndApplicationId(
+        req.params.connection_id,
+        req.supaglueApplication.id
+      );
       return res.status(200).send(snakecaseKeys(connection));
     }
   );
@@ -44,13 +50,13 @@ export default function init(app: Router): void {
   connectionRouter.delete(
     '/:connection_id',
     async (
-      req: Request<DeleteConnectionPathParams, DeleteConnectionResponse, DeleteConnectionResponse>,
+      req: Request<DeleteConnectionPathParams, DeleteConnectionResponse, DeleteConnectionRequest>,
       res: Response<DeleteConnectionResponse>
     ) => {
       // TODO: revoke token from provider?
 
-      const connection = await connectionService.delete(req.params.connection_id);
-      return res.status(200).send(snakecaseKeys(connection));
+      await connectionService.delete(req.params.connection_id, req.supaglueApplication.id);
+      return res.status(204).send();
     }
   );
 

@@ -5,6 +5,8 @@ import { Request, Response, Router } from 'express';
 
 const { applicationService } = getDependencyContainer();
 
+// TODO: need to protect these routes with some kind of org api key
+
 export default function init(app: Router): void {
   const applicationRouter = Router();
 
