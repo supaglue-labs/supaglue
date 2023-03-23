@@ -16,8 +16,7 @@ model Application {
   config      Json
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
-  // This ought to be required, but making it optional for backwards compatibility.
-  orgId       String?       @map("org_id")
+  orgId       String        @map("org_id")
   Customer    Customer[]
   Integration Integration[]
 
