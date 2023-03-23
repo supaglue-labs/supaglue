@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.5.0
+  version: 0.6.0
   title: Supaglue CRM API
   contact:
     name: Supaglue

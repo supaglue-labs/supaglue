@@ -94,6 +94,11 @@ spec:
                 secretKeyRef:
                   name: {{ template "supaglue.secretName" . }}
                   key: {{ .Values.secretKeys.internalApiToken }}
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "supaglue.secretName" . }}
+                  key: {{ .Values.secretKeys.adminPassword }}
             - name: SUPAGLUE_DEPLOYMENT_ID
               value: {{ include "supaglue.deploymentId" . }}
             {{- with .Values.api.env }}
