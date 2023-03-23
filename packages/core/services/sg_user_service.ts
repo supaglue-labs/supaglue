@@ -1,8 +1,6 @@
 import { NotFoundError } from '../errors';
+import { ADMIN_PASSWORD, SG_USER_ID } from '../lib/constants';
 import { SgUser } from '../types/index';
-
-const SG_USER_ID = 'd56b851b-5a36-4480-bc43-515d677f46e3';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin';
 
 export class SgUserService {
   public async login({ username, password }: { username: string; password: string }): Promise<SgUser | null> {
