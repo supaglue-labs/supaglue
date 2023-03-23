@@ -22,6 +22,7 @@ import {
   RemoteOpportunityUpdateParams,
 } from '../../../types/crm';
 import { CompleteIntegration } from '../../../types/integration';
+import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '../../../types/passthrough';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
@@ -449,6 +450,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       }
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  public override async sendPassthroughRequest(
+    request: SendPassthroughRequestRequest
+  ): Promise<SendPassthroughRequestResponse> {
+    await this.maybeRefreshAccessToken();
+    return await super.sendPassthroughRequest(request);
   }
 }
 
