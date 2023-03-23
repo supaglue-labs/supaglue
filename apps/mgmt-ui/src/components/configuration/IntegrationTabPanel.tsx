@@ -35,10 +35,6 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
     (integrationCardInfo) => integrationCardInfo.providerName === providerName
   );
 
-  if (!integration || !integrationCardInfo) {
-    return null;
-  }
-
   useEffect(() => {
     if (!clientId) {
       setClientId(integration?.config?.oauth?.credentials?.oauthClientId ?? '');
@@ -53,6 +49,10 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
       setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
     }
   }, [integration]);
+
+  if (!integration || !integrationCardInfo) {
+    return null;
+  }
 
   return (
     <Card>
