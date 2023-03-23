@@ -30,10 +30,13 @@ export class IntegrationService {
     return fromIntegrationModel(integration);
   }
 
-  public async getByProviderName(providerName: string): Promise<Integration> {
+  public async getByProviderNameAndApplicationId(providerName: string, applicationId: string): Promise<Integration> {
     const integration = await this.#prisma.integration.findUnique({
       where: {
-        providerName,
+        applicationId_providerName: {
+          applicationId,
+          providerName,
+        },
       },
     });
     if (!integration) {

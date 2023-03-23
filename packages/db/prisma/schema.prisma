@@ -70,12 +70,13 @@ model Integration {
   application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   authType      String       @map("auth_type") // [oauth2]
   category      String
-  providerName  String       @unique @map("provider_name") // [salesforce, hubspot]
+  providerName  String       @map("provider_name") // [salesforce, hubspot]
   config        Json? // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
   connections   Connection[]
 
+  @@unique([applicationId, providerName])
   @@map("integrations")
 }
 

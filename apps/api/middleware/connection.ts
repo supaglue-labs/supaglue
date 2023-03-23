@@ -14,9 +14,10 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
 
   const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
 
-  // TODO: Need to make integration unique on (providerName, applicationId)
-  // TODO: Then, the look up by applicationId here will check for authorization.
-  const integration = await integrationService.getByProviderName(providerName);
+  const integration = await integrationService.getByProviderNameAndApplicationId(
+    providerName,
+    req.supaglueApplication.id
+  );
 
   req.customerConnection = await connectionService.getSafeByCustomerIdAndIntegrationId({
     customerId,
