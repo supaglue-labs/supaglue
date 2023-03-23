@@ -5,12 +5,11 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getAuth } from '@clerk/nextjs/server';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
-import { ORGANIZATION_ID } from '@supaglue/core/lib';
 import { type GetServerSideProps } from 'next';
 import { getServerSession, Session } from 'next-auth';
 import Head from 'next/head';
 import { useState } from 'react';
-import { API_HOST, IS_CLOUD, SG_INTERNAL_TOKEN } from './api';
+import { API_HOST, IS_CLOUD, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from './api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   let session: Session | null = null;
