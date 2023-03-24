@@ -53,7 +53,6 @@ const {
   DEV_CAPSULE_APP_ID,
   SUPAGLUE_API_ENCRYPTION_SECRET,
   SUPAGLUE_QUICKSTART_API_KEY,
-  IS_CLOUD,
 } = process.env;
 
 const ORGANIZATION_ID = 'e7070cc8-36e7-43e2-81fc-ad57713cf2d3';
@@ -270,9 +269,6 @@ async function seedCRMIntegrations() {
 }
 
 async function main() {
-  if (IS_CLOUD) {
-    return;
-  }
   await seedApplication();
   await seedCustomers();
   await seedCRMIntegrations();

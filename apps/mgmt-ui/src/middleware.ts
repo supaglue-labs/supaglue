@@ -45,6 +45,7 @@ export default withClerkMiddleware((request: NextRequest) => {
   }
 
   // if the user is signed in but does not have an org, redirect them to create an org.
+  // (but don't redirect if the path is already `/create-organization`)
   if (!orgId && !isCloudCreateOrgPath(request.nextUrl.pathname)) {
     const createOrgUrl = new URL('/create-organization', request.url);
     createOrgUrl.searchParams.set('redirect_url', request.url);
