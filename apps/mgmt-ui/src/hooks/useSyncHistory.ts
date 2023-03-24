@@ -3,10 +3,10 @@ import { PaginatedResult, SyncHistory } from '@supaglue/core/types';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useSyncHistory() {
-  const { data, isLoading, error } = useSWRWithApplication<PaginatedResult<SyncHistory>>('/api/internal/sync-history');
+  const { data, isLoading, error } = useSWRWithApplication('/api/internal/sync-history');
 
   return {
-    syncHistories: data ? camelcaseKeys(data) : undefined,
+    syncHistories: data ? (camelcaseKeys(data) as PaginatedResult<SyncHistory>) : undefined,
     isLoading,
     error,
   };

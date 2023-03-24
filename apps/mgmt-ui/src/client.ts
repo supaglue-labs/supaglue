@@ -1,4 +1,4 @@
-import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/core/lib/camelcase';
+import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/core/lib/snakecase';
 import { Application, Integration, WebhookConfig } from '@supaglue/core/types';
 
 // TODO: use Supaglue TS client
