@@ -5,3 +5,12 @@ export function camelcaseKeys<T extends Record<string, any>>(inputObject: T) {
     deep: true,
   });
 }
+
+export function camelcaseKeysSansHeaders<T extends Record<string, any> & { headers?: Record<string, any> }>(
+  inputObject: T
+) {
+  return {
+    ...camelcaseKeys(inputObject),
+    headers: inputObject.headers,
+  };
+}
