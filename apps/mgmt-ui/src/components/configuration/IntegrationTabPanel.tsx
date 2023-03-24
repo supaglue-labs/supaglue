@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { updateRemoteIntegration } from '@/client';
-import { useActiveApplication } from '@/context/activeApplication';
+import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
@@ -48,7 +48,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
     if (!syncPeriodSecs) {
       setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
     }
-  }, [integration]);
+  }, []);
 
   if (!integration || !integrationCardInfo) {
     return null;
@@ -129,6 +129,9 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
             <Button
               variant="contained"
               onClick={() => {
+                if (!activeApplication) {
+                  return;
+                }
                 const newIntegration = {
                   ...integration,
                   config: {

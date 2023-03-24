@@ -1,4 +1,3 @@
-import { ActiveApplicationManager } from '@/context/activeApplication';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
@@ -164,11 +163,9 @@ export default function App({ Component, pageProps: { session, activeApplication
       <SessionProvider session={session}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
-            <ActiveApplicationManager initialActiveApplication={activeApplication}>
-              <InnerApp signedIn={!!activeApplication}>
-                <Component {...pageProps} />
-              </InnerApp>
-            </ActiveApplicationManager>
+            <InnerApp signedIn={!!activeApplication}>
+              <Component {...pageProps} />
+            </InnerApp>
           </ThemeProvider>
         </StyledEngineProvider>
       </SessionProvider>
@@ -179,11 +176,9 @@ export default function App({ Component, pageProps: { session, activeApplication
     <ClerkProvider {...pageProps}>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <ActiveApplicationManager initialActiveApplication={activeApplication}>
-            <InnerApp signedIn={!!activeApplication}>
-              <Component {...pageProps} />
-            </InnerApp>
-          </ActiveApplicationManager>
+          <InnerApp signedIn={!!activeApplication}>
+            <Component {...pageProps} />
+          </InnerApp>
         </ThemeProvider>
       </StyledEngineProvider>
     </ClerkProvider>

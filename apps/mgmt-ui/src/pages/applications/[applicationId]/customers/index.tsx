@@ -1,7 +1,7 @@
 import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
-import { getServerSideProps } from '@/pages';
+import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import providerToIcon from '@/utils/providerToIcon';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid, Stack } from '@mui/material';

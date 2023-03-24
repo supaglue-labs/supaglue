@@ -1,5 +1,6 @@
 import { Application } from '@supaglue/core/types';
-import { createContext, FC, PropsWithChildren, useContext, useState } from 'react';
+import { useRouter } from 'next/router';
+import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 type ActiveApplicationContextType = {
   // TODO: Force it to be set
@@ -29,7 +30,16 @@ type ActiveApplicationManagerProps = PropsWithChildren & {
 };
 
 export const ActiveApplicationManager: FC<ActiveApplicationManagerProps> = ({ initialActiveApplication, children }) => {
+  const router = useRouter();
+
   const [activeApplication, setActiveApplication] = useState<Application>(initialActiveApplication);
+
+  useEffect(() => {
+    router.push(`/applications/${activeApplication.id}`).catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    });
+  }, [activeApplication]);
 
   return (
     <ActiveApplicationContext.Provider
