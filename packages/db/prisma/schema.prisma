@@ -68,6 +68,7 @@ model Connection {
   customerId      String        @map("customer_id")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
+  syncs           Sync[]
   syncHistoryList SyncHistory[]
 
   @@unique([customerId, integrationId])
@@ -221,8 +222,22 @@ model CrmUser {
   @@map("crm_users")
 }
 
+model Sync {
+  id           String     @id @default(uuid())
+  // contact, lead, account, opportunity, etc.
+  model        String
+  // contains info like high watermark 
+  data         Json
+  connectionId String     @map("connection_id")
+  connection   Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, model])
+  @@map("syncs")
+}
+
 model SyncHistory {
   id             Int        @id @default(autoincrement())
+  // TODO: Link this with the sync table instead of sharing join keys on (model, connectionId)
   // contact, lead, account, opportunity, etc.
   model          String
   // SUCCESS | ERROR | IN_PROGRESS
