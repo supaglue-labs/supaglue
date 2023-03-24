@@ -30,9 +30,4 @@ const CloudLogout = () => {
   return <LogoutImpl handleLogout={handleLogout} />;
 };
 
-export const Logout = () => {
-  if (IS_CLOUD) {
-    return <CloudLogout />;
-  }
-  return <NonCloudLogout />;
-};
+export const Logout = () => (IS_CLOUD ? <CloudLogout /> : <NonCloudLogout />);
