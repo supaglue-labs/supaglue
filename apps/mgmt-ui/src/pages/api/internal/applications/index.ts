@@ -1,11 +1,13 @@
+import { getOrgId } from '@/utils/org';
 import { Application } from '@supaglue/core/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { API_HOST, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from '../..';
+import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ applications: Application[] } | null>
 ) {
+  const orgId = getOrgId(req);
   switch (req.method) {
     case 'GET': {
       const result = await fetch(`${API_HOST}/internal/v1/applications`, {
@@ -13,6 +15,7 @@ export default async function handler(
         headers: {
           'Content-Type': 'application/json',
           'x-sg-internal-token': SG_INTERNAL_TOKEN,
+          'x-org-id': orgId,
         },
       });
 
@@ -30,10 +33,10 @@ export default async function handler(
         headers: {
           'Content-Type': 'application/json',
           'x-sg-internal-token': SG_INTERNAL_TOKEN,
+          'x-org-id': orgId,
         },
         body: JSON.stringify({
           name: req.body.name,
-          org_id: ORGANIZATION_ID,
         }),
       });
 

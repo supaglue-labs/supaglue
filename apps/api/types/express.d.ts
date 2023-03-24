@@ -7,6 +7,7 @@ declare global {
     interface Request {
       supaglueApplication: SupaglueApplication;
       customerConnection: ConnectionSafe;
+      orgId: string;
       sg: Record<string, string>;
     }
   }

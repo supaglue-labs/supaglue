@@ -61,7 +61,6 @@ export default function ApplicationMenu() {
           <Typography sx={{ fontSize: 20, lineHeight: 1 }}>{activeApplication?.name}</Typography>
         </Box>
       </Button>
-      <Typography fontSize={8}>ID: {activeApplication?.id}</Typography>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}

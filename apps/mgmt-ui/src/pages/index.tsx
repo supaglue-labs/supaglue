@@ -2,10 +2,12 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getAuth } from '@clerk/nextjs/server';
 import { type GetServerSideProps } from 'next';
 import { getServerSession, Session } from 'next-auth';
-import { API_HOST, IS_CLOUD, SG_INTERNAL_TOKEN } from './api';
+import { API_HOST, IS_CLOUD, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from './api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   let session: Session | null = null;
+
+  let orgId = ORGANIZATION_ID;
 
   if (!IS_CLOUD) {
     session = await getServerSession(req, res, authOptions);
@@ -26,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         props: { session, signedIn: false },
       };
     }
-    // TODO: Get org from user and use that to fetch application
+    ({ orgId } = user);
   }
 
   // This is the same call as in apps/mgmt-ui/src/pages/api/internal/applications/index.ts
@@ -36,6 +38,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     headers: {
       'Content-Type': 'application/json',
       'x-sg-internal-token': SG_INTERNAL_TOKEN,
+      'x-org-id': orgId,
     },
   });
 
@@ -45,15 +48,35 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   const applications = await result.json();
 
-  // Pick one application at random
-  // TODO: Make it not random
-  if (!applications.length) {
-    throw new Error('No applications found');
+  if (applications.length) {
+    // Pick one application at random
+    // TODO: Make it not random
+    return {
+      redirect: {
+        destination: `/applications/${applications[0].id}`,
+        permanent: false,
+      },
+    };
   }
 
+  const createResult = await fetch(`${API_HOST}/internal/v1/applications`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-sg-internal-token': SG_INTERNAL_TOKEN,
+      'x-org-id': orgId,
+    },
+    body: JSON.stringify({
+      name: 'My Application',
+    }),
+  });
+  if (!createResult.ok) {
+    throw new Error('Errored while creating application');
+  }
+  const application = await createResult.json();
   return {
     redirect: {
-      destination: `/applications/${applications[0].id}`,
+      destination: `/applications/${application.id}`,
       permanent: false,
     },
   };
