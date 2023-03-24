@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeys } from '@/lib/camelcase';
+import { camelcaseKeys } from '@supaglue/core/lib/camelcase';
 import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import {
   DeleteCustomerPathParams,

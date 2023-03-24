@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeysSansHeaders } from '@/lib/camelcase';
 import { NotFoundError } from '@supaglue/core/errors';
+import { camelcaseKeysSansHeaders } from '@supaglue/core/lib/camelcase';
 import { snakecaseKeysSansHeaders } from '@supaglue/core/lib/snakecase';
 import {
   CreateWebhookPathParams,
