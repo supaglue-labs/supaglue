@@ -2,9 +2,12 @@ import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import providerToIcon from '@/utils/providerToIcon';
 import { getAuth } from '@clerk/nextjs/server';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Stack } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { ConnectionSafe } from '@supaglue/core/types';
 import { type GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
@@ -46,6 +49,7 @@ export default function Home() {
   const { customers = [] } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // TODO: count this on server?
   const totalConnections = customers
     ?.map((customer) => customer.connections.length)
     .reduce((a: number, b: number) => a + b, 0);
@@ -53,6 +57,27 @@ export default function Home() {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', width: 300 },
+    { field: 'name', headerName: 'Name', width: 250 },
+    { field: 'email', headerName: 'Email', width: 250 },
+    {
+      field: 'connections',
+      headerName: 'Connections',
+      width: 300,
+      renderCell: (params) => {
+        return params.value.map((connection: ConnectionSafe) => providerToIcon(connection.providerName));
+      },
+    },
+  ];
+
+  const rows = customers.map((customer) => ({
+    id: customer.customerId,
+    email: customer.email,
+    name: customer.name,
+    connections: customer?.connections,
+  }));
 
   return (
     <>
@@ -64,16 +89,34 @@ export default function Home() {
       </Head>
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Header title="Dashboard" onDrawerToggle={handleDrawerToggle} />
-        <Box className="space-y-4" component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
+        <Header title="Customers" onDrawerToggle={handleDrawerToggle} />
+        <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
+          <Stack className="gap-2">
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
+              </Grid>
+              <Grid item xs={6}>
+                <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
-            </Grid>
-          </Grid>
+
+            <div style={{ height: '100%', width: '100%' }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                autoHeight
+                sx={{
+                  boxShadow: 1,
+                  backgroundColor: 'white',
+                }}
+                density="comfortable"
+                hideFooter
+                disableColumnMenu
+                rowSelection={false}
+              />
+            </div>
+          </Stack>
         </Box>
       </Box>
     </>
