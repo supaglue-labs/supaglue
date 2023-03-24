@@ -4286,6 +4286,7 @@ __metadata:
     "@types/uuid": ^9.0.1
     async-retry: ^1.3.3
     axios: ^1.3.4
+    camelcase-keys: ^8.0.2
     csv-parse: ^5.3.5
     csv-stringify: ^6.3.0
     jsforce: ^2.0.0-beta.20
@@ -6075,7 +6076,6 @@ __metadata:
     "@types/express": ^4.17.17
     "@types/simple-oauth2": ^5
     "@types/uuid": ^9.0.0
-    camelcase-keys: ^7.0.2
     cors: ^2.8.5
     dotenv: ^16.0.3
     express: ">=5.0.0-beta.1"
@@ -6855,18 +6855,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase-keys@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "camelcase-keys@npm:7.0.2"
-  dependencies:
-    camelcase: ^6.3.0
-    map-obj: ^4.1.0
-    quick-lru: ^5.1.1
-    type-fest: ^1.2.1
-  checksum: b5821cc48dd00e8398a30c5d6547f06837ab44de123f1b3a603d0a03399722b2fc67a485a7e47106eb02ef543c3b50c5ebaabc1242cde4b63a267c3258d2365b
-  languageName: node
-  linkType: hard
-
 "camelcase-keys@npm:^8.0.2":
   version: 8.0.2
   resolution: "camelcase-keys@npm:8.0.2"
@@ -6886,7 +6874,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:^6.2.0, camelcase@npm:^6.3.0":
+"camelcase@npm:^6.2.0":
   version: 6.3.0
   resolution: "camelcase@npm:6.3.0"
   checksum: 8c96818a9076434998511251dcb2761a94817ea17dbdc37f47ac080bd088fc62c7369429a19e2178b993497132c8cbcf5cc1f44ba963e76782ba469c0474938d
@@ -12557,7 +12545,6 @@ __metadata:
     "@types/react-dom": 18.0.11
     "@types/sharp": ^0
     autoprefixer: ^10.4.13
-    camelcase-keys: ^8.0.2
     dayjs: ^1.11.7
     eslint: 8.35.0
     eslint-config-next: 13.2.3
@@ -12568,7 +12555,6 @@ __metadata:
     react: 18.2.0
     react-dom: 18.2.0
     sharp: ^0.31.3
-    snakecase-keys: ^5.4.5
     swr: ^2.1.0
     tailwindcss: ^3.2.7
     typescript: 4.9.5
@@ -18046,13 +18032,6 @@ __metadata:
   version: 0.8.1
   resolution: "type-fest@npm:0.8.1"
   checksum: d61c4b2eba24009033ae4500d7d818a94fd6d1b481a8111612ee141400d5f1db46f199c014766b9fa9b31a6a7374d96fc748c6d688a78a3ce5a33123839becb7
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:^1.2.1":
-  version: 1.4.0
-  resolution: "type-fest@npm:1.4.0"
-  checksum: b011c3388665b097ae6a109a437a04d6f61d81b7357f74cbcb02246f2f5bd72b888ae33631b99871388122ba0a87f4ff1c94078e7119ff22c70e52c0ff828201
   languageName: node
   linkType: hard
 
