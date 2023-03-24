@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
     if (!user.userId || !user.orgId) {
       return {
-        props: { session, activeApplication: null },
+        props: { session, signedIn: false },
       };
     }
     // TODO: Get org from user and use that to fetch application

@@ -154,16 +154,16 @@ theme = {
 
 const drawerWidth = 256;
 
-export default function App({ Component, pageProps: { session, activeApplication, ...pageProps } }: AppProps) {
+export default function App({ Component, pageProps: { session, signedIn, ...pageProps } }: AppProps) {
   if (!IS_CLOUD) {
-    if (!activeApplication) {
+    if (!signedIn) {
       return null;
     }
     return (
       <SessionProvider session={session}>
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={theme}>
-            <InnerApp signedIn={!!activeApplication}>
+            <InnerApp signedIn={signedIn}>
               <Component {...pageProps} />
             </InnerApp>
           </ThemeProvider>
@@ -176,7 +176,7 @@ export default function App({ Component, pageProps: { session, activeApplication
     <ClerkProvider {...pageProps}>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <InnerApp signedIn={!!activeApplication}>
+          <InnerApp signedIn={signedIn}>
             <Component {...pageProps} />
           </InnerApp>
         </ThemeProvider>

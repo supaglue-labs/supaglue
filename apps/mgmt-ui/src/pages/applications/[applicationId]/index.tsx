@@ -10,9 +10,9 @@ import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import Head from 'next/head';
 import { useState } from 'react';
-import { API_HOST, IS_CLOUD, SG_INTERNAL_TOKEN } from '../../api';
+import { IS_CLOUD } from '../../api';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   let session: Session | null = null;
 
   if (!IS_CLOUD) {
@@ -31,30 +31,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
 
     if (!user.userId || !user.orgId) {
       return {
-        props: { session, activeApplication: null },
+        props: { session, signedIn: false },
       };
     }
-    // TODO: Get org from user and use that to fetch application
+    // TODO: Get org from user and use that to fetch application to make sure authenticated
   }
-
-  // This is the same call as in apps/mgmt-ui/src/pages/api/internal/applications/index.ts
-  // Get applications to set active application
-  const result = await fetch(`${API_HOST}/internal/v1/applications/${params?.applicationId}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-sg-internal-token': SG_INTERNAL_TOKEN,
-    },
-  });
-
-  if (!result.ok) {
-    throw new Error('Errored while fetching application');
-  }
-
-  const application = await result.json();
 
   return {
-    props: { session, activeApplication: application },
+    props: { session, signedIn: true },
   };
 };
 
