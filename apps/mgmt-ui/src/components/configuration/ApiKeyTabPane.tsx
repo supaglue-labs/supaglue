@@ -37,10 +37,7 @@ export default function ApiKeyTabPanel() {
             <Button
               variant="contained"
               onClick={async () => {
-                if (!activeApplicationId) {
-                  return;
-                }
-                const { api_key: newApiKey } = await createRemoteApiKey(activeApplicationId as string);
+                const { api_key: newApiKey } = await createRemoteApiKey(activeApplicationId);
                 setApiKey(newApiKey);
               }}
             >
@@ -52,10 +49,7 @@ export default function ApiKeyTabPanel() {
               variant="text"
               color="error"
               onClick={() => {
-                if (!activeApplicationId) {
-                  return;
-                }
-                deleteRemoteApiKey(activeApplicationId as string);
+                deleteRemoteApiKey(activeApplicationId);
                 setApiKey('');
               }}
             >

@@ -151,7 +151,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
                   ei.id === newIntegration.id ? newIntegration : ei
                 );
 
-                updateRemoteIntegration(activeApplicationId as string, newIntegration);
+                updateRemoteIntegration(activeApplicationId, newIntegration);
                 mutate(updatedIntegrations, false);
                 router.push(`/configuration/integrations/${newIntegration.category}`);
               }}
