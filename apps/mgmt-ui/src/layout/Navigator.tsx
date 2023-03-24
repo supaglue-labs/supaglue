@@ -45,15 +45,9 @@ export default function Navigator(props: DrawerProps) {
     {
       id: 'Manage',
       children: [
-        // {
-        //   id: 'Dashboard',
-        //   to: '/',
-        //   icon: <BarChart />,
-        //   active: false,
-        // },
         {
           id: 'Customers',
-          to: `/applications/${applicationId}/customers`,
+          to: `/applications/${applicationId}`,
           icon: <PeopleIcon />,
           active: false,
         },
