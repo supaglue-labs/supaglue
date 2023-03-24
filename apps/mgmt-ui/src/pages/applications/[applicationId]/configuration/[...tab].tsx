@@ -1,5 +1,5 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPane';
-import { useActiveApplication } from '@/context/activeApplication';
+import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { Box, Tab, Tabs } from '@mui/material';
@@ -54,7 +54,7 @@ export default function Home() {
   const { tab = [] } = router.query;
   const [value, setValue] = React.useState(0);
 
-  const { activeApplication } = useActiveApplication();
+  const activeApplicationId = useActiveApplicationId();
 
   React.useEffect(() => {
     const tabIndex = configurationHeaderTabs.findIndex(
@@ -71,7 +71,7 @@ export default function Home() {
       tab += '/crm';
     }
 
-    await router.push(`/applications/${activeApplication.id}/configuration/${tab}`);
+    await router.push(`/applications/${activeApplicationId}/configuration/${tab}`);
   };
 
   const handleDrawerToggle = () => {

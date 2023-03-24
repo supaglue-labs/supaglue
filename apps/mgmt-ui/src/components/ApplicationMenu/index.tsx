@@ -1,8 +1,8 @@
 import { addApplication } from '@/client';
-import { useActiveApplication } from '@/context/activeApplication';
+import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { useApplications } from '@/hooks/useApplications';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Divider, Link as MUILink, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,11 +13,14 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export default function ApplicationMenu() {
-  const { applications = [], isLoading, error, mutate } = useApplications();
-  const { activeApplication, setActiveApplication } = useActiveApplication();
+  const router = useRouter();
+  const { applications = [], mutate } = useApplications();
+  const { activeApplication } = useActiveApplication();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -28,26 +31,10 @@ export default function ApplicationMenu() {
     setAnchorEl(null);
   };
 
-  const onChangeApplication = (applicationId: string) => {
-    handleClose();
-
-    if (applicationId === activeApplication.id) {
-      return;
-    }
-
-    const foundApplication = applications.find(({ id }) => id === applicationId);
-    if (!foundApplication) {
-      // TODO: error?
-      return;
-    }
-
-    setActiveApplication(foundApplication);
-  };
-
   const onAddApplication = async (name: string) => {
     const newApplication = await addApplication(name);
     await mutate([...applications, newApplication]);
-    onChangeApplication(newApplication.id);
+    await router.push(`/applications/${newApplication.id}`);
   };
 
   return (
@@ -71,10 +58,10 @@ export default function ApplicationMenu() {
       >
         <Box>
           <Typography sx={{ fontSize: 12 }}>Application</Typography>
-          <Typography sx={{ fontSize: 20, lineHeight: 1 }}>{activeApplication.name}</Typography>
+          <Typography sx={{ fontSize: 20, lineHeight: 1 }}>{activeApplication?.name}</Typography>
         </Box>
       </Button>
-      <Typography fontSize={8}>ID: {activeApplication.id}</Typography>
+      <Typography fontSize={8}>ID: {activeApplication?.id}</Typography>
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
@@ -86,9 +73,17 @@ export default function ApplicationMenu() {
       >
         {/* TODO: Implement loading state */}
         {applications.map(({ id, name }) => (
-          <MenuItem key={id} onClick={() => onChangeApplication(id)} selected={id === activeApplication.id}>
-            {name}
-          </MenuItem>
+          <>
+            <MUILink
+              href={`/applications/${id}`}
+              component={NextLink}
+              sx={{ width: '100%', 'text-decoration': 'none', color: 'rgba(0, 0, 0, 0.87);' }}
+            >
+              <MenuItem key={id} component="a" href={`/applications/${id}`}>
+                {name}
+              </MenuItem>
+            </MUILink>
+          </>
         ))}
         <Divider />
         <NewApplication onCreate={onAddApplication} />

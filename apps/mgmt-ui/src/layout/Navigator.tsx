@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import ApplicationMenu from '@/components/ApplicationMenu';
-import { useActiveApplication } from '@/context/activeApplication';
+import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
@@ -36,7 +36,7 @@ const item = {
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
 
-  const { activeApplication } = useActiveApplication();
+  const applicationId = useActiveApplicationId();
 
   const categories: {
     id: string;
@@ -53,19 +53,19 @@ export default function Navigator(props: DrawerProps) {
         // },
         {
           id: 'Customers',
-          to: `/applications/${activeApplication.id}/customers`,
+          to: `/applications/${applicationId}/customers`,
           icon: <PeopleIcon />,
           active: false,
         },
         {
           id: 'Configuration',
-          to: `/applications/${activeApplication.id}/configuration/integrations/crm`,
+          to: `/applications/${applicationId}/configuration/integrations/crm`,
           icon: <Tune />,
           active: false,
         },
         {
           id: 'Sync Logs',
-          to: `/applications/${activeApplication.id}/sync_logs`,
+          to: `/applications/${applicationId}/sync_logs`,
           icon: <FindInPage />,
           active: false,
         },

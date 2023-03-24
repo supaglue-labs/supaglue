@@ -1,11 +1,12 @@
-import { ActiveApplicationManager } from '@/context/activeApplication';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
-import { Box, CssBaseline, useMediaQuery } from '@mui/material';
-import { createTheme, StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import { ClerkProvider } from '@clerk/nextjs';
+import { Box, CssBaseline, StyledEngineProvider, ThemeProvider, useMediaQuery } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { ReactNode, useState } from 'react';
+import { IS_CLOUD } from './api';
 
 // Note: from material-ui template. Eventually consolidate between styled props, sx, and tailwindcss
 export let theme = createTheme({
@@ -153,27 +154,38 @@ theme = {
 
 const drawerWidth = 256;
 
-export default function App({ Component, pageProps: { session, activeApplication, ...pageProps } }: AppProps) {
-  if (!activeApplication) {
-    return null;
+export default function App({ Component, pageProps: { session, signedIn, ...pageProps } }: AppProps) {
+  if (!IS_CLOUD) {
+    if (!signedIn) {
+      return null;
+    }
+    return (
+      <SessionProvider session={session}>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <InnerApp signedIn={signedIn}>
+              <Component {...pageProps} />
+            </InnerApp>
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </SessionProvider>
+    );
   }
 
   return (
-    <SessionProvider session={session}>
+    <ClerkProvider {...pageProps}>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <ActiveApplicationManager initialActiveApplication={activeApplication}>
-            <InnerApp>
-              <Component {...pageProps} />
-            </InnerApp>
-          </ActiveApplicationManager>
+          <InnerApp signedIn={signedIn}>
+            <Component {...pageProps} />
+          </InnerApp>
         </ThemeProvider>
       </StyledEngineProvider>
-    </SessionProvider>
+    </ClerkProvider>
   );
 }
 
-function InnerApp({ children }: { children: ReactNode }) {
+function InnerApp({ signedIn, children }: { signedIn: boolean; children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -184,17 +196,20 @@ function InnerApp({ children }: { children: ReactNode }) {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
-      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
-        {isSmUp ? null : (
-          <Navigator
-            PaperProps={{ style: { width: drawerWidth } }}
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-          />
-        )}
-        <Navigator PaperProps={{ style: { width: drawerWidth } }} sx={{ display: { sm: 'block', xs: 'none' } }} />
-      </Box>
+      {/* Don't show navigator if not signed in */}
+      {signedIn && (
+        <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
+          {isSmUp ? null : (
+            <Navigator
+              PaperProps={{ style: { width: drawerWidth } }}
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+            />
+          )}
+          <Navigator PaperProps={{ style: { width: drawerWidth } }} sx={{ display: { sm: 'block', xs: 'none' } }} />
+        </Box>
+      )}
       {children}
     </Box>
   );

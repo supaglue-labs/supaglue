@@ -2,54 +2,43 @@ import MetricCard from '@/components/customers/MetricCard';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { getAuth } from '@clerk/nextjs/server';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
-import { Application } from '@supaglue/core/types';
 import { type GetServerSideProps } from 'next';
+import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import Head from 'next/head';
 import { useState } from 'react';
-import { API_HOST, SG_INTERNAL_TOKEN } from '../../api';
+import { IS_CLOUD } from '../../api';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
-  const session = await getServerSession(req, res, authOptions);
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  let session: Session | null = null;
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/api/auth/signin',
-        permanent: false,
-      },
-    };
-  }
+  if (!IS_CLOUD) {
+    session = await getServerSession(req, res, authOptions);
 
-  if (!params?.applicationId) {
-    throw new Error('Could not find application id');
-  }
+    if (!session) {
+      return {
+        redirect: {
+          destination: '/api/auth/signin',
+          permanent: false,
+        },
+      };
+    }
+  } else {
+    const user = getAuth(req);
 
-  // This is the same call as in apps/mgmt-ui/src/pages/api/internal/applications/index.ts
-  // Get applications to set active application
-  const result = await fetch(`${API_HOST}/internal/v1/applications`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-sg-internal-token': SG_INTERNAL_TOKEN,
-    },
-  });
-
-  if (!result.ok) {
-    throw new Error('Errored while fetching applications');
-  }
-
-  const applications = await result.json();
-
-  const application = applications.find((app: Application) => app.id === params.applicationId);
-  if (!application) {
-    throw new Error('Application not found');
+    if (!user.userId || !user.orgId) {
+      return {
+        props: { session, signedIn: false },
+      };
+    }
+    // TODO: Get org from user and use that to fetch application to make sure authenticated
   }
 
   return {
-    props: { session, activeApplication: application },
+    props: { session, signedIn: true },
   };
 };
 

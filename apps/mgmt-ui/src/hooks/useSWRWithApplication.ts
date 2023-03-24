@@ -1,14 +1,15 @@
-import { useActiveApplication } from '@/context/activeApplication';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { fetcherWithApplication } from '.';
 
 export function useSWRWithApplication<T>(path: string) {
-  const { activeApplication } = useActiveApplication();
+  const router = useRouter();
+  const { applicationId } = router.query;
 
   return useSWR(
     {
       path,
-      applicationId: activeApplication.id,
+      applicationId,
     },
     fetcherWithApplication<T>
   );
