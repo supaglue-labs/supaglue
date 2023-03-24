@@ -1394,6 +1394,10 @@
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
                   },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
                   "history_id": {
                     "type": "string",
                     "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
@@ -1419,6 +1423,7 @@
                 },
                 "required": [
                   "connection_id",
+                  "customer_id",
                   "history_id",
                   "num_records_synced",
                   "common_model"

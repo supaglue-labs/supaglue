@@ -269,6 +269,8 @@ export interface components {
       payload: {
         /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
         connection_id: string;
+        /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+        customer_id: string;
         /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
         history_id: string;
         /** @example 100 */
