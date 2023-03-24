@@ -20,7 +20,7 @@ import * as React from 'react';
 export default function ApplicationMenu() {
   const router = useRouter();
   const { applications = [], mutate } = useApplications();
-  const { activeApplication } = useActiveApplication();
+  const { activeApplication, isLoading } = useActiveApplication();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -58,7 +58,9 @@ export default function ApplicationMenu() {
       >
         <Box>
           <Typography sx={{ fontSize: 12 }}>Application</Typography>
-          <Typography sx={{ fontSize: 20, lineHeight: 1 }}>{activeApplication?.name}</Typography>
+          <Typography sx={{ fontSize: 20, lineHeight: 1 }}>
+            {isLoading ? 'Loading...' : activeApplication?.name}
+          </Typography>
         </Box>
       </Button>
       <Menu

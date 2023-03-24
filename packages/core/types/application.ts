@@ -13,7 +13,7 @@ export type ApplicationConfig = {
   apiKey: string | null;
 };
 
-type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+export type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export type WebhookConfig = {
   url: string;

@@ -1,4 +1,5 @@
-import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPane';
+import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
+import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
@@ -19,6 +20,10 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
   {
     label: 'Integrations',
     value: 'integrations',
+  },
+  {
+    label: 'Webhook',
+    value: 'webhook',
   },
   {
     label: 'API Keys',
@@ -92,6 +97,7 @@ export default function Home() {
           tabs={
             <Tabs value={value} textColor="inherit" onChange={handleChange}>
               <Tab label="Integrations" />
+              <Tab label="Webhook" />
               <Tab label="API Key" />
             </Tabs>
           }
@@ -103,6 +109,9 @@ export default function Home() {
             <IntegrationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={1} className="w-full">
+            <WebhookTabPanel />
+          </TabPanel>
+          <TabPanel value={value} index={2} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
         </Box>

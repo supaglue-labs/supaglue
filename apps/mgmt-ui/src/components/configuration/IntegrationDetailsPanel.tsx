@@ -10,13 +10,13 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { integrationCardsInfo } from './IntegrationTabPanelContainer';
 
-export type IntegrationDetailTabPanelProps = {
+export type IntegrationDetailsPanelProps = {
   category: string;
   providerName: string;
   status: string;
 };
 
-export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProps) {
+export default function IntegrationDetailsPanel(props: IntegrationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
   const { providerName } = props;
   const [clientId, setClientId] = useState<string>('');
@@ -48,7 +48,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
     if (!syncPeriodSecs) {
       setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
     }
-  }, []);
+  }, [integration?.id]);
 
   if (!integration || !integrationCardInfo) {
     return null;

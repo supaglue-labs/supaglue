@@ -1,5 +1,5 @@
-import { Application, Integration } from '@supaglue/core/types';
-import { snakecaseKeys } from './utils/snakecase';
+import { Application, Integration, WebhookConfig } from '@supaglue/core/types';
+import { snakecaseKeys, snakecaseKeysSansHeaders } from './utils/snakecase';
 
 // TODO: use Supaglue TS client
 
@@ -27,6 +27,30 @@ export async function deleteRemoteApiKey(applicationId: string): Promise<{ api_k
 
   const r = await result.json();
   return r;
+}
+
+export async function createOrUpdateWebhook(applicationId: string, data: WebhookConfig): Promise<WebhookConfig> {
+  const result = await fetch(`/api/internal/webhook/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeysSansHeaders(data)),
+  });
+
+  const r = await result.json();
+  return r;
+}
+
+export async function deleteWebhook(applicationId: string): Promise<void> {
+  await fetch(`/api/internal/webhook/delete`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+  });
 }
 
 export async function updateRemoteIntegration(applicationId: string, data: Integration): Promise<Integration> {

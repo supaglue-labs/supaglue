@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeys } from '@/lib/camelcase';
+import { camelcaseKeysSansHeaders } from '@/lib/camelcase';
 import { NotFoundError } from '@supaglue/core/errors';
-import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
+import { snakecaseKeysSansHeaders } from '@supaglue/core/lib/snakecase';
 import {
   CreateWebhookPathParams,
   CreateWebhookRequest,
@@ -30,7 +30,7 @@ export default function init(app: Router): void {
       if (!webhook) {
         throw new NotFoundError('Webhook not found. You must create one first');
       }
-      return res.status(200).send(snakecaseKeys(webhook));
+      return res.status(200).send(snakecaseKeysSansHeaders(webhook));
     }
   );
 
@@ -41,11 +41,11 @@ export default function init(app: Router): void {
       res: Response<CreateWebhookResponse>
     ) => {
       const application = await applicationService.update(req.supaglueApplication.id, {
-        config: { ...req.supaglueApplication.config, webhook: camelcaseKeys(req.body) },
+        config: { ...req.supaglueApplication.config, webhook: camelcaseKeysSansHeaders(req.body) },
       });
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return res.status(201).send(snakecaseKeys(application.config.webhook!));
+      return res.status(201).send(snakecaseKeysSansHeaders(application.config.webhook!));
     }
   );
 
