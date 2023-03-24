@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import ApplicationMenu from '@/components/ApplicationMenu';
+import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
 import PeopleIcon from '@mui/icons-material/People';
 import {
@@ -23,58 +24,6 @@ type Category = {
   active: boolean;
 };
 
-const categories: {
-  id: string;
-  children: Category[];
-}[] = [
-  {
-    id: 'Manage',
-    children: [
-      // {
-      //   id: 'Dashboard',
-      //   to: '/',
-      //   icon: <BarChart />,
-      //   active: false,
-      // },
-      {
-        id: 'Customers',
-        to: '/customers',
-        icon: <PeopleIcon />,
-        active: false,
-      },
-      {
-        id: 'Configuration',
-        to: '/configuration/integrations/crm',
-        icon: <Tune />,
-        active: false,
-      },
-      {
-        id: 'Sync Logs',
-        to: '/sync_logs',
-        icon: <FindInPage />,
-        active: false,
-      },
-    ],
-  },
-  {
-    id: 'Learn',
-    children: [
-      {
-        id: 'API Explorer',
-        to: 'https://docs.supaglue.com/api',
-        icon: <Biotech />,
-        active: false,
-      },
-      {
-        id: 'Documentation',
-        to: 'https://docs.supaglue.com',
-        icon: <MenuBook />,
-        active: false,
-      },
-    ],
-  },
-];
-
 const item = {
   py: '2px',
   px: 3,
@@ -86,6 +35,60 @@ const item = {
 
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
+
+  const applicationId = useActiveApplicationId();
+
+  const categories: {
+    id: string;
+    children: Category[];
+  }[] = [
+    {
+      id: 'Manage',
+      children: [
+        // {
+        //   id: 'Dashboard',
+        //   to: '/',
+        //   icon: <BarChart />,
+        //   active: false,
+        // },
+        {
+          id: 'Customers',
+          to: `/applications/${applicationId}/customers`,
+          icon: <PeopleIcon />,
+          active: false,
+        },
+        {
+          id: 'Configuration',
+          to: `/applications/${applicationId}/configuration/integrations/crm`,
+          icon: <Tune />,
+          active: false,
+        },
+        {
+          id: 'Sync Logs',
+          to: `/applications/${applicationId}/sync_logs`,
+          icon: <FindInPage />,
+          active: false,
+        },
+      ],
+    },
+    {
+      id: 'Learn',
+      children: [
+        {
+          id: 'API Explorer',
+          to: 'https://docs.supaglue.com/api',
+          icon: <Biotech />,
+          active: false,
+        },
+        {
+          id: 'Documentation',
+          to: 'https://docs.supaglue.com',
+          icon: <MenuBook />,
+          active: false,
+        },
+      ],
+    },
+  ];
 
   return (
     <Drawer variant="permanent" {...other}>

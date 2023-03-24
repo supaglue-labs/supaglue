@@ -1,12 +1,13 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPane';
+import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
-import { getServerSideProps } from '@/pages';
+import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { Box, Tab, Tabs } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useState } from 'react';
-import IntegrationTabPanelContainer from '../../components/configuration/IntegrationTabPanelContainer';
+import IntegrationTabPanelContainer from '../../../../components/configuration/IntegrationTabPanelContainer';
 
 export { getServerSideProps };
 
@@ -53,6 +54,8 @@ export default function Home() {
   const { tab = [] } = router.query;
   const [value, setValue] = React.useState(0);
 
+  const activeApplicationId = useActiveApplicationId();
+
   React.useEffect(() => {
     const tabIndex = configurationHeaderTabs.findIndex(
       (configurationHeaderTab) => configurationHeaderTab.value === tab[0]
@@ -68,7 +71,7 @@ export default function Home() {
       tab += '/crm';
     }
 
-    await router.push(`/configuration/${tab}`);
+    await router.push(`/applications/${activeApplicationId}/configuration/${tab}`);
   };
 
   const handleDrawerToggle = () => {

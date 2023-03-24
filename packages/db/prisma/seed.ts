@@ -270,7 +270,7 @@ async function seedCRMIntegrations() {
 }
 
 async function main() {
-  if (IS_CLOUD !== 'true') {
+  if (IS_CLOUD) {
     return;
   }
   await seedApplication();

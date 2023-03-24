@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { updateRemoteIntegration } from '@/client';
-import { useActiveApplication } from '@/context/activeApplication';
+import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
@@ -17,7 +17,7 @@ export type IntegrationDetailTabPanelProps = {
 };
 
 export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProps) {
-  const { activeApplication } = useActiveApplication();
+  const activeApplicationId = useActiveApplicationId();
   const { providerName } = props;
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
@@ -48,7 +48,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
     if (!syncPeriodSecs) {
       setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
     }
-  }, [integration]);
+  }, []);
 
   if (!integration || !integrationCardInfo) {
     return null;
@@ -151,7 +151,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
                   ei.id === newIntegration.id ? newIntegration : ei
                 );
 
-                updateRemoteIntegration(activeApplication.id, newIntegration);
+                updateRemoteIntegration(activeApplicationId, newIntegration);
                 mutate(updatedIntegrations, false);
                 router.push(`/configuration/integrations/${newIntegration.category}`);
               }}

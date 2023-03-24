@@ -1,7 +1,7 @@
 import { getOrgId } from '@/utils/org';
 import { Application } from '@supaglue/core/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { API_HOST, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from '../..';
+import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,7 +37,6 @@ export default async function handler(
         },
         body: JSON.stringify({
           name: req.body.name,
-          org_id: ORGANIZATION_ID,
         }),
       });
 

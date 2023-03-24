@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createRemoteApiKey, deleteRemoteApiKey } from '@/client';
-import { useActiveApplication } from '@/context/activeApplication';
+import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Box, Button, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
 
 export default function ApiKeyTabPanel() {
-  const { activeApplication } = useActiveApplication();
+  const activeApplicationId = useActiveApplicationId();
   const [apiKey, setApiKey] = useState('');
 
   return (
@@ -37,7 +37,7 @@ export default function ApiKeyTabPanel() {
             <Button
               variant="contained"
               onClick={async () => {
-                const { api_key: newApiKey } = await createRemoteApiKey(activeApplication.id);
+                const { api_key: newApiKey } = await createRemoteApiKey(activeApplicationId);
                 setApiKey(newApiKey);
               }}
             >
@@ -49,7 +49,7 @@ export default function ApiKeyTabPanel() {
               variant="text"
               color="error"
               onClick={() => {
-                deleteRemoteApiKey(activeApplication.id);
+                deleteRemoteApiKey(activeApplicationId);
                 setApiKey('');
               }}
             >
