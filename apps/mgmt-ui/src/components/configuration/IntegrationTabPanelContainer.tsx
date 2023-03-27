@@ -2,6 +2,7 @@ import HubspotIcon from '@/assets/connector_icons/hubspot.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import Box from '@mui/material/Box';
+import { CRMProviderName, IntegrationCategory } from '@supaglue/core/types';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -15,7 +16,6 @@ export type IntegrationCardInfo = {
   name: string;
   category: 'crm';
   providerName: string;
-  status: 'available' | 'auth-only';
   description: string;
 };
 
@@ -25,7 +25,6 @@ export const integrationCardsInfo: IntegrationCardInfo[] = [
     name: 'Salesforce',
     providerName: 'salesforce',
     category: 'crm',
-    status: 'available',
     description: 'Configure your Salesforce integration.',
   },
   {
@@ -33,7 +32,6 @@ export const integrationCardsInfo: IntegrationCardInfo[] = [
     name: 'HubSpot',
     providerName: 'hubspot',
     category: 'crm',
-    status: 'available',
     description: 'Configure your HubSpot integration.',
   },
 ];
@@ -64,7 +62,7 @@ export default function IntegrationTabPanelContainer() {
   const router = useRouter();
   const { tab = [] } = router.query;
   const [_, category, providerName] = Array.isArray(tab) ? tab : [tab];
-  const { integrations: existingIntegrations = [] } = useIntegrations();
+  const { integrations: existingIntegrations = [], isLoading } = useIntegrations();
 
   const isListPage = tab.length === 2;
   const isDetailPage = tab.length === 3;
@@ -73,12 +71,18 @@ export default function IntegrationTabPanelContainer() {
     <TabPanel value={0} index={0} className="w-full">
       {isListPage && (
         <IntegrationsListPanel
-          status="available"
+          isLoading={isLoading}
           integrationCardsInfo={integrationCardsInfo}
           existingIntegrations={existingIntegrations}
         />
       )}
-      {isDetailPage && <IntegrationDetailsPanel status="available" category={category} providerName={providerName} />}
+      {isDetailPage && (
+        <IntegrationDetailsPanel
+          isLoading={isLoading}
+          category={category as IntegrationCategory}
+          providerName={providerName as CRMProviderName}
+        />
+      )}
     </TabPanel>
   );
 }
