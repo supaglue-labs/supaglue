@@ -14,6 +14,7 @@ export default function init(app: Router): void {
   const v1Router = Router();
 
   v1Router.use(apiKeyHeaderMiddleware);
+  // TODO: Remove once all customers are backfilled / migrated
   v1Router.post('/_backfill_remote_account_ids', async (req: Request, res: Response) => {
     await connectionService.backfillRemoteAccountIds(req.supaglueApplication.id);
     return res.status(200).send();
