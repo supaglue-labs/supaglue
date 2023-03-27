@@ -123,6 +123,15 @@ Create a test customer using postman.
 Go to
 <https://$API_HOST/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&returnUrl=https://$MANAGEMENT_HOST>
 
+### Troubleshooting
+
+Sometimes when setting up Supaglue initially, the Temporal helm chart that our chart depends on will fail to migrate the cassandra schema. You will know this is happening when the `supaglue-temporal-*` containers are in `CrashLoopBackoff` state for a long time. To fix this, you can run the following commands to manually migrate the schema:
+
+```shell
+kubectl exec deployment/supaglue-temporal-admintools -n supaglue -- temporal-cassandra-tool -ep supaglue-cassandra.supaglue.svc.cluster.local -k temporal update-schema -d ./schema/cassandra/temporal/versioned
+kubectl exec deployment/supaglue-temporal-admintools -n supaglue -- temporal-cassandra-tool -ep supaglue-cassandra.supaglue.svc.cluster.local -k temporal_visibility update-schema -d ./schema/cassandra/visibility/versioned
+```
+
 ## Upgrading
 
 ### Upgrading to 0.6.x
