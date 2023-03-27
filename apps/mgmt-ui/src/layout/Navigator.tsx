@@ -97,7 +97,7 @@ export default function Navigator(props: DrawerProps) {
             </ListItem>
             {children.map(({ id: childId, icon, active, to }) => (
               <ListItem disablePadding key={childId}>
-                <MUILink href={to} component={NextLink} sx={{ width: '100%', 'text-decoration': 'none' }}>
+                <MUILink href={to} component={NextLink} sx={{ width: '100%', textDecoration: 'none' }}>
                   <ListItemButton selected={active} sx={item}>
                     <ListItemIcon>{icon}</ListItemIcon>
                     <ListItemText>{childId}</ListItemText>
