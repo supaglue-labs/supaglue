@@ -19,7 +19,7 @@ import * as React from 'react';
 
 export default function ApplicationMenu() {
   const router = useRouter();
-  const { applications = [], mutate } = useApplications();
+  const { applications = [] } = useApplications();
   const { activeApplication, isLoading } = useActiveApplication();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -33,7 +33,6 @@ export default function ApplicationMenu() {
 
   const onAddApplication = async (name: string) => {
     const newApplication = await addApplication(name);
-    await mutate([...applications, newApplication]);
     await router.push(`/applications/${newApplication.id}`);
   };
 

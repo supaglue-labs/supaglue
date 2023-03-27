@@ -16,7 +16,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(500).json(null);
   }
 
-  const r = await result.json();
-
-  return res.status(200).json(r);
+  return res.status(200);
 }

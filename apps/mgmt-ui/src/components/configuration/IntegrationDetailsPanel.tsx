@@ -5,7 +5,6 @@ import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { Integration } from '@supaglue/core/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { integrationCardsInfo } from './IntegrationTabPanelContainer';
@@ -25,7 +24,7 @@ export default function IntegrationDetailsPanel(props: IntegrationDetailsPanelPr
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const router = useRouter();
 
-  const { integrations: existingIntegrations = [], mutate } = useIntegrations();
+  const { integrations: existingIntegrations = [] } = useIntegrations();
 
   const integration = existingIntegrations.find(
     (existingIntegration) => existingIntegration.providerName === providerName
@@ -147,12 +146,7 @@ export default function IntegrationDetailsPanel(props: IntegrationDetailsPanelPr
                     },
                   },
                 };
-                const updatedIntegrations = existingIntegrations.map((ei: Integration) =>
-                  ei.id === newIntegration.id ? newIntegration : ei
-                );
-
                 updateRemoteIntegration(activeApplicationId, newIntegration);
-                mutate(updatedIntegrations, false);
                 router.push(`/configuration/integrations/${newIntegration.category}`);
               }}
             >
