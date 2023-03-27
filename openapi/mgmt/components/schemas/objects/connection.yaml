@@ -24,6 +24,9 @@ properties:
     $ref: ./provider_name.yaml
   category:
     $ref: ./category.yaml
+  remote_account_id:
+    type: string
+    example: 123456
 required:
   - id
   - status
@@ -32,3 +35,4 @@ required:
   - integration_id
   - provider_name
   - category
+  - remote_account_id

@@ -1,11 +1,12 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { Client as HubspotClient } from '@hubspot/api-client';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes/crm';
 import { ConnectionCreateParams, ConnectionUpsertParams } from '@supaglue/core/types/connection';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/core/types/crm';
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
-const { integrationService, connectionWriterService, customerService } = getDependencyContainer();
+const { integrationService, connectionWriterService } = getDependencyContainer();
 
 const SERVER_URL = process.env.SUPAGLUE_SERVER_URL ?? 'http://localhost:8080';
 const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
@@ -139,11 +140,20 @@ export default function init(app: Router): void {
       // TODO: implement code_verifier/code_challenge when we implement sessions
       const additionalAuthParams: Record<string, string> = {};
 
-      const accessToken = await client.getToken({
+      const tokenWrapper = await client.getToken({
         code,
         redirect_uri: REDIRECT_URI,
         ...additionalAuthParams,
       });
+
+      let remoteAccountId = tokenWrapper.token['refresh_token'] as string;
+
+      if (providerName) {
+        const accessToken = tokenWrapper.token['access_token'] as string;
+        const hubspotClient = new HubspotClient({ accessToken: tokenWrapper.token['access_token'] as string });
+        const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(accessToken);
+        remoteAccountId = hubId.toString();
+      }
 
       const payload: ConnectionCreateParams | ConnectionUpsertParams = {
         category: 'crm',
@@ -153,11 +163,12 @@ export default function init(app: Router): void {
         integrationId: integration.id,
         credentials: {
           type: 'oauth2',
-          accessToken: accessToken.token['access_token'] as string,
-          refreshToken: accessToken.token['refresh_token'] as string,
-          instanceUrl: accessToken.token['instance_url'] as string,
-          expiresAt: accessToken.token['expires_at'] as string,
+          accessToken: tokenWrapper.token['access_token'] as string,
+          refreshToken: tokenWrapper.token['refresh_token'] as string,
+          instanceUrl: tokenWrapper.token['instance_url'] as string,
+          expiresAt: tokenWrapper.token['expires_at'] as string,
         },
+        remoteAccountId,
       };
 
       try {
