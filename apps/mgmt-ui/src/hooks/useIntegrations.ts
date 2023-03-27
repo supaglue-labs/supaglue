@@ -1,4 +1,4 @@
-import { camelcaseKeys } from '@/utils/camelcase';
+import { camelcaseKeys } from '@supaglue/core/lib/camelcase';
 import { Integration } from '@supaglue/core/types';
 import { useSWRWithApplication } from './useSWRWithApplication';
 

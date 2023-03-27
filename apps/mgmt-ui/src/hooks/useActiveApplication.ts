@@ -1,4 +1,3 @@
-import { camelcaseKeys } from '@/utils/camelcase';
 import { Application } from '@supaglue/core/types/application';
 import useSWR from 'swr';
 import { fetcher } from '.';
@@ -12,7 +11,7 @@ export function useActiveApplication() {
   );
 
   return {
-    activeApplication: data ? camelcaseKeys(data) : undefined,
+    activeApplication: data,
     isLoading,
     error,
     ...rest,

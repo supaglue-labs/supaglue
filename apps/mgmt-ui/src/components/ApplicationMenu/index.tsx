@@ -2,7 +2,7 @@ import { addApplication } from '@/client';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { useApplications } from '@/hooks/useApplications';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, Divider, Link as MUILink, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,14 +13,14 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
-import NextLink from 'next/link';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export default function ApplicationMenu() {
   const router = useRouter();
   const { applications = [], mutate } = useApplications();
-  const { activeApplication } = useActiveApplication();
+  const { activeApplication, isLoading } = useActiveApplication();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -58,7 +58,9 @@ export default function ApplicationMenu() {
       >
         <Box>
           <Typography sx={{ fontSize: 12 }}>Application</Typography>
-          <Typography sx={{ fontSize: 20, lineHeight: 1 }}>{activeApplication?.name}</Typography>
+          <Typography sx={{ fontSize: 20, lineHeight: 1 }}>
+            {isLoading ? 'Loading...' : activeApplication?.name}
+          </Typography>
         </Box>
       </Button>
       <Menu
@@ -72,17 +74,17 @@ export default function ApplicationMenu() {
       >
         {/* TODO: Implement loading state */}
         {applications.map(({ id, name }) => (
-          <>
-            <MUILink
+          <MenuItem key={id}>
+            <Link
+              style={{
+                textDecoration: 'none',
+                color: '#000',
+              }}
               href={`/applications/${id}`}
-              component={NextLink}
-              sx={{ width: '100%', 'text-decoration': 'none', color: 'rgba(0, 0, 0, 0.87);' }}
             >
-              <MenuItem key={id} component="a" href={`/applications/${id}`}>
-                {name}
-              </MenuItem>
-            </MUILink>
-          </>
+              {name}
+            </Link>
+          </MenuItem>
         ))}
         <Divider />
         <NewApplication onCreate={onAddApplication} />

@@ -3,13 +3,13 @@ import { Integration } from '@supaglue/core/types';
 import IntegrationCard from './IntegrationCard';
 import { IntegrationCardInfo } from './IntegrationTabPanelContainer';
 
-export type IntegrationTabPanelProps = {
+export type IntegrationsListPanelProps = {
   integrationCardsInfo: IntegrationCardInfo[];
   existingIntegrations: Integration[];
   status: string;
 };
 
-export default function IntegrationsTabPanel(props: IntegrationTabPanelProps) {
+export default function IntegrationsListPanel(props: IntegrationsListPanelProps) {
   const { integrationCardsInfo, existingIntegrations, status } = props;
 
   return (

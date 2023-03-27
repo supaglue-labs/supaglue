@@ -5,8 +5,8 @@ import Box from '@mui/material/Box';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import IntegrationsTabPanel from './IntegrationsTabPanel';
-import IntegrationTabPanel from './IntegrationTabPanel';
+import IntegrationDetailsPanel from './IntegrationDetailsPanel';
+import IntegrationsListPanel from './IntegrationsTabPanel';
 
 const ICON_SIZE = 35;
 
@@ -72,13 +72,13 @@ export default function IntegrationTabPanelContainer() {
   return (
     <TabPanel value={0} index={0} className="w-full">
       {isListPage && (
-        <IntegrationsTabPanel
+        <IntegrationsListPanel
           status="available"
           integrationCardsInfo={integrationCardsInfo}
           existingIntegrations={existingIntegrations}
         />
       )}
-      {isDetailPage && <IntegrationTabPanel status="available" category={category} providerName={providerName} />}
+      {isDetailPage && <IntegrationDetailsPanel status="available" category={category} providerName={providerName} />}
     </TabPanel>
   );
 }

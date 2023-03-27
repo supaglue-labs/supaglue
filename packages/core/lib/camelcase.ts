@@ -14,3 +14,12 @@ export function camelcaseKeysSansCustomFields<T extends Record<string, any> & { 
     customFields: inputObject.custom_fields,
   };
 }
+
+export function camelcaseKeysSansHeaders<T extends Record<string, any> & { headers?: Record<string, any> }>(
+  inputObject: T
+) {
+  return {
+    ...camelcaseKeys(inputObject),
+    headers: inputObject.headers,
+  };
+}

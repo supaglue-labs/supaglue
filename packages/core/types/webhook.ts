@@ -1,7 +1,7 @@
 import { CommonModel } from './common';
 import { ConnectionCreateParams } from './connection';
 
-type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+export type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export type WebhookConfig = {
   url: string;

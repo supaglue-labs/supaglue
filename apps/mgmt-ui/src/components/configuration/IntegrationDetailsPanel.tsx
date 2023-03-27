@@ -5,18 +5,17 @@ import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { Integration } from '@supaglue/core/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { integrationCardsInfo } from './IntegrationTabPanelContainer';
 
-export type IntegrationDetailTabPanelProps = {
+export type IntegrationDetailsPanelProps = {
   category: string;
   providerName: string;
   status: string;
 };
 
-export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProps) {
+export default function IntegrationDetailsPanel(props: IntegrationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
   const { providerName } = props;
   const [clientId, setClientId] = useState<string>('');
@@ -25,7 +24,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const router = useRouter();
 
-  const { integrations: existingIntegrations = [], mutate } = useIntegrations();
+  const { integrations: existingIntegrations = [] } = useIntegrations();
 
   const integration = existingIntegrations.find(
     (existingIntegration) => existingIntegration.providerName === providerName
@@ -48,7 +47,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
     if (!syncPeriodSecs) {
       setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
     }
-  }, []);
+  }, [integration?.id]);
 
   if (!integration || !integrationCardInfo) {
     return null;
@@ -147,12 +146,7 @@ export default function IntegrationTabPanel(props: IntegrationDetailTabPanelProp
                     },
                   },
                 };
-                const updatedIntegrations = existingIntegrations.map((ei: Integration) =>
-                  ei.id === newIntegration.id ? newIntegration : ei
-                );
-
                 updateRemoteIntegration(activeApplicationId, newIntegration);
-                mutate(updatedIntegrations, false);
                 router.push(`/configuration/integrations/${newIntegration.category}`);
               }}
             >

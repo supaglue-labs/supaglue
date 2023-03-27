@@ -14,7 +14,6 @@
     "@temporalio/activity": "^1.6.0",
     "@temporalio/client": "^1.6.0",
     "@temporalio/workflow": "^1.6.0",
-    "camelcase-keys": "^7.0.2",
     "cors": "^2.8.5",
     "express": ">=5.0.0-beta.1",
     "express-openapi-validator": "^5.0.2",
