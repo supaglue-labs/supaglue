@@ -196,6 +196,7 @@ function Headers({ headersList, setHeadersList, isLoading }: HeadersProps) {
     <Stack direction="column" className="gap-4">
       {headersList.map(({ name, value }, idx) => (
         <HeaderRow
+          key={idx}
           name={name}
           value={value}
           isLoading={isLoading}
