@@ -458,6 +458,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
     return await super.sendPassthroughRequest(request);
   }
+
+  // TODO: Delete once all customers are migrated and backfilled
+  public async getHubId() {
+    await this.maybeRefreshAccessToken();
+    const { hubId } = await this.#client.oauth.accessTokensApi.getAccessToken(this.#credentials.accessToken);
+    return hubId.toString();
+  }
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection

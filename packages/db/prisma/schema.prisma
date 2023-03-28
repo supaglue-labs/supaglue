@@ -67,6 +67,8 @@ model Connection {
   credentials     Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
   customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId      String        @map("customer_id")
+  // TODO: Make it non-optional after all customers have been migrated.
+  remoteId        String?       @map("remote_id")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   syncs           Sync[]

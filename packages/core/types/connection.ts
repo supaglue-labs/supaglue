@@ -16,6 +16,7 @@ type BaseConnectionCreateParams = {
   customerId: string;
   integrationId: string;
   credentials: ConnectionCredentialsDecrypted;
+  remoteId: string;
 };
 
 type BaseConnection = BaseConnectionCreateParams & {
