@@ -26,8 +26,8 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
     isActive: record.IsActive,
     remoteWasDeleted: false,
     // These fields are not supported by Salesforce
-    remoteCreatedAt: record.CreatedDate,
-    remoteUpdatedAt: record.SystemModstamp,
+    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
   };
 };
 

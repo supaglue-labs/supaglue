@@ -77,7 +77,6 @@ const propertiesToFetch = {
     'Fax',
     'HomePhone',
     'MobilePhone',
-    'CreatedDate',
     'LastActivityDate',
     // We may not need all of these fields in order to map to common model
     'MailingCity',
@@ -132,7 +131,7 @@ const propertiesToFetch = {
     'Email',
     'IsDeleted',
   ],
-  user: ['Id', 'Name', 'Email', 'IsActive'],
+  user: ['Id', 'Name', 'Email', 'IsActive', 'CreatedDate', 'SystemModstamp'],
 };
 
 // this is incomplete; it only includes the fields that we need to use
