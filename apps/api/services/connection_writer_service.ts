@@ -103,7 +103,7 @@ export class ConnectionWriterService {
         // an event to another table and have a background job pick this up to guarantee
         // that we start up syncs when connections are created.
         // TODO: Do this for non-CRM models
-        await this.#syncService.createSyncsSchedule(connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
+        await this.#syncService.createSync(connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
       }
       return connection;
     } catch (e) {
