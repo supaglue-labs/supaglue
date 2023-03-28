@@ -27,7 +27,7 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
     remoteWasDeleted: false,
     // These fields are not supported by Salesforce
     remoteCreatedAt: record.CreatedDate,
-    remoteUpdatedAt: record.SystemModStamp,
+    remoteUpdatedAt: record.SystemModstamp,
   };
 };
 
@@ -96,7 +96,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     // Figure out where this comes from
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModStam ? new Date(record.SystemModStam) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
   };
 };
@@ -187,7 +187,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     phoneNumbers,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModStam ? new Date(record.SystemModStam) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
   };
 };
@@ -248,7 +248,7 @@ export const fromSalesforceLeadToRemoteLead = (
         ]
       : [],
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModStam ? new Date(record.SystemModStam) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
   };
 };
@@ -295,7 +295,7 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     amount: record.Amount ? parseInt(record.Amount) : null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModStam ? new Date(record.SystemModStam) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
   };
 };

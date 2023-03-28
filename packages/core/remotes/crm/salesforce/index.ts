@@ -63,7 +63,7 @@ const propertiesToFetch = {
     'Fax',
     'LastActivityDate',
     'CreatedDate',
-    'SystemModStamp',
+    'SystemModstamp',
     'IsDeleted',
   ],
   contact: [
@@ -93,7 +93,7 @@ const propertiesToFetch = {
     'OtherStreet',
     'IsDeleted',
     'CreatedDate',
-    'SystemModStamp',
+    'SystemModstamp',
   ],
   opportunity: [
     'Id',
@@ -108,7 +108,7 @@ const propertiesToFetch = {
     'StageName',
     'CloseDate',
     'CreatedDate',
-    'SystemModStamp',
+    'SystemModstamp',
     'AccountId',
   ],
   lead: [
@@ -119,7 +119,7 @@ const propertiesToFetch = {
     'LastName',
     'ConvertedDate',
     'CreatedDate',
-    'SystemModStamp',
+    'SystemModstamp',
     'ConvertedContactId',
     'ConvertedAccountId',
     'Company',
