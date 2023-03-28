@@ -108,7 +108,7 @@ const propertiesToFetch = {
     'StageName',
     'CloseDate',
     'CreatedDate',
-    'SystemModStam',
+    'SystemModStamp',
     'AccountId',
   ],
   lead: [
@@ -119,7 +119,7 @@ const propertiesToFetch = {
     'LastName',
     'ConvertedDate',
     'CreatedDate',
-    'SystemModStam',
+    'SystemModStamp',
     'ConvertedContactId',
     'ConvertedAccountId',
     'Company',
