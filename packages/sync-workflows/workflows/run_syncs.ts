@@ -126,18 +126,20 @@ async function doFullThenIncrementalSync({
       )
     ) as Record<CommonModel, ImportRecordsResult>;
 
+    const newMaxRemoteUpdatedAtMsMap = {
+      account: importRecordsResultList['account'].maxRemoteUpdatedAtMs,
+      lead: importRecordsResultList['lead'].maxRemoteUpdatedAtMs,
+      opportunity: importRecordsResultList['opportunity'].maxRemoteUpdatedAtMs,
+      contact: importRecordsResultList['contact'].maxRemoteUpdatedAtMs,
+      user: importRecordsResultList['user'].maxRemoteUpdatedAtMs,
+    };
+
     await updateSyncState({
       syncId: sync.id,
       state: {
         phase: 'full',
         status: 'in progress',
-        maxRemoteUpdatedAtMsMap: {
-          account: importRecordsResultList['account'].maxRemoteUpdatedAtMs,
-          lead: importRecordsResultList['lead'].maxRemoteUpdatedAtMs,
-          opportunity: importRecordsResultList['opportunity'].maxRemoteUpdatedAtMs,
-          contact: importRecordsResultList['contact'].maxRemoteUpdatedAtMs,
-          user: importRecordsResultList['user'].maxRemoteUpdatedAtMs,
-        },
+        maxRemoteUpdatedAtMsMap: newMaxRemoteUpdatedAtMsMap,
       },
     });
 
@@ -148,13 +150,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'full',
         status: 'done',
-        maxRemoteUpdatedAtMsMap: {
-          account: importRecordsResultList['account'].maxRemoteUpdatedAtMs,
-          lead: importRecordsResultList['lead'].maxRemoteUpdatedAtMs,
-          opportunity: importRecordsResultList['opportunity'].maxRemoteUpdatedAtMs,
-          contact: importRecordsResultList['contact'].maxRemoteUpdatedAtMs,
-          user: importRecordsResultList['user'].maxRemoteUpdatedAtMs,
-        },
+        maxRemoteUpdatedAtMsMap: newMaxRemoteUpdatedAtMsMap,
       },
     });
 
@@ -164,19 +160,44 @@ async function doFullThenIncrementalSync({
   }
 
   async function doIncrementalPhase(): Promise<Record<CommonModel, number>> {
-    // TODO: implement true incremental. right now it's just reusing full-refresh code
-    await updateSyncState({
-      syncId: sync.id,
-      state: {
-        phase: 'incremental',
-        status: 'in progress',
-        maxRemoteUpdatedAtMsMap: {
+    function getOriginalMaxRemoteUpdatedAtMsMap(): Record<CommonModel, number> {
+      // TODO: we shouldn't need to do this, since it's not possible to
+      // start the incremental phase if the full phase hasn't been completed.
+      if (sync.state.phase === 'created') {
+        return {
           account: 0,
           lead: 0,
           opportunity: 0,
           contact: 0,
           user: 0,
-        },
+        };
+      }
+
+      return sync.state.maxRemoteUpdatedAtMsMap;
+    }
+
+    function computeUpdatedMaxRemoteUpdatedAtMsMap(
+      importRecordsResultList: Record<CommonModel, ImportRecordsResult>
+    ): Record<CommonModel, number> {
+      const originalMaxRemoteUpdatedAtMsMap = getOriginalMaxRemoteUpdatedAtMsMap();
+
+      return Object.fromEntries(
+        CRM_COMMON_MODELS.map((commonModel) => [
+          commonModel,
+          Math.max(
+            originalMaxRemoteUpdatedAtMsMap[commonModel],
+            importRecordsResultList[commonModel].maxRemoteUpdatedAtMs
+          ),
+        ])
+      ) as Record<CommonModel, number>;
+    }
+
+    await updateSyncState({
+      syncId: sync.id,
+      state: {
+        phase: 'incremental',
+        status: 'in progress',
+        maxRemoteUpdatedAtMsMap: getOriginalMaxRemoteUpdatedAtMsMap(),
       },
     });
 
@@ -185,25 +206,26 @@ async function doFullThenIncrementalSync({
         CRM_COMMON_MODELS.map(async (commonModel) => {
           const entry: [CommonModel, ImportRecordsResult] = [
             commonModel,
-            await importRecords({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
+            await importRecords({
+              syncId: sync.id,
+              connectionId: sync.connectionId,
+              commonModel,
+              updatedAfterMs: getOriginalMaxRemoteUpdatedAtMsMap()[commonModel],
+            }),
           ];
           return entry;
         })
       )
     ) as Record<CommonModel, ImportRecordsResult>;
 
+    const newMaxRemoteUpdatedAtMsMap = computeUpdatedMaxRemoteUpdatedAtMsMap(importRecordsResultList);
+
     await updateSyncState({
       syncId: sync.id,
       state: {
         phase: 'incremental',
         status: 'in progress',
-        maxRemoteUpdatedAtMsMap: {
-          account: importRecordsResultList['account'].maxRemoteUpdatedAtMs,
-          lead: importRecordsResultList['lead'].maxRemoteUpdatedAtMs,
-          opportunity: importRecordsResultList['opportunity'].maxRemoteUpdatedAtMs,
-          contact: importRecordsResultList['contact'].maxRemoteUpdatedAtMs,
-          user: importRecordsResultList['user'].maxRemoteUpdatedAtMs,
-        },
+        maxRemoteUpdatedAtMsMap: newMaxRemoteUpdatedAtMsMap,
       },
     });
 
@@ -214,13 +236,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'incremental',
         status: 'done',
-        maxRemoteUpdatedAtMsMap: {
-          account: importRecordsResultList['account'].maxRemoteUpdatedAtMs,
-          lead: importRecordsResultList['lead'].maxRemoteUpdatedAtMs,
-          opportunity: importRecordsResultList['opportunity'].maxRemoteUpdatedAtMs,
-          contact: importRecordsResultList['contact'].maxRemoteUpdatedAtMs,
-          user: importRecordsResultList['user'].maxRemoteUpdatedAtMs,
-        },
+        maxRemoteUpdatedAtMsMap: newMaxRemoteUpdatedAtMsMap,
       },
     });
 

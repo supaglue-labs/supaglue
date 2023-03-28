@@ -3151,9 +3151,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hubspot/api-client@npm:8.3.2":
-  version: 8.3.2
-  resolution: "@hubspot/api-client@npm:8.3.2"
+"@hubspot/api-client@npm:8.8.1":
+  version: 8.8.1
+  resolution: "@hubspot/api-client@npm:8.8.1"
   dependencies:
     "@types/node-fetch": ^2.5.7
     bottleneck: ^2.19.5
@@ -3163,7 +3163,7 @@ __metadata:
     lodash.merge: ^4.6.2
     node-fetch: ^2.6.0
     url-parse: ^1.4.3
-  checksum: 965c25c5265f9dc43cce88291d3a8144f28fea12f90e0b1ec2ed04c0cc396da3d3994fc93041b3f04ff330f16b0ec1d26d83445e0f7de47069d5e1d2d9e9568c
+  checksum: 43102bfae44ebaeb1c41aabca6d75af3125b01362d5814461187c3782fb9514353fbf6f43c08d715ef83a9fbd27f5d31663fc2bbaa1abec5fbcc20966eb1e14c
   languageName: node
   linkType: hard
 
@@ -4275,7 +4275,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/core@workspace:packages/core"
   dependencies:
-    "@hubspot/api-client": 8.3.2
+    "@hubspot/api-client": 8.8.1
     "@sentry/integrations": ^7.43.0
     "@sentry/node": ^7.43.0
     "@supaglue/db": "workspace:*"
