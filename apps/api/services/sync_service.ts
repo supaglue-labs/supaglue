@@ -1,7 +1,7 @@
 import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@/temporal/index';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { ConnectionSafe, CRM_COMMON_MODELS, Sync } from '@supaglue/core/types/';
+import { ConnectionSafe, CRM_COMMON_MODELS, Sync, SyncState, SyncStrategy } from '@supaglue/core/types/';
 import { CommonModel } from '@supaglue/core/types/common';
 import { SyncInfo, SyncInfoFilter } from '@supaglue/core/types/sync_info';
 import { PrismaClient } from '@supaglue/db';
@@ -19,6 +19,36 @@ export class SyncService {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#connectionService = connectionService;
+  }
+
+  public async getSync(id: string): Promise<Sync> {
+    const syncModel = await this.#prisma.sync.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+
+    return {
+      id: syncModel.id,
+      connectionId: syncModel.connectionId,
+      strategy: syncModel.strategy as SyncStrategy,
+      state: syncModel.state as SyncState,
+    };
+  }
+
+  public async getSyncByConnectionId(connectionId: string): Promise<Sync> {
+    const syncModel = await this.#prisma.sync.findUniqueOrThrow({
+      where: {
+        connectionId,
+      },
+    });
+
+    return {
+      id: syncModel.id,
+      connectionId: syncModel.connectionId,
+      strategy: syncModel.strategy as SyncStrategy,
+      state: syncModel.state as SyncState,
+    };
   }
 
   public async createSync(connection: ConnectionSafe, syncPeriodMs: number): Promise<Sync> {
