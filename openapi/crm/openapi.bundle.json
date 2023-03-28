@@ -2876,8 +2876,7 @@
             "country",
             "postal_code",
             "state",
-            "street1",
-            "street2"
+            "street1"
           ]
         },
         "example": [

@@ -1,5 +1,6 @@
 import {
   Address,
+  EmailAddress,
   OpportunityStatus,
   PhoneNumber,
   RemoteAccount,
@@ -14,7 +15,21 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
+  RemoteUser,
 } from '../../../types';
+
+export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): RemoteUser => {
+  return {
+    remoteId: record.Id,
+    name: record.Name,
+    email: record.Email,
+    isActive: record.IsActive,
+    remoteWasDeleted: false,
+    // These fields are not supported by Salesforce
+    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+  };
+};
 
 export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>): RemoteAccount => {
   const billingAddress: Address | null =
@@ -81,7 +96,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     // Figure out where this comes from
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.LastModifiedDate ? new Date(record.LastModifiedDate) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
   };
 };
@@ -93,6 +108,9 @@ export const toSalesforceAccountCreateParams = (params: RemoteAccountCreateParam
     Industry: params.industry,
     Website: params.website,
     NumberOfEmployees: params.numberOfEmployees,
+    ...toSalesforceAccountAddressCreateParams(params.addresses),
+    ...toSalesforceAccountPhoneCreateParams(params.phoneNumbers),
+    ...params.customFields,
   };
 };
 
@@ -165,11 +183,11 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
     addresses,
-    emailAddresses: [{ emailAddress: record.Email, emailAddressType: 'primary' }],
+    emailAddresses: record.Email ? [{ emailAddress: record.Email, emailAddressType: 'primary' }] : [],
     phoneNumbers,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.LastModifiedDate ? new Date(record.LastModifiedDate) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
   };
 };
@@ -179,6 +197,10 @@ export const toSalesforceContactCreateParams = (params: RemoteContactCreateParam
     FirstName: params.firstName,
     LastName: params.lastName,
     AccountId: params.accountId,
+    ...toSalesforceEmailCreateParams(params.emailAddresses),
+    ...toSalesforceContactAddressCreateParams(params.addresses),
+    ...toSalesforceContactPhoneCreateParams(params.phoneNumbers),
+    ...params.customFields,
   };
 };
 
@@ -216,15 +238,17 @@ export const fromSalesforceLeadToRemoteLead = (
         addressType: 'primary',
       },
     ],
-    emailAddresses: [{ emailAddress: record.Email, emailAddressType: 'primary' }],
-    phoneNumbers: [
-      {
-        phoneNumber: record.Phone ?? null,
-        phoneNumberType: 'primary',
-      },
-    ],
+    emailAddresses: record.Email ? [{ emailAddress: record.Email, emailAddressType: 'primary' }] : [],
+    phoneNumbers: record.Phone
+      ? [
+          {
+            phoneNumber: record.Phone ?? null,
+            phoneNumberType: 'primary',
+          },
+        ]
+      : [],
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.LastModifiedDate ? new Date(record.LastModifiedDate) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
   };
 };
@@ -236,6 +260,9 @@ export const toSalesforceLeadCreateParams = (params: RemoteLeadCreateParams) => 
     Title: params.title,
     LeadSource: params.leadSource,
     Company: params.company,
+    ...toSalesforceEmailCreateParams(params.emailAddresses),
+    ...toSalesforceLeadAddressCreateParams(params.addresses),
+    ...params.customFields,
   };
 };
 
@@ -268,7 +295,7 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     amount: record.Amount ? parseInt(record.Amount) : null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.LastModifiedDate ? new Date(record.LastModifiedDate) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
   };
 };
@@ -281,6 +308,7 @@ export const toSalesforceOpportunityCreateParams = (params: RemoteOpportunityCre
     Name: params.name,
     StageName: params.stage,
     AccountId: params.accountId,
+    ...params.customFields,
   };
 };
 
@@ -288,5 +316,92 @@ export const toSalesforceOpportunityUpdateParams = (params: RemoteOpportunityUpd
   return {
     Id: params.remoteId,
     ...toSalesforceOpportunityCreateParams(params),
+  };
+};
+
+const toSalesforceAccountAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
+  if (!addresses) {
+    return {};
+  }
+  const shipping = addresses.find(({ addressType }) => addressType === 'shipping');
+  const billing = addresses.find(({ addressType }) => addressType === 'billing');
+  return {
+    ShippingStreet: shipping?.street1 ?? '',
+    ShippingCity: shipping?.city ?? '',
+    ShippingState: shipping?.state ?? '',
+    ShippingPostalCode: shipping?.postalCode ?? '',
+    ShippingCountry: shipping?.country ?? '',
+    BillingStreet: billing?.street1 ?? '',
+    BillingCity: billing?.city ?? '',
+    BillingState: billing?.state ?? '',
+    BillingPostalCode: billing?.postalCode ?? '',
+    BillingCountry: billing?.country ?? '',
+  };
+};
+
+const toSalesforceContactAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
+  if (!addresses) {
+    return {};
+  }
+  const mailing = addresses.find(({ addressType }) => addressType === 'mailing');
+  const other = addresses.find(({ addressType }) => addressType === 'other');
+  return {
+    MailingStreet: mailing?.street1 ?? '',
+    MailingCity: mailing?.city ?? '',
+    MailingState: mailing?.state ?? '',
+    MailingPostalCode: mailing?.postalCode ?? '',
+    MailingCountry: mailing?.country ?? '',
+    OtherStreet: other?.street1 ?? '',
+    OtherCity: other?.city ?? '',
+    OtherState: other?.state ?? '',
+    OtherPostalCode: other?.postalCode ?? '',
+    OtherCountry: other?.country ?? '',
+  };
+};
+
+const toSalesforceLeadAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
+  if (!addresses) {
+    return {};
+  }
+  const primary = addresses.find(({ addressType }) => addressType === 'primary');
+  return {
+    Street: primary?.street1 ?? '',
+    City: primary?.city ?? '',
+    State: primary?.state ?? '',
+    Zip: primary?.postalCode ?? '',
+    Country: primary?.country ?? '',
+  };
+};
+
+const toSalesforceAccountPhoneCreateParams = (phoneNumbers?: PhoneNumber[]): Record<string, string> => {
+  if (!phoneNumbers) {
+    return {};
+  }
+  const primary = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'primary');
+  const fax = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'fax');
+  return {
+    Phone: primary?.phoneNumber ?? '',
+    Fax: fax?.phoneNumber ?? '',
+  };
+};
+
+const toSalesforceContactPhoneCreateParams = (phoneNumbers?: PhoneNumber[]): Record<string, string> => {
+  if (!phoneNumbers) {
+    return {};
+  }
+  const mobile = phoneNumbers.find(({ phoneNumberType }) => phoneNumberType === 'mobile');
+  return {
+    ...toSalesforceAccountPhoneCreateParams(phoneNumbers),
+    MobilePhone: mobile?.phoneNumber ?? '',
+  };
+};
+
+const toSalesforceEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<string, string> => {
+  if (!emailAddresses) {
+    return {};
+  }
+  const primary = emailAddresses.find(({ emailAddressType }) => emailAddressType === 'primary');
+  return {
+    Email: primary?.emailAddress ?? '',
   };
 };
