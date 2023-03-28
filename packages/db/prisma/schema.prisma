@@ -231,6 +231,8 @@ model Sync {
   strategy     Json
   connectionId String     @unique @map("connection_id")
   connection   Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
 
   @@map("syncs")
 }
