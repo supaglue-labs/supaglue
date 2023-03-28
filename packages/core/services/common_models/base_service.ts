@@ -28,8 +28,9 @@ export abstract class CommonModelBaseService {
     table: string,
     tempTable: string,
     columnsWithoutId: string[],
-    mapper: (connectionId: string, customerId: string, remoteCommonModel: T) => Record<string, any>
-  ): Promise<number> {
+    mapper: (connectionId: string, customerId: string, remoteCommonModel: T) => Record<string, any>,
+    remoteUpdatedAtGetter: (remoteCommonModel: T) => Date | null
+  ): Promise<UpsertRemoteCommonModelsResult> {
     const client = await this.pgPool.connect();
 
     // TODO: On the first run, we should be able to directly write into the table and skip the temp table
@@ -55,13 +56,24 @@ export abstract class CommonModelBaseService {
         },
       });
 
+      // Keep track of the max remoteUpdatedAt
+      let maxRemoteUpdatedAt: Date | null = null;
+
       await pipeline(
         remoteCommonModelReadable,
         new Transform({
           objectMode: true,
           transform: (chunk, encoding, callback) => {
             try {
-              callback(null, mapper(connectionId, customerId, chunk));
+              const mappedRecord = mapper(connectionId, customerId, chunk);
+
+              // Update the max remoteUpdatedAt
+              const remoteUpdatedAt = remoteUpdatedAtGetter(chunk);
+              if (remoteUpdatedAt && (!maxRemoteUpdatedAt || remoteUpdatedAt > maxRemoteUpdatedAt)) {
+                maxRemoteUpdatedAt = remoteUpdatedAt;
+              }
+
+              callback(null, mappedRecord);
             } catch (e: any) {
               return callback(e);
             }
@@ -78,9 +90,18 @@ export abstract class CommonModelBaseService {
 SELECT * FROM ${tempTable}
 ON CONFLICT (connection_id, remote_id)
 DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
-      return result.rowCount;
+
+      return {
+        maxRemoteUpdatedAt,
+        numRecords: result.rowCount,
+      };
     } finally {
       client.release();
     }
   }
 }
+
+export type UpsertRemoteCommonModelsResult = {
+  maxRemoteUpdatedAt: Date | null;
+  numRecords: number;
+};

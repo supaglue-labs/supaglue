@@ -12,17 +12,18 @@ import { Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 
-export type DoSyncArgs = {
+export type ImportRecordsArgs = {
+  syncId: string;
   connectionId: string;
   commonModel: CommonModel;
-  syncId: string;
 };
 
-export type DoSyncResult = {
+export type ImportRecordsResult = {
+  maxRemoteUpdatedAtMs: number;
   numRecordsSynced: number;
 };
 
-export function createDoSync(
+export function createImportRecords(
   accountService: AccountService,
   connectionService: ConnectionService,
   contactService: ContactService,
@@ -31,18 +32,25 @@ export function createDoSync(
   leadService: LeadService,
   userService: UserService
 ) {
-  return async function doSync({ connectionId, commonModel, syncId }: DoSyncArgs): Promise<DoSyncResult> {
+  return async function importRecords({
+    syncId,
+    connectionId,
+    commonModel,
+  }: ImportRecordsArgs): Promise<ImportRecordsResult> {
     const connection = await connectionService.getSafeById(connectionId);
     const client = await remoteService.getCrmRemoteClient(connectionId);
 
-    let numRecordsSynced = 0;
+    let result = {
+      maxRemoteUpdatedAt: null as Date | null,
+      numRecords: 0,
+    };
 
     logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: commonModel });
 
     switch (commonModel) {
       case 'account': {
         const readable = await client.listAccounts();
-        numRecordsSynced = await accountService.upsertRemoteAccounts(
+        result = await accountService.upsertRemoteAccounts(
           connection.id,
           connection.customerId,
           toHeartbeatingReadable(readable)
@@ -51,7 +59,7 @@ export function createDoSync(
       }
       case 'contact': {
         const readable = await client.listContacts();
-        numRecordsSynced = await contactService.upsertRemoteContacts(
+        result = await contactService.upsertRemoteContacts(
           connection.id,
           connection.customerId,
           toHeartbeatingReadable(readable)
@@ -60,7 +68,7 @@ export function createDoSync(
       }
       case 'opportunity': {
         const readable = await client.listOpportunities();
-        numRecordsSynced = await opportunityService.upsertRemoteOpportunities(
+        result = await opportunityService.upsertRemoteOpportunities(
           connection.id,
           connection.customerId,
           toHeartbeatingReadable(readable)
@@ -69,7 +77,7 @@ export function createDoSync(
       }
       case 'lead': {
         const readable = await client.listLeads();
-        numRecordsSynced = await leadService.upsertRemoteLeads(
+        result = await leadService.upsertRemoteLeads(
           connection.id,
           connection.customerId,
           toHeartbeatingReadable(readable)
@@ -78,7 +86,7 @@ export function createDoSync(
       }
       case 'user': {
         const readable = await client.listUsers();
-        numRecordsSynced = await userService.upsertRemoteUsers(
+        result = await userService.upsertRemoteUsers(
           connection.id,
           connection.customerId,
           toHeartbeatingReadable(readable)
@@ -90,7 +98,8 @@ export function createDoSync(
     logEvent({ eventName: 'Completed Sync', syncId, providerName: connection.providerName, modelName: commonModel });
 
     return {
-      numRecordsSynced,
+      maxRemoteUpdatedAtMs: result.maxRemoteUpdatedAt ? result.maxRemoteUpdatedAt.getTime() : 0,
+      numRecordsSynced: result.numRecords,
     };
   };
 }

@@ -14,7 +14,7 @@ import type {
   PaginatedResult,
   PaginationParams,
 } from '../../types';
-import { CommonModelBaseService } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class OpportunityService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -194,7 +194,7 @@ export class OpportunityService extends CommonModelBaseService {
     connectionId: string,
     customerId: string,
     remoteOpportunitiesReadable: Readable
-  ): Promise<number> {
+  ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES['opportunities'];
     const tempTable = 'crm_opportunities_temp';
     const columnsWithoutId = [
@@ -223,7 +223,8 @@ export class OpportunityService extends CommonModelBaseService {
       table,
       tempTable,
       columnsWithoutId,
-      fromRemoteOpportunityToDbOpportunityParams
+      fromRemoteOpportunityToDbOpportunityParams,
+      (remoteOpportunity) => remoteOpportunity.remoteUpdatedAt
     );
   }
 

@@ -1,14 +1,36 @@
 import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@/temporal/index';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { ConnectionSafe, CRM_COMMON_MODELS, Sync, SyncState, SyncStrategy } from '@supaglue/core/types/';
+import {
+  ConnectionSafe,
+  CRM_COMMON_MODELS,
+  FullThenIncrementalSync,
+  Sync,
+  SyncState,
+  SyncType,
+} from '@supaglue/core/types';
 import { CommonModel } from '@supaglue/core/types/common';
 import { SyncInfo, SyncInfoFilter } from '@supaglue/core/types/sync_info';
-import { PrismaClient } from '@supaglue/db';
+import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { getRunSyncsScheduleId, getRunSyncsWorkflowId, runSyncs } from '@supaglue/sync-workflows/workflows/run_syncs';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
+
+function fromSyncModel(model: SyncModel): Sync {
+  // `strategy` looks like { type: 'full then incremental', ...otherProps }
+
+  const { type, ...otherStrategyProps } = model.strategy as { type: SyncType } & Record<string, unknown>;
+
+  // TODO: don't do type assertion
+  return {
+    id: model.id,
+    connectionId: model.connectionId,
+    type,
+    ...otherStrategyProps,
+    state: model.state as SyncState,
+  } as Sync;
+}
 
 export class SyncService {
   #prisma: PrismaClient;
@@ -21,47 +43,32 @@ export class SyncService {
     this.#connectionService = connectionService;
   }
 
-  public async getSync(id: string): Promise<Sync> {
-    const syncModel = await this.#prisma.sync.findUniqueOrThrow({
+  public async getSyncById(id: string): Promise<Sync> {
+    const model = await this.#prisma.sync.findUniqueOrThrow({
       where: {
         id,
       },
     });
-
-    return {
-      id: syncModel.id,
-      connectionId: syncModel.connectionId,
-      strategy: syncModel.strategy as SyncStrategy,
-      state: syncModel.state as SyncState,
-    };
+    return fromSyncModel(model);
   }
 
   public async getSyncByConnectionId(connectionId: string): Promise<Sync> {
-    const syncModel = await this.#prisma.sync.findUniqueOrThrow({
+    const model = await this.#prisma.sync.findUniqueOrThrow({
       where: {
         connectionId,
       },
     });
-
-    return {
-      id: syncModel.id,
-      connectionId: syncModel.connectionId,
-      strategy: syncModel.strategy as SyncStrategy,
-      state: syncModel.state as SyncState,
-    };
+    return fromSyncModel(model);
   }
 
   public async createSync(connection: ConnectionSafe, syncPeriodMs: number): Promise<Sync> {
     // Create sync as type first to get type-checking
-    const sync: Sync = {
+    const sync: FullThenIncrementalSync = {
       id: uuidv4(),
       connectionId: connection.id,
-      strategy: {
-        type: 'reverse then forward',
-        reverseSubStageCutoffTimestampMsList: [0],
-      },
+      type: 'full then incremental',
       state: {
-        stage: 'created',
+        phase: 'created',
       },
     };
 
@@ -69,7 +76,9 @@ export class SyncService {
       data: {
         id: sync.id,
         connectionId: sync.connectionId,
-        strategy: sync.strategy,
+        strategy: {
+          type: sync.type,
+        },
         state: sync.state,
       },
     });
@@ -78,15 +87,15 @@ export class SyncService {
     // an event to another table and have a background job pick this up to guarantee
     // that we start up syncs when connections are created.
     // TODO: Do this for non-CRM models
-    await this.#createSyncsSchedule(connection, syncPeriodMs);
+    await this.#createSyncsSchedule(sync.id, connection, syncPeriodMs);
 
     return sync;
   }
 
-  async #createSyncsSchedule(connection: ConnectionSafe, syncPeriodMs: number): Promise<void> {
+  async #createSyncsSchedule(syncId: string, connection: ConnectionSafe, syncPeriodMs: number): Promise<void> {
     try {
       await this.#temporalClient.schedule.create({
-        scheduleId: getRunSyncsScheduleId(connection.id),
+        scheduleId: getRunSyncsScheduleId(syncId),
         spec: {
           intervals: [
             {
@@ -99,10 +108,11 @@ export class SyncService {
         action: {
           type: 'startWorkflow',
           workflowType: runSyncs,
-          workflowId: getRunSyncsWorkflowId(connection.id),
+          workflowId: getRunSyncsWorkflowId(syncId),
           taskQueue: SYNC_TASK_QUEUE,
-          args: [{ connectionId: connection.id }],
+          args: [{ syncId, connectionId: connection.id }],
           searchAttributes: {
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
             [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
             [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
             [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],

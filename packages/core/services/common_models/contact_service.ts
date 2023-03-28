@@ -14,7 +14,7 @@ import type {
   PaginatedResult,
   PaginationParams,
 } from '../../types';
-import { CommonModelBaseService } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -189,7 +189,7 @@ export class ContactService extends CommonModelBaseService {
     connectionId: string,
     customerId: string,
     remoteContactsReadable: Readable
-  ): Promise<number> {
+  ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES['contacts'];
     const tempTable = 'crm_contacts_temp';
     const columnsWithoutId = [
@@ -217,7 +217,8 @@ export class ContactService extends CommonModelBaseService {
       table,
       tempTable,
       columnsWithoutId,
-      fromRemoteContactToDbContactParams
+      fromRemoteContactToDbContactParams,
+      (remoteContact) => remoteContact.remoteUpdatedAt
     );
   }
 
