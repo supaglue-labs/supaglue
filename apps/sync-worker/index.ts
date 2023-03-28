@@ -75,6 +75,14 @@ async function run() {
 
   const connection = await NativeConnection.connect({
     address: TEMPORAL_ADDRESS,
+    tls: fs.existsSync('/etc/temporal/temporal.pem')
+      ? {
+          clientCertPair: {
+            crt: fs.readFileSync('/etc/temporal/temporal.pem'),
+            key: fs.readFileSync('/etc/temporal/temporal.key'),
+          },
+        }
+      : undefined,
   });
 
   const worker = await Worker.create({
@@ -84,6 +92,7 @@ async function run() {
     activities: createActivities(getDependencyContainer()),
     taskQueue: SYNC_TASK_QUEUE,
     connection,
+    namespace: process.env.TEMPORAL_NAMESPACE ?? 'default',
   });
 
   await worker.run();

@@ -1,5 +1,6 @@
 import { CoreDependencyContainer, getCoreDependencyContainer } from '@supaglue/core';
 import { Client, Connection } from '@temporalio/client';
+import fs from 'fs';
 import { PassthroughService, SyncService } from './services';
 import { ConnectionWriterService } from './services/connection_writer_service';
 
@@ -25,8 +26,17 @@ function createDependencyContainer(): DependencyContainer {
   const { prisma, integrationService, remoteService, applicationService, connectionService } = coreDependencyContainer;
 
   const temporalClient = new Client({
+    namespace: process.env.TEMPORAL_NAMESPACE ?? 'default',
     connection: Connection.lazy({
       address: TEMPORAL_ADDRESS,
+      tls: fs.existsSync('/etc/temporal/temporal.pem')
+        ? {
+            clientCertPair: {
+              crt: fs.readFileSync('/etc/temporal/temporal.pem'),
+              key: fs.readFileSync('/etc/temporal/temporal.key'),
+            },
+          }
+        : undefined,
     }),
   });
 
