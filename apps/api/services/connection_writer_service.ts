@@ -93,6 +93,7 @@ export class ConnectionWriterService {
           integrationId: integration.id,
           status,
           credentials: encrypt(JSON.stringify(params.credentials)),
+          remoteId: params.remoteId,
         },
       });
       const connection = fromConnectionModelToConnectionUnsafe(connectionModel);
