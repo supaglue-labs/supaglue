@@ -33,7 +33,7 @@ get:
                   integration_id: db40a684-3150-46d2-bfd2-acb341a72681
                   provider_name: hubspot 
                   category: crm
-                  remote_account_id: 1234567
+                  remote_id: 1234567
 parameters:
   - name: customer_id
     in: path

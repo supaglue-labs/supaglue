@@ -151,7 +151,7 @@ export interface components {
       provider_name: components["schemas"]["provider_name"];
       category: components["schemas"]["category"];
       /** @example 123456 */
-      remote_account_id: string;
+      remote_id: string;
     };
     /** @enum {string} */
     category: "crm";

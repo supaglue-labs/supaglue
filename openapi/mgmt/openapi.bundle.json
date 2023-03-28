@@ -538,7 +538,7 @@
                         "integration_id": "db40a684-3150-46d2-bfd2-acb341a72681",
                         "provider_name": "hubspot",
                         "category": "crm",
-                        "remote_account_id": 1234567
+                        "remote_id": 1234567
                       }
                     ]
                   }
@@ -590,7 +590,7 @@
                       "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
                       "provider_name": "salesforce",
                       "category": "crm",
-                      "remote_account_id": "https://supaglue-dev-ed.develop.my.salesforce.com"
+                      "remote_id": "https://supaglue-dev-ed.develop.my.salesforce.com"
                     }
                   }
                 }
@@ -1055,7 +1055,7 @@
           "category": {
             "$ref": "#/components/schemas/category"
           },
-          "remote_account_id": {
+          "remote_id": {
             "type": "string",
             "example": 123456
           }
@@ -1068,7 +1068,7 @@
           "integration_id",
           "provider_name",
           "category",
-          "remote_account_id"
+          "remote_id"
         ]
       },
       "category": {

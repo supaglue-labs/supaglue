@@ -68,7 +68,7 @@ model Connection {
   customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId      String        @map("customer_id")
   // TODO: Make it non-optional after all customers have been migrated.
-  remoteAccountId String?       @map("remote_account_id")
+  remoteId        String?       @map("remote_id")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   syncs           Sync[]

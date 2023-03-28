@@ -11,7 +11,7 @@ export const fromConnectionModelToConnectionUnsafe = ({
   providerName,
   status,
   credentials,
-  remoteAccountId,
+  remoteId,
 }: ConnectionModel): ConnectionUnsafe => {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
@@ -24,7 +24,7 @@ export const fromConnectionModelToConnectionUnsafe = ({
     providerName: providerName as CRMProviderName,
     credentials: JSON.parse(decrypt(credentials)),
     // TODO: Clean up after all customers are migrated
-    remoteAccountId: remoteAccountId ?? '',
+    remoteId: remoteId ?? '',
   };
 };
 
@@ -35,7 +35,7 @@ export const fromConnectionModelToConnectionSafe = ({
   integrationId,
   providerName,
   status,
-  remoteAccountId,
+  remoteId,
 }: ConnectionModel): ConnectionSafe => {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
@@ -47,6 +47,6 @@ export const fromConnectionModelToConnectionSafe = ({
     status: status as ConnectionStatus,
     providerName: providerName as CRMProviderName,
     // TODO: Clean up after all customers are migrated
-    remoteAccountId: remoteAccountId ?? '',
+    remoteId: remoteId ?? '',
   };
 };

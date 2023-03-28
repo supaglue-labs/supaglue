@@ -22,7 +22,7 @@ get:
                 integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
                 provider_name: salesforce
                 category: crm
-                remote_account_id: https://supaglue-dev-ed.develop.my.salesforce.com
+                remote_id: https://supaglue-dev-ed.develop.my.salesforce.com
 delete:
   operationId: deleteConnection
   summary: Delete connection

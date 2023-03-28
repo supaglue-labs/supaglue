@@ -460,7 +460,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   // TODO: Delete once all customers are migrated and backfilled
-  public async getRemoteAccountId() {
+  public async getHubId() {
     await this.maybeRefreshAccessToken();
     const { hubId } = await this.#client.oauth.accessTokensApi.getAccessToken(this.#credentials.accessToken);
     return hubId.toString();

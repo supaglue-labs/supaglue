@@ -146,13 +146,13 @@ export default function init(app: Router): void {
         ...additionalAuthParams,
       });
 
-      let remoteAccountId = tokenWrapper.token['refresh_token'] as string;
+      let remoteId = tokenWrapper.token['refresh_token'] as string;
 
       if (providerName) {
         const accessToken = tokenWrapper.token['access_token'] as string;
         const hubspotClient = new HubspotClient({ accessToken: tokenWrapper.token['access_token'] as string });
         const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(accessToken);
-        remoteAccountId = hubId.toString();
+        remoteId = hubId.toString();
       }
 
       const payload: ConnectionCreateParams | ConnectionUpsertParams = {
@@ -168,7 +168,7 @@ export default function init(app: Router): void {
           instanceUrl: tokenWrapper.token['instance_url'] as string,
           expiresAt: tokenWrapper.token['expires_at'] as string,
         },
-        remoteAccountId,
+        remoteId,
       };
 
       try {

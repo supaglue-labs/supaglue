@@ -61,7 +61,7 @@ export class ConnectionService {
   }
 
   // TODO: Delete once all customers are migrated and backfilled
-  public async backfillRemoteAccountIds(applicationId: string): Promise<void> {
+  public async backfillRemoteIds(applicationId: string): Promise<void> {
     const integrations = await this.#integrationService.list(applicationId);
     const integrationIds = integrations.map(({ id }) => id);
     const models = await this.#prisma.connection.findMany({
@@ -70,8 +70,8 @@ export class ConnectionService {
     const connections = models.map((connection) => fromConnectionModelToConnectionUnsafe(connection));
     await Promise.all(
       connections.map(async (connection) => {
-        const remoteAccountId = await this.getRemoteAccountId(connection);
-        await this.#prisma.connection.update({ where: { id: connection.id }, data: { remoteAccountId } });
+        const remoteId = await this.getRemoteAccountId(connection);
+        await this.#prisma.connection.update({ where: { id: connection.id }, data: { remoteId } });
       })
     );
   }
@@ -83,7 +83,7 @@ export class ConnectionService {
     }
     const integration = await this.#integrationService.getById(connection.integrationId);
     const hubspotClient = newClient(connection, integration as CompleteIntegration);
-    return hubspotClient.getRemoteAccountId();
+    return hubspotClient.getHubId();
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
