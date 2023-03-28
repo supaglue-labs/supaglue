@@ -15,7 +15,21 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
+  RemoteUser,
 } from '../../../types';
+
+export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): RemoteUser => {
+  return {
+    remoteId: record.Id,
+    name: record.Name,
+    email: record.Email,
+    isActive: record.IsActive,
+    remoteWasDeleted: false,
+    // These fields are not supported by Salesforce
+    remoteCreatedAt: null,
+    remoteUpdatedAt: null,
+  };
+};
 
 export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>): RemoteAccount => {
   const billingAddress: Address | null =
@@ -96,6 +110,7 @@ export const toSalesforceAccountCreateParams = (params: RemoteAccountCreateParam
     NumberOfEmployees: params.numberOfEmployees,
     ...toSalesforceAccountAddressCreateParams(params.addresses),
     ...toSalesforceAccountPhoneCreateParams(params.phoneNumbers),
+    ...params.customFields,
   };
 };
 
@@ -168,7 +183,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
     addresses,
-    emailAddresses: [{ emailAddress: record.Email, emailAddressType: 'primary' }],
+    emailAddresses: record.Email ? [{ emailAddress: record.Email, emailAddressType: 'primary' }] : [],
     phoneNumbers,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
@@ -185,6 +200,7 @@ export const toSalesforceContactCreateParams = (params: RemoteContactCreateParam
     ...toSalesforceEmailCreateParams(params.emailAddresses),
     ...toSalesforceContactAddressCreateParams(params.addresses),
     ...toSalesforceContactPhoneCreateParams(params.phoneNumbers),
+    ...params.customFields,
   };
 };
 
@@ -222,13 +238,15 @@ export const fromSalesforceLeadToRemoteLead = (
         addressType: 'primary',
       },
     ],
-    emailAddresses: [{ emailAddress: record.Email, emailAddressType: 'primary' }],
-    phoneNumbers: [
-      {
-        phoneNumber: record.Phone ?? null,
-        phoneNumberType: 'primary',
-      },
-    ],
+    emailAddresses: record.Email ? [{ emailAddress: record.Email, emailAddressType: 'primary' }] : [],
+    phoneNumbers: record.Phone
+      ? [
+          {
+            phoneNumber: record.Phone ?? null,
+            phoneNumberType: 'primary',
+          },
+        ]
+      : [],
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.LastModifiedDate ? new Date(record.LastModifiedDate) : null,
     remoteWasDeleted: record.IsDeleted === 'true' ?? false,
@@ -244,6 +262,7 @@ export const toSalesforceLeadCreateParams = (params: RemoteLeadCreateParams) => 
     Company: params.company,
     ...toSalesforceEmailCreateParams(params.emailAddresses),
     ...toSalesforceLeadAddressCreateParams(params.addresses),
+    ...params.customFields,
   };
 };
 
@@ -289,6 +308,7 @@ export const toSalesforceOpportunityCreateParams = (params: RemoteOpportunityCre
     Name: params.name,
     StageName: params.stage,
     AccountId: params.accountId,
+    ...params.customFields,
   };
 };
 
@@ -309,12 +329,12 @@ const toSalesforceAccountAddressCreateParams = (addresses?: Address[]): Record<s
     ShippingStreet: shipping?.street1 ?? '',
     ShippingCity: shipping?.city ?? '',
     ShippingState: shipping?.state ?? '',
-    ShippingZip: shipping?.postalCode ?? '',
+    ShippingPostalCode: shipping?.postalCode ?? '',
     ShippingCountry: shipping?.country ?? '',
     BillingStreet: billing?.street1 ?? '',
     BillingCity: billing?.city ?? '',
     BillingState: billing?.state ?? '',
-    BillingZip: billing?.postalCode ?? '',
+    BillingPostalCode: billing?.postalCode ?? '',
     BillingCountry: billing?.country ?? '',
   };
 };
@@ -329,12 +349,12 @@ const toSalesforceContactAddressCreateParams = (addresses?: Address[]): Record<s
     MailingStreet: mailing?.street1 ?? '',
     MailingCity: mailing?.city ?? '',
     MailingState: mailing?.state ?? '',
-    MailingZip: mailing?.postalCode ?? '',
+    MailingPostalCode: mailing?.postalCode ?? '',
     MailingCountry: mailing?.country ?? '',
     OtherStreet: other?.street1 ?? '',
     OtherCity: other?.city ?? '',
     OtherState: other?.state ?? '',
-    OtherZip: other?.postalCode ?? '',
+    OtherPostalCode: other?.postalCode ?? '',
     OtherCountry: other?.country ?? '',
   };
 };

@@ -483,7 +483,7 @@ export interface components {
         /** @example 525 Brannan */
         street1: string | null;
         /** @example null */
-        street2: string | null;
+        street2?: string | null;
       })[];
     /**
      * @example [

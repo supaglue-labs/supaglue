@@ -27,6 +27,7 @@ import {
   fromSalesforceContactToRemoteContact,
   fromSalesforceLeadToRemoteLead,
   fromSalesforceOpportunityToRemoteOpportunity,
+  fromSalesforceUserToRemoteUser,
   toSalesforceAccountCreateParams,
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
@@ -129,6 +130,7 @@ const propertiesToFetch = {
     'Email',
     'IsDeleted',
   ],
+  user: ['Id', 'Name', 'Email', 'IsActive'],
 };
 
 // this is incomplete; it only includes the fields that we need to use
@@ -478,8 +480,11 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listUsers(): Promise<Readable> {
-    // TODO: Implement salesforce users
-    return Readable.from([]);
+    const soql = `
+      SELECT ${propertiesToFetch.user.join(', ')}
+      FROM User
+    `;
+    return this.listCommonModelRecords(soql, fromSalesforceUserToRemoteUser);
   }
 }
 

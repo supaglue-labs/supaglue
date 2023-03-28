@@ -41,7 +41,6 @@ items:
     - postal_code
     - state
     - street1
-    - street2
 example:
   - address_type: shipping
     city: San Francisco
