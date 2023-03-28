@@ -176,6 +176,8 @@ export default function init(app: Router): void {
       } catch (e: any) {
         if (e.code === 'P2002') {
           await connectionWriterService.upsert(payload);
+        } else {
+          throw e;
         }
       }
 
