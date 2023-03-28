@@ -5,42 +5,52 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { createOrUpdateWebhook, deleteWebhook } from '@/client';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { Box, Button, IconButton, Stack, Switch, TextField, Typography } from '@mui/material';
-import { HttpRequestType } from '@supaglue/core/types';
+import { HttpRequestType, WebhookConfig } from '@supaglue/core/types';
 import { useEffect, useState } from 'react';
 import HttpMethodSelect from '../logs/HttpMethodSelect';
 
+const defaultWebhook: WebhookConfig = {
+  url: '',
+  notifyOnConnectionError: false,
+  notifyOnConnectionSuccess: false,
+  notifyOnSyncError: false,
+  notifyOnSyncSuccess: false,
+  requestType: 'POST',
+};
+const defaultHeadersList = [{ name: '', value: '' }];
+
 export default function WebhookTabPanel() {
-  const { activeApplication, isLoading } = useActiveApplication();
+  const { activeApplication, isLoading, mutate } = useActiveApplication();
   const [webhookUrl, setWebhookUrl] = useState<string>('');
   const [notifyOnConnectionSuccess, setNotifyOnConnectionSuccess] = useState<boolean>(false);
   const [notifyOnSyncSuccess, setNotifyOnSyncSuccess] = useState<boolean>(false);
   const [notifyOnConnectionError, setNotifyOnConnectionError] = useState<boolean>(false);
   const [notifyOnSyncError, setNotifyOnSyncError] = useState<boolean>(false);
   const [requestType, setRequestType] = useState<HttpRequestType>('POST');
-  const [headersList, setHeadersList] = useState<{ name: string; value: string }[]>([{ name: '', value: '' }]);
+  const [headersList, setHeadersList] = useState<{ name: string; value: string }[]>(defaultHeadersList);
 
   useEffect(() => {
-    if (activeApplication?.config.webhook) {
-      const {
-        url,
-        notifyOnConnectionError,
-        notifyOnConnectionSuccess,
-        notifyOnSyncError,
-        notifyOnSyncSuccess,
-        requestType,
-        headers,
-      } = activeApplication.config.webhook;
-      setWebhookUrl(url);
-      setNotifyOnConnectionSuccess(notifyOnConnectionSuccess);
-      setNotifyOnSyncSuccess(notifyOnSyncSuccess);
-      setNotifyOnConnectionError(notifyOnConnectionError);
-      setNotifyOnSyncError(notifyOnSyncError);
-      setRequestType(requestType);
-      if (headers) {
-        setHeadersList(Object.entries(headers).map(([name, value]) => ({ name, value: value.toString() })));
-      }
+    const {
+      url,
+      notifyOnConnectionError,
+      notifyOnConnectionSuccess,
+      notifyOnSyncError,
+      notifyOnSyncSuccess,
+      requestType,
+      headers,
+    } = activeApplication?.config.webhook ?? defaultWebhook;
+    setWebhookUrl(url);
+    setNotifyOnConnectionSuccess(notifyOnConnectionSuccess);
+    setNotifyOnSyncSuccess(notifyOnSyncSuccess);
+    setNotifyOnConnectionError(notifyOnConnectionError);
+    setNotifyOnSyncError(notifyOnSyncError);
+    setRequestType(requestType);
+    if (headers && Object.keys(headers).length) {
+      setHeadersList(Object.entries(headers).map(([name, value]) => ({ name, value: value.toString() })));
+    } else {
+      setHeadersList(defaultHeadersList);
     }
-  }, [activeApplication?.id]);
+  }, [JSON.stringify(activeApplication?.config.webhook)]);
 
   return (
     <Box
@@ -108,10 +118,13 @@ export default function WebhookTabPanel() {
               variant="contained"
               disabled={isLoading || !activeApplication}
               onClick={async () => {
+                if (!activeApplication) {
+                  return;
+                }
                 const headers = Object.fromEntries(
                   headersList.filter(({ name }) => !!name).map(({ name, value }) => [name, value])
                 );
-                await createOrUpdateWebhook(activeApplication!.id, {
+                const webhook = {
                   url: webhookUrl.trim(),
                   requestType,
                   notifyOnSyncSuccess,
@@ -119,7 +132,9 @@ export default function WebhookTabPanel() {
                   notifyOnConnectionSuccess,
                   notifyOnConnectionError,
                   headers,
-                });
+                };
+                mutate({ ...activeApplication, config: { ...activeApplication.config, webhook } }, false);
+                await createOrUpdateWebhook(activeApplication.id, webhook);
               }}
             >
               Update
@@ -130,14 +145,12 @@ export default function WebhookTabPanel() {
               variant="text"
               color="error"
               disabled={isLoading || !activeApplication}
-              onClick={() => {
-                deleteWebhook(activeApplication!.id);
-                setWebhookUrl('');
-                setNotifyOnConnectionError(false);
-                setNotifyOnConnectionSuccess(false);
-                setNotifyOnSyncError(false);
-                setNotifyOnSyncSuccess(false);
-                setHeadersList([{ name: '', value: '' }]);
+              onClick={async () => {
+                if (!activeApplication) {
+                  return;
+                }
+                mutate({ ...activeApplication, config: { ...activeApplication.config, webhook: null } }, false);
+                deleteWebhook(activeApplication.id);
               }}
             >
               Delete
