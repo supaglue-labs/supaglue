@@ -1,12 +1,10 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { orgHeaderMiddleware } from '@/middleware/org';
 import { Request, Response, Router } from 'express';
 
 const { applicationService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const applicationRouter = Router();
-  applicationRouter.use(orgHeaderMiddleware);
 
   applicationRouter.get('/', async (req: Request, res: Response) => {
     const applications = await applicationService.list(req.orgId);
