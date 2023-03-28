@@ -11,13 +11,13 @@ const columns: GridColDef[] = [
     field: 'startTimestamp',
     headerName: 'Start Time',
     width: 180,
-    valueGetter: ({ value }) => datetimeStringFromISOString(value),
+    valueGetter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
   },
   {
     field: 'endTimestamp',
     headerName: 'End Time',
     width: 180,
-    valueGetter: ({ value }) => datetimeStringFromISOString(value),
+    valueGetter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
   },
   {
     field: 'errorMessage',
