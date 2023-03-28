@@ -1,5 +1,6 @@
-import { applicationMiddleware } from '@/middleware/application';
 import { internalMiddleware } from '@/middleware/internal';
+import { internalApplicationMiddleware } from '@/middleware/internal_application';
+import { orgHeaderMiddleware } from '@/middleware/org';
 import { Router } from 'express';
 import apiKey from './api_key';
 import application from './application';
@@ -14,6 +15,7 @@ export default function init(app: Router): void {
   // application routes should not require application header
   const v1ApplicationRouter = Router();
   v1ApplicationRouter.use(internalMiddleware);
+  v1ApplicationRouter.use(orgHeaderMiddleware);
 
   application(v1ApplicationRouter);
   auth(v1ApplicationRouter);
@@ -23,7 +25,8 @@ export default function init(app: Router): void {
   // non-application routes require application header
   const v1Router = Router();
   v1Router.use(internalMiddleware);
-  v1Router.use(applicationMiddleware);
+  v1Router.use(orgHeaderMiddleware);
+  v1Router.use(internalApplicationMiddleware);
 
   apiKey(v1Router);
   customer(v1Router);
