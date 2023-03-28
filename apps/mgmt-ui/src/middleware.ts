@@ -40,7 +40,7 @@ export default withClerkMiddleware((request: NextRequest) => {
   // if the user is not signed in redirect them to the sign in page.
   if (!userId) {
     const signInUrl = new URL('/sign-in', request.url);
-    signInUrl.searchParams.set('redirect_url', request.url);
+    signInUrl.searchParams.set('redirect_url', process.env.FRONTEND_URL ?? request.url);
     return NextResponse.redirect(signInUrl);
   }
 
@@ -48,7 +48,7 @@ export default withClerkMiddleware((request: NextRequest) => {
   // (but don't redirect if the path is already `/create-organization`)
   if (!orgId && !isCloudCreateOrgPath(request.nextUrl.pathname)) {
     const createOrgUrl = new URL('/create-organization', request.url);
-    createOrgUrl.searchParams.set('redirect_url', request.url);
+    createOrgUrl.searchParams.set('redirect_url', process.env.FRONTEND_URL ?? request.url);
     return NextResponse.redirect(createOrgUrl);
   }
   return NextResponse.next();

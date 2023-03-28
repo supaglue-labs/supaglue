@@ -27,7 +27,7 @@ RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo run buil
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus --production sync-worker
 
 FROM node:18-slim AS runner
-RUN apt-get update && apt-get install -y openssl libssl-dev && rm -rf /var/lib/apt/lists/* && apt-get clean
+RUN apt-get update && apt-get install -y openssl libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/* && apt-get clean
 WORKDIR /app
 
 ARG POSTHOG_API_KEY
