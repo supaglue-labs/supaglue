@@ -123,6 +123,9 @@ function NewApplication({ onCreate }: { onCreate: (name: string) => void }) {
             type="text"
             fullWidth
             value={applicationName}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+            }}
             onChange={(e) => {
               setApplicationName(e.target.value);
             }}
