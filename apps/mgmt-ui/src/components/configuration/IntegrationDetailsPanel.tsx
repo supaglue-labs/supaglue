@@ -1,30 +1,31 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { updateRemoteIntegration } from '@/client';
+import { createRemoteIntegration, updateRemoteIntegration } from '@/client';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
+import { CRMProviderName, Integration, IntegrationCategory } from '@supaglue/core/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Spinner from '../Spinner';
 import { integrationCardsInfo } from './IntegrationTabPanelContainer';
 
 export type IntegrationDetailsPanelProps = {
-  category: string;
-  providerName: string;
-  status: string;
+  category: IntegrationCategory;
+  providerName: CRMProviderName;
+  isLoading: boolean;
 };
 
-export default function IntegrationDetailsPanel(props: IntegrationDetailsPanelProps) {
+export default function IntegrationDetailsPanel({ providerName, category, isLoading }: IntegrationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
-  const { providerName } = props;
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const router = useRouter();
 
-  const { integrations: existingIntegrations = [] } = useIntegrations();
+  const { integrations: existingIntegrations = [], mutate } = useIntegrations();
 
   const integration = existingIntegrations.find(
     (existingIntegration) => existingIntegration.providerName === providerName
@@ -49,8 +50,55 @@ export default function IntegrationDetailsPanel(props: IntegrationDetailsPanelPr
     }
   }, [integration?.id]);
 
-  if (!integration || !integrationCardInfo) {
+  const createOrUpdateIntegration = async (): Promise<Integration> => {
+    if (integration) {
+      const newIntegration: Integration = {
+        ...integration,
+        config: {
+          providerAppId: '', // TODO: add input field for this
+          ...integration?.config,
+          oauth: {
+            ...integration?.config?.oauth,
+            credentials: {
+              oauthClientId: clientId,
+              oauthClientSecret: clientSecret,
+            },
+            oauthScopes: oauthScopes.split(','),
+          },
+          sync: {
+            periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : 3600,
+          },
+        },
+      };
+      return await updateRemoteIntegration(activeApplicationId, newIntegration);
+    }
+    return await createRemoteIntegration(activeApplicationId, {
+      applicationId: activeApplicationId,
+      authType: 'oauth2',
+      category,
+      providerName,
+      config: {
+        providerAppId: '', // TODO: add input field for this
+        oauth: {
+          credentials: {
+            oauthClientId: clientId,
+            oauthClientSecret: clientSecret,
+          },
+          oauthScopes: oauthScopes.split(','),
+        },
+        sync: {
+          periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : 3600,
+        },
+      },
+    });
+  };
+
+  if (!integrationCardInfo) {
     return null;
+  }
+
+  if (isLoading) {
+    return <Spinner />;
   }
 
   return (
@@ -127,27 +175,12 @@ export default function IntegrationDetailsPanel(props: IntegrationDetailsPanelPr
             </Button>
             <Button
               variant="contained"
-              onClick={() => {
-                const newIntegration = {
-                  ...integration,
-                  config: {
-                    providerAppId: '', // TODO: add input field for this
-                    ...integration?.config,
-                    oauth: {
-                      ...integration?.config?.oauth,
-                      credentials: {
-                        oauthClientId: clientId,
-                        oauthClientSecret: clientSecret,
-                      },
-                      oauthScopes: oauthScopes.split(','),
-                    },
-                    sync: {
-                      periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : 3600,
-                    },
-                  },
-                };
-                updateRemoteIntegration(activeApplicationId, newIntegration);
-                router.push(`/configuration/integrations/${newIntegration.category}`);
+              onClick={async () => {
+                const newIntegration = await createOrUpdateIntegration();
+                mutate([...existingIntegrations, newIntegration], false);
+                router.push(
+                  `/applications/${activeApplicationId}/configuration/integrations/${newIntegration.category}`
+                );
               }}
             >
               Save
