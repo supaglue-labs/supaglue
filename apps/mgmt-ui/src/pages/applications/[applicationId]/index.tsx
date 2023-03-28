@@ -1,4 +1,5 @@
 import MetricCard from '@/components/customers/MetricCard';
+import Spinner from '@/components/Spinner';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
@@ -46,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 };
 
 export default function Home() {
-  const { customers = [] } = useCustomers();
+  const { customers = [], isLoading } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // TODO: count this on server?
@@ -91,32 +92,36 @@ export default function Home() {
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header title="Customers" onDrawerToggle={handleDrawerToggle} />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          <Stack className="gap-2">
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <Stack className="gap-2">
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
+                </Grid>
+                <Grid item xs={6}>
+                  <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
-              </Grid>
-            </Grid>
 
-            <div style={{ height: '100%', width: '100%' }}>
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                autoHeight
-                sx={{
-                  boxShadow: 1,
-                  backgroundColor: 'white',
-                }}
-                density="comfortable"
-                hideFooter
-                disableColumnMenu
-                rowSelection={false}
-              />
-            </div>
-          </Stack>
+              <div style={{ height: '100%', width: '100%' }}>
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  autoHeight
+                  sx={{
+                    boxShadow: 1,
+                    backgroundColor: 'white',
+                  }}
+                  density="comfortable"
+                  hideFooter
+                  disableColumnMenu
+                  rowSelection={false}
+                />
+              </div>
+            </Stack>
+          )}
         </Box>
       </Box>
     </>
