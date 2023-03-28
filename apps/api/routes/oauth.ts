@@ -148,7 +148,7 @@ export default function init(app: Router): void {
 
       let remoteId = tokenWrapper.token['refresh_token'] as string;
 
-      if (providerName) {
+      if (providerName === 'hubspot') {
         const accessToken = tokenWrapper.token['access_token'] as string;
         const hubspotClient = new HubspotClient({ accessToken: tokenWrapper.token['access_token'] as string });
         const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(accessToken);

@@ -4,14 +4,14 @@ import { getDependencyContainer } from '../dependency_container';
 
 const { applicationService } = getDependencyContainer();
 
-export async function applicationMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function internalApplicationMiddleware(req: Request, res: Response, next: NextFunction) {
   const applicationId = req.headers['x-application-id'] as string;
 
   if (!applicationId) {
     throw new BadRequestError('x-application-id must be set');
   }
 
-  req.supaglueApplication = await applicationService.getById(applicationId);
+  req.supaglueApplication = await applicationService.getByIdAndOrgId(applicationId, req.orgId);
 
   next();
 }
