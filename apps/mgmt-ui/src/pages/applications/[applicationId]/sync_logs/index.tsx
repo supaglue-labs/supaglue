@@ -1,4 +1,5 @@
 import LogsTable from '@/components/logs/LogsTable';
+import Spinner from '@/components/Spinner';
 import { useSyncHistory } from '@/hooks/useSyncHistory';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
@@ -9,7 +10,7 @@ import { useState } from 'react';
 export { getServerSideProps };
 
 export default function Home() {
-  const { syncHistories } = useSyncHistory();
+  const { syncHistories, isLoading } = useSyncHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -28,7 +29,7 @@ export default function Home() {
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header title="Sync Logs" onDrawerToggle={handleDrawerToggle} />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          <LogsTable data={syncHistories?.results ?? []} />
+          {isLoading ? <Spinner /> : <LogsTable data={syncHistories?.results ?? []} />}
         </Box>
       </Box>
     </>

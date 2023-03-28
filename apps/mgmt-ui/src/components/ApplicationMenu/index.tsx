@@ -32,6 +32,7 @@ export default function ApplicationMenu() {
   };
 
   const onAddApplication = async (name: string) => {
+    handleClose();
     const newApplication = await addApplication(name);
     await mutate([...applications, newApplication]);
     await router.push(`/applications/${newApplication.id}`);
@@ -81,6 +82,7 @@ export default function ApplicationMenu() {
                 color: '#000',
               }}
               href={`/applications/${id}`}
+              onClick={handleClose}
             >
               {name}
             </Link>
