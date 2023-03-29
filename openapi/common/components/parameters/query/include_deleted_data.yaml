@@ -1,0 +1,6 @@
+name: include_deleted_at
+in: query
+schema:
+  type: boolean
+  example: true
+description: Whether to include data that was deleted in providers.

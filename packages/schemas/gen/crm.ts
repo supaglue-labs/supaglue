@@ -574,6 +574,8 @@ export interface components {
   };
   responses: never;
   parameters: {
+    /** @description Whether to include data that was deleted in providers. */
+    include_deleted_data: boolean;
     /** @description If provided, will only return objects created after this datetime */
     created_after: Date;
     /** @description If provided, will only return objects created before this datetime */

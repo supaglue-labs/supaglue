@@ -2,6 +2,7 @@ import type { CRMCommonModel } from './crm';
 
 export type ListParams = GetParams &
   PaginationParams & {
+    include_deleted_data?: boolean;
     created_after?: string;
     created_before?: string;
     modified_after?: string;

@@ -36,6 +36,9 @@
         "description": "Get a list of accounts",
         "parameters": [
           {
+            "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
             "$ref": "#/components/parameters/created_after"
           },
           {
@@ -534,6 +537,9 @@
         "description": "Get a list of contacts",
         "parameters": [
           {
+            "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
             "$ref": "#/components/parameters/created_after"
           },
           {
@@ -1016,6 +1022,9 @@
         "description": "Get a list of leads",
         "parameters": [
           {
+            "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
             "$ref": "#/components/parameters/created_after"
           },
           {
@@ -1358,6 +1367,9 @@
         "summary": "List opportunities",
         "description": "Get a list of opportunities",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/include_deleted_data"
+          },
           {
             "$ref": "#/components/parameters/created_after"
           },
@@ -1787,6 +1799,9 @@
         "summary": "List users",
         "description": "Get a list of users",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/include_deleted_data"
+          },
           {
             "$ref": "#/components/parameters/created_after"
           },
@@ -3073,6 +3088,15 @@
       }
     },
     "parameters": {
+      "include_deleted_data": {
+        "name": "include_deleted_at",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include data that was deleted in providers."
+      },
       "created_after": {
         "name": "created_after",
         "in": "query",
