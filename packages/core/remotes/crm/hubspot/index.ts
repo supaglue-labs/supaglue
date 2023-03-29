@@ -637,7 +637,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         inputs: fromObjectIds.map((id) => ({ id })),
       });
       return associations.results
-        .map((result) => result.to.map(({ id }) => ({ [result._from.id]: id })))
+        .map((result) => ({ [result._from.id]: result.to.map(({ id }) => id) }))
         .reduce((acc, curr) => ({ ...acc, ...curr }), {});
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
