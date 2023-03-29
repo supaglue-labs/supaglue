@@ -71,6 +71,13 @@ async function run() {
       trace: (message: string, meta?: LogMetadata) => logger.trace(transformMeta(meta), message),
       debug: (message: string, meta?: LogMetadata) => logger.debug(transformMeta(meta), message),
     },
+    telemetryOptions: {
+      metrics: {
+        prometheus: {
+          bindAddress: '0.0.0.0:9090',
+        },
+      },
+    },
   });
 
   const connection = await NativeConnection.connect({
