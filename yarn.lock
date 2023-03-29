@@ -6080,7 +6080,9 @@ __metadata:
     dotenv: ^16.0.3
     express: ">=5.0.0-beta.1"
     express-openapi-validator: ^5.0.2
+    express-prom-bundle: ^6.6.0
     pino-http: ^8.3.3
+    prom-client: ^14.2.0
     simple-oauth2: ^5.0.0
     ts-patch: ^2.1.0
     tslib: ^2.5.0
@@ -6546,6 +6548,13 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
+  languageName: node
+  linkType: hard
+
+"bintrees@npm:1.0.2":
+  version: 1.0.2
+  resolution: "bintrees@npm:1.0.2"
+  checksum: 56a52b7d3634e30002b1eda740d2517a22fa8e9e2eb088e919f37c030a0ed86e364ab59e472fc770fc8751308054bb1c892979d150e11d9e11ac33bcc1b5d16e
   languageName: node
   linkType: hard
 
@@ -9395,6 +9404,18 @@ __metadata:
     ono: ^7.1.3
     path-to-regexp: ^6.2.0
   checksum: f98e0e78888b27ba3b9a5aac894bce4ce84d33c3226d0cb0da5e476fff9212b4670f52c935888b67a8ea6ab8d1eb10c0c39aba4bacd9772b3130d2a02fa315e5
+  languageName: node
+  linkType: hard
+
+"express-prom-bundle@npm:^6.6.0":
+  version: 6.6.0
+  resolution: "express-prom-bundle@npm:6.6.0"
+  dependencies:
+    on-finished: ^2.3.0
+    url-value-parser: ^2.0.0
+  peerDependencies:
+    prom-client: ">=12.0.0"
+  checksum: 414451347abb7ed414fcecfbc35dd39ae6abf8f3d69824679640b539b5849dd53c8a94ce43c263bf6e78c3ec2646803ed843cfb5613b8385c0ded4b59465e9b7
   languageName: node
   linkType: hard
 
@@ -13478,7 +13499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"on-finished@npm:2.4.1":
+"on-finished@npm:2.4.1, on-finished@npm:^2.3.0":
   version: 2.4.1
   resolution: "on-finished@npm:2.4.1"
   dependencies:
@@ -14909,6 +14930,15 @@ __metadata:
   version: 2.0.3
   resolution: "progress@npm:2.0.3"
   checksum: f67403fe7b34912148d9252cb7481266a354bd99ce82c835f79070643bb3c6583d10dbcfda4d41e04bbc1d8437e9af0fb1e1f2135727878f5308682a579429b7
+  languageName: node
+  linkType: hard
+
+"prom-client@npm:^14.2.0":
+  version: 14.2.0
+  resolution: "prom-client@npm:14.2.0"
+  dependencies:
+    tdigest: ^0.1.1
+  checksum: d4c04e57616c72643dd02862d0d4bde09cf8869a19d0aef5e7b785e6e27d02439b66cdc165e3492f62d579fa91579183820870cc757a09b99399d2d02f46b9f1
   languageName: node
   linkType: hard
 
@@ -17527,6 +17557,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tdigest@npm:^0.1.1":
+  version: 0.1.2
+  resolution: "tdigest@npm:0.1.2"
+  dependencies:
+    bintrees: 1.0.2
+  checksum: 44de8246752b6f8c2924685f969fd3d94c36949f22b0907e99bef2b2220726dd8467f4730ea96b06040b9aa2587c0866049640039d1b956952dfa962bc2075a3
+  languageName: node
+  linkType: hard
+
 "terser-webpack-plugin@npm:^5.1.3, terser-webpack-plugin@npm:^5.3.3":
   version: 5.3.6
   resolution: "terser-webpack-plugin@npm:5.3.6"
@@ -18432,6 +18471,13 @@ __metadata:
   version: 2.0.8
   resolution: "url-template@npm:2.0.8"
   checksum: 4183fccd74e3591e4154134d4443dccecba9c455c15c7df774f1f1e3fa340fd9bffb903b5beec347196d15ce49c34edf6dec0634a95d170ad6e78c0467d6e13e
+  languageName: node
+  linkType: hard
+
+"url-value-parser@npm:^2.0.0":
+  version: 2.2.0
+  resolution: "url-value-parser@npm:2.2.0"
+  checksum: d5fd52b3526bb5db20384c6ab95ff8f8d1f37daaadfb2a8d8c70f60810997a60d80dbff35de681850356d2117c948ca9cb9c5d903d75fb63f021c890d63440c6
   languageName: node
   linkType: hard
 

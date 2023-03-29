@@ -8,6 +8,7 @@ import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import cors from 'cors';
 import express, { NextFunction, Request, Response } from 'express';
+import promBundle from 'express-prom-bundle';
 import fs from 'fs';
 import path from 'path';
 import pinoHttp from 'pino-http';
@@ -38,7 +39,20 @@ if (sentryEnabled) {
 }
 
 const app = express();
+const metricsApp = express();
 const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_PORT) : 8080;
+
+app.use(
+  promBundle({
+    includeMethod: true,
+    includePath: true,
+    promClient: {
+      collectDefaultMetrics: {},
+    },
+    autoregister: false,
+    metricsApp,
+  })
+);
 
 app.use(Sentry.Handlers.requestHandler());
 // Body parsing Middleware
@@ -145,7 +159,7 @@ const server = app.listen(port, (): void => {
 /\\____) || (___) || )      | )   ( || (___) || (____/\\| (___) || (____/\\
 \\_______)(_______)|/       |/     \\|(_______)(_______/(_______)(_______/`);
   }
-  logger.info(`Connected successfully at http://localhost:${port}`);
+  logger.info(`Server listening on port ${port}`);
 
   if (distinctId) {
     posthogClient.capture({
@@ -161,6 +175,10 @@ const server = app.listen(port, (): void => {
   }
 });
 
+const metricsServer = metricsApp.listen(9090, (): void => {
+  logger.info('Metrics server listening on port 9090');
+});
+
 createTerminus(server, {
   healthChecks: {
     '/health': async () => {
@@ -170,6 +188,7 @@ createTerminus(server, {
   timeout: 10000,
   beforeShutdown: async () => {
     logger.info('Server is shutting down');
+    metricsServer.close();
     await posthogClient.shutdownAsync();
   },
   onShutdown: async () => {
