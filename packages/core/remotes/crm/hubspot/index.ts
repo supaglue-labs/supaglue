@@ -79,7 +79,7 @@ const propertiesToFetch = {
     'hs_createdate', // TODO: Use this or createdate?
     'hs_is_contact', // TODO: distinguish from "visitor"?
     'hubspot_owner_id',
-    'lastmodifieddate',
+    'lastmodifieddate', // hs_lastmodifieddate is missing
     'lastname',
     'mobilephone',
     'phone',
@@ -97,6 +97,7 @@ const propertiesToFetch = {
     'closedate',
     'hs_is_closed_won',
     'hs_is_closed',
+    'hs_lastmodifieddate',
   ],
 };
 
@@ -466,7 +467,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             {
               filters: [
                 {
-                  propertyName: 'lastmodifieddate',
+                  propertyName: 'lastmodifieddate', // hubspot doesn't set hs_lastmodifieddate for some reason
                   operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
                   value: updatedAfter.getTime().toString(),
                 },
