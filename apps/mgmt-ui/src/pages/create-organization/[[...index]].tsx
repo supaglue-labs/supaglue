@@ -1,12 +1,16 @@
 import { CreateOrganization } from '@clerk/nextjs';
-import { getServerSideProps } from '..';
+import { GetServerSideProps } from 'next';
 
-export { getServerSideProps };
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: { session: null, signedIn: false },
+  };
+};
 
 export default function CreateOrganizationPage() {
   return (
     <div className="m-auto">
-      <CreateOrganization />
+      <CreateOrganization afterCreateOrganizationUrl="/" />
     </div>
   );
 }

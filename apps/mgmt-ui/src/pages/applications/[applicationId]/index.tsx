@@ -38,7 +38,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
         props: { session, signedIn: false },
       };
     }
-    // TODO: Get org from user and use that to fetch application to make sure authenticated
   }
 
   return {
