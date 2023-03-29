@@ -1,4 +1,4 @@
-name: include_deleted_at
+name: include_deleted_data
 in: query
 schema:
   type: boolean
