@@ -93,6 +93,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     numberOfEmployees: record.NumberOfEmployees ? parseInt(record.NumberOfEmployees) : null,
     addresses,
     phoneNumbers,
+    // lifecycle stage is not supported in salesforce
     lifecycleStage: null,
     // Figure out where this comes from
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
@@ -186,6 +187,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     addresses,
     emailAddresses: record.Email ? [{ emailAddress: record.Email, emailAddressType: 'primary' }] : [],
     phoneNumbers,
+    // lifecycle stage is not supported in salesforce
     lifecycleStage: null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
