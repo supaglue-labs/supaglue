@@ -1,12 +1,16 @@
 import { SignIn } from '@clerk/nextjs';
-import { getServerSideProps } from '..';
+import { GetServerSideProps } from 'next';
 
-export { getServerSideProps };
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  return {
+    props: { session: null, signedIn: false },
+  };
+};
 
 const SignInPage = () => {
   return (
     <div className="m-auto">
-      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" afterSignUpUrl="/create-organization" />
     </div>
   );
 };
