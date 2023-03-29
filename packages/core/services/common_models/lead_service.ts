@@ -177,6 +177,18 @@ export class LeadService extends CommonModelBaseService {
     const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
+    await this.prisma.crmLead.updateMany({
+      where: {
+        convertedRemoteAccountId: null,
+        convertedAccountId: {
+          not: null,
+        },
+      },
+      data: {
+        convertedAccountId: null,
+      },
+    });
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} l
       SET converted_account_id = a.id
@@ -194,6 +206,18 @@ export class LeadService extends CommonModelBaseService {
     const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
     const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
 
+    await this.prisma.crmLead.updateMany({
+      where: {
+        convertedRemoteContactId: null,
+        convertedContactId: {
+          not: null,
+        },
+      },
+      data: {
+        convertedContactId: null,
+      },
+    });
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} l
       SET converted_contact_id = c.id
@@ -210,6 +234,18 @@ export class LeadService extends CommonModelBaseService {
   public async updateDanglingOwners(connectionId: string): Promise<void> {
     const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.crmLead.updateMany({
+      where: {
+        remoteOwnerId: null,
+        ownerId: {
+          not: null,
+        },
+      },
+      data: {
+        ownerId: null,
+      },
+    });
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} c

@@ -202,6 +202,18 @@ export class AccountService extends CommonModelBaseService {
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
 
+    await this.prisma.crmAccount.updateMany({
+      where: {
+        remoteOwnerId: null,
+        ownerId: {
+          not: null,
+        },
+      },
+      data: {
+        ownerId: null,
+      },
+    });
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${accountsTable} c
       SET owner_id = u.id
