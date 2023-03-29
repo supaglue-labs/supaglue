@@ -40,6 +40,8 @@ export type RemoteLead = BaseLead & {
   convertedRemoteContactId: string | null;
   convertedRemoteAccountId: string | null;
   remoteOwnerId: string | null;
+  remoteDeletedAt: Date | null;
+  detectedOrRemoteDeletedAt: Date | null;
 };
 
 type BaseLeadCreateParams = {

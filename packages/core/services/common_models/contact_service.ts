@@ -206,6 +206,8 @@ export class ContactService extends CommonModelBaseService {
       'remote_created_at',
       'remote_updated_at',
       'remote_was_deleted',
+      'remote_deleted_at',
+      'detected_or_remote_deleted_at',
       'last_modified_at',
       '_remote_account_id',
       '_remote_owner_id',

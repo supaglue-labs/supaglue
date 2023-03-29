@@ -22,6 +22,8 @@ export const fromHubSpotCompanyToRemoteAccount = ({
   properties,
   createdAt,
   updatedAt,
+  archived,
+  archivedAt,
 }: HubSpotCompany): RemoteAccount => {
   const addresses: Address[] =
     properties.address ||
@@ -67,7 +69,9 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     remoteCreatedAt: createdAt,
     remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: false,
+    remoteWasDeleted: !!archived,
+    remoteDeletedAt: archivedAt ?? null,
+    detectedOrRemoteDeletedAt: archivedAt ?? null,
   };
 };
 
@@ -77,6 +81,8 @@ export const fromHubSpotContactToRemoteContact = ({
   createdAt,
   updatedAt,
   associations,
+  archived,
+  archivedAt,
 }: HubSpotContact): RemoteContact => {
   const emailAddresses = [
     properties.email
@@ -146,7 +152,9 @@ export const fromHubSpotContactToRemoteContact = ({
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     remoteCreatedAt: createdAt,
     remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: false,
+    remoteWasDeleted: !!archived,
+    remoteDeletedAt: archivedAt ?? null,
+    detectedOrRemoteDeletedAt: archivedAt ?? null,
   };
 };
 
@@ -156,6 +164,8 @@ export const fromHubSpotDealToRemoteOpportunity = ({
   createdAt,
   updatedAt,
   associations,
+  archived,
+  archivedAt,
 }: HubSpotDeal): RemoteOpportunity => {
   let status: OpportunityStatus = 'OPEN';
   if (properties.hs_is_closed_won) {
@@ -173,15 +183,17 @@ export const fromHubSpotDealToRemoteOpportunity = ({
     description: properties.description ?? null,
     remoteOwnerId: properties.hubspot_owner_id ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
     status,
     pipeline: properties.pipeline ?? null,
     remoteAccountId,
     amount: properties.amount ? parseInt(properties.amount) : null,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage: properties.dealstage,
-    remoteWasDeleted: false,
+    remoteCreatedAt: createdAt,
+    remoteUpdatedAt: updatedAt,
+    remoteWasDeleted: !!archived,
+    remoteDeletedAt: archivedAt ?? null,
+    detectedOrRemoteDeletedAt: archivedAt ?? null,
   };
 };
 
@@ -189,10 +201,10 @@ export const fromHubspotOwnerToRemoteUser = ({
   id,
   firstName,
   lastName,
-  archived,
   email,
   createdAt,
   updatedAt,
+  archived,
 }: HubspotOwner): RemoteUser => {
   return {
     remoteId: id,
@@ -201,7 +213,9 @@ export const fromHubspotOwnerToRemoteUser = ({
     isActive: !archived,
     remoteCreatedAt: createdAt,
     remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: false,
+    remoteWasDeleted: !!archived,
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: archived ? new Date() : null,
   };
 };
 
