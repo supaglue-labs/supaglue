@@ -38,17 +38,7 @@ properties:
   phone_numbers:
     $ref: './phone_numbers.yaml'
   lifecycle_stage:
-    type: string
-    nullable: true
-    enum:
-      - subscriber
-      - lead
-      - marketingqualifiedlead
-      - salesqualifiedlead
-      - opportunity
-      - customer
-      - evangelist
-      - other
+    $ref: './lifecycle_stage.yaml'
   created_at:
     type: string
     nullable: true

@@ -2240,8 +2240,7 @@
             "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
           },
           "lifecycle_stage": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/account/properties/lifecycle_stage"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
@@ -2301,18 +2300,7 @@
             "$ref": "#/components/schemas/phone_numbers"
           },
           "lifecycle_stage": {
-            "type": "string",
-            "nullable": true,
-            "enum": [
-              "subscriber",
-              "lead",
-              "marketingqualifiedlead",
-              "salesqualifiedlead",
-              "opportunity",
-              "customer",
-              "evangelist",
-              "other"
-            ]
+            "$ref": "#/components/schemas/account/properties/lifecycle_stage"
           },
           "created_at": {
             "type": "string",
@@ -2377,8 +2365,7 @@
             "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
           },
           "lifecycle_stage": {
-            "type": "string",
-            "nullable": true
+            "$ref": "#/components/schemas/account/properties/lifecycle_stage"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
