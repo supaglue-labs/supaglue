@@ -354,7 +354,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             ...deal,
             associations: {
               companies: {
-                results: dealToCompaniesMap[deal.id].map((id) => ({ id, type: 'deal_to_company' })),
+                results: (dealToCompaniesMap[deal.id] ?? []).map((id) => ({ id, type: 'deal_to_company' })),
               },
             },
           })),
@@ -501,7 +501,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             ...contact,
             associations: {
               companies: {
-                results: contactToCompaniesMap[contact.id].map((id) => ({ id, type: 'contact_to_company' })),
+                results: (contactToCompaniesMap[contact.id] ?? []).map((id) => ({ id, type: 'contact_to_company' })),
               },
             },
           })),
