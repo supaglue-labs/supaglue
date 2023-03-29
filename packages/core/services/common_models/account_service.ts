@@ -66,7 +66,7 @@ export class AccountService extends CommonModelBaseService {
 
   // TODO: implement rest of list params
   public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Account>> {
-    const { page_size, cursor, created_after, created_before, updated_after, updated_before, expand } = listParams;
+    const { page_size, cursor, created_after, created_before, modified_after, modified_before, expand } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmAccount.findMany({
@@ -77,9 +77,9 @@ export class AccountService extends CommonModelBaseService {
           gt: created_after,
           lt: created_before,
         },
-        remoteUpdatedAt: {
-          gt: updated_after,
-          lt: updated_before,
+        lastModifiedAt: {
+          gt: modified_after,
+          lt: modified_before,
         },
       },
       include: {
@@ -181,6 +181,7 @@ export class AccountService extends CommonModelBaseService {
       'remote_created_at',
       'remote_updated_at',
       'remote_was_deleted',
+      'last_modified_at',
       'customer_id',
       'connection_id',
       '_remote_owner_id',

@@ -26,7 +26,7 @@ export class UserService extends CommonModelBaseService {
   }
 
   public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<User>> {
-    const { page_size, cursor, created_after, created_before, updated_after, updated_before } = listParams;
+    const { page_size, cursor, created_after, created_before, modified_after, modified_before } = listParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmUser.findMany({
       ...getPaginationParams(pageSize, cursor),
@@ -36,9 +36,9 @@ export class UserService extends CommonModelBaseService {
           gt: created_after,
           lt: created_before,
         },
-        remoteUpdatedAt: {
-          gt: updated_after,
-          lt: updated_before,
+        lastModifiedAt: {
+          gt: modified_after,
+          lt: modified_before,
         },
       },
       orderBy: {
@@ -69,6 +69,7 @@ export class UserService extends CommonModelBaseService {
       'remote_created_at',
       'remote_updated_at',
       'remote_was_deleted',
+      'last_modified_at',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];
 

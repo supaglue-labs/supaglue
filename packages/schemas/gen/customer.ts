@@ -104,9 +104,9 @@ export interface components {
     /** @description If provided, will only return objects created before this datetime */
     created_before: Date;
     /** @description If provided, will only return objects modified after this datetime */
-    updated_after: Date;
+    modified_after: Date;
     /** @description If provided, will only return objects modified before this datetime */
-    updated_before: Date;
+    modified_before: Date;
     /** @description The pagination cursor value */
     cursor: string;
     /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces */

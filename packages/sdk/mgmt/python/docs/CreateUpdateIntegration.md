@@ -3,7 +3,6 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**application_id** | **object** |  | 
 **category** | [**Category**](Category.md) |  | 
 **auth_type** | **object** |  | 
 **provider_name** | [**ProviderName**](ProviderName.md) |  | 

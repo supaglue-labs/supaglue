@@ -9,5 +9,7 @@ export * from './integration-config-oauth';
 export * from './integration-config-oauth-credentials';
 export * from './integration-config-sync';
 export * from './provider-name';
+export * from './sync-history';
+export * from './sync-info';
 export * from './webhook';
 export * from './webhook-payload';

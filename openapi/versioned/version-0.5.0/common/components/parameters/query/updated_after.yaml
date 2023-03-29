@@ -1,4 +1,4 @@
-name: updated_after
+name: modified_after
 in: query
 schema:
   type: string

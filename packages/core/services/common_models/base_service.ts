@@ -50,7 +50,7 @@ export abstract class CommonModelBaseService {
 
       // Input
       const stringifier = stringify({
-        columns: columns,
+        columns,
         cast: {
           boolean: (value: boolean) => value.toString(),
         },

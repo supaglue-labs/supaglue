@@ -11,6 +11,7 @@ export const fromUserModel = ({
   remoteCreatedAt,
   remoteUpdatedAt,
   remoteWasDeleted,
+  lastModifiedAt,
 }: CrmUser): User => {
   return {
     id,
@@ -18,9 +19,10 @@ export const fromUserModel = ({
     name,
     email,
     isActive,
-    createdAt: remoteCreatedAt,
-    updatedAt: remoteUpdatedAt,
-    wasDeleted: remoteWasDeleted,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   };
 };
 
@@ -37,6 +39,7 @@ export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: s
     remote_created_at: remoteUser.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteUser.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteUser.remoteWasDeleted,
+    last_modified_at: remoteUser.remoteUpdatedAt?.toISOString(),
     updated_at: new Date().toISOString(),
   };
 };

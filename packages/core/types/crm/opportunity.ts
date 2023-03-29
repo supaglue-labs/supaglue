@@ -21,6 +21,9 @@ type BaseOpportunity = {
   lastActivityAt: Date | null;
   closeDate: Date | null;
   pipeline: string | null;
+  remoteCreatedAt: Date | null;
+  remoteUpdatedAt: Date | null;
+  remoteWasDeleted: boolean;
 };
 
 export type Opportunity = BaseOpportunity & {
@@ -28,11 +31,9 @@ export type Opportunity = BaseOpportunity & {
   account?: Account;
   ownerId: string | null;
   owner?: User;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  wasDeleted: boolean;
   id: string;
   remoteId: string;
+  lastModifiedAt: Date | null;
   // Support field mappings + remote data etc
 };
 
@@ -40,9 +41,6 @@ export type RemoteOpportunity = BaseOpportunity & {
   remoteId: string;
   remoteAccountId: string | null;
   remoteOwnerId: string | null;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
 };
 
 type BaseOpportunityCreateParams = {

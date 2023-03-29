@@ -23,7 +23,7 @@ Send request directly to a provider
 
 PassthroughApi apiInstance = new PassthroughApi();
 PassthroughBody body = new PassthroughBody(); // PassthroughBody | 
-String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xCustomerId = "xCustomerId_example"; // String | The customer ID that uniquely identifies the customer in your application
 String xProviderName = "xProviderName_example"; // String | The provider name
 try {
     InlineResponse2005 result = apiInstance.sendPassthroughRequest(body, xCustomerId, xProviderName);
@@ -39,7 +39,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**PassthroughBody**](PassthroughBody.md)|  |
- **xCustomerId** | **String**| The customer ID |
+ **xCustomerId** | **String**| The customer ID that uniquely identifies the customer in your application |
  **xProviderName** | **String**| The provider name |
 
 ### Return type

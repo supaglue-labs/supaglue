@@ -7,7 +7,6 @@ export const fromOpportunityModel = (
   {
     id,
     remoteId,
-    remoteWasDeleted,
     ownerId,
     owner,
     name,
@@ -22,6 +21,8 @@ export const fromOpportunityModel = (
     account,
     remoteCreatedAt,
     remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   }: CrmOpportunityExpanded,
   expandedAssociations: string[] = []
 ): Opportunity => {
@@ -42,9 +43,10 @@ export const fromOpportunityModel = (
     pipeline,
     status: status ? (status as OpportunityStatus) : null,
     amount,
-    wasDeleted: remoteWasDeleted,
-    createdAt: remoteCreatedAt,
-    updatedAt: remoteUpdatedAt,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   };
 };
 
@@ -59,7 +61,6 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     remote_id: remoteOpportunity.remoteId,
     connection_id: connectionId,
     customer_id: customerId,
-    remote_was_deleted: remoteOpportunity.remoteWasDeleted,
     name: remoteOpportunity.name,
     description: remoteOpportunity.description,
     amount: remoteOpportunity.amount,
@@ -70,6 +71,8 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     close_date: remoteOpportunity.closeDate?.toISOString(),
     remote_created_at: remoteOpportunity.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteOpportunity.remoteUpdatedAt?.toISOString(),
+    remote_was_deleted: remoteOpportunity.remoteWasDeleted,
+    last_modified_at: remoteOpportunity.remoteUpdatedAt?.toISOString(),
     _remote_account_id: remoteOpportunity.remoteAccountId,
     _remote_owner_id: remoteOpportunity.remoteOwnerId,
     updated_at: new Date().toISOString(),

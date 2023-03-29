@@ -159,18 +159,25 @@ export interface components {
       owner?: components["schemas"]["user"];
       phone_numbers: components["schemas"]["phone_numbers"];
       lifecycle_stage: components["schemas"]["lifecycle_stage"];
-      /**
-       * Format: date-time 
-       * @example 2022-02-27T00:00:00Z
-       */
-      created_at: Date | null;
-      /**
-       * Format: date-time 
-       * @example 2022-02-27T00:00:00Z
-       */
-      updated_at: Date | null;
       /** @example https://supaglue.com/ */
       website: string | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_created_at?: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_updated_at?: Date | null;
+      /** @example false */
+      remote_was_deleted?: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at?: Date | null;
     };
     create_update_account: {
       /** @example Integration API */
@@ -218,12 +225,19 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      created_at: Date | null;
+      remote_created_at?: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      updated_at: Date | null;
+      remote_updated_at?: Date | null;
+      /** @example false */
+      remote_was_deleted?: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at?: Date | null;
     };
     create_update_contact: {
       /** @example George */
@@ -270,18 +284,25 @@ export interface components {
       owner_id: string | null;
       owner?: components["schemas"]["user"];
       phone_numbers: components["schemas"]["phone_numbers"];
-      /**
-       * Format: date-time 
-       * @example 2023-02-10T00:00:00Z
-       */
-      created_at: Date | null;
-      /**
-       * Format: date-time 
-       * @example 2023-02-10T00:00:00Z
-       */
-      updated_at: Date | null;
       /** @example Co-Founder */
       title: string | null;
+      /**
+       * Format: date-time 
+       * @example 2023-02-10T00:00:00Z
+       */
+      remote_created_at?: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2023-02-10T00:00:00Z
+       */
+      remote_updated_at?: Date | null;
+      /** @example false */
+      remote_was_deleted?: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at?: Date | null;
     };
     create_update_lead: {
       /** @example Supaglue */
@@ -328,20 +349,27 @@ export interface components {
       owner_id: string | null;
       owner?: components["schemas"]["user"];
       pipeline: string | null;
-      /**
-       * Format: date-time 
-       * @example 2023-02-27T00:00:00Z
-       */
-      created_at: Date | null;
-      /**
-       * Format: date-time 
-       * @example 2023-02-27T00:00:00Z
-       */
-      updated_at: Date | null;
       /** @example Closed Won */
       stage: string | null;
       /** @example OPEN */
       status: string | null;
+      /**
+       * Format: date-time 
+       * @example 2023-02-27T00:00:00Z
+       */
+      remote_created_at?: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2023-02-27T00:00:00Z
+       */
+      remote_updated_at?: Date | null;
+      /** @example false */
+      remote_was_deleted?: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at?: Date | null;
     };
     user: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -357,12 +385,19 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      created_at: Date | null;
+      remote_created_at?: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      updated_at: Date | null;
+      remote_updated_at?: Date | null;
+      /** @example false */
+      remote_was_deleted?: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at?: Date | null;
     };
     create_update_opportunity: {
       /** @example 100000 */
@@ -544,9 +579,9 @@ export interface components {
     /** @description If provided, will only return objects created before this datetime */
     created_before: Date;
     /** @description If provided, will only return objects modified after this datetime */
-    updated_after: Date;
+    modified_after: Date;
     /** @description If provided, will only return objects modified before this datetime */
-    updated_before: Date;
+    modified_before: Date;
     /** @description The pagination cursor value */
     cursor: string;
     /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces */

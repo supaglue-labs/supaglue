@@ -6,7 +6,6 @@ export const fromLeadModel = (
   {
     id,
     remoteId,
-    remoteWasDeleted,
     ownerId,
     owner,
     leadSource,
@@ -24,6 +23,8 @@ export const fromLeadModel = (
     convertedContact,
     remoteCreatedAt,
     remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   }: CrmLeadExpanded,
   expandedAssociations: string[] = []
 ): Lead => {
@@ -48,9 +49,10 @@ export const fromLeadModel = (
     convertedContactId,
     convertedAccount: expandAccount && convertedAccount ? fromAccountModel(convertedAccount) : undefined,
     convertedContact: expandContact && convertedContact ? fromContactModel(convertedContact) : undefined,
-    createdAt: remoteCreatedAt,
-    updatedAt: remoteUpdatedAt,
-    wasDeleted: remoteWasDeleted,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   };
 };
 
@@ -61,7 +63,6 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     remote_id: remoteLead.remoteId,
     connection_id: connectionId,
     customer_id: customerId,
-    remote_was_deleted: remoteLead.remoteWasDeleted,
     lead_source: remoteLead.leadSource,
     title: remoteLead.title,
     company: remoteLead.company,
@@ -71,6 +72,8 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     email_addresses: remoteLead.emailAddresses,
     remote_created_at: remoteLead.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteLead.remoteUpdatedAt?.toISOString(),
+    remote_was_deleted: remoteLead.remoteWasDeleted,
+    last_modified_at: remoteLead.remoteUpdatedAt?.toISOString(),
     converted_date: remoteLead.convertedDate?.toISOString(),
     _converted_remote_account_id: remoteLead.convertedRemoteAccountId,
     _converted_remote_contact_id: remoteLead.convertedRemoteContactId,

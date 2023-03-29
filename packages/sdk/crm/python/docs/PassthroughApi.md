@@ -24,7 +24,7 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.PassthroughApi()
 body = swagger_client.PassthroughBody() # PassthroughBody | 
-x_customer_id = 'x_customer_id_example' # str | The customer ID
+x_customer_id = 'x_customer_id_example' # str | The customer ID that uniquely identifies the customer in your application
 x_provider_name = 'x_provider_name_example' # str | The provider name
 
 try:
@@ -40,7 +40,7 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**PassthroughBody**](PassthroughBody.md)|  | 
- **x_customer_id** | **str**| The customer ID | 
+ **x_customer_id** | **str**| The customer ID that uniquely identifies the customer in your application | 
  **x_provider_name** | **str**| The provider name | 
 
 ### Return type

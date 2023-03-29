@@ -3,7 +3,6 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**applicationId** | **Object** |  | 
-**externalIdentifier** | **Object** |  | 
+**customerId** | **Object** |  | 
 **name** | **Object** |  | 
 **email** | **Object** |  | 

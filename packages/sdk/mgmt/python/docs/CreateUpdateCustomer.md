@@ -3,8 +3,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**application_id** | **object** |  | 
-**external_identifier** | **object** |  | 
+**customer_id** | **object** |  | 
 **name** | **object** |  | 
 **email** | **object** |  | 
 

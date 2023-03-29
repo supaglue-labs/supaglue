@@ -4,8 +4,8 @@ export type ListParams = GetParams &
   PaginationParams & {
     created_after?: string;
     created_before?: string;
-    updated_after?: string;
-    updated_before?: string;
+    modified_after?: string;
+    modified_before?: string;
   };
 
 export type PaginationParams = {
