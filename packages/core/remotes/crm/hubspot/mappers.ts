@@ -245,6 +245,7 @@ export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreate
     dealname: nullToEmptyString(params.name),
     description: nullToEmptyString(params.description),
     dealstage: nullToEmptyString(params.stage),
+    pipeline: nullToEmptyString(params.pipeline),
     hubspot_owner_id: nullToEmptyString(params.ownerId),
     ...params.customFields,
   };
