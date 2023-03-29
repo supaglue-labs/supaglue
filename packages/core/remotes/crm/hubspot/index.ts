@@ -222,11 +222,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             {
               propertyName: 'hs_lastmodifieddate',
               direction: 'ASCENDING',
-            } as unknown as string, // hubspot sdk has wrong types
+            } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
           ],
           properties: propertiesToFetch.company,
           limit: HUBSPOT_RECORD_LIMIT,
-          after: after as unknown as number, // hubspot sdk has wrong types
+          after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
         });
         return companies;
       } catch (e: any) {
@@ -330,11 +330,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             {
               propertyName: 'hs_lastmodifieddate',
               direction: 'ASCENDING',
-            } as unknown as string, // hubspot sdk has wrong types
+            } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
           ],
           properties: propertiesToFetch.deal,
           limit: HUBSPOT_RECORD_LIMIT,
-          after: after as unknown as number, // hubspot sdk has wrong types
+          after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
         });
 
         const dealIds = response.results.map((deal) => deal.id);
