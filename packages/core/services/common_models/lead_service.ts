@@ -5,7 +5,7 @@ import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
 import type { GetParams, Lead, LeadCreateParams, LeadUpdateParams, ListParams, PaginatedResult } from '../../types';
-import { CommonModelBaseService } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class LeadService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -136,7 +136,7 @@ export class LeadService extends CommonModelBaseService {
     connectionId: string,
     customerId: string,
     remoteLeadsReadable: Readable
-  ): Promise<number> {
+  ): Promise<UpsertRemoteCommonModelsResult> {
     const table = `${schemaPrefix}crm_leads`;
     const tempTable = 'crm_leads_temp';
     const columnsWithoutId = [
@@ -168,7 +168,8 @@ export class LeadService extends CommonModelBaseService {
       table,
       tempTable,
       columnsWithoutId,
-      fromRemoteLeadToDbLeadParams
+      fromRemoteLeadToDbLeadParams,
+      (remoteLead) => remoteLead.remoteUpdatedAt
     );
   }
 

@@ -10,11 +10,14 @@ import {
   SyncHistoryService,
   UserService,
 } from '@supaglue/core/services';
-import { createDoSync } from './do_sync';
+import { SyncService } from 'sync-worker/services/sync_service';
+import { createGetSync } from './get_sync';
+import { createImportRecords } from './import_records';
 import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
 import { createPopulateAssociations } from './populate_associations';
+import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
   accountService,
@@ -24,6 +27,7 @@ export const createActivities = ({
   opportunityService,
   leadService,
   userService,
+  syncService,
   syncHistoryService,
   integrationService,
   applicationService,
@@ -35,12 +39,15 @@ export const createActivities = ({
   opportunityService: OpportunityService;
   leadService: LeadService;
   userService: UserService;
+  syncService: SyncService;
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
   applicationService: ApplicationService;
 }) => {
   return {
-    doSync: createDoSync(
+    getSync: createGetSync(syncService),
+    updateSyncState: createUpdateSyncState(syncService),
+    importRecords: createImportRecords(
       accountService,
       connectionService,
       contactService,

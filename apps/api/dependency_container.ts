@@ -40,7 +40,7 @@ function createDependencyContainer(): DependencyContainer {
     }),
   });
 
-  const syncService = new SyncService(temporalClient, connectionService);
+  const syncService = new SyncService(prisma, temporalClient, connectionService);
   const connectionWriterService = new ConnectionWriterService(
     prisma,
     syncService,

@@ -5,7 +5,7 @@ import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromRemoteUserToDbUserParams, fromUserModel } from '../../mappers/user';
 import { ListParams, PaginatedResult } from '../../types/common';
 import { User } from '../../types/crm';
-import { CommonModelBaseService } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class UserService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -56,7 +56,7 @@ export class UserService extends CommonModelBaseService {
     connectionId: string,
     customerId: string,
     remoteUsersReadable: Readable
-  ): Promise<number> {
+  ): Promise<UpsertRemoteCommonModelsResult> {
     const table = `${schemaPrefix}crm_users`;
     const tempTable = 'crm_users_temp';
     const columnsWithoutId = [
@@ -79,7 +79,8 @@ export class UserService extends CommonModelBaseService {
       table,
       tempTable,
       columnsWithoutId,
-      fromRemoteUserToDbUserParams
+      fromRemoteUserToDbUserParams,
+      (remoteUser) => remoteUser.remoteUpdatedAt
     );
   }
 }
