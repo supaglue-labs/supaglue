@@ -20,6 +20,7 @@ type BaseOpportunity = {
   status: OpportunityStatus | null;
   lastActivityAt: Date | null;
   closeDate: Date | null;
+  pipeline: string | null;
   remoteCreatedAt: Date | null;
   remoteUpdatedAt: Date | null;
   remoteWasDeleted: boolean;
@@ -54,6 +55,7 @@ type BaseOpportunityCreateParams = {
   stage?: string | null;
   accountId?: string | null;
   ownerId?: string | null;
+  pipeline?: string | null;
 
   customFields?: CustomFields;
 };

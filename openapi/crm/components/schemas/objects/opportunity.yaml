@@ -40,6 +40,9 @@ properties:
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
   owner:
     $ref: ./user.yaml
+  pipeline:
+    type: string
+    nullable: true
   stage:
     type: string
     nullable: true
@@ -77,3 +80,4 @@ required:
   - owner_id
   - stage
   - status
+  - pipeline

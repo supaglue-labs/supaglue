@@ -2587,6 +2587,10 @@
           "owner": {
             "$ref": "#/components/schemas/user"
           },
+          "pipeline": {
+            "type": "string",
+            "nullable": true
+          },
           "stage": {
             "type": "string",
             "nullable": true,
@@ -2630,7 +2634,8 @@
           "name",
           "owner_id",
           "stage",
-          "status"
+          "status",
+          "pipeline"
         ]
       },
       "user": {
@@ -2725,6 +2730,10 @@
             "type": "string",
             "nullable": true,
             "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
+          },
+          "pipeline": {
+            "type": "string",
+            "nullable": true
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"

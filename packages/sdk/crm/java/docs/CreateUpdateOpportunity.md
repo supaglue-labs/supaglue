@@ -10,4 +10,5 @@ Name | Type | Description | Notes
 **stage** | **String** |  |  [optional]
 **accountId** | **String** |  |  [optional]
 **ownerId** | **String** |  |  [optional]
+**pipeline** | **String** |  |  [optional]
 **customFields** | [**CustomFields**](CustomFields.md) |  |  [optional]

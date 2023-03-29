@@ -49,6 +49,9 @@ public class CreateUpdateOpportunity {
   @SerializedName("owner_id")
   private String ownerId = null;
 
+  @SerializedName("pipeline")
+  private String pipeline = null;
+
   @SerializedName("custom_fields")
   private CustomFields customFields = null;
 
@@ -178,6 +181,24 @@ public class CreateUpdateOpportunity {
     this.ownerId = ownerId;
   }
 
+  public CreateUpdateOpportunity pipeline(String pipeline) {
+    this.pipeline = pipeline;
+    return this;
+  }
+
+   /**
+   * Get pipeline
+   * @return pipeline
+  **/
+  @Schema(description = "")
+  public String getPipeline() {
+    return pipeline;
+  }
+
+  public void setPipeline(String pipeline) {
+    this.pipeline = pipeline;
+  }
+
   public CreateUpdateOpportunity customFields(CustomFields customFields) {
     this.customFields = customFields;
     return this;
@@ -213,12 +234,13 @@ public class CreateUpdateOpportunity {
         Objects.equals(this.stage, createUpdateOpportunity.stage) &&
         Objects.equals(this.accountId, createUpdateOpportunity.accountId) &&
         Objects.equals(this.ownerId, createUpdateOpportunity.ownerId) &&
+        Objects.equals(this.pipeline, createUpdateOpportunity.pipeline) &&
         Objects.equals(this.customFields, createUpdateOpportunity.customFields);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(amount, closeDate, description, name, stage, accountId, ownerId, customFields);
+    return Objects.hash(amount, closeDate, description, name, stage, accountId, ownerId, pipeline, customFields);
   }
 
 
@@ -234,6 +256,7 @@ public class CreateUpdateOpportunity {
     sb.append("    stage: ").append(toIndentedString(stage)).append("\n");
     sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
     sb.append("    ownerId: ").append(toIndentedString(ownerId)).append("\n");
+    sb.append("    pipeline: ").append(toIndentedString(pipeline)).append("\n");
     sb.append("    customFields: ").append(toIndentedString(customFields)).append("\n");
     sb.append("}");
     return sb.toString();

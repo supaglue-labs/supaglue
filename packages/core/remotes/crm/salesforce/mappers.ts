@@ -296,6 +296,8 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     stage: record.StageName,
     closeDate: record.CloseDate ? new Date(record.CloseDate) : null,
     remoteAccountId: record.AccountId ?? null,
+    // pipeline is not supported in salesforce
+    pipeline: null,
     amount: record.Amount ? parseInt(record.Amount) : null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,

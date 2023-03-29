@@ -206,6 +206,7 @@ export class OpportunityService extends CommonModelBaseService {
       'amount',
       'stage',
       'status',
+      'pipeline',
       'last_activity_at',
       'close_date',
       'remote_created_at',

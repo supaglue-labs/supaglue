@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **name** | **str** |  | 
 **owner_id** | **str** |  | 
 **owner** | [**User**](User.md) |  | [optional] 
+**pipeline** | **str** |  | 
 **stage** | **str** |  | 
 **status** | **str** |  | 
 **remote_created_at** | **datetime** |  | [optional] 

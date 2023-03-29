@@ -63,6 +63,9 @@ public class Opportunity {
   @SerializedName("owner")
   private User owner = null;
 
+  @SerializedName("pipeline")
+  private String pipeline = null;
+
   @SerializedName("stage")
   private String stage = null;
 
@@ -279,6 +282,24 @@ public class Opportunity {
     this.owner = owner;
   }
 
+  public Opportunity pipeline(String pipeline) {
+    this.pipeline = pipeline;
+    return this;
+  }
+
+   /**
+   * Get pipeline
+   * @return pipeline
+  **/
+  @Schema(required = true, description = "")
+  public String getPipeline() {
+    return pipeline;
+  }
+
+  public void setPipeline(String pipeline) {
+    this.pipeline = pipeline;
+  }
+
   public Opportunity stage(String stage) {
     this.stage = stage;
     return this;
@@ -408,6 +429,7 @@ public class Opportunity {
         Objects.equals(this.name, opportunity.name) &&
         Objects.equals(this.ownerId, opportunity.ownerId) &&
         Objects.equals(this.owner, opportunity.owner) &&
+        Objects.equals(this.pipeline, opportunity.pipeline) &&
         Objects.equals(this.stage, opportunity.stage) &&
         Objects.equals(this.status, opportunity.status) &&
         Objects.equals(this.remoteCreatedAt, opportunity.remoteCreatedAt) &&
@@ -418,7 +440,7 @@ public class Opportunity {
 
   @Override
   public int hashCode() {
-    return Objects.hash(accountId, account, amount, closeDate, description, id, remoteId, lastActivityAt, name, ownerId, owner, stage, status, remoteCreatedAt, remoteUpdatedAt, remoteWasDeleted, lastModifiedAt);
+    return Objects.hash(accountId, account, amount, closeDate, description, id, remoteId, lastActivityAt, name, ownerId, owner, pipeline, stage, status, remoteCreatedAt, remoteUpdatedAt, remoteWasDeleted, lastModifiedAt);
   }
 
 
@@ -438,6 +460,7 @@ public class Opportunity {
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    ownerId: ").append(toIndentedString(ownerId)).append("\n");
     sb.append("    owner: ").append(toIndentedString(owner)).append("\n");
+    sb.append("    pipeline: ").append(toIndentedString(pipeline)).append("\n");
     sb.append("    stage: ").append(toIndentedString(stage)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    remoteCreatedAt: ").append(toIndentedString(remoteCreatedAt)).append("\n");

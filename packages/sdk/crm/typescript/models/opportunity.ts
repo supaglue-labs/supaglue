@@ -90,6 +90,12 @@ export interface Opportunity {
      * @type {string}
      * @memberof Opportunity
      */
+    pipeline: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Opportunity
+     */
     stage: string | null;
     /**
      * 

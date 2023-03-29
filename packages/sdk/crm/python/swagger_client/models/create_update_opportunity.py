@@ -35,6 +35,7 @@ class CreateUpdateOpportunity(object):
         'stage': 'str',
         'account_id': 'str',
         'owner_id': 'str',
+        'pipeline': 'str',
         'custom_fields': 'CustomFields'
     }
 
@@ -46,10 +47,11 @@ class CreateUpdateOpportunity(object):
         'stage': 'stage',
         'account_id': 'account_id',
         'owner_id': 'owner_id',
+        'pipeline': 'pipeline',
         'custom_fields': 'custom_fields'
     }
 
-    def __init__(self, amount=None, close_date=None, description=None, name=None, stage=None, account_id=None, owner_id=None, custom_fields=None):  # noqa: E501
+    def __init__(self, amount=None, close_date=None, description=None, name=None, stage=None, account_id=None, owner_id=None, pipeline=None, custom_fields=None):  # noqa: E501
         """CreateUpdateOpportunity - a model defined in Swagger"""  # noqa: E501
         self._amount = None
         self._close_date = None
@@ -58,6 +60,7 @@ class CreateUpdateOpportunity(object):
         self._stage = None
         self._account_id = None
         self._owner_id = None
+        self._pipeline = None
         self._custom_fields = None
         self.discriminator = None
         if amount is not None:
@@ -74,6 +77,8 @@ class CreateUpdateOpportunity(object):
             self.account_id = account_id
         if owner_id is not None:
             self.owner_id = owner_id
+        if pipeline is not None:
+            self.pipeline = pipeline
         if custom_fields is not None:
             self.custom_fields = custom_fields
 
@@ -223,6 +228,27 @@ class CreateUpdateOpportunity(object):
         """
 
         self._owner_id = owner_id
+
+    @property
+    def pipeline(self):
+        """Gets the pipeline of this CreateUpdateOpportunity.  # noqa: E501
+
+
+        :return: The pipeline of this CreateUpdateOpportunity.  # noqa: E501
+        :rtype: str
+        """
+        return self._pipeline
+
+    @pipeline.setter
+    def pipeline(self, pipeline):
+        """Sets the pipeline of this CreateUpdateOpportunity.
+
+
+        :param pipeline: The pipeline of this CreateUpdateOpportunity.  # noqa: E501
+        :type: str
+        """
+
+        self._pipeline = pipeline
 
     @property
     def custom_fields(self):

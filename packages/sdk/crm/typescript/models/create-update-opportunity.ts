@@ -62,6 +62,12 @@ export interface CreateUpdateOpportunity {
     ownerId?: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof CreateUpdateOpportunity
+     */
+    pipeline?: string | null;
+    /**
+     * 
      * @type {CustomFields}
      * @memberof CreateUpdateOpportunity
      */

@@ -25,13 +25,8 @@ services:
     command: /bin/sh -c "./apps/sync-worker/scripts/start_dev.sh"
 
   mgmt-ui:
-    image: node:18
-    environment:
-      <<: *common-env
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: /bin/sh -c "./apps/mgmt-ui/scripts/start_dev.sh"
+    profiles:
+      - donotstart
 
   init:
     image: node:18

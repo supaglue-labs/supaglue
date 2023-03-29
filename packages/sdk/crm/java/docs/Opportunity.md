@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **name** | **String** |  | 
 **ownerId** | **String** |  | 
 **owner** | [**User**](User.md) |  |  [optional]
+**pipeline** | **String** |  | 
 **stage** | **String** |  | 
 **status** | **String** |  | 
 **remoteCreatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]

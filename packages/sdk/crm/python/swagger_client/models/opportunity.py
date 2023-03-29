@@ -39,6 +39,7 @@ class Opportunity(object):
         'name': 'str',
         'owner_id': 'str',
         'owner': 'User',
+        'pipeline': 'str',
         'stage': 'str',
         'status': 'str',
         'remote_created_at': 'datetime',
@@ -59,6 +60,7 @@ class Opportunity(object):
         'name': 'name',
         'owner_id': 'owner_id',
         'owner': 'owner',
+        'pipeline': 'pipeline',
         'stage': 'stage',
         'status': 'status',
         'remote_created_at': 'remote_created_at',
@@ -67,7 +69,7 @@ class Opportunity(object):
         'last_modified_at': 'last_modified_at'
     }
 
-    def __init__(self, account_id=None, account=None, amount=None, close_date=None, description=None, id=None, remote_id=None, last_activity_at=None, name=None, owner_id=None, owner=None, stage=None, status=None, remote_created_at=None, remote_updated_at=None, remote_was_deleted=None, last_modified_at=None):  # noqa: E501
+    def __init__(self, account_id=None, account=None, amount=None, close_date=None, description=None, id=None, remote_id=None, last_activity_at=None, name=None, owner_id=None, owner=None, pipeline=None, stage=None, status=None, remote_created_at=None, remote_updated_at=None, remote_was_deleted=None, last_modified_at=None):  # noqa: E501
         """Opportunity - a model defined in Swagger"""  # noqa: E501
         self._account_id = None
         self._account = None
@@ -80,6 +82,7 @@ class Opportunity(object):
         self._name = None
         self._owner_id = None
         self._owner = None
+        self._pipeline = None
         self._stage = None
         self._status = None
         self._remote_created_at = None
@@ -101,6 +104,7 @@ class Opportunity(object):
         self.owner_id = owner_id
         if owner is not None:
             self.owner = owner
+        self.pipeline = pipeline
         self.stage = stage
         self.status = status
         if remote_created_at is not None:
@@ -358,6 +362,29 @@ class Opportunity(object):
         """
 
         self._owner = owner
+
+    @property
+    def pipeline(self):
+        """Gets the pipeline of this Opportunity.  # noqa: E501
+
+
+        :return: The pipeline of this Opportunity.  # noqa: E501
+        :rtype: str
+        """
+        return self._pipeline
+
+    @pipeline.setter
+    def pipeline(self, pipeline):
+        """Sets the pipeline of this Opportunity.
+
+
+        :param pipeline: The pipeline of this Opportunity.  # noqa: E501
+        :type: str
+        """
+        if pipeline is None:
+            raise ValueError("Invalid value for `pipeline`, must not be `None`")  # noqa: E501
+
+        self._pipeline = pipeline
 
     @property
     def stage(self):

@@ -8,7 +8,7 @@ x-common-env:
   SUPAGLUE_DISABLE_ANALYTICS:
   SUPAGLUE_DISABLE_ERROR_REPORTING:
   SUPAGLUE_DEPLOYMENT_ID:
-  IS_CLOUD: 
+  IS_CLOUD:
 
 
 x-fe-api-common-env:
@@ -16,7 +16,8 @@ x-fe-api-common-env:
   SUPAGLUE_INTERNAL_TOKEN: some-internal-token
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-some-key}
   CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-some-key}
-  NEXT_PUBLIC_IS_CLOUD: 
+  NEXT_PUBLIC_IS_CLOUD:
+
 
 services:
   postgres:
@@ -94,6 +95,8 @@ services:
       SUPAGLUE_QUICKSTART_API_KEY: ${SUPAGLUE_QUICKSTART_API_KEY:-some-api-key}
     depends_on:
       postgres:
+        condition: service_started
+      temporal:
         condition: service_started
     volumes:
       - .env:/app/.env
