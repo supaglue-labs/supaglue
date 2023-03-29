@@ -58,6 +58,13 @@ export const fromLeadModel = (
 
 // TODO: Use prisma generator to generate return type
 export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: string, remoteLead: RemoteLead) => {
+  const lastModifiedAt =
+    remoteLead.remoteUpdatedAt || remoteLead.detectedOrRemoteDeletedAt
+      ? new Date(
+          Math.max(remoteLead.remoteUpdatedAt?.getTime() || 0, remoteLead.detectedOrRemoteDeletedAt?.getTime() || 0)
+        )
+      : undefined;
+
   return {
     id: uuidv4(),
     remote_id: remoteLead.remoteId,
@@ -73,7 +80,9 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     remote_created_at: remoteLead.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteLead.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteLead.remoteWasDeleted,
-    last_modified_at: remoteLead.remoteUpdatedAt?.toISOString(),
+    remote_deleted_at: remoteLead.remoteDeletedAt?.toISOString(),
+    detected_or_remote_deleted_at: remoteLead.detectedOrRemoteDeletedAt?.toISOString(),
+    last_modified_at: lastModifiedAt?.toISOString(),
     converted_date: remoteLead.convertedDate?.toISOString(),
     _converted_remote_account_id: remoteLead.convertedRemoteAccountId,
     _converted_remote_contact_id: remoteLead.convertedRemoteContactId,

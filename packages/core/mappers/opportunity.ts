@@ -56,6 +56,16 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
   customerId: string,
   remoteOpportunity: RemoteOpportunity
 ) => {
+  const lastModifiedAt =
+    remoteOpportunity.remoteUpdatedAt || remoteOpportunity.detectedOrRemoteDeletedAt
+      ? new Date(
+          Math.max(
+            remoteOpportunity.remoteUpdatedAt?.getTime() || 0,
+            remoteOpportunity.detectedOrRemoteDeletedAt?.getTime() || 0
+          )
+        )
+      : undefined;
+
   return {
     id: uuidv4(),
     remote_id: remoteOpportunity.remoteId,
@@ -72,7 +82,9 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     remote_created_at: remoteOpportunity.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteOpportunity.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteOpportunity.remoteWasDeleted,
-    last_modified_at: remoteOpportunity.remoteUpdatedAt?.toISOString(),
+    remote_deleted_at: remoteOpportunity.remoteDeletedAt?.toISOString(),
+    detected_or_remote_deleted_at: remoteOpportunity.detectedOrRemoteDeletedAt?.toISOString(),
+    last_modified_at: lastModifiedAt?.toISOString(),
     _remote_account_id: remoteOpportunity.remoteAccountId,
     _remote_owner_id: remoteOpportunity.remoteOwnerId,
     updated_at: new Date().toISOString(),

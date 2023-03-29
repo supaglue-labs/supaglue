@@ -24,10 +24,12 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
     name: record.Name,
     email: record.Email,
     isActive: record.IsActive,
-    remoteWasDeleted: false,
     // These fields are not supported by Salesforce
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    remoteWasDeleted: record.IsDeleted === 'true',
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
   };
 };
 
@@ -99,7 +101,9 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true' ?? false,
+    remoteWasDeleted: record.IsDeleted === 'true',
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
   };
 };
 
@@ -192,7 +196,9 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true' ?? false,
+    remoteWasDeleted: record.IsDeleted === 'true',
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
   };
 };
 
@@ -253,7 +259,9 @@ export const fromSalesforceLeadToRemoteLead = (
       : [],
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true' ?? false,
+    remoteWasDeleted: record.IsDeleted === 'true',
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
   };
 };
 
@@ -302,7 +310,9 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true' ?? false,
+    remoteWasDeleted: record.IsDeleted === 'true',
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
   };
 };
 

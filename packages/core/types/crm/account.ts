@@ -33,6 +33,8 @@ export type Account = BaseAccount & {
 export type RemoteAccount = BaseAccount & {
   remoteId: string;
   remoteOwnerId: string | null;
+  remoteDeletedAt: Date | null;
+  detectedOrRemoteDeletedAt: Date | null;
 };
 
 type BaseAccountCreateParams = {

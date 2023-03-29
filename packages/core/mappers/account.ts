@@ -52,6 +52,16 @@ export const fromRemoteAccountToDbAccountParams = (
   customerId: string,
   remoteAccount: RemoteAccount
 ) => {
+  const lastModifiedAt =
+    remoteAccount.remoteUpdatedAt || remoteAccount.detectedOrRemoteDeletedAt
+      ? new Date(
+          Math.max(
+            remoteAccount.remoteUpdatedAt?.getTime() || 0,
+            remoteAccount.detectedOrRemoteDeletedAt?.getTime() || 0
+          )
+        )
+      : undefined;
+
   return {
     id: uuidv4(),
     name: remoteAccount.name,
@@ -67,7 +77,9 @@ export const fromRemoteAccountToDbAccountParams = (
     remote_created_at: remoteAccount.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteAccount.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteAccount.remoteWasDeleted,
-    last_modified_at: remoteAccount.remoteUpdatedAt?.toISOString(),
+    remote_deleted_at: remoteAccount.remoteDeletedAt?.toISOString(),
+    detected_or_remote_deleted_at: remoteAccount.detectedOrRemoteDeletedAt?.toISOString(),
+    last_modified_at: lastModifiedAt?.toISOString(),
     _remote_owner_id: remoteAccount.remoteOwnerId,
     customer_id: customerId,
     connection_id: connectionId,

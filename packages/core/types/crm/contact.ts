@@ -36,6 +36,8 @@ export type RemoteContact = BaseContact & {
   remoteId: string;
   remoteAccountId: string | null;
   remoteOwnerId: string | null;
+  remoteDeletedAt: Date | null;
+  detectedOrRemoteDeletedAt: Date | null;
 };
 
 type BaseContactCreateParams = {

@@ -41,6 +41,8 @@ export type RemoteOpportunity = BaseOpportunity & {
   remoteId: string;
   remoteAccountId: string | null;
   remoteOwnerId: string | null;
+  remoteDeletedAt: Date | null;
+  detectedOrRemoteDeletedAt: Date | null;
 };
 
 type BaseOpportunityCreateParams = {

@@ -69,6 +69,8 @@ export class UserService extends CommonModelBaseService {
       'remote_created_at',
       'remote_updated_at',
       'remote_was_deleted',
+      'remote_deleted_at',
+      'detected_or_remote_deleted_at',
       'last_modified_at',
       'updated_at', // TODO: We should have default for this column in Postgres
     ];

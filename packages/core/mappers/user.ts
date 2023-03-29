@@ -28,6 +28,13 @@ export const fromUserModel = ({
 
 // TODO: Use prisma generator to generate return type
 export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: string, remoteUser: RemoteUser) => {
+  const lastModifiedAt =
+    remoteUser.remoteUpdatedAt || remoteUser.detectedOrRemoteDeletedAt
+      ? new Date(
+          Math.max(remoteUser.remoteUpdatedAt?.getTime() || 0, remoteUser.detectedOrRemoteDeletedAt?.getTime() || 0)
+        )
+      : undefined;
+
   return {
     id: uuidv4(),
     connection_id: connectionId,
@@ -39,7 +46,9 @@ export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: s
     remote_created_at: remoteUser.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteUser.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteUser.remoteWasDeleted,
-    last_modified_at: remoteUser.remoteUpdatedAt?.toISOString(),
+    remote_deleted_at: remoteUser.remoteDeletedAt?.toISOString(),
+    detected_or_remote_deleted_at: remoteUser.detectedOrRemoteDeletedAt?.toISOString(),
+    last_modified_at: lastModifiedAt?.toISOString(),
     updated_at: new Date().toISOString(),
   };
 };

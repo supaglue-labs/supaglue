@@ -15,4 +15,6 @@ export type User = BaseUser & {
 
 export type RemoteUser = BaseUser & {
   remoteId: string;
+  remoteDeletedAt: Date | null;
+  detectedOrRemoteDeletedAt: Date | null;
 };
