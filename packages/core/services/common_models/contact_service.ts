@@ -227,6 +227,18 @@ export class ContactService extends CommonModelBaseService {
     const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
+    await this.prisma.crmContact.updateMany({
+      where: {
+        remoteAccountId: null,
+        accountId: {
+          not: null,
+        },
+      },
+      data: {
+        accountId: null,
+      },
+    });
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${contactsTable} c
       SET account_id = a.id
@@ -243,6 +255,18 @@ export class ContactService extends CommonModelBaseService {
   public async updateDanglingOwners(connectionId: string): Promise<void> {
     const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.crmContact.updateMany({
+      where: {
+        remoteOwnerId: null,
+        ownerId: {
+          not: null,
+        },
+      },
+      data: {
+        ownerId: null,
+      },
+    });
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${contactsTable} c

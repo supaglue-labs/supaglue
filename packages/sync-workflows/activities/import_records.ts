@@ -16,6 +16,7 @@ export type ImportRecordsArgs = {
   syncId: string;
   connectionId: string;
   commonModel: CommonModel;
+  updatedAfterMs?: number;
 };
 
 export type ImportRecordsResult = {
@@ -36,6 +37,7 @@ export function createImportRecords(
     syncId,
     connectionId,
     commonModel,
+    updatedAfterMs,
   }: ImportRecordsArgs): Promise<ImportRecordsResult> {
     const connection = await connectionService.getSafeById(connectionId);
     const client = await remoteService.getCrmRemoteClient(connectionId);
@@ -47,9 +49,11 @@ export function createImportRecords(
 
     logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: commonModel });
 
+    const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
+
     switch (commonModel) {
       case 'account': {
-        const readable = await client.listAccounts();
+        const readable = await client.listAccounts(updatedAfter);
         result = await accountService.upsertRemoteAccounts(
           connection.id,
           connection.customerId,
@@ -58,7 +62,7 @@ export function createImportRecords(
         break;
       }
       case 'contact': {
-        const readable = await client.listContacts();
+        const readable = await client.listContacts(updatedAfter);
         result = await contactService.upsertRemoteContacts(
           connection.id,
           connection.customerId,
@@ -67,7 +71,7 @@ export function createImportRecords(
         break;
       }
       case 'opportunity': {
-        const readable = await client.listOpportunities();
+        const readable = await client.listOpportunities(updatedAfter);
         result = await opportunityService.upsertRemoteOpportunities(
           connection.id,
           connection.customerId,
@@ -76,7 +80,7 @@ export function createImportRecords(
         break;
       }
       case 'lead': {
-        const readable = await client.listLeads();
+        const readable = await client.listLeads(updatedAfter);
         result = await leadService.upsertRemoteLeads(
           connection.id,
           connection.customerId,
@@ -85,7 +89,7 @@ export function createImportRecords(
         break;
       }
       case 'user': {
-        const readable = await client.listUsers();
+        const readable = await client.listUsers(updatedAfter);
         result = await userService.upsertRemoteUsers(
           connection.id,
           connection.customerId,

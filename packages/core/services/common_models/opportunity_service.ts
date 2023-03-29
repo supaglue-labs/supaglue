@@ -232,6 +232,18 @@ export class OpportunityService extends CommonModelBaseService {
     const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
+    await this.prisma.crmOpportunity.updateMany({
+      where: {
+        remoteAccountId: null,
+        accountId: {
+          not: null,
+        },
+      },
+      data: {
+        accountId: null,
+      },
+    });
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${opportunitiesTable} o
       SET account_id = a.id
@@ -248,6 +260,18 @@ export class OpportunityService extends CommonModelBaseService {
   public async updateDanglingOwners(connectionId: string): Promise<void> {
     const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
+
+    await this.prisma.crmOpportunity.updateMany({
+      where: {
+        remoteOwnerId: null,
+        ownerId: {
+          not: null,
+        },
+      },
+      data: {
+        ownerId: null,
+      },
+    });
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${opportunitiesTable} c
