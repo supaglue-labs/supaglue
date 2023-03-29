@@ -81,6 +81,7 @@ export class AccountService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
+        remoteWasDeleted: false,
       },
       include: {
         owner: expandedAssociations.includes('owner'),

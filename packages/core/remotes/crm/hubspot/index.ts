@@ -164,6 +164,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     const passThrough = new PassThrough({ objectMode: true });
 
+    // Accounts
     (async () => {
       let after = undefined;
       do {
@@ -185,17 +186,43 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       passThrough.emit('error', err);
     });
 
+    // Archived Accounts
+    // TODO: this doesn't respect the `updatedAfter` parameter because we can't use the search API for archived accounts
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedCompanies = await this.#listAccountsFullImpl(after, /* archived */ true);
+        const remoteAccounts = currResults.results.map(fromHubSpotCompanyToRemoteAccount);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteAccounts);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
     return passThrough;
   }
 
-  async #listAccountsFullImpl(after?: string): Promise<HubspotPaginatedCompanies> {
+  async #listAccountsFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedCompanies> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
         const companies = await this.#client.crm.companies.basicApi.getPage(
           HUBSPOT_RECORD_LIMIT,
           after,
-          propertiesToFetch.company
+          propertiesToFetch.company,
+          undefined,
+          undefined,
+          archived
         );
         return companies;
       } catch (e: any) {
@@ -270,6 +297,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     const passThrough = new PassThrough({ objectMode: true });
 
+    // Opportunities
     (async () => {
       let after = undefined;
       do {
@@ -291,10 +319,33 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       passThrough.emit('error', err);
     });
 
+    // Archived Opportunities
+    // TODO: this doesn't respect the `updatedAfter` parameter because we can't use the search API for archived opportunities
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedDeals = await this.#listOpportunitiesFullImpl(after, /* archived */ true);
+        const remoteOpportunities = currResults.results.map(fromHubSpotDealToRemoteOpportunity);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteOpportunities);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
     return passThrough;
   }
 
-  async #listOpportunitiesFullImpl(after?: string): Promise<HubspotPaginatedDeals> {
+  async #listOpportunitiesFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedDeals> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
@@ -303,7 +354,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           after,
           propertiesToFetch.deal,
           /* propertiesWithHistory */ undefined,
-          /* associations */ ['company']
+          /* associations */ ['company'],
+          archived
         );
         return deals;
       } catch (e: any) {
@@ -415,6 +467,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     const passThrough = new PassThrough({ objectMode: true });
 
+    // Contacts
     (async () => {
       let after = undefined;
       do {
@@ -436,10 +489,33 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       passThrough.emit('error', err);
     });
 
+    // Archived Contacts
+    // TODO: this doesn't respect the `updatedAfter` parameter because we can't use the search API for archived contacts
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedContacts = await this.#listContactsFullImpl(after, /* archived */ true);
+        const remoteContacts = currResults.results.map(fromHubSpotContactToRemoteContact);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(remoteContacts);
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
     return passThrough;
   }
 
-  async #listContactsFullImpl(after?: string): Promise<HubspotPaginatedContacts> {
+  async #listContactsFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedContacts> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
@@ -448,7 +524,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           after,
           propertiesToFetch.contact,
           /* propertiesWithHistory */ undefined,
-          /* associations */ ['company']
+          /* associations */ ['company'],
+          archived
         );
         return contacts;
       } catch (e: any) {
@@ -576,6 +653,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   public async listUsers(updatedAfter?: Date): Promise<Readable> {
     const passThrough = new PassThrough({ objectMode: true });
 
+    // Users
     (async () => {
       let after = undefined;
       do {
@@ -609,17 +687,53 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       passThrough.emit('error', err);
     });
 
+    // Archived Users
+    // TODO: this doesn't respect the `updatedAfter` parameter because we can't use the search API for archived users
+    (async () => {
+      let after = undefined;
+      do {
+        const currResults: HubspotPaginatedOwners = await this.#listUsersImpl(after, /* archived */ true);
+        const remoteUsers = currResults.results.map(fromHubspotOwnerToRemoteUser);
+        after = currResults.paging?.next?.after;
+
+        // Do not emit 'end' event until the last batch
+        const readable = Readable.from(
+          remoteUsers.filter((remoteUser) => {
+            if (!updatedAfter) {
+              return true;
+            }
+
+            if (!remoteUser.remoteUpdatedAt) {
+              return true;
+            }
+
+            return updatedAfter < remoteUser.remoteUpdatedAt;
+          })
+        );
+        readable.pipe(passThrough, { end: !after });
+        readable.on('error', (err) => passThrough.emit('error', err));
+
+        // Wait
+        await new Promise((resolve) => readable.on('end', resolve));
+      } while (after);
+    })().catch((err: unknown) => {
+      // We need to forward the error to the returned `Readable` because there
+      // is no way for the caller to find out about errors in the above async block otherwise.
+      passThrough.emit('error', err);
+    });
+
     return passThrough;
   }
 
-  async #listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
+  async #listUsersImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedOwners> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
         const owners = await this.#client.crm.owners.ownersApi.getPage(
           /* email */ undefined,
           after,
-          HUBSPOT_RECORD_LIMIT
+          HUBSPOT_RECORD_LIMIT,
+          archived
         );
         return owners;
       } catch (e: any) {

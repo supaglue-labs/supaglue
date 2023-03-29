@@ -40,6 +40,7 @@ export class UserService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
+        remoteWasDeleted: false,
       },
       orderBy: {
         id: 'asc',

@@ -85,6 +85,7 @@ export class ContactService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
+        remoteWasDeleted: false,
       },
       include: {
         account: expandedAssociations.includes('account'),

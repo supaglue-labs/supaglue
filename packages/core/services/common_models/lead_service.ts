@@ -50,6 +50,7 @@ export class LeadService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
+        remoteWasDeleted: false,
       },
       include: {
         convertedAccount: expandedAssociations.includes('converted_account'),
