@@ -20,7 +20,7 @@ export type ImportRecordsArgs = {
 };
 
 export type ImportRecordsResult = {
-  maxRemoteUpdatedAtMs: number;
+  maxLastModifiedAtMs: number;
   numRecordsSynced: number;
 };
 
@@ -43,7 +43,7 @@ export function createImportRecords(
     const client = await remoteService.getCrmRemoteClient(connectionId);
 
     let result = {
-      maxRemoteUpdatedAt: null as Date | null,
+      maxLastModifiedAt: null as Date | null,
       numRecords: 0,
     };
 
@@ -102,7 +102,7 @@ export function createImportRecords(
     logEvent({ eventName: 'Completed Sync', syncId, providerName: connection.providerName, modelName: commonModel });
 
     return {
-      maxRemoteUpdatedAtMs: result.maxRemoteUpdatedAt ? result.maxRemoteUpdatedAt.getTime() : 0,
+      maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : 0,
       numRecordsSynced: result.numRecords,
     };
   };

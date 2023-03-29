@@ -173,7 +173,10 @@ export class LeadService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteLeadToDbLeadParams,
-      (remoteLead) => remoteLead.remoteUpdatedAt
+      (remoteLead) =>
+        new Date(
+          Math.max(remoteLead.remoteUpdatedAt?.getTime() || 0, remoteLead.detectedOrRemoteDeletedAt?.getTime() || 0)
+        )
     );
   }
 

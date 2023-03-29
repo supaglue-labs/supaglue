@@ -229,7 +229,13 @@ export class OpportunityService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteOpportunityToDbOpportunityParams,
-      (remoteOpportunity) => remoteOpportunity.remoteUpdatedAt
+      (remoteOpportunity) =>
+        new Date(
+          Math.max(
+            remoteOpportunity.remoteUpdatedAt?.getTime() || 0,
+            remoteOpportunity.detectedOrRemoteDeletedAt?.getTime() || 0
+          )
+        )
     );
   }
 

@@ -29,7 +29,7 @@ export abstract class CommonModelBaseService {
     tempTable: string,
     columnsWithoutId: string[],
     mapper: (connectionId: string, customerId: string, remoteCommonModel: T) => Record<string, any>,
-    remoteUpdatedAtGetter: (remoteCommonModel: T) => Date | null
+    lastModifiedAtGetter: (remoteCommonModel: T) => Date | null
   ): Promise<UpsertRemoteCommonModelsResult> {
     const client = await this.pgPool.connect();
 
@@ -56,8 +56,8 @@ export abstract class CommonModelBaseService {
         },
       });
 
-      // Keep track of the max remoteUpdatedAt
-      let maxRemoteUpdatedAt: Date | null = null;
+      // Keep track of the max lastModifiedAt
+      let maxLastModifiedAt: Date | null = null;
 
       await pipeline(
         remoteCommonModelReadable,
@@ -67,10 +67,10 @@ export abstract class CommonModelBaseService {
             try {
               const mappedRecord = mapper(connectionId, customerId, chunk);
 
-              // Update the max remoteUpdatedAt
-              const remoteUpdatedAt = remoteUpdatedAtGetter(chunk);
-              if (remoteUpdatedAt && (!maxRemoteUpdatedAt || remoteUpdatedAt > maxRemoteUpdatedAt)) {
-                maxRemoteUpdatedAt = remoteUpdatedAt;
+              // Update the max lastModifiedAt
+              const lastModifiedAt = lastModifiedAtGetter(chunk);
+              if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
+                maxLastModifiedAt = lastModifiedAt;
               }
 
               callback(null, mappedRecord);
@@ -92,7 +92,7 @@ ON CONFLICT (connection_id, remote_id)
 DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
 
       return {
-        maxRemoteUpdatedAt,
+        maxLastModifiedAt,
         numRecords: result.rowCount,
       };
     } finally {
@@ -102,6 +102,6 @@ DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
 }
 
 export type UpsertRemoteCommonModelsResult = {
-  maxRemoteUpdatedAt: Date | null;
+  maxLastModifiedAt: Date | null;
   numRecords: number;
 };

@@ -199,7 +199,13 @@ export class AccountService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteAccountToDbAccountParams,
-      (remoteAccount) => remoteAccount.remoteUpdatedAt
+      (remoteAccount) =>
+        new Date(
+          Math.max(
+            remoteAccount.remoteUpdatedAt?.getTime() || 0,
+            remoteAccount.detectedOrRemoteDeletedAt?.getTime() || 0
+          )
+        )
     );
   }
 
