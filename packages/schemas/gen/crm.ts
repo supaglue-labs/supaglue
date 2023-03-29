@@ -158,8 +158,7 @@ export interface components {
       owner_id: string | null;
       owner?: components["schemas"]["user"];
       phone_numbers: components["schemas"]["phone_numbers"];
-      /** @enum {string|null} */
-      lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+      lifecycle_stage: components["schemas"]["lifecycle_stage"];
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -188,7 +187,7 @@ export interface components {
       phone_numbers?: components["schemas"]["phone_numbers"];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
-      lifecycle_stage?: components["schemas"]["account"]["lifecycle_stage"];
+      lifecycle_stage?: components["schemas"]["lifecycle_stage"];
       custom_fields?: components["schemas"]["custom_fields"];
     };
     contact: {
@@ -214,7 +213,7 @@ export interface components {
       /** @example Xing */
       last_name: string | null;
       phone_numbers: components["schemas"]["phone_numbers"];
-      lifecycle_stage: components["schemas"]["account"]["lifecycle_stage"];
+      lifecycle_stage: components["schemas"]["lifecycle_stage"];
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -238,7 +237,7 @@ export interface components {
       phone_numbers?: components["schemas"]["phone_numbers"];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
-      lifecycle_stage?: components["schemas"]["account"]["lifecycle_stage"];
+      lifecycle_stage?: components["schemas"]["lifecycle_stage"];
       custom_fields?: components["schemas"]["custom_fields"];
     };
     lead: {
@@ -533,6 +532,8 @@ export interface components {
       type: "equals";
       value: string;
     };
+    /** @enum {string|null} */
+    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
   };
   responses: never;
   parameters: {

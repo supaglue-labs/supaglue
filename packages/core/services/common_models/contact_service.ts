@@ -201,6 +201,7 @@ export class ContactService extends CommonModelBaseService {
       'addresses',
       'email_addresses',
       'phone_numbers',
+      'lifecycle_stage',
       'last_activity_at',
       'remote_created_at',
       'remote_updated_at',
