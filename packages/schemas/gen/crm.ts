@@ -327,6 +327,7 @@ export interface components {
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       owner_id: string | null;
       owner?: components["schemas"]["user"];
+      pipeline: string | null;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
@@ -378,6 +379,7 @@ export interface components {
       account_id?: string | null;
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
+      pipeline?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     /**

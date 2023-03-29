@@ -188,6 +188,7 @@ model CrmOpportunity {
   stage            String?
   status           String?
   lastActivityAt   DateTime?   @map("last_activity_at")
+  pipeline         String?
   closeDate        DateTime?   @map("close_date")
   remoteCreatedAt  DateTime?   @map("remote_created_at")
   remoteUpdatedAt  DateTime?   @map("remote_updated_at")

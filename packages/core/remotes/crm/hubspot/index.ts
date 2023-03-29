@@ -97,6 +97,7 @@ const propertiesToFetch = {
     'hubspot_owner_id',
     'notes_last_updated',
     'closedate',
+    'pipeline',
     'hs_is_closed_won',
     'hs_is_closed',
     'hs_lastmodifieddate',
