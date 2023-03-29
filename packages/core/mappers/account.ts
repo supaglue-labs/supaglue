@@ -67,6 +67,7 @@ export const fromRemoteAccountToDbAccountParams = (
     remote_created_at: remoteAccount.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteAccount.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteAccount.remoteWasDeleted,
+    last_modified_at: remoteAccount.remoteUpdatedAt?.toISOString(),
     _remote_owner_id: remoteAccount.remoteOwnerId,
     customer_id: customerId,
     connection_id: connectionId,

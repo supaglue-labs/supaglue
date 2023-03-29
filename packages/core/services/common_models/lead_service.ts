@@ -46,7 +46,7 @@ export class LeadService extends CommonModelBaseService {
           gt: created_after,
           lt: created_before,
         },
-        remoteUpdatedAt: {
+        lastModifiedAt: {
           gt: modified_after,
           lt: modified_before,
         },

@@ -77,6 +77,7 @@ export const fromRemoteContactToDbContactParams = (
     remote_created_at: remoteContact.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteContact.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteContact.remoteWasDeleted,
+    last_modified_at: remoteContact.remoteUpdatedAt?.toISOString(),
     _remote_account_id: remoteContact.remoteAccountId,
     _remote_owner_id: remoteContact.remoteOwnerId,
     updated_at: new Date().toISOString(),

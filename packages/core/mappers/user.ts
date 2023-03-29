@@ -39,6 +39,7 @@ export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: s
     remote_created_at: remoteUser.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteUser.remoteUpdatedAt?.toISOString(),
     remote_was_deleted: remoteUser.remoteWasDeleted,
+    last_modified_at: remoteUser.remoteUpdatedAt?.toISOString(),
     updated_at: new Date().toISOString(),
   };
 };
