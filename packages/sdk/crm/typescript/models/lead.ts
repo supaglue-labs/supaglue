@@ -148,5 +148,5 @@ export interface Lead {
      * @type {Date}
      * @memberof Lead
      */
-    lastModifiedAt?: Date;
+    lastModifiedAt?: Date | null;
 }

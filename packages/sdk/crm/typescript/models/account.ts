@@ -122,5 +122,5 @@ export interface Account {
      * @type {Date}
      * @memberof Account
      */
-    lastModifiedAt?: Date;
+    lastModifiedAt?: Date | null;
 }

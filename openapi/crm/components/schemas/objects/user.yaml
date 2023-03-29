@@ -32,6 +32,7 @@ properties:
     example: false
   last_modified_at:
     type: string
+    nullable: true # we should make this required
     format: date-time
     example: '2022-02-27T00:00:00Z' 
 required:
@@ -40,5 +41,3 @@ required:
   - name
   - email
   - is_active
-  - created_at
-  - updated_at

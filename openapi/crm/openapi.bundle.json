@@ -2177,6 +2177,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2192,8 +2193,6 @@
           "number_of_employees",
           "owner_id",
           "phone_numbers",
-          "created_at",
-          "updated_at",
           "website",
           "lifecycle_stage"
         ]
@@ -2318,6 +2317,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2334,9 +2334,7 @@
           "last_activity_at",
           "last_name",
           "phone_numbers",
-          "lifecycle_stage",
-          "created_at",
-          "updated_at"
+          "lifecycle_stage"
         ]
       },
       "create_update_contact": {
@@ -2472,6 +2470,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2488,8 +2487,6 @@
           "lead_source",
           "owner_id",
           "phone_numbers",
-          "created_at",
-          "updated_at",
           "title"
         ]
       },
@@ -2618,6 +2615,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2631,8 +2629,6 @@
           "last_activity_at",
           "name",
           "owner_id",
-          "created_at",
-          "updated_at",
           "stage",
           "status"
         ]
@@ -2680,6 +2676,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2689,9 +2686,7 @@
           "remote_id",
           "name",
           "email",
-          "is_active",
-          "created_at",
-          "updated_at"
+          "is_active"
         ]
       },
       "create_update_opportunity": {

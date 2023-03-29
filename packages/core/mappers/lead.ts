@@ -6,7 +6,6 @@ export const fromLeadModel = (
   {
     id,
     remoteId,
-    remoteWasDeleted,
     ownerId,
     owner,
     leadSource,
@@ -24,6 +23,8 @@ export const fromLeadModel = (
     convertedContact,
     remoteCreatedAt,
     remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   }: CrmLeadExpanded,
   expandedAssociations: string[] = []
 ): Lead => {
@@ -48,9 +49,10 @@ export const fromLeadModel = (
     convertedContactId,
     convertedAccount: expandAccount && convertedAccount ? fromAccountModel(convertedAccount) : undefined,
     convertedContact: expandContact && convertedContact ? fromContactModel(convertedContact) : undefined,
-    createdAt: remoteCreatedAt,
-    updatedAt: remoteUpdatedAt,
-    wasDeleted: remoteWasDeleted,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   };
 };
 

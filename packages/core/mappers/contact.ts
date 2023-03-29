@@ -29,6 +29,7 @@ export const fromContactModel = (
     remoteCreatedAt,
     remoteUpdatedAt,
     remoteWasDeleted,
+    lastModifiedAt,
   }: CrmContactExpanded,
   expandedAssociations: string[] = []
 ): Contact => {
@@ -48,9 +49,10 @@ export const fromContactModel = (
     phoneNumbers: phoneNumbers as PhoneNumber[],
     lifecycleStage: lifecycleStage as LifecycleStage,
     lastActivityAt,
-    createdAt: remoteCreatedAt,
-    updatedAt: remoteUpdatedAt,
-    wasDeleted: remoteWasDeleted,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   };
 };
 

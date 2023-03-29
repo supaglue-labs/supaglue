@@ -16,6 +16,9 @@ type BaseAccount = {
   phoneNumbers: PhoneNumber[];
   lastActivityAt: Date | null;
   lifecycleStage: LifecycleStage | null;
+  remoteCreatedAt: Date | null;
+  remoteUpdatedAt: Date | null;
+  remoteWasDeleted: boolean;
 };
 
 export type Account = BaseAccount & {
@@ -23,18 +26,13 @@ export type Account = BaseAccount & {
   remoteId: string;
   ownerId: string | null;
   owner?: User;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  wasDeleted: boolean;
+  lastModifiedAt: Date | null;
   // TODO: Support remote data
 };
 
 export type RemoteAccount = BaseAccount & {
   remoteId: string;
   remoteOwnerId: string | null;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
 };
 
 type BaseAccountCreateParams = {

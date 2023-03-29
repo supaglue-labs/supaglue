@@ -177,7 +177,7 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date;
+      last_modified_at?: Date | null;
     };
     create_update_account: {
       /** @example Integration API */
@@ -237,7 +237,7 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date;
+      last_modified_at?: Date | null;
     };
     create_update_contact: {
       /** @example George */
@@ -302,7 +302,7 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date;
+      last_modified_at?: Date | null;
     };
     create_update_lead: {
       /** @example Supaglue */
@@ -368,7 +368,7 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date;
+      last_modified_at?: Date | null;
     };
     user: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -396,7 +396,7 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date;
+      last_modified_at?: Date | null;
     };
     create_update_opportunity: {
       /** @example 100000 */

@@ -70,5 +70,5 @@ export interface User {
      * @type {Date}
      * @memberof User
      */
-    lastModifiedAt?: Date;
+    lastModifiedAt?: Date | null;
 }

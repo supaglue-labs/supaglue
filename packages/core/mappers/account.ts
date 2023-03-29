@@ -20,6 +20,7 @@ export const fromAccountModel = (
     lastActivityAt,
     remoteCreatedAt,
     remoteUpdatedAt,
+    lastModifiedAt,
   }: CrmAccountExpanded,
   expandedAssociations: string[] = []
 ): Account => {
@@ -38,9 +39,10 @@ export const fromAccountModel = (
     phoneNumbers: phoneNumbers as PhoneNumber[],
     lifecycleStage: lifecycleStage as LifecycleStage,
     lastActivityAt,
-    createdAt: remoteCreatedAt,
-    updatedAt: remoteUpdatedAt,
-    wasDeleted: remoteWasDeleted,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   };
 };
 

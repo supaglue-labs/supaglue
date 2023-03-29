@@ -83,7 +83,6 @@ model CrmAccount {
   remoteId          String           @map("remote_id")
   customerId        String           @map("customer_id")
   connectionId      String           @map("connection_id")
-  remoteWasDeleted  Boolean          @default(false) @map("remote_was_deleted")
   name              String?
   description       String?
   industry          String?
@@ -96,6 +95,8 @@ model CrmAccount {
   remoteData        Json?            @map("remote_data")
   remoteCreatedAt   DateTime?        @map("remote_created_at")
   remoteUpdatedAt   DateTime?        @map("remote_updated_at")
+  remoteWasDeleted  Boolean          @default(false) @map("remote_was_deleted")
+  lastModifiedAt    DateTime?        @map("last_modified_at")
   createdAt         DateTime         @default(now()) @map("created_at")
   updatedAt         DateTime         @updatedAt @map("updated_at")
   // Associations
@@ -126,6 +127,7 @@ model CrmContact {
   remoteCreatedAt  DateTime?   @map("remote_created_at")
   remoteUpdatedAt  DateTime?   @map("remote_updated_at")
   remoteWasDeleted Boolean     @default(false) @map("remote_was_deleted")
+  lastModifiedAt   DateTime?   @map("last_modified_at")
   createdAt        DateTime    @default(now()) @map("created_at")
   updatedAt        DateTime    @updatedAt @map("updated_at")
   // Associations
@@ -146,7 +148,6 @@ model CrmLead {
   remoteId                 String      @map("remote_id")
   customerId               String      @map("customer_id")
   connectionId             String      @map("connection_id")
-  remoteWasDeleted         Boolean     @default(false) @map("remote_was_deleted")
   leadSource               String?     @map("lead_source")
   title                    String?
   company                  String?
@@ -158,6 +159,8 @@ model CrmLead {
   remoteData               Json?       @map("remote_data")
   remoteCreatedAt          DateTime?   @map("remote_created_at")
   remoteUpdatedAt          DateTime?   @map("remote_updated_at")
+  remoteWasDeleted         Boolean     @default(false) @map("remote_was_deleted")
+  lastModifiedAt           DateTime?   @map("last_modified_at")
   convertedDate            DateTime?   @map("converted_date")
   createdAt                DateTime    @default(now()) @map("created_at")
   updatedAt                DateTime    @updatedAt @map("updated_at")
@@ -181,7 +184,6 @@ model CrmOpportunity {
   remoteId         String      @map("remote_id")
   customerId       String      @map("customer_id")
   connectionId     String      @map("connection_id")
-  remoteWasDeleted Boolean     @default(false) @map("remote_was_deleted")
   name             String?
   description      String?
   amount           Int?
@@ -191,6 +193,8 @@ model CrmOpportunity {
   closeDate        DateTime?   @map("close_date")
   remoteCreatedAt  DateTime?   @map("remote_created_at")
   remoteUpdatedAt  DateTime?   @map("remote_updated_at")
+  remoteWasDeleted Boolean     @default(false) @map("remote_was_deleted")
+  lastModifiedAt   DateTime?   @map("last_modified_at")
   createdAt        DateTime    @default(now()) @map("created_at")
   updatedAt        DateTime    @updatedAt @map("updated_at")
   // Associations
@@ -210,12 +214,13 @@ model CrmUser {
   remoteId         String           @map("remote_id")
   customerId       String           @map("customer_id")
   connectionId     String           @map("connection_id")
-  remoteWasDeleted Boolean          @default(false) @map("remote_was_deleted")
   name             String?
   email            String?
   isActive         Boolean?         @map("is_active")
   remoteCreatedAt  DateTime?        @map("remote_created_at")
   remoteUpdatedAt  DateTime?        @map("remote_updated_at")
+  remoteWasDeleted Boolean          @default(false) @map("remote_was_deleted")
+  lastModifiedAt   DateTime?        @map("last_modified_at")
   createdAt        DateTime         @default(now()) @map("created_at")
   updatedAt        DateTime         @updatedAt @map("updated_at")
   leads            CrmLead[]

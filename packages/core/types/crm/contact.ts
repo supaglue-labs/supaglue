@@ -16,6 +16,9 @@ export type BaseContact = {
   phoneNumbers: PhoneNumber[];
   lastActivityAt: Date | null;
   lifecycleStage: LifecycleStage | null;
+  remoteCreatedAt: Date | null;
+  remoteUpdatedAt: Date | null;
+  remoteWasDeleted: boolean;
 };
 
 export type Contact = BaseContact & {
@@ -25,9 +28,7 @@ export type Contact = BaseContact & {
   owner?: User;
   accountId: string | null;
   account?: Account;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  wasDeleted: boolean;
+  lastModifiedAt: Date | null;
   // TODO: Support remote data and field mappings
 };
 
@@ -35,9 +36,6 @@ export type RemoteContact = BaseContact & {
   remoteId: string;
   remoteAccountId: string | null;
   remoteOwnerId: string | null;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
 };
 
 type BaseContactCreateParams = {

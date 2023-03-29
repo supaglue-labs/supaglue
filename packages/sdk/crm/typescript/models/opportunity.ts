@@ -120,5 +120,5 @@ export interface Opportunity {
      * @type {Date}
      * @memberof Opportunity
      */
-    lastModifiedAt?: Date;
+    lastModifiedAt?: Date | null;
 }

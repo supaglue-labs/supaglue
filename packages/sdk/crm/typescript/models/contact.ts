@@ -124,5 +124,5 @@ export interface Contact {
      * @type {Date}
      * @memberof Contact
      */
-    lastModifiedAt?: Date;
+    lastModifiedAt?: Date | null;
 }

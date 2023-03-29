@@ -7,7 +7,6 @@ export const fromOpportunityModel = (
   {
     id,
     remoteId,
-    remoteWasDeleted,
     ownerId,
     owner,
     name,
@@ -21,6 +20,8 @@ export const fromOpportunityModel = (
     account,
     remoteCreatedAt,
     remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   }: CrmOpportunityExpanded,
   expandedAssociations: string[] = []
 ): Opportunity => {
@@ -40,9 +41,10 @@ export const fromOpportunityModel = (
     closeDate,
     status: status ? (status as OpportunityStatus) : null,
     amount,
-    wasDeleted: remoteWasDeleted,
-    createdAt: remoteCreatedAt,
-    updatedAt: remoteUpdatedAt,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
   };
 };
 

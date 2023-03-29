@@ -2,19 +2,17 @@ type BaseUser = {
   name: string | null;
   email: string | null;
   isActive: boolean | null;
+  remoteCreatedAt: Date | null;
+  remoteUpdatedAt: Date | null;
+  remoteWasDeleted: boolean;
 };
 
 export type User = BaseUser & {
   id: string;
   remoteId: string;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  wasDeleted: boolean;
+  lastModifiedAt: Date | null;
 };
 
 export type RemoteUser = BaseUser & {
   remoteId: string;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
 };

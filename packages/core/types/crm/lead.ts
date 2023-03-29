@@ -17,20 +17,21 @@ type BaseLead = {
   emailAddresses: EmailAddress[];
   phoneNumbers: PhoneNumber[];
   convertedDate: Date | null;
+  remoteUpdatedAt: Date | null;
+  remoteCreatedAt: Date | null;
+  remoteWasDeleted: boolean;
 };
 
 export type Lead = BaseLead & {
-  updatedAt: Date | null;
-  createdAt: Date | null;
   convertedContactId: string | null;
   convertedContact?: Contact;
   convertedAccountId: string | null;
   convertedAccount?: Account;
   ownerId: string | null;
   owner?: User;
-  wasDeleted: boolean;
   id: string;
   remoteId: string;
+  lastModifiedAt: Date | null;
   // Support field mappings + remote data etc
 };
 
@@ -39,9 +40,6 @@ export type RemoteLead = BaseLead & {
   convertedRemoteContactId: string | null;
   convertedRemoteAccountId: string | null;
   remoteOwnerId: string | null;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
 };
 
 type BaseLeadCreateParams = {
