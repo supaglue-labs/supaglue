@@ -1,5 +1,5 @@
 import { CrmAccount, CrmUser } from '@supaglue/db';
-import type { Address, CustomFields, PhoneNumber, User } from '..';
+import type { Address, CustomFields, LifecycleStage, PhoneNumber, User } from '..';
 import { Filter } from '../filter';
 
 export type CrmAccountExpanded = CrmAccount & {
@@ -15,6 +15,7 @@ type BaseAccount = {
   addresses: Address[];
   phoneNumbers: PhoneNumber[];
   lastActivityAt: Date | null;
+  lifecycleStage: LifecycleStage | null;
 };
 
 export type Account = BaseAccount & {
@@ -47,6 +48,7 @@ type BaseAccountCreateParams = {
   numberOfEmployees?: number | null;
   addresses?: Address[];
   phoneNumbers?: PhoneNumber[];
+  lifecycleStage?: LifecycleStage | null;
 
   ownerId?: string | null;
 

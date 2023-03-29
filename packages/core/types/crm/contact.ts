@@ -1,5 +1,5 @@
 import type { CrmAccount, CrmContact, CrmUser } from '@supaglue/db';
-import type { Address, CustomFields, EmailAddress, PhoneNumber, User } from '..';
+import type { Address, CustomFields, EmailAddress, LifecycleStage, PhoneNumber, User } from '..';
 import { Filter } from '../filter';
 import type { Account } from './account';
 
@@ -15,6 +15,7 @@ export type BaseContact = {
   emailAddresses: EmailAddress[];
   phoneNumbers: PhoneNumber[];
   lastActivityAt: Date | null;
+  lifecycleStage: LifecycleStage | null;
 };
 
 export type Contact = BaseContact & {
@@ -47,6 +48,7 @@ type BaseContactCreateParams = {
   addresses?: Address[];
   emailAddresses?: EmailAddress[];
   phoneNumbers?: PhoneNumber[];
+  lifecycleStage?: LifecycleStage | null;
 
   // TODO: Need extra permissions to create/update this derived field in SF
   // lastActivityAt?: Date | null;

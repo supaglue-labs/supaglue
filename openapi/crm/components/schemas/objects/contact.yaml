@@ -37,6 +37,8 @@ properties:
     example: Xing
   phone_numbers:
     $ref: ./phone_numbers.yaml
+  lifecycle_stage:
+    $ref: './lifecycle_stage.yaml'
   created_at:
     type: string
     nullable: true
@@ -59,5 +61,6 @@ required:
   - last_activity_at
   - last_name
   - phone_numbers
+  - lifecycle_stage
   - created_at
   - updated_at

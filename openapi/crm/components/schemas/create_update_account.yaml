@@ -28,5 +28,7 @@ properties:
     type: string
     nullable: true
     example: 9f3e97fd-4d5d-4efc-959d-bbebfac079f5
+  lifecycle_stage:
+    $ref: './objects/lifecycle_stage.yaml'
   custom_fields:
     $ref: ./objects/custom_fields.yaml

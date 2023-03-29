@@ -91,6 +91,7 @@ model CrmAccount {
   numberOfEmployees Int?             @map("number_of_employees")
   addresses         Json?
   phoneNumbers      Json?            @map("phone_numbers")
+  lifecycleStage    String?          @map("lifecycle_stage")
   lastActivityAt    DateTime?        @map("last_activity_at")
   remoteData        Json?            @map("remote_data")
   remoteCreatedAt   DateTime?        @map("remote_created_at")
@@ -120,6 +121,7 @@ model CrmContact {
   emailAddresses   Json        @map("email_addresses")
   phoneNumbers     Json        @map("phone_numbers")
   lastActivityAt   DateTime?   @map("last_activity_at")
+  lifecycleStage   String?     @map("lifecycle_stage")
   remoteData       Json?       @map("remote_data")
   remoteCreatedAt  DateTime?   @map("remote_created_at")
   remoteUpdatedAt  DateTime?   @map("remote_updated_at")
