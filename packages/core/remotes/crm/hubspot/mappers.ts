@@ -176,6 +176,7 @@ export const fromHubSpotDealToRemoteOpportunity = ({
     remoteCreatedAt: createdAt,
     remoteUpdatedAt: updatedAt,
     status,
+    pipeline: properties.pipeline ?? null,
     remoteAccountId,
     amount: properties.amount ? parseInt(properties.amount) : null,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,

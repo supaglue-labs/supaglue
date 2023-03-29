@@ -20,6 +20,7 @@ type BaseOpportunity = {
   status: OpportunityStatus | null;
   lastActivityAt: Date | null;
   closeDate: Date | null;
+  pipeline: string | null;
 };
 
 export type Opportunity = BaseOpportunity & {
@@ -56,6 +57,7 @@ type BaseOpportunityCreateParams = {
   stage?: string | null;
   accountId?: string | null;
   ownerId?: string | null;
+  pipeline?: string | null;
 
   customFields?: CustomFields;
 };
