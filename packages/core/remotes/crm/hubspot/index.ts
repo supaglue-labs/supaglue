@@ -78,7 +78,6 @@ const propertiesToFetch = {
     'firstname',
     'hs_createdate', // TODO: Use this or createdate?
     'hs_is_contact', // TODO: distinguish from "visitor"?
-    'hs_lastmodifieddate', // TODO: Use this or lastmodifieddate?
     'hubspot_owner_id',
     'lastmodifieddate',
     'lastname',
@@ -315,8 +314,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
-        // TODO: need to grab associations too
-        const deals = await this.#client.crm.deals.searchApi.doSearch({
+        const response = await this.#client.crm.deals.searchApi.doSearch({
           filterGroups: [
             {
               filters: [
@@ -339,15 +337,28 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           after: after as unknown as number, // hubspot sdk has wrong types
         });
 
-        // TODO: get associations
+        const dealIds = response.results.map((deal) => deal.id);
 
-        //   HUBSPOT_RECORD_LIMIT,
-        //   after,
-        //   propertiesToFetch.deal,
-        //   /* propertiesWithHistory */ undefined,
-        //   /* associations */ ['company']
-        // );
-        return deals;
+        // Get associations
+        const contactToDealsMap = await this.#listAssociations(
+          'deal',
+          'company',
+          dealIds.map((id) => id)
+        );
+
+        // Add associations to deals
+        // TODO: We shouldn't hijack the response object like this; clean this code up
+        return {
+          ...response,
+          results: response.results.map((deal) => ({
+            ...deal,
+            associations: {
+              companies: {
+                results: contactToDealsMap[deal.id].map((id) => ({ id, type: 'deal_to_company' })),
+              },
+            },
+          })),
+        };
       } catch (e: any) {
         logger.error(e, 'Error encountered');
         throw e;
@@ -450,7 +461,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         await this.maybeRefreshAccessToken();
 
         // Get contacts
-        const contacts = await this.#client.crm.contacts.searchApi.doSearch({
+        const response = await this.#client.crm.contacts.searchApi.doSearch({
           filterGroups: [
             {
               filters: [
@@ -472,18 +483,29 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           limit: HUBSPOT_RECORD_LIMIT,
           after: after as unknown as number, // hubspot sdk has wrong types
         });
-        return contacts;
 
-        // TODO: Get associations
+        const contactIds = response.results.map((contact) => contact.id);
 
-        // const contacts = await this.#client.crm.contacts.basicApi.getPage(
-        //   HUBSPOT_RECORD_LIMIT,
-        //   after,
-        //   propertiesToFetch.contact,
-        //   /* propertiesWithHistory */ undefined,
-        //   /* associations */ ['company']
-        // );
-        // return contacts;
+        // Get associations
+        const contactToCompaniesMap = await this.#listAssociations(
+          'contact',
+          'company',
+          contactIds.map((id) => id)
+        );
+
+        // Add associations to contacts
+        // TODO: We shouldn't hijack the response object like this; clean this code up
+        return {
+          ...response,
+          results: response.results.map((contact) => ({
+            ...contact,
+            associations: {
+              companies: {
+                results: contactToCompaniesMap[contact.id].map((id) => ({ id, type: 'contact_to_company' })),
+              },
+            },
+          })),
+        };
       } catch (e: any) {
         logger.error(e, 'Error encountered');
         throw e;
@@ -553,7 +575,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     (async () => {
       let after = undefined;
       do {
-        const currResults: HubspotPaginatedOwners = await this.listUsersImpl(after);
+        const currResults: HubspotPaginatedOwners = await this.#listUsersImpl(after);
         const remoteUsers = currResults.results.map(fromHubspotOwnerToRemoteUser);
         after = currResults.paging?.next?.after;
 
@@ -586,7 +608,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return passThrough;
   }
 
-  private async listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
+  async #listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
@@ -600,6 +622,23 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         logger.error(e, 'Error encountered');
         throw e;
       }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  async #listAssociations(
+    fromObjectType: string,
+    toObjectType: string,
+    fromObjectIds: string[]
+  ): Promise<Record<string, string[]>> {
+    const helper = async () => {
+      await this.maybeRefreshAccessToken();
+      const associations = await this.#client.crm.associations.batchApi.read(fromObjectType, toObjectType, {
+        inputs: fromObjectIds.map((id) => ({ id })),
+      });
+      return associations.results
+        .map((result) => result.to.map(({ id }) => ({ [result._from.id]: id })))
+        .reduce((acc, curr) => ({ ...acc, ...curr }), {});
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
   }
