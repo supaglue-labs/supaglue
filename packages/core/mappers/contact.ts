@@ -1,5 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Address, Contact, CrmContactExpanded, EmailAddress, PhoneNumber, RemoteContact } from '../types';
+import {
+  Address,
+  Contact,
+  CrmContactExpanded,
+  EmailAddress,
+  LifecycleStage,
+  PhoneNumber,
+  RemoteContact,
+} from '../types';
 import { fromAccountModel } from './account';
 import { fromUserModel } from './user';
 
@@ -16,6 +24,7 @@ export const fromContactModel = (
     addresses,
     emailAddresses,
     phoneNumbers,
+    lifecycleStage,
     lastActivityAt,
     remoteCreatedAt,
     remoteUpdatedAt,
@@ -37,6 +46,7 @@ export const fromContactModel = (
     addresses: addresses as Address[],
     emailAddresses: emailAddresses as EmailAddress[],
     phoneNumbers: phoneNumbers as PhoneNumber[],
+    lifecycleStage: lifecycleStage as LifecycleStage,
     lastActivityAt,
     createdAt: remoteCreatedAt,
     updatedAt: remoteUpdatedAt,
@@ -60,6 +70,7 @@ export const fromRemoteContactToDbContactParams = (
     addresses: remoteContact.addresses,
     email_addresses: remoteContact.emailAddresses,
     phone_numbers: remoteContact.phoneNumbers,
+    lifecycle_stage: remoteContact.lifecycleStage,
     last_activity_at: remoteContact.lastActivityAt?.toISOString(),
     remote_created_at: remoteContact.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteContact.remoteUpdatedAt?.toISOString(),

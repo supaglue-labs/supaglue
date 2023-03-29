@@ -176,6 +176,7 @@ export class AccountService extends CommonModelBaseService {
       'addresses',
       'phone_numbers',
       'last_activity_at',
+      'lifecycle_stage',
       'remote_id',
       'remote_created_at',
       'remote_updated_at',

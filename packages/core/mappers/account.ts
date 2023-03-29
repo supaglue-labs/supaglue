@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Account, Address, CrmAccountExpanded, PhoneNumber, RemoteAccount } from '../types';
+import { Account, Address, CrmAccountExpanded, LifecycleStage, PhoneNumber, RemoteAccount } from '../types';
 import { fromUserModel } from './user';
 
 export const fromAccountModel = (
@@ -16,6 +16,7 @@ export const fromAccountModel = (
     numberOfEmployees,
     addresses,
     phoneNumbers,
+    lifecycleStage,
     lastActivityAt,
     remoteCreatedAt,
     remoteUpdatedAt,
@@ -35,6 +36,7 @@ export const fromAccountModel = (
     numberOfEmployees,
     addresses: addresses as Address[],
     phoneNumbers: phoneNumbers as PhoneNumber[],
+    lifecycleStage: lifecycleStage as LifecycleStage,
     lastActivityAt,
     createdAt: remoteCreatedAt,
     updatedAt: remoteUpdatedAt,
@@ -57,6 +59,7 @@ export const fromRemoteAccountToDbAccountParams = (
     number_of_employees: remoteAccount.numberOfEmployees,
     addresses: remoteAccount.addresses,
     phone_numbers: remoteAccount.phoneNumbers,
+    lifecycle_stage: remoteAccount.lifecycleStage,
     last_activity_at: remoteAccount.lastActivityAt?.toISOString(),
     remote_id: remoteAccount.remoteId,
     remote_created_at: remoteAccount.remoteCreatedAt?.toISOString(),
