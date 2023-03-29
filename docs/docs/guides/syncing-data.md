@@ -11,13 +11,13 @@ We recommending syncing data from Supaglue into your application using a [webhoo
 
 This endpoint will be called when Supaglue finishes its sync.
 
-For each object type that you wish to sync, call the list endpoints utilizing the `updated_after` timestamp filter to incrementally fetch records.
+For each object type that you wish to sync, call the list endpoints utilizing the `modified_after` timestamp filter to incrementally fetch records.
 
-Start by setting `updated_after` to be the beginning of time (Epoch 0) to initially do a full refresh.
+Start by setting `modified_after` to be the beginning of time (Epoch 0) to initially do a full refresh.
 
 For each page of records returned, write these records to your application database, and fetch the next page of records and repeat.
 
-You should store `updated_after` in your application so that the next time a Supaglue sync finishes you can only fetch and write new changes.
+You should store `modified_after` in your application so that the next time a Supaglue sync finishes you can only fetch and write new changes.
 
 #### Example
 View a [full example here](https://github.com/supaglue-labs/ts-etl-example) utilizing Nodejs, Typescript, Express, and Prisma.

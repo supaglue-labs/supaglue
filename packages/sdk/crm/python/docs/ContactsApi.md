@@ -32,7 +32,7 @@ configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
 # create an instance of the API class
 api_instance = swagger_client.ContactsApi(swagger_client.ApiClient(configuration))
 body = swagger_client.ContactsBody() # ContactsBody | 
-x_customer_id = 'x_customer_id_example' # str | The customer ID
+x_customer_id = 'x_customer_id_example' # str | The customer ID that uniquely identifies the customer in your application
 x_provider_name = 'x_provider_name_example' # str | The provider name
 
 try:
@@ -48,7 +48,7 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**ContactsBody**](ContactsBody.md)|  | 
- **x_customer_id** | **str**| The customer ID | 
+ **x_customer_id** | **str**| The customer ID that uniquely identifies the customer in your application | 
  **x_provider_name** | **str**| The provider name | 
 
 ### Return type
@@ -87,7 +87,7 @@ configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.ContactsApi(swagger_client.ApiClient(configuration))
-x_customer_id = 'x_customer_id_example' # str | The customer ID
+x_customer_id = 'x_customer_id_example' # str | The customer ID that uniquely identifies the customer in your application
 x_provider_name = 'x_provider_name_example' # str | The provider name
 contact_id = 'contact_id_example' # str | 
 expand = 'expand_example' # str | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces (optional)
@@ -104,7 +104,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **x_customer_id** | **str**| The customer ID | 
+ **x_customer_id** | **str**| The customer ID that uniquely identifies the customer in your application | 
  **x_provider_name** | **str**| The provider name | 
  **contact_id** | **str**|  | 
  **expand** | **str**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional] 
@@ -125,7 +125,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **get_contacts**
-> InlineResponse2001 get_contacts(x_customer_id, x_provider_name, created_after=created_after, created_before=created_before, updated_after=updated_after, updated_before=updated_before, cursor=cursor, expand=expand, page_size=page_size)
+> InlineResponse2001 get_contacts(x_customer_id, x_provider_name, created_after=created_after, created_before=created_before, modified_after=modified_after, modified_before=modified_before, cursor=cursor, expand=expand, page_size=page_size)
 
 List contacts
 
@@ -147,19 +147,19 @@ configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.ContactsApi(swagger_client.ApiClient(configuration))
-x_customer_id = 'x_customer_id_example' # str | The customer ID
+x_customer_id = 'x_customer_id_example' # str | The customer ID that uniquely identifies the customer in your application
 x_provider_name = 'x_provider_name_example' # str | The provider name
 created_after = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects created after this datetime (optional)
 created_before = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects created before this datetime (optional)
-updated_after = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects modified after this datetime (optional)
-updated_before = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects modified before this datetime (optional)
+modified_after = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects modified after this datetime (optional)
+modified_before = '2013-10-20T19:20:30+01:00' # datetime | If provided, will only return objects modified before this datetime (optional)
 cursor = 'cursor_example' # str | The pagination cursor value (optional)
 expand = 'expand_example' # str | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces (optional)
 page_size = 'page_size_example' # str | Number of results to return per page (optional)
 
 try:
     # List contacts
-    api_response = api_instance.get_contacts(x_customer_id, x_provider_name, created_after=created_after, created_before=created_before, updated_after=updated_after, updated_before=updated_before, cursor=cursor, expand=expand, page_size=page_size)
+    api_response = api_instance.get_contacts(x_customer_id, x_provider_name, created_after=created_after, created_before=created_before, modified_after=modified_after, modified_before=modified_before, cursor=cursor, expand=expand, page_size=page_size)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ContactsApi->get_contacts: %s\n" % e)
@@ -169,12 +169,12 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **x_customer_id** | **str**| The customer ID | 
+ **x_customer_id** | **str**| The customer ID that uniquely identifies the customer in your application | 
  **x_provider_name** | **str**| The provider name | 
  **created_after** | **datetime**| If provided, will only return objects created after this datetime | [optional] 
  **created_before** | **datetime**| If provided, will only return objects created before this datetime | [optional] 
- **updated_after** | **datetime**| If provided, will only return objects modified after this datetime | [optional] 
- **updated_before** | **datetime**| If provided, will only return objects modified before this datetime | [optional] 
+ **modified_after** | **datetime**| If provided, will only return objects modified after this datetime | [optional] 
+ **modified_before** | **datetime**| If provided, will only return objects modified before this datetime | [optional] 
  **cursor** | **str**| The pagination cursor value | [optional] 
  **expand** | **str**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional] 
  **page_size** | **str**| Number of results to return per page | [optional] 
@@ -216,7 +216,7 @@ configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
 # create an instance of the API class
 api_instance = swagger_client.ContactsApi(swagger_client.ApiClient(configuration))
 body = swagger_client.ContactsSearchBody() # ContactsSearchBody | 
-x_customer_id = 'x_customer_id_example' # str | The customer ID
+x_customer_id = 'x_customer_id_example' # str | The customer ID that uniquely identifies the customer in your application
 x_provider_name = 'x_provider_name_example' # str | The provider name
 cursor = 'cursor_example' # str | The pagination cursor value (optional)
 page_size = 'page_size_example' # str | Number of results to return per page (optional)
@@ -234,7 +234,7 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**ContactsSearchBody**](ContactsSearchBody.md)|  | 
- **x_customer_id** | **str**| The customer ID | 
+ **x_customer_id** | **str**| The customer ID that uniquely identifies the customer in your application | 
  **x_provider_name** | **str**| The provider name | 
  **cursor** | **str**| The pagination cursor value | [optional] 
  **page_size** | **str**| Number of results to return per page | [optional] 
@@ -276,7 +276,7 @@ configuration.api_key['x-api-key'] = 'YOUR_API_KEY'
 # create an instance of the API class
 api_instance = swagger_client.ContactsApi(swagger_client.ApiClient(configuration))
 body = swagger_client.ContactsContactIdBody() # ContactsContactIdBody | 
-x_customer_id = 'x_customer_id_example' # str | The customer ID
+x_customer_id = 'x_customer_id_example' # str | The customer ID that uniquely identifies the customer in your application
 x_provider_name = 'x_provider_name_example' # str | The provider name
 contact_id = 'contact_id_example' # str | 
 
@@ -293,7 +293,7 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**ContactsContactIdBody**](ContactsContactIdBody.md)|  | 
- **x_customer_id** | **str**| The customer ID | 
+ **x_customer_id** | **str**| The customer ID that uniquely identifies the customer in your application | 
  **x_provider_name** | **str**| The provider name | 
  **contact_id** | **str**|  | 
 

@@ -3,8 +3,12 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **String** |  |  [optional]
-**email** | **String** |  |  [optional]
-**isActive** | **Boolean** |  |  [optional]
-**createdAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
-**updatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**id** | **String** |  | 
+**remoteId** | **String** |  | 
+**name** | **String** |  | 
+**email** | **String** |  | 
+**isActive** | **Boolean** |  | 
+**remoteCreatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**remoteUpdatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**remoteWasDeleted** | **Boolean** |  |  [optional]
+**lastModifiedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]

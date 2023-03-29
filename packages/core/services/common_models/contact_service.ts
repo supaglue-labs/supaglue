@@ -70,7 +70,7 @@ export class ContactService extends CommonModelBaseService {
   }
 
   public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Contact>> {
-    const { page_size, cursor, created_after, created_before, updated_after, updated_before, expand } = listParams;
+    const { page_size, cursor, created_after, created_before, modified_after, modified_before, expand } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmContact.findMany({
@@ -82,8 +82,8 @@ export class ContactService extends CommonModelBaseService {
           lt: created_before,
         },
         remoteUpdatedAt: {
-          gt: updated_after,
-          lt: updated_before,
+          gt: modified_after,
+          lt: modified_before,
         },
       },
       include: {

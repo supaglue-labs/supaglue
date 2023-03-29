@@ -10,4 +10,5 @@ Name | Type | Description | Notes
 **emailAddresses** | [**EmailAddresses**](EmailAddresses.md) |  |  [optional]
 **phoneNumbers** | [**PhoneNumbers**](PhoneNumbers.md) |  |  [optional]
 **ownerId** | **String** |  |  [optional]
+**lifecycleStage** | [**LifecycleStage**](LifecycleStage.md) |  |  [optional]
 **customFields** | [**CustomFields**](CustomFields.md) |  |  [optional]

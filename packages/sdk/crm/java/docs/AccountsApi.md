@@ -35,7 +35,7 @@ ApiKeyAuth.setApiKey("YOUR API KEY");
 
 AccountsApi apiInstance = new AccountsApi();
 AccountsBody body = new AccountsBody(); // AccountsBody | 
-String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xCustomerId = "xCustomerId_example"; // String | The customer ID that uniquely identifies the customer in your application
 String xProviderName = "xProviderName_example"; // String | The provider name
 try {
     InlineResponse201 result = apiInstance.createAccount(body, xCustomerId, xProviderName);
@@ -51,7 +51,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**AccountsBody**](AccountsBody.md)|  |
- **xCustomerId** | **String**| The customer ID |
+ **xCustomerId** | **String**| The customer ID that uniquely identifies the customer in your application |
  **xProviderName** | **String**| The provider name |
 
 ### Return type
@@ -91,7 +91,7 @@ ApiKeyAuth.setApiKey("YOUR API KEY");
 //ApiKeyAuth.setApiKeyPrefix("Token");
 
 AccountsApi apiInstance = new AccountsApi();
-String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xCustomerId = "xCustomerId_example"; // String | The customer ID that uniquely identifies the customer in your application
 String xProviderName = "xProviderName_example"; // String | The provider name
 String accountId = "accountId_example"; // String | 
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
@@ -108,7 +108,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **xCustomerId** | **String**| The customer ID |
+ **xCustomerId** | **String**| The customer ID that uniquely identifies the customer in your application |
  **xProviderName** | **String**| The provider name |
  **accountId** | **String**|  |
  **expand** | **String**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional]
@@ -128,7 +128,7 @@ Name | Type | Description  | Notes
 
 <a name="getAccounts"></a>
 # **getAccounts**
-> InlineResponse200 getAccounts(xCustomerId, xProviderName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize)
+> InlineResponse200 getAccounts(xCustomerId, xProviderName, createdAfter, createdBefore, modifiedAfter, modifiedBefore, cursor, expand, pageSize)
 
 List accounts
 
@@ -152,17 +152,17 @@ ApiKeyAuth.setApiKey("YOUR API KEY");
 //ApiKeyAuth.setApiKeyPrefix("Token");
 
 AccountsApi apiInstance = new AccountsApi();
-String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xCustomerId = "xCustomerId_example"; // String | The customer ID that uniquely identifies the customer in your application
 String xProviderName = "xProviderName_example"; // String | The provider name
 OffsetDateTime createdAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created after this datetime
 OffsetDateTime createdBefore = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects created before this datetime
-OffsetDateTime updatedAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified after this datetime
-OffsetDateTime updatedBefore = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified before this datetime
+OffsetDateTime modifiedAfter = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified after this datetime
+OffsetDateTime modifiedBefore = new OffsetDateTime(); // OffsetDateTime | If provided, will only return objects modified before this datetime
 String cursor = "cursor_example"; // String | The pagination cursor value
 String expand = "expand_example"; // String | Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces
 String pageSize = "pageSize_example"; // String | Number of results to return per page
 try {
-    InlineResponse200 result = apiInstance.getAccounts(xCustomerId, xProviderName, createdAfter, createdBefore, updatedAfter, updatedBefore, cursor, expand, pageSize);
+    InlineResponse200 result = apiInstance.getAccounts(xCustomerId, xProviderName, createdAfter, createdBefore, modifiedAfter, modifiedBefore, cursor, expand, pageSize);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling AccountsApi#getAccounts");
@@ -174,12 +174,12 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **xCustomerId** | **String**| The customer ID |
+ **xCustomerId** | **String**| The customer ID that uniquely identifies the customer in your application |
  **xProviderName** | **String**| The provider name |
  **createdAfter** | **OffsetDateTime**| If provided, will only return objects created after this datetime | [optional]
  **createdBefore** | **OffsetDateTime**| If provided, will only return objects created before this datetime | [optional]
- **updatedAfter** | **OffsetDateTime**| If provided, will only return objects modified after this datetime | [optional]
- **updatedBefore** | **OffsetDateTime**| If provided, will only return objects modified before this datetime | [optional]
+ **modifiedAfter** | **OffsetDateTime**| If provided, will only return objects modified after this datetime | [optional]
+ **modifiedBefore** | **OffsetDateTime**| If provided, will only return objects modified before this datetime | [optional]
  **cursor** | **String**| The pagination cursor value | [optional]
  **expand** | **String**| Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces | [optional]
  **pageSize** | **String**| Number of results to return per page | [optional]
@@ -222,7 +222,7 @@ ApiKeyAuth.setApiKey("YOUR API KEY");
 
 AccountsApi apiInstance = new AccountsApi();
 AccountsSearchBody body = new AccountsSearchBody(); // AccountsSearchBody | 
-String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xCustomerId = "xCustomerId_example"; // String | The customer ID that uniquely identifies the customer in your application
 String xProviderName = "xProviderName_example"; // String | The provider name
 String cursor = "cursor_example"; // String | The pagination cursor value
 String pageSize = "pageSize_example"; // String | Number of results to return per page
@@ -240,7 +240,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**AccountsSearchBody**](AccountsSearchBody.md)|  |
- **xCustomerId** | **String**| The customer ID |
+ **xCustomerId** | **String**| The customer ID that uniquely identifies the customer in your application |
  **xProviderName** | **String**| The provider name |
  **cursor** | **String**| The pagination cursor value | [optional]
  **pageSize** | **String**| Number of results to return per page | [optional]
@@ -283,7 +283,7 @@ ApiKeyAuth.setApiKey("YOUR API KEY");
 
 AccountsApi apiInstance = new AccountsApi();
 AccountsAccountIdBody body = new AccountsAccountIdBody(); // AccountsAccountIdBody | 
-String xCustomerId = "xCustomerId_example"; // String | The customer ID
+String xCustomerId = "xCustomerId_example"; // String | The customer ID that uniquely identifies the customer in your application
 String xProviderName = "xProviderName_example"; // String | The provider name
 String accountId = "accountId_example"; // String | 
 try {
@@ -300,7 +300,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **body** | [**AccountsAccountIdBody**](AccountsAccountIdBody.md)|  |
- **xCustomerId** | **String**| The customer ID |
+ **xCustomerId** | **String**| The customer ID that uniquely identifies the customer in your application |
  **xProviderName** | **String**| The provider name |
  **accountId** | **String**|  |
 

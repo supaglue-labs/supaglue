@@ -114,10 +114,10 @@ components:
       $ref: ../common/components/parameters/query/created_after.yaml
     created_before:
       $ref: ../common/components/parameters/query/created_before.yaml
-    updated_after:
-      $ref: ../common/components/parameters/query/updated_after.yaml
-    updated_before:
-      $ref: ../common/components/parameters/query/updated_before.yaml
+    modified_after:
+      $ref: ../common/components/parameters/query/modified_after.yaml
+    modified_before:
+      $ref: ../common/components/parameters/query/modified_before.yaml
     cursor:
       $ref: ../common/components/parameters/query/cursor.yaml
     expand:

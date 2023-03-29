@@ -42,10 +42,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -540,10 +540,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1022,10 +1022,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1365,10 +1365,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1794,10 +1794,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -2154,22 +2154,31 @@
           "lifecycle_stage": {
             "$ref": "#/components/schemas/lifecycle_stage"
           },
-          "created_at": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time",
-            "example": "2022-02-27T00:00:00Z"
-          },
-          "updated_at": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time",
-            "example": "2022-02-27T00:00:00Z"
-          },
           "website": {
             "type": "string",
             "nullable": true,
             "example": "https://supaglue.com/"
+          },
+          "remote_created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_was_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
           }
         },
         "required": [
@@ -2291,15 +2300,24 @@
           "lifecycle_stage": {
             "$ref": "#/components/schemas/lifecycle_stage"
           },
-          "created_at": {
+          "remote_created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "updated_at": {
+          "remote_updated_at": {
             "type": "string",
             "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_was_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2431,22 +2449,31 @@
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
           },
-          "created_at": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time",
-            "example": "2023-02-10T00:00:00Z"
-          },
-          "updated_at": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time",
-            "example": "2023-02-10T00:00:00Z"
-          },
           "title": {
             "type": "string",
             "nullable": true,
             "example": "Co-Founder"
+          },
+          "remote_created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-10T00:00:00Z"
+          },
+          "remote_updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-10T00:00:00Z"
+          },
+          "remote_was_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
           }
         },
         "required": [
@@ -2563,18 +2590,6 @@
           "owner": {
             "$ref": "#/components/schemas/user"
           },
-          "created_at": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time",
-            "example": "2023-02-27T00:00:00Z"
-          },
-          "updated_at": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time",
-            "example": "2023-02-27T00:00:00Z"
-          },
           "stage": {
             "type": "string",
             "nullable": true,
@@ -2584,6 +2599,27 @@
             "type": "string",
             "nullable": true,
             "example": "OPEN"
+          },
+          "remote_created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-27T00:00:00Z"
+          },
+          "remote_updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2023-02-27T00:00:00Z"
+          },
+          "remote_was_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
           }
         },
         "required": [
@@ -2626,15 +2662,24 @@
             "type": "boolean",
             "nullable": true
           },
-          "created_at": {
+          "remote_created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "updated_at": {
+          "remote_updated_at": {
             "type": "string",
             "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_was_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -3044,8 +3089,8 @@
         },
         "description": "If provided, will only return objects created before this datetime"
       },
-      "updated_after": {
-        "name": "updated_after",
+      "modified_after": {
+        "name": "modified_after",
         "in": "query",
         "schema": {
           "type": "string",
@@ -3054,8 +3099,8 @@
         },
         "description": "If provided, will only return objects modified after this datetime"
       },
-      "updated_before": {
-        "name": "updated_before",
+      "modified_before": {
+        "name": "modified_before",
         "in": "query",
         "schema": {
           "type": "string",

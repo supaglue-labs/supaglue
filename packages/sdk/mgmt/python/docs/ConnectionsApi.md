@@ -9,7 +9,7 @@ Method | HTTP request | Description
 [**get_connections**](ConnectionsApi.md#get_connections) | **GET** /customers/{customer_id}/connections | List connections
 
 # **delete_connection**
-> Connection delete_connection()
+> delete_connection()
 
 Delete connection
 
@@ -32,8 +32,7 @@ api_instance = swagger_client.ConnectionsApi(swagger_client.ApiClient(configurat
 
 try:
     # Delete connection
-    api_response = api_instance.delete_connection()
-    pprint(api_response)
+    api_instance.delete_connection()
 except ApiException as e:
     print("Exception when calling ConnectionsApi->delete_connection: %s\n" % e)
 ```
@@ -43,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**Connection**](Connection.md)
+void (empty response body)
 
 ### Authorization
 
@@ -52,7 +51,7 @@ This endpoint does not need any parameter.
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

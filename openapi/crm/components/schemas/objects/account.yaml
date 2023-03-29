@@ -39,20 +39,27 @@ properties:
     $ref: './phone_numbers.yaml'
   lifecycle_stage:
     $ref: './lifecycle_stage.yaml'
-  created_at:
-    type: string
-    nullable: true
-    format: date-time
-    example: '2022-02-27T00:00:00Z'
-  updated_at:
-    type: string
-    nullable: true
-    format: date-time
-    example: '2022-02-27T00:00:00Z'
   website:
     type: string
     nullable: true
     example: https://supaglue.com/
+  remote_created_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_updated_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_was_deleted:
+    type: boolean
+    example: false
+  last_modified_at:
+    type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
 required:
   - addresses
   - description

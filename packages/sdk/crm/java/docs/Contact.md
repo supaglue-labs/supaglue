@@ -3,16 +3,20 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**accountId** | **String** |  |  [optional]
+**accountId** | **String** |  | 
 **account** | [**Account**](Account.md) |  |  [optional]
-**ownerId** | **String** |  |  [optional]
+**ownerId** | **String** |  | 
 **owner** | [**User**](User.md) |  |  [optional]
-**addresses** | [**Addresses**](Addresses.md) |  |  [optional]
-**emailAddresses** | [**EmailAddresses**](EmailAddresses.md) |  |  [optional]
-**firstName** | **String** |  |  [optional]
-**id** | **String** |  |  [optional]
-**lastActivityAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
-**lastName** | **String** |  |  [optional]
-**phoneNumbers** | [**PhoneNumbers**](PhoneNumbers.md) |  |  [optional]
-**createdAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
-**updatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**addresses** | [**Addresses**](Addresses.md) |  | 
+**emailAddresses** | [**EmailAddresses**](EmailAddresses.md) |  | 
+**firstName** | **String** |  | 
+**id** | **String** |  | 
+**remoteId** | **String** |  | 
+**lastActivityAt** | [**OffsetDateTime**](OffsetDateTime.md) |  | 
+**lastName** | **String** |  | 
+**phoneNumbers** | [**PhoneNumbers**](PhoneNumbers.md) |  | 
+**lifecycleStage** | [**LifecycleStage**](LifecycleStage.md) |  | 
+**remoteCreatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**remoteUpdatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**remoteWasDeleted** | **Boolean** |  |  [optional]
+**lastModifiedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]

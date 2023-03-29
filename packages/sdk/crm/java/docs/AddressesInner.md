@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **postalCode** | **String** |  | 
 **state** | **String** |  | 
 **street1** | **String** |  | 
-**street2** | **String** |  | 
+**street2** | **String** |  |  [optional]
 
 <a name="AddressTypeEnum"></a>
 ## Enum: AddressTypeEnum

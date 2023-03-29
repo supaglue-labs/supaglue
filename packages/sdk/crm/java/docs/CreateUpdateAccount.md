@@ -11,4 +11,5 @@ Name | Type | Description | Notes
 **addresses** | [**Addresses**](Addresses.md) |  |  [optional]
 **phoneNumbers** | [**PhoneNumbers**](PhoneNumbers.md) |  |  [optional]
 **ownerId** | **String** |  |  [optional]
+**lifecycleStage** | [**LifecycleStage**](LifecycleStage.md) |  |  [optional]
 **customFields** | [**CustomFields**](CustomFields.md) |  |  [optional]

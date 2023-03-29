@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 <a name="deleteConnection"></a>
 # **deleteConnection**
-> Connection deleteConnection()
+> deleteConnection()
 
 Delete connection
 
@@ -33,8 +33,7 @@ ApiKeyAuth.setApiKey("YOUR API KEY");
 
 ConnectionsApi apiInstance = new ConnectionsApi();
 try {
-    Connection result = apiInstance.deleteConnection();
-    System.out.println(result);
+    apiInstance.deleteConnection();
 } catch (ApiException e) {
     System.err.println("Exception when calling ConnectionsApi#deleteConnection");
     e.printStackTrace();
@@ -46,7 +45,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**Connection**](Connection.md)
+null (empty response body)
 
 ### Authorization
 
@@ -55,7 +54,7 @@ This endpoint does not need any parameter.
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: Not defined
 
 <a name="getConnection"></a>
 # **getConnection**

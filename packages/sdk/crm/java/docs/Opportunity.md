@@ -3,17 +3,20 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**accountId** | **String** |  |  [optional]
+**accountId** | **String** |  | 
 **account** | [**Account**](Account.md) |  |  [optional]
-**amount** | **Integer** |  |  [optional]
+**amount** | **Integer** |  | 
 **closeDate** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
-**description** | **String** |  |  [optional]
-**id** | **String** |  |  [optional]
-**lastActivityAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
-**name** | **String** |  |  [optional]
-**ownerId** | **String** |  |  [optional]
+**description** | **String** |  | 
+**id** | **String** |  | 
+**remoteId** | **String** |  | 
+**lastActivityAt** | [**OffsetDateTime**](OffsetDateTime.md) |  | 
+**name** | **String** |  | 
+**ownerId** | **String** |  | 
 **owner** | [**User**](User.md) |  |  [optional]
-**createdAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
-**updatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
-**stage** | **String** |  |  [optional]
-**status** | **String** |  |  [optional]
+**stage** | **String** |  | 
+**status** | **String** |  | 
+**remoteCreatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**remoteUpdatedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]
+**remoteWasDeleted** | **Boolean** |  |  [optional]
+**lastModifiedAt** | [**OffsetDateTime**](OffsetDateTime.md) |  |  [optional]

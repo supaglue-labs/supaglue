@@ -42,10 +42,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -540,10 +540,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1022,10 +1022,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1365,10 +1365,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1794,10 +1794,10 @@
             "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/components/parameters/updated_after"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/updated_before"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -3017,8 +3017,8 @@
         },
         "description": "If provided, will only return objects created before this datetime"
       },
-      "updated_after": {
-        "name": "updated_after",
+      "modified_after": {
+        "name": "modified_after",
         "in": "query",
         "schema": {
           "type": "string",
@@ -3027,8 +3027,8 @@
         },
         "description": "If provided, will only return objects modified after this datetime"
       },
-      "updated_before": {
-        "name": "updated_before",
+      "modified_before": {
+        "name": "modified_before",
         "in": "query",
         "schema": {
           "type": "string",

@@ -17,16 +17,23 @@ properties:
   is_active:
     type: boolean
     nullable: true
-  created_at:
+  remote_created_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  updated_at:
+  remote_updated_at:
     type: string
     nullable: true
     format: date-time
-    example: '2022-02-27T00:00:00Z'  
+    example: '2022-02-27T00:00:00Z'
+  remote_was_deleted:
+    type: boolean
+    example: false
+  last_modified_at:
+    type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z' 
 required:
   - id
   - remote_id

@@ -40,16 +40,6 @@ properties:
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
   owner:
     $ref: ./user.yaml
-  created_at:
-    type: string
-    nullable: true
-    format: date-time
-    example: '2023-02-27T00:00:00Z'
-  updated_at:
-    type: string
-    nullable: true
-    format: date-time
-    example: '2023-02-27T00:00:00Z'
   stage:
     type: string
     nullable: true
@@ -58,6 +48,23 @@ properties:
     type: string # TODO: enum
     nullable: true
     example: OPEN
+  remote_created_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2023-02-27T00:00:00Z'
+  remote_updated_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2023-02-27T00:00:00Z'
+  remote_was_deleted:
+    type: boolean
+    example: false
+  last_modified_at:
+    type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
 required:
   - account_id
   - amount

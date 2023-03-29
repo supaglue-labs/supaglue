@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **addresses** | [**Addresses**](Addresses.md) |  | [optional] 
 **phone_numbers** | [**PhoneNumbers**](PhoneNumbers.md) |  | [optional] 
 **owner_id** | **str** |  | [optional] 
+**lifecycle_stage** | [**LifecycleStage**](LifecycleStage.md) |  | [optional] 
 **custom_fields** | [**CustomFields**](CustomFields.md) |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
