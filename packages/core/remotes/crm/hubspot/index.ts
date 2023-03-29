@@ -340,7 +340,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         const dealIds = response.results.map((deal) => deal.id);
 
         // Get associations
-        const contactToDealsMap = await this.#listAssociations(
+        const dealToCompaniesMap = await this.#listAssociations(
           'deal',
           'company',
           dealIds.map((id) => id)
@@ -354,7 +354,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             ...deal,
             associations: {
               companies: {
-                results: contactToDealsMap[deal.id].map((id) => ({ id, type: 'deal_to_company' })),
+                results: dealToCompaniesMap[deal.id].map((id) => ({ id, type: 'deal_to_company' })),
               },
             },
           })),
