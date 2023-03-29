@@ -93,6 +93,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     numberOfEmployees: record.NumberOfEmployees ? parseInt(record.NumberOfEmployees) : null,
     addresses,
     phoneNumbers,
+    lifecycleStage: null,
     // Figure out where this comes from
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
@@ -185,6 +186,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     addresses,
     emailAddresses: record.Email ? [{ emailAddress: record.Email, emailAddressType: 'primary' }] : [],
     phoneNumbers,
+    lifecycleStage: null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,

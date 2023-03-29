@@ -64,6 +64,7 @@ const propertiesToFetch = {
     'zip',
     'phone',
     'notes_last_updated',
+    'lifecyclestage',
     'createddate',
     'hs_lastmodifieddate',
   ],
@@ -81,6 +82,7 @@ const propertiesToFetch = {
     'hs_lastmodifieddate', // TODO: Use this or lastmodifieddate?
     'hubspot_owner_id',
     'lastmodifieddate',
+    'lifecyclestage',
     'lastname',
     'mobilephone',
     'phone',

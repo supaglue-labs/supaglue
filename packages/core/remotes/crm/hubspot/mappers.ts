@@ -5,6 +5,7 @@ import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm
 import {
   Address,
   EmailAddress,
+  LifecycleStage,
   OpportunityStatus,
   PhoneNumber,
   RemoteAccount,
@@ -61,6 +62,7 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     numberOfEmployees: properties.numberofemployees ? parseInt(properties.numberofemployees) : null,
     addresses,
     phoneNumbers,
+    lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     // Figure out where this comes from
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     remoteCreatedAt: createdAt,
@@ -140,6 +142,7 @@ export const fromHubSpotContactToRemoteContact = ({
     addresses,
     phoneNumbers,
     emailAddresses,
+    lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     remoteCreatedAt: createdAt,
     remoteUpdatedAt: updatedAt,
@@ -223,6 +226,7 @@ export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams):
     website: nullToEmptyString(params.website),
     numberofemployees: nullToEmptyString(params.numberOfEmployees?.toString()),
     phone: phoneParams.phone, // only primary phone is supported for hubspot accounts
+    lifecyclestage: nullToEmptyString(params.lifecycleStage),
     hubspot_owner_id: nullToEmptyString(params.ownerId),
     ...toHubspotAddressCreateParams(params.addresses),
     ...params.customFields,
@@ -253,6 +257,7 @@ export const toHubspotContactCreateParams = (params: RemoteContactCreateParams):
     firstname: nullToEmptyString(params.firstName),
     lastname: nullToEmptyString(params.lastName),
     hubspot_owner_id: nullToEmptyString(params.ownerId),
+    lifecyclestage: nullToEmptyString(params.lifecycleStage),
     ...toHubspotEmailCreateParams(params.emailAddresses),
     ...toHubspotPhoneCreateParams(params.phoneNumbers),
     ...toHubspotAddressCreateParams(params.addresses),
