@@ -79,10 +79,9 @@ const propertiesToFetch = {
     'firstname',
     'hs_createdate', // TODO: Use this or createdate?
     'hs_is_contact', // TODO: distinguish from "visitor"?
-    'hs_lastmodifieddate', // TODO: Use this or lastmodifieddate?
     'hubspot_owner_id',
-    'lastmodifieddate',
     'lifecyclestage',
+    'lastmodifieddate', // hs_lastmodifieddate is missing
     'lastname',
     'mobilephone',
     'phone',
@@ -101,6 +100,7 @@ const propertiesToFetch = {
     'pipeline',
     'hs_is_closed_won',
     'hs_is_closed',
+    'hs_lastmodifieddate',
   ],
 };
 
@@ -157,13 +157,17 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public async listAccounts(): Promise<Readable> {
+  public async listAccounts(updatedAfter?: Date): Promise<Readable> {
+    const impl = updatedAfter
+      ? this.#listAccountsIncrementalImpl.bind(this, updatedAfter)
+      : this.#listAccountsFullImpl.bind(this);
+
     const passThrough = new PassThrough({ objectMode: true });
 
     (async () => {
       let after = undefined;
       do {
-        const currResults: HubspotPaginatedCompanies = await this.listAccountsImpl(after);
+        const currResults: HubspotPaginatedCompanies = await impl(after);
         const remoteAccounts = currResults.results.map(fromHubSpotCompanyToRemoteAccount);
         after = currResults.paging?.next?.after;
 
@@ -184,7 +188,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return passThrough;
   }
 
-  private async listAccountsImpl(after?: string): Promise<HubspotPaginatedCompanies> {
+  async #listAccountsFullImpl(after?: string): Promise<HubspotPaginatedCompanies> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
@@ -193,6 +197,41 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           after,
           propertiesToFetch.company
         );
+        return companies;
+      } catch (e: any) {
+        logger.error(e, 'Error encountered');
+        throw e;
+      }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  async #listAccountsIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedCompanies> {
+    const helper = async () => {
+      try {
+        await this.maybeRefreshAccessToken();
+        const companies = await this.#client.crm.companies.searchApi.doSearch({
+          filterGroups: [
+            {
+              filters: [
+                {
+                  propertyName: 'hs_lastmodifieddate',
+                  operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
+                  value: updatedAfter.getTime().toString(),
+                },
+              ],
+            },
+          ],
+          sorts: [
+            {
+              propertyName: 'hs_lastmodifieddate',
+              direction: 'ASCENDING',
+            } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
+          ],
+          properties: propertiesToFetch.company,
+          limit: HUBSPOT_RECORD_LIMIT,
+          after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
+        });
         return companies;
       } catch (e: any) {
         logger.error(e, 'Error encountered');
@@ -224,13 +263,17 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await this.getAccount(company.id);
   }
 
-  public async listOpportunities(): Promise<Readable> {
+  public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
+    const impl = updatedAfter
+      ? this.#listOpportunitiesIncrementalImpl.bind(this, updatedAfter)
+      : this.#listOpportunitiesFullImpl.bind(this);
+
     const passThrough = new PassThrough({ objectMode: true });
 
     (async () => {
       let after = undefined;
       do {
-        const currResults: HubspotPaginatedDeals = await this.listOpportunitiesImpl(after);
+        const currResults: HubspotPaginatedDeals = await impl(after);
         const remoteOpportunities = currResults.results.map(fromHubSpotDealToRemoteOpportunity);
         after = currResults.paging?.next?.after;
 
@@ -251,7 +294,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return passThrough;
   }
 
-  private async listOpportunitiesImpl(after?: string): Promise<HubspotPaginatedDeals> {
+  async #listOpportunitiesFullImpl(after?: string): Promise<HubspotPaginatedDeals> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
@@ -263,6 +306,63 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           /* associations */ ['company']
         );
         return deals;
+      } catch (e: any) {
+        logger.error(e, 'Error encountered');
+        throw e;
+      }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  async #listOpportunitiesIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedDeals> {
+    const helper = async () => {
+      try {
+        await this.maybeRefreshAccessToken();
+        const response = await this.#client.crm.deals.searchApi.doSearch({
+          filterGroups: [
+            {
+              filters: [
+                {
+                  propertyName: 'hs_lastmodifieddate',
+                  operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
+                  value: updatedAfter.getTime().toString(),
+                },
+              ],
+            },
+          ],
+          sorts: [
+            {
+              propertyName: 'hs_lastmodifieddate',
+              direction: 'ASCENDING',
+            } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
+          ],
+          properties: propertiesToFetch.deal,
+          limit: HUBSPOT_RECORD_LIMIT,
+          after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
+        });
+
+        const dealIds = response.results.map((deal) => deal.id);
+
+        // Get associations
+        const dealToCompaniesMap = await this.#listAssociations(
+          'deal',
+          'company',
+          dealIds.map((id) => id)
+        );
+
+        // Add associations to deals
+        // TODO: We shouldn't hijack the response object like this; clean this code up
+        return {
+          ...response,
+          results: response.results.map((deal) => ({
+            ...deal,
+            associations: {
+              companies: {
+                results: (dealToCompaniesMap[deal.id] ?? []).map((id) => ({ id, type: 'deal_to_company' })),
+              },
+            },
+          })),
+        };
       } catch (e: any) {
         logger.error(e, 'Error encountered');
         throw e;
@@ -308,13 +408,17 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await this.getOpportunity(deal.id);
   }
 
-  public async listContacts(): Promise<Readable> {
+  public async listContacts(updatedAfter?: Date): Promise<Readable> {
+    const impl = updatedAfter
+      ? this.#listContactsIncrementalImpl.bind(this, updatedAfter)
+      : this.#listContactsFullImpl.bind(this);
+
     const passThrough = new PassThrough({ objectMode: true });
 
     (async () => {
       let after = undefined;
       do {
-        const currResults: HubspotPaginatedContacts = await this.listContactsImpl(after);
+        const currResults: HubspotPaginatedContacts = await impl(after);
         const remoteContacts = currResults.results.map(fromHubSpotContactToRemoteContact);
         after = currResults.paging?.next?.after;
 
@@ -335,7 +439,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return passThrough;
   }
 
-  private async listContactsImpl(after?: string): Promise<HubspotPaginatedContacts> {
+  async #listContactsFullImpl(after?: string): Promise<HubspotPaginatedContacts> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
@@ -347,6 +451,65 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           /* associations */ ['company']
         );
         return contacts;
+      } catch (e: any) {
+        logger.error(e, 'Error encountered');
+        throw e;
+      }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  async #listContactsIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedContacts> {
+    const helper = async () => {
+      try {
+        await this.maybeRefreshAccessToken();
+
+        // Get contacts
+        const response = await this.#client.crm.contacts.searchApi.doSearch({
+          filterGroups: [
+            {
+              filters: [
+                {
+                  propertyName: 'lastmodifieddate', // hubspot doesn't set hs_lastmodifieddate for some reason
+                  operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
+                  value: updatedAfter.getTime().toString(),
+                },
+              ],
+            },
+          ],
+          sorts: [
+            {
+              propertyName: 'lastmodifieddate',
+              direction: 'ASCENDING',
+            } as unknown as string, // hubspot sdk has wrong types
+          ],
+          properties: propertiesToFetch.contact,
+          limit: HUBSPOT_RECORD_LIMIT,
+          after: after as unknown as number, // hubspot sdk has wrong types
+        });
+
+        const contactIds = response.results.map((contact) => contact.id);
+
+        // Get associations
+        const contactToCompaniesMap = await this.#listAssociations(
+          'contact',
+          'company',
+          contactIds.map((id) => id)
+        );
+
+        // Add associations to contacts
+        // TODO: We shouldn't hijack the response object like this; clean this code up
+        return {
+          ...response,
+          results: response.results.map((contact) => ({
+            ...contact,
+            associations: {
+              companies: {
+                results: (contactToCompaniesMap[contact.id] ?? []).map((id) => ({ id, type: 'contact_to_company' })),
+              },
+            },
+          })),
+        };
       } catch (e: any) {
         logger.error(e, 'Error encountered');
         throw e;
@@ -398,7 +561,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await this.getContact(contact.id);
   }
 
-  public async listLeads(limit?: number): Promise<Readable> {
+  public async listLeads(updatedAfter?: Date): Promise<Readable> {
     return Readable.from([]);
   }
 
@@ -410,18 +573,30 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     throw new Error('Not supported');
   }
 
-  public async listUsers(): Promise<Readable> {
+  public async listUsers(updatedAfter?: Date): Promise<Readable> {
     const passThrough = new PassThrough({ objectMode: true });
 
     (async () => {
       let after = undefined;
       do {
-        const currResults: HubspotPaginatedOwners = await this.listUsersImpl(after);
-        const remoteAccounts = currResults.results.map(fromHubspotOwnerToRemoteUser);
+        const currResults: HubspotPaginatedOwners = await this.#listUsersImpl(after);
+        const remoteUsers = currResults.results.map(fromHubspotOwnerToRemoteUser);
         after = currResults.paging?.next?.after;
 
         // Do not emit 'end' event until the last batch
-        const readable = Readable.from(remoteAccounts);
+        const readable = Readable.from(
+          remoteUsers.filter((remoteUser) => {
+            if (!updatedAfter) {
+              return true;
+            }
+
+            if (!remoteUser.remoteUpdatedAt) {
+              return true;
+            }
+
+            return updatedAfter < remoteUser.remoteUpdatedAt;
+          })
+        );
         readable.pipe(passThrough, { end: !after });
         readable.on('error', (err) => passThrough.emit('error', err));
 
@@ -437,7 +612,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return passThrough;
   }
 
-  private async listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
+  async #listUsersImpl(after?: string): Promise<HubspotPaginatedOwners> {
     const helper = async () => {
       try {
         await this.maybeRefreshAccessToken();
@@ -451,6 +626,23 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         logger.error(e, 'Error encountered');
         throw e;
       }
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
+  }
+
+  async #listAssociations(
+    fromObjectType: string,
+    toObjectType: string,
+    fromObjectIds: string[]
+  ): Promise<Record<string, string[]>> {
+    const helper = async () => {
+      await this.maybeRefreshAccessToken();
+      const associations = await this.#client.crm.associations.batchApi.read(fromObjectType, toObjectType, {
+        inputs: fromObjectIds.map((id) => ({ id })),
+      });
+      return associations.results
+        .map((result) => ({ [result._from.id]: result.to.map(({ id }) => id) }))
+        .reduce((acc, curr) => ({ ...acc, ...curr }), {});
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
   }

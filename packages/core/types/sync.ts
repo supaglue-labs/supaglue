@@ -47,10 +47,10 @@ export type ReverseThenForwardSync = BaseSync & {
 export type SyncType = 'full then incremental' | 'reverse then forward';
 export type Sync = FullThenIncrementalSync | ReverseThenForwardSync;
 
-type FullThenIncrementalSyncStateCreatedPhase = {
+export type FullThenIncrementalSyncStateCreatedPhase = {
   phase: 'created';
 };
-type FullThenIncrementalSyncStateLivePhase = {
+export type FullThenIncrementalSyncStateLivePhase = {
   phase: 'full' | 'incremental';
   status: 'in progress' | 'done';
   maxRemoteUpdatedAtMsMap: Record<CommonModel, number>;
