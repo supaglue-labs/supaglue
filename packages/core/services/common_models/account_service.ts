@@ -181,6 +181,7 @@ export class AccountService extends CommonModelBaseService {
       'remote_created_at',
       'remote_updated_at',
       'remote_was_deleted',
+      'last_modified_at',
       'customer_id',
       'connection_id',
       '_remote_owner_id',
