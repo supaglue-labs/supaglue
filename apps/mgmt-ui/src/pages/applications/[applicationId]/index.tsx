@@ -53,9 +53,9 @@ export default function Home() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const applicationId = useActiveApplicationId();
 
-  const onCreateCustomer = (customerId: string, name: string, email: string) => {
-    mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
-    createCustomer(applicationId, customerId, name, email);
+  const onCreateCustomer = async (customerId: string, name: string, email: string) => {
+    await mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
+    await createCustomer(applicationId, customerId, name, email);
   };
 
   // TODO: count this on server?
