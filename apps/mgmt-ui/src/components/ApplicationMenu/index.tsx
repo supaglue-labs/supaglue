@@ -80,6 +80,7 @@ export default function ApplicationMenu() {
               style={{
                 textDecoration: 'none',
                 color: '#000',
+                width: '100%',
               }}
               href={`/applications/${id}`}
               onClick={handleClose}
