@@ -16,7 +16,9 @@ cp docker-compose.override.dev.yml docker-compose.override.yml
 ### Running
 
 ```shell
-docker-compose up
+cp apps/mgmt-ui/.env.sample apps/mgmt-ui/.env
+
+yarn workspace mgmt-ui dev
 ```
 
 ### Environment variables
