@@ -157,7 +157,7 @@ export class SyncService {
         (connection) => connection.id === syncs.find((sync) => sync.id === syncId)?.connectionId
       );
       if (!connection) {
-        throw new Error('Unexpected');
+        throw new Error('Unexpectedly could not find connection for sync');
       }
       const { id: connectionId, applicationId, customerId, category, providerName } = connection;
       return CRM_COMMON_MODELS.map((commonModel) => ({
