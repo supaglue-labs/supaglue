@@ -70,8 +70,8 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
   return {
     id: uuidv4(),
     remote_id: remoteOpportunity.remoteId,
-    connection_id: connectionId,
     customer_id: customerId,
+    connection_id: connectionId,
     name: remoteOpportunity.name,
     description: remoteOpportunity.description,
     amount: remoteOpportunity.amount,

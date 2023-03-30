@@ -37,9 +37,9 @@ export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: s
 
   return {
     id: uuidv4(),
-    connection_id: connectionId,
-    customer_id: customerId,
     remote_id: remoteUser.remoteId,
+    customer_id: customerId,
+    connection_id: connectionId,
     name: remoteUser.name,
     email: remoteUser.email,
     is_active: remoteUser.isActive,
