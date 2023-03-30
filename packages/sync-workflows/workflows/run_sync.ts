@@ -3,8 +3,8 @@ import { CRM_COMMON_MODELS } from '@supaglue/core/types/crm';
 import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/core/types/sync';
 import { ApplicationFailure, proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
-import type { createActivities } from '../activities';
 import { ImportRecordsResult } from '../activities/import_records';
+import type { createActivities } from '../activities/index';
 
 const { importRecords, populateAssociations } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
@@ -17,15 +17,15 @@ const { getSync, updateSyncState, logSyncStart, logSyncFinish, maybeSendSyncFini
   startToCloseTimeout: '30 second',
 });
 
-export const getRunSyncsScheduleId = (syncId: string): string => `run-syncs-${syncId}`;
-export const getRunSyncsWorkflowId = (syncId: string): string => `run-syncs-${syncId}`;
+export const getRunSyncScheduleId = (syncId: string): string => `run-sync-${syncId}`;
+export const getRunSyncWorkflowId = (syncId: string): string => `run-sync-${syncId}`;
 
-export type RunSyncsArgs = {
+export type RunSyncArgs = {
   syncId: string;
   connectionId: string;
 };
 
-export async function runSyncs({ syncId, connectionId }: RunSyncsArgs): Promise<void> {
+export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<void> {
   // TODO: Re-do the sync logs now that a single "Sync" is for all common models together.
   const historyIdsMap = Object.fromEntries(
     await Promise.all(

@@ -1,1 +1,1 @@
-export { runSyncs } from './run_syncs';
+export { runSync } from './run_sync';

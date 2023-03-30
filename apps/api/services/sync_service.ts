@@ -13,7 +13,7 @@ import { CommonModel } from '@supaglue/core/types/common';
 import { SyncInfo, SyncInfoFilter } from '@supaglue/core/types/sync_info';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import { getRunSyncsScheduleId, getRunSyncsWorkflowId, runSyncs } from '@supaglue/sync-workflows/workflows/run_syncs';
+import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -95,7 +95,7 @@ export class SyncService {
   async #createSyncsSchedule(syncId: string, connection: ConnectionSafe, syncPeriodMs: number): Promise<void> {
     try {
       await this.#temporalClient.schedule.create({
-        scheduleId: getRunSyncsScheduleId(syncId),
+        scheduleId: getRunSyncScheduleId(syncId),
         spec: {
           intervals: [
             {
@@ -107,8 +107,8 @@ export class SyncService {
         },
         action: {
           type: 'startWorkflow',
-          workflowType: runSyncs,
-          workflowId: getRunSyncsWorkflowId(syncId),
+          workflowType: runSync,
+          workflowId: getRunSyncWorkflowId(syncId),
           taskQueue: SYNC_TASK_QUEUE,
           args: [{ syncId, connectionId: connection.id }],
           searchAttributes: {
@@ -151,7 +151,7 @@ export class SyncService {
     { id: connectionId, applicationId, customerId, category, providerName }: ConnectionSafe,
     commonModel: CommonModel
   ): Promise<SyncInfo> {
-    const scheduleId = getRunSyncsScheduleId(connectionId);
+    const scheduleId = getRunSyncScheduleId(connectionId);
     const handle = this.#temporalClient.schedule.getHandle(scheduleId);
     const description = await handle.describe();
 
