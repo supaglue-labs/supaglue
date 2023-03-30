@@ -3,7 +3,7 @@ import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromRemoteUserToDbUserParams, fromUserModel } from '../../mappers/user';
-import { ListParams, PaginatedResult } from '../../types/common';
+import { ListInternalParams, PaginatedResult } from '../../types/common';
 import { User } from '../../types/crm';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
@@ -25,7 +25,7 @@ export class UserService extends CommonModelBaseService {
     return fromUserModel(model);
   }
 
-  public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<User>> {
+  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<User>> {
     const { page_size, cursor, include_deleted_data, created_after, created_before, modified_after, modified_before } =
       listParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;

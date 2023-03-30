@@ -10,7 +10,7 @@ import type {
   ContactFilters,
   ContactUpdateParams,
   GetParams,
-  ListParams,
+  ListInternalParams,
   PaginatedResult,
   PaginationParams,
 } from '../../types';
@@ -69,7 +69,7 @@ export class ContactService extends CommonModelBaseService {
     };
   }
 
-  public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Contact>> {
+  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Contact>> {
     const {
       page_size,
       cursor,
@@ -80,6 +80,7 @@ export class ContactService extends CommonModelBaseService {
       modified_before,
       expand,
     } = listParams;
+
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmContact.findMany({

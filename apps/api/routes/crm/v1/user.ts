@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
+import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import { ListParams } from '@supaglue/core/types/common';
 import {
   GetUserPathParams,
@@ -22,7 +23,10 @@ export default function init(app: Router): void {
       req: Request<GetUsersPathParams, GetUsersResponse, GetUsersRequest, /* GetUsersQueryParams */ ListParams>,
       res: Response<GetUsersResponse>
     ) => {
-      const { next, previous, results } = await userService.list(req.customerConnection.id, req.query);
+      const { next, previous, results } = await userService.list(
+        req.customerConnection.id,
+        toListInternalParams(req.query)
+      );
       const snakeCaseKeysResults = results.map((result) => {
         return snakecaseKeys(result);
       });

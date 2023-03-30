@@ -6,7 +6,7 @@ import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../mappers';
 import type {
   GetParams,
-  ListParams,
+  ListInternalParams,
   Opportunity,
   OpportunityCreateParams,
   OpportunityFilters,
@@ -42,7 +42,7 @@ export class OpportunityService extends CommonModelBaseService {
   }
 
   // TODO: implement rest of list params
-  public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Opportunity>> {
+  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Opportunity>> {
     const {
       page_size,
       cursor,

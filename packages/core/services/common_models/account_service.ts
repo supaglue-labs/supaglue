@@ -10,7 +10,7 @@ import type {
   AccountFilters,
   AccountUpdateParams,
   GetParams,
-  ListParams,
+  ListInternalParams,
   PaginatedResult,
   PaginationParams,
 } from '../../types/index';
@@ -65,7 +65,7 @@ export class AccountService extends CommonModelBaseService {
   }
 
   // TODO: implement rest of list params
-  public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Account>> {
+  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Account>> {
     const {
       page_size,
       cursor,

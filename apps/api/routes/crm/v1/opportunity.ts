@@ -2,6 +2,7 @@ import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/core/lib/camelcase';
 import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
+import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import { GetParams, ListParams } from '@supaglue/core/types/common';
 import {
   CreateOpportunityPathParams,
@@ -38,7 +39,10 @@ export default function init(app: Router): void {
       >,
       res: Response<GetOpportunitiesResponse>
     ) => {
-      const { next, previous, results } = await opportunityService.list(req.customerConnection.id, req.query);
+      const { next, previous, results } = await opportunityService.list(
+        req.customerConnection.id,
+        toListInternalParams(req.query)
+      );
       const snakeCaseKeysResults = results.map((result) => {
         return snakecaseKeys(result);
       });

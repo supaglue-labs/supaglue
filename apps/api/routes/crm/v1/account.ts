@@ -1,6 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { camelcaseKeysSansCustomFields } from '@supaglue/core/lib/camelcase';
 import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
+import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import { GetParams, ListParams } from '@supaglue/core/types/common';
 import {
   CreateAccountPathParams,
@@ -37,7 +38,10 @@ export default function init(app: Router): void {
       >,
       res: Response<GetAccountsResponse>
     ) => {
-      const { next, previous, results } = await accountService.list(req.customerConnection.id, req.query);
+      const { next, previous, results } = await accountService.list(
+        req.customerConnection.id,
+        toListInternalParams(req.query)
+      );
 
       const snakeCaseKeysResults = results.map((result) => {
         return snakecaseKeys(result);

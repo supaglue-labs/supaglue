@@ -4,7 +4,14 @@ import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
-import type { GetParams, Lead, LeadCreateParams, LeadUpdateParams, ListParams, PaginatedResult } from '../../types';
+import type {
+  GetParams,
+  Lead,
+  LeadCreateParams,
+  LeadUpdateParams,
+  ListInternalParams,
+  PaginatedResult,
+} from '../../types';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class LeadService extends CommonModelBaseService {
@@ -34,7 +41,7 @@ export class LeadService extends CommonModelBaseService {
   }
 
   // TODO: implement rest of list params
-  public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Lead>> {
+  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Lead>> {
     const {
       page_size,
       cursor,
