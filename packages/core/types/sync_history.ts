@@ -5,11 +5,15 @@ import { PaginationParams } from './common';
 export type SyncHistoryStatus = 'SUCCESS' | 'FAILURE' | 'IN_PROGRESS';
 
 export type SyncHistoryModelExpanded = SyncHistoryModel & {
-  connection: ConnectionModel;
+  sync: {
+    id: string;
+    connection: ConnectionModel;
+  };
 };
 
 export type SyncHistory = {
-  id: number;
+  id: string;
+  syncId: string;
   modelName: string;
   status: SyncHistoryStatus;
   errorMessage: string | null;
@@ -23,7 +27,7 @@ export type SyncHistory = {
   connectionId: string;
 };
 
-export type SyncHistoryCreateParams = {
+export type SyncHistoryUpsertParams = {
   model: string;
   status: SyncHistoryStatus;
   errorMessage: string | null;

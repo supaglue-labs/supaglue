@@ -1,7 +1,7 @@
 import { CommonModel } from '@supaglue/core/types/common';
 import { CRM_COMMON_MODELS } from '@supaglue/core/types/crm';
 import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/core/types/sync';
-import { ApplicationFailure, proxyActivities } from '@temporalio/workflow';
+import { ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
 import { ImportRecordsResult } from '../activities/import_records';
 import type { createActivities } from '../activities/index';
@@ -26,15 +26,18 @@ export type RunSyncArgs = {
 };
 
 export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<void> {
-  // TODO: Re-do the sync logs now that a single "Sync" is for all common models together.
   const historyIdsMap = Object.fromEntries(
-    await Promise.all(
-      CRM_COMMON_MODELS.map(async (commonModel) => {
-        const entry: [CommonModel, number] = [commonModel, await logSyncStart({ connectionId, commonModel })];
-        return entry;
-      })
-    )
-  ) as Record<CommonModel, number>;
+    CRM_COMMON_MODELS.map((commonModel) => {
+      const entry: [CommonModel, string] = [commonModel, uuid4()];
+      return entry;
+    })
+  ) as Record<CommonModel, string>;
+
+  await Promise.all(
+    CRM_COMMON_MODELS.map(async (commonModel) => {
+      await logSyncStart({ syncId, historyId: historyIdsMap[commonModel], commonModel });
+    })
+  );
 
   // Read sync from DB
   const { sync } = await getSync({ syncId });

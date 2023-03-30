@@ -19,7 +19,7 @@ export function createMaybeSendSyncFinishWebhook({
     commonModel,
     errorMessage,
   }: {
-    historyId: number;
+    historyId: string;
     connectionId: string;
     status: 'SYNC_SUCCESS' | 'SYNC_ERROR';
     numRecordsSynced: number;
