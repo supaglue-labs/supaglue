@@ -58,6 +58,7 @@ export class OpportunityService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
+        remoteWasDeleted: false,
       },
       include: {
         account: expandedAssociations.includes('account'),
@@ -228,7 +229,13 @@ export class OpportunityService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteOpportunityToDbOpportunityParams,
-      (remoteOpportunity) => remoteOpportunity.remoteUpdatedAt
+      (remoteOpportunity) =>
+        new Date(
+          Math.max(
+            remoteOpportunity.remoteUpdatedAt?.getTime() || 0,
+            remoteOpportunity.detectedOrRemoteDeletedAt?.getTime() || 0
+          )
+        )
     );
   }
 

@@ -40,6 +40,7 @@ export class UserService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
+        remoteWasDeleted: false,
       },
       orderBy: {
         id: 'asc',
@@ -83,7 +84,10 @@ export class UserService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteUserToDbUserParams,
-      (remoteUser) => remoteUser.remoteUpdatedAt
+      (remoteUser) =>
+        new Date(
+          Math.max(remoteUser.remoteUpdatedAt?.getTime() || 0, remoteUser.detectedOrRemoteDeletedAt?.getTime() || 0)
+        )
     );
   }
 }

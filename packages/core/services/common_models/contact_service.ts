@@ -85,6 +85,7 @@ export class ContactService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
+        remoteWasDeleted: false,
       },
       include: {
         account: expandedAssociations.includes('account'),
@@ -222,7 +223,13 @@ export class ContactService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteContactToDbContactParams,
-      (remoteContact) => remoteContact.remoteUpdatedAt
+      (remoteContact) =>
+        new Date(
+          Math.max(
+            remoteContact.remoteUpdatedAt?.getTime() || 0,
+            remoteContact.detectedOrRemoteDeletedAt?.getTime() || 0
+          )
+        )
     );
   }
 

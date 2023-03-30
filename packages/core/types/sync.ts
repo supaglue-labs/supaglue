@@ -53,7 +53,7 @@ export type FullThenIncrementalSyncStateCreatedPhase = {
 export type FullThenIncrementalSyncStateLivePhase = {
   phase: 'full' | 'incremental';
   status: 'in progress' | 'done';
-  maxRemoteUpdatedAtMsMap: Record<CommonModel, number>;
+  maxLastModifiedAtMsMap: Record<CommonModel, number>;
 };
 export type FullThenIncrementalSyncState =
   | FullThenIncrementalSyncStateCreatedPhase

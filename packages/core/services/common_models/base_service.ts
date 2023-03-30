@@ -29,7 +29,7 @@ export abstract class CommonModelBaseService {
     tempTable: string,
     columnsWithoutId: string[],
     mapper: (connectionId: string, customerId: string, remoteCommonModel: T) => Record<string, any>,
-    remoteUpdatedAtGetter: (remoteCommonModel: T) => Date | null
+    lastModifiedAtGetter: (remoteCommonModel: T) => Date | null
   ): Promise<UpsertRemoteCommonModelsResult> {
     const client = await this.pgPool.connect();
 
@@ -40,7 +40,7 @@ export abstract class CommonModelBaseService {
       // TODO: In the future, we may want to create a permanent table with background reaper
       // so that we can resume in the case of failure during the COPY stage.
       // TODO: Maybe we don't need to include all
-      await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING ALL)`);
+      await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING DEFAULTS)`);
       const columns = ['id', ...columnsWithoutId];
 
       // Output
@@ -56,8 +56,8 @@ export abstract class CommonModelBaseService {
         },
       });
 
-      // Keep track of the max remoteUpdatedAt
-      let maxRemoteUpdatedAt: Date | null = null;
+      // Keep track of the max lastModifiedAt
+      let maxLastModifiedAt: Date | null = null;
 
       await pipeline(
         remoteCommonModelReadable,
@@ -67,10 +67,10 @@ export abstract class CommonModelBaseService {
             try {
               const mappedRecord = mapper(connectionId, customerId, chunk);
 
-              // Update the max remoteUpdatedAt
-              const remoteUpdatedAt = remoteUpdatedAtGetter(chunk);
-              if (remoteUpdatedAt && (!maxRemoteUpdatedAt || remoteUpdatedAt > maxRemoteUpdatedAt)) {
-                maxRemoteUpdatedAt = remoteUpdatedAt;
+              // Update the max lastModifiedAt
+              const lastModifiedAt = lastModifiedAtGetter(chunk);
+              if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
+                maxLastModifiedAt = lastModifiedAt;
               }
 
               callback(null, mappedRecord);
@@ -86,13 +86,19 @@ export abstract class CommonModelBaseService {
       // Copy from temp table
       const columnsToUpdate = columnsWithoutId.join(',');
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
+
+      // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same remote_id
+      // For example, hubspot will return the same record twice when querying for `archived: true` if
+      // the record was archived, restored, and archived again.
+      // TODO: This may have performance implications. We should look into this later.
+      // https://github.com/supaglue-labs/supaglue/issues/497
       const result = await client.query(`INSERT INTO ${table}
-SELECT * FROM ${tempTable}
+SELECT DISTINCT ON (remote_id) * FROM ${tempTable}
 ON CONFLICT (connection_id, remote_id)
 DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
 
       return {
-        maxRemoteUpdatedAt,
+        maxLastModifiedAt,
         numRecords: result.rowCount,
       };
     } finally {
@@ -102,6 +108,6 @@ DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
 }
 
 export type UpsertRemoteCommonModelsResult = {
-  maxRemoteUpdatedAt: Date | null;
+  maxLastModifiedAt: Date | null;
   numRecords: number;
 };

@@ -104,7 +104,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'full',
         status: 'in progress',
-        maxRemoteUpdatedAtMsMap: {
+        maxLastModifiedAtMsMap: {
           account: 0,
           lead: 0,
           opportunity: 0,
@@ -126,12 +126,12 @@ async function doFullThenIncrementalSync({
       )
     ) as Record<CommonModel, ImportRecordsResult>;
 
-    const newMaxRemoteUpdatedAtMsMap = {
-      account: importRecordsResultList['account'].maxRemoteUpdatedAtMs,
-      lead: importRecordsResultList['lead'].maxRemoteUpdatedAtMs,
-      opportunity: importRecordsResultList['opportunity'].maxRemoteUpdatedAtMs,
-      contact: importRecordsResultList['contact'].maxRemoteUpdatedAtMs,
-      user: importRecordsResultList['user'].maxRemoteUpdatedAtMs,
+    const newMaxLastModifiedAtMsMap = {
+      account: importRecordsResultList['account'].maxLastModifiedAtMs,
+      lead: importRecordsResultList['lead'].maxLastModifiedAtMs,
+      opportunity: importRecordsResultList['opportunity'].maxLastModifiedAtMs,
+      contact: importRecordsResultList['contact'].maxLastModifiedAtMs,
+      user: importRecordsResultList['user'].maxLastModifiedAtMs,
     };
 
     await updateSyncState({
@@ -139,7 +139,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'full',
         status: 'in progress',
-        maxRemoteUpdatedAtMsMap: newMaxRemoteUpdatedAtMsMap,
+        maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
       },
     });
 
@@ -150,7 +150,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'full',
         status: 'done',
-        maxRemoteUpdatedAtMsMap: newMaxRemoteUpdatedAtMsMap,
+        maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
       },
     });
 
@@ -160,7 +160,7 @@ async function doFullThenIncrementalSync({
   }
 
   async function doIncrementalPhase(): Promise<Record<CommonModel, number>> {
-    function getOriginalMaxRemoteUpdatedAtMsMap(): Record<CommonModel, number> {
+    function getOriginalMaxLastModifiedAtMsMap(): Record<CommonModel, number> {
       // TODO: we shouldn't need to do this, since it's not possible to
       // start the incremental phase if the full phase hasn't been completed.
       if (sync.state.phase === 'created') {
@@ -173,20 +173,20 @@ async function doFullThenIncrementalSync({
         };
       }
 
-      return sync.state.maxRemoteUpdatedAtMsMap;
+      return sync.state.maxLastModifiedAtMsMap;
     }
 
-    function computeUpdatedMaxRemoteUpdatedAtMsMap(
+    function computeUpdatedMaxLastModifiedAtMsMap(
       importRecordsResultList: Record<CommonModel, ImportRecordsResult>
     ): Record<CommonModel, number> {
-      const originalMaxRemoteUpdatedAtMsMap = getOriginalMaxRemoteUpdatedAtMsMap();
+      const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMap();
 
       return Object.fromEntries(
         CRM_COMMON_MODELS.map((commonModel) => [
           commonModel,
           Math.max(
-            originalMaxRemoteUpdatedAtMsMap[commonModel],
-            importRecordsResultList[commonModel].maxRemoteUpdatedAtMs
+            originalMaxLastModifiedAtMsMap[commonModel],
+            importRecordsResultList[commonModel].maxLastModifiedAtMs
           ),
         ])
       ) as Record<CommonModel, number>;
@@ -197,7 +197,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'incremental',
         status: 'in progress',
-        maxRemoteUpdatedAtMsMap: getOriginalMaxRemoteUpdatedAtMsMap(),
+        maxLastModifiedAtMsMap: getOriginalMaxLastModifiedAtMsMap(),
       },
     });
 
@@ -210,7 +210,7 @@ async function doFullThenIncrementalSync({
               syncId: sync.id,
               connectionId: sync.connectionId,
               commonModel,
-              updatedAfterMs: getOriginalMaxRemoteUpdatedAtMsMap()[commonModel],
+              updatedAfterMs: getOriginalMaxLastModifiedAtMsMap()[commonModel],
             }),
           ];
           return entry;
@@ -218,14 +218,14 @@ async function doFullThenIncrementalSync({
       )
     ) as Record<CommonModel, ImportRecordsResult>;
 
-    const newMaxRemoteUpdatedAtMsMap = computeUpdatedMaxRemoteUpdatedAtMsMap(importRecordsResultList);
+    const newMaxLastModifiedAtMsMap = computeUpdatedMaxLastModifiedAtMsMap(importRecordsResultList);
 
     await updateSyncState({
       syncId: sync.id,
       state: {
         phase: 'incremental',
         status: 'in progress',
-        maxRemoteUpdatedAtMsMap: newMaxRemoteUpdatedAtMsMap,
+        maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
       },
     });
 
@@ -236,7 +236,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'incremental',
         status: 'done',
-        maxRemoteUpdatedAtMsMap: newMaxRemoteUpdatedAtMsMap,
+        maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
       },
     });
 
