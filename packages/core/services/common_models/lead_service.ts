@@ -4,7 +4,14 @@ import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
-import type { GetParams, Lead, LeadCreateParams, LeadUpdateParams, ListParams, PaginatedResult } from '../../types';
+import type {
+  GetParams,
+  Lead,
+  LeadCreateParams,
+  LeadUpdateParams,
+  ListInternalParams,
+  PaginatedResult,
+} from '../../types';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class LeadService extends CommonModelBaseService {
@@ -34,8 +41,17 @@ export class LeadService extends CommonModelBaseService {
   }
 
   // TODO: implement rest of list params
-  public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Lead>> {
-    const { page_size, cursor, created_after, created_before, modified_after, modified_before, expand } = listParams;
+  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Lead>> {
+    const {
+      page_size,
+      cursor,
+      include_deleted_data,
+      created_after,
+      created_before,
+      modified_after,
+      modified_before,
+      expand,
+    } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmLead.findMany({
@@ -50,7 +66,7 @@ export class LeadService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
-        remoteWasDeleted: false,
+        remoteWasDeleted: include_deleted_data ? undefined : false,
       },
       include: {
         convertedAccount: expandedAssociations.includes('converted_account'),

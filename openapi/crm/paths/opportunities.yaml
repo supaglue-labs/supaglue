@@ -8,6 +8,7 @@ get:
   description: >-
     Get a list of opportunities
   parameters:
+    - $ref: ../../common/components/parameters/query/include_deleted_data.yaml
     - $ref: ../../common/components/parameters/query/created_after.yaml
     - $ref: ../../common/components/parameters/query/created_before.yaml
     - $ref: ../../common/components/parameters/query/modified_after.yaml

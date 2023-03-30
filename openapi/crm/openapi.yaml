@@ -110,6 +110,8 @@ components:
     lifecycle_stage:
       $ref: ./components/schemas/objects/lifecycle_stage.yaml
   parameters:
+    include_deleted_data:
+      $ref: ../common/components/parameters/query/include_deleted_data.yaml
     created_after:
       $ref: ../common/components/parameters/query/created_after.yaml
     created_before:

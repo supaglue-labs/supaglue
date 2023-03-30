@@ -10,7 +10,7 @@ import type {
   AccountFilters,
   AccountUpdateParams,
   GetParams,
-  ListParams,
+  ListInternalParams,
   PaginatedResult,
   PaginationParams,
 } from '../../types/index';
@@ -65,8 +65,17 @@ export class AccountService extends CommonModelBaseService {
   }
 
   // TODO: implement rest of list params
-  public async list(connectionId: string, listParams: ListParams): Promise<PaginatedResult<Account>> {
-    const { page_size, cursor, created_after, created_before, modified_after, modified_before, expand } = listParams;
+  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Account>> {
+    const {
+      page_size,
+      cursor,
+      include_deleted_data,
+      created_after,
+      created_before,
+      modified_after,
+      modified_before,
+      expand,
+    } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmAccount.findMany({
@@ -81,7 +90,7 @@ export class AccountService extends CommonModelBaseService {
           gt: modified_after,
           lt: modified_before,
         },
-        remoteWasDeleted: false,
+        remoteWasDeleted: include_deleted_data ? undefined : false,
       },
       include: {
         owner: expandedAssociations.includes('owner'),
