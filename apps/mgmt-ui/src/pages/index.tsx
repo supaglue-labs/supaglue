@@ -1,22 +1,36 @@
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { getAuth } from '@clerk/nextjs/server';
 import { type GetServerSideProps } from 'next';
 import { getServerSession, Session } from 'next-auth';
-import { API_HOST, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from './api';
+import { API_HOST, IS_CLOUD, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from './api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   let session: Session | null = null;
 
-  const orgId = ORGANIZATION_ID;
+  let orgId = ORGANIZATION_ID;
 
   session = await getServerSession(req, res, authOptions);
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/api/auth/signin',
-        permanent: false,
-      },
-    };
+  if (!IS_CLOUD) {
+    session = await getServerSession(req, res, authOptions);
+
+    if (!session) {
+      return {
+        redirect: {
+          destination: '/api/auth/signin',
+          permanent: false,
+        },
+      };
+    }
+  } else {
+    const user = getAuth(req);
+
+    if (!user.userId || !user.orgId) {
+      return {
+        props: { session, signedIn: false },
+      };
+    }
+    ({ orgId } = user);
   }
 
   // This is the same call as in apps/mgmt-ui/src/pages/api/internal/applications/index.ts
