@@ -48,6 +48,7 @@ services:
       SUPAGLUE_API_PORT: ${SUPAGLUE_API_PORT:-8080}
       SUPAGLUE_CORS_ORIGIN: ${SUPAGLUE_CORS_ORIGIN:-http://localhost:3000}
       SUPAGLUE_SYNC_PERIOD_MS:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
     restart: on-failure
 
   sync-worker:
