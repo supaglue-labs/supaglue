@@ -1,14 +1,14 @@
 import type { PrismaClient } from '@supaglue/db';
 import { getCustomerIdPk } from '../lib/customer_id';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { fromSyncHistoryModelAndConnection } from '../mappers';
+import { fromSyncHistoryModelAndSync } from '../mappers';
 import type {
   PaginatedResult,
   SyncHistory,
-  SyncHistoryCreateParams,
   SyncHistoryFilter,
   SyncHistoryModelExpanded,
   SyncHistoryStatus,
+  SyncHistoryUpsertParams,
 } from '../types';
 import { ConnectionService } from './connection_service';
 
@@ -21,42 +21,57 @@ export class SyncHistoryService {
     this.#connectionService = connectionService;
   }
 
-  public async create({
-    connectionId,
+  public async upsert({
+    id,
+    syncId,
     createParams,
   }: {
-    connectionId: string;
-    createParams: SyncHistoryCreateParams;
+    id: string;
+    syncId: string;
+    createParams: SyncHistoryUpsertParams;
   }): Promise<SyncHistory> {
-    const created: SyncHistoryModelExpanded = await this.#prisma.syncHistory.create({
-      data: {
+    const created: SyncHistoryModelExpanded = await this.#prisma.syncHistory.upsert({
+      where: { id },
+      create: {
         ...createParams,
-        connectionId,
+        id,
+        syncId,
       },
+      update: {},
       include: {
-        connection: true,
+        sync: {
+          select: {
+            id: true,
+            connection: true,
+          },
+        },
       },
     });
 
-    return fromSyncHistoryModelAndConnection(created);
+    return fromSyncHistoryModelAndSync(created);
   }
 
   public async update({
     id,
     updateParams,
   }: {
-    id: number;
-    updateParams: Partial<SyncHistoryCreateParams>;
+    id: string;
+    updateParams: Partial<SyncHistoryUpsertParams>;
   }): Promise<SyncHistory> {
     const model = await this.#prisma.syncHistory.update({
       where: { id },
       data: updateParams,
       include: {
-        connection: true,
+        sync: {
+          select: {
+            id: true,
+            connection: true,
+          },
+        },
       },
     });
 
-    return fromSyncHistoryModelAndConnection(model);
+    return fromSyncHistoryModelAndSync(model);
   }
 
   public async logFinish({
@@ -64,7 +79,7 @@ export class SyncHistoryService {
     status,
     errorMessage,
   }: {
-    historyId: number;
+    historyId: string;
     status: SyncHistoryStatus;
     errorMessage?: string;
   }): Promise<void> {
@@ -78,9 +93,18 @@ export class SyncHistoryService {
     });
   }
 
-  public async logStart({ connectionId, commonModel }: { connectionId: string; commonModel: string }): Promise<number> {
-    const { id } = await this.create({
-      connectionId,
+  public async logStart({
+    syncId,
+    historyId,
+    commonModel,
+  }: {
+    syncId: string;
+    historyId: string;
+    commonModel: string;
+  }): Promise<string> {
+    await this.upsert({
+      id: historyId,
+      syncId,
       createParams: {
         model: commonModel,
         status: 'IN_PROGRESS',
@@ -89,7 +113,7 @@ export class SyncHistoryService {
         endTimestamp: null,
       },
     });
-    return id;
+    return historyId;
   }
 
   public async list({
@@ -105,23 +129,30 @@ export class SyncHistoryService {
     const { page_size, cursor } = paginationParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.#prisma.syncHistory.findMany({
-      ...getPaginationParams<number>(pageSize, cursor),
+      ...getPaginationParams<string>(pageSize, cursor),
       where: {
-        connectionId: { in: connectionIds },
+        sync: {
+          connectionId: { in: connectionIds },
+        },
         model,
       },
       include: {
-        connection: true,
+        sync: {
+          select: {
+            id: true,
+            connection: true,
+          },
+        },
       },
       orderBy: {
         id: 'desc',
       },
     });
 
-    const results = models.map(fromSyncHistoryModelAndConnection);
+    const results = models.map(fromSyncHistoryModelAndSync);
 
     return {
-      ...getPaginationResult<number>(pageSize, cursor, results),
+      ...getPaginationResult<string>(pageSize, cursor, results),
       results,
     };
   }

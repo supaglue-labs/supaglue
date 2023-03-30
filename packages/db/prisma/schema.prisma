@@ -56,23 +56,22 @@ model Integration {
 }
 
 model Connection {
-  id              String        @id @default(uuid())
-  integration     Integration   @relation(fields: [integrationId], references: [id], onDelete: Cascade)
-  integrationId   String        @map("integration_id")
+  id            String      @id @default(uuid())
+  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  integrationId String      @map("integration_id")
   // CRM, HRIS, etc.
-  category        String
+  category      String
   // Salesforce, Hubspot, etc.
-  providerName    String        @map("provider_name")
-  status          String // available | added | authorized | callable
-  credentials     Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
-  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId      String        @map("customer_id")
+  providerName  String      @map("provider_name")
+  status        String // available | added | authorized | callable
+  credentials   Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
+  customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId    String      @map("customer_id")
   // TODO: Make it non-optional after all customers have been migrated.
-  remoteId        String?       @map("remote_id")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
-  syncs           Sync[]
-  syncHistoryList SyncHistory[]
+  remoteId      String?     @map("remote_id")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  syncs         Sync[]
 
   @@unique([customerId, integrationId])
   @@map("connections")
@@ -244,30 +243,29 @@ model CrmUser {
 }
 
 model Sync {
-  id           String     @id @default(uuid())
-  state        Json
-  strategy     Json
-  connectionId String     @unique @map("connection_id")
-  connection   Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
-  createdAt    DateTime   @default(now()) @map("created_at")
-  updatedAt    DateTime   @updatedAt @map("updated_at")
+  id              String        @id @default(uuid())
+  state           Json
+  strategy        Json
+  connectionId    String        @unique @map("connection_id")
+  connection      Connection    @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  syncHistoryList SyncHistory[]
 
   @@map("syncs")
 }
 
 model SyncHistory {
-  id             Int        @id @default(autoincrement())
-  // TODO: Link this with the sync table instead of sharing join keys on (model, connectionId)
+  id             String    @id @default(uuid())
+  syncId         String    @map("sync_id")
+  sync           Sync      @relation(fields: [syncId], references: [id], onDelete: Cascade)
   // contact, lead, account, opportunity, etc.
   model          String
   // SUCCESS | ERROR | IN_PROGRESS
   status         String
-  errorMessage   String?    @map("error_message")
-  startTimestamp DateTime   @map("start_timestamp")
-  endTimestamp   DateTime?  @map("end_timestamp")
-  // Associations
-  connectionId   String     @map("connection_id")
-  connection     Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  errorMessage   String?   @map("error_message")
+  startTimestamp DateTime  @map("start_timestamp")
+  endTimestamp   DateTime? @map("end_timestamp")
 
   @@map("sync_history")
 }

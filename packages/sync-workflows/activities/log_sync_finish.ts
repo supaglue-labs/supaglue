@@ -7,7 +7,7 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
     status,
     errorMessage,
   }: {
-    historyId: number;
+    historyId: string;
     status: SyncHistoryStatus;
     errorMessage?: string;
   }) {

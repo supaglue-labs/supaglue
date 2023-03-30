@@ -1,18 +1,20 @@
 import { parseCustomerIdPk } from '../lib/customer_id';
 import { SyncHistory, SyncHistoryModelExpanded, SyncHistoryStatus } from '../types';
 
-export const fromSyncHistoryModelAndConnection = ({
+export const fromSyncHistoryModelAndSync = ({
   id,
   model,
   status,
   errorMessage,
   startTimestamp,
   endTimestamp,
-  connection,
+  sync,
 }: SyncHistoryModelExpanded): SyncHistory => {
+  const { connection } = sync;
   const { applicationId, externalCustomerId } = parseCustomerIdPk(connection.customerId);
   return {
     id,
+    syncId: sync.id,
     modelName: model,
     status: status as SyncHistoryStatus,
     errorMessage,
