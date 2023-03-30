@@ -28,8 +28,8 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
   };
 };
 
@@ -102,8 +102,8 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
   };
 };
 
@@ -197,8 +197,8 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
   };
 };
 
@@ -260,8 +260,8 @@ export const fromSalesforceLeadToRemoteLead = (
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
   };
 };
 
@@ -311,8 +311,8 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
     remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
   };
 };
 
