@@ -87,6 +87,10 @@ export abstract class CommonModelBaseService {
       const columnsToUpdate = columnsWithoutId.join(',');
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
 
+      // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same remote_id
+      // For example, hubspot will return the same record twice when querying for `archived: true` if
+      // the record was archived, restored, and archived again.
+      // TODO: This may have performance implications. We should look into this later.
       const result = await client.query(`INSERT INTO ${table}
 SELECT DISTINCT ON (remote_id) * FROM ${tempTable}
 ON CONFLICT (connection_id, remote_id)
