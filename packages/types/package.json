@@ -1,0 +1,21 @@
+{
+  "name": "@supaglue/types",
+  "version": "0.6.0",
+  "private": true,
+  "index": "dist/index.js",
+  "types": "index.ts",
+  "packageManager": "yarn@3.4.1",
+  "devDependencies": {
+    "@tsconfig/node18": "^1.0.1",
+    "typescript": "^4.9.5"
+  },
+  "scripts": {
+    "build": "yarn run clean && tsc -p .",
+    "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
+    "lint-staged": "run -T lint-staged --no-stash --quiet",
+    "lint": "run -T eslint"
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -1,6 +1,6 @@
+import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types';
 import axios from 'axios';
 import { EventEmitter } from 'events';
-import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '../types/passthrough';
 
 interface RemoteClientEvents {
   token_refreshed: (accessToken: string, expiresAt: string | null) => void;

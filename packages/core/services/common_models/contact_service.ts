@@ -1,9 +1,4 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import { Readable } from 'stream';
-import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getExpandedAssociations } from '../../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
-import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
 import type {
   Contact,
   ContactCreateParams,
@@ -13,7 +8,12 @@ import type {
   ListInternalParams,
   PaginatedResult,
   PaginationParams,
-} from '../../types';
+} from '@supaglue/types';
+import { Readable } from 'stream';
+import { NotFoundError, UnauthorizedError } from '../../errors';
+import { getExpandedAssociations } from '../../lib/expand';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class ContactService extends CommonModelBaseService {

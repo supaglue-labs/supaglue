@@ -3,7 +3,7 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { HttpRequestType } from '@supaglue/core/types';
+import { HttpRequestType } from '@supaglue/types';
 
 export type HttpMethodSelectProps = {
   value: HttpRequestType;

@@ -1,7 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
-import { ListParams } from '@supaglue/core/types/common';
 import {
   GetUserPathParams,
   GetUserRequest,
@@ -10,6 +8,8 @@ import {
   GetUsersRequest,
   GetUsersResponse,
 } from '@supaglue/schemas/crm';
+import { ListParams } from '@supaglue/types/common';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { userService } = getDependencyContainer();

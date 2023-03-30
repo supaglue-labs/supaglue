@@ -1,5 +1,5 @@
-import { camelcaseKeys } from '@supaglue/core/lib/camelcase';
-import { PaginatedResult, SyncHistory } from '@supaglue/core/types';
+import { PaginatedResult, SyncHistory } from '@supaglue/types';
+import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useSyncHistory() {

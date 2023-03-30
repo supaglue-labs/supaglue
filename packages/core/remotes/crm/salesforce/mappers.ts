@@ -16,7 +16,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
   RemoteUser,
-} from '../../../types';
+} from '@supaglue/types';
 
 export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): RemoteUser => {
   return {

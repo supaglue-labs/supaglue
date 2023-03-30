@@ -1,7 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { NotFoundError } from '@supaglue/core/errors';
-import { camelcaseKeysSansHeaders } from '@supaglue/core/lib/camelcase';
-import { snakecaseKeysSansHeaders } from '@supaglue/core/lib/snakecase';
 import {
   CreateWebhookPathParams,
   CreateWebhookRequest,
@@ -13,6 +11,8 @@ import {
   GetWebhookRequest,
   GetWebhookResponse,
 } from '@supaglue/schemas/mgmt';
+import { camelcaseKeysSansHeaders } from '@supaglue/utils/camelcase';
+import { snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { applicationService } = getDependencyContainer();

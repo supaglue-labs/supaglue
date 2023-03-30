@@ -1,11 +1,11 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import {
   GetSyncInfosPathParams,
   GetSyncInfosQueryParams,
   GetSyncInfosRequest,
   GetSyncInfosResponse,
 } from '@supaglue/schemas/mgmt';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { syncService } = getDependencyContainer();

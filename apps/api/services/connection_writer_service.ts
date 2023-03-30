@@ -3,13 +3,13 @@ import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, IntegrationService } from '@supaglue/core/services';
+import type { PrismaClient } from '@supaglue/db';
 import type {
   ConnectionCreateParams,
   ConnectionStatus,
   ConnectionUnsafe,
   ConnectionUpsertParams,
-} from '@supaglue/core/types/connection';
-import type { PrismaClient } from '@supaglue/db';
+} from '@supaglue/types/connection';
 import type { SyncService } from './sync_service';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;

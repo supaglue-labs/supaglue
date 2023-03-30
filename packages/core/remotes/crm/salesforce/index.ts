@@ -2,12 +2,10 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import { parse } from 'csv-parse';
-import * as jsforce from 'jsforce';
-import { PassThrough, pipeline, Readable, Transform } from 'stream';
-import { CRMConnectionUnsafe } from '../../../types/connection';
 import {
   AccountCreateParams,
+  CompleteIntegration,
+  CRMConnectionUnsafe,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -19,8 +17,10 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/crm';
-import { CompleteIntegration } from '../../../types/integration';
+} from '@supaglue/types';
+import { parse } from 'csv-parse';
+import * as jsforce from 'jsforce';
+import { PassThrough, pipeline, Readable, Transform } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,

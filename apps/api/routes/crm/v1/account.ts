@@ -1,8 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeysSansCustomFields } from '@supaglue/core/lib/camelcase';
-import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
-import { GetParams, ListParams } from '@supaglue/core/types/common';
 import {
   CreateAccountPathParams,
   CreateAccountRequest,
@@ -20,6 +17,9 @@ import {
   UpdateAccountRequest,
   UpdateAccountResponse,
 } from '@supaglue/schemas/crm';
+import { GetParams, ListParams } from '@supaglue/types';
+import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { accountService } = getDependencyContainer();

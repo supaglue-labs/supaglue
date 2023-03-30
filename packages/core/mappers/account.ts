@@ -1,5 +1,6 @@
+import { Account, Address, LifecycleStage, PhoneNumber, RemoteAccount } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { Account, Address, CrmAccountExpanded, LifecycleStage, PhoneNumber, RemoteAccount } from '../types';
+import { CrmAccountExpanded } from '../types';
 import { fromUserModel } from './user';
 
 export const fromAccountModel = (

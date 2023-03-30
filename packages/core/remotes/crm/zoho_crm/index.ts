@@ -1,4 +1,3 @@
-import { Readable } from 'stream';
 import {
   AccountCreateParams,
   CompleteIntegration,
@@ -14,7 +13,8 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types';
+} from '@supaglue/types';
+import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 
 class ZohoCrmClient extends AbstractCrmRemoteClient {

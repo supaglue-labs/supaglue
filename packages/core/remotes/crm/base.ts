@@ -1,7 +1,6 @@
-import { EventEmitter } from 'events';
-import { Readable } from 'stream';
-import { CRMConnectionUnsafe } from '../../types/connection';
 import {
+  CompleteIntegration,
+  CRMConnectionUnsafe,
   RemoteAccount,
   RemoteAccountCreateParams,
   RemoteAccountUpdateParams,
@@ -14,8 +13,9 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../types/crm';
-import { CompleteIntegration } from '../../types/integration';
+} from '@supaglue/types';
+import { EventEmitter } from 'events';
+import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface CrmRemoteClient extends RemoteClient {

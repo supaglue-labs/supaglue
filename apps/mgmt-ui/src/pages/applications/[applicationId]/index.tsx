@@ -8,7 +8,7 @@ import { getAuth } from '@clerk/nextjs/server';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { ConnectionSafe } from '@supaglue/core/types';
+import { ConnectionSafe } from '@supaglue/types';
 import { type GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';

@@ -1,5 +1,5 @@
 import { SyncHistoryService } from '@supaglue/core/services';
-import { SyncHistoryStatus } from '@supaglue/core/types/sync_history';
+import { SyncHistoryStatus } from '@supaglue/types/sync_history';
 
 export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService: SyncHistoryService }) {
   return async function logSyncFinish({

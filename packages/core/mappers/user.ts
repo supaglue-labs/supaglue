@@ -1,6 +1,6 @@
 import { CrmUser } from '@supaglue/db';
+import { RemoteUser, User } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { RemoteUser, User } from '../types/crm';
 
 export const fromUserModel = ({
   id,

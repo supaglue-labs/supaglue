@@ -3,11 +3,9 @@ import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as Hu
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
-import retry from 'async-retry';
-import { PassThrough, Readable } from 'stream';
-import { logger } from '../../../lib';
-import { CRMConnectionUnsafe } from '../../../types/connection';
 import {
+  CompleteIntegration,
+  CRMConnectionUnsafe,
   RemoteAccount,
   RemoteAccountCreateParams,
   RemoteAccountUpdateParams,
@@ -20,9 +18,12 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-} from '../../../types/crm';
-import { CompleteIntegration } from '../../../types/integration';
-import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '../../../types/passthrough';
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+} from '@supaglue/types';
+import retry from 'async-retry';
+import { PassThrough, Readable } from 'stream';
+import { logger } from '../../../lib';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,

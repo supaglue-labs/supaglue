@@ -1,5 +1,5 @@
 import { RemoteService } from '@supaglue/core/services/remote_service';
-import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/core/types/passthrough';
+import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types/passthrough';
 
 export class PassthroughService {
   #remoteService: RemoteService;

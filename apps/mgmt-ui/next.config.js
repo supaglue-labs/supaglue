@@ -16,7 +16,7 @@ const nextConfig = {
     // this includes files from the monorepo base two directories up
     outputFileTracingRoot: path.join(__dirname, '../../'),
   },
-  transpilePackages: ['@supaglue/core'],
+  transpilePackages: ['@supaglue/types', '@supaglue/utils'],
 };
 
 module.exports = nextConfig;

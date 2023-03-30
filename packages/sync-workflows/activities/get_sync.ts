@@ -1,4 +1,4 @@
-import { Sync } from '@supaglue/core/types';
+import { Sync } from '@supaglue/types';
 import { SyncService } from 'sync-worker/services/sync_service';
 
 export type GetSyncArgs = {

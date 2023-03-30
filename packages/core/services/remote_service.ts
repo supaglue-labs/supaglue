@@ -1,6 +1,6 @@
+import { CompleteIntegration } from '@supaglue/types';
 import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
-import { CompleteIntegration } from '../types/integration';
 import type { ConnectionService } from './connection_service';
 import type { IntegrationService } from './integration_service';
 

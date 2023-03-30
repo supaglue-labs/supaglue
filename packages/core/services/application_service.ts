@@ -1,8 +1,8 @@
 import type { PrismaClient } from '@supaglue/db';
+import { Application, ApplicationCreateParams, ApplicationUpdateParams } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { cryptoHash, generateApiKey } from '../lib/crypt';
 import { fromApplicationModel } from '../mappers';
-import { Application, ApplicationCreateParams, ApplicationUpdateParams } from '../types';
 
 export class ApplicationService {
   #prisma: PrismaClient;

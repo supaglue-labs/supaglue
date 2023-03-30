@@ -1,6 +1,6 @@
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
-import { CommonModel, CRMProviderName } from '@supaglue/core/types';
+import { CommonModel, CRMProviderName } from '@supaglue/types';
 
 export const logEvent = ({
   eventName,

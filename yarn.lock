@@ -4271,7 +4271,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@supaglue/core@workspace:*, @supaglue/core@workspace:^, @supaglue/core@workspace:packages/core":
+"@supaglue/core@workspace:*, @supaglue/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@supaglue/core@workspace:packages/core"
   dependencies:
@@ -4286,7 +4286,6 @@ __metadata:
     "@types/uuid": ^9.0.1
     async-retry: ^1.3.3
     axios: ^1.3.4
-    camelcase-keys: 7.0.2
     csv-parse: ^5.3.5
     csv-stringify: ^6.3.0
     jsforce: ^2.0.0-beta.20
@@ -4296,7 +4295,6 @@ __metadata:
     pino-abstract-transport: ^1.0.0
     pino-pretty: ^9.4.0
     posthog-node: ^2.5.4
-    snakecase-keys: ^5.4.5
     typescript: ^4.9.5
     uuid: ^9.0.0
   languageName: unknown
@@ -4340,6 +4338,26 @@ __metadata:
     "@temporalio/workflow": ^1.6.0
     "@tsconfig/node18": ^1.0.1
     tsx: ^3.12.3
+    typescript: ^4.9.5
+  languageName: unknown
+  linkType: soft
+
+"@supaglue/types@workspace:*, @supaglue/types@workspace:^, @supaglue/types@workspace:packages/types":
+  version: 0.0.0-use.local
+  resolution: "@supaglue/types@workspace:packages/types"
+  dependencies:
+    "@tsconfig/node18": ^1.0.1
+    typescript: ^4.9.5
+  languageName: unknown
+  linkType: soft
+
+"@supaglue/utils@workspace:^, @supaglue/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@supaglue/utils@workspace:packages/utils"
+  dependencies:
+    "@tsconfig/node18": ^1.0.1
+    camelcase-keys: 7.0.2
+    snakecase-keys: ^5.4.5
     typescript: ^4.9.5
   languageName: unknown
   linkType: soft
@@ -12551,8 +12569,9 @@ __metadata:
     "@mui/x-data-grid": ^6.0.0
     "@mui/x-date-pickers": ^6.0.0
     "@sentry/nextjs": ^7.44.2
-    "@supaglue/core": "workspace:^"
     "@supaglue/schemas": "workspace:^"
+    "@supaglue/types": "workspace:^"
+    "@supaglue/utils": "workspace:^"
     "@types/luxon": ^3
     "@types/node": 18.14.6
     "@types/react": 18.0.28
@@ -17450,6 +17469,7 @@ __metadata:
     "@supaglue/core": "workspace:*"
     "@supaglue/db": "workspace:*"
     "@supaglue/sync-workflows": "workspace:*"
+    "@supaglue/types": "workspace:*"
     "@swc/core": ^1.3.35
     "@temporalio/worker": ^1.6.0
     "@tsconfig/node18": ^1.0.1
