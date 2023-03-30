@@ -96,20 +96,21 @@ Create a Supaglue customer using the [Management API](/api/mgmt#tag/Customers/op
 You will need four pieces of information when hitting this endpoint:
 
 - **customer_id**: the primary key you use in your application that uniquely identifies this customer.
+- **application_id**: your Supaglue application id: `a4398523-03a2-42dd-9681-c91e3e2efaf4`.
 - **name**: the name of the customer.
 - **email**: the email associated with the customer.
-- **api_key**: the Supaglue API key for Supaglue Application.
 
 Here's a sample request:
 
 ```shell
 curl --location --request PUT 'http://localhost:8080/mgmt/v1/customers' \
---header 'x-api-key: {{api_key}}'
+--header 'x-api-key: {{apiKey}}'
 --header 'Content-Type: application/json' \
 --data-raw '{
+ "application_id": "{{applicationId}}",
  "name": "Customer 1",
  "email": "customer-1@email.com",
- "customer_id": "your_application_customer_id"
+ "customer_id": "0001"
 }'
 ```
 
