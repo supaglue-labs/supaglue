@@ -4279,6 +4279,7 @@ __metadata:
     "@sentry/integrations": ^7.43.0
     "@sentry/node": ^7.43.0
     "@supaglue/db": "workspace:*"
+    "@supaglue/utils": "workspace:*"
     "@tsconfig/node18": ^1.0.1
     "@types/async-retry": ^1
     "@types/pg": ^8
@@ -4351,7 +4352,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@supaglue/utils@workspace:^, @supaglue/utils@workspace:packages/utils":
+"@supaglue/utils@workspace:*, @supaglue/utils@workspace:^, @supaglue/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@supaglue/utils@workspace:packages/utils"
   dependencies:
