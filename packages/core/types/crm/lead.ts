@@ -8,6 +8,7 @@ export type CrmLeadExpanded = CrmLead & {
 };
 
 type BaseLead = {
+  remoteId: string;
   leadSource: string | null;
   title: string | null;
   company: string | null;
@@ -30,13 +31,11 @@ export type Lead = BaseLead & {
   ownerId: string | null;
   owner?: User;
   id: string;
-  remoteId: string;
   lastModifiedAt: Date | null;
   // Support field mappings + remote data etc
 };
 
 export type RemoteLead = BaseLead & {
-  remoteId: string;
   convertedRemoteContactId: string | null;
   convertedRemoteAccountId: string | null;
   remoteOwnerId: string | null;

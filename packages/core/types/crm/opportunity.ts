@@ -13,6 +13,7 @@ export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
 
 type BaseOpportunity = {
+  remoteId: string;
   name: string | null;
   description: string | null;
   amount: number | null;
@@ -32,13 +33,11 @@ export type Opportunity = BaseOpportunity & {
   ownerId: string | null;
   owner?: User;
   id: string;
-  remoteId: string;
   lastModifiedAt: Date | null;
   // Support field mappings + remote data etc
 };
 
 export type RemoteOpportunity = BaseOpportunity & {
-  remoteId: string;
   remoteAccountId: string | null;
   remoteOwnerId: string | null;
   remoteDeletedAt: Date | null;

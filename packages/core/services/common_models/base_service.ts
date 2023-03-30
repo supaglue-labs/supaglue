@@ -40,7 +40,7 @@ export abstract class CommonModelBaseService {
       // TODO: In the future, we may want to create a permanent table with background reaper
       // so that we can resume in the case of failure during the COPY stage.
       // TODO: Maybe we don't need to include all
-      await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING ALL)`);
+      await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING DEFAULTS)`);
       const columns = ['id', ...columnsWithoutId];
 
       // Output
@@ -86,8 +86,9 @@ export abstract class CommonModelBaseService {
       // Copy from temp table
       const columnsToUpdate = columnsWithoutId.join(',');
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
+
       const result = await client.query(`INSERT INTO ${table}
-SELECT * FROM ${tempTable}
+SELECT DISTINCT ON (remote_id) * FROM ${tempTable}
 ON CONFLICT (connection_id, remote_id)
 DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
 

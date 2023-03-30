@@ -9,6 +9,7 @@ export type CrmContactExpanded = CrmContact & {
 };
 
 export type BaseContact = {
+  remoteId: string;
   firstName: string | null;
   lastName: string | null;
   addresses: Address[];
@@ -23,7 +24,6 @@ export type BaseContact = {
 
 export type Contact = BaseContact & {
   id: string;
-  remoteId: string;
   ownerId: string | null;
   owner?: User;
   accountId: string | null;
@@ -33,7 +33,6 @@ export type Contact = BaseContact & {
 };
 
 export type RemoteContact = BaseContact & {
-  remoteId: string;
   remoteAccountId: string | null;
   remoteOwnerId: string | null;
   remoteDeletedAt: Date | null;

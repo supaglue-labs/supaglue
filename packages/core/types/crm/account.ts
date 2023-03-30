@@ -7,6 +7,7 @@ export type CrmAccountExpanded = CrmAccount & {
 };
 
 type BaseAccount = {
+  remoteId: string;
   name: string | null;
   description: string | null;
   industry: string | null;
@@ -23,7 +24,6 @@ type BaseAccount = {
 
 export type Account = BaseAccount & {
   id: string;
-  remoteId: string;
   ownerId: string | null;
   owner?: User;
   lastModifiedAt: Date | null;
@@ -31,7 +31,6 @@ export type Account = BaseAccount & {
 };
 
 export type RemoteAccount = BaseAccount & {
-  remoteId: string;
   remoteOwnerId: string | null;
   remoteDeletedAt: Date | null;
   detectedOrRemoteDeletedAt: Date | null;
