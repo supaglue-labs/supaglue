@@ -17,6 +17,7 @@ cp docker-compose.override.dev.yml docker-compose.override.yml
 
 ```shell
 cp apps/mgmt-ui/.env.sample apps/mgmt-ui/.env
+docker compose up
 
 yarn workspace mgmt-ui dev
 ```
