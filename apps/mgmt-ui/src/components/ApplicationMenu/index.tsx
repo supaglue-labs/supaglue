@@ -13,7 +13,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/system';
-import Link from 'next/link';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -75,18 +75,8 @@ export default function ApplicationMenu() {
       >
         {/* TODO: Implement loading state */}
         {applications.map(({ id, name }) => (
-          <MenuItem key={id}>
-            <Link
-              style={{
-                textDecoration: 'none',
-                color: '#000',
-                width: '100%',
-              }}
-              href={`/applications/${id}`}
-              onClick={handleClose}
-            >
-              {name}
-            </Link>
+          <MenuItem key={id} component={NextLink} href={`/applications/${id}`}>
+            {name}
           </MenuItem>
         ))}
         <Divider />
