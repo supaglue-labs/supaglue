@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { API_HOST, SG_INTERNAL_TOKEN } from '..';
+import { API_HOST, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from '..';
 
 export const authOptions = {
   providers: [
@@ -12,6 +12,7 @@ export const authOptions = {
           headers: {
             'Content-Type': 'application/json',
             'x-sg-internal-token': SG_INTERNAL_TOKEN,
+            'x-org-id': ORGANIZATION_ID,
           },
           body: JSON.stringify({
             ...credentials,

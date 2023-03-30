@@ -21,16 +21,7 @@ const isCloudOnlyPath = (path: string) => {
   return cloudOnlyPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
 };
 
-export default withClerkMiddleware((request: NextRequest) => {
-  if (!IS_CLOUD) {
-    // If it's self-hosted but user tries to access a cloud-only path, redirect them to non-cloud sign-in.
-    if (isCloudOnlyPath(request.nextUrl.pathname)) {
-      const selfHostedSignInUrl = new URL('/api/auth/signin', request.url);
-      return NextResponse.redirect(selfHostedSignInUrl);
-    }
-    return NextResponse.next();
-  }
-
+const cloudMiddleware = withClerkMiddleware((request: NextRequest) => {
   if (isCloudPublicPath(request.nextUrl.pathname)) {
     return NextResponse.next();
   }
@@ -53,5 +44,16 @@ export default withClerkMiddleware((request: NextRequest) => {
   }
   return NextResponse.next();
 });
+
+const nonCloudMiddleware = async (request: NextRequest) => {
+  // If it's self-hosted but user tries to access a cloud-only path, redirect them to non-cloud sign-in.
+  if (isCloudOnlyPath(request.nextUrl.pathname)) {
+    const selfHostedSignInUrl = new URL('/api/auth/signin', request.url);
+    return NextResponse.redirect(selfHostedSignInUrl);
+  }
+  return NextResponse.next();
+};
+
+export default IS_CLOUD ? cloudMiddleware : nonCloudMiddleware;
 
 export const config = { matcher: '/((?!_next/image|_next/static|favicon.ico).*)' };
