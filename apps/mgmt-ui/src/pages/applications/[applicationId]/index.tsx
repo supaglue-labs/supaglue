@@ -54,8 +54,8 @@ export default function Home() {
   const applicationId = useActiveApplicationId();
 
   const onCreateCustomer = async (customerId: string, name: string, email: string) => {
-    await mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
     await createCustomer(applicationId, customerId, name, email);
+    await mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
   };
 
   // TODO: count this on server?
