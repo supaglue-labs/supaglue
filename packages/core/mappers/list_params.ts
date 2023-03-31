@@ -1,4 +1,4 @@
-import { ListInternalParams, ListParams } from '../types/common';
+import { ListInternalParams, ListParams } from '@supaglue/types';
 
 export function toListInternalParams(listParams: ListParams): ListInternalParams {
   return {

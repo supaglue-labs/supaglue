@@ -1,5 +1,5 @@
-import { Sync, SyncState, SyncType } from '@supaglue/core/types/sync';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
+import { Sync, SyncState, SyncType } from '@supaglue/types';
 
 function fromSyncModel(model: SyncModel): Sync {
   // `strategy` looks like { type: 'full then incremental', ...otherProps }

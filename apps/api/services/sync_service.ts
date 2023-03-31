@@ -1,19 +1,12 @@
 import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@/temporal/index';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import {
-  ConnectionSafe,
-  CRM_COMMON_MODELS,
-  FullThenIncrementalSync,
-  Sync,
-  SyncState,
-  SyncType,
-} from '@supaglue/core/types';
-import { CommonModel } from '@supaglue/core/types/common';
-import { SyncInfo, SyncInfoFilter } from '@supaglue/core/types/sync_info';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
+import { ConnectionSafe, CRM_COMMON_MODELS, FullThenIncrementalSync, Sync, SyncState, SyncType } from '@supaglue/types';
+import { CommonModel } from '@supaglue/types/common';
+import { SyncInfo, SyncInfoFilter } from '@supaglue/types/sync_info';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 

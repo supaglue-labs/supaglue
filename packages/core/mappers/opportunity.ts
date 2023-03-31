@@ -1,5 +1,6 @@
+import { Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { CrmOpportunityExpanded, Opportunity, OpportunityStatus, RemoteOpportunity } from '../types';
+import { CrmOpportunityExpanded } from '../types';
 import { fromAccountModel } from './account';
 import { fromUserModel } from './user';
 

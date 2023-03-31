@@ -1,13 +1,6 @@
+import { Address, Contact, EmailAddress, LifecycleStage, PhoneNumber, RemoteContact } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  Address,
-  Contact,
-  CrmContactExpanded,
-  EmailAddress,
-  LifecycleStage,
-  PhoneNumber,
-  RemoteContact,
-} from '../types';
+import { CrmContactExpanded } from '../types';
 import { fromAccountModel } from './account';
 import { fromUserModel } from './user';
 

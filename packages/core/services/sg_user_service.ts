@@ -1,6 +1,6 @@
+import { SgUser } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { ADMIN_PASSWORD, SG_USER_ID } from '../lib/constants';
-import { SgUser } from '../types/index';
 
 export class SgUserService {
   public async login({ username, password }: { username: string; password: string }): Promise<SgUser | null> {

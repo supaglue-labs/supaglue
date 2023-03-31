@@ -1,8 +1,8 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes/crm';
-import { ConnectionCreateParams, ConnectionUpsertParams } from '@supaglue/core/types/connection';
-import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/core/types/crm';
+import { ConnectionCreateParams, ConnectionUpsertParams } from '@supaglue/types/connection';
+import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 

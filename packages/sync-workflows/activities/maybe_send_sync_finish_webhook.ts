@@ -1,6 +1,6 @@
 import { sendWebhookPayload } from '@supaglue/core/lib/webhook';
 import { ApplicationService, ConnectionService, IntegrationService } from '@supaglue/core/services';
-import { CommonModel } from '@supaglue/core/types/common';
+import { CommonModel } from '@supaglue/types/common';
 
 export function createMaybeSendSyncFinishWebhook({
   connectionService,

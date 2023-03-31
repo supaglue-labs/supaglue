@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
+import type { CRMIntegrationCreateParams, CRMIntegrationUpdateParams, Integration } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { fromIntegrationModel, toIntegrationModel } from '../mappers';
-import type { CRMIntegrationCreateParams, CRMIntegrationUpdateParams, Integration } from '../types';
 
 export class IntegrationService {
   #prisma: PrismaClient;

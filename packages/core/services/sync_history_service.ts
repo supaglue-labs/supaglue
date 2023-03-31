@@ -1,15 +1,15 @@
 import type { PrismaClient } from '@supaglue/db';
-import { getCustomerIdPk } from '../lib/customer_id';
-import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { fromSyncHistoryModelAndSync } from '../mappers';
 import type {
   PaginatedResult,
   SyncHistory,
   SyncHistoryFilter,
-  SyncHistoryModelExpanded,
   SyncHistoryStatus,
   SyncHistoryUpsertParams,
-} from '../types';
+} from '@supaglue/types';
+import { getCustomerIdPk } from '../lib/customer_id';
+import { getPaginationParams, getPaginationResult } from '../lib/pagination';
+import { fromSyncHistoryModelAndSync } from '../mappers';
+import { SyncHistoryModelExpanded } from '../types/sync_history';
 import { ConnectionService } from './connection_service';
 
 export class SyncHistoryService {

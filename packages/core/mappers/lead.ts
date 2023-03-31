@@ -1,6 +1,7 @@
+import { Address, EmailAddress, Lead, PhoneNumber, RemoteLead } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import { fromAccountModel, fromContactModel, fromUserModel } from '.';
-import { Address, CrmLeadExpanded, EmailAddress, Lead, PhoneNumber, RemoteLead } from '../types';
+import { CrmLeadExpanded } from '../types';
 
 export const fromLeadModel = (
   {

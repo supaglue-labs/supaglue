@@ -1,7 +1,7 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
+import { ConnectionSafe, ConnectionStatus, ConnectionUnsafe, CRMProviderName } from '@supaglue/types';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
-import { ConnectionSafe, ConnectionStatus, ConnectionUnsafe, CRMProviderName } from '../types';
 
 export const fromConnectionModelToConnectionUnsafe = ({
   id,

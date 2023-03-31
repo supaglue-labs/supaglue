@@ -1,7 +1,7 @@
+import { WebhookConfig, WebhookPayload } from '@supaglue/types';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import axios from 'axios';
-import { WebhookConfig, WebhookPayload } from '../types';
 import { logger } from './logger';
-import { snakecaseKeys } from './snakecase';
 
 export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SYNC_SUCCESS' | 'SYNC_ERROR';
 

@@ -1,5 +1,5 @@
-import { camelcaseKeys } from '@supaglue/core/lib/camelcase';
-import { Integration } from '@supaglue/core/types';
+import { Integration } from '@supaglue/types';
+import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useIntegrations() {

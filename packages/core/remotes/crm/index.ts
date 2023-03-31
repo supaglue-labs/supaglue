@@ -1,7 +1,5 @@
+import { CompleteIntegration, CRMConnectionUnsafe, CRMProviderName } from '@supaglue/types';
 import { logger } from '../../lib/logger';
-import { CRMConnectionUnsafe } from '../../types/connection';
-import { CRMProviderName } from '../../types/crm';
-import { CompleteIntegration } from '../../types/integration';
 import { ConnectorAuthConfig, CrmConnectorConfig, CrmRemoteClient } from './base';
 import * as capsule from './capsule';
 import * as hubspot from './hubspot';

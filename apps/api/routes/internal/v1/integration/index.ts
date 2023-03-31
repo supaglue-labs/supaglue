@@ -1,6 +1,4 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { camelcaseKeys } from '@supaglue/core/lib/camelcase';
-import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
 import {
   CreateIntegrationPathParams,
   CreateIntegrationRequest,
@@ -18,6 +16,8 @@ import {
   UpdateIntegrationRequest,
   UpdateIntegrationResponse,
 } from '@supaglue/schemas/mgmt';
+import { camelcaseKeys } from '@supaglue/utils/camelcase';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { integrationService } = getDependencyContainer();

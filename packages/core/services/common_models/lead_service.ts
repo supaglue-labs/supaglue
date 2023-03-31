@@ -1,9 +1,4 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
-import { Readable } from 'stream';
-import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getExpandedAssociations } from '../../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
-import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
 import type {
   GetParams,
   Lead,
@@ -11,7 +6,12 @@ import type {
   LeadUpdateParams,
   ListInternalParams,
   PaginatedResult,
-} from '../../types';
+} from '@supaglue/types';
+import { Readable } from 'stream';
+import { NotFoundError, UnauthorizedError } from '../../errors';
+import { getExpandedAssociations } from '../../lib/expand';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class LeadService extends CommonModelBaseService {

@@ -15,7 +15,7 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteUser,
-} from '../../../types';
+} from '@supaglue/types';
 
 export const fromHubSpotCompanyToRemoteAccount = ({
   id,

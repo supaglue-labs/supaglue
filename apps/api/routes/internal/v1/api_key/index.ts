@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { snakecaseKeys } from '@supaglue/core/lib/snakecase';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { applicationService } = getDependencyContainer();
