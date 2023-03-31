@@ -262,6 +262,7 @@ model CrmEvent {
   remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
   remoteDeletedAt           DateTime? @map("remote_deleted_at")
   detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime? @map("last_modified_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
