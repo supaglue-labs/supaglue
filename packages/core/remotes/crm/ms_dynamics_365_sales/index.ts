@@ -7,6 +7,9 @@ import {
   RemoteContact,
   RemoteContactCreateParams,
   RemoteContactUpdateParams,
+  RemoteEvent,
+  RemoteEventCreateParams,
+  RemoteEventUpdateParams,
   RemoteLead,
   RemoteLeadCreateParams,
   RemoteLeadUpdateParams,
@@ -92,6 +95,22 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   }
 
   public async listUsers(): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+
+  public async listEvents(): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+
+  public async getEvent(remoteId: string): Promise<RemoteEvent> {
+    throw new Error('Not implemented');
+  }
+
+  public async createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent> {
+    throw new Error('Not implemented');
+  }
+
+  public async updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent> {
     throw new Error('Not implemented');
   }
 }

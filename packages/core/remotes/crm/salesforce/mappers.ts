@@ -9,6 +9,9 @@ import {
   RemoteContact,
   RemoteContactCreateParams,
   RemoteContactUpdateParams,
+  RemoteEvent,
+  RemoteEventCreateParams,
+  RemoteEventUpdateParams,
   RemoteLead,
   RemoteLeadCreateParams,
   RemoteLeadUpdateParams,
@@ -30,6 +33,49 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
     remoteWasDeleted: record.IsDeleted === 'true',
     remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+  };
+};
+
+export const fromSalesforceEventToRemoteEvent = (record: Record<string, any>): RemoteEvent => {
+  return {
+    remoteId: record.Id,
+    subject: record.Subject ?? null,
+    type: record.Type,
+    // content is not supported in salesforce events
+    content: null,
+    startTime: record.StartDateTime ?? null,
+    endTime: record.EndDateTime ?? null,
+    remoteOwnerId: record.OwnerId ?? null,
+    remoteAccountId: record.AccountId,
+    // In SFDC, WhoId can refer to either a contact or a lead
+    remoteContactId: record.WhoId,
+    remoteLeadId: record.WhoId,
+    remoteOpportunityId: null,
+    // These fields are not supported by Salesforce
+    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    remoteWasDeleted: false,
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+  };
+};
+
+export const toSalesforceEventCreateParams = (params: RemoteEventCreateParams) => {
+  return {
+    Subject: params.subject,
+    OwnerId: params.ownerId,
+    AccountId: params.accountId,
+    WhoId: params.contactId || params.leadId,
+    StartDateTime: params.startTime,
+    EndDateTime: params.endTime,
+    ...params.customFields,
+  };
+};
+
+export const toSalesforceEventUpdateParams = (params: RemoteEventUpdateParams) => {
+  return {
+    Id: params.remoteId,
+    ...toSalesforceEventCreateParams(params),
   };
 };
 

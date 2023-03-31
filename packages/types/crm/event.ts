@@ -2,7 +2,7 @@ import { Account, Contact, CustomFields, Lead, Opportunity, User } from '..';
 
 type BaseEvent = {
   remoteId: string;
-  type: 'meeting';
+  type: string;
   subject: string | null;
   content: string | null;
   startTime: Date | null;
@@ -38,7 +38,7 @@ export type RemoteEvent = BaseEvent & {
 };
 
 type BaseEventCreateParams = {
-  type: 'meeting';
+  type: string;
   subject?: string | null;
   content?: string | null;
   startTime?: Date | null;

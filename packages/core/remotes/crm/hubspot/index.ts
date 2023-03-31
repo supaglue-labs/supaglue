@@ -12,6 +12,9 @@ import {
   RemoteContact,
   RemoteContactCreateParams,
   RemoteContactUpdateParams,
+  RemoteEvent,
+  RemoteEventCreateParams,
+  RemoteEventUpdateParams,
   RemoteLead,
   RemoteLeadCreateParams,
   RemoteLeadUpdateParams,
@@ -640,6 +643,22 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
     throw new Error('Not supported');
+  }
+
+  public async listEvents(): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+
+  public async getEvent(remoteId: string): Promise<RemoteEvent> {
+    throw new Error('Not implemented');
+  }
+
+  public async createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent> {
+    throw new Error('Not implemented');
+  }
+
+  public async updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent> {
+    throw new Error('Not implemented');
   }
 
   public async listUsers(updatedAfter?: Date): Promise<Readable> {

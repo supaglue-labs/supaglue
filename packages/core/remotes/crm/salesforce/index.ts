@@ -11,6 +11,9 @@ import {
   RemoteContact,
   RemoteContactCreateParams,
   RemoteContactUpdateParams,
+  RemoteEvent,
+  RemoteEventCreateParams,
+  RemoteEventUpdateParams,
   RemoteLead,
   RemoteLeadCreateParams,
   RemoteLeadUpdateParams,
@@ -25,6 +28,7 @@ import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
   fromSalesforceContactToRemoteContact,
+  fromSalesforceEventToRemoteEvent,
   fromSalesforceLeadToRemoteLead,
   fromSalesforceOpportunityToRemoteOpportunity,
   fromSalesforceUserToRemoteUser,
@@ -32,6 +36,8 @@ import {
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
   toSalesforceContactUpdateParams,
+  toSalesforceEventCreateParams,
+  toSalesforceEventUpdateParams,
   toSalesforceLeadCreateParams,
   toSalesforceLeadUpdateParams,
   toSalesforceOpportunityCreateParams,
@@ -132,6 +138,7 @@ const propertiesToFetch = {
     'IsDeleted',
   ],
   user: ['Id', 'Name', 'Email', 'IsActive', 'CreatedDate', 'SystemModstamp'],
+  event: ['Id', 'StartDateTime', 'EndDateTime', 'Type', 'OwnerId', 'Subject', 'CreatedDate', 'SystemModstamp'],
 };
 
 // this is incomplete; it only includes the fields that we need to use
@@ -501,6 +508,38 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
       : baseSoql;
     return this.listCommonModelRecords(soql, fromSalesforceUserToRemoteUser);
+  }
+
+  public async listEvents(updatedAfter?: Date): Promise<Readable> {
+    const baseSoql = `
+      SELECT ${propertiesToFetch.event.join(', ')}
+      FROM Event
+    `;
+    const soql = updatedAfter
+      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
+      : baseSoql;
+    return this.listCommonModelRecords(soql, fromSalesforceUserToRemoteUser);
+  }
+
+  public async getEvent(remoteId: string): Promise<RemoteEvent> {
+    const event = await this.#client.retrieve('Event', remoteId);
+    return fromSalesforceEventToRemoteEvent(event);
+  }
+
+  public async createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent> {
+    const response = await this.#client.create('Event', toSalesforceEventCreateParams(params));
+    if (!response.success) {
+      throw new Error('Failed to create Salesforce event');
+    }
+    return await this.getEvent(response.id);
+  }
+
+  public async updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent> {
+    const response = await this.#client.update('Event', toSalesforceEventUpdateParams(params));
+    if (!response.success) {
+      throw new Error('Failed to update Salesforce event');
+    }
+    return await this.getEvent(response.id);
   }
 }
 

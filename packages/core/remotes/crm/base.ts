@@ -7,6 +7,9 @@ import {
   RemoteContact,
   RemoteContactCreateParams,
   RemoteContactUpdateParams,
+  RemoteEvent,
+  RemoteEventCreateParams,
+  RemoteEventUpdateParams,
   RemoteLead,
   RemoteLeadCreateParams,
   RemoteLeadUpdateParams,
@@ -62,6 +65,10 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
 
   // Note: User creation/updates are not supported
   abstract listUsers(updatedAfter?: Date): Promise<Readable>; // streams RemoteUser
+
+  abstract listEvents(updatedAfter?: Date): Promise<Readable>; // streams RemoteEvent
+  abstract createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent>;
+  abstract updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent>;
 }
 
 export abstract class CrmRemoteClientEventEmitter extends EventEmitter {}

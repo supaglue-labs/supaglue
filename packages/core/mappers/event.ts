@@ -43,7 +43,7 @@ export const fromEventModel = (
     content,
     startTime,
     endTime,
-    type: type as 'meeting',
+    type,
     accountId,
     contactId,
     leadId,
