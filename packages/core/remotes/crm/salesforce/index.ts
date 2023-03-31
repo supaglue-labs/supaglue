@@ -257,7 +257,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        operation: 'query',
+        operation: 'queryAll',
         query: soql,
       }),
     });
