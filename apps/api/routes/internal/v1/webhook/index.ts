@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { NotFoundError } from '@supaglue/core/errors';
-import {
+import type {
   CreateWebhookPathParams,
   CreateWebhookRequest,
   CreateWebhookResponse,
@@ -13,7 +13,8 @@ import {
 } from '@supaglue/schemas/mgmt';
 import { camelcaseKeysSansHeaders } from '@supaglue/utils/camelcase';
 import { snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
-import { Request, Response, Router } from 'express';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { applicationService } = getDependencyContainer();
 
@@ -40,7 +41,7 @@ export default function init(app: Router): void {
       req: Request<CreateWebhookPathParams, CreateWebhookResponse, CreateWebhookRequest>,
       res: Response<CreateWebhookResponse>
     ) => {
-      const application = await applicationService.update(req.supaglueApplication.id, {
+      const application = await applicationService.update(req.supaglueApplication.id, req.orgId, {
         config: { ...req.supaglueApplication.config, webhook: camelcaseKeysSansHeaders(req.body) },
       });
 
@@ -55,7 +56,7 @@ export default function init(app: Router): void {
       req: Request<DeleteWebhookPathParams, DeleteWebhookResponse, DeleteWebhookRequest>,
       res: Response<DeleteWebhookResponse>
     ) => {
-      await applicationService.update(req.supaglueApplication.id, {
+      await applicationService.update(req.supaglueApplication.id, req.orgId, {
         config: { ...req.supaglueApplication.config, webhook: null },
       });
       // TODO: Figure out why typing doesn't work here
