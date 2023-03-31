@@ -1,5 +1,6 @@
+import { Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { CrmOpportunityExpanded, Opportunity, OpportunityStatus, RemoteOpportunity } from '../types';
+import { CrmOpportunityExpanded } from '../types';
 import { fromAccountModel } from './account';
 import { fromUserModel } from './user';
 
@@ -69,8 +70,8 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
   return {
     id: uuidv4(),
     remote_id: remoteOpportunity.remoteId,
-    connection_id: connectionId,
     customer_id: customerId,
+    connection_id: connectionId,
     name: remoteOpportunity.name,
     description: remoteOpportunity.description,
     amount: remoteOpportunity.amount,

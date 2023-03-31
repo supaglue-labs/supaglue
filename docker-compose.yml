@@ -33,7 +33,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supaglue}
 
   api:
-    image: supaglue/api:0.6.0
+    image: supaglue/api:0.7.0
     ports:
       - '8080:8080'
     depends_on:
@@ -48,10 +48,11 @@ services:
       SUPAGLUE_API_PORT: ${SUPAGLUE_API_PORT:-8080}
       SUPAGLUE_CORS_ORIGIN: ${SUPAGLUE_CORS_ORIGIN:-http://localhost:3000}
       SUPAGLUE_SYNC_PERIOD_MS:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
     restart: on-failure
 
   sync-worker:
-    image: supaglue/sync-worker:0.6.0
+    image: supaglue/sync-worker:0.7.0
     depends_on:
       postgres:
         condition: service_started
@@ -64,7 +65,7 @@ services:
     restart: on-failure
 
   mgmt-ui:
-    image: supaglue/mgmt-ui:0.6.0
+    image: supaglue/mgmt-ui:0.7.0
     ports:
       - '3000:3000'
     depends_on:
@@ -89,7 +90,7 @@ services:
       - temporalitedata:/data
 
   init:
-    image: supaglue/api:0.6.0
+    image: supaglue/api:0.7.0
     environment:
       <<: *common-env
       SUPAGLUE_QUICKSTART_API_KEY: ${SUPAGLUE_QUICKSTART_API_KEY:-some-api-key}

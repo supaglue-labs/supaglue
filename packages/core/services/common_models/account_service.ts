@@ -1,9 +1,4 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
-import { Readable } from 'stream';
-import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getExpandedAssociations } from '../../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
-import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
 import type {
   Account,
   AccountCreateParams,
@@ -13,7 +8,12 @@ import type {
   ListInternalParams,
   PaginatedResult,
   PaginationParams,
-} from '../../types/index';
+} from '@supaglue/types';
+import { Readable } from 'stream';
+import { NotFoundError, UnauthorizedError } from '../../errors';
+import { getExpandedAssociations } from '../../lib/expand';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class AccountService extends CommonModelBaseService {

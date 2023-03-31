@@ -1,5 +1,4 @@
 import type { Integration as IntegrationModel, Prisma } from '@supaglue/db';
-import { decryptFromString, encryptAsString } from '../lib/crypt';
 import {
   CRMIntegrationCreateParams,
   CRMProviderName,
@@ -7,7 +6,8 @@ import {
   IntegrationCategory,
   IntegrationConfigDecrypted,
   IntegrationConfigEncrypted,
-} from '../types';
+} from '@supaglue/types';
+import { decryptFromString, encryptAsString } from '../lib/crypt';
 
 export const fromIntegrationModel = ({
   id,

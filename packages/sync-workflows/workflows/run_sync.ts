@@ -1,6 +1,6 @@
-import { CommonModel } from '@supaglue/core/types/common';
-import { CRM_COMMON_MODELS } from '@supaglue/core/types/crm';
-import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/core/types/sync';
+import { CommonModel } from '@supaglue/types/common';
+import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
+import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/types/sync';
 import { ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
 import { ImportRecordsResult } from '../activities/import_records';

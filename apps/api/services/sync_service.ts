@@ -1,19 +1,11 @@
 import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@/temporal/index';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import {
-  ConnectionSafe,
-  CRM_COMMON_MODELS,
-  FullThenIncrementalSync,
-  Sync,
-  SyncState,
-  SyncType,
-} from '@supaglue/core/types';
-import { CommonModel } from '@supaglue/core/types/common';
-import { SyncInfo, SyncInfoFilter } from '@supaglue/core/types/sync_info';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
+import { ConnectionSafe, CRM_COMMON_MODELS, FullThenIncrementalSync, Sync, SyncState, SyncType } from '@supaglue/types';
+import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -59,6 +51,17 @@ export class SyncService {
       },
     });
     return fromSyncModel(model);
+  }
+
+  public async getSyncsByConnectionIds(connectionIds: string[]): Promise<Sync[]> {
+    const models = await this.#prisma.sync.findMany({
+      where: {
+        connectionId: {
+          in: connectionIds,
+        },
+      },
+    });
+    return models.map(fromSyncModel);
   }
 
   public async createSync(connection: ConnectionSafe, syncPeriodMs: number): Promise<Sync> {
@@ -143,15 +146,40 @@ export class SyncService {
   }: SyncInfoFilter): Promise<SyncInfo[]> {
     const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
-    const out = await Promise.all(connections.flatMap((connection) => this.getSyncInfoListFromConnection(connection)));
-    return out.flat();
+    const syncs = await this.getSyncsByConnectionIds(connections.map((connection) => connection.id));
+    const syncIds = syncs.map((sync) => sync.id);
+
+    const metadataList = await Promise.all(
+      syncIds.map(async (syncId) => ({ syncId, ...(await this.getMetadataFromSyncSchedule(syncId)) }))
+    );
+    return metadataList.flatMap(({ syncId, lastSyncStart, nextSyncStart, status }) => {
+      const connection = connections.find(
+        (connection) => connection.id === syncs.find((sync) => sync.id === syncId)?.connectionId
+      );
+      if (!connection) {
+        throw new Error('Unexpectedly could not find connection for sync');
+      }
+      const { id: connectionId, applicationId, customerId, category, providerName } = connection;
+      return CRM_COMMON_MODELS.map((commonModel) => ({
+        modelName: commonModel,
+        lastSyncStart,
+        nextSyncStart,
+        status,
+        connectionId,
+        applicationId,
+        customerId,
+        category,
+        providerName,
+      }));
+    });
   }
 
-  private async getSyncInfoFromConnectionAndCommonModel(
-    { id: connectionId, applicationId, customerId, category, providerName }: ConnectionSafe,
-    commonModel: CommonModel
-  ): Promise<SyncInfo> {
-    const scheduleId = getRunSyncScheduleId(connectionId);
+  private async getMetadataFromSyncSchedule(syncId: string): Promise<{
+    lastSyncStart: Date | null;
+    nextSyncStart: Date | null;
+    status: SyncStatus | null;
+  }> {
+    const scheduleId = getRunSyncScheduleId(syncId);
     const handle = this.#temporalClient.schedule.getHandle(scheduleId);
     const description = await handle.describe();
 
@@ -162,24 +190,9 @@ export class SyncService {
     const status = lastSyncStart ? (description.info.runningActions.length ? 'SYNCING' : 'DONE') : null;
 
     return {
-      modelName: commonModel,
       lastSyncStart,
       nextSyncStart,
       status,
-      connectionId,
-      applicationId,
-      customerId,
-      category,
-      providerName,
     };
   }
-
-  private async getSyncInfoListFromConnection(connection: ConnectionSafe): Promise<SyncInfo[]> {
-    // TODO: Support other IntegrationCategory types
-    return await Promise.all(
-      CRM_COMMON_MODELS.map((commonModel) => this.getSyncInfoFromConnectionAndCommonModel(connection, commonModel))
-    );
-  }
-
-  // TODO: Create CommonModel type
 }

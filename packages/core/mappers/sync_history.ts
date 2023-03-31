@@ -1,5 +1,6 @@
+import { SyncHistory, SyncHistoryStatus } from '@supaglue/types';
 import { parseCustomerIdPk } from '../lib/customer_id';
-import { SyncHistory, SyncHistoryModelExpanded, SyncHistoryStatus } from '../types';
+import { SyncHistoryModelExpanded } from '../types';
 
 export const fromSyncHistoryModelAndSync = ({
   id,

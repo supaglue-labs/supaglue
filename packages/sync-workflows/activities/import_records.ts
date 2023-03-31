@@ -7,7 +7,7 @@ import {
   RemoteService,
   UserService,
 } from '@supaglue/core/services';
-import { CommonModel } from '@supaglue/core/types';
+import { CommonModel } from '@supaglue/types';
 import { Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';

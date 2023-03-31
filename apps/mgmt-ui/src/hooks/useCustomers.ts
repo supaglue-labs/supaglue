@@ -1,5 +1,5 @@
-import { camelcaseKeys } from '@supaglue/core/lib/camelcase';
-import { CustomerExpandedSafe } from '@supaglue/core/types/customer';
+import { CustomerExpandedSafe } from '@supaglue/types/customer';
+import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useCustomers() {

@@ -1,13 +1,6 @@
+import { Address, Contact, EmailAddress, LifecycleStage, PhoneNumber, RemoteContact } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  Address,
-  Contact,
-  CrmContactExpanded,
-  EmailAddress,
-  LifecycleStage,
-  PhoneNumber,
-  RemoteContact,
-} from '../types';
+import { CrmContactExpanded } from '../types';
 import { fromAccountModel } from './account';
 import { fromUserModel } from './user';
 
@@ -74,9 +67,9 @@ export const fromRemoteContactToDbContactParams = (
 
   return {
     id: uuidv4(),
-    connection_id: connectionId,
-    customer_id: customerId,
     remote_id: remoteContact.remoteId,
+    customer_id: customerId,
+    connection_id: connectionId,
     first_name: remoteContact.firstName,
     last_name: remoteContact.lastName,
     addresses: remoteContact.addresses,

@@ -1,6 +1,7 @@
+import { Address, EmailAddress, Lead, PhoneNumber, RemoteLead } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import { fromAccountModel, fromContactModel, fromUserModel } from '.';
-import { Address, CrmLeadExpanded, EmailAddress, Lead, PhoneNumber, RemoteLead } from '../types';
+import { CrmLeadExpanded } from '../types';
 
 export const fromLeadModel = (
   {
@@ -68,14 +69,15 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
   return {
     id: uuidv4(),
     remote_id: remoteLead.remoteId,
-    connection_id: connectionId,
     customer_id: customerId,
+    connection_id: connectionId,
     lead_source: remoteLead.leadSource,
     title: remoteLead.title,
     company: remoteLead.company,
     first_name: remoteLead.firstName,
     last_name: remoteLead.lastName,
     addresses: remoteLead.addresses,
+    phone_numbers: remoteLead.phoneNumbers,
     email_addresses: remoteLead.emailAddresses,
     remote_created_at: remoteLead.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteLead.remoteUpdatedAt?.toISOString(),

@@ -1,9 +1,14 @@
 import type { PrismaClient } from '@supaglue/db';
+import type {
+  CompleteIntegration,
+  ConnectionCredentialsDecrypted,
+  ConnectionSafe,
+  ConnectionUnsafe,
+} from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
 import { newClient } from '../remotes/crm/hubspot/index';
-import type { CompleteIntegration, ConnectionCredentialsDecrypted, ConnectionSafe, ConnectionUnsafe } from '../types';
 import { IntegrationService } from './integration_service';
 
 export class ConnectionService {

@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { createOrUpdateWebhook, deleteWebhook } from '@/client';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { Box, Button, IconButton, Stack, Switch, TextField, Typography } from '@mui/material';
-import { HttpRequestType, WebhookConfig } from '@supaglue/core/types';
+import { HttpRequestType, WebhookConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
 import HttpMethodSelect from '../logs/HttpMethodSelect';
 

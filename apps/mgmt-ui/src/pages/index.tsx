@@ -9,6 +9,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
   let orgId = ORGANIZATION_ID;
 
+  session = await getServerSession(req, res, authOptions);
+
   if (!IS_CLOUD) {
     session = await getServerSession(req, res, authOptions);
 
