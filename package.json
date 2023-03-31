@@ -56,5 +56,11 @@
     "posthog-node": "^2.5.4",
     "sync-worker": "workspace:^",
     "workspace": "^0.0.1-preview.1"
+  },
+  "resolutions": {
+    "qs": "6.9.7",
+    "webpack": "5.76.0",
+    "trim": "0.0.3",
+    "got": "11.8.5"
   }
 }
