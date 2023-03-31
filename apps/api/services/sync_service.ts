@@ -1,12 +1,13 @@
 import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@/temporal/index';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
+import { logger } from '@supaglue/core/lib/logger';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
 import { ConnectionSafe, CRM_COMMON_MODELS, FullThenIncrementalSync, Sync, SyncState, SyncType } from '@supaglue/types';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
-import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
+import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
 function fromSyncModel(model: SyncModel): Sync {
@@ -79,17 +80,42 @@ export class SyncService {
       },
     });
 
-    // Delete sync schedules
+    // TODO: When we stop using temporalite locally, we should just use
+    // advanced visibility to search by custom attributes and find the workflows to kill.
+    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
+    // in Postgres and without an external ES cluster.
+    //
+    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
+    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
+
+    // Get the sync schedule handles
     const syncScheduleHandles = syncs.map((sync) =>
       this.#temporalClient.schedule.getHandle(getRunSyncScheduleId(sync.id))
     );
-    await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
 
-    // Delete sync workflows
-    const syncWorkflowHandles = syncs.map((sync) =>
-      this.#temporalClient.workflow.getHandle(getRunSyncWorkflowId(sync.id))
-    );
-    await Promise.all(syncWorkflowHandles.map((handle) => handle.terminate(`Deleting application ${applicationId}`)));
+    try {
+      // Pause the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
+
+      // Kill the associated workflows
+      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
+      const workflowIds = scheduleDescriptions.flatMap((description) =>
+        description.info.runningActions.map((action) => action.workflow.workflowId)
+      );
+      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
+      await Promise.all(workflowHandles.map((handle) => handle.terminate(`Deleting application ${applicationId}`)));
+
+      // Kill the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
+    } catch (err: unknown) {
+      if (err instanceof ScheduleNotFoundError) {
+        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
+      } else if (err instanceof WorkflowNotFoundError) {
+        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
+      } else {
+        throw err;
+      }
+    }
   }
 
   public async createSync(connection: ConnectionSafe, syncPeriodMs: number): Promise<Sync> {
