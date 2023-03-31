@@ -59,6 +59,7 @@
     "tsconfig.json",
     ".eslintrc.json",
     ".yarnrc.yml",
-    ".yarnrc.build.yml"
+    ".yarnrc.build.yml",
+    "package.json"
   ]
 }
