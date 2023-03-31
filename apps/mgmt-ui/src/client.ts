@@ -1,4 +1,4 @@
-import { Application, CRMIntegrationCreateParams, Integration, WebhookConfig } from '@supaglue/types';
+import { Application, CRMIntegrationCreateParams, Customer, Integration, WebhookConfig } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
 // TODO: use Supaglue TS client
