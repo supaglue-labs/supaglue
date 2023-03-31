@@ -1,4 +1,4 @@
-import { Application, CRMIntegrationCreateParams, Integration, WebhookConfig } from '@supaglue/types';
+import { Application, CRMIntegrationCreateParams, Customer, Integration, WebhookConfig } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
 // TODO: use Supaglue TS client
@@ -97,4 +97,21 @@ export async function addApplication(name: string): Promise<Application> {
   return r;
 }
 
-// TODO: add other calls
+export async function createCustomer(
+  applicationId: string,
+  customerId: string,
+  name: string,
+  email: string
+): Promise<Customer> {
+  const result = await fetch(`/api/internal/customers/create`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify({ customerId, name, email }),
+  });
+
+  const r = await result.json();
+  return r;
+}

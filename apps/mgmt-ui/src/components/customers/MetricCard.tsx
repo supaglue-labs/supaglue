@@ -2,7 +2,7 @@ import { Card, CardHeader, Stack } from '@mui/material';
 
 type MetricCardProps = {
   icon: React.ReactNode;
-  value: string;
+  value: React.ReactNode;
 };
 
 export default function MetricCard(props: MetricCardProps) {

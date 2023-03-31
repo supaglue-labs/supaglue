@@ -1,5 +1,8 @@
+import { createCustomer } from '@/client';
 import MetricCard from '@/components/customers/MetricCard';
+import { NewCustomer } from '@/components/customers/NewCustomer';
 import Spinner from '@/components/Spinner';
+import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
@@ -46,8 +49,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 };
 
 export default function Home() {
-  const { customers = [], isLoading } = useCustomers();
+  const { customers = [], isLoading, mutate } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const applicationId = useActiveApplicationId();
+
+  const onCreateCustomer = async (customerId: string, name: string, email: string) => {
+    await createCustomer(applicationId, customerId, name, email);
+    await mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
+  };
 
   // TODO: count this on server?
   const totalConnections = customers
@@ -97,7 +106,15 @@ export default function Home() {
             <Stack className="gap-2">
               <Grid container spacing={2}>
                 <Grid item xs={6}>
-                  <MetricCard icon={<PeopleAltOutlined />} value={`${customers.length} customers`} />
+                  <MetricCard
+                    icon={<PeopleAltOutlined />}
+                    value={
+                      <Stack direction="row" className="align-center justify-center justify-between">
+                        <div>{customers.length} customers</div>
+                        <NewCustomer onCreate={onCreateCustomer} />
+                      </Stack>
+                    }
+                  />
                 </Grid>
                 <Grid item xs={6}>
                   <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
