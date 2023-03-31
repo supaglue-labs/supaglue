@@ -253,9 +253,10 @@ model CrmEvent {
   customerId                String    @map("customer_id")
   connectionId              String    @map("connection_id")
   type                      String
-  location                  String
-  startTime                 DateTime  @map("start_time")
-  endTime                   DateTime  @map("end_time")
+  subject                   String?
+  content                   String?
+  startTime                 DateTime? @map("start_time")
+  endTime                   DateTime? @map("end_time")
   remoteCreatedAt           DateTime? @map("remote_created_at")
   remoteUpdatedAt           DateTime? @map("remote_updated_at")
   remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
