@@ -64,6 +64,34 @@ export class SyncService {
     return models.map(fromSyncModel);
   }
 
+  public async cleanUpSyncsForApplication(applicationId: string): Promise<void> {
+    // TODO: Seems like an inefficient query. Maybe want to denormalize a bit later.
+    const syncs = await this.#prisma.sync.findMany({
+      where: {
+        connection: {
+          integration: {
+            applicationId,
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    // Delete sync schedules
+    const syncScheduleHandles = syncs.map((sync) =>
+      this.#temporalClient.schedule.getHandle(getRunSyncScheduleId(sync.id))
+    );
+    await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
+
+    // Delete sync workflows
+    const syncWorkflowHandles = syncs.map((sync) =>
+      this.#temporalClient.workflow.getHandle(getRunSyncWorkflowId(sync.id))
+    );
+    await Promise.all(syncWorkflowHandles.map((handle) => handle.terminate(`Deleting application ${applicationId}`)));
+  }
+
   public async createSync(connection: ConnectionSafe, syncPeriodMs: number): Promise<Sync> {
     // Create sync as type first to get type-checking
     const sync: FullThenIncrementalSync = {

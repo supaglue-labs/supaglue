@@ -1,4 +1,3 @@
-export * from './application_service';
 export * from './common_models';
 export * from './connection_service';
 export * from './customer_service';

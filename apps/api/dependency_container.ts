@@ -1,7 +1,7 @@
 import { CoreDependencyContainer, getCoreDependencyContainer } from '@supaglue/core';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';
-import { PassthroughService, SyncService } from './services';
+import { ApplicationService, PassthroughService, SyncService } from './services';
 import { ConnectionWriterService } from './services/connection_writer_service';
 
 const TEMPORAL_ADDRESS =
@@ -14,6 +14,7 @@ const TEMPORAL_ADDRESS =
 type DependencyContainer = CoreDependencyContainer & {
   temporalClient: Client;
   syncService: SyncService;
+  applicationService: ApplicationService;
   connectionWriterService: ConnectionWriterService;
   passthroughService: PassthroughService;
 };
@@ -23,7 +24,7 @@ let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
   const coreDependencyContainer = getCoreDependencyContainer();
-  const { prisma, integrationService, remoteService, applicationService, connectionService } = coreDependencyContainer;
+  const { prisma, integrationService, remoteService, connectionService } = coreDependencyContainer;
 
   const temporalClient = new Client({
     namespace: process.env.TEMPORAL_NAMESPACE ?? 'default',
@@ -41,6 +42,7 @@ function createDependencyContainer(): DependencyContainer {
   });
 
   const syncService = new SyncService(prisma, temporalClient, connectionService);
+  const applicationService = new ApplicationService(prisma, syncService);
   const connectionWriterService = new ConnectionWriterService(
     prisma,
     syncService,
@@ -54,6 +56,7 @@ function createDependencyContainer(): DependencyContainer {
     ...coreDependencyContainer,
     temporalClient,
     syncService,
+    applicationService,
     connectionWriterService,
     passthroughService,
   };
