@@ -67,9 +67,9 @@ export const fromRemoteContactToDbContactParams = (
 
   return {
     id: uuidv4(),
-    connection_id: connectionId,
-    customer_id: customerId,
     remote_id: remoteContact.remoteId,
+    customer_id: customerId,
+    connection_id: connectionId,
     first_name: remoteContact.firstName,
     last_name: remoteContact.lastName,
     addresses: remoteContact.addresses,

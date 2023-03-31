@@ -72,8 +72,8 @@ export const fromRemoteAccountToDbAccountParams = (
     number_of_employees: remoteAccount.numberOfEmployees,
     addresses: remoteAccount.addresses,
     phone_numbers: remoteAccount.phoneNumbers,
-    lifecycle_stage: remoteAccount.lifecycleStage,
     last_activity_at: remoteAccount.lastActivityAt?.toISOString(),
+    lifecycle_stage: remoteAccount.lifecycleStage,
     remote_id: remoteAccount.remoteId,
     remote_created_at: remoteAccount.remoteCreatedAt?.toISOString(),
     remote_updated_at: remoteAccount.remoteUpdatedAt?.toISOString(),
@@ -81,9 +81,9 @@ export const fromRemoteAccountToDbAccountParams = (
     remote_deleted_at: remoteAccount.remoteDeletedAt?.toISOString(),
     detected_or_remote_deleted_at: remoteAccount.detectedOrRemoteDeletedAt?.toISOString(),
     last_modified_at: lastModifiedAt?.toISOString(),
-    _remote_owner_id: remoteAccount.remoteOwnerId,
     customer_id: customerId,
     connection_id: connectionId,
+    _remote_owner_id: remoteAccount.remoteOwnerId,
     updated_at: new Date().toISOString(),
   };
 };
