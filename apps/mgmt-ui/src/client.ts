@@ -97,6 +97,25 @@ export async function addApplication(name: string): Promise<Application> {
   return r;
 }
 
+export async function updateApplicationName(id: string, name: string): Promise<Application> {
+  const result = await fetch(`/api/internal/applications/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name }),
+  });
+
+  const r = await result.json();
+  return r;
+}
+
+export async function deleteApplication(id: string): Promise<void> {
+  await fetch(`/api/internal/applications/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function createCustomer(
   applicationId: string,
   customerId: string,
@@ -115,3 +134,5 @@ export async function createCustomer(
   const r = await result.json();
   return r;
 }
+
+// TODO: add other calls
