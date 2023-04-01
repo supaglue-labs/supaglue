@@ -1,14 +1,17 @@
+import { NotFoundError } from '@supaglue/core/errors';
+import { cryptoHash, generateApiKey } from '@supaglue/core/lib/crypt';
+import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
 import { Application, ApplicationCreateParams, ApplicationUpdateParams } from '@supaglue/types';
-import { NotFoundError } from '../errors';
-import { cryptoHash, generateApiKey } from '../lib/crypt';
-import { fromApplicationModel } from '../mappers';
+import { SyncService } from './sync_service';
 
 export class ApplicationService {
   #prisma: PrismaClient;
+  #syncService: SyncService;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: PrismaClient, syncService: SyncService) {
     this.#prisma = prisma;
+    this.#syncService = syncService;
   }
 
   public async getById(id: string): Promise<Application> {
@@ -73,11 +76,12 @@ export class ApplicationService {
     return fromApplicationModel(createdApplication);
   }
 
-  public async update(id: string, application: ApplicationUpdateParams): Promise<Application> {
+  public async update(id: string, orgId: string, params: ApplicationUpdateParams): Promise<Application> {
+    // TODO: check that org id matches
     const updatedApplication = await this.#prisma.application.update({
       where: { id },
       data: {
-        ...application,
+        ...params,
       },
     });
     return fromApplicationModel(updatedApplication);
@@ -119,5 +123,18 @@ export class ApplicationService {
     });
 
     return fromApplicationModel(updatedApplication);
+  }
+
+  public async delete(id: string, orgId: string): Promise<void> {
+    // Check that org matches
+    await this.getByIdAndOrgId(id, orgId);
+
+    // Clean up the Temporal schedules and workflows
+    // TODO: It's possible that after we delete the schedules and workflows, somebody creates a new sync
+    // and we leave the orphaned sync behind when we cascade-delete the application (which cascades to the syncs).
+    // Later, we might consider running this in a workflow or do some eventual consistency thing.
+    await this.#syncService.cleanUpSyncsForApplication(id);
+
+    await this.#prisma.application.delete({ where: { id } });
   }
 }

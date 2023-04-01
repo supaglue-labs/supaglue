@@ -11,6 +11,7 @@ export type GetSyncResult = {
 
 export function createGetSync(syncService: SyncService) {
   return async function getSync({ syncId }: GetSyncArgs): Promise<GetSyncResult> {
+    throw new Error('purposely making it fail');
     const sync = await syncService.getSyncById(syncId);
     return { sync };
   };

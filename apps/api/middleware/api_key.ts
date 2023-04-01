@@ -12,6 +12,7 @@ export async function apiKeyHeaderMiddleware(req: Request, res: Response, next: 
   }
 
   req.supaglueApplication = await applicationService.getByApiKey(apiKey);
+  req.orgId = req.supaglueApplication.orgId;
 
   next();
 }
