@@ -1,6 +1,5 @@
-import {
+import type {
   AccountService,
-  ApplicationService,
   ConnectionService,
   ContactService,
   IntegrationService,
@@ -10,7 +9,7 @@ import {
   SyncHistoryService,
   UserService,
 } from '@supaglue/core/services';
-import { SyncService } from 'sync-worker/services/sync_service';
+import type { ApplicationService, SyncService } from 'sync-worker/services';
 import { createGetSync } from './get_sync';
 import { createImportRecords } from './import_records';
 import { createLogSyncFinish } from './log_sync_finish';

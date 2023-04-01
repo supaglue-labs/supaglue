@@ -2,7 +2,7 @@ import { sendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
-import { ApplicationService, IntegrationService } from '@supaglue/core/services';
+import type { IntegrationService } from '@supaglue/core/services';
 import type { PrismaClient } from '@supaglue/db';
 import type {
   ConnectionCreateParams,
@@ -10,6 +10,7 @@ import type {
   ConnectionUnsafe,
   ConnectionUpsertParams,
 } from '@supaglue/types/connection';
+import type { ApplicationService } from './application_service';
 import type { SyncService } from './sync_service';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
