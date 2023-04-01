@@ -97,6 +97,15 @@ export function createImportRecords(
         );
         break;
       }
+      case 'event': {
+        const readable = await client.listEvents(updatedAfter);
+        result = await userService.upsertRemoteUsers(
+          connection.id,
+          connection.customerId,
+          toHeartbeatingReadable(readable)
+        );
+        break;
+      }
     }
 
     logEvent({ eventName: 'Completed Sync', syncId, providerName: connection.providerName, modelName: commonModel });

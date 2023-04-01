@@ -40,6 +40,10 @@ export interface CrmRemoteClient extends RemoteClient {
 
   // Note: User creation/updates are not supported
   listUsers(updatedAfter?: Date): Promise<Readable>; // streams RemoteUser
+
+  listEvents(updatedAfter?: Date): Promise<Readable>; // streams RemoteEvent
+  createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent>;
+  updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
