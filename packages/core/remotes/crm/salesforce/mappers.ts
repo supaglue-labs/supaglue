@@ -41,8 +41,8 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
 
 export const fromSalesforceEventToRemoteEvent = (record: Record<string, any>): RemoteEvent => {
   // In SFDC, WhoId can refer to either a contact or a lead
-  const remoteContactId = (record.WhoId as string).startsWith(CONTACT_ID_PREFIX) ? record.WhoId : null;
-  const remoteLeadId = (record.WhoId as string).startsWith(LEAD_ID_PREFIX) ? record.WhoId : null;
+  const remoteContactId = (record.WhoId ?? '').startsWith(CONTACT_ID_PREFIX) ? record.WhoId : null;
+  const remoteLeadId = (record.WhoId ?? '').startsWith(LEAD_ID_PREFIX) ? record.WhoId : null;
   return {
     remoteId: record.Id,
     subject: record.Subject ?? null,
