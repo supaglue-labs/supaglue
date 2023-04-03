@@ -38,7 +38,7 @@ export type RemoteEvent = BaseEvent & {
 };
 
 type BaseEventCreateParams = {
-  type: string | null;
+  type?: string | null;
   subject?: string | null;
   content?: string | null;
   startTime?: Date | null;

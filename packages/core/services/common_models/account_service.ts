@@ -13,6 +13,7 @@ import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getRemoteId } from '../../lib/remote_id';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
@@ -106,24 +107,12 @@ export class AccountService extends CommonModelBaseService {
     };
   }
 
-  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
-    const crmUser = await this.prisma.crmUser.findUnique({
-      where: {
-        id: ownerId,
-      },
-    });
-    if (!crmUser) {
-      throw new NotFoundError(`User ${ownerId} not found`);
-    }
-    return crmUser.remoteId;
-  }
-
   public async create(customerId: string, connectionId: string, createParams: AccountCreateParams): Promise<Account> {
     // TODO: We may want to have better guarantees that we create the record in both our DB
     // and the external integration.
     const remoteCreateParams = { ...createParams };
     if (createParams.ownerId) {
-      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
+      remoteCreateParams.ownerId = await getRemoteId(createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteAccount = await remoteClient.createAccount(remoteCreateParams);
@@ -153,7 +142,7 @@ export class AccountService extends CommonModelBaseService {
 
     const remoteUpdateParams = { ...updateParams };
     if (updateParams.ownerId) {
-      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+      remoteUpdateParams.ownerId = await getRemoteId(updateParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteAccount = await remoteClient.updateAccount({

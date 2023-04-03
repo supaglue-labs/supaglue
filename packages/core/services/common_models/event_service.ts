@@ -1,9 +1,15 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
-import { Event, ListInternalParams, PaginatedResult } from '@supaglue/types';
+import {
+  Event,
+  EventCreateParams,
+  EventUpdateParams,
+  GetParams,
+  ListInternalParams,
+  PaginatedResult,
+} from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getExpandedAssociations } from '../../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getExpandedAssociations, getPaginationParams, getPaginationResult, getRemoteId } from '../../lib';
 import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/event';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
@@ -12,9 +18,17 @@ export class EventService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async getById(id: string, connectionId: string): Promise<Event> {
+  public async getById(id: string, connectionId: string, { expand }: GetParams): Promise<Event> {
+    const expandedAssociations = getExpandedAssociations(expand);
     const model = await this.prisma.crmEvent.findUnique({
       where: { id },
+      include: {
+        account: expandedAssociations.includes('account'),
+        owner: expandedAssociations.includes('owner'),
+        lead: expandedAssociations.includes('lead'),
+        contact: expandedAssociations.includes('contact'),
+        opportunity: expandedAssociations.includes('opportunity'),
+      },
     });
     if (!model) {
       throw new NotFoundError(`Can't find event with id: ${id}`);
@@ -22,7 +36,7 @@ export class EventService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromEventModel(model);
+    return fromEventModel(model, expandedAssociations);
   }
 
   public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Event>> {
@@ -68,6 +82,83 @@ export class EventService extends CommonModelBaseService {
       ...getPaginationResult(pageSize, cursor, results),
       results,
     };
+  }
+
+  public async create(customerId: string, connectionId: string, createParams: EventCreateParams): Promise<Event> {
+    // TODO: We may want to have better guarantees that we update the record in both our DB
+    // and the external integration.
+    const remoteCreateParams = { ...createParams };
+    if (createParams.accountId) {
+      remoteCreateParams.accountId = await getRemoteId(createParams.accountId, 'account');
+    }
+    if (createParams.contactId) {
+      remoteCreateParams.contactId = await getRemoteId(createParams.contactId, 'contact');
+    }
+    if (createParams.leadId) {
+      remoteCreateParams.leadId = await getRemoteId(createParams.leadId, 'lead');
+    }
+    if (createParams.opportunityId) {
+      remoteCreateParams.opportunityId = await getRemoteId(createParams.opportunityId, 'opportunity');
+    }
+    if (createParams.ownerId) {
+      remoteCreateParams.ownerId = await getRemoteId(createParams.ownerId, 'user');
+    }
+    const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
+    const remoteEvent = await remoteClient.createEvent(remoteCreateParams);
+    const contactModel = await this.prisma.crmEvent.create({
+      data: {
+        customerId,
+        connectionId,
+        ...remoteEvent,
+        accountId: createParams.accountId,
+        ownerId: createParams.ownerId,
+      },
+    });
+    return fromEventModel(contactModel);
+  }
+
+  public async update(customerId: string, connectionId: string, updateParams: EventUpdateParams): Promise<Event> {
+    // TODO: We may want to have better guarantees that we update the record in both our DB
+    // and the external integration.
+    const foundEventModel = await this.prisma.crmEvent.findUniqueOrThrow({
+      where: {
+        id: updateParams.id,
+      },
+    });
+
+    if (foundEventModel.customerId !== customerId) {
+      throw new Error('Event customerId does not match');
+    }
+
+    const remoteUpdateParams = { ...updateParams };
+    if (updateParams.accountId) {
+      remoteUpdateParams.accountId = await getRemoteId(updateParams.accountId, 'account');
+    }
+    if (updateParams.contactId) {
+      remoteUpdateParams.contactId = await getRemoteId(updateParams.contactId, 'contact');
+    }
+    if (updateParams.leadId) {
+      remoteUpdateParams.leadId = await getRemoteId(updateParams.leadId, 'lead');
+    }
+    if (updateParams.opportunityId) {
+      remoteUpdateParams.opportunityId = await getRemoteId(updateParams.opportunityId, 'opportunity');
+    }
+    if (updateParams.ownerId) {
+      remoteUpdateParams.ownerId = await getRemoteId(updateParams.ownerId, 'user');
+    }
+    const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
+    const remoteEvent = await remoteClient.updateEvent({
+      ...remoteUpdateParams,
+      remoteId: foundEventModel.remoteId,
+    });
+
+    const contactModel = await this.prisma.crmEvent.update({
+      data: { ...remoteEvent, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
+      where: {
+        id: updateParams.id,
+      },
+    });
+    return fromEventModel(contactModel);
   }
 
   public async upsertRemoteEvents(

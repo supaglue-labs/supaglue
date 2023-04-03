@@ -27,8 +27,8 @@ get:
                 last_activity_at: '2023-02-27T00:00:00Z'
                 name: Needs third-party integrations
                 owner: 93b0c2b5-26a8-4b92-b4e5-05d764eb1119
-                created_at: '2023-02-27T00:00:00Z'
-                updated_at: '2023-02-27T00:00:00Z'
+                remote_created_at: '2023-02-27T00:00:00Z'
+                remote_updated_at: '2023-02-27T00:00:00Z'
                 stage: Closed Won
 patch:
   operationId: updateOpportunity
