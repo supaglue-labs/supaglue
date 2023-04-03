@@ -138,7 +138,18 @@ const propertiesToFetch = {
     'IsDeleted',
   ],
   user: ['Id', 'Name', 'Email', 'IsActive', 'CreatedDate', 'SystemModstamp'],
-  event: ['Id', 'StartDateTime', 'EndDateTime', 'OwnerId', 'Subject', 'CreatedDate', 'SystemModstamp'],
+  event: [
+    'Id',
+    'StartDateTime',
+    'EndDateTime',
+    'OwnerId',
+    'Subject',
+    'CreatedDate',
+    'SystemModstamp',
+    'WhoId',
+    'AccountId',
+    'WhatId',
+  ],
 };
 
 // this is incomplete; it only includes the fields that we need to use
