@@ -1,7 +1,8 @@
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
-import { Box, CssBaseline, StyledEngineProvider, useMediaQuery } from '@mui/material';
+import { CssBaseline, StyledEngineProvider, useMediaQuery } from '@mui/material';
+import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';

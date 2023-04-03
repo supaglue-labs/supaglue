@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import Box from '@mui/system/Box';
 import { Integration } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { IntegrationCardInfo } from './IntegrationTabPanelContainer';

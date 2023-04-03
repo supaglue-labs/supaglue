@@ -1,5 +1,6 @@
 import { datetimeStringFromISOString } from '@/utils/datetime';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid/DataGrid';
+import { GridColDef } from '@mui/x-data-grid/models/colDef/gridColDef';
 import { SyncHistory } from '@supaglue/types';
 
 const columns: GridColDef[] = [
