@@ -4,9 +4,6 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { withSentryConfig } = require('@sentry/nextjs');
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
@@ -32,4 +29,4 @@ const nextConfig = {
 
 module.exports = nextConfig;
 
-module.exports = withBundleAnalyzer(withSentryConfig(module.exports, { silent: true }, { hideSourcemaps: false }));
+module.exports = withSentryConfig(module.exports, { silent: true }, { hideSourcemaps: false });
