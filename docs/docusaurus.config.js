@@ -52,6 +52,18 @@ const config = {
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/supaglue-labs/supaglue/tree/main/docs/',
           routeBasePath: '/',
+          docLayoutComponent: '@theme/DocPage',
+          docItemComponent: '@theme/ApiItem', // Derived from docusaurus-theme-openapi-docs
+          async sidebarItemsGenerator({ defaultSidebarItemsGenerator, ...args }) {
+            const items = await defaultSidebarItemsGenerator(args);
+            return (
+              items
+                // flatten the API to a single link in the sidebar
+                .map((item) =>
+                  item.type === 'category' && item.label === 'API Reference' ? { type: 'doc', id: 'api/index' } : item
+                )
+            );
+          },
         },
         // blog: {
         //   showReadingTime: true,
@@ -81,14 +93,6 @@ const config = {
               },
             ])
             .flat(),
-          {
-            spec: '../openapi/crm/openapi.bundle.json',
-            route: '/next/api/crm',
-          },
-          {
-            spec: '../openapi/mgmt/openapi.bundle.json',
-            route: '/next/api/mgmt',
-          },
         ],
         // Theme Options for modifying how redoc renders them
         theme: {
@@ -132,7 +136,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'api',
+            docId: 'api/index',
             position: 'left',
             label: 'API Reference',
           },
@@ -257,17 +261,15 @@ const config = {
       },
     }),
   plugins: [
-    async function myPlugin(context, options) {
-      return {
-        name: 'docusaurus-tailwindcss',
-        configurePostCss(postcssOptions) {
-          // Appends TailwindCSS and AutoPrefixer.
-          postcssOptions.plugins.push(require('tailwindcss'));
-          postcssOptions.plugins.push(require('autoprefixer'));
-          return postcssOptions;
-        },
-      };
-    },
+    () => ({
+      name: 'docusaurus-tailwindcss',
+      configurePostCss(postcssOptions) {
+        // Appends TailwindCSS and AutoPrefixer.
+        postcssOptions.plugins.push(require('tailwindcss'));
+        postcssOptions.plugins.push(require('autoprefixer'));
+        return postcssOptions;
+      },
+    }),
     [
       'posthog-docusaurus',
       {
@@ -311,7 +313,33 @@ const config = {
         };
       },
     }),
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'apiDocs',
+        docsPluginId: 'classic',
+        config: {
+          crm: {
+            specPath: '../openapi/crm/openapi.bundle.json',
+            outputDir: 'docs/api/crm', // Output directory for generated .mdx docs
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+            },
+          },
+          mgmt: {
+            specPath: '../openapi/mgmt/openapi.bundle.json',
+            outputDir: 'docs/api/mgmt',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+            },
+          },
+        },
+      },
+    ],
   ],
+  themes: ['docusaurus-theme-openapi-docs'],
 };
 
 module.exports = config;
