@@ -22,7 +22,7 @@ import * as React from 'react';
 export default function ApplicationMenu() {
   const router = useRouter();
   const { applications = [], mutate } = useApplications();
-  const { activeApplication, isLoading } = useActiveApplication();
+  const { activeApplication, isLoading, mutate: mutateActiveApplication } = useActiveApplication();
 
   // Top-level menu
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -45,6 +45,9 @@ export default function ApplicationMenu() {
     handleClose();
     const newApplication = await updateApplicationName(id, name);
     await mutate(applications.map((application) => (application.id === id ? newApplication : application)));
+    if (id === activeApplication?.id) {
+      await mutateActiveApplication(newApplication);
+    }
   };
 
   const onDeleteApplication = async (id: string) => {
