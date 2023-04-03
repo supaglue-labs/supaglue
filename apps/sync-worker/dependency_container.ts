@@ -3,6 +3,7 @@ import {
   AccountService,
   ConnectionService,
   ContactService,
+  EventService,
   IntegrationService,
   LeadService,
   OpportunityService,
@@ -21,6 +22,7 @@ type DependencyContainer = {
   accountService: AccountService;
   leadService: LeadService;
   userService: UserService;
+  eventService: EventService;
   opportunityService: OpportunityService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
@@ -40,6 +42,7 @@ function createDependencyContainer(): DependencyContainer {
     accountService,
     leadService,
     userService,
+    eventService,
     opportunityService,
     syncHistoryService,
     integrationService,
@@ -57,6 +60,7 @@ function createDependencyContainer(): DependencyContainer {
     accountService,
     leadService,
     userService,
+    eventService,
     opportunityService,
     syncService,
     syncHistoryService,

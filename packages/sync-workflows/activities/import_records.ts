@@ -2,6 +2,7 @@ import {
   AccountService,
   ConnectionService,
   ContactService,
+  EventService,
   LeadService,
   OpportunityService,
   RemoteService,
@@ -31,7 +32,8 @@ export function createImportRecords(
   remoteService: RemoteService,
   opportunityService: OpportunityService,
   leadService: LeadService,
-  userService: UserService
+  userService: UserService,
+  eventService: EventService
 ) {
   return async function importRecords({
     syncId,
@@ -99,7 +101,7 @@ export function createImportRecords(
       }
       case 'event': {
         const readable = await client.listEvents(updatedAfter);
-        result = await userService.upsertRemoteUsers(
+        result = await eventService.upsertRemoteEvents(
           connection.id,
           connection.customerId,
           toHeartbeatingReadable(readable)

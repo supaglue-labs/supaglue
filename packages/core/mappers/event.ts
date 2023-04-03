@@ -32,7 +32,7 @@ export const fromEventModel = (
   const expandAccount = expandedAssociations.includes('account');
   const expandContact = expandedAssociations.includes('contact');
   const expandOwner = expandedAssociations.includes('owner');
-  const expandLead = expandedAssociations.includes('');
+  const expandLead = expandedAssociations.includes('lead');
   const expandOpportunity = expandedAssociations.includes('opportunity');
   return {
     id,

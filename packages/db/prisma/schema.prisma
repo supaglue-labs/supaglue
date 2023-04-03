@@ -252,7 +252,7 @@ model CrmEvent {
   remoteId                  String    @map("remote_id")
   customerId                String    @map("customer_id")
   connectionId              String    @map("connection_id")
-  type                      String
+  type                      String?
   subject                   String?
   content                   String?
   startTime                 DateTime? @map("start_time")

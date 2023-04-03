@@ -40,7 +40,8 @@ export const fromSalesforceEventToRemoteEvent = (record: Record<string, any>): R
   return {
     remoteId: record.Id,
     subject: record.Subject ?? null,
-    type: record.Type,
+    // TODO: Type is not turned on by default in SFDC instances. We should have a way to turn it on.
+    type: record.Type ?? null,
     // content is not supported in salesforce events
     content: null,
     startTime: record.StartDateTime ?? null,

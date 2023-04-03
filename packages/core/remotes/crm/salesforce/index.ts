@@ -138,7 +138,7 @@ const propertiesToFetch = {
     'IsDeleted',
   ],
   user: ['Id', 'Name', 'Email', 'IsActive', 'CreatedDate', 'SystemModstamp'],
-  event: ['Id', 'StartDateTime', 'EndDateTime', 'Type', 'OwnerId', 'Subject', 'CreatedDate', 'SystemModstamp'],
+  event: ['Id', 'StartDateTime', 'EndDateTime', 'OwnerId', 'Subject', 'CreatedDate', 'SystemModstamp'],
 };
 
 // this is incomplete; it only includes the fields that we need to use
@@ -518,7 +518,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     const soql = updatedAfter
       ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
       : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceUserToRemoteUser);
+    return this.listCommonModelRecords(soql, fromSalesforceEventToRemoteEvent);
   }
 
   public async getEvent(remoteId: string): Promise<RemoteEvent> {
