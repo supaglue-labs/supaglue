@@ -44,8 +44,8 @@ export const fromSalesforceEventToRemoteEvent = (record: Record<string, any>): R
     type: record.Type ?? null,
     // content is not supported in salesforce events
     content: null,
-    startTime: record.StartDateTime ?? null,
-    endTime: record.EndDateTime ?? null,
+    startTime: record.StartDateTime ? new Date(record.StartDateTime) : null,
+    endTime: record.EndDateTime ? new Date(record.EndDateTime) : null,
     remoteOwnerId: record.OwnerId ?? null,
     remoteAccountId: record.AccountId,
     // In SFDC, WhoId can refer to either a contact or a lead
