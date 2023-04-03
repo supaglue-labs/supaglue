@@ -112,7 +112,7 @@ export class AccountService extends CommonModelBaseService {
     // and the external integration.
     const remoteCreateParams = { ...createParams };
     if (createParams.ownerId) {
-      remoteCreateParams.ownerId = await getRemoteId(createParams.ownerId, 'user');
+      remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteAccount = await remoteClient.createAccount(remoteCreateParams);
@@ -142,7 +142,7 @@ export class AccountService extends CommonModelBaseService {
 
     const remoteUpdateParams = { ...updateParams };
     if (updateParams.ownerId) {
-      remoteUpdateParams.ownerId = await getRemoteId(updateParams.ownerId, 'user');
+      remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteAccount = await remoteClient.updateAccount({

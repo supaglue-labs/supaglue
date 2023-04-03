@@ -89,19 +89,19 @@ export class EventService extends CommonModelBaseService {
     // and the external integration.
     const remoteCreateParams = { ...createParams };
     if (createParams.accountId) {
-      remoteCreateParams.accountId = await getRemoteId(createParams.accountId, 'account');
+      remoteCreateParams.accountId = await getRemoteId(this.prisma, createParams.accountId, 'account');
     }
     if (createParams.contactId) {
-      remoteCreateParams.contactId = await getRemoteId(createParams.contactId, 'contact');
+      remoteCreateParams.contactId = await getRemoteId(this.prisma, createParams.contactId, 'contact');
     }
     if (createParams.leadId) {
-      remoteCreateParams.leadId = await getRemoteId(createParams.leadId, 'lead');
+      remoteCreateParams.leadId = await getRemoteId(this.prisma, createParams.leadId, 'lead');
     }
     if (createParams.opportunityId) {
-      remoteCreateParams.opportunityId = await getRemoteId(createParams.opportunityId, 'opportunity');
+      remoteCreateParams.opportunityId = await getRemoteId(this.prisma, createParams.opportunityId, 'opportunity');
     }
     if (createParams.ownerId) {
-      remoteCreateParams.ownerId = await getRemoteId(createParams.ownerId, 'user');
+      remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteEvent = await remoteClient.createEvent(remoteCreateParams);
@@ -132,19 +132,19 @@ export class EventService extends CommonModelBaseService {
 
     const remoteUpdateParams = { ...updateParams };
     if (updateParams.accountId) {
-      remoteUpdateParams.accountId = await getRemoteId(updateParams.accountId, 'account');
+      remoteUpdateParams.accountId = await getRemoteId(this.prisma, updateParams.accountId, 'account');
     }
     if (updateParams.contactId) {
-      remoteUpdateParams.contactId = await getRemoteId(updateParams.contactId, 'contact');
+      remoteUpdateParams.contactId = await getRemoteId(this.prisma, updateParams.contactId, 'contact');
     }
     if (updateParams.leadId) {
-      remoteUpdateParams.leadId = await getRemoteId(updateParams.leadId, 'lead');
+      remoteUpdateParams.leadId = await getRemoteId(this.prisma, updateParams.leadId, 'lead');
     }
     if (updateParams.opportunityId) {
-      remoteUpdateParams.opportunityId = await getRemoteId(updateParams.opportunityId, 'opportunity');
+      remoteUpdateParams.opportunityId = await getRemoteId(this.prisma, updateParams.opportunityId, 'opportunity');
     }
     if (updateParams.ownerId) {
-      remoteUpdateParams.ownerId = await getRemoteId(updateParams.ownerId, 'user');
+      remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteEvent = await remoteClient.updateEvent({
