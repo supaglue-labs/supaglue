@@ -90,7 +90,7 @@ export class LeadService extends CommonModelBaseService {
     // and the external integration.
     const remoteCreateParams = { ...createParams };
     if (createParams.ownerId) {
-      remoteCreateParams.ownerId = await getRemoteId(createParams.ownerId, 'user');
+      remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteLead = await remoteClient.createLead(remoteCreateParams);
@@ -120,7 +120,7 @@ export class LeadService extends CommonModelBaseService {
 
     const remoteUpdateParams = { ...updateParams };
     if (updateParams.ownerId) {
-      remoteUpdateParams.ownerId = await await getRemoteId(updateParams.ownerId, 'user');
+      remoteUpdateParams.ownerId = await await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
 
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
