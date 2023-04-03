@@ -12,6 +12,7 @@ import promBundle from 'express-prom-bundle';
 import fs from 'fs';
 import path from 'path';
 import pinoHttp from 'pino-http';
+import { collectDefaultMetrics } from 'prom-client';
 import { v4 as uuidv4 } from 'uuid';
 import { posthogErrorMiddleware, posthogMiddleware } from './lib/posthog';
 
@@ -41,6 +42,8 @@ if (sentryEnabled) {
 const app = express();
 const metricsApp = express();
 const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_PORT) : 8080;
+
+collectDefaultMetrics();
 
 app.use(
   promBundle({
