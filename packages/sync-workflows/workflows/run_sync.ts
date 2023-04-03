@@ -113,6 +113,7 @@ async function doFullThenIncrementalSync({
           opportunity: 0,
           contact: 0,
           user: 0,
+          event: 0,
         },
       },
     });
@@ -135,6 +136,7 @@ async function doFullThenIncrementalSync({
       opportunity: importRecordsResultList['opportunity'].maxLastModifiedAtMs,
       contact: importRecordsResultList['contact'].maxLastModifiedAtMs,
       user: importRecordsResultList['user'].maxLastModifiedAtMs,
+      event: importRecordsResultList['event'].maxLastModifiedAtMs,
     };
 
     await updateSyncState({
@@ -173,6 +175,7 @@ async function doFullThenIncrementalSync({
           opportunity: 0,
           contact: 0,
           user: 0,
+          event: 0,
         };
       }
 

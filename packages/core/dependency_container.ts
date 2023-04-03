@@ -5,6 +5,7 @@ import {
   ConnectionService,
   ContactService,
   CustomerService,
+  EventService,
   IntegrationService,
   LeadService,
   OpportunityService,
@@ -31,6 +32,7 @@ export type CoreDependencyContainer = {
   leadService: LeadService;
   opportunityService: OpportunityService;
   userService: UserService;
+  eventService: EventService;
   syncHistoryService: SyncHistoryService;
 };
 
@@ -56,6 +58,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const contactService = new ContactService(pgPool, prisma, remoteService);
   const syncHistoryService = new SyncHistoryService(prisma, connectionService);
   const userService = new UserService(pgPool, prisma, remoteService);
+  const eventService = new EventService(pgPool, prisma, remoteService);
 
   return {
     pgPool,
@@ -72,6 +75,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     leadService,
     opportunityService,
     userService,
+    eventService,
     syncHistoryService,
   };
 }

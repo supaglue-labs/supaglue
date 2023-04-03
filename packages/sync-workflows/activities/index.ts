@@ -2,6 +2,7 @@ import type {
   AccountService,
   ConnectionService,
   ContactService,
+  EventService,
   IntegrationService,
   LeadService,
   OpportunityService,
@@ -26,6 +27,7 @@ export const createActivities = ({
   opportunityService,
   leadService,
   userService,
+  eventService,
   syncService,
   syncHistoryService,
   integrationService,
@@ -38,6 +40,7 @@ export const createActivities = ({
   opportunityService: OpportunityService;
   leadService: LeadService;
   userService: UserService;
+  eventService: EventService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
@@ -53,9 +56,16 @@ export const createActivities = ({
       remoteService,
       opportunityService,
       leadService,
-      userService
+      userService,
+      eventService
     ),
-    populateAssociations: createPopulateAssociations(accountService, contactService, opportunityService, leadService),
+    populateAssociations: createPopulateAssociations(
+      accountService,
+      contactService,
+      opportunityService,
+      leadService,
+      eventService
+    ),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
     logSyncFinish: createLogSyncFinish({ syncHistoryService }),
     maybeSendSyncFinishWebhook: createMaybeSendSyncFinishWebhook({

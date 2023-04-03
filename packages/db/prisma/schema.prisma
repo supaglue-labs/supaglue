@@ -107,6 +107,7 @@ model CrmAccount {
   remoteOwnerId             String?          @map("_remote_owner_id")
   ownerId                   String?          @map("owner_id")
   owner                     CrmUser?         @relation(fields: [ownerId], references: [id])
+  events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
   @@map("crm_accounts")
@@ -141,6 +142,7 @@ model CrmContact {
   remoteOwnerId             String?     @map("_remote_owner_id")
   ownerId                   String?     @map("owner_id")
   owner                     CrmUser?    @relation(fields: [ownerId], references: [id])
+  events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
   @@map("crm_contacts")
@@ -179,6 +181,7 @@ model CrmLead {
   remoteOwnerId             String?     @map("_remote_owner_id")
   ownerId                   String?     @map("owner_id")
   owner                     CrmUser?    @relation(fields: [ownerId], references: [id])
+  events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
   @@map("crm_leads")
@@ -212,6 +215,7 @@ model CrmOpportunity {
   remoteOwnerId             String?     @map("_remote_owner_id")
   ownerId                   String?     @map("owner_id")
   owner                     CrmUser?    @relation(fields: [ownerId], references: [id])
+  events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
   @@map("crm_opportunities")
@@ -237,9 +241,51 @@ model CrmUser {
   opportunities             CrmOpportunity[]
   contacts                  CrmContact[]
   accounts                  CrmAccount[]
+  events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
   @@map("crm_users")
+}
+
+model CrmEvent {
+  id                        String    @id @default(uuid())
+  remoteId                  String    @map("remote_id")
+  customerId                String    @map("customer_id")
+  connectionId              String    @map("connection_id")
+  type                      String?
+  subject                   String?
+  content                   String?
+  startTime                 DateTime? @map("start_time")
+  endTime                   DateTime? @map("end_time")
+  remoteCreatedAt           DateTime? @map("remote_created_at")
+  remoteUpdatedAt           DateTime? @map("remote_updated_at")
+  remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
+  remoteDeletedAt           DateTime? @map("remote_deleted_at")
+  detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime? @map("last_modified_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Associations
+  remoteAccountId     String?         @map("_remote_account_id")
+  accountId           String?         @map("account_id")
+  account             CrmAccount?     @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  remoteContactId     String?         @map("_remote_contact_id")
+  contactId           String?         @map("contact_id")
+  contact             CrmContact?     @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  remoteLeadId        String?         @map("_remote_lead_id")
+  leadId              String?         @map("lead_id")
+  lead                CrmLead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  remoteOpportunityId String?         @map("_remote_opportunity_id")
+  opportunityId       String?         @map("opportunity_id")
+  opportunity         CrmOpportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  remoteOwnerId       String?         @map("_remote_owner_id")
+  ownerId             String?         @map("owner_id")
+  owner               CrmUser?        @relation(fields: [ownerId], references: [id])
+
+  @@unique([connectionId, remoteId])
+  @@map("crm_events")
 }
 
 model Sync {
