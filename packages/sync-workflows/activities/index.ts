@@ -59,7 +59,13 @@ export const createActivities = ({
       userService,
       eventService
     ),
-    populateAssociations: createPopulateAssociations(accountService, contactService, opportunityService, leadService),
+    populateAssociations: createPopulateAssociations(
+      accountService,
+      contactService,
+      opportunityService,
+      leadService,
+      eventService
+    ),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
     logSyncFinish: createLogSyncFinish({ syncHistoryService }),
     maybeSendSyncFinishWebhook: createMaybeSendSyncFinishWebhook({

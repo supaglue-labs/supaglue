@@ -21,6 +21,9 @@ import {
   RemoteUser,
 } from '@supaglue/types';
 
+const CONTACT_ID_PREFIX = '003';
+const LEAD_ID_PREFIX = '00Q';
+
 export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): RemoteUser => {
   return {
     remoteId: record.Id,
@@ -37,6 +40,9 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
 };
 
 export const fromSalesforceEventToRemoteEvent = (record: Record<string, any>): RemoteEvent => {
+  // In SFDC, WhoId can refer to either a contact or a lead
+  const remoteContactId = (record.WhoId as string).startsWith(CONTACT_ID_PREFIX) ? record.WhoId : null;
+  const remoteLeadId = (record.WhoId as string).startsWith(LEAD_ID_PREFIX) ? record.WhoId : null;
   return {
     remoteId: record.Id,
     subject: record.Subject ?? null,
@@ -48,9 +54,8 @@ export const fromSalesforceEventToRemoteEvent = (record: Record<string, any>): R
     endTime: record.EndDateTime ? new Date(record.EndDateTime) : null,
     remoteOwnerId: record.OwnerId ?? null,
     remoteAccountId: record.AccountId,
-    // In SFDC, WhoId can refer to either a contact or a lead
-    remoteContactId: record.WhoId,
-    remoteLeadId: record.WhoId,
+    remoteContactId,
+    remoteLeadId,
     remoteOpportunityId: null,
     // These fields are not supported by Salesforce
     remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
