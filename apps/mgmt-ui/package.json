@@ -21,6 +21,7 @@
     "next": "13.2.3",
     "next-auth": "^4.20.1",
     "react": "18.2.0",
+    "sharp": "^0.31.3",
     "swr": "^2.1.0"
   },
   "devDependencies": {
