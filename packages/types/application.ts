@@ -15,7 +15,7 @@ export type ApplicationConfig = {
   apiKey: string | null;
 };
 
-export type ApplicationCreateParams = {
+export type ApplicationUpsertParams = {
   name: string;
   orgId: string;
 };

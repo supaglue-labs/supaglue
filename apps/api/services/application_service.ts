@@ -2,7 +2,7 @@ import { NotFoundError } from '@supaglue/core/errors';
 import { cryptoHash, generateApiKey } from '@supaglue/core/lib/crypt';
 import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
-import { Application, ApplicationCreateParams, ApplicationUpdateParams } from '@supaglue/types';
+import { Application, ApplicationUpdateParams, ApplicationUpsertParams } from '@supaglue/types';
 import { SyncService } from './sync_service';
 
 export class ApplicationService {
@@ -63,17 +63,25 @@ export class ApplicationService {
     return applications.map(fromApplicationModel);
   }
 
-  public async create(createParams: ApplicationCreateParams): Promise<Application> {
-    const createdApplication = await this.#prisma.application.create({
-      data: {
+  public async upsert(createParams: ApplicationUpsertParams): Promise<Application> {
+    const upsertedApplication = await this.#prisma.application.upsert({
+      where: {
+        orgId_name: {
+          ...createParams,
+        },
+      },
+      create: {
         ...createParams,
         config: {
           apiKey: null,
           webhook: null,
         },
       },
+      update: {
+        ...createParams,
+      },
     });
-    return fromApplicationModel(createdApplication);
+    return fromApplicationModel(upsertedApplication);
   }
 
   public async update(id: string, orgId: string, params: ApplicationUpdateParams): Promise<Application> {

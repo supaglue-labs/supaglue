@@ -62,7 +62,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
 
   const createResult = await fetch(`${API_HOST}/internal/v1/applications`, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       'x-sg-internal-token': SG_INTERNAL_TOKEN,

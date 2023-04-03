@@ -11,8 +11,8 @@ export default function init(app: Router): void {
     return res.status(200).send(applications);
   });
 
-  applicationRouter.post('/', async (req: Request, res: Response) => {
-    const application = await applicationService.create({ ...req.body, orgId: req.orgId });
+  applicationRouter.put('/', async (req: Request, res: Response) => {
+    const application = await applicationService.upsert({ ...req.body, orgId: req.orgId });
     return res.status(201).send(application);
   });
 
