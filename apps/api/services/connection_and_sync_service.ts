@@ -1,4 +1,4 @@
-import { sendWebhookPayload } from '@supaglue/core/lib';
+import { logger, sendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
@@ -137,6 +137,12 @@ export class ConnectionAndSyncService {
 
       const connection = fromConnectionModelToConnectionUnsafe(connectionModel);
 
+      // best-effort trigger schedule to process sync changes. even if this fails, the
+      // schedule will trigger the workflow on the next run
+      this.#triggerProcessSyncChangesTemporalSchedule().catch((err) =>
+        logger.error(err, 'Error triggering processSyncChanges Temporal schedule')
+      );
+
       // // TODO: We need do this transactionally and not best-effort. Maybe transactionally write
       // // an event to another table and have a background job pick this up to guarantee
       // // that we start up syncs when connections are created.
@@ -156,6 +162,11 @@ export class ConnectionAndSyncService {
         );
       }
     }
+  }
+
+  async #triggerProcessSyncChangesTemporalSchedule(): Promise<void> {
+    const handle = this.#temporalClient.schedule.getHandle(PROCESS_SYNC_CHANGES_SCHEDULE_ID);
+    await handle.trigger();
   }
 
   public async createProcessSyncChangesTemporalScheduleIfNotExist(): Promise<void> {
