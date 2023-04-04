@@ -646,7 +646,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listEvents(): Promise<Readable> {
-    throw new Error('Not implemented');
+    return Readable.from([]);
   }
 
   public async getEvent(remoteId: string): Promise<RemoteEvent> {
