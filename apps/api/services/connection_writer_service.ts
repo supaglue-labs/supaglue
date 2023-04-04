@@ -54,6 +54,7 @@ export class ConnectionWriterService {
         customerId,
         integrationId: integration.id,
         status,
+        remoteId: params.remoteId,
         credentials: encrypt(JSON.stringify(params.credentials)),
       },
       update: {
@@ -62,6 +63,7 @@ export class ConnectionWriterService {
         customerId,
         integrationId: integration.id,
         status,
+        remoteId: params.remoteId,
         credentials: encrypt(JSON.stringify(params.credentials)),
       },
       where: {
