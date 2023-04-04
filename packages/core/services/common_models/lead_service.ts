@@ -11,6 +11,7 @@ import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getRemoteId } from '../../lib/remote_id';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
@@ -84,24 +85,12 @@ export class LeadService extends CommonModelBaseService {
     };
   }
 
-  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
-    const crmUser = await this.prisma.crmUser.findUnique({
-      where: {
-        id: ownerId,
-      },
-    });
-    if (!crmUser) {
-      throw new NotFoundError(`User ${ownerId} not found`);
-    }
-    return crmUser.remoteId;
-  }
-
   public async create(customerId: string, connectionId: string, createParams: LeadCreateParams): Promise<Lead> {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
     const remoteCreateParams = { ...createParams };
     if (createParams.ownerId) {
-      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
+      remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteLead = await remoteClient.createLead(remoteCreateParams);
@@ -131,7 +120,7 @@ export class LeadService extends CommonModelBaseService {
 
     const remoteUpdateParams = { ...updateParams };
     if (updateParams.ownerId) {
-      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+      remoteUpdateParams.ownerId = await await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
 
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);

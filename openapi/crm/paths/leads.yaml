@@ -60,8 +60,8 @@ get:
                     phone_numbers:
                       - phone_number: '+14151234567'
                         phone_number_type: mobile
-                    created_at: '2023-02-27T00:00:00Z'
-                    updated_at: '2023-02-27T00:00:00Z'
+                    remote_created_at: '2023-02-27T00:00:00Z'
+                    remote_updated_at: '2023-02-27T00:00:00Z'
                     title: Co-Founder
                   - addresses:
                       - address_type: shipping
@@ -87,8 +87,8 @@ get:
                     phone_numbers:
                       - phone_number: '+14151234567'
                         phone_number_type: mobile
-                    created_at: '2023-02-27T00:00:00Z'
-                    updated_at: '2023-02-27T00:00:00Z'
+                    remote_created_at: '2023-02-27T00:00:00Z'
+                    remote_updated_at: '2023-02-27T00:00:00Z'
                     title: Co-Founder
 post:
   operationId: createLead

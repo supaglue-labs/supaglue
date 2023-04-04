@@ -13,6 +13,7 @@ import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getRemoteId } from '../../lib/remote_id';
 import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
@@ -112,39 +113,15 @@ export class ContactService extends CommonModelBaseService {
     };
   }
 
-  private async getAssociatedAccountRemoteId(accountId: string): Promise<string> {
-    const crmAccount = await this.prisma.crmAccount.findUnique({
-      where: {
-        id: accountId,
-      },
-    });
-    if (!crmAccount) {
-      throw new NotFoundError(`Account ${accountId} not found`);
-    }
-    return crmAccount.remoteId;
-  }
-
-  private async getAssociatedOwnerRemoteId(ownerId: string): Promise<string> {
-    const crmUser = await this.prisma.crmUser.findUnique({
-      where: {
-        id: ownerId,
-      },
-    });
-    if (!crmUser) {
-      throw new NotFoundError(`User ${ownerId} not found`);
-    }
-    return crmUser.remoteId;
-  }
-
   public async create(customerId: string, connectionId: string, createParams: ContactCreateParams): Promise<Contact> {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
     const remoteCreateParams = { ...createParams };
     if (createParams.accountId) {
-      remoteCreateParams.accountId = await this.getAssociatedAccountRemoteId(createParams.accountId);
+      remoteCreateParams.accountId = await getRemoteId(this.prisma, createParams.accountId, 'account');
     }
     if (createParams.ownerId) {
-      remoteCreateParams.ownerId = await this.getAssociatedOwnerRemoteId(createParams.ownerId);
+      remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
     const remoteContact = await remoteClient.createContact(remoteCreateParams);
@@ -175,10 +152,10 @@ export class ContactService extends CommonModelBaseService {
 
     const remoteUpdateParams = { ...updateParams };
     if (updateParams.accountId) {
-      remoteUpdateParams.accountId = await this.getAssociatedAccountRemoteId(updateParams.accountId);
+      remoteUpdateParams.accountId = await getRemoteId(this.prisma, updateParams.accountId, 'account');
     }
     if (updateParams.ownerId) {
-      remoteUpdateParams.ownerId = await this.getAssociatedOwnerRemoteId(updateParams.ownerId);
+      remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
 
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);

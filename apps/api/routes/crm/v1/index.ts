@@ -2,6 +2,7 @@ import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/o
 import { Router } from 'express';
 import accounts from './account';
 import contacts from './contact';
+import events from './event';
 import leads from './lead';
 import opportunities from './opportunity';
 import passthrough from './passthrough';
@@ -17,6 +18,7 @@ export default function init(app: Router): void {
   leads(v1Router);
   opportunities(v1Router);
   users(v1Router);
+  events(v1Router);
 
   passthrough(v1Router);
 

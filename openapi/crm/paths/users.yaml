@@ -41,15 +41,15 @@ get:
                     name: George Xing
                     email: george@supaglue.com
                     is_active: true
-                    created_at: '2021-11-10T00:00:00Z'
-                    updated_at: '2022-01-09T00:00:00Z'
+                    remote_created_at: '2021-11-10T00:00:00Z'
+                    remote_updated_at: '2022-01-09T00:00:00Z'
                   - id: a0f8385c-4947-41d2-a276-740f792bb0e6
                     remote_id: 1235
                     name: Thomas Chen
                     email: tom@supaglue.com
                     is_active: true
-                    created_at: '2021-11-10T00:00:00Z'
-                    updated_at: '2022-01-09T00:00:00Z'
+                    remote_created_at: '2021-11-10T00:00:00Z'
+                    remote_updated_at: '2022-01-09T00:00:00Z'
 parameters:
   - $ref: ../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../common/components/parameters/header/x-provider-name.yaml
