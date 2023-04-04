@@ -86,7 +86,7 @@ export async function updateRemoteIntegration(applicationId: string, data: Integ
 
 export async function addApplication(name: string): Promise<Application> {
   const result = await fetch(`/api/internal/applications`, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
