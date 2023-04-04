@@ -71,7 +71,7 @@ model Connection {
   remoteId      String?     @map("remote_id")
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
-  syncs         Sync[]
+  sync          Sync?
 
   @@unique([customerId, integrationId])
   @@map("connections")
@@ -299,6 +299,14 @@ model Sync {
   syncHistoryList SyncHistory[]
 
   @@map("syncs")
+}
+
+model SyncChange {
+  id        String   @id @default(uuid())
+  syncId    String   @map("sync_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("sync_changes")
 }
 
 model SyncHistory {
