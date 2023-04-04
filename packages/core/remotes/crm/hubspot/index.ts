@@ -4,8 +4,8 @@ import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as Hu
 import { CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
-  CompleteIntegration,
   CRMConnectionUnsafe,
+  Integration,
   RemoteAccount,
   RemoteAccountCreateParams,
   RemoteAccountUpdateParams,
@@ -763,17 +763,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
     return await super.sendPassthroughRequest(request);
   }
-
-  // TODO: Delete once all customers are migrated and backfilled
-  public async getHubId() {
-    await this.maybeRefreshAccessToken();
-    const { hubId } = await this.#client.oauth.accessTokensApi.getAccessToken(this.#credentials.accessToken);
-    return hubId.toString();
-  }
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): HubSpotClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: Integration): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,

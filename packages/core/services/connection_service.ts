@@ -34,6 +34,13 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connection);
   }
 
+  public async getSafeByIds(ids: string[]): Promise<ConnectionSafe[]> {
+    const connections = await this.#prisma.connection.findMany({
+      where: { id: { in: ids } },
+    });
+    return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
   public async getSafeByIdAndApplicationId(id: string, applicationId: string): Promise<ConnectionSafe> {
     const connections = await this.#prisma.connection.findMany({
       where: {

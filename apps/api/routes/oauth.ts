@@ -6,7 +6,7 @@ import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm'
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
-const { integrationService, connectionWriterService } = getDependencyContainer();
+const { integrationService, connectionAndSyncService } = getDependencyContainer();
 
 const SERVER_URL = process.env.SUPAGLUE_SERVER_URL ?? 'http://localhost:8080';
 const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
@@ -172,10 +172,10 @@ export default function init(app: Router): void {
       };
 
       try {
-        await connectionWriterService.create(payload);
+        await connectionAndSyncService.create(payload);
       } catch (e: any) {
         if (e.code === 'P2002') {
-          await connectionWriterService.upsert(payload);
+          await connectionAndSyncService.upsert(payload);
         } else {
           throw e;
         }

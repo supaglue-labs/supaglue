@@ -1213,7 +1213,8 @@
         "required": [
           "category",
           "auth_type",
-          "provider_name"
+          "provider_name",
+          "config"
         ]
       },
       "webhook": {

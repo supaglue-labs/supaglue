@@ -11,6 +11,7 @@ import type {
   UserService,
 } from '@supaglue/core/services';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
+import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetSync } from './get_sync';
 import { createImportRecords } from './import_records';
 import { createLogSyncFinish } from './log_sync_finish';
@@ -48,6 +49,7 @@ export const createActivities = ({
 }) => {
   return {
     getSync: createGetSync(syncService),
+    doProcessSyncChanges: createDoProcessSyncChanges(syncService),
     updateSyncState: createUpdateSyncState(syncService),
     importRecords: createImportRecords(
       accountService,
