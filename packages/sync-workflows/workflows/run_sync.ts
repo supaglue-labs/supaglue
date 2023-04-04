@@ -6,9 +6,14 @@ import { ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow
 import { ImportRecordsResult } from '../activities/import_records';
 import type { createActivities } from '../activities/index';
 
-const { importRecords, populateAssociations } = proxyActivities<ReturnType<typeof createActivities>>({
+const { importRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '30 seconds',
+});
+
+const { populateAssociations } = proxyActivities<ReturnType<typeof createActivities>>({
+  startToCloseTimeout: '120 minute',
+  heartbeatTimeout: '1 minute',
 });
 
 const { getSync, updateSyncState, logSyncStart, logSyncFinish, maybeSendSyncFinishWebhook } = proxyActivities<
