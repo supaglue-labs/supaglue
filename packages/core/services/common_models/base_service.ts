@@ -67,7 +67,8 @@ export abstract class CommonModelBaseService {
         },
       });
 
-      // Keep track of the max lastModifiedAt
+      // Keep track of stuff
+      let tempTableRowCount = 0;
       let maxLastModifiedAt: Date | null = null;
 
       logger.info({ connectionId, customerId, table }, 'Importing common model objects into temp table [IN PROGRESS]');
@@ -78,6 +79,8 @@ export abstract class CommonModelBaseService {
           transform: (chunk, encoding, callback) => {
             try {
               const mappedRecord = mapper(connectionId, customerId, chunk);
+
+              ++tempTableRowCount;
 
               // Update the max lastModifiedAt
               const lastModifiedAt = lastModifiedAtGetter(chunk);
@@ -105,8 +108,6 @@ export abstract class CommonModelBaseService {
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
 
       // Paginate
-      const tempTableRowCountResult = await client.query(`SELECT COUNT(*) AS count FROM ${tempTable}`);
-      const tempTableRowCount = parseInt(tempTableRowCountResult.rows[0].count as string);
       const batchSize = 1;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
         logger.info({ connectionId, customerId, table, offset }, 'Copying from temp table to main table [IN PROGRESS]');
