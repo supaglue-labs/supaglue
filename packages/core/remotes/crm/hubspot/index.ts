@@ -43,15 +43,6 @@ import {
 
 const HUBSPOT_RECORD_LIMIT = 100;
 
-const ASYNC_RETRY_OPTIONS = {
-  // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
-  // and will know that this activity is making progress.
-  forever: true,
-  factor: 2,
-  minTimeout: 1000,
-  maxTimeout: 60 * 1000,
-};
-
 const propertiesToFetch = {
   company: [
     'name',
@@ -111,6 +102,15 @@ const propertiesToFetch = {
 // TODO: We may need to fetch this from the hubspot schema
 const CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 1;
 const OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 5;
+
+const ASYNC_RETRY_OPTIONS = {
+  // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
+  // and will know that this activity is making progress.
+  forever: true,
+  factor: 2,
+  minTimeout: 1000,
+  maxTimeout: 60 * 1000,
+};
 
 type Credentials = {
   accessToken: string;
@@ -214,59 +214,47 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #listAccountsFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedCompanies> {
-    const helper = async () => {
-      try {
-        await this.maybeRefreshAccessToken();
-        const companies = await this.#client.crm.companies.basicApi.getPage(
-          HUBSPOT_RECORD_LIMIT,
-          after,
-          propertiesToFetch.company,
-          undefined,
-          undefined,
-          archived
-        );
-        return companies;
-      } catch (e: any) {
-        logger.error(e, 'Error encountered');
-        throw e;
-      }
-    };
-    return await retry(helper, ASYNC_RETRY_OPTIONS);
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const companies = await this.#client.crm.companies.basicApi.getPage(
+        HUBSPOT_RECORD_LIMIT,
+        after,
+        propertiesToFetch.company,
+        undefined,
+        undefined,
+        archived
+      );
+      return companies;
+    });
   }
 
   async #listAccountsIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedCompanies> {
-    const helper = async () => {
-      try {
-        await this.maybeRefreshAccessToken();
-        const companies = await this.#client.crm.companies.searchApi.doSearch({
-          filterGroups: [
-            {
-              filters: [
-                {
-                  propertyName: 'hs_lastmodifieddate',
-                  operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
-                  value: updatedAfter.getTime().toString(),
-                },
-              ],
-            },
-          ],
-          sorts: [
-            {
-              propertyName: 'hs_lastmodifieddate',
-              direction: 'ASCENDING',
-            } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
-          ],
-          properties: propertiesToFetch.company,
-          limit: HUBSPOT_RECORD_LIMIT,
-          after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
-        });
-        return companies;
-      } catch (e: any) {
-        logger.error(e, 'Error encountered');
-        throw e;
-      }
-    };
-    return await retry(helper, ASYNC_RETRY_OPTIONS);
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const companies = await this.#client.crm.companies.searchApi.doSearch({
+        filterGroups: [
+          {
+            filters: [
+              {
+                propertyName: 'hs_lastmodifieddate',
+                operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
+                value: updatedAfter.getTime().toString(),
+              },
+            ],
+          },
+        ],
+        sorts: [
+          {
+            propertyName: 'hs_lastmodifieddate',
+            direction: 'ASCENDING',
+          } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
+        ],
+        properties: propertiesToFetch.company,
+        limit: HUBSPOT_RECORD_LIMIT,
+        after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
+      });
+      return companies;
+    });
   }
 
   private async getAccount(remoteId: string): Promise<RemoteAccount> {
@@ -344,81 +332,69 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #listOpportunitiesFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedDeals> {
-    const helper = async () => {
-      try {
-        await this.maybeRefreshAccessToken();
-        const deals = await this.#client.crm.deals.basicApi.getPage(
-          HUBSPOT_RECORD_LIMIT,
-          after,
-          propertiesToFetch.deal,
-          /* propertiesWithHistory */ undefined,
-          /* associations */ ['company'],
-          archived
-        );
-        return deals;
-      } catch (e: any) {
-        logger.error(e, 'Error encountered');
-        throw e;
-      }
-    };
-    return await retry(helper, ASYNC_RETRY_OPTIONS);
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const deals = await this.#client.crm.deals.basicApi.getPage(
+        HUBSPOT_RECORD_LIMIT,
+        after,
+        propertiesToFetch.deal,
+        /* propertiesWithHistory */ undefined,
+        /* associations */ ['company'],
+        archived
+      );
+      return deals;
+    });
   }
 
   async #listOpportunitiesIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedDeals> {
-    const helper = async () => {
-      try {
-        await this.maybeRefreshAccessToken();
-        const response = await this.#client.crm.deals.searchApi.doSearch({
-          filterGroups: [
-            {
-              filters: [
-                {
-                  propertyName: 'hs_lastmodifieddate',
-                  operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
-                  value: updatedAfter.getTime().toString(),
-                },
-              ],
-            },
-          ],
-          sorts: [
-            {
-              propertyName: 'hs_lastmodifieddate',
-              direction: 'ASCENDING',
-            } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
-          ],
-          properties: propertiesToFetch.deal,
-          limit: HUBSPOT_RECORD_LIMIT,
-          after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
-        });
-
-        const dealIds = response.results.map((deal) => deal.id);
-
-        // Get associations
-        const dealToCompaniesMap = await this.#listAssociations(
-          'deal',
-          'company',
-          dealIds.map((id) => id)
-        );
-
-        // Add associations to deals
-        // TODO: We shouldn't hijack the response object like this; clean this code up
-        return {
-          ...response,
-          results: response.results.map((deal) => ({
-            ...deal,
-            associations: {
-              companies: {
-                results: (dealToCompaniesMap[deal.id] ?? []).map((id) => ({ id, type: 'deal_to_company' })),
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await this.#client.crm.deals.searchApi.doSearch({
+        filterGroups: [
+          {
+            filters: [
+              {
+                propertyName: 'hs_lastmodifieddate',
+                operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
+                value: updatedAfter.getTime().toString(),
               },
+            ],
+          },
+        ],
+        sorts: [
+          {
+            propertyName: 'hs_lastmodifieddate',
+            direction: 'ASCENDING',
+          } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
+        ],
+        properties: propertiesToFetch.deal,
+        limit: HUBSPOT_RECORD_LIMIT,
+        after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
+      });
+
+      const dealIds = response.results.map((deal) => deal.id);
+
+      // Get associations
+      const dealToCompaniesMap = await this.#listAssociations(
+        'deal',
+        'company',
+        dealIds.map((id) => id)
+      );
+
+      // Add associations to deals
+      // TODO: We shouldn't hijack the response object like this; clean this code up
+      return {
+        ...response,
+        results: response.results.map((deal) => ({
+          ...deal,
+          associations: {
+            companies: {
+              results: (dealToCompaniesMap[deal.id] ?? []).map((id) => ({ id, type: 'deal_to_company' })),
             },
-          })),
-        };
-      } catch (e: any) {
-        logger.error(e, 'Error encountered');
-        throw e;
-      }
-    };
-    return await retry(helper, ASYNC_RETRY_OPTIONS);
+          },
+        })),
+      };
+    });
   }
 
   private async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
@@ -511,83 +487,71 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #listContactsFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedContacts> {
-    const helper = async () => {
-      try {
-        await this.maybeRefreshAccessToken();
-        const contacts = await this.#client.crm.contacts.basicApi.getPage(
-          HUBSPOT_RECORD_LIMIT,
-          after,
-          propertiesToFetch.contact,
-          /* propertiesWithHistory */ undefined,
-          /* associations */ ['company'],
-          archived
-        );
-        return contacts;
-      } catch (e: any) {
-        logger.error(e, 'Error encountered');
-        throw e;
-      }
-    };
-    return await retry(helper, ASYNC_RETRY_OPTIONS);
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const contacts = await this.#client.crm.contacts.basicApi.getPage(
+        HUBSPOT_RECORD_LIMIT,
+        after,
+        propertiesToFetch.contact,
+        /* propertiesWithHistory */ undefined,
+        /* associations */ ['company'],
+        archived
+      );
+      return contacts;
+    });
   }
 
   async #listContactsIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedContacts> {
-    const helper = async () => {
-      try {
-        await this.maybeRefreshAccessToken();
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
 
-        // Get contacts
-        const response = await this.#client.crm.contacts.searchApi.doSearch({
-          filterGroups: [
-            {
-              filters: [
-                {
-                  propertyName: 'lastmodifieddate', // hubspot doesn't set hs_lastmodifieddate for some reason
-                  operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
-                  value: updatedAfter.getTime().toString(),
-                },
-              ],
-            },
-          ],
-          sorts: [
-            {
-              propertyName: 'lastmodifieddate',
-              direction: 'ASCENDING',
-            } as unknown as string, // hubspot sdk has wrong types
-          ],
-          properties: propertiesToFetch.contact,
-          limit: HUBSPOT_RECORD_LIMIT,
-          after: after as unknown as number, // hubspot sdk has wrong types
-        });
-
-        const contactIds = response.results.map((contact) => contact.id);
-
-        // Get associations
-        const contactToCompaniesMap = await this.#listAssociations(
-          'contact',
-          'company',
-          contactIds.map((id) => id)
-        );
-
-        // Add associations to contacts
-        // TODO: We shouldn't hijack the response object like this; clean this code up
-        return {
-          ...response,
-          results: response.results.map((contact) => ({
-            ...contact,
-            associations: {
-              companies: {
-                results: (contactToCompaniesMap[contact.id] ?? []).map((id) => ({ id, type: 'contact_to_company' })),
+      // Get contacts
+      const response = await this.#client.crm.contacts.searchApi.doSearch({
+        filterGroups: [
+          {
+            filters: [
+              {
+                propertyName: 'lastmodifieddate', // hubspot doesn't set hs_lastmodifieddate for some reason
+                operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
+                value: updatedAfter.getTime().toString(),
               },
+            ],
+          },
+        ],
+        sorts: [
+          {
+            propertyName: 'lastmodifieddate',
+            direction: 'ASCENDING',
+          } as unknown as string, // hubspot sdk has wrong types
+        ],
+        properties: propertiesToFetch.contact,
+        limit: HUBSPOT_RECORD_LIMIT,
+        after: after as unknown as number, // hubspot sdk has wrong types
+      });
+
+      const contactIds = response.results.map((contact) => contact.id);
+
+      // Get associations
+      const contactToCompaniesMap = await this.#listAssociations(
+        'contact',
+        'company',
+        contactIds.map((id) => id)
+      );
+
+      // Add associations to contacts
+      // TODO: We shouldn't hijack the response object like this; clean this code up
+      return {
+        ...response,
+        results: response.results.map((contact) => ({
+          ...contact,
+          associations: {
+            companies: {
+              results: (contactToCompaniesMap[contact.id] ?? []).map((id) => ({ id, type: 'contact_to_company' })),
             },
-          })),
-        };
-      } catch (e: any) {
-        logger.error(e, 'Error encountered');
-        throw e;
-      }
-    };
-    return await retry(helper, ASYNC_RETRY_OPTIONS);
+          },
+        })),
+      };
+    });
   }
 
   private async getContact(remoteId: string): Promise<RemoteContact> {
@@ -722,22 +686,16 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #listUsersImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedOwners> {
-    const helper = async () => {
-      try {
-        await this.maybeRefreshAccessToken();
-        const owners = await this.#client.crm.owners.ownersApi.getPage(
-          /* email */ undefined,
-          after,
-          HUBSPOT_RECORD_LIMIT,
-          archived
-        );
-        return owners;
-      } catch (e: any) {
-        logger.error(e, 'Error encountered');
-        throw e;
-      }
-    };
-    return await retry(helper, ASYNC_RETRY_OPTIONS);
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const owners = await this.#client.crm.owners.ownersApi.getPage(
+        /* email */ undefined,
+        after,
+        HUBSPOT_RECORD_LIMIT,
+        archived
+      );
+      return owners;
+    });
   }
 
   async #listAssociations(
@@ -745,7 +703,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     toObjectType: string,
     fromObjectIds: string[]
   ): Promise<Record<string, string[]>> {
-    const helper = async () => {
+    return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const associations = await this.#client.crm.associations.batchApi.read(fromObjectType, toObjectType, {
         inputs: fromObjectIds.map((id) => ({ id })),
@@ -753,8 +711,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       return associations.results
         .map((result) => ({ [result._from.id]: result.to.map(({ id }) => id) }))
         .reduce((acc, curr) => ({ ...acc, ...curr }), {});
-    };
-    return await retry(helper, ASYNC_RETRY_OPTIONS);
+    });
   }
 
   public override async sendPassthroughRequest(
@@ -781,4 +738,26 @@ export const authConfig: ConnectorAuthConfig = {
   tokenPath: '/oauth/v1/token',
   authorizeHost: 'https://app.hubspot.com',
   authorizePath: '/oauth/authorize',
+};
+
+const isRateLimited = (e: any): boolean => {
+  return e.code === 429;
+};
+
+const retryWhenRateLimited = async <Args extends any[], Return>(
+  operation: (...operationParameters: Args) => Return,
+  ...parameters: Args
+): Promise<Return> => {
+  const helper = async (bail: (e: Error) => void) => {
+    try {
+      return await operation(...parameters);
+    } catch (e: any) {
+      logger.error(e, 'Error encountered');
+      if (!isRateLimited(e)) {
+        bail(e);
+      }
+      throw e;
+    }
+  };
+  return await retry(helper, ASYNC_RETRY_OPTIONS);
 };
