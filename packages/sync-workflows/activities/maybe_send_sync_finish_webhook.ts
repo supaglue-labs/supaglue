@@ -34,6 +34,7 @@ export function createMaybeSendSyncFinishWebhook({
       await sendWebhookPayload(config.webhook, status, {
         connectionId,
         customerId: connection.customerId,
+        providerName: connection.providerName,
         historyId,
         numRecordsSynced,
         commonModel,

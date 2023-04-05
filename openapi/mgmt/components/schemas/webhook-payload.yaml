@@ -15,6 +15,12 @@ oneOf:
           customer_id:
             type: string
             example: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
+          provider_name:
+            type: string
+            enum:
+              - hubspot
+              - salesforce
+            example: hubspot
           history_id:
             type: string
             example: 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d
@@ -66,6 +72,7 @@ oneOf:
             enum:
               - hubspot
               - salesforce
+            example: hubspot
         required:
           - customer_id
           - integration_id
