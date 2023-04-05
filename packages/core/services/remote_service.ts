@@ -1,4 +1,3 @@
-import { CompleteIntegration } from '@supaglue/types';
 import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
 import type { ConnectionService } from './connection_service';
@@ -21,8 +20,7 @@ export class RemoteService {
       throw new Error('Integration must have config');
     }
 
-    // TODO: don't cast `integration as CompleteIntegration`
-    const client = getCrmRemoteClient(connection, integration as CompleteIntegration);
+    const client = getCrmRemoteClient(connection, integration);
 
     // Persist the refreshed token
     client.on('token_refreshed', (accessToken: string, expiresAt: string | null) => {

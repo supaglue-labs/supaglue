@@ -1,7 +1,7 @@
 import {
   AccountCreateParams,
-  CompleteIntegration,
   CRMConnectionUnsafe,
+  Integration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -116,7 +116,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): MsDynamics365Sales {
+export function newClient(connection: CRMConnectionUnsafe, integration: Integration): MsDynamics365Sales {
   return new MsDynamics365Sales();
 }
 

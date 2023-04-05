@@ -1,4 +1,4 @@
-import { CompleteIntegration, CRMConnectionUnsafe, CRMProviderName } from '@supaglue/types';
+import { CRMConnectionUnsafe, CRMProviderName, Integration } from '@supaglue/types';
 import { logger } from '../../lib/logger';
 import { ConnectorAuthConfig, CrmConnectorConfig, CrmRemoteClient } from './base';
 import * as capsule from './capsule';
@@ -24,7 +24,7 @@ export function getConnectorAuthConfig(providerName: CRMProviderName): Connector
   return authConfig;
 }
 
-export function getCrmRemoteClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): CrmRemoteClient {
+export function getCrmRemoteClient(connection: CRMConnectionUnsafe, integration: Integration): CrmRemoteClient {
   const { newClient } = crmConnectorConfigMap[connection.providerName];
   const client = newClient(connection, integration);
 

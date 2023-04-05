@@ -10,6 +10,7 @@
     "@supaglue/sync-workflows": "workspace:*",
     "@supaglue/types": "workspace:*",
     "@swc/core": "^1.3.35",
+    "@temporalio/client": "^1.6.0",
     "@temporalio/worker": "^1.6.0"
   },
   "devDependencies": {

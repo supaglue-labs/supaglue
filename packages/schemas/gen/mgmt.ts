@@ -210,7 +210,7 @@ export interface components {
       /** @enum {string} */
       auth_type: "oauth2";
       provider_name: components["schemas"]["provider_name"];
-      config?: components["schemas"]["integration_config"];
+      config: components["schemas"]["integration_config"];
     };
     webhook: {
       url: string;

@@ -8,7 +8,7 @@ import {
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
-const { syncService } = getDependencyContainer();
+const { connectionAndSyncService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -19,7 +19,7 @@ export default function init(app: Router): void {
       req: Request<GetSyncInfosPathParams, GetSyncInfosResponse, GetSyncInfosRequest, GetSyncInfosQueryParams>,
       res: Response<GetSyncInfosResponse>
     ) => {
-      const syncInfoList = await syncService.getSyncInfoList({
+      const syncInfoList = await connectionAndSyncService.getSyncInfoList({
         applicationId: req.supaglueApplication.id,
         externalCustomerId: req.query?.customer_id,
         providerName: req.query?.provider_name,
