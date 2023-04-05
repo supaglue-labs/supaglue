@@ -23,7 +23,10 @@ export const sendWebhookPayload = async (
       case 'GET':
         return await axios.get(url, axiosRequest);
       case 'POST':
-        return await axios.post(url, axiosRequest);
+        return await axios.post(url, {
+          data: axiosRequest.data,
+          headers,
+        });
       case 'PATCH':
         return await axios.patch(url, axiosRequest);
       case 'PUT':
