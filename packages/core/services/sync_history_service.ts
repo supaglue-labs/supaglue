@@ -145,7 +145,7 @@ export class SyncHistoryService {
         },
       },
       orderBy: {
-        id: 'desc',
+        startTimestamp: 'desc',
       },
     });
 
