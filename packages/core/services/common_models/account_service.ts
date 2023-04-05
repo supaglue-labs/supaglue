@@ -162,7 +162,8 @@ export class AccountService extends CommonModelBaseService {
   public async upsertRemoteAccounts(
     connectionId: string,
     customerId: string,
-    remoteAccountsReadable: Readable
+    remoteAccountsReadable: Readable,
+    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = `${schemaPrefix}crm_accounts`;
     const tempTable = 'crm_accounts_temp';
@@ -203,7 +204,8 @@ export class AccountService extends CommonModelBaseService {
             remoteAccount.remoteUpdatedAt?.getTime() || 0,
             remoteAccount.detectedOrRemoteDeletedAt?.getTime() || 0
           )
-        )
+        ),
+      onUpsertBatchCompletion
     );
   }
 
