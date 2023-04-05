@@ -271,7 +271,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       if (response.status === 200) {
         return response;
       }
-      if (response.status !== 249) {
+      if (response.status !== 429) {
         bail(new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`));
       }
       throw new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`);
