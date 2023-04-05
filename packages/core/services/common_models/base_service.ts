@@ -41,6 +41,7 @@ export abstract class CommonModelBaseService {
       // so that we can resume in the case of failure during the COPY stage.
       // TODO: Maybe we don't need to include all
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING DEFAULTS)`);
+      await client.query(`CREATE INDEX ${tempTable}_remote_id_idx ON ${tempTable} (remote_id)`);
       const columns = ['id', ...columnsWithoutId];
 
       // Output
