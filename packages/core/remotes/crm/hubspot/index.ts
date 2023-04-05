@@ -161,16 +161,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  private async getWrongRefreshToken(): Promise<void> {
-    const newAccessToken = 'wrongtoken';
-    const newExpiresAt = new Date(Date.now() + 1000).toISOString();
-    this.#credentials.accessToken = newAccessToken;
-    this.#credentials.expiresAt = newExpiresAt;
-
-    this.#client.setAccessToken(newAccessToken);
-    this.emit('token_refreshed', newAccessToken, newExpiresAt);
-  }
-
   public async listAccounts(updatedAfter?: Date): Promise<Readable> {
     const impl = updatedAfter
       ? this.#listAccountsIncrementalImpl.bind(this, updatedAfter)
@@ -240,7 +230,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   async #listAccountsIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedCompanies> {
     return await retryWhenRateLimited(async () => {
-      await this.getWrongRefreshToken();
+      await this.maybeRefreshAccessToken();
       const companies = await this.#client.crm.companies.searchApi.doSearch({
         filterGroups: [
           {
@@ -767,7 +757,7 @@ const retryWhenRateLimited = async <Args extends any[], Return>(
 ): Promise<Return> => {
   const helper = async (bail: (e: Error) => void) => {
     try {
-      return operation(...parameters);
+      return await operation(...parameters);
     } catch (e: any) {
       logger.error(e, 'Error encountered');
       if (!isRateLimited(e)) {
