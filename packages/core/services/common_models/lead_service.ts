@@ -141,7 +141,8 @@ export class LeadService extends CommonModelBaseService {
   public async upsertRemoteLeads(
     connectionId: string,
     customerId: string,
-    remoteLeadsReadable: Readable
+    remoteLeadsReadable: Readable,
+    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = `${schemaPrefix}crm_leads`;
     const tempTable = 'crm_leads_temp';
@@ -181,7 +182,8 @@ export class LeadService extends CommonModelBaseService {
       (remoteLead) =>
         new Date(
           Math.max(remoteLead.remoteUpdatedAt?.getTime() || 0, remoteLead.detectedOrRemoteDeletedAt?.getTime() || 0)
-        )
+        ),
+      onUpsertBatchCompletion
     );
   }
 

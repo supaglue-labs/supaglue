@@ -56,7 +56,8 @@ export class UserService extends CommonModelBaseService {
   public async upsertRemoteUsers(
     connectionId: string,
     customerId: string,
-    remoteUsersReadable: Readable
+    remoteUsersReadable: Readable,
+    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = `${schemaPrefix}crm_users`;
     const tempTable = 'crm_users_temp';
@@ -87,7 +88,8 @@ export class UserService extends CommonModelBaseService {
       (remoteUser) =>
         new Date(
           Math.max(remoteUser.remoteUpdatedAt?.getTime() || 0, remoteUser.detectedOrRemoteDeletedAt?.getTime() || 0)
-        )
+        ),
+      onUpsertBatchCompletion
     );
   }
 }

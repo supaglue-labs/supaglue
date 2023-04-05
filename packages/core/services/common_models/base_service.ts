@@ -30,7 +30,8 @@ export abstract class CommonModelBaseService {
     tempTable: string,
     columnsWithoutId: string[],
     mapper: (connectionId: string, customerId: string, remoteCommonModel: T) => Record<string, any>,
-    lastModifiedAtGetter: (remoteCommonModel: T) => Date | null
+    lastModifiedAtGetter: (remoteCommonModel: T) => Date | null,
+    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const client = await this.pgPool.connect();
 
@@ -96,24 +97,37 @@ export abstract class CommonModelBaseService {
       logger.info({ connectionId, customerId, table }, 'Importing common model objects into temp table [COMPLETED]');
 
       // Copy from temp table
-      logger.info({ connectionId, customerId, table }, 'Copying from temp table to main table [IN PROGRESS]');
+      logger.info(
+        { connectionId, customerId, table, offset: null },
+        'Copying from temp table to main table [IN PROGRESS]'
+      );
       const columnsToUpdate = columnsWithoutId.join(',');
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
 
-      // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same remote_id
-      // For example, hubspot will return the same record twice when querying for `archived: true` if
-      // the record was archived, restored, and archived again.
-      // TODO: This may have performance implications. We should look into this later.
-      // https://github.com/supaglue-labs/supaglue/issues/497
-      const result = await client.query(`INSERT INTO ${table}
-SELECT DISTINCT ON (remote_id) * FROM ${tempTable}
+      // Paginate
+      const tempTableRowCountResult = await client.query(`SELECT COUNT(*) AS C FROM ${tempTable}`);
+      const tempTableRowCount = tempTableRowCountResult.rows[0].C;
+      const batchSize = 10000;
+      for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
+        logger.info({ connectionId, customerId, table, offset }, 'Copying from temp table to main table [IN PROGRESS]');
+        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same remote_id
+        // For example, hubspot will return the same record twice when querying for `archived: true` if
+        // the record was archived, restored, and archived again.
+        // TODO: This may have performance implications. We should look into this later.
+        // https://github.com/supaglue-labs/supaglue/issues/497
+        await client.query(`INSERT INTO ${table}
+SELECT DISTINCT ON (remote_id) * FROM (SELECT * FROM ${tempTable} ORDER BY remote_id OFFSET ${offset} limit ${batchSize})
 ON CONFLICT (connection_id, remote_id)
 DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
+        logger.info({ connectionId, customerId, table, offset }, 'Copying from temp table to main table [COMPLETED]');
+        onUpsertBatchCompletion(offset, tempTableRowCount);
+      }
+
       logger.info({ connectionId, customerId, table }, 'Copying from temp table to main table [COMPLETED]');
 
       return {
         maxLastModifiedAt,
-        numRecords: result.rowCount,
+        numRecords: tempTableRowCount, // TODO: not quite accurate (because there can be duplicates) but good enough
       };
     } finally {
       client.release();
