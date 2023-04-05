@@ -273,6 +273,11 @@ export interface components {
         connection_id: string;
         /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
         customer_id: string;
+        /**
+         * @example hubspot 
+         * @enum {string}
+         */
+        provider_name?: "hubspot" | "salesforce";
         /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
         history_id: string;
         /** @example 100 */
@@ -294,7 +299,10 @@ export interface components {
         integration_id: string;
         /** @enum {string} */
         category: "crm";
-        /** @enum {string} */
+        /**
+         * @example hubspot 
+         * @enum {string}
+         */
         provider_name: "hubspot" | "salesforce";
       };
     }]>;
