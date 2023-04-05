@@ -220,12 +220,17 @@ export class ContactService extends CommonModelBaseService {
     );
   }
 
-  public async updateDanglingAccounts(connectionId: string): Promise<void> {
+  public async updateDanglingAccounts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
     await this.prisma.crmContact.updateMany({
       where: {
+        // Only update contacts for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteAccountId: null,
         accountId: {
           not: null,
@@ -242,6 +247,7 @@ export class ContactService extends CommonModelBaseService {
       FROM ${accountsTable} a
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = a.connection_id
         AND c.account_id IS NULL
         AND c._remote_account_id IS NOT NULL
@@ -249,12 +255,17 @@ export class ContactService extends CommonModelBaseService {
       `);
   }
 
-  public async updateDanglingOwners(connectionId: string): Promise<void> {
+  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
 
     await this.prisma.crmContact.updateMany({
       where: {
+        // Only update contacts for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteOwnerId: null,
         ownerId: {
           not: null,
@@ -271,6 +282,7 @@ export class ContactService extends CommonModelBaseService {
       FROM ${usersTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.owner_id IS NULL
         AND c._remote_owner_id IS NOT NULL

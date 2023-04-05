@@ -153,7 +153,17 @@ async function doFullThenIncrementalSync({
       },
     });
 
-    await populateAssociations({ connectionId: sync.connectionId });
+    await populateAssociations({
+      connectionId: sync.connectionId,
+      originalMaxLastModifiedAtMsMap: {
+        account: 0,
+        lead: 0,
+        opportunity: 0,
+        contact: 0,
+        user: 0,
+        event: 0,
+      },
+    });
 
     await updateSyncState({
       syncId: sync.id,
