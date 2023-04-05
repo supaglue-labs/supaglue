@@ -105,9 +105,9 @@ export abstract class CommonModelBaseService {
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
 
       // Paginate
-      const tempTableRowCountResult = await client.query(`SELECT COUNT(*) AS C FROM ${tempTable}`);
-      const tempTableRowCount = tempTableRowCountResult.rows[0].C;
-      const batchSize = 10000;
+      const tempTableRowCountResult = await client.query(`SELECT COUNT(*) AS count FROM ${tempTable}`);
+      const tempTableRowCount = parseInt(tempTableRowCountResult.rows[0].count as string);
+      const batchSize = 1;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
         logger.info({ connectionId, customerId, table, offset }, 'Copying from temp table to main table [IN PROGRESS]');
         // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same remote_id
@@ -116,7 +116,7 @@ export abstract class CommonModelBaseService {
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${table}
-SELECT DISTINCT ON (remote_id) * FROM (SELECT * FROM ${tempTable} ORDER BY remote_id OFFSET ${offset} limit ${batchSize})
+SELECT DISTINCT ON (remote_id) * FROM (SELECT * FROM ${tempTable} ORDER BY remote_id OFFSET ${offset} limit ${batchSize}) AS batch
 ON CONFLICT (connection_id, remote_id)
 DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
         logger.info({ connectionId, customerId, table, offset }, 'Copying from temp table to main table [COMPLETED]');
