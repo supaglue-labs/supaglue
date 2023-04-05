@@ -173,7 +173,7 @@ async function doFullThenIncrementalSync({
         return defaultMaxLastModifiedAtMsMap;
       }
 
-      // TODO: When we add a new common model, the old maxLastModifiedAtMsMap will be missing fields. We
+      // When we add a new common model, the old maxLastModifiedAtMsMap will be missing fields. We
       // need to pull in the defaultMaxLastModifiedAtMsMap
       return {
         account: sync.state.maxLastModifiedAtMsMap['account'] ?? defaultMaxLastModifiedAtMsMap['account'],

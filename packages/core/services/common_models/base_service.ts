@@ -4,6 +4,7 @@ import { Pool } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
+import { logger } from '../../lib';
 import { RemoteService } from '../remote_service';
 
 export abstract class CommonModelBaseService {
@@ -39,9 +40,17 @@ export abstract class CommonModelBaseService {
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper
       // so that we can resume in the case of failure during the COPY stage.
-      // TODO: Maybe we don't need to include all
+      logger.info(
+        { connectionId, customerId, table },
+        'Creating temp table for importing common model objects [IN PROGRESS]'
+      );
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING DEFAULTS)`);
       await client.query(`CREATE INDEX IF NOT EXISTS ${tempTable}_remote_id_idx ON ${tempTable} (remote_id)`);
+      logger.info(
+        { connectionId, customerId, table },
+        'Creating temp table for importing common model objects [COMPLETED]'
+      );
+
       const columns = ['id', ...columnsWithoutId];
 
       // Output
@@ -60,6 +69,7 @@ export abstract class CommonModelBaseService {
       // Keep track of the max lastModifiedAt
       let maxLastModifiedAt: Date | null = null;
 
+      logger.info({ connectionId, customerId, table }, 'Importing common model objects into temp table [IN PROGRESS]');
       await pipeline(
         remoteCommonModelReadable,
         new Transform({
@@ -83,8 +93,10 @@ export abstract class CommonModelBaseService {
         stringifier,
         stream
       );
+      logger.info({ connectionId, customerId, table }, 'Importing common model objects into temp table [COMPLETED]');
 
       // Copy from temp table
+      logger.info({ connectionId, customerId, table }, 'Copying from temp table to main table [IN PROGRESS]');
       const columnsToUpdate = columnsWithoutId.join(',');
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
 
@@ -97,6 +109,7 @@ export abstract class CommonModelBaseService {
 SELECT DISTINCT ON (remote_id) * FROM ${tempTable}
 ON CONFLICT (connection_id, remote_id)
 DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
+      logger.info({ connectionId, customerId, table }, 'Copying from temp table to main table [COMPLETED]');
 
       return {
         maxLastModifiedAt,
