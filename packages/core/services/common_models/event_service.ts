@@ -164,7 +164,8 @@ export class EventService extends CommonModelBaseService {
   public async upsertRemoteEvents(
     connectionId: string,
     customerId: string,
-    remoteEventsReadable: Readable
+    remoteEventsReadable: Readable,
+    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = `${schemaPrefix}crm_events`;
     const tempTable = 'crm_events_temp';
@@ -202,7 +203,8 @@ export class EventService extends CommonModelBaseService {
       (remoteEvent) =>
         new Date(
           Math.max(remoteEvent.remoteUpdatedAt?.getTime() || 0, remoteEvent.detectedOrRemoteDeletedAt?.getTime() || 0)
-        )
+        ),
+      onUpsertBatchCompletion
     );
   }
 

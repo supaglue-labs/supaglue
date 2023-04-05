@@ -176,7 +176,8 @@ export class ContactService extends CommonModelBaseService {
   public async upsertRemoteContacts(
     connectionId: string,
     customerId: string,
-    remoteContactsReadable: Readable
+    remoteContactsReadable: Readable,
+    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES['contacts'];
     const tempTable = 'crm_contacts_temp';
@@ -216,7 +217,8 @@ export class ContactService extends CommonModelBaseService {
             remoteContact.remoteUpdatedAt?.getTime() || 0,
             remoteContact.detectedOrRemoteDeletedAt?.getTime() || 0
           )
-        )
+        ),
+      onUpsertBatchCompletion
     );
   }
 

@@ -59,7 +59,8 @@ export function createImportRecords(
         result = await accountService.upsertRemoteAccounts(
           connection.id,
           connection.customerId,
-          toHeartbeatingReadable(readable)
+          toHeartbeatingReadable(readable),
+          onUpsertBatchCompletion
         );
         break;
       }
@@ -68,7 +69,8 @@ export function createImportRecords(
         result = await contactService.upsertRemoteContacts(
           connection.id,
           connection.customerId,
-          toHeartbeatingReadable(readable)
+          toHeartbeatingReadable(readable),
+          onUpsertBatchCompletion
         );
         break;
       }
@@ -77,7 +79,8 @@ export function createImportRecords(
         result = await opportunityService.upsertRemoteOpportunities(
           connection.id,
           connection.customerId,
-          toHeartbeatingReadable(readable)
+          toHeartbeatingReadable(readable),
+          onUpsertBatchCompletion
         );
         break;
       }
@@ -86,7 +89,8 @@ export function createImportRecords(
         result = await leadService.upsertRemoteLeads(
           connection.id,
           connection.customerId,
-          toHeartbeatingReadable(readable)
+          toHeartbeatingReadable(readable),
+          onUpsertBatchCompletion
         );
         break;
       }
@@ -95,7 +99,8 @@ export function createImportRecords(
         result = await userService.upsertRemoteUsers(
           connection.id,
           connection.customerId,
-          toHeartbeatingReadable(readable)
+          toHeartbeatingReadable(readable),
+          onUpsertBatchCompletion
         );
         break;
       }
@@ -104,7 +109,8 @@ export function createImportRecords(
         result = await eventService.upsertRemoteEvents(
           connection.id,
           connection.customerId,
-          toHeartbeatingReadable(readable)
+          toHeartbeatingReadable(readable),
+          onUpsertBatchCompletion
         );
         break;
       }
@@ -140,4 +146,8 @@ function toHeartbeatingReadable(readable: Readable): Readable {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     () => {}
   );
+}
+
+function onUpsertBatchCompletion(offset: number, numRecords: number) {
+  Context.current().heartbeat();
 }
