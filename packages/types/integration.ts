@@ -2,19 +2,12 @@ import { IntegrationCategory } from './common';
 import { CRMProviderName } from './crm';
 import { SyncConfig } from './sync_config';
 
-export type BaseIntegration = {
+export type CRMIntegration = {
   id: string;
   applicationId: string;
   authType: 'oauth2';
   category: IntegrationCategory;
   providerName: CRMProviderName;
-};
-
-export type IncompleteCRMIntegration = BaseIntegration & {
-  config?: IntegrationConfigDecrypted;
-};
-
-export type CRMIntegration = IncompleteCRMIntegration & {
   config: IntegrationConfigDecrypted;
 };
 
@@ -45,13 +38,8 @@ export type OauthCredentials = {
   oauthClientSecret: string;
 };
 
-type BaseCRMIntegrationCreateParams = Omit<IncompleteCRMIntegration, 'id'>;
 // TODO: Update params should not contain applicationId even if create params does.
-type BaseCRMIntegrationUpdateParams = Omit<IncompleteCRMIntegration, 'id'>;
-export type CRMIntegrationCreateParams = BaseCRMIntegrationCreateParams;
-export type CRMIntegrationUpdateParams = BaseCRMIntegrationUpdateParams;
+export type CRMIntegrationCreateParams = Omit<CRMIntegration, 'id'>;
+export type CRMIntegrationUpdateParams = Omit<CRMIntegration, 'id'>;
 
-export type CompleteIntegration = CRMIntegration;
-export type IncompleteIntegration = IncompleteCRMIntegration;
-
-export type Integration = CompleteIntegration | IncompleteIntegration;
+export type Integration = CRMIntegration;

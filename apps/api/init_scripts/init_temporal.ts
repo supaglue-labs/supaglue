@@ -1,4 +1,4 @@
-import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES_AND_TYPES } from '@/temporal/index';
+import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES_AND_TYPES } from '@supaglue/core/temporal';
 import { Connection } from '@temporalio/client';
 
 const TEMPORAL_ADDRESS =

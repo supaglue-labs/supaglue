@@ -13,6 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import pinoHttp from 'pino-http';
 import { v4 as uuidv4 } from 'uuid';
+import { getDependencyContainer } from './dependency_container';
 import { posthogErrorMiddleware, posthogMiddleware } from './lib/posthog';
 
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
@@ -106,6 +107,12 @@ app.use(
 app.use(posthogMiddleware);
 
 initRoutes(app);
+
+// init the processSyncChanges schedule
+const { connectionAndSyncService } = getDependencyContainer();
+connectionAndSyncService.createProcessSyncChangesTemporalScheduleIfNotExist().catch((err) => {
+  logger.error(err);
+});
 
 // error handling middlewares
 app.use(posthogErrorMiddleware);

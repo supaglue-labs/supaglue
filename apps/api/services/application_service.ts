@@ -3,15 +3,12 @@ import { cryptoHash, generateApiKey } from '@supaglue/core/lib/crypt';
 import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
 import { Application, ApplicationUpdateParams, ApplicationUpsertParams } from '@supaglue/types';
-import { SyncService } from './sync_service';
 
 export class ApplicationService {
   #prisma: PrismaClient;
-  #syncService: SyncService;
 
-  constructor(prisma: PrismaClient, syncService: SyncService) {
+  constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
-    this.#syncService = syncService;
   }
 
   public async getById(id: string): Promise<Application> {
@@ -134,15 +131,13 @@ export class ApplicationService {
   }
 
   public async delete(id: string, orgId: string): Promise<void> {
+    // TODO: Temporarily disabling this because we cascade delete sync table
+    // when we delete applications, and that doesn't add to sync_changes table,
+    // so we don't know to clean up ongoing Temporal sync schedules/workflows.
+    throw new Error('Not implemented');
+
     // Check that org matches
     await this.getByIdAndOrgId(id, orgId);
-
-    // Clean up the Temporal schedules and workflows
-    // TODO: It's possible that after we delete the schedules and workflows, somebody creates a new sync
-    // and we leave the orphaned sync behind when we cascade-delete the application (which cascades to the syncs).
-    // Later, we might consider running this in a workflow or do some eventual consistency thing.
-    await this.#syncService.cleanUpSyncsForApplication(id);
-
     await this.#prisma.application.delete({ where: { id } });
   }
 }

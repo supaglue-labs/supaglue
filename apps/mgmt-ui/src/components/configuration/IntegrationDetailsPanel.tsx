@@ -55,6 +55,8 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
       const newIntegration: Integration = {
         ...integration,
         config: {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           providerAppId: '', // TODO: add input field for this
           ...integration?.config,
           oauth: {

@@ -81,7 +81,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ template "supaglue.secretName" }}
-                  key: {{ .Values.secretKeys.databaseUrl }}
+                  key: {{ default "sync-worker-database-url" .Values.secretKeys.syncWorkerDatabaseUrl }}
             - name: SUPAGLUE_DEPLOYMENT_ID
               value: {{ include "supaglue.deploymentId" . }}
             {{- with .Values.syncWorker.env }}

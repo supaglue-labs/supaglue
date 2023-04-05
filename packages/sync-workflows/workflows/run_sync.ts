@@ -121,14 +121,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'full',
         status: 'in progress',
-        maxLastModifiedAtMsMap: {
-          account: 0,
-          lead: 0,
-          opportunity: 0,
-          contact: 0,
-          user: 0,
-          event: 0,
-        },
+        maxLastModifiedAtMsMap: defaultMaxLastModifiedAtMsMap,
       },
     });
 
@@ -162,7 +155,10 @@ async function doFullThenIncrementalSync({
       },
     });
 
-    await populateAssociations({ connectionId: sync.connectionId });
+    await populateAssociations({
+      connectionId: sync.connectionId,
+      originalMaxLastModifiedAtMsMap: defaultMaxLastModifiedAtMsMap,
+    });
 
     await updateSyncState({
       syncId: sync.id,
@@ -183,17 +179,19 @@ async function doFullThenIncrementalSync({
       // TODO: we shouldn't need to do this, since it's not possible to
       // start the incremental phase if the full phase hasn't been completed.
       if (sync.state.phase === 'created') {
-        return {
-          account: 0,
-          lead: 0,
-          opportunity: 0,
-          contact: 0,
-          user: 0,
-          event: 0,
-        };
+        return defaultMaxLastModifiedAtMsMap;
       }
 
-      return sync.state.maxLastModifiedAtMsMap;
+      // When we add a new common model, the old maxLastModifiedAtMsMap will be missing fields. We
+      // need to pull in the defaultMaxLastModifiedAtMsMap
+      return {
+        account: sync.state.maxLastModifiedAtMsMap['account'] ?? defaultMaxLastModifiedAtMsMap['account'],
+        lead: sync.state.maxLastModifiedAtMsMap['lead'] ?? defaultMaxLastModifiedAtMsMap['lead'],
+        opportunity: sync.state.maxLastModifiedAtMsMap['opportunity'] ?? defaultMaxLastModifiedAtMsMap['opportunity'],
+        contact: sync.state.maxLastModifiedAtMsMap['contact'] ?? defaultMaxLastModifiedAtMsMap['contact'],
+        user: sync.state.maxLastModifiedAtMsMap['user'] ?? defaultMaxLastModifiedAtMsMap['user'],
+        event: sync.state.maxLastModifiedAtMsMap['event'] ?? defaultMaxLastModifiedAtMsMap['event'],
+      };
     }
 
     function computeUpdatedMaxLastModifiedAtMsMap(
@@ -249,7 +247,10 @@ async function doFullThenIncrementalSync({
       },
     });
 
-    await populateAssociations({ connectionId: sync.connectionId });
+    await populateAssociations({
+      connectionId: sync.connectionId,
+      originalMaxLastModifiedAtMsMap: getOriginalMaxLastModifiedAtMsMap(),
+    });
 
     await updateSyncState({
       syncId: sync.id,
@@ -288,3 +289,12 @@ async function doReverseThenForwardSync({
 }): Promise<Record<CommonModel, number>> {
   throw ApplicationFailure.nonRetryable('reverse then forward sync not currently supported');
 }
+
+const defaultMaxLastModifiedAtMsMap = {
+  account: 0,
+  lead: 0,
+  opportunity: 0,
+  contact: 0,
+  user: 0,
+  event: 0,
+};

@@ -1,7 +1,7 @@
 import {
   AccountCreateParams,
-  CompleteIntegration,
   CRMConnectionUnsafe,
+  Integration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -116,7 +116,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): PipedriveClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: Integration): PipedriveClient {
   return new PipedriveClient();
 }
 

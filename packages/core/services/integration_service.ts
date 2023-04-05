@@ -10,6 +10,13 @@ export class IntegrationService {
     this.#prisma = prisma;
   }
 
+  public async getByIds(ids: string[]): Promise<Integration[]> {
+    const integrations = await this.#prisma.integration.findMany({
+      where: { id: { in: ids } },
+    });
+    return integrations.map(fromIntegrationModel);
+  }
+
   public async getById(id: string): Promise<Integration> {
     const integration = await this.#prisma.integration.findUnique({
       where: { id },

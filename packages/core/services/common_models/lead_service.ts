@@ -185,12 +185,17 @@ export class LeadService extends CommonModelBaseService {
     );
   }
 
-  public async updateDanglingAccounts(connectionId: string): Promise<void> {
+  public async updateDanglingAccounts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
     await this.prisma.crmLead.updateMany({
       where: {
+        // Only update accounts for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         convertedRemoteAccountId: null,
         convertedAccountId: {
           not: null,
@@ -207,6 +212,7 @@ export class LeadService extends CommonModelBaseService {
       FROM ${accountsTable} a
       WHERE
         l.connection_id = '${connectionId}'
+        AND l.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND l.connection_id = a.connection_id
         AND l.converted_account_id IS NULL
         AND l._converted_remote_account_id IS NOT NULL
@@ -214,12 +220,17 @@ export class LeadService extends CommonModelBaseService {
       `);
   }
 
-  public async updateDanglingContacts(connectionId: string): Promise<void> {
+  public async updateDanglingContacts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
     const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
 
     await this.prisma.crmLead.updateMany({
       where: {
+        // Only update contacts for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         convertedRemoteContactId: null,
         convertedContactId: {
           not: null,
@@ -236,6 +247,7 @@ export class LeadService extends CommonModelBaseService {
       FROM ${contactsTable} c
       WHERE
         l.connection_id = '${connectionId}'
+        AND l.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND l.connection_id = c.connection_id
         AND l.converted_contact_id IS NULL
         AND l._converted_remote_contact_id IS NOT NULL
@@ -243,12 +255,17 @@ export class LeadService extends CommonModelBaseService {
       `);
   }
 
-  public async updateDanglingOwners(connectionId: string): Promise<void> {
+  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
 
     await this.prisma.crmLead.updateMany({
       where: {
+        // Only update leads for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteOwnerId: null,
         ownerId: {
           not: null,
@@ -265,6 +282,7 @@ export class LeadService extends CommonModelBaseService {
       FROM ${usersTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.owner_id IS NULL
         AND c._remote_owner_id IS NOT NULL

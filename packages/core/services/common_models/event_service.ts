@@ -206,12 +206,17 @@ export class EventService extends CommonModelBaseService {
     );
   }
 
-  public async updateDanglingOwners(connectionId: string): Promise<void> {
+  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const eventsTable = COMMON_MODEL_DB_TABLES['events'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
 
     await this.prisma.crmEvent.updateMany({
       where: {
+        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteOwnerId: null,
         ownerId: {
           not: null,
@@ -228,6 +233,7 @@ export class EventService extends CommonModelBaseService {
       FROM ${usersTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.owner_id IS NULL
         AND c._remote_owner_id IS NOT NULL
@@ -235,12 +241,17 @@ export class EventService extends CommonModelBaseService {
       `);
   }
 
-  public async updateDanglingAccounts(connectionId: string): Promise<void> {
+  public async updateDanglingAccounts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const eventsTable = COMMON_MODEL_DB_TABLES['events'];
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
     await this.prisma.crmEvent.updateMany({
       where: {
+        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteAccountId: null,
         accountId: {
           not: null,
@@ -257,6 +268,7 @@ export class EventService extends CommonModelBaseService {
       FROM ${accountsTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.account_id IS NULL
         AND c._remote_account_id IS NOT NULL
@@ -264,12 +276,17 @@ export class EventService extends CommonModelBaseService {
       `);
   }
 
-  public async updateDanglingContacts(connectionId: string): Promise<void> {
+  public async updateDanglingContacts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const eventsTable = COMMON_MODEL_DB_TABLES['events'];
     const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
 
     await this.prisma.crmEvent.updateMany({
       where: {
+        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteContactId: null,
         contactId: {
           not: null,
@@ -286,6 +303,7 @@ export class EventService extends CommonModelBaseService {
       FROM ${contactsTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.contact_id IS NULL
         AND c._remote_contact_id IS NOT NULL
@@ -293,12 +311,17 @@ export class EventService extends CommonModelBaseService {
       `);
   }
 
-  public async updateDanglingLeads(connectionId: string): Promise<void> {
+  public async updateDanglingLeads(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const eventsTable = COMMON_MODEL_DB_TABLES['events'];
     const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
 
     await this.prisma.crmEvent.updateMany({
       where: {
+        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteLeadId: null,
         leadId: {
           not: null,
@@ -315,6 +338,7 @@ export class EventService extends CommonModelBaseService {
       FROM ${leadsTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.lead_id IS NULL
         AND c._remote_lead_id IS NOT NULL
@@ -322,12 +346,17 @@ export class EventService extends CommonModelBaseService {
       `);
   }
 
-  public async updateDanglingOpportunities(connectionId: string): Promise<void> {
+  public async updateDanglingOpportunities(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const eventsTable = COMMON_MODEL_DB_TABLES['events'];
     const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
 
     await this.prisma.crmEvent.updateMany({
       where: {
+        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteOpportunityId: null,
         opportunityId: {
           not: null,
@@ -344,6 +373,7 @@ export class EventService extends CommonModelBaseService {
       FROM ${opportunitiesTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.opportunity_id IS NULL
         AND c._remote_opportunity_id IS NOT NULL

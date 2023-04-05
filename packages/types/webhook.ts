@@ -20,6 +20,7 @@ export type ConnectionWebhookPayload = ConnectionCreateParams;
 export type SyncWebhookPayload = {
   connectionId: string;
   customerId: string;
+  providerName: string;
   historyId: string;
   numRecordsSynced: number;
   commonModel: CommonModel;

@@ -16,6 +16,11 @@ export const fromIntegrationModel = ({
   providerName,
   config,
 }: IntegrationModel): Integration => {
+  // TODO: We should update the prisma schema
+  if (!config) {
+    throw new Error('Integration config is missing');
+  }
+
   return {
     id,
     applicationId,
@@ -26,9 +31,9 @@ export const fromIntegrationModel = ({
   };
 };
 
-export const fromIntegrationConfigModel = (config: Prisma.JsonValue | null): IntegrationConfigDecrypted | undefined => {
+export const fromIntegrationConfigModel = (config: Prisma.JsonValue): IntegrationConfigDecrypted => {
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
-    return;
+    throw new Error('Integration config is missing');
   }
   const integrationConfig = config as unknown as IntegrationConfigEncrypted;
   return {

@@ -4,8 +4,8 @@
 
 import {
   AccountCreateParams,
-  CompleteIntegration,
   CRMConnectionUnsafe,
+  Integration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -566,7 +566,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 }
 
 // TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnectionUnsafe, integration: CompleteIntegration): SalesforceClient {
+export function newClient(connection: CRMConnectionUnsafe, integration: Integration): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,

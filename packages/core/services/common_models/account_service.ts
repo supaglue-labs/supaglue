@@ -207,12 +207,17 @@ export class AccountService extends CommonModelBaseService {
     );
   }
 
-  public async updateDanglingOwners(connectionId: string): Promise<void> {
+  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
 
     await this.prisma.crmAccount.updateMany({
       where: {
+        // Only update accounts for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteOwnerId: null,
         ownerId: {
           not: null,
@@ -229,6 +234,7 @@ export class AccountService extends CommonModelBaseService {
       FROM ${usersTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.owner_id IS NULL
         AND c._remote_owner_id IS NOT NULL

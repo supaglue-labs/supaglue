@@ -21,6 +21,10 @@ syncWorker:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  db:
+    parameters:
+      connectionLimit: 5 # prisma defaults to num_cpu * 2 + 1
+      poolTimeout: 10 # primsa default is 10 secs
 
 management:
   enabled: true
@@ -69,6 +73,10 @@ api:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  db:
+    parameters:
+      connectionLimit: 5 # prisma defaults to num_cpu * 2 + 1
+      poolTimeout: 10 # primsa default is 10 secs
   ingressHosts: []
   #  - "supaglue.domain.com"
 
@@ -102,6 +110,8 @@ existingSecret: ~
 
 secretKeys:
   databaseUrl: database-url
+  apiDatabaseUrl: api-database-url
+  syncWorkerDatabaseUrl: sync-worker-database-url
   dbEncryptionSecret: db-encryption-secret
   apiKeySalt: api-key-salt
   jwtSecret: jwt-secret

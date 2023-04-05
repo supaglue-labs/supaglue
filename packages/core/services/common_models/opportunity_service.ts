@@ -225,12 +225,17 @@ export class OpportunityService extends CommonModelBaseService {
     );
   }
 
-  public async updateDanglingAccounts(connectionId: string): Promise<void> {
+  public async updateDanglingAccounts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
     const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
 
     await this.prisma.crmOpportunity.updateMany({
       where: {
+        // Only update opportunities for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteAccountId: null,
         accountId: {
           not: null,
@@ -247,6 +252,7 @@ export class OpportunityService extends CommonModelBaseService {
       FROM ${accountsTable} a
       WHERE
         o.connection_id = '${connectionId}'
+        AND o.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND o.connection_id = a.connection_id
         AND o.account_id IS NULL
         AND o._remote_account_id IS NOT NULL
@@ -254,12 +260,17 @@ export class OpportunityService extends CommonModelBaseService {
       `);
   }
 
-  public async updateDanglingOwners(connectionId: string): Promise<void> {
+  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
     const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
     const usersTable = COMMON_MODEL_DB_TABLES['users'];
 
     await this.prisma.crmOpportunity.updateMany({
       where: {
+        // Only update opportunities for the given connection and that have been updated since the last sync (to be more efficient).
+        connectionId,
+        lastModifiedAt: {
+          gt: startingLastModifiedAt,
+        },
         remoteOwnerId: null,
         ownerId: {
           not: null,
@@ -276,6 +287,7 @@ export class OpportunityService extends CommonModelBaseService {
       FROM ${usersTable} u
       WHERE
         c.connection_id = '${connectionId}'
+        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
         AND c.connection_id = u.connection_id
         AND c.owner_id IS NULL
         AND c._remote_owner_id IS NOT NULL
