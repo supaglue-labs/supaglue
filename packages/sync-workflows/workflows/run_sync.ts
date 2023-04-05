@@ -1,7 +1,7 @@
 import { CommonModel } from '@supaglue/types/common';
 import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
 import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/types/sync';
-import { ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
+import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
 import { ImportRecordsResult } from '../activities/import_records';
 import type { createActivities } from '../activities/index';
@@ -68,12 +68,13 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
         break;
     }
   } catch (err: any) {
+    const errorMessage = getErrorMessage(err);
     await Promise.all(
       CRM_COMMON_MODELS.map(async (commonModel) => {
         await logSyncFinish({
           historyId: historyIdsMap[commonModel],
           status: 'FAILURE',
-          errorMessage: err.message ?? 'Unknown error',
+          errorMessage,
         });
         await maybeSendSyncFinishWebhook({
           historyId: historyIdsMap[commonModel],
@@ -82,7 +83,7 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
           // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
           numRecordsSynced: 0,
           commonModel,
-          errorMessage: err.message ?? 'Unknown error',
+          errorMessage,
         });
       })
     );
@@ -297,4 +298,14 @@ const defaultMaxLastModifiedAtMsMap = {
   contact: 0,
   user: 0,
   event: 0,
+};
+
+const getErrorMessage = (err: Error): string => {
+  if (err instanceof ActivityFailure) {
+    return err.failure?.cause?.message ?? 'Unknown error';
+  }
+  if (err instanceof ApplicationFailure) {
+    return err.failure?.message ?? 'Unknown error';
+  }
+  return err.message ?? 'Unknown error';
 };
