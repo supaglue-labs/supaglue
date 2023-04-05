@@ -80,6 +80,21 @@ and we want to make sure that the component is included in the name.
 {{- printf "postgres://%s:%s@%s:%s/%s" $username $password $host $port $database -}}
 {{- end -}}
 
+{{- define "supaglue.syncWorker.databaseUrl" -}}
+{{- $databaseUrl := include "supaglue.databaseUrl" . -}}
+{{- $connectionLimit := default 5 ((.Values.syncWorker.db).parameters).connectionLimit -}}
+{{- $poolTimeout := default 10 ((.Values.syncWorker.db).parameters).poolTimeout -}}
+{{- printf "%s?connection_limit=%d&pool_timeout=%d" $databaseUrl $connectionLimit $poolTimeout -}}
+{{- end -}}
+
+{{- define "supaglue.api.databaseUrl" -}}
+{{- $databaseUrl := include "supaglue.databaseUrl" . -}}
+{{- $connectionLimit := default 5 ((.Values.api.db).parameters).connectionLimit -}}
+{{- $poolTimeout := default 10 ((.Values.api.db).parameters).poolTimeout -}}
+{{- printf "%s?connection_limit=%d&pool_timeout=%d" $databaseUrl $connectionLimit $poolTimeout -}}
+{{- end -}}
+
+
 {{- define "supaglue.secretName" -}}
 {{- if .Values.existingSecret -}}
     {{- printf "%s" (tpl .Values.existingSecret $) -}}
