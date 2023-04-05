@@ -9,17 +9,26 @@ import type { createActivities } from '../activities/index';
 const { importRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '30 seconds',
+  retry: {
+    maximumAttempts: 3,
+  },
 });
 
 const { populateAssociations } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '1 minute',
+  retry: {
+    maximumAttempts: 3,
+  },
 });
 
 const { getSync, updateSyncState, logSyncStart, logSyncFinish, maybeSendSyncFinishWebhook } = proxyActivities<
   ReturnType<typeof createActivities>
 >({
   startToCloseTimeout: '30 second',
+  retry: {
+    maximumAttempts: 3,
+  },
 });
 
 export const getRunSyncScheduleId = (syncId: string): string => `run-sync-${syncId}`;

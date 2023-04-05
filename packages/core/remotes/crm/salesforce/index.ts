@@ -21,6 +21,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
 } from '@supaglue/types';
+import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { PassThrough, pipeline, Readable, Transform } from 'stream';
@@ -152,6 +153,15 @@ const propertiesToFetch = {
   ],
 };
 
+const ASYNC_RETRY_OPTIONS = {
+  // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
+  // and will know that this activity is making progress.
+  forever: true,
+  factor: 2,
+  minTimeout: 1000,
+  maxTimeout: 60 * 1000,
+};
+
 // this is incomplete; it only includes the fields that we need to use
 type SalesforceBulk2QueryJob = {
   id: string;
@@ -231,41 +241,42 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     this.emit('token_refreshed', token.access_token, null);
   }
 
+  async #fetchImpl(path: string, init: RequestInit) {
+    return await fetch(`${this.#instanceUrl}${path}`, {
+      ...init,
+      headers: {
+        ...init.headers,
+        ...this.getAuthHeadersForPassthroughRequest(),
+      },
+    });
+  }
+
   async #fetch(path: string, init: RequestInit): Promise<ReturnType<typeof fetch>> {
-    const helper = async () => {
-      return await fetch(`${this.#instanceUrl}${path}`, {
-        ...init,
-        headers: {
-          ...init.headers,
-          ...this.getAuthHeadersForPassthroughRequest(),
-        },
-      });
-    };
+    const helper = async (bail: (e: Error) => void) => {
+      let response = await this.#fetchImpl(path, init);
 
-    const response = await helper();
-
-    // Only try to refresh token once (to avoid infinite loop).
-    // TODO: Clean up this code a bit.
-    // TODO: We should consider having a global singleton to do a single token refresh rather
-    //       than many concurrent ones.
-    // TODO: Check on `jsforce` periodically to see if we can just use that library instead
-    // of writing this ourselves. For now, we are writing ourselves due to issue with hanging
-    // CSV download for bulk 2.0 with large loads and also more future control of rate limits,
-    // etc.
-    if (response.status === 401) {
-      await this.#refreshAccessToken();
-      const response = await helper();
-      if (response.status !== 200) {
-        throw new Error(`Status code ${response.status} when calling salesforce API`);
+      // Only try to refresh token once (to avoid infinite loop).
+      // TODO: Clean up this code a bit.
+      // TODO: We should consider having a global singleton to do a single token refresh rather
+      //       than many concurrent ones.
+      // TODO: Check on `jsforce` periodically to see if we can just use that library instead
+      // of writing this ourselves. For now, we are writing ourselves due to issue with hanging
+      // CSV download for bulk 2.0 with large loads and also more future control of rate limits,
+      // etc.
+      if (response.status === 401) {
+        await this.#refreshAccessToken();
+        response = await this.#fetchImpl(path, init);
       }
-      return response;
-    }
 
-    if (response.status !== 200) {
-      throw new Error(`Status code ${response.status} when calling salesforce API`);
-    }
-
-    return response;
+      if (response.status === 200) {
+        return response;
+      }
+      if (response.status !== 249) {
+        bail(new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`));
+      }
+      throw new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`);
+    };
+    return await retry(helper, ASYNC_RETRY_OPTIONS);
   }
 
   async #submitBulk2QueryJob(soql: string): Promise<SalesforceBulk2QueryJob> {
