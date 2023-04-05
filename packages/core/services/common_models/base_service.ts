@@ -108,7 +108,7 @@ export abstract class CommonModelBaseService {
       const excludedColumnsToUpdate = columnsWithoutId.map((column) => `EXCLUDED.${column}`).join(',');
 
       // Paginate
-      const batchSize = 1;
+      const batchSize = 10000;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
         logger.info({ connectionId, customerId, table, offset }, 'Copying from temp table to main table [IN PROGRESS]');
         // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same remote_id
