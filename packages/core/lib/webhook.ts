@@ -14,10 +14,10 @@ export const sendWebhookPayload = async (
   // TODO: Make webhooks more durable
   try {
     const { url, requestType, headers } = config;
-    const axiosRequest = snakecaseKeys({
-      data: { type: payloadType, payload },
+    const axiosRequest = {
+      data: { type: payloadType, payload: snakecaseKeys(payload) },
       headers,
-    });
+    };
 
     switch (requestType) {
       case 'GET':
