@@ -70,11 +70,11 @@ export class SyncService {
     const syncChangeIds = syncChanges.map((syncChange) => syncChange.id);
 
     // Find out all the syncs that may have changed (for now, it's just created; syncs aren't updated).
-    const uniqueSyncIds = [...new Set(syncChanges.map((syncChange) => syncChange.syncId))];
+    const uniqueSyncChangeIds = [...new Set(syncChanges.map((syncChange) => syncChange.syncId))];
     const syncs = await this.#prisma.sync.findMany({
       where: {
         id: {
-          in: uniqueSyncIds,
+          in: uniqueSyncChangeIds,
         },
       },
       select: {
@@ -84,10 +84,8 @@ export class SyncService {
     });
 
     // Classify SyncChange into upserts and deletes
-    const syncIdsToDelete = uniqueSyncIds.filter((syncId) =>
-      syncChanges.some((syncChange) => syncChange.syncId === syncId)
-    );
-    const syncIdsToUpsert = uniqueSyncIds.filter((syncId) => !syncIdsToDelete.includes(syncId));
+    const syncIdsToDelete = uniqueSyncChangeIds.filter((syncId) => !syncs.some((sync) => sync.id === syncId));
+    const syncIdsToUpsert = uniqueSyncChangeIds.filter((syncId) => !syncIdsToDelete.includes(syncId));
 
     // Delete syncs
     await this.#deleteTemporalSyncs(syncIdsToDelete);
