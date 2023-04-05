@@ -11,13 +11,13 @@ const columns: GridColDef[] = [
     field: 'startTimestamp',
     headerName: 'Start Time',
     width: 180,
-    valueGetter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
+    valueFormatter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
   },
   {
     field: 'endTimestamp',
     headerName: 'End Time',
     width: 180,
-    valueGetter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
+    valueFormatter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
   },
   {
     field: 'errorMessage',
@@ -38,6 +38,11 @@ export default function LogsTable(props: LogsTableProps) {
       <DataGrid
         rows={data ?? []}
         columns={columns}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: 'startTimestamp', sort: 'desc' }],
+          },
+        }}
         sx={{
           boxShadow: 1,
           backgroundColor: 'white',
