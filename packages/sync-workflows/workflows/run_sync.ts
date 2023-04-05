@@ -112,14 +112,7 @@ async function doFullThenIncrementalSync({
       state: {
         phase: 'full',
         status: 'in progress',
-        maxLastModifiedAtMsMap: {
-          account: 0,
-          lead: 0,
-          opportunity: 0,
-          contact: 0,
-          user: 0,
-          event: 0,
-        },
+        maxLastModifiedAtMsMap: defaultMaxLastModifiedAtMsMap,
       },
     });
 
@@ -155,14 +148,7 @@ async function doFullThenIncrementalSync({
 
     await populateAssociations({
       connectionId: sync.connectionId,
-      originalMaxLastModifiedAtMsMap: {
-        account: 0,
-        lead: 0,
-        opportunity: 0,
-        contact: 0,
-        user: 0,
-        event: 0,
-      },
+      originalMaxLastModifiedAtMsMap: defaultMaxLastModifiedAtMsMap,
     });
 
     await updateSyncState({
@@ -184,17 +170,15 @@ async function doFullThenIncrementalSync({
       // TODO: we shouldn't need to do this, since it's not possible to
       // start the incremental phase if the full phase hasn't been completed.
       if (sync.state.phase === 'created') {
-        return {
-          account: 0,
-          lead: 0,
-          opportunity: 0,
-          contact: 0,
-          user: 0,
-          event: 0,
-        };
+        return defaultMaxLastModifiedAtMsMap;
       }
 
-      return sync.state.maxLastModifiedAtMsMap;
+      // TODO: When we add a new common model, the old maxLastModifiedAtMsMap will be missing fields. We
+      // need to pull in the defaultMaxLastModifiedAtMsMap
+      return {
+        ...defaultMaxLastModifiedAtMsMap,
+        ...sync.state.maxLastModifiedAtMsMap,
+      };
     }
 
     function computeUpdatedMaxLastModifiedAtMsMap(
@@ -292,3 +276,12 @@ async function doReverseThenForwardSync({
 }): Promise<Record<CommonModel, number>> {
   throw ApplicationFailure.nonRetryable('reverse then forward sync not currently supported');
 }
+
+const defaultMaxLastModifiedAtMsMap = {
+  account: 0,
+  lead: 0,
+  opportunity: 0,
+  contact: 0,
+  user: 0,
+  event: 0,
+};
