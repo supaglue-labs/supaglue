@@ -14,22 +14,25 @@ export const sendWebhookPayload = async (
   // TODO: Make webhooks more durable
   try {
     const { url, requestType, headers } = config;
-    const axiosRequest = {
-      data: { type: payloadType, payload: snakecaseKeys(payload) },
-      headers,
-    };
+    const data = { type: payloadType, payload: snakecaseKeys(payload) };
 
     switch (requestType) {
       case 'GET':
-        return await axios.get(url, axiosRequest);
+        return await axios.get(url, {
+          headers,
+          data,
+        });
       case 'POST':
-        return await axios.post(url, axiosRequest);
+        return await axios.post(url, data, { headers });
       case 'PATCH':
-        return await axios.patch(url, axiosRequest);
+        return await axios.patch(url, data, { headers });
       case 'PUT':
-        return await axios.put(url, axiosRequest);
+        return await axios.put(url, data, { headers });
       case 'DELETE':
-        return await axios.delete(url, axiosRequest);
+        return await axios.delete(url, {
+          headers,
+          data,
+        });
       default:
         throw new Error(`Unsupported requestType: ${requestType}`);
     }
