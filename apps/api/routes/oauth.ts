@@ -21,7 +21,7 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl } = req.query;
+      const { applicationId, customerId, providerName, returnUrl, loginUrl } = req.query;
 
       if (!applicationId) {
         throw new Error('Missing applicationId');
@@ -44,12 +44,19 @@ export default function init(app: Router): void {
       const { oauthScopes } = integration.config.oauth;
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
+      const auth = getConnectorAuthConfig(providerName);
+
+      if (loginUrl) {
+        auth.tokenHost = loginUrl;
+        auth.authorizeHost = loginUrl;
+      }
+
       const client = new simpleOauth2.AuthorizationCode({
         client: {
           id: oauthClientId,
           secret: oauthClientSecret,
         },
-        auth: getConnectorAuthConfig(providerName),
+        auth,
         options: {
           authorizationMethod: 'body' as AuthorizationMethod,
         },
@@ -67,6 +74,7 @@ export default function init(app: Router): void {
           customerId,
           providerName,
           scope: oauthScopes.join(' '), // TODO: this should be in a session
+          loginUrl,
         }),
         ...additionalAuthParams,
       });
@@ -94,12 +102,14 @@ export default function init(app: Router): void {
         providerName,
         customerId,
         applicationId,
+        loginUrl,
       }: {
         returnUrl: string;
         scope?: string;
         applicationId?: string;
         providerName?: CRMProviderName;
         customerId?: string;
+        loginUrl?: string;
       } = JSON.parse(decodeURIComponent(state));
 
       if (!providerName || !SUPPORTED_CRM_CONNECTIONS.includes(providerName)) {
@@ -126,12 +136,19 @@ export default function init(app: Router): void {
 
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
+      const auth = getConnectorAuthConfig(providerName);
+
+      if (loginUrl) {
+        auth.tokenHost = loginUrl;
+        auth.authorizeHost = loginUrl;
+      }
+
       const client = new simpleOauth2.AuthorizationCode({
         client: {
           id: oauthClientId,
           secret: oauthClientSecret,
         },
-        auth: getConnectorAuthConfig(providerName),
+        auth,
         options: {
           authorizationMethod: 'body' as AuthorizationMethod,
         },
