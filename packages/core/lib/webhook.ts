@@ -5,6 +5,8 @@ import { logger } from './logger';
 
 export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SYNC_SUCCESS' | 'SYNC_ERROR';
 
+const WEBHOOK_TIMEOUT = 5000;
+
 export const sendWebhookPayload = async (
   config: WebhookConfig,
   payloadType: WebhookPayloadType,
@@ -21,17 +23,19 @@ export const sendWebhookPayload = async (
         return await axios.get(url, {
           headers,
           data,
+          timeout: WEBHOOK_TIMEOUT,
         });
       case 'POST':
-        return await axios.post(url, data, { headers });
+        return await axios.post(url, data, { headers, timeout: WEBHOOK_TIMEOUT });
       case 'PATCH':
-        return await axios.patch(url, data, { headers });
+        return await axios.patch(url, data, { headers, timeout: WEBHOOK_TIMEOUT });
       case 'PUT':
-        return await axios.put(url, data, { headers });
+        return await axios.put(url, data, { headers, timeout: WEBHOOK_TIMEOUT });
       case 'DELETE':
         return await axios.delete(url, {
           headers,
           data,
+          timeout: WEBHOOK_TIMEOUT,
         });
       default:
         throw new Error(`Unsupported requestType: ${requestType}`);
