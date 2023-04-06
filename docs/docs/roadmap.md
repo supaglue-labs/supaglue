@@ -16,22 +16,24 @@ Our longer-term vision is to become the connected layer for all business applica
 
 In the coming weeks we plan to ship:
 
-- Client drivers
-- API logs
-- Metrics and alerting
-- Associated objects
-- CLI
-- Management portal
-- CDC event webhooks
-- Incremental reads
-- Sync configuration and throttling
+✅  Associated objects <br />
+✅  Management portal <br />
+✅  Incremental reads <br />
+🚧  Cloud / managed version of Supaglue <br />
+🚧  Support for tasks, notes, and events in common model <br />
+🚧  CDC event webhooks <br />
+🚧  Client drivers <br />
+🚧  API logs <br />
+🚧  Metrics and alerting <br />
+🚧  Sync configuration and throttling <br />
+🚧  Customizable common model
 
 ## Upcoming months / quarters
 
 We're also thinking about some longer-term projects:
 
+- CLI
 - Connector developer kit (CDK) for community contributed connectors
 - More Supaglue-supported connectors
-- Cloud / managed version of Supaglue
 
 If there's something you like or have an idea for a feature, join our [Slack](https://join.slack.com/t/supagluecommunity/shared_invite/zt-1o2hiozzl-ZRQswNzlT5W4sXwrQnVlDg) and let us know! We'd love to hear from you.
