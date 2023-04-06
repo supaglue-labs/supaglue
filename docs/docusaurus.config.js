@@ -187,10 +187,6 @@ const config = {
           {
             title: 'Connectors',
             items: [
-              // {
-              //   label: 'Blog',
-              //   to: '/blog',
-              // },
               {
                 label: 'HubSpot',
                 href: '/connectors/hubspot',
@@ -216,7 +212,7 @@ const config = {
                 href: '/connectors/copper',
               },
               {
-                label: 'ActiveCampaign',
+                label: 'Active Campaign',
                 href: '/connectors/activecampaign',
               },
             ],
