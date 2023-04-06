@@ -19,6 +19,7 @@ export type ConnectionWebhookPayload = ConnectionCreateParams;
 
 export type SyncWebhookPayload = {
   connectionId: string;
+  // This should be the external customer Id
   customerId: string;
   providerName: string;
   historyId: string;

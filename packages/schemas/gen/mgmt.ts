@@ -150,7 +150,10 @@ export interface components {
       integration_id: string;
       provider_name: components["schemas"]["provider_name"];
       category: components["schemas"]["category"];
-      /** @example 123456 */
+      /**
+       * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+       * @example 123456
+       */
       remote_id: string;
     };
     /** @enum {string} */
