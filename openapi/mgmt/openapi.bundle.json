@@ -1058,8 +1058,8 @@
           },
           "remote_id": {
             "type": "string",
-            "example": 123456,
-            "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL."
+            "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+            "example": 123456
           }
         },
         "required": [
