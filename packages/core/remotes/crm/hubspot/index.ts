@@ -174,11 +174,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   public async listAccounts(updatedAfter?: Date): Promise<Readable> {
     // TODO(585): Incremental uses the Search endpoint which doesn't allow for more than 10000 results. We need to introduce another layer of pagination.
     let impl = updatedAfter
-      ? this.#listAccountsIncrementalImpl.bind(this, updatedAfter)
+      ? this.#listAccountsIncrementalImpl.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT)
       : this.#listAccountsFullImpl.bind(this);
 
     if (updatedAfter) {
-      const response = await this.#listAccountsIncrementalImpl(updatedAfter);
+      const response = await this.#listAccountsIncrementalImpl(updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
         impl = this.#listAccountsFullImpl.bind(this);
       }
@@ -246,7 +246,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #listAccountsIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedCompaniesWithTotal> {
+  async #listAccountsIncrementalImpl(
+    updatedAfter: Date,
+    limit: number,
+    after?: string
+  ): Promise<HubspotPaginatedCompaniesWithTotal> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const companies = await this.#client.crm.companies.searchApi.doSearch({
@@ -268,7 +272,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
         ],
         properties: propertiesToFetch.company,
-        limit: HUBSPOT_RECORD_LIMIT,
+        limit,
         after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
       });
       return companies;
@@ -300,11 +304,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
     // TODO(585): Incremental uses the Search endpoint which doesn't allow for more than 10000 results. We need to introduce another layer of pagination.
     let impl = updatedAfter
-      ? this.#listOpportunitiesIncrementalImpl.bind(this, updatedAfter)
+      ? this.#listOpportunitiesIncrementalImpl.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT)
       : this.#listOpportunitiesFullImpl.bind(this);
 
     if (updatedAfter) {
-      const response = await this.#listOpportunitiesIncrementalImpl(updatedAfter);
+      const response = await this.#listOpportunitiesIncrementalImpl(updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
         impl = this.#listOpportunitiesFullImpl.bind(this);
       }
@@ -372,7 +376,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #listOpportunitiesIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedDealsWithTotal> {
+  async #listOpportunitiesIncrementalImpl(
+    updatedAfter: Date,
+    limit: number,
+    after?: string
+  ): Promise<HubspotPaginatedDealsWithTotal> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const response = await this.#client.crm.deals.searchApi.doSearch({
@@ -394,7 +402,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
         ],
         properties: propertiesToFetch.deal,
-        limit: HUBSPOT_RECORD_LIMIT,
+        limit,
         after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
       });
 
@@ -463,11 +471,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   public async listContacts(updatedAfter?: Date): Promise<Readable> {
     // TODO(585): Incremental uses the Search endpoint which doesn't allow for more than 10000 results. We need to introduce another layer of pagination.
     let impl = updatedAfter
-      ? this.#listContactsIncrementalImpl.bind(this, updatedAfter)
+      ? this.#listContactsIncrementalImpl.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT)
       : this.#listContactsFullImpl.bind(this);
 
     if (updatedAfter) {
-      const response = await this.#listContactsIncrementalImpl(updatedAfter);
+      const response = await this.#listContactsIncrementalImpl(updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
         impl = this.#listContactsFullImpl.bind(this);
       }
@@ -535,7 +543,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #listContactsIncrementalImpl(updatedAfter: Date, after?: string): Promise<HubspotPaginatedContactsWithTotal> {
+  async #listContactsIncrementalImpl(
+    updatedAfter: Date,
+    limit: number,
+    after?: string
+  ): Promise<HubspotPaginatedContactsWithTotal> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
 
@@ -559,7 +571,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           } as unknown as string, // hubspot sdk has wrong types
         ],
         properties: propertiesToFetch.contact,
-        limit: HUBSPOT_RECORD_LIMIT,
+        limit,
         after: after as unknown as number, // hubspot sdk has wrong types
       });
 
