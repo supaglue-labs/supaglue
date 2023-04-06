@@ -42,6 +42,7 @@ let coreDependencyContainer: CoreDependencyContainer | undefined = undefined;
 function createCoreDependencyContainer(): CoreDependencyContainer {
   const pgPool = new Pool({
     connectionString: process.env.SUPAGLUE_DATABASE_URL,
+    max: 5,
   });
 
   // mgmt

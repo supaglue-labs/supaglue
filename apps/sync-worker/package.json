@@ -1,6 +1,6 @@
 {
   "name": "sync-worker",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "@sentry/integrations": "^7.43.0",
