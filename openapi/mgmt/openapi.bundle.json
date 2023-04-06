@@ -528,7 +528,8 @@
                         "status": "available",
                         "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
                         "provider_name": "salesforce",
-                        "category": "crm"
+                        "category": "crm",
+                        "remote_id": "https://mycompany-dev-ed.develop.my.salesforce.com"
                       },
                       {
                         "id": "e888cedf-e9d0-42c5-9485-2d72984faef7",
@@ -1057,7 +1058,8 @@
           },
           "remote_id": {
             "type": "string",
-            "example": 123456
+            "example": 123456,
+            "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL."
           }
         },
         "required": [
