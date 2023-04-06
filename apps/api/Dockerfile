@@ -43,6 +43,7 @@ COPY --from=installer --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=installer --chown=nodejs:nodejs /app/apps/api/package.json .
 COPY --from=installer --chown=nodejs:nodejs /app/packages/core/dist ./node_modules/@supaglue/core
 COPY --from=installer --chown=nodejs:nodejs /app/packages/utils/dist ./node_modules/@supaglue/utils
+COPY --from=installer --chown=nodejs:nodejs /app/packages/types/dist ./node_modules/@supaglue/types
 COPY --from=installer --chown=nodejs:nodejs /app/packages/db/dist ./node_modules/@supaglue/db
 COPY --from=installer --chown=nodejs:nodejs /app/packages/db/node_modules ./node_modules/@supaglue/db/node_modules
 COPY --from=installer --chown=nodejs:nodejs /app/packages/db/prisma ./prisma
