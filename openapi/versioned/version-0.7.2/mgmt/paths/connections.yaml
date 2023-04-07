@@ -1,0 +1,44 @@
+get:
+  operationId: getConnections
+  tags:
+    - Connections
+  security:
+    - ApiKeyAuth: []
+  summary: List connections
+  description: >-
+    Get a list of connections
+  responses:
+    '200':
+      description: Connections
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/connection.yaml
+          examples:
+            Example:
+              value:
+                - id: 9572d08b-f19f-48cc-a992-1eb7031d3f6b
+                  application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+                  customer_id: my-customer-1
+                  status: available
+                  integration_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                  provider_name: salesforce
+                  category: crm
+                  remote_id: https://mycompany-dev-ed.develop.my.salesforce.com
+                - id: e888cedf-e9d0-42c5-9485-2d72984faef7
+                  application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+                  customer_id: my-customer-2
+                  status: available
+                  integration_id: db40a684-3150-46d2-bfd2-acb341a72681
+                  provider_name: hubspot 
+                  category: crm
+                  remote_id: 1234567
+parameters:
+  - name: customer_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
