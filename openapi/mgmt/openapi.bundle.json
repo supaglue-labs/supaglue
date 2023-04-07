@@ -940,51 +940,6 @@
           }
         }
       }
-    },
-    "/sync/_manually_clean_up_orphaned_temporal_syncs": {
-      "post": {
-        "operationId": "manuallyCleanUpOrphanedTemporalSyncs",
-        "tags": [
-          "Sync"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "Manually clean up orphaned temporal syncs",
-        "description": "Manually clean up orphaned temporal syncs",
-        "responses": {
-          "200": {
-            "description": "Clean Up Result",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "schedule_ids_deleted": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "workflow_ids_terminated": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "required": [
-                    "schedule_ids_deleted",
-                    "workflow_ids_terminated"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [],

@@ -101,13 +101,6 @@ export interface paths {
      */
     get: operations["getSyncInfos"];
   };
-  "/sync/_manually_clean_up_orphaned_temporal_syncs": {
-    /**
-     * Manually clean up orphaned temporal syncs 
-     * @description Manually clean up orphaned temporal syncs
-     */
-    post: operations["manuallyCleanUpOrphanedTemporalSyncs"];
-  };
 }
 
 export interface webhooks {
@@ -579,23 +572,6 @@ export interface operations {
       200: {
         content: {
           "application/json": (components["schemas"]["sync_info"])[];
-        };
-      };
-    };
-  };
-  manuallyCleanUpOrphanedTemporalSyncs: {
-    /**
-     * Manually clean up orphaned temporal syncs 
-     * @description Manually clean up orphaned temporal syncs
-     */
-    responses: {
-      /** @description Clean Up Result */
-      200: {
-        content: {
-          "application/json": {
-            schedule_ids_deleted: (string)[];
-            workflow_ids_terminated: (string)[];
-          };
         };
       };
     };
