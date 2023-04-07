@@ -4,6 +4,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import type { IntegrationService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
+import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
@@ -14,11 +15,13 @@ import {
 import {
   getRunSyncScheduleId,
   getRunSyncWorkflowId,
+  runSync,
   RUN_SYNC_PREFIX,
 } from '@supaglue/sync-workflows/workflows/run_sync';
 import { CRM_COMMON_MODELS, Sync, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParams,
+  ConnectionSafe,
   ConnectionStatus,
   ConnectionUnsafe,
   ConnectionUpsertParams,
@@ -27,6 +30,8 @@ import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info'
 import { Client, ScheduleAlreadyRunning, WorkflowNotFoundError } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 import type { ApplicationService } from './application_service';
+
+const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 
 export class ConnectionAndSyncService {
   #prisma: PrismaClient;
@@ -203,13 +208,19 @@ export class ConnectionAndSyncService {
     }
   }
 
-  public async manuallyCleanUpOrphanedTemporalSyncs(): Promise<{
+  public async manuallyFixTemporalSyncs(): Promise<{
     scheduleIdsDeleted: string[];
     workflowIdsTerminated: string[];
+    scheduleIdsCreated: string[];
   }> {
     // Find all the syncs in our DB
     // TODO: paginate
-    const syncs = await this.#prisma.sync.findMany();
+    const syncs = await this.#prisma.sync.findMany({
+      select: {
+        id: true,
+        connectionId: true,
+      },
+    });
     const expectedSyncIds = syncs.map((sync) => sync.id);
     const expectedScheduleIds = expectedSyncIds.map(getRunSyncScheduleId);
     const expectedWorkflowIdPrefixes = expectedSyncIds.map(getRunSyncWorkflowId);
@@ -249,10 +260,95 @@ export class ConnectionAndSyncService {
       }
     }
 
+    // Upsert schedules in case
+    const connectionIds = syncs.map((sync) => sync.connectionId);
+    const connections = await this.#connectionService.getSafeByIds(connectionIds);
+
+    // Get the integrations
+    const integrationIds = connections.map((connection) => connection.integrationId);
+    const integrations = await this.#integrationService.getByIds(integrationIds);
+
+    // Upsert schedules for all the syncs (currently ignores updating periodMs)
+    const scheduleIdsCreated: string[] = [];
+    for (const syncId of expectedSyncIds) {
+      const sync = syncs.find((sync) => sync.id === syncId);
+      if (!sync) {
+        throw new Error('Unexpected error: sync not found');
+      }
+      const connection = connections.find((connection) => connection.id === sync.connectionId);
+      if (!connection) {
+        throw new Error('Unexpected error: connection not found');
+      }
+      const integration = integrations.find((integration) => integration.id === connection.integrationId);
+      if (!integration) {
+        throw new Error('Unexpected error: integration not found');
+      }
+      const justCreated = await this.#createTemporalSyncIfNotExist(
+        syncId,
+        connection,
+        integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
+      );
+
+      if (justCreated) {
+        scheduleIdsCreated.push(getRunSyncScheduleId(syncId));
+      }
+    }
+
     return {
       scheduleIdsDeleted,
       workflowIdsTerminated,
+      scheduleIdsCreated,
     };
+  }
+
+  async #createTemporalSyncIfNotExist(
+    syncId: string,
+    connection: ConnectionSafe,
+    syncPeriodMs: number
+  ): Promise<boolean> {
+    try {
+      await this.#temporalClient.schedule.create({
+        scheduleId: getRunSyncScheduleId(syncId),
+        spec: {
+          intervals: [
+            {
+              every: syncPeriodMs,
+              // so that not everybody is refreshing and hammering the DB at the same time
+              offset: Math.random() * syncPeriodMs,
+            },
+          ],
+        },
+        action: {
+          type: 'startWorkflow',
+          workflowType: runSync,
+          workflowId: getRunSyncWorkflowId(syncId),
+          taskQueue: SYNC_TASK_QUEUE,
+          args: [{ syncId, connectionId: connection.id }],
+          searchAttributes: {
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
+            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+          },
+        },
+        state: {
+          triggerImmediately: true,
+        },
+      });
+    } catch (err: unknown) {
+      if (err instanceof ScheduleAlreadyRunning) {
+        // swallow
+        // TODO: Allow updating the schedule
+        return false;
+      }
+
+      throw err;
+    }
+
+    return true;
   }
 
   public async getSyncById(id: string): Promise<Sync> {
