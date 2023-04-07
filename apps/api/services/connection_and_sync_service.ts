@@ -11,7 +11,11 @@ import {
   PROCESS_SYNC_CHANGES_SCHEDULE_ID,
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
-import { getRunSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_sync';
+import {
+  getRunSyncScheduleId,
+  getRunSyncWorkflowId,
+  RUN_SYNC_PREFIX,
+} from '@supaglue/sync-workflows/workflows/run_sync';
 import { CRM_COMMON_MODELS, Sync, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParams,
@@ -20,7 +24,7 @@ import type {
   ConnectionUpsertParams,
 } from '@supaglue/types/connection';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
-import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
+import { Client, ScheduleAlreadyRunning, WorkflowNotFoundError } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 import type { ApplicationService } from './application_service';
 
@@ -197,6 +201,58 @@ export class ConnectionAndSyncService {
 
       throw err;
     }
+  }
+
+  public async manuallyCleanUpOrphanedTemporalSyncs(): Promise<{
+    scheduleIdsDeleted: string[];
+    workflowIdsTerminated: string[];
+  }> {
+    // Find all the syncs in our DB
+    // TODO: paginate
+    const syncs = await this.#prisma.sync.findMany();
+    const expectedSyncIds = syncs.map((sync) => sync.id);
+    const expectedScheduleIds = expectedSyncIds.map(getRunSyncScheduleId);
+    const expectedWorkflowIdPrefixes = expectedSyncIds.map(getRunSyncWorkflowId);
+
+    // List out all the schedules in Temporal
+    const scheduleIdsDeleted: string[] = [];
+    for await (const schedule of this.#temporalClient.schedule.list()) {
+      // If the corresponding sync is not in our DB, delete it
+      // TODO: for some reason `schedule.action` is undefined for `runSync` schedules, but not in tctl
+      if (schedule.scheduleId.startsWith(RUN_SYNC_PREFIX) && !expectedScheduleIds.includes(schedule.scheduleId)) {
+        const handle = this.#temporalClient.schedule.getHandle(schedule.scheduleId);
+        await handle.delete();
+        scheduleIdsDeleted.push(schedule.scheduleId);
+      }
+    }
+
+    // List out all the workflows in Temporal
+    const workflowIdsTerminated: string[] = [];
+    for await (const workflow of this.#temporalClient.workflow.list()) {
+      if (workflow.status.name !== 'RUNNING') {
+        continue;
+      }
+      // If the corresponding sync is not in our DB, delete it
+      if (
+        workflow.workflowId.startsWith(RUN_SYNC_PREFIX) &&
+        !expectedWorkflowIdPrefixes.some((prefix) => workflow.workflowId.startsWith(prefix))
+      ) {
+        const handle = this.#temporalClient.workflow.getHandle(workflow.workflowId);
+        try {
+          await handle.terminate('could not find corresponding sync in DB');
+          workflowIdsTerminated.push(workflow.workflowId);
+        } catch (err) {
+          if (err instanceof WorkflowNotFoundError) {
+            // swallow
+          }
+        }
+      }
+    }
+
+    return {
+      scheduleIdsDeleted,
+      workflowIdsTerminated,
+    };
   }
 
   public async getSyncById(id: string): Promise<Sync> {
