@@ -91,3 +91,9 @@ export type GetSyncHistoryQueryParams = Required<operations['getSyncHistory']>['
 export type GetSyncHistoryRequest = never;
 export type GetSyncHistoryResponse =
   operations['getSyncHistory']['responses'][keyof operations['getSyncHistory']['responses']]['content']['application/json'];
+
+export type ManuallyCleanUpOrphanedTemporalSyncsPathParams = never;
+export type ManuallyCleanUpOrphanedTemporalSyncsQueryParams = never;
+export type ManuallyCleanUpOrphanedTemporalSyncsRequest = never;
+export type ManuallyCleanUpOrphanedTemporalSyncsResponse =
+  operations['manuallyCleanUpOrphanedTemporalSyncs']['responses'][keyof operations['manuallyCleanUpOrphanedTemporalSyncs']['responses']]['content']['application/json'];

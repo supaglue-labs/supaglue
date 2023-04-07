@@ -3,6 +3,7 @@ import { openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
 import customer from './customer';
 import integration from './integration';
+import sync from './sync';
 import syncHistory from './sync_history';
 import syncInfo from './sync_info';
 import webhook from './webhook';
@@ -16,6 +17,7 @@ export default function init(app: Router): void {
   customer(v1Router);
   integration(v1Router);
   webhook(v1Router);
+  sync(v1Router);
   syncInfo(v1Router);
   syncHistory(v1Router);
 

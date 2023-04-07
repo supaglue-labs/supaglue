@@ -31,8 +31,9 @@ const { getSync, updateSyncState, logSyncStart, logSyncFinish, maybeSendSyncFini
   },
 });
 
-export const getRunSyncScheduleId = (syncId: string): string => `run-sync-${syncId}`;
-export const getRunSyncWorkflowId = (syncId: string): string => `run-sync-${syncId}`;
+export const RUN_SYNC_PREFIX = 'run-sync-';
+export const getRunSyncScheduleId = (syncId: string): string => `${RUN_SYNC_PREFIX}${syncId}`;
+export const getRunSyncWorkflowId = (syncId: string): string => `${RUN_SYNC_PREFIX}${syncId}`;
 
 export type RunSyncArgs = {
   syncId: string;
