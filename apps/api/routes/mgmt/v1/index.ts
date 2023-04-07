@@ -15,7 +15,7 @@ export default function init(app: Router): void {
   const v1Router = Router();
 
   v1Router.use(apiKeyHeaderMiddleware);
-  v1Router.post('/_manually_fix_temporal_syncs', async (req, res) => {
+  v1Router.post('/_manually_fix_syncs', async (req, res) => {
     const result = await connectionAndSyncService.manuallyFixTemporalSyncs();
     return res.status(200).send(snakecaseKeys(result));
   });
