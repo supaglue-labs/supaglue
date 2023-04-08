@@ -1,6 +1,8 @@
+import { getDependencyContainer } from '@/dependency_container';
 import { internalMiddleware } from '@/middleware/internal';
 import { internalApplicationMiddleware } from '@/middleware/internal_application';
 import { orgHeaderMiddleware } from '@/middleware/org';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Router } from 'express';
 import apiKey from './api_key';
 import application from './application';
@@ -11,10 +13,18 @@ import syncHistory from './sync_history';
 import syncInfo from './sync_info';
 import webhook from './webhook';
 
+const { connectionAndSyncService } = getDependencyContainer();
+
 export default function init(app: Router): void {
   // application routes should not require application header
   const v1ApplicationRouter = Router();
   v1ApplicationRouter.use(internalMiddleware);
+
+  v1ApplicationRouter.post('/_manually_fix_syncs', async (req, res) => {
+    const result = await connectionAndSyncService.manuallyFixTemporalSyncs();
+    return res.status(200).send(snakecaseKeys(result));
+  });
+
   v1ApplicationRouter.use(orgHeaderMiddleware);
 
   application(v1ApplicationRouter);
