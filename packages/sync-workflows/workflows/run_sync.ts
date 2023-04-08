@@ -89,7 +89,7 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
       })
     );
 
-    return;
+    throw err;
   }
 
   if (!numRecordsSyncedMap) {
