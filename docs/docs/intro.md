@@ -7,7 +7,7 @@ slug: /
 
 ## What is Supaglue?
 
-Supaglue is an open source unified API for CRMs. It handles authentication, caches and normalizes data from multiple CRM platforms, and provides a single set of API endpoints for reading and writing to those CRMs. Developers at B2B companies can use Supaglue to streamline and scale the work of building customer-facing CRM integrations.
+Supaglue is an open source unified API for CRMs. It handles authentication, caches and normalizes data from multiple CRM platforms, and provides a single set of API endpoints for reading and writing to those CRMs. Developers at B2B companies can use Supaglue to ship native, customer-facing CRM integrations in days.
 
 <figure>
 
@@ -18,7 +18,7 @@ Supaglue is an open source unified API for CRMs. It handles authentication, cach
 ## Features
 
 - **Unified API**: single developer interface to read from and write to multiple third-party providers.
-- **Common model**: a common data model for CRMs that has been standardized across multiple third-party providers.
+- **Common model**: a common data model for CRMs that normalizes core CRM entities and properties across multiple third-party providers.
 - **High performance**: query against synced data in your own cloud with no rate limits.
 - **Open source**: self-host and run Supaglue for free.
 - **Privacy-first**: prevent sensitive customer data from leaving your infrastructure.

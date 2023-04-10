@@ -1,16 +1,20 @@
+---
+sidebar_custom_props:
+  icon: /img/connector_icons/salesforce.png
+description: ''
+---
+
 # Salesforce
 
 ## Overview
 
-Supaglue interfaces with the Salesforce async Bulk 2.0 API using the JSforce client.
-
-Status: Alpha
+Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes       |
 | Reads: Full refresh        | Yes       |
-| Reads: Incremental refresh | No        |
+| Reads: Incremental refresh | Yes       |
 | Creates                    | Yes       |
 | Updates                    | Yes       |
 | Handles rate limits        | Yes       |
@@ -21,9 +25,4 @@ Supported object types:
 - Contact
 - Lead
 - Opportunity
-
-## Common Model sync frequencies
-
-_The default sync frequency is 15 minutes (900000 ms)._
-
-Sync frequencies can be configured by setting the `SUPAGLUE_SYNC_PERIOD_MS` environment variable defined in `.env`.
+- User

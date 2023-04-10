@@ -187,10 +187,6 @@ const config = {
           {
             title: 'Connectors',
             items: [
-              // {
-              //   label: 'Blog',
-              //   to: '/blog',
-              // },
               {
                 label: 'HubSpot',
                 href: '/connectors/hubspot',
@@ -208,10 +204,6 @@ const config = {
                 href: '/connectors/ms_dynamics_365_sales',
               },
               {
-                label: 'Zendesk Sell',
-                href: '/connectors/zendesk_sell',
-              },
-              {
                 label: 'Zoho CRM',
                 href: '/connectors/zoho_crm',
               },
@@ -220,24 +212,8 @@ const config = {
                 href: '/connectors/copper',
               },
               {
-                label: 'Keap',
-                href: '/connectors/keap',
-              },
-              {
-                label: 'Teamwork CRM',
-                href: '/connectors/teamwork_crm',
-              },
-              {
-                label: 'Freshsales',
-                href: '/connectors/freshsales',
-              },
-              {
-                label: 'ActiveCampaign',
+                label: 'Active Campaign',
                 href: '/connectors/activecampaign',
-              },
-              {
-                label: 'Capsule',
-                href: '/connectors/capsule',
               },
             ],
           },
