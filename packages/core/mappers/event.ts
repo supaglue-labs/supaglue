@@ -1,7 +1,44 @@
 import { Event, RemoteEvent } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { fromAccountModel, fromContactModel, fromLeadModel, fromOpportunityModel, fromUserModel } from '.';
+import {
+  fromAccountModel,
+  fromContactModel,
+  fromLeadModel,
+  fromOpportunityModel,
+  fromUserModel,
+  toSnakecasedKeysAccount,
+  toSnakecasedKeysContact,
+  toSnakecasedKeysLead,
+  toSnakecasedKeysOpportunity,
+  toSnakecasedKeysUser,
+} from '.';
 import { CrmEventExpanded } from '../types';
+
+export const toSnakecasedKeysEvent = (event: Event) => {
+  return {
+    id: event.id,
+    owner_id: event.ownerId,
+    owner: event.owner ? toSnakecasedKeysUser(event.owner) : undefined,
+    account_id: event.accountId,
+    account: event.account ? toSnakecasedKeysAccount(event.account) : undefined,
+    contact_id: event.contactId,
+    contact: event.contact ? toSnakecasedKeysContact(event.contact) : undefined,
+    lead_id: event.leadId,
+    lead: event.lead ? toSnakecasedKeysLead(event.lead) : undefined,
+    opportunity_id: event.opportunityId,
+    opportunity: event.opportunity ? toSnakecasedKeysOpportunity(event.opportunity) : undefined,
+    last_modified_at: event.lastModifiedAt,
+    remote_id: event.remoteId,
+    type: event.type,
+    subject: event.subject,
+    content: event.content,
+    start_time: event.startTime,
+    end_time: event.endTime,
+    remote_created_at: event.remoteCreatedAt,
+    remote_updated_at: event.remoteUpdatedAt,
+    remote_was_deleted: event.remoteWasDeleted,
+  };
+};
 
 export const fromEventModel = (
   {

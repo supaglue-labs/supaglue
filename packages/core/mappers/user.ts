@@ -2,6 +2,20 @@ import { CrmUser } from '@supaglue/db';
 import { RemoteUser, User } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 
+export const toSnakecasedKeysUser = (user: User) => {
+  return {
+    id: user.id,
+    last_modified_at: user.lastModifiedAt,
+    remote_id: user.remoteId,
+    name: user.name,
+    email: user.email,
+    is_active: user.isActive,
+    remote_created_at: user.remoteCreatedAt,
+    remote_updated_at: user.remoteUpdatedAt,
+    remote_was_deleted: user.remoteWasDeleted,
+  };
+};
+
 export const fromUserModel = ({
   id,
   remoteId,

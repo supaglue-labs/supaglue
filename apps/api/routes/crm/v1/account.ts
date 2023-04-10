@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toSnakecasedKeysAccount } from '@supaglue/core/mappers';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import {
   CreateAccountPathParams,
@@ -19,7 +20,6 @@ import {
 } from '@supaglue/schemas/crm';
 import { GetParams, ListParams } from '@supaglue/types';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
-import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { accountService } = getDependencyContainer();
@@ -43,9 +43,7 @@ export default function init(app: Router): void {
         toListInternalParams(req.query)
       );
 
-      const snakeCaseKeysResults = results.map((result) => {
-        return snakecaseKeys(result);
-      });
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysAccount);
 
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
@@ -58,7 +56,7 @@ export default function init(app: Router): void {
       res: Response<GetAccountResponse>
     ) => {
       const account = await accountService.getById(req.params.account_id, req.customerConnection.id, req.query);
-      return res.status(200).send(snakecaseKeys(account));
+      return res.status(200).send(toSnakecasedKeysAccount(account));
     }
   );
 
@@ -74,7 +72,7 @@ export default function init(app: Router): void {
         connectionId,
         camelcaseKeysSansCustomFields(req.body.model)
       );
-      return res.status(200).send({ model: snakecaseKeys(account) });
+      return res.status(200).send({ model: toSnakecasedKeysAccount(account) });
     }
   );
 
@@ -89,7 +87,7 @@ export default function init(app: Router): void {
         id: req.params.account_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
-      return res.status(200).send({ model: snakecaseKeys(account) });
+      return res.status(200).send({ model: toSnakecasedKeysAccount(account) });
     }
   );
 
@@ -105,9 +103,7 @@ export default function init(app: Router): void {
         req.body.filters
       );
 
-      const snakeCaseKeysResults = results.map((result) => {
-        return snakecaseKeys(result);
-      });
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysAccount);
 
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
