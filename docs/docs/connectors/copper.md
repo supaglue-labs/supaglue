@@ -10,8 +10,6 @@ description: ''
 
 Supaglue interfaces with the Copper V1 API.
 
-Status: Alpha
-
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | No        |

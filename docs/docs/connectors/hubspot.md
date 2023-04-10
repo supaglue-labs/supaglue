@@ -8,15 +8,13 @@ description: ''
 
 ## Overview
 
-Supaglue interfaces with the HubSpot V3 API using Hubspot's official nodejs client and its getAll() functionality.
-
-Status: Alpha
+Supaglue interfaces with the HubSpot V3 API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes       |
 | Reads: Full refresh        | Yes       |
-| Reads: Incremental refresh | No        |
+| Reads: Incremental refresh | Yes       |
 | Creates                    | Yes       |
 | Updates                    | Yes       |
 | Handles rate limits        | Yes       |
@@ -26,3 +24,4 @@ Supported object types:
 - Company
 - Contact
 - Deal
+- User

@@ -10,7 +10,6 @@ description: ''
 
 Supaglue interfaces with the ActiveCampaign V3 API.
 
-Status: Alpha
 
 | Feature                    | Available |
 | -------------------------- | --------- |

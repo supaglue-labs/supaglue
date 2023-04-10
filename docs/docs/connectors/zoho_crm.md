@@ -10,8 +10,6 @@ description: ''
 
 Supaglue interfaces with the Zoho REST V3 API.
 
-Status: Alpha
-
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes       |

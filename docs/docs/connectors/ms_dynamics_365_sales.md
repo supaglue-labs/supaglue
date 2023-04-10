@@ -10,8 +10,6 @@ description: ''
 
 Supaglue interfaces with the Microsoft Dynamics 365 V9 API.
 
-Status: Alpha
-
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes       |

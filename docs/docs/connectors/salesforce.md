@@ -8,15 +8,13 @@ description: ''
 
 ## Overview
 
-Supaglue interfaces with the Salesforce async Bulk 2.0 API using the JSforce client.
-
-Status: Alpha
+Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes       |
 | Reads: Full refresh        | Yes       |
-| Reads: Incremental refresh | No        |
+| Reads: Incremental refresh | Yes       |
 | Creates                    | Yes       |
 | Updates                    | Yes       |
 | Handles rate limits        | Yes       |
@@ -27,3 +25,4 @@ Supported object types:
 - Contact
 - Lead
 - Opportunity
+- User
