@@ -22,10 +22,15 @@ const { populateAssociations } = proxyActivities<ReturnType<typeof createActivit
   },
 });
 
-const { getSync, updateSyncState, logSyncStart, logSyncFinish, maybeSendSyncFinishWebhook } = proxyActivities<
-  ReturnType<typeof createActivities>
->({
-  startToCloseTimeout: '5 minute',
+const { getSync, updateSyncState, logSyncStart, logSyncFinish } = proxyActivities<ReturnType<typeof createActivities>>({
+  startToCloseTimeout: '10 second',
+  retry: {
+    maximumAttempts: 3,
+  },
+});
+
+const { maybeSendSyncFinishWebhook } = proxyActivities<ReturnType<typeof createActivities>>({
+  startToCloseTimeout: '6 minute',
   retry: {
     maximumAttempts: 3,
   },
