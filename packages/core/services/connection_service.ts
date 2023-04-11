@@ -66,6 +66,32 @@ export class ConnectionService {
     return connections.map((connection) => fromConnectionModelToConnectionSafe(connection));
   }
 
+  public async getSafeByCustomerIdAndApplicationIdAndProviderName({
+    customerId,
+    applicationId,
+    providerName,
+  }: {
+    customerId: string;
+    applicationId: string;
+    providerName: string;
+  }): Promise<ConnectionSafe> {
+    const connection = await this.#prisma.connection.findFirstOrThrow({
+      where: {
+        customerId,
+        integration: {
+          applicationId,
+          providerName,
+        },
+      },
+    });
+    if (!connection) {
+      throw new NotFoundError(
+        `Connection not found for customer: ${customerId} and application: ${applicationId} and provider: ${providerName}`
+      );
+    }
+    return fromConnectionModelToConnectionSafe(connection);
+  }
+
   public async getSafeByCustomerIdAndIntegrationId({
     customerId,
     integrationId,
@@ -73,7 +99,7 @@ export class ConnectionService {
     customerId: string;
     integrationId: string;
   }): Promise<ConnectionSafe> {
-    const integration = await this.#prisma.connection.findUnique({
+    const connection = await this.#prisma.connection.findUnique({
       where: {
         customerId_integrationId: {
           customerId,
@@ -81,10 +107,10 @@ export class ConnectionService {
         },
       },
     });
-    if (!integration) {
+    if (!connection) {
       throw new NotFoundError(`Connection not found for customer: ${customerId} and integration: ${integrationId}`);
     }
-    return fromConnectionModelToConnectionSafe(integration);
+    return fromConnectionModelToConnectionSafe(connection);
   }
 
   public async updateConnectionWithNewAccessToken(
