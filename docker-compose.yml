@@ -94,6 +94,7 @@ services:
     environment:
       <<: *common-env
       SUPAGLUE_QUICKSTART_API_KEY: ${SUPAGLUE_QUICKSTART_API_KEY:-some-api-key}
+      DO_SEED: "1"
     depends_on:
       postgres:
         condition: service_started

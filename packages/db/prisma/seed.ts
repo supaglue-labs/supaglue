@@ -21,6 +21,8 @@ dotenv.config({
 });
 const prisma = new PrismaClient();
 
+const DO_SEED = process.env.DO_SEED === '1';
+
 const {
   SUPAGLUE_SYNC_PERIOD_MS,
   DEV_SALESFORCE_SCOPES,
@@ -53,7 +55,6 @@ const {
   DEV_CAPSULE_APP_ID,
   SUPAGLUE_API_ENCRYPTION_SECRET,
   SUPAGLUE_QUICKSTART_API_KEY,
-  IS_CLOUD,
 } = process.env;
 
 const ORGANIZATION_ID = 'e7070cc8-36e7-43e2-81fc-ad57713cf2d3';
@@ -195,10 +196,6 @@ async function seedApplication() {
 }
 
 async function seedCustomers() {
-  if (process.env.NODE_ENV === 'production') {
-    return;
-  }
-
   // Create customers
   await Promise.all(
     EXTERNAL_CUSTOMER_IDS.map((externalCustomerId, idx) =>
@@ -252,9 +249,6 @@ async function seedCRMIntegrations() {
       };
       // eslint-disable-next-line prefer-const
       let { id: __, ...update } = create;
-      if (process.env.NODE_ENV === 'production') {
-        update = {} as any;
-      }
       await prisma.integration.upsert({
         where: {
           applicationId_providerName: {
@@ -270,7 +264,7 @@ async function seedCRMIntegrations() {
 }
 
 async function main() {
-  if (IS_CLOUD) {
+  if (!DO_SEED) {
     return;
   }
   await seedApplication();
