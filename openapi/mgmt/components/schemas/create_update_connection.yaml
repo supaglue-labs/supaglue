@@ -17,7 +17,6 @@ properties:
     required:
       - type
       - refresh_token
-      - instance_url
 required:
   - integration_id
   - credentials

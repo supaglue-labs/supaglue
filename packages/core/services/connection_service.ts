@@ -66,17 +66,6 @@ export class ConnectionService {
     return connections.map((connection) => fromConnectionModelToConnectionSafe(connection));
   }
 
-  public async delete(id: string, applicationId: string): Promise<void> {
-    await this.#prisma.connection.deleteMany({
-      where: {
-        id,
-        integration: {
-          applicationId,
-        },
-      },
-    });
-  }
-
   public async getSafeByCustomerIdAndIntegrationId({
     customerId,
     integrationId,

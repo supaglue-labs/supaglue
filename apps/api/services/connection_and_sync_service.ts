@@ -1,3 +1,4 @@
+import { NotFoundError } from '@supaglue/core/errors';
 import { logger, sendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
@@ -171,6 +172,51 @@ export class ConnectionAndSyncService {
         );
       }
     }
+  }
+
+  public async delete(id: string, applicationId: string): Promise<void> {
+    const connection = await this.#prisma.connection.findFirst({
+      where: {
+        id,
+        integration: {
+          applicationId,
+        },
+      },
+      include: {
+        sync: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!connection) {
+      throw new NotFoundError(`Could not find connection ${id} with application id ${applicationId}`);
+    }
+
+    await this.#prisma.$transaction([
+      // Delete the sync, if it exists
+      ...(connection.sync?.id
+        ? [
+            this.#prisma.sync.delete({
+              where: {
+                id: connection.sync.id,
+              },
+            }),
+            this.#prisma.syncChange.create({
+              data: {
+                syncId: connection.sync.id,
+              },
+            }),
+          ]
+        : []),
+      this.#prisma.connection.delete({
+        where: {
+          id,
+        },
+      }),
+    ]);
   }
 
   async #triggerProcessSyncChangesTemporalSchedule(): Promise<void> {
