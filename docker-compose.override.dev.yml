@@ -32,6 +32,7 @@ services:
     image: node:18
     environment:
       <<: *common-env
+      DO_SEED: "0"
     volumes:
       - .:/app
     working_dir: /app
