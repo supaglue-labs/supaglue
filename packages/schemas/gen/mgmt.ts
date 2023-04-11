@@ -476,7 +476,6 @@ export interface operations {
           credentials: {
             /** @enum {string} */
             type: "oauth2";
-            access_token: string;
             refresh_token: string;
             instance_url: string;
           };

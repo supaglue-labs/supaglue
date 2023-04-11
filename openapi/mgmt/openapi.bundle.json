@@ -581,9 +581,6 @@
                           "oauth2"
                         ]
                       },
-                      "access_token": {
-                        "type": "string"
-                      },
                       "refresh_token": {
                         "type": "string"
                       },
@@ -593,7 +590,6 @@
                     },
                     "required": [
                       "type",
-                      "access_token",
                       "refresh_token",
                       "instance_url"
                     ]
