@@ -77,7 +77,7 @@ export class ConnectionAndSyncService {
         integrationId: integration.id,
         status,
         remoteId: params.remoteId,
-        credentials: encrypt(JSON.stringify(params.credentials)),
+        credentials: await encrypt(JSON.stringify(params.credentials)),
       },
       update: {
         category: params.category,
@@ -86,7 +86,7 @@ export class ConnectionAndSyncService {
         integrationId: integration.id,
         status,
         remoteId: params.remoteId,
-        credentials: encrypt(JSON.stringify(params.credentials)),
+        credentials: await encrypt(JSON.stringify(params.credentials)),
       },
       where: {
         customerId_integrationId: {
@@ -123,7 +123,7 @@ export class ConnectionAndSyncService {
             integrationId: integration.id,
             status,
             remoteId: params.remoteId,
-            credentials: encrypt(JSON.stringify(params.credentials)),
+            credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         }),
         this.#prisma.sync.create({
@@ -145,19 +145,13 @@ export class ConnectionAndSyncService {
         }),
       ]);
 
-      const connection = fromConnectionModelToConnectionUnsafe(connectionModel);
+      const connection = await fromConnectionModelToConnectionUnsafe(connectionModel);
 
       // best-effort trigger schedule to process sync changes. even if this fails, the
       // schedule will trigger the workflow on the next run
       this.#triggerProcessSyncChangesTemporalSchedule().catch((err) =>
         logger.error(err, 'Error triggering processSyncChanges Temporal schedule')
       );
-
-      // // TODO: We need do this transactionally and not best-effort. Maybe transactionally write
-      // // an event to another table and have a background job pick this up to guarantee
-      // // that we start up syncs when connections are created.
-      // // TODO: Do this for non-CRM models
-      // await this.#createSyncsSchedule(syncId, connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
 
       return connection;
     } catch (e) {

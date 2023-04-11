@@ -3,7 +3,7 @@ import { ConnectionSafe, ConnectionStatus, ConnectionUnsafe, CRMProviderName } f
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 
-export const fromConnectionModelToConnectionUnsafe = ({
+export const fromConnectionModelToConnectionUnsafe = async ({
   id,
   customerId,
   category,
@@ -12,7 +12,7 @@ export const fromConnectionModelToConnectionUnsafe = ({
   status,
   credentials,
   remoteId,
-}: ConnectionModel): ConnectionUnsafe => {
+}: ConnectionModel): Promise<ConnectionUnsafe> => {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
     id,
@@ -22,7 +22,7 @@ export const fromConnectionModelToConnectionUnsafe = ({
     category: category as 'crm',
     status: status as ConnectionStatus,
     providerName: providerName as CRMProviderName,
-    credentials: JSON.parse(decrypt(credentials)),
+    credentials: JSON.parse(await decrypt(credentials)),
     remoteId,
   };
 };

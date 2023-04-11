@@ -9,13 +9,13 @@ import {
 } from '@supaglue/types';
 import { decryptFromString, encryptAsString } from '../lib/crypt';
 
-export const fromIntegrationModel = ({
+export const fromIntegrationModel = async ({
   id,
   applicationId,
   category,
   providerName,
   config,
-}: IntegrationModel): Integration => {
+}: IntegrationModel): Promise<Integration> => {
   // TODO: We should update the prisma schema
   if (!config) {
     throw new Error('Integration config is missing');
@@ -27,11 +27,11 @@ export const fromIntegrationModel = ({
     category: category as IntegrationCategory,
     authType: 'oauth2',
     providerName: providerName as CRMProviderName,
-    config: fromIntegrationConfigModel(config),
+    config: await fromIntegrationConfigModel(config),
   };
 };
 
-export const fromIntegrationConfigModel = (config: Prisma.JsonValue): IntegrationConfigDecrypted => {
+const fromIntegrationConfigModel = async (config: Prisma.JsonValue): Promise<IntegrationConfigDecrypted> => {
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new Error('Integration config is missing');
   }
@@ -40,12 +40,12 @@ export const fromIntegrationConfigModel = (config: Prisma.JsonValue): Integratio
     ...integrationConfig,
     oauth: {
       ...integrationConfig.oauth,
-      credentials: JSON.parse(decryptFromString(integrationConfig.oauth.credentials)),
+      credentials: JSON.parse(await decryptFromString(integrationConfig.oauth.credentials)),
     },
   };
 };
 
-export const toIntegrationModel = ({
+export const toIntegrationModel = async ({
   applicationId,
   category,
   authType,
@@ -62,7 +62,7 @@ export const toIntegrationModel = ({
           ...config,
           oauth: {
             ...config.oauth,
-            credentials: encryptAsString(JSON.stringify(config.oauth.credentials)),
+            credentials: await encryptAsString(JSON.stringify(config.oauth.credentials)),
           },
         }
       : undefined,
