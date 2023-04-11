@@ -155,15 +155,15 @@ const config = {
               },
               {
                 label: 'Quickstart',
-                to: '/quickstart',
+                to: 'quickstart',
               },
               {
                 label: 'Connectors',
-                to: '/category/connectors',
+                to: 'connectors',
               },
               {
                 label: 'API Reference',
-                to: '/api',
+                to: 'api',
               },
             ],
           },
