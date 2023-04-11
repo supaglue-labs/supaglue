@@ -1,9 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import {
-  CreateConnectionPathParams,
-  CreateConnectionRequest,
-  CreateConnectionResponse,
   DeleteConnectionPathParams,
   DeleteConnectionRequest,
   DeleteConnectionResponse,
@@ -34,59 +31,53 @@ export default function init(app: Router): void {
   );
 
   // TODO: clean this up
-  connectionRouter.post(
-    '/',
-    async (
-      req: Request<CreateConnectionPathParams, CreateConnectionResponse, CreateConnectionRequest>,
-      res: Response<CreateConnectionResponse>
-    ) => {
-      // Get integration first to get category and provider_name
-      const integration = await integrationService.getByIdAndApplicationId(
-        req.body.integration_id,
-        req.supaglueApplication.id
-      );
+  connectionRouter.post('/', async (req: Request, res: Response) => {
+    // Get integration first to get category and provider_name
+    const integration = await integrationService.getByIdAndApplicationId(
+      req.body.integration_id,
+      req.supaglueApplication.id
+    );
 
-      if (integration.providerName !== 'hubspot') {
-        throw new Error('Currently only support creating hubspot connections');
-      }
-
-      // TODO: Share this logic with oauth path
-      let remoteId = req.body.credentials.refresh_token;
-
-      const hubspotClient = new HubspotClient();
-      const token = await hubspotClient.oauth.tokensApi.createToken(
-        'refresh_token',
-        undefined,
-        undefined,
-        integration.config.oauth.credentials.oauthClientId,
-        integration.config.oauth.credentials.oauthClientSecret,
-        req.body.credentials.refresh_token
-      );
-      const expiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
-
-      const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(token.accessToken);
-      remoteId = hubId.toString();
-
-      const connection = await connectionAndSyncService.create({
-        // TODO: don't denormalize this?
-        category: integration.category,
-        providerName: integration.providerName,
-        applicationId: req.supaglueApplication.id,
-        customerId: req.params.customer_id,
-        integrationId: req.body.integration_id,
-        credentials: {
-          type: req.body.credentials.type,
-          accessToken: token.accessToken,
-          refreshToken: req.body.credentials.refresh_token,
-          instanceUrl: '', // TODO: Maybe we shouldn't make this required in our types. it seems only used for salesforce
-          expiresAt,
-        },
-        remoteId,
-      });
-
-      return res.status(200).send(snakecaseKeys(connection));
+    if (integration.providerName !== 'hubspot') {
+      throw new Error('Currently only support creating hubspot connections');
     }
-  );
+
+    // TODO: Share this logic with oauth path
+    let remoteId = req.body.credentials.refresh_token;
+
+    const hubspotClient = new HubspotClient();
+    const token = await hubspotClient.oauth.tokensApi.createToken(
+      'refresh_token',
+      undefined,
+      undefined,
+      integration.config.oauth.credentials.oauthClientId,
+      integration.config.oauth.credentials.oauthClientSecret,
+      req.body.credentials.refresh_token
+    );
+    const expiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
+
+    const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(token.accessToken);
+    remoteId = hubId.toString();
+
+    const connection = await connectionAndSyncService.create({
+      // TODO: don't denormalize this?
+      category: integration.category,
+      providerName: integration.providerName,
+      applicationId: req.supaglueApplication.id,
+      customerId: req.params.customer_id,
+      integrationId: req.body.integration_id,
+      credentials: {
+        type: req.body.credentials.type,
+        accessToken: token.accessToken,
+        refreshToken: req.body.credentials.refresh_token,
+        instanceUrl: '', // TODO: Maybe we shouldn't make this required in our types. it seems only used for salesforce
+        expiresAt,
+      },
+      remoteId,
+    });
+
+    return res.status(200).send(snakecaseKeys(connection));
+  });
 
   connectionRouter.get(
     '/:connection_id',
