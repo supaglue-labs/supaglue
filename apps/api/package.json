@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "packageManager": "yarn@3.4.1",
   "type": "commonjs",
   "dependencies": {
