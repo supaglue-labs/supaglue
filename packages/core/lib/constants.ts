@@ -8,7 +8,7 @@ export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin';
 export const ASYNC_RETRY_OPTIONS = {
   // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
   // and will know that this activity is making progress.
-  maxRetryTime: 2 * 60 * 1000,
+  forever: true,
   factor: 2,
   minTimeout: 1000,
   maxTimeout: 60 * 1000,
