@@ -3,7 +3,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { NextFunction, Request, Response } from 'express';
 import { getDependencyContainer } from '../dependency_container';
 
-const { connectionService, integrationService } = getDependencyContainer();
+const { connectionService } = getDependencyContainer();
 
 export async function connectionHeaderMiddleware(req: Request, res: Response, next: NextFunction) {
   const externalCustomerId = req.headers['x-customer-id'] as string;
@@ -14,14 +14,10 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
 
   const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
 
-  const integration = await integrationService.getByProviderNameAndApplicationId(
-    providerName,
-    req.supaglueApplication.id
-  );
-
-  req.customerConnection = await connectionService.getSafeByCustomerIdAndIntegrationId({
+  req.customerConnection = await connectionService.getSafeByCustomerIdAndApplicationIdAndProviderName({
     customerId,
-    integrationId: integration.id,
+    applicationId: req.supaglueApplication.id,
+    providerName,
   });
 
   next();
