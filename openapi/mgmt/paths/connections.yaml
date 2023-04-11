@@ -35,27 +35,6 @@ get:
                   provider_name: hubspot 
                   category: crm
                   remote_id: 1234567
-post:
-  operationId: createConnection
-  summary: Create connection
-  tags:
-    - Connections
-  security:
-    - ApiKeyAuth: []
-  parameters: []
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: ../components/schemas/create_update_connection.yaml
-  responses:
-    '200':
-      description: Connection created
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/objects/connection.yaml
 parameters:
   - name: customer_id
     in: path
