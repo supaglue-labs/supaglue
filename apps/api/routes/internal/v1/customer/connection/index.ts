@@ -67,7 +67,7 @@ export default function init(app: Router): void {
       const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(token.accessToken);
       remoteId = hubId.toString();
 
-      const params = {
+      const connection = await connectionAndSyncService.create({
         // TODO: don't denormalize this?
         category: integration.category,
         providerName: integration.providerName,
@@ -78,12 +78,11 @@ export default function init(app: Router): void {
           type: req.body.credentials.type,
           accessToken: token.accessToken,
           refreshToken: req.body.credentials.refresh_token,
-          instanceUrl: req.body.credentials.instance_url,
+          instanceUrl: '', // TODO: Maybe we shouldn't make this required in our types. it seems only used for salesforce
           expiresAt,
         },
         remoteId,
-      };
-      const connection = await connectionAndSyncService.create(params);
+      });
 
       return res.status(200).send(snakecaseKeys(connection));
     }

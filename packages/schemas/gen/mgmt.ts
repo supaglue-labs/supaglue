@@ -477,7 +477,6 @@ export interface operations {
             /** @enum {string} */
             type: "oauth2";
             refresh_token: string;
-            instance_url: string;
           };
         };
       };

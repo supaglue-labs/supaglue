@@ -12,8 +12,6 @@ properties:
           - oauth2
       refresh_token:
         type: string
-      instance_url:
-        type: string
     required:
       - type
       - refresh_token

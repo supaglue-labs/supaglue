@@ -583,15 +583,11 @@
                       },
                       "refresh_token": {
                         "type": "string"
-                      },
-                      "instance_url": {
-                        "type": "string"
                       }
                     },
                     "required": [
                       "type",
-                      "refresh_token",
-                      "instance_url"
+                      "refresh_token"
                     ]
                   }
                 },
