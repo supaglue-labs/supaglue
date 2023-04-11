@@ -47,7 +47,7 @@ docker compose up
 
 ## Connectors
 
-See the [list of connectors](https://docs.supaglue.com/category/connectors) we currently support.
+See the [list of connectors](https://docs.supaglue.com/connectors) we currently support.
 
 Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
 
