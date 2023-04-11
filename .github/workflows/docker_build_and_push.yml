@@ -30,7 +30,7 @@ jobs:
   build:
     name: Build and Push to Docker Hub
     timeout-minutes: 15
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -83,7 +83,7 @@ jobs:
           file: ./${{ env.directory }}/Dockerfile
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: ${{ !env.ACT }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
