@@ -1,8 +1,0 @@
-{
-  "label": "Connectors",
-  "position": 5,
-  "link": {
-    "type": "generated-index",
-    "description": "Connectors supported by Supaglue. Email us (support@supaglue.com) to request a connector."
-  }
-}
