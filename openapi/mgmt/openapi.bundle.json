@@ -549,6 +549,77 @@
           }
         }
       },
+      "post": {
+        "operationId": "createConnection",
+        "summary": "Create connection",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "integration_id": {
+                    "type": "string",
+                    "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6b"
+                  },
+                  "credentials": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "oauth2"
+                        ]
+                      },
+                      "access_token": {
+                        "type": "string"
+                      },
+                      "refresh_token": {
+                        "type": "string"
+                      },
+                      "instance_url": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "access_token",
+                      "refresh_token",
+                      "instance_url"
+                    ]
+                  }
+                },
+                "required": [
+                  "integration_id",
+                  "credentials"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection"
+                }
+              }
+            }
+          }
+        }
+      },
       "parameters": [
         {
           "name": "customer_id",
