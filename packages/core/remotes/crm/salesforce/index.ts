@@ -25,6 +25,7 @@ import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { PassThrough, pipeline, Readable, Transform } from 'stream';
+import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
@@ -150,15 +151,6 @@ const propertiesToFetch = {
   ],
 };
 
-const ASYNC_RETRY_OPTIONS = {
-  // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
-  // and will know that this activity is making progress.
-  forever: true,
-  factor: 2,
-  minTimeout: 1000,
-  maxTimeout: 60 * 1000,
-};
-
 // this is incomplete; it only includes the fields that we need to use
 type SalesforceBulk2QueryJob = {
   id: string;
@@ -268,10 +260,12 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       if (response.status === 200) {
         return response;
       }
+      const error = new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`);
+      logger.error(error);
       if (response.status !== 429) {
-        bail(new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`));
+        bail(error);
       }
-      throw new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`);
+      throw error;
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
   }

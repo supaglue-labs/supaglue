@@ -35,7 +35,7 @@ import {
 } from '@supaglue/types';
 import retry from 'async-retry';
 import { PassThrough, Readable } from 'stream';
-import { logger } from '../../../lib';
+import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
@@ -112,15 +112,6 @@ const propertiesToFetch = {
 // TODO: We may need to fetch this from the hubspot schema
 const CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 1;
 const OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 5;
-
-const ASYNC_RETRY_OPTIONS = {
-  // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
-  // and will know that this activity is making progress.
-  forever: true,
-  factor: 2,
-  minTimeout: 1000,
-  maxTimeout: 60 * 1000,
-};
 
 type Credentials = {
   accessToken: string;
