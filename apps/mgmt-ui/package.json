@@ -41,6 +41,6 @@
   "devDependencies": {
     "@types/luxon": "^3",
     "@types/sharp": "^0",
-    "vercel": "^28.18.3"
+    "vercel": "^28.18.4"
   }
 }
