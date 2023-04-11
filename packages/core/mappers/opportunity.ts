@@ -1,8 +1,31 @@
 import { Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import { CrmOpportunityExpanded } from '../types';
-import { fromAccountModel } from './account';
-import { fromUserModel } from './user';
+import { fromAccountModel, toSnakecasedKeysAccount } from './account';
+import { fromUserModel, toSnakecasedKeysUser } from './user';
+
+export const toSnakecasedKeysOpportunity = (opportunity: Opportunity) => {
+  return {
+    id: opportunity.id,
+    owner_id: opportunity.ownerId,
+    owner: opportunity.owner ? toSnakecasedKeysUser(opportunity.owner) : undefined,
+    account_id: opportunity.accountId,
+    account: opportunity.account ? toSnakecasedKeysAccount(opportunity.account) : undefined,
+    last_modified_at: opportunity.lastModifiedAt,
+    remote_id: opportunity.remoteId,
+    name: opportunity.name,
+    description: opportunity.description,
+    amount: opportunity.amount,
+    stage: opportunity.stage,
+    status: opportunity.status,
+    last_activity_at: opportunity.lastActivityAt,
+    close_date: opportunity.closeDate,
+    pipeline: opportunity.pipeline,
+    remote_created_at: opportunity.remoteCreatedAt,
+    remote_updated_at: opportunity.remoteUpdatedAt,
+    remote_was_deleted: opportunity.remoteWasDeleted,
+  };
+};
 
 export const fromOpportunityModel = (
   {

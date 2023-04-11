@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
+import { toSnakecasedKeysEvent } from '@supaglue/core/mappers/event';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import {
   CreateEventPathParams,
@@ -19,7 +20,6 @@ import {
 } from '@supaglue/schemas/crm';
 import { GetParams, ListParams } from '@supaglue/types';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
-import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { eventService } = getDependencyContainer();
@@ -37,9 +37,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toListInternalParams(req.query)
       );
-      const snakeCaseKeysResults = results.map((result) => {
-        return snakecaseKeys(result);
-      });
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysEvent);
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
@@ -51,7 +49,7 @@ export default function init(app: Router): void {
       res: Response<GetEventResponse>
     ) => {
       const event = await eventService.getById(req.params.event_id, req.customerConnection.id, req.query);
-      return res.status(200).send(snakecaseKeys(event));
+      return res.status(200).send(toSnakecasedKeysEvent(event));
     }
   );
 
@@ -69,7 +67,7 @@ export default function init(app: Router): void {
         endTime: stringOrNullOrUndefinedToDate(originalParams.endTime),
       };
       const event = await eventService.create(customerId, connectionId, eventCreateParams);
-      return res.status(200).send({ model: snakecaseKeys(event) });
+      return res.status(200).send({ model: toSnakecasedKeysEvent(event) });
     }
   );
 
@@ -90,7 +88,7 @@ export default function init(app: Router): void {
         id: req.params.event_id,
         ...eventUpdateParams,
       });
-      return res.status(200).send({ model: snakecaseKeys(event) });
+      return res.status(200).send({ model: toSnakecasedKeysEvent(event) });
     }
   );
 

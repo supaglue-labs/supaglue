@@ -1,7 +1,31 @@
 import { Account, Address, LifecycleStage, PhoneNumber, RemoteAccount } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import { CrmAccountExpanded } from '../types';
-import { fromUserModel } from './user';
+import { toSnakecasedKeysAddress } from './address';
+import { toSnakecasedKeysPhoneNumber } from './phone_number';
+import { fromUserModel, toSnakecasedKeysUser } from './user';
+
+export const toSnakecasedKeysAccount = (account: Account) => {
+  return {
+    id: account.id,
+    owner_id: account.ownerId,
+    owner: account.owner ? toSnakecasedKeysUser(account.owner) : undefined,
+    last_modified_at: account.lastModifiedAt,
+    remote_id: account.remoteId,
+    name: account.name,
+    description: account.description,
+    industry: account.industry,
+    website: account.website,
+    number_of_employees: account.numberOfEmployees,
+    addresses: account.addresses.map(toSnakecasedKeysAddress),
+    phone_numbers: account.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    last_activity_at: account.lastActivityAt,
+    lifecycle_stage: account.lifecycleStage,
+    remote_created_at: account.remoteCreatedAt,
+    remote_updated_at: account.remoteUpdatedAt,
+    remote_was_deleted: account.remoteWasDeleted,
+  };
+};
 
 export const fromAccountModel = (
   {

@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toSnakecasedKeysLead } from '@supaglue/core/mappers';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import {
   CreateLeadPathParams,
@@ -16,7 +17,6 @@ import {
 } from '@supaglue/schemas/crm';
 import { GetParams, ListParams } from '@supaglue/types/common';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
-import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { leadService } = getDependencyContainer();
@@ -34,9 +34,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toListInternalParams(req.query)
       );
-      const snakeCaseKeysResults = results.map((result) => {
-        return snakecaseKeys(result);
-      });
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysLead);
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
@@ -48,7 +46,7 @@ export default function init(app: Router): void {
       res: Response<GetLeadResponse>
     ) => {
       const lead = await leadService.getById(req.params.lead_id, req.customerConnection.id, req.query);
-      return res.status(200).send(snakecaseKeys(lead));
+      return res.status(200).send(toSnakecasedKeysLead(lead));
     }
   );
 
@@ -60,7 +58,7 @@ export default function init(app: Router): void {
     ) => {
       const { customerId, id: connectionId } = req.customerConnection;
       const lead = await leadService.create(customerId, connectionId, camelcaseKeysSansCustomFields(req.body.model));
-      return res.status(200).send({ model: snakecaseKeys(lead) });
+      return res.status(200).send({ model: toSnakecasedKeysLead(lead) });
     }
   );
 
@@ -75,7 +73,7 @@ export default function init(app: Router): void {
         id: req.params.lead_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
-      return res.status(200).send({ model: snakecaseKeys(lead) });
+      return res.status(200).send({ model: toSnakecasedKeysLead(lead) });
     }
   );
 

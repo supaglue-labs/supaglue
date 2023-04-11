@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
+import { toSnakecasedKeysOpportunity } from '@supaglue/core/mappers';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import {
   CreateOpportunityPathParams,
@@ -43,9 +44,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toListInternalParams(req.query)
       );
-      const snakeCaseKeysResults = results.map((result) => {
-        return snakecaseKeys(result);
-      });
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysOpportunity);
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
@@ -66,7 +65,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         req.query
       );
-      return res.status(200).send(snakecaseKeys(opportunity));
+      return res.status(200).send(toSnakecasedKeysOpportunity(opportunity));
     }
   );
 
@@ -83,7 +82,7 @@ export default function init(app: Router): void {
         closeDate: stringOrNullOrUndefinedToDate(originalParams.closeDate),
       };
       const opportunity = await opportunityService.create(customerId, connectionId, opportunityCreateParams);
-      return res.status(200).send({ model: snakecaseKeys(opportunity) });
+      return res.status(200).send({ model: toSnakecasedKeysOpportunity(opportunity) });
     }
   );
 
@@ -101,7 +100,7 @@ export default function init(app: Router): void {
         closeDate: stringOrNullOrUndefinedToDate(originalParams.closeDate),
       };
       const opportunity = await opportunityService.update(customerId, connectionId, opportunityUpdateParams);
-      return res.status(200).send({ model: snakecaseKeys(opportunity) });
+      return res.status(200).send({ model: toSnakecasedKeysOpportunity(opportunity) });
     }
   );
 
