@@ -60,6 +60,11 @@ export type GetConnectionRequest = never;
 export type GetConnectionResponse =
   operations['getConnection']['responses'][keyof operations['getConnection']['responses']]['content']['application/json'];
 
+export type CreateConnectionPathParams = paths[`/customers/{customer_id}/connections`]['parameters']['path'];
+export type CreateConnectionRequest = operations['createConnection']['requestBody']['content']['application/json'];
+export type CreateConnectionResponse =
+  operations['createConnection']['responses'][keyof operations['createConnection']['responses']]['content']['application/json'];
+
 export type DeleteConnectionPathParams =
   paths[`/customers/{customer_id}/connections/{connection_id}`]['parameters']['path'];
 export type DeleteConnectionRequest = never;

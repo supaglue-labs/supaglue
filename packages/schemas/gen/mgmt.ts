@@ -58,6 +58,8 @@ export interface paths {
      * @description Get a list of connections
      */
     get: operations["getConnections"];
+    /** Create connection */
+    post: operations["createConnection"];
     parameters: {
       path: {
         customer_id: string;
@@ -460,6 +462,30 @@ export interface operations {
       200: {
         content: {
           "application/json": (components["schemas"]["connection"])[];
+        };
+      };
+    };
+  };
+  createConnection: {
+    /** Create connection */
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6b */
+          integration_id: string;
+          credentials: {
+            /** @enum {string} */
+            type: "oauth2";
+            refresh_token: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Connection created */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection"];
         };
       };
     };

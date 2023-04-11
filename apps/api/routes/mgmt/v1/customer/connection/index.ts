@@ -12,10 +12,10 @@ import {
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
-const { connectionService } = getDependencyContainer();
+const { connectionService, connectionAndSyncService } = getDependencyContainer();
 
 export default function init(app: Router): void {
-  const connectionRouter = Router();
+  const connectionRouter = Router({ mergeParams: true });
 
   connectionRouter.get(
     '/',
@@ -53,8 +53,7 @@ export default function init(app: Router): void {
       res: Response<DeleteConnectionResponse>
     ) => {
       // TODO: revoke token from provider?
-
-      await connectionService.delete(req.params.connection_id, req.supaglueApplication.id);
+      await connectionAndSyncService.delete(req.params.connection_id, req.supaglueApplication.id);
       return res.status(204).send();
     }
   );
