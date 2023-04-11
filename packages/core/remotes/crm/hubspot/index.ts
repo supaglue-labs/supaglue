@@ -792,6 +792,7 @@ const retryWhenRateLimited = async <Args extends any[], Return>(
       logger.error(e, 'Error encountered');
       if (!isRateLimited(e)) {
         bail(e);
+        return null as Return;
       }
       throw e;
     }

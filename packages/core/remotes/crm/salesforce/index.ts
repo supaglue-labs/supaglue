@@ -264,6 +264,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       logger.error(error);
       if (response.status !== 429) {
         bail(error);
+        return null as unknown as ReturnType<typeof fetch>;
       }
       throw error;
     };
