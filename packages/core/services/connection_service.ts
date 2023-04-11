@@ -97,7 +97,7 @@ export class ConnectionService {
     const connection = await this.#prisma.connection.findUniqueOrThrow({
       where: { id: connectionId },
     });
-    const oldCredentialsUnsafe = JSON.parse(decrypt(connection.credentials));
+    const oldCredentialsUnsafe = JSON.parse(await decrypt(connection.credentials));
     const newCredentials: ConnectionCredentialsDecrypted = {
       ...(oldCredentialsUnsafe as ConnectionCredentialsDecrypted),
       accessToken,
@@ -109,7 +109,7 @@ export class ConnectionService {
         id: connectionId,
       },
       data: {
-        credentials: encrypt(JSON.stringify(newCredentials)),
+        credentials: await encrypt(JSON.stringify(newCredentials)),
       },
     });
 
