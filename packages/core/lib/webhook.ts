@@ -5,7 +5,7 @@ import { logger } from './logger';
 
 export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SYNC_SUCCESS' | 'SYNC_ERROR';
 
-const WEBHOOK_TIMEOUT = 5000;
+const WEBHOOK_TIMEOUT = 5 * 60 * 1000;
 
 export const sendWebhookPayload = async (
   config: WebhookConfig,
@@ -41,6 +41,7 @@ export const sendWebhookPayload = async (
         throw new Error(`Unsupported requestType: ${requestType}`);
     }
   } catch (e) {
+    // TODO: Don't swallow this error.
     logger.error(e, 'Failed to send webhook');
   }
 };
