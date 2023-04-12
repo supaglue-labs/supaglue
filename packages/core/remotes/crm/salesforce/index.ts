@@ -298,7 +298,9 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     const interval = 1000; // TODO: make configurable
 
     while (startTime + timeout > Date.now()) {
-      const { state } = await poll();
+      const pollResponse = await poll();
+      logger.info(`poll response: `, pollResponse);
+      const { state } = pollResponse;
       switch (state) {
         case 'Open':
           throw new Error('job has not been started');
@@ -333,7 +335,10 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   async #getBulk2QueryJobResults(soql: string): Promise<Readable> {
-    const { id } = await this.#submitBulk2QueryJob(soql);
+    const response = await this.#submitBulk2QueryJob(soql);
+    // TODO: Delete this
+    logger.info(`bulk job submission response: `, response);
+    const { id } = response;
 
     await this.#pollBulk2QueryJob(id);
 
@@ -347,6 +352,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       let locator: string | undefined = undefined;
       do {
         const response = await this.#getBulk2QueryJobResponse(id, locator);
+        // TODO: Delete this
+        logger.info(`get bulk job response: `, response);
         const readable = getBulk2QueryJobResultsFromResponse(response);
         locator = getBulk2QueryJobNextLocatorFromResponse(response);
 
