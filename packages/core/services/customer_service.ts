@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@supaglue/db';
+import { Prisma, PrismaClient } from '@supaglue/db';
 import { Customer, CustomerExpandedSafe, CustomerUpsertParams } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { fromCustomerModel, fromCustomerModelExpandedUnsafe, toCustomerModelCreateParams } from '../mappers/customer';
@@ -66,14 +66,24 @@ export class CustomerService {
   }
 
   public async delete(applicationId: string, externalId: string): Promise<Customer> {
-    const deletedCustomer = await this.#prisma.customer.delete({
-      where: {
-        applicationId_externalIdentifier: {
-          applicationId,
-          externalIdentifier: externalId,
+    try {
+      const deletedCustomer = await this.#prisma.customer.delete({
+        where: {
+          applicationId_externalIdentifier: {
+            applicationId,
+            externalIdentifier: externalId,
+          },
         },
-      },
-    });
-    return fromCustomerModel(deletedCustomer);
+      });
+      return fromCustomerModel(deletedCustomer);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2003') {
+        throw new Error(
+          `Can't delete customer ${externalId}. There may still be connections associated. Delete those first.`
+        );
+      }
+
+      throw e;
+    }
   }
 }

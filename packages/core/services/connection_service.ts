@@ -63,7 +63,7 @@ export class ConnectionService {
     const connections = await this.#prisma.connection.findMany({
       where: { integrationId: { in: integrationIds }, customerId, providerName },
     });
-    return connections.map((connection) => fromConnectionModelToConnectionSafe(connection));
+    return connections.map(fromConnectionModelToConnectionSafe);
   }
 
   public async getSafeByCustomerIdAndApplicationIdAndProviderName({

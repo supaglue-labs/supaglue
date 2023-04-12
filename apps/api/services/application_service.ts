@@ -2,6 +2,7 @@ import { NotFoundError } from '@supaglue/core/errors';
 import { cryptoHash, generateApiKey } from '@supaglue/core/lib/crypt';
 import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
+import { Prisma } from '@supaglue/db';
 import { Application, ApplicationUpdateParams, ApplicationUpsertParams } from '@supaglue/types';
 
 export class ApplicationService {
@@ -131,13 +132,15 @@ export class ApplicationService {
   }
 
   public async delete(id: string, orgId: string): Promise<void> {
-    // TODO: Temporarily disabling this because we cascade delete sync table
-    // when we delete applications, and that doesn't add to sync_changes table,
-    // so we don't know to clean up ongoing Temporal sync schedules/workflows.
-    throw new Error('Not implemented');
-
     // Check that org matches
-    await this.getByIdAndOrgId(id, orgId);
-    await this.#prisma.application.delete({ where: { id } });
+    try {
+      await this.#prisma.application.deleteMany({ where: { id, orgId } });
+    } catch (e: unknown) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2003') {
+        throw new Error(`Can't delete application ${id}. There may still be connections associated.`);
+      }
+
+      throw e;
+    }
   }
 }
