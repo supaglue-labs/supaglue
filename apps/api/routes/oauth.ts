@@ -184,6 +184,7 @@ export default function init(app: Router): void {
           refreshToken: tokenWrapper.token['refresh_token'] as string,
           instanceUrl: tokenWrapper.token['instance_url'] as string,
           expiresAt: tokenWrapper.token['expires_at'] as string,
+          loginUrl,
         },
         remoteId,
       };

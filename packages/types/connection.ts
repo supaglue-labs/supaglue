@@ -2,12 +2,15 @@ import type { CRMProviderName } from './crm';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
+// TODO: Bifurcate salesforce vs hubspot
 export type ConnectionCredentialsDecrypted = {
   type: string;
   accessToken: string;
   refreshToken: string;
   expiresAt: string | null; // null means unknown expiry time
+  // Needed for salesforce only
   instanceUrl: string;
+  loginUrl?: string;
 };
 
 type BaseConnectionCreateParams = {

@@ -151,6 +151,8 @@ const propertiesToFetch = {
   ],
 };
 
+const FETCH_TIMEOUT = 60 * 1000;
+
 // this is incomplete; it only includes the fields that we need to use
 type SalesforceBulk2QueryJob = {
   id: string;
@@ -192,12 +194,14 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     accessToken,
     clientId,
     clientSecret,
+    loginUrl,
   }: {
     instanceUrl: string;
     refreshToken: string;
     accessToken: string;
     clientId: string;
     clientSecret: string;
+    loginUrl?: string;
   }) {
     super(instanceUrl);
 
@@ -207,7 +211,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
     this.#client = new jsforce.Connection({
       oauth2: new jsforce.OAuth2({
-        loginUrl: 'https://login.salesforce.com',
+        loginUrl: loginUrl ?? 'https://login.salesforce.com',
         clientId,
         clientSecret,
       }),
@@ -230,14 +234,20 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     this.emit('token_refreshed', token.access_token, null);
   }
 
-  async #fetchImpl(path: string, init: RequestInit) {
-    return await fetch(`${this.#instanceUrl}${path}`, {
+  async #fetchImpl(path: string, init: RequestInit, timeout = FETCH_TIMEOUT) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(`${this.#instanceUrl}${path}`, {
       ...init,
       headers: {
         ...init.headers,
         ...this.getAuthHeadersForPassthroughRequest(),
       },
+      signal: controller.signal,
     });
+    clearTimeout(id);
+
+    return response;
   }
 
   async #fetch(path: string, init: RequestInit): Promise<ReturnType<typeof fetch>> {
@@ -253,7 +263,16 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       // CSV download for bulk 2.0 with large loads and also more future control of rate limits,
       // etc.
       if (response.status === 401) {
-        await this.#refreshAccessToken();
+        try {
+          await this.#refreshAccessToken();
+        } catch (e: any) {
+          logger.error(e);
+          if (e.name === 'ERROR_HTTP_429') {
+            throw e;
+          }
+          bail(e);
+          return null as unknown as ReturnType<typeof fetch>;
+        }
         response = await this.#fetchImpl(path, init);
       }
 
@@ -299,7 +318,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
     while (startTime + timeout > Date.now()) {
       const pollResponse = await poll();
-      logger.info(`poll response: `, pollResponse);
       const { state } = pollResponse;
       switch (state) {
         case 'Open':
@@ -335,10 +353,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   async #getBulk2QueryJobResults(soql: string): Promise<Readable> {
-    const response = await this.#submitBulk2QueryJob(soql);
-    // TODO: Delete this
-    logger.info(`bulk job submission response: `, response);
-    const { id } = response;
+    const { id } = await this.#submitBulk2QueryJob(soql);
 
     await this.#pollBulk2QueryJob(id);
 
@@ -353,7 +368,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       do {
         const response = await this.#getBulk2QueryJobResponse(id, locator);
         // TODO: Delete this
-        logger.info(`get bulk job response: `, response);
         const readable = getBulk2QueryJobResultsFromResponse(response);
         locator = getBulk2QueryJobNextLocatorFromResponse(response);
 
@@ -576,6 +590,7 @@ export function newClient(connection: CRMConnectionUnsafe, integration: Integrat
     refreshToken: connection.credentials.refreshToken,
     clientId: integration.config.oauth.credentials.oauthClientId,
     clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+    loginUrl: connection.credentials.loginUrl,
   });
 }
 
