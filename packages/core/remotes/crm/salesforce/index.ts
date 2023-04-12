@@ -317,8 +317,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     const interval = 1000; // TODO: make configurable
 
     while (startTime + timeout > Date.now()) {
-      const pollResponse = await poll();
-      const { state } = pollResponse;
+      const { state } = await poll();
       switch (state) {
         case 'Open':
           throw new Error('job has not been started');
@@ -367,7 +366,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       let locator: string | undefined = undefined;
       do {
         const response = await this.#getBulk2QueryJobResponse(id, locator);
-        // TODO: Delete this
         const readable = getBulk2QueryJobResultsFromResponse(response);
         locator = getBulk2QueryJobNextLocatorFromResponse(response);
 
