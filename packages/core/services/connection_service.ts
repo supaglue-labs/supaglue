@@ -61,7 +61,7 @@ export class ConnectionService {
     const integrations = await this.#integrationService.list(applicationId);
     const integrationIds = integrations.map(({ id }) => id);
     const connections = await this.#prisma.connection.findMany({
-      where: { integrationId: { in: integrationIds }, customerId: customerId, providerName: providerName },
+      where: { integrationId: { in: integrationIds }, customerId, providerName },
     });
     return connections.map((connection) => fromConnectionModelToConnectionSafe(connection));
   }

@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
+import { getCustomerIdPk } from '@supaglue/core/lib';
 import {
   DeleteConnectionPathParams,
   DeleteConnectionRequest,
@@ -25,7 +26,8 @@ export default function init(app: Router): void {
       req: Request<GetConnectionsPathParams, GetConnectionsResponse, GetConnectionsRequest>,
       res: Response<GetConnectionsResponse>
     ) => {
-      const connections = await connectionService.listSafe(req.supaglueApplication.id);
+      const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
+      const connections = await connectionService.listSafe(req.supaglueApplication.id, customerId);
       return res.status(200).send(connections.map(snakecaseKeys));
     }
   );
