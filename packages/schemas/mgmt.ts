@@ -48,7 +48,7 @@ export type DeleteIntegrationRequest = never;
 export type DeleteIntegrationResponse =
   operations['deleteIntegration']['responses'][keyof operations['deleteIntegration']['responses']]['content']['application/json'];
 
-export type GetConnectionsPathParams = never;
+export type GetConnectionsPathParams = paths['/customers/{customer_id}/connections']['parameters']['path'];
 export type GetConnectionsQueryParams = never;
 export type GetConnectionsRequest = never;
 export type GetConnectionsResponse =
