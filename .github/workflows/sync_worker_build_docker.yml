@@ -7,9 +7,19 @@ on:
       - main
     paths:
       - apps/sync-worker/**
+      - packages/core/**
+      - packages/db/**
+      - packages/sync-workflows/**
+      - packages/types/**
+      - packages/utils/**
   pull_request:
     paths:
       - apps/sync-worker/**
+      - packages/core/**
+      - packages/db/**
+      - packages/sync-workflows/**
+      - packages/types/**
+      - packages/utils/**
 
 concurrency:
   group: ${{ github.repository }}-sync_worker-${{ github.event.number || github.head_ref ||

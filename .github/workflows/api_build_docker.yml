@@ -7,9 +7,21 @@ on:
       - main
     paths:
       - apps/api/**
+      - packages/core/**
+      - packages/db/**
+      - packages/schemas/**
+      - packages/sync-workflows/**
+      - packages/types/**
+      - packages/utils/**
   pull_request:
     paths:
       - apps/api/**
+      - packages/core/**
+      - packages/db/**
+      - packages/schemas/**
+      - packages/sync-workflows/**
+      - packages/types/**
+      - packages/utils/**
 
 concurrency:
   group: ${{ github.repository }}-api-${{ github.event.number || github.head_ref ||
