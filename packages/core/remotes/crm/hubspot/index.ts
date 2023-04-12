@@ -205,7 +205,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           after = currResults.paging?.next?.after;
 
           // Do not emit 'end' event until the last batch
-          const readable = Readable.from(remoteAccounts);
+          const readable = Readable.from(
+            remoteAccounts.filter((remoteAccount) => {
+              if (!updatedAfter) {
+                return true;
+              }
+
+              if (!remoteAccount.remoteUpdatedAt) {
+                return true;
+              }
+
+              return updatedAfter < remoteAccount.remoteUpdatedAt;
+            })
+          );
           readable.pipe(passThrough, { end: !after });
           readable.on('error', (err) => passThrough.emit('error', err));
 
@@ -335,7 +347,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           after = currResults.paging?.next?.after;
 
           // Do not emit 'end' event until the last batch
-          const readable = Readable.from(remoteOpportunities);
+          const readable = Readable.from(
+            remoteOpportunities.filter((remoteOpportunity) => {
+              if (!updatedAfter) {
+                return true;
+              }
+
+              if (!remoteOpportunity.remoteUpdatedAt) {
+                return true;
+              }
+
+              return updatedAfter < remoteOpportunity.remoteUpdatedAt;
+            })
+          );
           readable.pipe(passThrough, { end: !after });
           readable.on('error', (err) => passThrough.emit('error', err));
 
@@ -502,7 +526,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           after = currResults.paging?.next?.after;
 
           // Do not emit 'end' event until the last batch
-          const readable = Readable.from(remoteContacts);
+          const readable = Readable.from(
+            remoteContacts.filter((remoteContact) => {
+              if (!updatedAfter) {
+                return true;
+              }
+
+              if (!remoteContact.remoteUpdatedAt) {
+                return true;
+              }
+
+              return updatedAfter < remoteContact.remoteUpdatedAt;
+            })
+          );
           readable.pipe(passThrough, { end: !after });
           readable.on('error', (err) => passThrough.emit('error', err));
 
@@ -705,7 +741,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           after = currResults.paging?.next?.after;
 
           // Do not emit 'end' event until the last batch
-          const readable = Readable.from(remoteUsers);
+          const readable = Readable.from(
+            remoteUsers.filter((remoteUser) => {
+              if (!updatedAfter) {
+                return true;
+              }
+
+              if (!remoteUser.remoteUpdatedAt) {
+                return true;
+              }
+
+              return updatedAfter < remoteUser.remoteUpdatedAt;
+            })
+          );
           readable.pipe(passThrough, { end: !after });
           readable.on('error', (err) => passThrough.emit('error', err));
 
