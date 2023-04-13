@@ -65,16 +65,43 @@ export class SyncService {
   }
 
   public async processSyncChanges(): Promise<void> {
+    // Get all the IntegrationChange objects
+    const integrationChanges = await this.#prisma.integrationChange.findMany();
+    const integrationChangeIds = integrationChanges.map((integrationChange) => integrationChange.id);
+
+    // Find out all the integrations that may have changed
+    const uniqueIntegrationIds = [
+      ...new Set(integrationChanges.map((integrationChange) => integrationChange.integrationId)),
+    ];
+
+    // Get all the associated syncs and generate sync changes so that we update the schedule intervals.
+    // TODO: Write a raw query instead of reading out all syncs and then writing sync changes.
+    const syncsForIntegrations = await this.#prisma.sync.findMany({
+      where: {
+        connection: {
+          integrationId: {
+            in: uniqueIntegrationIds,
+          },
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
     // Get all the SyncChange objects
     const syncChanges = await this.#prisma.syncChange.findMany();
     const syncChangeIds = syncChanges.map((syncChange) => syncChange.id);
 
     // Find out all the syncs that may have changed (for now, it's just created; syncs aren't updated).
-    const uniqueSyncChangeIds = [...new Set(syncChanges.map((syncChange) => syncChange.syncId))];
+    const uniqueSyncIds = [
+      ...new Set(syncsForIntegrations.map((sync) => sync.id)),
+      ...new Set(syncChanges.map((syncChange) => syncChange.syncId)),
+    ];
     const syncs = await this.#prisma.sync.findMany({
       where: {
         id: {
-          in: uniqueSyncChangeIds,
+          in: uniqueSyncIds,
         },
       },
       select: {
@@ -84,8 +111,8 @@ export class SyncService {
     });
 
     // Classify SyncChange into upserts and deletes
-    const syncIdsToDelete = uniqueSyncChangeIds.filter((syncId) => !syncs.some((sync) => sync.id === syncId));
-    const syncIdsToUpsert = uniqueSyncChangeIds.filter((syncId) => !syncIdsToDelete.includes(syncId));
+    const syncIdsToDelete = uniqueSyncIds.filter((syncId) => !syncs.some((sync) => sync.id === syncId));
+    const syncIdsToUpsert = uniqueSyncIds.filter((syncId) => !syncIdsToDelete.includes(syncId));
 
     // Delete syncs
     await this.#deleteTemporalSyncs(syncIdsToDelete);
@@ -115,22 +142,28 @@ export class SyncService {
         if (!integration) {
           throw new Error('Unexpected error: integration not found');
         }
-        return this.#createTemporalSyncIfNotExist(
-          syncId,
-          connection,
-          integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
-        );
+        return this.upsertTemporalSync(syncId, connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
       })
     );
 
-    // Delete the SyncChange objects
-    await this.#prisma.syncChange.deleteMany({
-      where: {
-        id: {
-          in: syncChangeIds,
+    await Promise.all([
+      // Delete the IntegrationChange objects
+      this.#prisma.integrationChange.deleteMany({
+        where: {
+          id: {
+            in: integrationChangeIds,
+          },
         },
-      },
-    });
+      }),
+      // Delete the SyncChange objects
+      this.#prisma.syncChange.deleteMany({
+        where: {
+          id: {
+            in: syncChangeIds,
+          },
+        },
+      }),
+    ]);
   }
 
   async #deleteTemporalSyncs(syncIds: string[]): Promise<void> {
@@ -172,10 +205,12 @@ export class SyncService {
     }
   }
 
-  async #createTemporalSyncIfNotExist(syncId: string, connection: ConnectionSafe, syncPeriodMs: number): Promise<void> {
+  async upsertTemporalSync(syncId: string, connection: ConnectionSafe, syncPeriodMs: number): Promise<void> {
+    const scheduleId = getRunSyncScheduleId(syncId);
+
     try {
       await this.#temporalClient.schedule.create({
-        scheduleId: getRunSyncScheduleId(syncId),
+        scheduleId,
         spec: {
           intervals: [
             {
@@ -207,8 +242,27 @@ export class SyncService {
       });
     } catch (err: unknown) {
       if (err instanceof ScheduleAlreadyRunning) {
-        // swallow
-        // TODO: Allow updating the schedule
+        // Update schedule's interval instead
+        const handle = this.#temporalClient.schedule.getHandle(scheduleId);
+        await handle.update((prev) => {
+          if (prev.spec.intervals?.[0]?.every === syncPeriodMs) {
+            // No change
+            return prev;
+          }
+
+          return {
+            ...prev,
+            spec: {
+              intervals: [
+                {
+                  every: syncPeriodMs,
+                  // so that not everybody is refreshing and hammering the DB at the same time
+                  offset: Math.random() * syncPeriodMs,
+                },
+              ],
+            },
+          };
+        });
         return;
       }
 

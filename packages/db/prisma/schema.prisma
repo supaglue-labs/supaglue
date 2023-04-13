@@ -55,6 +55,14 @@ model Integration {
   @@map("integrations")
 }
 
+model IntegrationChange {
+  id            String   @id @default(uuid())
+  integrationId String   @map("integration_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("integration_changes")
+}
+
 model Connection {
   id            String      @id @default(uuid())
   integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)

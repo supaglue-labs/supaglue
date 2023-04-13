@@ -66,10 +66,21 @@ export class IntegrationService {
   }
 
   public async update(id: string, integration: CRMIntegrationUpdateParams): Promise<Integration> {
-    const updatedIntegration = await this.#prisma.integration.update({
-      where: { id },
-      data: await toIntegrationModel(integration),
-    });
+    // TODO: we should only need to do this if the integration's sync config has changed
+    const [updatedIntegration] = await this.#prisma.$transaction([
+      this.#prisma.integration.update({
+        where: { id },
+        data: await toIntegrationModel(integration),
+      }),
+      this.#prisma.integrationChange.create({
+        data: {
+          integrationId: id,
+        },
+      }),
+    ]);
+
+    // TODO: implement best-effort trigger schedule to process sync changes
+
     return fromIntegrationModel(updatedIntegration);
   }
 
