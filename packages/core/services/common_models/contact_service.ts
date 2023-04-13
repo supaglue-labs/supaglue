@@ -12,10 +12,10 @@ import type {
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { DateAndIdCursor, getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
-import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -49,7 +49,7 @@ export class ContactService extends CommonModelBaseService {
     const { page_size, cursor } = paginationParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmContact.findMany({
-      ...getPaginationParams(pageSize, cursor),
+      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
       where: {
         connectionId,
         emailAddresses:
@@ -59,13 +59,11 @@ export class ContactService extends CommonModelBaseService {
               }
             : undefined,
       },
-      orderBy: {
-        id: 'asc',
-      },
+      orderBy: ORDER_BY,
     });
     const results = models.map((model) => fromContactModel(model));
     return {
-      ...getPaginationResult(pageSize, cursor, results),
+      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
       results,
     };
   }
@@ -85,7 +83,7 @@ export class ContactService extends CommonModelBaseService {
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmContact.findMany({
-      ...getPaginationParams(pageSize, cursor),
+      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -102,13 +100,11 @@ export class ContactService extends CommonModelBaseService {
         account: expandedAssociations.includes('account'),
         owner: expandedAssociations.includes('owner'),
       },
-      orderBy: {
-        id: 'asc',
-      },
+      orderBy: ORDER_BY,
     });
     const results = models.map((model) => fromContactModel(model, expandedAssociations));
     return {
-      ...getPaginationResult(pageSize, cursor, results),
+      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
       results,
     };
   }
@@ -129,6 +125,7 @@ export class ContactService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
+        lastModifiedAt: getLastModifiedAt(remoteContact),
         ...remoteContact,
         accountId: createParams.accountId,
         ownerId: createParams.ownerId,
@@ -211,13 +208,6 @@ export class ContactService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteContactToDbContactParams,
-      (remoteContact) =>
-        new Date(
-          Math.max(
-            remoteContact.remoteUpdatedAt?.getTime() || 0,
-            remoteContact.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        ),
       onUpsertBatchCompletion
     );
   }
