@@ -1,13 +1,16 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { CRMIntegrationCreateParams, CRMIntegrationUpdateParams, Integration } from '@supaglue/types';
+import { Client } from '@temporalio/client';
 import { NotFoundError } from '../errors';
 import { fromIntegrationModel, toIntegrationModel } from '../mappers';
 
 export class IntegrationService {
   #prisma: PrismaClient;
+  #temporalClient: Client;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: PrismaClient, temporalClient: Client) {
     this.#prisma = prisma;
+    this.#temporalClient = temporalClient;
   }
 
   public async getByIds(ids: string[]): Promise<Integration[]> {
@@ -66,10 +69,21 @@ export class IntegrationService {
   }
 
   public async update(id: string, integration: CRMIntegrationUpdateParams): Promise<Integration> {
-    const updatedIntegration = await this.#prisma.integration.update({
-      where: { id },
-      data: await toIntegrationModel(integration),
-    });
+    // TODO: we should only need to do this if the integration's sync config has changed
+    const [updatedIntegration] = await this.#prisma.$transaction([
+      this.#prisma.integration.update({
+        where: { id },
+        data: await toIntegrationModel(integration),
+      }),
+      this.#prisma.integrationChange.create({
+        data: {
+          integrationId: id,
+        },
+      }),
+    ]);
+
+    // TODO: implement best-effort trigger schedule to process sync changes
+
     return fromIntegrationModel(updatedIntegration);
   }
 
