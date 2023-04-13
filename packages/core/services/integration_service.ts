@@ -1,16 +1,13 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { CRMIntegrationCreateParams, CRMIntegrationUpdateParams, Integration } from '@supaglue/types';
-import { Client } from '@temporalio/client';
 import { NotFoundError } from '../errors';
 import { fromIntegrationModel, toIntegrationModel } from '../mappers';
 
 export class IntegrationService {
   #prisma: PrismaClient;
-  #temporalClient: Client;
 
-  constructor(prisma: PrismaClient, temporalClient: Client) {
+  constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
-    this.#temporalClient = temporalClient;
   }
 
   public async getByIds(ids: string[]): Promise<Integration[]> {
