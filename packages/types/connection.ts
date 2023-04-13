@@ -2,7 +2,7 @@ import type { CRMProviderName } from './crm';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
-// TODO: Bifurcate salesforce vs hubspot
+// TODO(625): Bifurcate salesforce vs hubspot
 export type ConnectionCredentialsDecrypted = {
   type: string;
   accessToken: string;

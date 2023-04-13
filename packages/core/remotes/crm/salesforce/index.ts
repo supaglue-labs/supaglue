@@ -267,6 +267,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
           await this.#refreshAccessToken();
         } catch (e: any) {
           logger.error(e);
+          // The error name in jsforce is generated at https://github.com/jsforce/jsforce/blob/master/lib/oauth2.js#L197
+          // TODO(624): Move off of jsforce
           if (e.name === 'ERROR_HTTP_429') {
             throw e;
           }
