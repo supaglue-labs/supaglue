@@ -7,11 +7,14 @@ export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SY
 
 const WEBHOOK_TIMEOUT = 5 * 60 * 1000;
 
-export const sendWebhookPayload = async (
+export const maybeSendWebhookPayload = async (
   config: WebhookConfig,
   payloadType: WebhookPayloadType,
   payload: WebhookPayload
 ) => {
+  if (skipSendingWebhook(payloadType, config)) {
+    return;
+  }
   // Note: this is best effort.
   // TODO: Make webhooks more durable
   try {
@@ -44,4 +47,13 @@ export const sendWebhookPayload = async (
     // TODO: Don't swallow this error.
     logger.error(e, 'Failed to send webhook');
   }
+};
+
+const skipSendingWebhook = (type: WebhookPayloadType, config: WebhookConfig): boolean => {
+  return (
+    (type === 'CONNECTION_ERROR' && !config.notifyOnConnectionError) ||
+    (type === 'CONNECTION_SUCCESS' && !config.notifyOnConnectionSuccess) ||
+    (type === 'SYNC_ERROR' && !config.notifyOnSyncError) ||
+    (type === 'SYNC_SUCCESS' && !config.notifyOnSyncSuccess)
+  );
 };
