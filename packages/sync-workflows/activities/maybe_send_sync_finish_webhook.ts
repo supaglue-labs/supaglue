@@ -1,4 +1,4 @@
-import { sendWebhookPayload } from '@supaglue/core/lib/webhook';
+import { maybeSendWebhookPayload } from '@supaglue/core/lib/webhook';
 import { ConnectionService, IntegrationService } from '@supaglue/core/services';
 import { CommonModel } from '@supaglue/types/common';
 import { ApplicationService } from 'sync-worker/services';
@@ -31,7 +31,7 @@ export function createMaybeSendSyncFinishWebhook({
     const integration = await integrationService.getById(connection.integrationId);
     const { config } = await applicationService.getById(integration.applicationId);
     if (config.webhook) {
-      await sendWebhookPayload(config.webhook, status, {
+      await maybeSendWebhookPayload(config.webhook, status, {
         connectionId,
         customerId: connection.customerId,
         providerName: connection.providerName,

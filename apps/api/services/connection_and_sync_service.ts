@@ -1,5 +1,5 @@
 import { NotFoundError } from '@supaglue/core/errors';
-import { logger, sendWebhookPayload } from '@supaglue/core/lib';
+import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
@@ -159,7 +159,7 @@ export class ConnectionAndSyncService {
       throw e;
     } finally {
       if (application.config.webhook) {
-        await sendWebhookPayload(
+        await maybeSendWebhookPayload(
           application.config.webhook,
           errored ? 'CONNECTION_ERROR' : 'CONNECTION_SUCCESS',
           params
