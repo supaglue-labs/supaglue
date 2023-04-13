@@ -97,6 +97,7 @@ export class AccountService extends CommonModelBaseService {
         owner: expandedAssociations.includes('owner'),
       },
       orderBy: {
+        lastModifiedAt: 'asc',
         id: 'asc',
       },
     });

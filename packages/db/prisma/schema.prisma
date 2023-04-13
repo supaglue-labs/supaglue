@@ -109,6 +109,8 @@ model CrmAccount {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_accounts")
 }
@@ -145,6 +147,8 @@ model CrmContact {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_contacts")
 }
@@ -185,6 +189,8 @@ model CrmLead {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_leads")
 }
@@ -220,6 +226,8 @@ model CrmOpportunity {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_opportunities")
 }
@@ -247,6 +255,8 @@ model CrmUser {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_users")
 }
@@ -289,6 +299,8 @@ model CrmEvent {
   owner               CrmUser?        @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_events")
 }

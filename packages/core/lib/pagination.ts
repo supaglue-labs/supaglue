@@ -38,6 +38,7 @@ export function getPaginationResult<T extends string | number = string>(
 
 export type Cursor = {
   id: string | number;
+  lastModifiedAt?: Date;
   reverse: boolean;
 };
 
