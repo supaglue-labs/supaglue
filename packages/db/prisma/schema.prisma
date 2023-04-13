@@ -104,7 +104,7 @@ model CrmAccount {
   remoteWasDeleted          Boolean          @default(false) @map("remote_was_deleted")
   remoteDeletedAt           DateTime?        @map("remote_deleted_at")
   detectedOrRemoteDeletedAt DateTime?        @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime?        @map("last_modified_at")
+  lastModifiedAt            DateTime         @map("last_modified_at")
   createdAt                 DateTime         @default(now()) @map("created_at")
   updatedAt                 DateTime         @updatedAt @map("updated_at")
   // Associations
@@ -117,6 +117,8 @@ model CrmAccount {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_accounts")
 }
@@ -139,7 +141,7 @@ model CrmContact {
   remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
   remoteDeletedAt           DateTime?   @map("remote_deleted_at")
   detectedOrRemoteDeletedAt DateTime?   @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime?   @map("last_modified_at")
+  lastModifiedAt            DateTime    @map("last_modified_at")
   createdAt                 DateTime    @default(now()) @map("created_at")
   updatedAt                 DateTime    @updatedAt @map("updated_at")
   // Associations
@@ -153,6 +155,8 @@ model CrmContact {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_contacts")
 }
@@ -176,7 +180,7 @@ model CrmLead {
   remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
   remoteDeletedAt           DateTime?   @map("remote_deleted_at")
   detectedOrRemoteDeletedAt DateTime?   @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime?   @map("last_modified_at")
+  lastModifiedAt            DateTime    @map("last_modified_at")
   convertedDate             DateTime?   @map("converted_date")
   createdAt                 DateTime    @default(now()) @map("created_at")
   updatedAt                 DateTime    @updatedAt @map("updated_at")
@@ -193,6 +197,8 @@ model CrmLead {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_leads")
 }
@@ -215,7 +221,7 @@ model CrmOpportunity {
   remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
   remoteDeletedAt           DateTime?   @map("remote_deleted_at")
   detectedOrRemoteDeletedAt DateTime?   @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime?   @map("last_modified_at")
+  lastModifiedAt            DateTime    @map("last_modified_at")
   createdAt                 DateTime    @default(now()) @map("created_at")
   updatedAt                 DateTime    @updatedAt @map("updated_at")
   // Associations
@@ -228,6 +234,8 @@ model CrmOpportunity {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_opportunities")
 }
@@ -245,7 +253,7 @@ model CrmUser {
   remoteWasDeleted          Boolean          @default(false) @map("remote_was_deleted")
   remoteDeletedAt           DateTime?        @map("remote_deleted_at")
   detectedOrRemoteDeletedAt DateTime?        @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime?        @map("last_modified_at")
+  lastModifiedAt            DateTime         @map("last_modified_at")
   createdAt                 DateTime         @default(now()) @map("created_at")
   updatedAt                 DateTime         @updatedAt @map("updated_at")
   leads                     CrmLead[]
@@ -255,6 +263,8 @@ model CrmUser {
   events                    CrmEvent[]
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_users")
 }
@@ -274,7 +284,7 @@ model CrmEvent {
   remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
   remoteDeletedAt           DateTime? @map("remote_deleted_at")
   detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime? @map("last_modified_at")
+  lastModifiedAt            DateTime  @map("last_modified_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -297,6 +307,8 @@ model CrmEvent {
   owner               CrmUser?        @relation(fields: [ownerId], references: [id])
 
   @@unique([connectionId, remoteId])
+  // This is needed for the prisma native cursor to work
+  @@unique([lastModifiedAt, id])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
   @@map("crm_events")
 }

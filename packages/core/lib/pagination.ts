@@ -1,8 +1,8 @@
-export function getPaginationParams<T extends string | number = string>(
+export function getPaginationParams<CursorType extends BaseCursor>(
   pageSize: number | undefined,
   cursorStr: string | undefined
 ) {
-  const cursor = decodeCursor(cursorStr);
+  const cursor = decodeCursor<CursorType>(cursorStr);
   let take = pageSize;
   if (cursor?.reverse && pageSize) {
     take = -pageSize;
@@ -10,25 +10,25 @@ export function getPaginationParams<T extends string | number = string>(
   return {
     take,
     skip: cursor ? 1 : undefined,
-    cursor: cursor ? { id: cursor.id as T } : undefined,
+    cursor,
   };
 }
 
-export function getPaginationResult<T extends string | number = string>(
+export function getPaginationResult<CursorType extends BaseCursor>(
   pageSize: number | undefined,
   cursorStr: string | undefined,
-  results: { id: T }[]
+  results: Omit<CursorType, 'reverse'>[]
 ) {
-  const cursor = decodeCursor(cursorStr);
+  const cursor = decodeCursor<CursorType>(cursorStr);
   let next = null;
   let previous = null;
   if (pageSize && results.length === pageSize) {
     const lastResult = results[pageSize - 1];
-    next = encodeCursor({ id: lastResult.id, reverse: false });
+    next = encodeCursor({ ...lastResult, reverse: false });
   }
   if (cursor && results.length) {
     const firstResult = results[0];
-    previous = encodeCursor({ id: firstResult.id, reverse: true });
+    previous = encodeCursor({ ...firstResult, reverse: true });
   }
   return {
     next,
@@ -36,18 +36,24 @@ export function getPaginationResult<T extends string | number = string>(
   };
 }
 
-export type Cursor = {
-  id: string | number;
+type BaseCursor = {
   reverse: boolean;
+  id: string;
 };
 
-export const encodeCursor = (cursorParams: Cursor): string => {
+export type IdCursor = BaseCursor;
+
+export type DateAndIdCursor = BaseCursor & {
+  lastModifiedAt: Date;
+};
+
+export const encodeCursor = (cursorParams: IdCursor | DateAndIdCursor): string => {
   return Buffer.from(JSON.stringify(cursorParams), 'binary').toString('base64');
 };
 
-export const decodeCursor = (encoded?: string): Cursor | undefined => {
+export function decodeCursor<CursorType extends BaseCursor>(encoded?: string): CursorType | undefined {
   if (!encoded) {
     return;
   }
   return JSON.parse(Buffer.from(encoded, 'base64').toString('binary'));
-};
+}

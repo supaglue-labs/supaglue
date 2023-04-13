@@ -2,9 +2,9 @@ import { schemaPrefix } from '@supaglue/db';
 import { ListInternalParams, PaginatedResult, User } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { DateAndIdCursor, getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromRemoteUserToDbUserParams, fromUserModel } from '../../mappers/user';
-import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class UserService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -29,7 +29,7 @@ export class UserService extends CommonModelBaseService {
       listParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmUser.findMany({
-      ...getPaginationParams(pageSize, cursor),
+      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -42,13 +42,11 @@ export class UserService extends CommonModelBaseService {
         },
         remoteWasDeleted: include_deleted_data ? undefined : false,
       },
-      orderBy: {
-        id: 'asc',
-      },
+      orderBy: ORDER_BY,
     });
     const results = models.map(fromUserModel);
     return {
-      ...getPaginationResult(pageSize, cursor, results),
+      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
       results,
     };
   }
@@ -85,10 +83,6 @@ export class UserService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteUserToDbUserParams,
-      (remoteUser) =>
-        new Date(
-          Math.max(remoteUser.remoteUpdatedAt?.getTime() || 0, remoteUser.detectedOrRemoteDeletedAt?.getTime() || 0)
-        ),
       onUpsertBatchCompletion
     );
   }
