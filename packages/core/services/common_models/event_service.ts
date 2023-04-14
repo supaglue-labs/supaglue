@@ -9,15 +9,9 @@ import {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import {
-  DateAndIdCursor,
-  getExpandedAssociations,
-  getPaginationParams,
-  getPaginationResult,
-  getRemoteId,
-} from '../../lib';
+import { getExpandedAssociations, getPaginationParams, getPaginationResult, getRemoteId } from '../../lib';
 import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/event';
-import { CommonModelBaseService, getLastModifiedAt, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class EventService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -59,7 +53,7 @@ export class EventService extends CommonModelBaseService {
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const expandedAssociations = getExpandedAssociations(expand);
     const models = await this.prisma.crmEvent.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams(pageSize, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -79,11 +73,13 @@ export class EventService extends CommonModelBaseService {
         opportunity: expandedAssociations.includes('opportunity'),
         contact: expandedAssociations.includes('contact'),
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromEventModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult(pageSize, cursor, results),
       results,
     };
   }
@@ -113,7 +109,6 @@ export class EventService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
-        lastModifiedAt: getLastModifiedAt(remoteEvent),
         ...remoteEvent,
         accountId: createParams.accountId,
         ownerId: createParams.ownerId,
@@ -205,6 +200,10 @@ export class EventService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteEventToDbEventParams,
+      (remoteEvent) =>
+        new Date(
+          Math.max(remoteEvent.remoteUpdatedAt?.getTime() || 0, remoteEvent.detectedOrRemoteDeletedAt?.getTime() || 0)
+        ),
       onUpsertBatchCompletion
     );
   }

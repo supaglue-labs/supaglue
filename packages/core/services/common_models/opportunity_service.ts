@@ -12,10 +12,10 @@ import type {
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
-import { DateAndIdCursor, getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../mappers';
-import { CommonModelBaseService, getLastModifiedAt, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class OpportunityService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -57,7 +57,7 @@ export class OpportunityService extends CommonModelBaseService {
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmOpportunity.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams(pageSize, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -74,11 +74,13 @@ export class OpportunityService extends CommonModelBaseService {
         account: expandedAssociations.includes('account'),
         owner: expandedAssociations.includes('owner'),
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromOpportunityModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult(pageSize, cursor, results),
       results,
     };
   }
@@ -91,16 +93,18 @@ export class OpportunityService extends CommonModelBaseService {
     const { page_size, cursor } = paginationParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmOpportunity.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams(pageSize, cursor),
       where: {
         connectionId,
         accountId: filters.accountId?.type === 'equals' ? filters.accountId.value : undefined,
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromOpportunityModel(model));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult(pageSize, cursor, results),
       results,
     };
   }
@@ -125,7 +129,6 @@ export class OpportunityService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
-        lastModifiedAt: getLastModifiedAt(remoteOpportunity),
         ...remoteOpportunity,
         accountId: createParams.accountId,
         ownerId: createParams.ownerId,
@@ -213,6 +216,13 @@ export class OpportunityService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteOpportunityToDbOpportunityParams,
+      (remoteOpportunity) =>
+        new Date(
+          Math.max(
+            remoteOpportunity.remoteUpdatedAt?.getTime() || 0,
+            remoteOpportunity.detectedOrRemoteDeletedAt?.getTime() || 0
+          )
+        ),
       onUpsertBatchCompletion
     );
   }

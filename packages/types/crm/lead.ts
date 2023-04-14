@@ -1,17 +1,7 @@
-import type {
-  Account,
-  Address,
-  BaseCrmModel,
-  BaseCrmModelNonRemoteParams,
-  BaseCrmModelRemoteOnlyParams,
-  Contact,
-  CustomFields,
-  EmailAddress,
-  PhoneNumber,
-  User,
-} from '..';
+import type { Account, Address, Contact, CustomFields, EmailAddress, PhoneNumber, User } from '..';
 
-type BaseLead = BaseCrmModel & {
+type BaseLead = {
+  remoteId: string;
   leadSource: string | null;
   title: string | null;
   company: string | null;
@@ -21,25 +11,30 @@ type BaseLead = BaseCrmModel & {
   emailAddresses: EmailAddress[];
   phoneNumbers: PhoneNumber[];
   convertedDate: Date | null;
+  remoteUpdatedAt: Date | null;
+  remoteCreatedAt: Date | null;
+  remoteWasDeleted: boolean;
 };
 
-export type Lead = BaseLead &
-  BaseCrmModelNonRemoteParams & {
-    convertedContactId: string | null;
-    convertedContact?: Contact;
-    convertedAccountId: string | null;
-    convertedAccount?: Account;
-    ownerId: string | null;
-    owner?: User;
-    // Support field mappings + remote data etc
-  };
+export type Lead = BaseLead & {
+  convertedContactId: string | null;
+  convertedContact?: Contact;
+  convertedAccountId: string | null;
+  convertedAccount?: Account;
+  ownerId: string | null;
+  owner?: User;
+  id: string;
+  lastModifiedAt: Date | null;
+  // Support field mappings + remote data etc
+};
 
-export type RemoteLead = BaseLead &
-  BaseCrmModelRemoteOnlyParams & {
-    convertedRemoteContactId: string | null;
-    convertedRemoteAccountId: string | null;
-    remoteOwnerId: string | null;
-  };
+export type RemoteLead = BaseLead & {
+  convertedRemoteContactId: string | null;
+  convertedRemoteAccountId: string | null;
+  remoteOwnerId: string | null;
+  remoteDeletedAt: Date | null;
+  detectedOrRemoteDeletedAt: Date | null;
+};
 
 type BaseLeadCreateParams = {
   firstName?: string | null;

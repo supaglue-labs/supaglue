@@ -2467,6 +2467,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2483,11 +2484,7 @@
           "owner_id",
           "phone_numbers",
           "website",
-          "lifecycle_stage",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
-          "last_modified_at"
+          "lifecycle_stage"
         ]
       },
       "create_update_account": {
@@ -2610,6 +2607,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2626,11 +2624,7 @@
           "last_activity_at",
           "last_name",
           "phone_numbers",
-          "lifecycle_stage",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
-          "last_modified_at"
+          "lifecycle_stage"
         ]
       },
       "create_update_contact": {
@@ -2768,6 +2762,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2784,11 +2779,7 @@
           "account_id",
           "contact_id",
           "lead_id",
-          "opportunity_id",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
-          "last_modified_at"
+          "opportunity_id"
         ]
       },
       "create_update_event": {
@@ -2941,6 +2932,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -2957,11 +2949,7 @@
           "lead_source",
           "owner_id",
           "phone_numbers",
-          "title",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
-          "last_modified_at"
+          "title"
         ]
       },
       "create_update_lead": {
@@ -3093,6 +3081,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -3108,11 +3097,7 @@
           "owner_id",
           "stage",
           "status",
-          "pipeline",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
-          "last_modified_at"
+          "pipeline"
         ]
       },
       "user": {
@@ -3158,6 +3143,7 @@
           },
           "last_modified_at": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           }
@@ -3167,11 +3153,7 @@
           "remote_id",
           "name",
           "email",
-          "is_active",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
-          "last_modified_at"
+          "is_active"
         ]
       },
       "create_update_opportunity": {
