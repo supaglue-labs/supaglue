@@ -1,4 +1,4 @@
-import { CRMConnectionUnsafe, CRMProviderName, Integration } from '@supaglue/types';
+import { ConnectionUnsafe, CRMProviderName, Integration } from '@supaglue/types';
 import { logger } from '../../lib/logger';
 import { ConnectorAuthConfig, CrmConnectorConfig, CrmRemoteClient } from './base';
 import * as capsule from './capsule';
@@ -9,7 +9,9 @@ import * as salesforce from './salesforce';
 import * as zendesk_sell from './zendesk_sell';
 import * as zoho_crm from './zoho_crm';
 
-const crmConnectorConfigMap: Record<CRMProviderName, CrmConnectorConfig> = {
+const crmConnectorConfigMap: {
+  [K in CRMProviderName]: CrmConnectorConfig<K>;
+} = {
   salesforce,
   hubspot,
   pipedrive,
@@ -24,7 +26,10 @@ export function getConnectorAuthConfig(providerName: CRMProviderName): Connector
   return authConfig;
 }
 
-export function getCrmRemoteClient(connection: CRMConnectionUnsafe, integration: Integration): CrmRemoteClient {
+export function getCrmRemoteClient<T extends CRMProviderName>(
+  connection: ConnectionUnsafe<T>,
+  integration: Integration
+): CrmRemoteClient {
   const { newClient } = crmConnectorConfigMap[connection.providerName];
   const client = newClient(connection, integration);
 

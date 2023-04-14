@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes/crm';
-import { ConnectionCreateParams, ConnectionUpsertParams } from '@supaglue/types/connection';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
@@ -172,22 +171,32 @@ export default function init(app: Router): void {
         remoteId = hubId.toString();
       }
 
-      const payload: ConnectionCreateParams | ConnectionUpsertParams = {
-        category: 'crm',
-        providerName,
+      const basePayload = {
+        category: 'crm' as const,
         applicationId,
         customerId,
         integrationId: integration.id,
         credentials: {
-          type: 'oauth2',
+          type: 'oauth2' as const,
           accessToken: tokenWrapper.token['access_token'] as string,
           refreshToken: tokenWrapper.token['refresh_token'] as string,
-          instanceUrl: tokenWrapper.token['instance_url'] as string,
-          expiresAt: tokenWrapper.token['expires_at'] as string,
-          loginUrl,
+          expiresAt: (tokenWrapper.token['expires_at'] as string | undefined) ?? null,
         },
         remoteId,
       };
+
+      const payload =
+        providerName === 'salesforce'
+          ? {
+              ...basePayload,
+              providerName,
+              credentials: {
+                ...basePayload.credentials,
+                instanceUrl: tokenWrapper.token['instance_url'] as string,
+                loginUrl,
+              },
+            }
+          : { ...basePayload, providerName };
 
       try {
         await connectionAndSyncService.create(payload);

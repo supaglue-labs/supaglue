@@ -1,6 +1,6 @@
 import {
   AccountCreateParams,
-  CRMConnectionUnsafe,
+  ConnectionUnsafe,
   Integration,
   RemoteAccount,
   RemoteAccountUpdateParams,
@@ -115,8 +115,7 @@ class CapsuleClient extends AbstractCrmRemoteClient {
   }
 }
 
-// TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnectionUnsafe, integration: Integration): CapsuleClient {
+export function newClient(connection: ConnectionUnsafe<'capsule'>, integration: Integration): CapsuleClient {
   return new CapsuleClient();
 }
 

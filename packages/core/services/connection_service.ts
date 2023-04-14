@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { ConnectionCredentialsDecrypted, ConnectionSafe, ConnectionUnsafe } from '@supaglue/types';
+import type { ConnectionCredentialsDecryptedAny, ConnectionSafeAny, ConnectionUnsafeAny } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
@@ -14,7 +14,7 @@ export class ConnectionService {
     this.#integrationService = integrationService;
   }
 
-  public async getUnsafeById(id: string): Promise<ConnectionUnsafe> {
+  public async getUnsafeById(id: string): Promise<ConnectionUnsafeAny> {
     const connection = await this.#prisma.connection.findUnique({
       where: { id },
     });
@@ -24,7 +24,7 @@ export class ConnectionService {
     return fromConnectionModelToConnectionUnsafe(connection);
   }
 
-  public async getSafeById(id: string): Promise<ConnectionSafe> {
+  public async getSafeById(id: string): Promise<ConnectionSafeAny> {
     const connection = await this.#prisma.connection.findUnique({
       where: { id },
     });
@@ -34,14 +34,14 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connection);
   }
 
-  public async getSafeByIds(ids: string[]): Promise<ConnectionSafe[]> {
+  public async getSafeByIds(ids: string[]): Promise<ConnectionSafeAny[]> {
     const connections = await this.#prisma.connection.findMany({
       where: { id: { in: ids } },
     });
     return connections.map(fromConnectionModelToConnectionSafe);
   }
 
-  public async getSafeByIdAndApplicationId(id: string, applicationId: string): Promise<ConnectionSafe> {
+  public async getSafeByIdAndApplicationId(id: string, applicationId: string): Promise<ConnectionSafeAny> {
     const connections = await this.#prisma.connection.findMany({
       where: {
         id,
@@ -57,7 +57,11 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connections[0]);
   }
 
-  public async listSafe(applicationId: string, customerId?: string, providerName?: string): Promise<ConnectionSafe[]> {
+  public async listSafe(
+    applicationId: string,
+    customerId?: string,
+    providerName?: string
+  ): Promise<ConnectionSafeAny[]> {
     const integrations = await this.#integrationService.list(applicationId);
     const integrationIds = integrations.map(({ id }) => id);
     const connections = await this.#prisma.connection.findMany({
@@ -74,7 +78,7 @@ export class ConnectionService {
     customerId: string;
     applicationId: string;
     providerName: string;
-  }): Promise<ConnectionSafe> {
+  }): Promise<ConnectionSafeAny> {
     const connection = await this.#prisma.connection.findFirstOrThrow({
       where: {
         customerId,
@@ -98,7 +102,7 @@ export class ConnectionService {
   }: {
     customerId: string;
     integrationId: string;
-  }): Promise<ConnectionSafe> {
+  }): Promise<ConnectionSafeAny> {
     const connection = await this.#prisma.connection.findUnique({
       where: {
         customerId_integrationId: {
@@ -117,15 +121,15 @@ export class ConnectionService {
     connectionId: string,
     accessToken: string,
     expiresAt: string | null
-  ): Promise<ConnectionSafe> {
+  ): Promise<ConnectionSafeAny> {
     // TODO: Not atomic.
 
     const connection = await this.#prisma.connection.findUniqueOrThrow({
       where: { id: connectionId },
     });
     const oldCredentialsUnsafe = JSON.parse(await decrypt(connection.credentials));
-    const newCredentials: ConnectionCredentialsDecrypted = {
-      ...(oldCredentialsUnsafe as ConnectionCredentialsDecrypted),
+    const newCredentials: ConnectionCredentialsDecryptedAny = {
+      ...(oldCredentialsUnsafe as ConnectionCredentialsDecryptedAny),
       accessToken,
       expiresAt,
     };

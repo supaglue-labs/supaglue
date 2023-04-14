@@ -13,7 +13,7 @@ import {
 } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
-  CRMConnectionUnsafe,
+  ConnectionUnsafe,
   Integration,
   RemoteAccount,
   RemoteAccountCreateParams,
@@ -807,8 +807,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 }
 
-// TODO: We should pass in a type-narrowed CRMConnection
-export function newClient(connection: CRMConnectionUnsafe, integration: Integration): HubSpotClient {
+export function newClient(connection: ConnectionUnsafe<'hubspot'>, integration: Integration): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
