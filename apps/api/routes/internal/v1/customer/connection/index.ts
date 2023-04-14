@@ -72,7 +72,6 @@ export default function init(app: Router): void {
         type: req.body.credentials.type,
         accessToken: token.accessToken,
         refreshToken: req.body.credentials.refresh_token,
-        instanceUrl: '', // TODO: Maybe we shouldn't make this required in our types. it seems only used for salesforce
         expiresAt,
       },
       remoteId,
