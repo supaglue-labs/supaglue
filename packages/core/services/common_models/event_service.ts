@@ -11,7 +11,7 @@ import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations, getPaginationParams, getPaginationResult, getRemoteId } from '../../lib';
 import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/event';
-import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class EventService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -109,6 +109,7 @@ export class EventService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
+        lastModifiedAt: getLastModifiedAt(remoteEvent),
         ...remoteEvent,
         accountId: createParams.accountId,
         ownerId: createParams.ownerId,
@@ -153,7 +154,12 @@ export class EventService extends CommonModelBaseService {
     });
 
     const contactModel = await this.prisma.crmEvent.update({
-      data: { ...remoteEvent, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
+      data: {
+        ...remoteEvent,
+        lastModifiedAt: getLastModifiedAt(remoteEvent),
+        accountId: updateParams.accountId,
+        ownerId: updateParams.ownerId,
+      },
       where: {
         id: updateParams.id,
       },
@@ -200,10 +206,6 @@ export class EventService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteEventToDbEventParams,
-      (remoteEvent) =>
-        new Date(
-          Math.max(remoteEvent.remoteUpdatedAt?.getTime() || 0, remoteEvent.detectedOrRemoteDeletedAt?.getTime() || 0)
-        ),
       onUpsertBatchCompletion
     );
   }

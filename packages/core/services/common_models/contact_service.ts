@@ -15,7 +15,7 @@ import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
-import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -129,6 +129,7 @@ export class ContactService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
+        lastModifiedAt: getLastModifiedAt(remoteContact),
         ...remoteContact,
         accountId: createParams.accountId,
         ownerId: createParams.ownerId,
@@ -165,7 +166,12 @@ export class ContactService extends CommonModelBaseService {
     });
 
     const contactModel = await this.prisma.crmContact.update({
-      data: { ...remoteContact, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
+      data: {
+        ...remoteContact,
+        lastModifiedAt: getLastModifiedAt(remoteContact),
+        accountId: updateParams.accountId,
+        ownerId: updateParams.ownerId,
+      },
       where: {
         id: updateParams.id,
       },
@@ -211,13 +217,6 @@ export class ContactService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteContactToDbContactParams,
-      (remoteContact) =>
-        new Date(
-          Math.max(
-            remoteContact.remoteUpdatedAt?.getTime() || 0,
-            remoteContact.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        ),
       onUpsertBatchCompletion
     );
   }

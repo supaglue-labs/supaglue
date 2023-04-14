@@ -30,7 +30,6 @@ export abstract class CommonModelBaseService {
     tempTable: string,
     columnsWithoutId: string[],
     mapper: (connectionId: string, customerId: string, remoteCommonModel: T) => Record<string, any>,
-    lastModifiedAtGetter: (remoteCommonModel: T) => Date | null,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const client = await this.pgPool.connect();
@@ -83,7 +82,7 @@ export abstract class CommonModelBaseService {
               ++tempTableRowCount;
 
               // Update the max lastModifiedAt
-              const lastModifiedAt = lastModifiedAtGetter(chunk);
+              const lastModifiedAt = getLastModifiedAt(chunk);
               if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
                 maxLastModifiedAt = lastModifiedAt;
               }
@@ -140,3 +139,15 @@ export type UpsertRemoteCommonModelsResult = {
   maxLastModifiedAt: Date | null;
   numRecords: number;
 };
+
+export function getLastModifiedAt(remoteCommonModel: {
+  remoteUpdatedAt: Date | null;
+  detectedOrRemoteDeletedAt: Date | null;
+}) {
+  return new Date(
+    Math.max(
+      remoteCommonModel.remoteUpdatedAt?.getTime() || 0,
+      remoteCommonModel.detectedOrRemoteDeletedAt?.getTime() || 0
+    )
+  );
+}
