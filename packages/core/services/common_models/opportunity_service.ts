@@ -15,7 +15,7 @@ import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../mappers';
-import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class OpportunityService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -129,6 +129,7 @@ export class OpportunityService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
+        lastModifiedAt: getLastModifiedAt(remoteOpportunity),
         ...remoteOpportunity,
         accountId: createParams.accountId,
         ownerId: createParams.ownerId,
@@ -169,7 +170,12 @@ export class OpportunityService extends CommonModelBaseService {
     });
 
     const opportunityModel = await this.prisma.crmOpportunity.update({
-      data: { ...remoteOpportunity, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
+      data: {
+        ...remoteOpportunity,
+        lastModifiedAt: getLastModifiedAt(remoteOpportunity),
+        accountId: updateParams.accountId,
+        ownerId: updateParams.ownerId,
+      },
       where: {
         id: updateParams.id,
       },
@@ -216,13 +222,6 @@ export class OpportunityService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteOpportunityToDbOpportunityParams,
-      (remoteOpportunity) =>
-        new Date(
-          Math.max(
-            remoteOpportunity.remoteUpdatedAt?.getTime() || 0,
-            remoteOpportunity.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        ),
       onUpsertBatchCompletion
     );
   }

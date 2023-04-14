@@ -13,7 +13,7 @@ import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
-import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class LeadService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -98,6 +98,7 @@ export class LeadService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
+        lastModifiedAt: getLastModifiedAt(remoteLead),
         ...remoteLead,
         ownerId: createParams.ownerId,
       },
@@ -130,7 +131,11 @@ export class LeadService extends CommonModelBaseService {
     });
 
     const leadModel = await this.prisma.crmLead.update({
-      data: { ...remoteLead, ownerId: updateParams.ownerId },
+      data: {
+        ...remoteLead,
+        lastModifiedAt: getLastModifiedAt(remoteLead),
+        ownerId: updateParams.ownerId,
+      },
       where: {
         id: updateParams.id,
       },
@@ -179,10 +184,6 @@ export class LeadService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteLeadToDbLeadParams,
-      (remoteLead) =>
-        new Date(
-          Math.max(remoteLead.remoteUpdatedAt?.getTime() || 0, remoteLead.detectedOrRemoteDeletedAt?.getTime() || 0)
-        ),
       onUpsertBatchCompletion
     );
   }
