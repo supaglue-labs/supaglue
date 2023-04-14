@@ -4,7 +4,7 @@ import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
-import { ConnectionSafe, Sync, SyncState, SyncType } from '@supaglue/types';
+import { ConnectionSafeAny, Sync, SyncState, SyncType } from '@supaglue/types';
 import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
@@ -205,7 +205,7 @@ export class SyncService {
     }
   }
 
-  async upsertTemporalSync(syncId: string, connection: ConnectionSafe, syncPeriodMs: number): Promise<void> {
+  async upsertTemporalSync(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
     const scheduleId = getRunSyncScheduleId(syncId);
 
     try {

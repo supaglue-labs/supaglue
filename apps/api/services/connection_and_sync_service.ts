@@ -21,11 +21,11 @@ import {
 } from '@supaglue/sync-workflows/workflows/run_sync';
 import { CRM_COMMON_MODELS, Sync, SyncState, SyncType } from '@supaglue/types';
 import type {
-  ConnectionCreateParams,
-  ConnectionSafe,
+  ConnectionCreateParamsAny,
+  ConnectionSafeAny,
   ConnectionStatus,
-  ConnectionUnsafe,
-  ConnectionUpsertParams,
+  ConnectionUnsafeAny,
+  ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
 import { Client, ScheduleAlreadyRunning, WorkflowNotFoundError } from '@temporalio/client';
@@ -55,7 +55,7 @@ export class ConnectionAndSyncService {
     this.#connectionService = connectionService;
   }
 
-  public async upsert(params: ConnectionUpsertParams): Promise<ConnectionUnsafe> {
+  public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
     const integration = await this.#prisma.integration.findUnique({
       where: {
         applicationId_providerName: {
@@ -99,7 +99,7 @@ export class ConnectionAndSyncService {
     return fromConnectionModelToConnectionUnsafe(connection);
   }
 
-  public async create(params: ConnectionCreateParams): Promise<ConnectionUnsafe> {
+  public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
     const integration = await this.#integrationService.getByProviderNameAndApplicationId(
       params.providerName,
       params.applicationId
@@ -343,7 +343,7 @@ export class ConnectionAndSyncService {
 
   async #createTemporalSyncIfNotExist(
     syncId: string,
-    connection: ConnectionSafe,
+    connection: ConnectionSafeAny,
     syncPeriodMs: number
   ): Promise<boolean> {
     try {

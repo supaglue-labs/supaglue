@@ -1,6 +1,6 @@
 import type { CrmAccount, CrmContact, CrmEvent, CrmLead, CrmOpportunity, CrmUser } from '@supaglue/db';
 
-export type CrmEventExpanded = CrmEvent & {
+export type CrmEventModelExpanded = CrmEvent & {
   account?: CrmAccount | null;
   contact?: CrmContact | null;
   lead?: CrmLead | null;

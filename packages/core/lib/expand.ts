@@ -1,4 +1,4 @@
-export const getExpandedAssociations = (expand: string | undefined) => {
+export const getExpandedAssociations = (expand: string | undefined): string[] => {
   if (!expand) {
     return [];
   }
