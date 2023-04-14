@@ -10,10 +10,10 @@ import type {
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
-import { DateAndIdCursor, getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
-import { CommonModelBaseService, getLastModifiedAt, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class LeadService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -56,7 +56,7 @@ export class LeadService extends CommonModelBaseService {
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmLead.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams(pageSize, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -74,11 +74,13 @@ export class LeadService extends CommonModelBaseService {
         convertedContact: expandedAssociations.includes('converted_contact'),
         owner: expandedAssociations.includes('owner'),
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromLeadModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult(pageSize, cursor, results),
       results,
     };
   }
@@ -96,7 +98,6 @@ export class LeadService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
-        lastModifiedAt: getLastModifiedAt(remoteLead),
         ...remoteLead,
         ownerId: createParams.ownerId,
       },
@@ -178,6 +179,10 @@ export class LeadService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteLeadToDbLeadParams,
+      (remoteLead) =>
+        new Date(
+          Math.max(remoteLead.remoteUpdatedAt?.getTime() || 0, remoteLead.detectedOrRemoteDeletedAt?.getTime() || 0)
+        ),
       onUpsertBatchCompletion
     );
   }

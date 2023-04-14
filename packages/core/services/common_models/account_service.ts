@@ -12,10 +12,10 @@ import type {
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getExpandedAssociations } from '../../lib/expand';
-import { DateAndIdCursor, getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
-import { CommonModelBaseService, getLastModifiedAt, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class AccountService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -49,16 +49,18 @@ export class AccountService extends CommonModelBaseService {
     const { page_size, cursor } = paginationParams;
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmAccount.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams(pageSize, cursor),
       where: {
         connectionId,
         website: filters.website?.type === 'equals' ? filters.website.value : undefined,
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromAccountModel(model));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult(pageSize, cursor, results),
       results,
     };
   }
@@ -78,7 +80,7 @@ export class AccountService extends CommonModelBaseService {
     const expandedAssociations = getExpandedAssociations(expand);
     const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmAccount.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams(pageSize, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -94,11 +96,13 @@ export class AccountService extends CommonModelBaseService {
       include: {
         owner: expandedAssociations.includes('owner'),
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromAccountModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult(pageSize, cursor, results),
       results,
     };
   }
@@ -116,7 +120,6 @@ export class AccountService extends CommonModelBaseService {
       data: {
         customerId,
         connectionId,
-        lastModifiedAt: getLastModifiedAt(remoteAccount),
         ...remoteAccount,
         ownerId: createParams.ownerId,
       },
@@ -195,6 +198,13 @@ export class AccountService extends CommonModelBaseService {
       tempTable,
       columnsWithoutId,
       fromRemoteAccountToDbAccountParams,
+      (remoteAccount) =>
+        new Date(
+          Math.max(
+            remoteAccount.remoteUpdatedAt?.getTime() || 0,
+            remoteAccount.detectedOrRemoteDeletedAt?.getTime() || 0
+          )
+        ),
       onUpsertBatchCompletion
     );
   }

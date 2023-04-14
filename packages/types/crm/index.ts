@@ -16,7 +16,6 @@ export type CRMCommonModel = (typeof CRM_COMMON_MODELS)[number];
 export type CustomFields = Record<string, any>;
 
 export * from './account';
-export * from './base';
 export * from './contact';
 export * from './event';
 export * from './lead';
