@@ -6,14 +6,6 @@ import TabItem from '@theme/TabItem';
 
 To connect to your customers' Salesforce instances, you'll need to update the redirect URL to point to Supaglue and fetch the API access credentials in your [Salesforce developer account](https://developer.salesforce.com).
 
-:::caution
-
-1. Salesforce API access is limited to Enterprise, Unlimited, and Performance Editions of Salesforce, as well as Professional Editions with the paid API add-on. See Salesforce documentation for more information.
-
-1. You must have the proper admin permissions on your Salesforce account to access the App Manager. If you don't, please speak to your admin.
-
-:::
-
 ## Add Redirect URL to your Salesforce app.
 
 Supaglue provides a redirect URL to send information to your app. To add the redirect URL to your Salesforce app:
