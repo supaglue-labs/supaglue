@@ -379,6 +379,8 @@ export class EventService extends CommonModelBaseService {
       },
     });
 
+    logger.info('EventService.updateDanglingOpportunitiess: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
       SET opportunity_id = u.id
