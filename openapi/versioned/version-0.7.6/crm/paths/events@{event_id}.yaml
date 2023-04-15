@@ -1,0 +1,71 @@
+get:
+  operationId: getEvent
+  summary: Get event
+  tags:
+    - Events
+  security:
+    - ApiKeyAuth: []
+  parameters:
+    - $ref: ../../common/components/parameters/query/expand.yaml
+  responses:
+    200:
+      description: Event
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/event.yaml
+patch:
+  operationId: updateEvent
+  summary: Update event
+  tags:
+    - Events
+  security:
+    - ApiKeyAuth: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            model:
+              $ref: ../components/schemas/create_update_event.yaml
+          required:
+            - model
+        examples:
+          Example:
+            value:
+              model:
+                type: Meeting
+                subject: Meeting
+                content: ~
+                start_time: '2022-02-27T00:00:00Z'
+                end_time: '2022-02-27T00:30:00Z'
+                owner_id: 4593d277-1654-4192-b155-a4663f1dbdc2
+                account_id: 0ce05511-adbc-4144-a049-6631c7ea3b04
+  responses:
+    200:
+      description: Event updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../common/components/schemas/logs.yaml
+              model:
+                $ref: ../components/schemas/objects/event.yaml
+              warnings:
+                $ref: ../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
+  - name: event_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

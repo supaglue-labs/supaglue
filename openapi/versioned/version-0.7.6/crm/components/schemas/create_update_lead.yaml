@@ -1,0 +1,31 @@
+type: object
+properties:
+  company:
+    type: string
+    nullable: true
+    example: Supaglue
+  first_name:
+    type: string
+    nullable: true
+    example: George
+  last_name:
+    type: string
+    nullable: true
+    example: Xing
+  lead_source:
+    type: string
+    nullable: true
+    example: API Blogger
+  title:
+    type: string
+    example: Co-Founder
+  email_addresses:
+    $ref: ./objects/email_addresses.yaml
+  addresses:
+    $ref: ./objects/addresses.yaml
+  owner_id:
+    type: string
+    nullable: true
+    example: 9f3e97fd-4d5d-4efc-959d-bbebfac079f5
+  custom_fields:
+    $ref: ./objects/custom_fields.yaml
