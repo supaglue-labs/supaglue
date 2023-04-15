@@ -9,7 +9,7 @@ import {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getExpandedAssociations, getPaginationParams, getPaginationResult, getRemoteId } from '../../lib';
+import { getExpandedAssociations, getPaginationParams, getPaginationResult, getRemoteId, logger } from '../../lib';
 import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/event';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
@@ -231,6 +231,8 @@ export class EventService extends CommonModelBaseService {
       },
     });
 
+    logger.info('EventService.updateDanglingOwners: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
       SET owner_id = u.id
@@ -265,6 +267,8 @@ export class EventService extends CommonModelBaseService {
         accountId: null,
       },
     });
+
+    logger.info('EventService.updateDanglingAccounts: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
@@ -301,6 +305,8 @@ export class EventService extends CommonModelBaseService {
       },
     });
 
+    logger.info('EventService.updateDanglingContacts: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
       SET contact_id = u.id
@@ -336,6 +342,8 @@ export class EventService extends CommonModelBaseService {
       },
     });
 
+    logger.info('EventService.updateDanglingLeads: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
       SET lead_id = u.id
@@ -370,6 +378,8 @@ export class EventService extends CommonModelBaseService {
         opportunityId: null,
       },
     });
+
+    logger.info('EventService.updateDanglingOpportunitiess: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c

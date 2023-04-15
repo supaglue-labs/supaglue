@@ -11,6 +11,7 @@ import type {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
+import { logger } from '../../lib';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
@@ -242,6 +243,8 @@ export class ContactService extends CommonModelBaseService {
       },
     });
 
+    logger.info('ContactService.updateDanglingAccounts: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${contactsTable} c
       SET account_id = a.id
@@ -276,6 +279,8 @@ export class ContactService extends CommonModelBaseService {
         ownerId: null,
       },
     });
+
+    logger.info('ContactService.updateDanglingOwners: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${contactsTable} c

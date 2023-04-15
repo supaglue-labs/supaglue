@@ -9,6 +9,7 @@ import type {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
+import { logger } from '../../lib';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
@@ -209,6 +210,8 @@ export class LeadService extends CommonModelBaseService {
       },
     });
 
+    logger.info('LeadService.updateDanglingAccounts: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} l
       SET converted_account_id = a.id
@@ -244,6 +247,8 @@ export class LeadService extends CommonModelBaseService {
       },
     });
 
+    logger.info('LeadService.updateDanglingContact: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} l
       SET converted_contact_id = c.id
@@ -278,6 +283,8 @@ export class LeadService extends CommonModelBaseService {
         ownerId: null,
       },
     });
+
+    logger.info('LeadService.updateDanglingOwners: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} c
