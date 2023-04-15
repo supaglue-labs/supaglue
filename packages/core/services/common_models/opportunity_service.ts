@@ -11,6 +11,7 @@ import type {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
+import { logger } from '../../lib';
 import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
@@ -247,6 +248,8 @@ export class OpportunityService extends CommonModelBaseService {
       },
     });
 
+    logger.info('OpportunityService.updateDanglingAccounts: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${opportunitiesTable} o
       SET account_id = a.id
@@ -281,6 +284,8 @@ export class OpportunityService extends CommonModelBaseService {
         ownerId: null,
       },
     });
+
+    logger.info('OpportunityService.updateDanglingOwners: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${opportunitiesTable} c
