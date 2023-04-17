@@ -2,9 +2,9 @@ import { schemaPrefix } from '@supaglue/db';
 import { ListInternalParams, PaginatedResult, User } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { DateAndIdCursor, getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { fromRemoteUserToDbUserParams, fromUserModel } from '../../mappers/user';
-import { CommonModelBaseService, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class UserService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -28,7 +28,7 @@ export class UserService extends CommonModelBaseService {
     const { page_size, cursor, include_deleted_data, created_after, created_before, modified_after, modified_before } =
       listParams;
     const models = await this.prisma.crmUser.findMany({
-      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -41,11 +41,13 @@ export class UserService extends CommonModelBaseService {
         },
         remoteWasDeleted: include_deleted_data ? undefined : false,
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map(fromUserModel);
     return {
-      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }

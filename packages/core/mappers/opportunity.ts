@@ -1,6 +1,6 @@
 import { Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { CrmOpportunityExpanded } from '../types';
+import { CrmOpportunityModelExpanded } from '../types';
 import { fromAccountModel, toSnakecasedKeysAccount } from './account';
 import { fromUserModel, toSnakecasedKeysUser } from './user';
 
@@ -47,7 +47,7 @@ export const fromOpportunityModel = (
     remoteUpdatedAt,
     remoteWasDeleted,
     lastModifiedAt,
-  }: CrmOpportunityExpanded,
+  }: CrmOpportunityModelExpanded,
   expandedAssociations: string[] = []
 ): Opportunity => {
   const expandAccount = expandedAssociations.includes('account');

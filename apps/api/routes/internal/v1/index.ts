@@ -2,6 +2,7 @@ import { getDependencyContainer } from '@/dependency_container';
 import { internalMiddleware } from '@/middleware/internal';
 import { internalApplicationMiddleware } from '@/middleware/internal_application';
 import { orgHeaderMiddleware } from '@/middleware/org';
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Router } from 'express';
 import apiKey from './api_key';
@@ -13,7 +14,7 @@ import syncHistory from './sync_history';
 import syncInfo from './sync_info';
 import webhook from './webhook';
 
-const { connectionAndSyncService } = getDependencyContainer();
+const { connectionAndSyncService, prisma } = getDependencyContainer();
 
 export default function init(app: Router): void {
   // application routes should not require application header
@@ -23,6 +24,23 @@ export default function init(app: Router): void {
   v1ApplicationRouter.post('/_manually_fix_syncs', async (req, res) => {
     const result = await connectionAndSyncService.manuallyFixTemporalSyncs();
     return res.status(200).send(snakecaseKeys(result));
+  });
+
+  // TODO: Remove when we're done calling this so we can bring back
+  // https://github.com/supaglue-labs/supaglue/pull/634
+  v1ApplicationRouter.post('/_backfill_last_modified_at', async (req, res) => {
+    for (const table of Object.values(COMMON_MODEL_DB_TABLES)) {
+      await prisma.$executeRawUnsafe(`
+UPDATE ${table}
+SET last_modified_at = GREATEST(
+  COALESCE(remote_updated_at, TIMESTAMP 'epoch'),
+  COALESCE(detected_or_remote_deleted_at, TIMESTAMP 'epoch')
+)
+WHERE last_modified_at IS NULL;
+`);
+    }
+
+    res.status(200).send();
   });
 
   v1ApplicationRouter.use(orgHeaderMiddleware);

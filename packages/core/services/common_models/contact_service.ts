@@ -11,11 +11,12 @@ import type {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
+import { logger } from '../../lib';
 import { getExpandedAssociations } from '../../lib/expand';
-import { DateAndIdCursor, getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
-import { CommonModelBaseService, getLastModifiedAt, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -48,7 +49,7 @@ export class ContactService extends CommonModelBaseService {
   ): Promise<PaginatedResult<Contact>> {
     const { page_size, cursor } = paginationParams;
     const models = await this.prisma.crmContact.findMany({
-      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         emailAddresses:
@@ -58,11 +59,13 @@ export class ContactService extends CommonModelBaseService {
               }
             : undefined,
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromContactModel(model));
     return {
-      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }
@@ -81,7 +84,7 @@ export class ContactService extends CommonModelBaseService {
 
     const expandedAssociations = getExpandedAssociations(expand);
     const models = await this.prisma.crmContact.findMany({
-      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -98,11 +101,13 @@ export class ContactService extends CommonModelBaseService {
         account: expandedAssociations.includes('account'),
         owner: expandedAssociations.includes('owner'),
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromContactModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }
@@ -160,7 +165,12 @@ export class ContactService extends CommonModelBaseService {
     });
 
     const contactModel = await this.prisma.crmContact.update({
-      data: { ...remoteContact, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
+      data: {
+        ...remoteContact,
+        lastModifiedAt: getLastModifiedAt(remoteContact),
+        accountId: updateParams.accountId,
+        ownerId: updateParams.ownerId,
+      },
       where: {
         id: updateParams.id,
       },
@@ -231,6 +241,8 @@ export class ContactService extends CommonModelBaseService {
       },
     });
 
+    logger.info('ContactService.updateDanglingAccounts: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${contactsTable} c
       SET account_id = a.id
@@ -265,6 +277,8 @@ export class ContactService extends CommonModelBaseService {
         ownerId: null,
       },
     });
+
+    logger.info('ContactService.updateDanglingOwners: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${contactsTable} c

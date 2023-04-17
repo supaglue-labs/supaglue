@@ -1,11 +1,11 @@
 import { PaginationInternalParams, PaginationParams } from '@supaglue/types';
 import { BadRequestError } from '../errors';
 
-export function getPaginationParams<CursorType extends BaseCursor>(
+export function getPaginationParams<T extends string | number = string>(
   pageSize: number | undefined,
   cursorStr: string | undefined
 ) {
-  const cursor = decodeCursor<CursorType>(cursorStr);
+  const cursor = decodeCursor(cursorStr);
   let take = pageSize;
   if (cursor?.reverse && pageSize) {
     take = -pageSize;
@@ -13,25 +13,25 @@ export function getPaginationParams<CursorType extends BaseCursor>(
   return {
     take,
     skip: cursor ? 1 : undefined,
-    cursor,
+    cursor: cursor ? { id: cursor.id as T } : undefined,
   };
 }
 
-export function getPaginationResult<CursorType extends BaseCursor>(
+export function getPaginationResult<T extends string | number = string>(
   pageSize: number | undefined,
   cursorStr: string | undefined,
-  results: Omit<CursorType, 'reverse'>[]
+  results: { id: T }[]
 ) {
-  const cursor = decodeCursor<CursorType>(cursorStr);
+  const cursor = decodeCursor(cursorStr);
   let next = null;
   let previous = null;
   if (pageSize && results.length === pageSize) {
     const lastResult = results[pageSize - 1];
-    next = encodeCursor({ ...lastResult, reverse: false });
+    next = encodeCursor({ id: lastResult.id, reverse: false });
   }
   if (cursor && results.length) {
     const firstResult = results[0];
-    previous = encodeCursor({ ...firstResult, reverse: true });
+    previous = encodeCursor({ id: firstResult.id, reverse: true });
   }
   return {
     next,
@@ -39,27 +39,21 @@ export function getPaginationResult<CursorType extends BaseCursor>(
   };
 }
 
-type BaseCursor = {
+export type Cursor = {
+  id: string | number;
   reverse: boolean;
-  id: string;
 };
 
-export type IdCursor = BaseCursor;
-
-export type DateAndIdCursor = BaseCursor & {
-  lastModifiedAt: Date;
-};
-
-export const encodeCursor = (cursorParams: IdCursor | DateAndIdCursor): string => {
+export const encodeCursor = (cursorParams: Cursor): string => {
   return Buffer.from(JSON.stringify(cursorParams), 'binary').toString('base64');
 };
 
-export function decodeCursor<CursorType extends BaseCursor>(encoded?: string): CursorType | undefined {
+export const decodeCursor = (encoded?: string): Cursor | undefined => {
   if (!encoded) {
     return;
   }
   return JSON.parse(Buffer.from(encoded, 'base64').toString('binary'));
-}
+};
 
 const MAX_PAGE_SIZE = 1000;
 

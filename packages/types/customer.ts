@@ -1,4 +1,4 @@
-import { ConnectionSafe } from '../types/connection';
+import { ConnectionSafeAny } from '../types/connection';
 
 export type BaseCustomer = {
   applicationId: string;
@@ -11,7 +11,7 @@ export type BaseCustomer = {
 export type Customer = BaseCustomer;
 
 export type CustomerExpandedSafe = Customer & {
-  connections: ConnectionSafe[];
+  connections: ConnectionSafeAny[];
 };
 
 export type BaseCustomerCreateParams = BaseCustomer;

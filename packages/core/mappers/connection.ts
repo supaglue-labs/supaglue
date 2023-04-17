@@ -1,5 +1,5 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
-import { ConnectionSafe, ConnectionStatus, ConnectionUnsafe, CRMProviderName } from '@supaglue/types';
+import { ConnectionSafeAny, ConnectionStatus, ConnectionUnsafeAny, CRMProviderName } from '@supaglue/types';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 
@@ -12,7 +12,7 @@ export const fromConnectionModelToConnectionUnsafe = async ({
   status,
   credentials,
   remoteId,
-}: ConnectionModel): Promise<ConnectionUnsafe> => {
+}: ConnectionModel): Promise<ConnectionUnsafeAny> => {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
     id,
@@ -35,7 +35,7 @@ export const fromConnectionModelToConnectionSafe = ({
   providerName,
   status,
   remoteId,
-}: ConnectionModel): ConnectionSafe => {
+}: ConnectionModel): ConnectionSafeAny => {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
     id,

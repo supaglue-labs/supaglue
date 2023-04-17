@@ -7,15 +7,6 @@ import { pipeline } from 'stream/promises';
 import { logger } from '../../lib';
 import { RemoteService } from '../remote_service';
 
-export const ORDER_BY = [
-  {
-    lastModifiedAt: 'asc' as const,
-  },
-  {
-    id: 'asc' as const,
-  },
-];
-
 export abstract class CommonModelBaseService {
   // TODO: Use just pg for common models?
   protected readonly pgPool: Pool;

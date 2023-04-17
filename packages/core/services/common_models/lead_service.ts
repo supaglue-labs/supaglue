@@ -9,11 +9,12 @@ import type {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
+import { logger } from '../../lib';
 import { getExpandedAssociations } from '../../lib/expand';
-import { DateAndIdCursor, getPaginationParams, getPaginationResult } from '../../lib/pagination';
+import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
-import { CommonModelBaseService, getLastModifiedAt, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class LeadService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -55,7 +56,7 @@ export class LeadService extends CommonModelBaseService {
     } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
     const models = await this.prisma.crmLead.findMany({
-      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -73,11 +74,13 @@ export class LeadService extends CommonModelBaseService {
         convertedContact: expandedAssociations.includes('converted_contact'),
         owner: expandedAssociations.includes('owner'),
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromLeadModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }
@@ -128,7 +131,11 @@ export class LeadService extends CommonModelBaseService {
     });
 
     const leadModel = await this.prisma.crmLead.update({
-      data: { ...remoteLead, ownerId: updateParams.ownerId },
+      data: {
+        ...remoteLead,
+        lastModifiedAt: getLastModifiedAt(remoteLead),
+        ownerId: updateParams.ownerId,
+      },
       where: {
         id: updateParams.id,
       },
@@ -202,6 +209,8 @@ export class LeadService extends CommonModelBaseService {
       },
     });
 
+    logger.info('LeadService.updateDanglingAccounts: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} l
       SET converted_account_id = a.id
@@ -237,6 +246,8 @@ export class LeadService extends CommonModelBaseService {
       },
     });
 
+    logger.info('LeadService.updateDanglingContact: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} l
       SET converted_contact_id = c.id
@@ -271,6 +282,8 @@ export class LeadService extends CommonModelBaseService {
         ownerId: null,
       },
     });
+
+    logger.info('LeadService.updateDanglingOwners: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${leadsTable} c

@@ -2,43 +2,63 @@ import type { CRMProviderName } from './crm';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
-// TODO(625): Bifurcate salesforce vs hubspot
-export type ConnectionCredentialsDecrypted = {
-  type: string;
+type BaseConnectionCredentialsDecrypted = {
+  type: 'oauth2';
   accessToken: string;
   refreshToken: string;
   expiresAt: string | null; // null means unknown expiry time
-  // Needed for salesforce only
-  instanceUrl: string;
-  loginUrl?: string;
 };
 
-type BaseConnectionCreateParams = {
+export type ConnectionCredentialsDecrypted<T extends CRMProviderName> = BaseConnectionCredentialsDecrypted &
+  (T extends 'salesforce'
+    ? {
+        instanceUrl: string;
+        loginUrl?: string;
+      }
+    : object);
+
+export type ConnectionCredentialsDecryptedAny = {
+  [K in CRMProviderName]: ConnectionCredentialsDecrypted<K>;
+}[CRMProviderName];
+
+export type ConnectionCreateParams<T extends CRMProviderName> = {
   applicationId: string;
-  // External customer Id
-  customerId: string;
+  customerId: string; // external customer id
   integrationId: string;
-  credentials: ConnectionCredentialsDecrypted;
+  category: 'crm';
+  providerName: T;
+  credentials: ConnectionCredentialsDecrypted<T>;
   remoteId: string;
 };
 
-type BaseConnection = BaseConnectionCreateParams & {
+export type ConnectionCreateParamsAny = {
+  [K in CRMProviderName]: ConnectionCreateParams<K>;
+}[CRMProviderName];
+
+export type ConnectionUpsertParams<T extends CRMProviderName> = ConnectionCreateParams<T>;
+
+export type ConnectionUpsertParamsAny = {
+  [K in CRMProviderName]: ConnectionUpsertParams<K>;
+}[CRMProviderName];
+
+export type ConnectionSafe<T extends CRMProviderName> = Omit<ConnectionCreateParams<T>, 'credentials'> & {
   id: string;
   status: ConnectionStatus;
-};
-
-type CoreCRMConnectionParams = {
   category: 'crm';
-  providerName: CRMProviderName;
+  providerName: T;
 };
 
-export type CRMConnectionCreateParams = BaseConnectionCreateParams & CoreCRMConnectionParams;
-export type CRMConnectionUpsertParams = BaseConnectionCreateParams & CoreCRMConnectionParams;
-export type CRMConnectionUnsafe = BaseConnection & CoreCRMConnectionParams;
+export type ConnectionSafeAny = {
+  [K in CRMProviderName]: ConnectionSafe<K>;
+}[CRMProviderName];
 
-export type CRMConnectionUpdateParams = Pick<BaseConnectionCreateParams, 'credentials'>;
+export type ConnectionUnsafe<T extends CRMProviderName> = ConnectionCreateParams<T> & {
+  id: string;
+  status: ConnectionStatus;
+  category: 'crm';
+  providerName: T;
+};
 
-export type ConnectionCreateParams = CRMConnectionCreateParams;
-export type ConnectionUpsertParams = CRMConnectionUpsertParams;
-export type ConnectionUnsafe = CRMConnectionUnsafe;
-export type ConnectionSafe = Omit<CRMConnectionUnsafe, 'credentials'>;
+export type ConnectionUnsafeAny = {
+  [K in CRMProviderName]: ConnectionUnsafe<K>;
+}[CRMProviderName];

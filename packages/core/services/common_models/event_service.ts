@@ -9,15 +9,9 @@ import {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import {
-  DateAndIdCursor,
-  getExpandedAssociations,
-  getPaginationParams,
-  getPaginationResult,
-  getRemoteId,
-} from '../../lib';
+import { getExpandedAssociations, getPaginationParams, getPaginationResult, getRemoteId, logger } from '../../lib';
 import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/event';
-import { CommonModelBaseService, getLastModifiedAt, ORDER_BY, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class EventService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -58,7 +52,7 @@ export class EventService extends CommonModelBaseService {
     } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
     const models = await this.prisma.crmEvent.findMany({
-      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -78,11 +72,13 @@ export class EventService extends CommonModelBaseService {
         opportunity: expandedAssociations.includes('opportunity'),
         contact: expandedAssociations.includes('contact'),
       },
-      orderBy: ORDER_BY,
+      orderBy: {
+        id: 'asc',
+      },
     });
     const results = models.map((model) => fromEventModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }
@@ -157,7 +153,12 @@ export class EventService extends CommonModelBaseService {
     });
 
     const contactModel = await this.prisma.crmEvent.update({
-      data: { ...remoteEvent, accountId: updateParams.accountId, ownerId: updateParams.ownerId },
+      data: {
+        ...remoteEvent,
+        lastModifiedAt: getLastModifiedAt(remoteEvent),
+        accountId: updateParams.accountId,
+        ownerId: updateParams.ownerId,
+      },
       where: {
         id: updateParams.id,
       },
@@ -229,6 +230,8 @@ export class EventService extends CommonModelBaseService {
       },
     });
 
+    logger.info('EventService.updateDanglingOwners: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
       SET owner_id = u.id
@@ -263,6 +266,8 @@ export class EventService extends CommonModelBaseService {
         accountId: null,
       },
     });
+
+    logger.info('EventService.updateDanglingAccounts: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
@@ -299,6 +304,8 @@ export class EventService extends CommonModelBaseService {
       },
     });
 
+    logger.info('EventService.updateDanglingContacts: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
       SET contact_id = u.id
@@ -334,6 +341,8 @@ export class EventService extends CommonModelBaseService {
       },
     });
 
+    logger.info('EventService.updateDanglingLeads: halfway');
+
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c
       SET lead_id = u.id
@@ -368,6 +377,8 @@ export class EventService extends CommonModelBaseService {
         opportunityId: null,
       },
     });
+
+    logger.info('EventService.updateDanglingOpportunitiess: halfway');
 
     await this.prisma.$executeRawUnsafe(`
       UPDATE ${eventsTable} c

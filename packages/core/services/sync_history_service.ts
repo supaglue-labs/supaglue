@@ -7,7 +7,7 @@ import type {
   SyncHistoryUpsertParams,
 } from '@supaglue/types';
 import { getCustomerIdPk } from '../lib/customer_id';
-import { getPaginationParams, getPaginationResult, IdCursor } from '../lib/pagination';
+import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromSyncHistoryModelAndSync } from '../mappers';
 import { SyncHistoryModelExpanded } from '../types/sync_history';
 import { ConnectionService } from './connection_service';
@@ -128,7 +128,7 @@ export class SyncHistoryService {
     const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;
     const models = await this.#prisma.syncHistory.findMany({
-      ...getPaginationParams<IdCursor>(page_size, cursor),
+      ...getPaginationParams<string>(page_size, cursor),
       where: {
         sync: {
           connectionId: { in: connectionIds },
@@ -151,7 +151,7 @@ export class SyncHistoryService {
     const results = models.map(fromSyncHistoryModelAndSync);
 
     return {
-      ...getPaginationResult<IdCursor>(page_size, cursor, results),
+      ...getPaginationResult<string>(page_size, cursor, results),
       results,
     };
   }

@@ -245,14 +245,15 @@ async function doFullThenIncrementalSync({
 
     const newMaxLastModifiedAtMsMap = computeUpdatedMaxLastModifiedAtMsMap(importRecordsResultList);
 
-    await updateSyncState({
-      syncId: sync.id,
-      state: {
-        phase: 'incremental',
-        status: 'in progress',
-        maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
-      },
-    });
+    // TODO: Bring this back when we fix https://github.com/supaglue-labs/supaglue/issues/644
+    // await updateSyncState({
+    //   syncId: sync.id,
+    //   state: {
+    //     phase: 'incremental',
+    //     status: 'in progress',
+    //     maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
+    //   },
+    // });
 
     await populateAssociations({
       connectionId: sync.connectionId,

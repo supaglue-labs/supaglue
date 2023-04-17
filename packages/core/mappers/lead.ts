@@ -8,7 +8,7 @@ import {
   toSnakecasedKeysContact,
   toSnakecasedKeysUser,
 } from '.';
-import { CrmLeadExpanded } from '../types';
+import { CrmLeadModelExpanded } from '../types';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
@@ -62,7 +62,7 @@ export const fromLeadModel = (
     remoteUpdatedAt,
     remoteWasDeleted,
     lastModifiedAt,
-  }: CrmLeadExpanded,
+  }: CrmLeadModelExpanded,
   expandedAssociations: string[] = []
 ): Lead => {
   const expandAccount = expandedAssociations.includes('converted_account');

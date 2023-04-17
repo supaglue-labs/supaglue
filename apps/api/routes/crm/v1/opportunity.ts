@@ -22,6 +22,7 @@ import {
 } from '@supaglue/schemas/crm';
 import { GetParams, ListParams } from '@supaglue/types/common';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
 const { opportunityService } = getDependencyContainer();
@@ -120,7 +121,7 @@ export default function init(app: Router): void {
         camelcaseKeys(req.body.filters)
       );
 
-      const snakeCaseKeysResults = results.map(toSnakecasedKeysOpportunity);
+      const snakeCaseKeysResults = results.map(snakecaseKeys);
 
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }

@@ -11,7 +11,7 @@ import { getAuth } from '@clerk/nextjs/server';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
 import { Box, Grid, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { ConnectionSafe } from '@supaglue/types';
+import { ConnectionSafeAny } from '@supaglue/types/connection';
 import { type GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
@@ -76,7 +76,7 @@ export default function Home() {
       headerName: 'Connections',
       width: 300,
       renderCell: (params) => {
-        return params.value.map((connection: ConnectionSafe) => providerToIcon(connection.providerName));
+        return params.value.map((connection: ConnectionSafeAny) => providerToIcon(connection.providerName));
       },
     },
   ];

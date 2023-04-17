@@ -12,7 +12,7 @@ import {
   toSnakecasedKeysOpportunity,
   toSnakecasedKeysUser,
 } from '.';
-import { CrmEventExpanded } from '../types';
+import { CrmEventModelExpanded } from '../types';
 
 export const toSnakecasedKeysEvent = (event: Event) => {
   return {
@@ -63,7 +63,7 @@ export const fromEventModel = (
     remoteCreatedAt,
     remoteUpdatedAt,
     remoteWasDeleted,
-  }: CrmEventExpanded,
+  }: CrmEventModelExpanded,
   expandedAssociations: string[] = []
 ): Event => {
   const expandAccount = expandedAssociations.includes('account');

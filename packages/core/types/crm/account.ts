@@ -1,5 +1,5 @@
 import { CrmAccount, CrmUser } from '@supaglue/db';
 
-export type CrmAccountExpanded = CrmAccount & {
+export type CrmAccountModelExpanded = CrmAccount & {
   owner?: CrmUser | null;
 };

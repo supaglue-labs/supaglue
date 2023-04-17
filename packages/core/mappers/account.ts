@@ -1,6 +1,6 @@
 import { Account, Address, LifecycleStage, PhoneNumber, RemoteAccount } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { CrmAccountExpanded } from '../types';
+import { CrmAccountModelExpanded } from '../types';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 import { fromUserModel, toSnakecasedKeysUser } from './user';
@@ -46,7 +46,7 @@ export const fromAccountModel = (
     remoteCreatedAt,
     remoteUpdatedAt,
     lastModifiedAt,
-  }: CrmAccountExpanded,
+  }: CrmAccountModelExpanded,
   expandedAssociations: string[] = []
 ): Account => {
   const expandOwner = expandedAssociations.includes('owner');

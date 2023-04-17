@@ -1,5 +1,5 @@
 import { CommonModel } from './common';
-import { ConnectionCreateParams } from './connection';
+import { ConnectionCreateParamsAny } from './connection';
 
 export type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
@@ -15,7 +15,7 @@ export type WebhookConfig = {
 
 export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SYNC_SUCCESS' | 'SYNC_ERROR';
 
-export type ConnectionWebhookPayload = ConnectionCreateParams;
+export type ConnectionWebhookPayload = ConnectionCreateParamsAny;
 
 export type SyncWebhookPayload = {
   connectionId: string;
