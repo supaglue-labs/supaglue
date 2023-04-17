@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toPaginationInternalParams } from '@supaglue/core/lib';
 import { toSnakecasedKeysContact } from '@supaglue/core/mappers';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import {
@@ -99,7 +100,7 @@ export default function init(app: Router): void {
     ) => {
       const { next, previous, results } = await contactService.search(
         req.customerConnection.id,
-        req.params,
+        toPaginationInternalParams(req.params),
         camelcaseKeys(req.body.filters)
       );
 

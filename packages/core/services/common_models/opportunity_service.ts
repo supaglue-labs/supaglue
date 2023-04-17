@@ -7,7 +7,7 @@ import type {
   OpportunityFilters,
   OpportunityUpdateParams,
   PaginatedResult,
-  PaginationParams,
+  PaginationInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
@@ -56,9 +56,8 @@ export class OpportunityService extends CommonModelBaseService {
       expand,
     } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmOpportunity.findMany({
-      ...getPaginationParams(pageSize, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -81,20 +80,19 @@ export class OpportunityService extends CommonModelBaseService {
     });
     const results = models.map((model) => fromOpportunityModel(model, expandedAssociations));
     return {
-      ...getPaginationResult(pageSize, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }
 
   public async search(
     connectionId: string,
-    paginationParams: PaginationParams,
+    paginationParams: PaginationInternalParams,
     filters: OpportunityFilters
   ): Promise<PaginatedResult<Opportunity>> {
     const { page_size, cursor } = paginationParams;
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmOpportunity.findMany({
-      ...getPaginationParams(pageSize, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         accountId: filters.accountId?.type === 'equals' ? filters.accountId.value : undefined,
@@ -105,7 +103,7 @@ export class OpportunityService extends CommonModelBaseService {
     });
     const results = models.map((model) => fromOpportunityModel(model));
     return {
-      ...getPaginationResult(pageSize, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }

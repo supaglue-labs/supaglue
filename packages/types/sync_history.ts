@@ -1,5 +1,4 @@
-import { SyncInfoFilter } from './';
-import { PaginationParams } from './common';
+import { PaginationInternalParams, SyncInfoFilter } from './';
 
 export type SyncHistoryStatus = 'SUCCESS' | 'FAILURE' | 'IN_PROGRESS';
 
@@ -28,6 +27,6 @@ export type SyncHistoryUpsertParams = {
 };
 
 export type SyncHistoryFilter = SyncInfoFilter & {
-  paginationParams: PaginationParams;
+  paginationParams: PaginationInternalParams;
   model?: string;
 };

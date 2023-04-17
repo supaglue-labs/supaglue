@@ -127,9 +127,8 @@ export class SyncHistoryService {
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.#prisma.syncHistory.findMany({
-      ...getPaginationParams<string>(pageSize, cursor),
+      ...getPaginationParams<string>(page_size, cursor),
       where: {
         sync: {
           connectionId: { in: connectionIds },
@@ -152,7 +151,7 @@ export class SyncHistoryService {
     const results = models.map(fromSyncHistoryModelAndSync);
 
     return {
-      ...getPaginationResult<string>(pageSize, cursor, results),
+      ...getPaginationResult<string>(page_size, cursor, results),
       results,
     };
   }

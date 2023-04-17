@@ -27,9 +27,8 @@ export class UserService extends CommonModelBaseService {
   public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<User>> {
     const { page_size, cursor, include_deleted_data, created_after, created_before, modified_after, modified_before } =
       listParams;
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmUser.findMany({
-      ...getPaginationParams(pageSize, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -48,7 +47,7 @@ export class UserService extends CommonModelBaseService {
     });
     const results = models.map(fromUserModel);
     return {
-      ...getPaginationResult(pageSize, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }

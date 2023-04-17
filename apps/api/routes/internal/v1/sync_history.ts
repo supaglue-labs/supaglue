@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toPaginationInternalParams } from '@supaglue/core/lib';
 import {
   GetSyncHistoryPathParams,
   GetSyncHistoryQueryParams,
@@ -19,7 +20,7 @@ export default function init(app: Router) {
     ) => {
       const { next, previous, results } = await syncHistoryService.list({
         applicationId: req.supaglueApplication.id,
-        paginationParams: { page_size: req.query?.page_size, cursor: req.query?.cursor },
+        paginationParams: toPaginationInternalParams({ page_size: req.query?.page_size, cursor: req.query?.cursor }),
         model: req.query?.model,
         externalCustomerId: req.query?.customer_id,
         providerName: req.query?.provider_name,

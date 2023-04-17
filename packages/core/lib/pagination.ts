@@ -1,3 +1,6 @@
+import { PaginationInternalParams, PaginationParams } from '@supaglue/types';
+import { BadRequestError } from '../errors';
+
 export function getPaginationParams<T extends string | number = string>(
   pageSize: number | undefined,
   cursorStr: string | undefined
@@ -50,4 +53,20 @@ export const decodeCursor = (encoded?: string): Cursor | undefined => {
     return;
   }
   return JSON.parse(Buffer.from(encoded, 'base64').toString('binary'));
+};
+
+const MAX_PAGE_SIZE = 1000;
+
+export const toPaginationInternalParams = (paginationParams: PaginationParams): PaginationInternalParams => {
+  const page_size = paginationParams.page_size ? parseInt(paginationParams.page_size) : MAX_PAGE_SIZE;
+  if (isNaN(page_size)) {
+    throw new BadRequestError('Unable to parse page_size');
+  }
+  if (page_size > MAX_PAGE_SIZE) {
+    throw new BadRequestError(`page_size cannot exceed ${MAX_PAGE_SIZE}`);
+  }
+  return {
+    ...paginationParams,
+    page_size: paginationParams.page_size ? parseInt(paginationParams.page_size) : MAX_PAGE_SIZE,
+  };
 };

@@ -55,9 +55,8 @@ export class LeadService extends CommonModelBaseService {
       expand,
     } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmLead.findMany({
-      ...getPaginationParams(pageSize, cursor),
+      ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -81,7 +80,7 @@ export class LeadService extends CommonModelBaseService {
     });
     const results = models.map((model) => fromLeadModel(model, expandedAssociations));
     return {
-      ...getPaginationResult(pageSize, cursor, results),
+      ...getPaginationResult(page_size, cursor, results),
       results,
     };
   }
