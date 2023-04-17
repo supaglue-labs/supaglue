@@ -5,7 +5,6 @@ export type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export type WebhookConfig = {
   url: string;
-  requestType: HttpRequestType; // GET, POST, etc.
   notifyOnSyncSuccess: boolean;
   notifyOnSyncError: boolean;
   notifyOnConnectionSuccess: boolean;
