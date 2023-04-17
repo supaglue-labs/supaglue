@@ -56,10 +56,9 @@ export class EventService extends CommonModelBaseService {
       modified_before,
       expand,
     } = listParams;
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const expandedAssociations = getExpandedAssociations(expand);
     const models = await this.prisma.crmEvent.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -83,7 +82,7 @@ export class EventService extends CommonModelBaseService {
     });
     const results = models.map((model) => fromEventModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
       results,
     };
   }

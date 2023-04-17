@@ -10,7 +10,7 @@ export type ListParams = GetParams &
   };
 
 export type ListInternalParams = GetParams &
-  PaginationParams & {
+  PaginationInternalParams & {
     include_deleted_data?: boolean;
     created_after?: string;
     created_before?: string;
@@ -20,7 +20,12 @@ export type ListInternalParams = GetParams &
 
 export type PaginationParams = {
   cursor?: string;
-  page_size?: string;
+  page_size?: string; // we need this to be string because the query param is not coerced to boolean
+};
+
+export type PaginationInternalParams = {
+  cursor?: string;
+  page_size: number;
 };
 
 export type GetParams = {

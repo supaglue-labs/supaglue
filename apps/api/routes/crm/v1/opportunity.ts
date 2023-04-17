@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
+import { toPaginationInternalParams } from '@supaglue/core/lib';
 import { toSnakecasedKeysOpportunity } from '@supaglue/core/mappers';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import {
@@ -115,7 +116,7 @@ export default function init(app: Router): void {
     ) => {
       const { next, previous, results } = await opportunityService.search(
         req.customerConnection.id,
-        req.params,
+        toPaginationInternalParams(req.params),
         camelcaseKeys(req.body.filters)
       );
 

@@ -7,7 +7,7 @@ import type {
   GetParams,
   ListInternalParams,
   PaginatedResult,
-  PaginationParams,
+  PaginationInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
@@ -43,13 +43,12 @@ export class ContactService extends CommonModelBaseService {
 
   public async search(
     connectionId: string,
-    paginationParams: PaginationParams,
+    paginationParams: PaginationInternalParams,
     filters: ContactFilters
   ): Promise<PaginatedResult<Contact>> {
     const { page_size, cursor } = paginationParams;
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmContact.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
       where: {
         connectionId,
         emailAddresses:
@@ -63,7 +62,7 @@ export class ContactService extends CommonModelBaseService {
     });
     const results = models.map((model) => fromContactModel(model));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
       results,
     };
   }
@@ -81,9 +80,8 @@ export class ContactService extends CommonModelBaseService {
     } = listParams;
 
     const expandedAssociations = getExpandedAssociations(expand);
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmContact.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -104,7 +102,7 @@ export class ContactService extends CommonModelBaseService {
     });
     const results = models.map((model) => fromContactModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
       results,
     };
   }

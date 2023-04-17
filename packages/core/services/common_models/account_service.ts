@@ -7,7 +7,7 @@ import type {
   GetParams,
   ListInternalParams,
   PaginatedResult,
-  PaginationParams,
+  PaginationInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
@@ -43,13 +43,12 @@ export class AccountService extends CommonModelBaseService {
 
   public async search(
     connectionId: string,
-    paginationParams: PaginationParams,
+    paginationParams: PaginationInternalParams,
     filters: AccountFilters
   ): Promise<PaginatedResult<Account>> {
     const { page_size, cursor } = paginationParams;
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmAccount.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
       where: {
         connectionId,
         website: filters.website?.type === 'equals' ? filters.website.value : undefined,
@@ -58,7 +57,7 @@ export class AccountService extends CommonModelBaseService {
     });
     const results = models.map((model) => fromAccountModel(model));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
       results,
     };
   }
@@ -76,9 +75,8 @@ export class AccountService extends CommonModelBaseService {
       expand,
     } = listParams;
     const expandedAssociations = getExpandedAssociations(expand);
-    const pageSize = page_size ? parseInt(page_size) : undefined;
     const models = await this.prisma.crmAccount.findMany({
-      ...getPaginationParams<DateAndIdCursor>(pageSize, cursor),
+      ...getPaginationParams<DateAndIdCursor>(page_size, cursor),
       where: {
         connectionId,
         remoteCreatedAt: {
@@ -98,7 +96,7 @@ export class AccountService extends CommonModelBaseService {
     });
     const results = models.map((model) => fromAccountModel(model, expandedAssociations));
     return {
-      ...getPaginationResult<DateAndIdCursor>(pageSize, cursor, results),
+      ...getPaginationResult<DateAndIdCursor>(page_size, cursor, results),
       results,
     };
   }
