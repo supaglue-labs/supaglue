@@ -52,71 +52,27 @@ function CardLayout({
   category?: string;
 }): JSX.Element {
   const badgeColor = category ? getBadgeColor(category) : 'gray';
-  
+
   return (
     <CardContainer href={href}>
       <div className={styles.cardHeader}>
-        <Heading
-          as="h2"
-          className={clsx(styles.cardTitle)}
-          title={title}>
+        <Heading as="h2" className={clsx(styles.cardTitle)} title={title}>
           {icon}&nbsp;&nbsp;&nbsp;{title}
         </Heading>
         {category && (
-          <span
-            className={clsx('badge', styles.cardLabel)}
-            style={{ backgroundColor: badgeColor }}>
+          <span className={clsx('badge', styles.cardLabel)} style={{ backgroundColor: badgeColor }}>
             {category}
           </span>
         )}
       </div>
       {description && (
-        <p
-          className={clsx('text--truncate', styles.cardDescription)}
-          title={description}>
+        <p className={clsx('text--truncate', styles.cardDescription)} title={description}>
           {description}
         </p>
       )}
     </CardContainer>
   );
 }
-
-// function CardLayout({
-//   href,
-//   icon,
-//   title,
-//   description,
-//   category,
-// }: {
-//   href: string;
-//   icon: ReactNode;
-//   title: string;
-//   description?: string;
-//   category?: string;
-// }): JSX.Element {
-//   return (
-//     <CardContainer href={href}>
-//       <div className={styles.cardHeader}>
-//         <Heading
-//           as="h2"
-//           className={clsx(styles.cardTitle)}
-//           title={title}>
-//           {icon}&nbsp;&nbsp;&nbsp;{title}
-//         </Heading>
-//         {category && (
-//           <span className={clsx('badge', styles.cardLabel)}>
-//             {category}
-//           </span>
-//         )}
-//       </div>
-//       {description && (
-//         <p className={clsx('text--truncate', styles.cardDescription)} title={description}>
-//           {description}
-//         </p>
-//       )}
-//     </CardContainer>
-//   );
-// }
 
 function CardCategory({ item }: { item: PropSidebarItemCategory }): JSX.Element | null {
   const href = findFirstSidebarItemLink(item);
@@ -155,7 +111,7 @@ function CardLink({ item }: { item: PropSidebarItemLink }): JSX.Element {
     ) : null
   ) : null;
   const doc = useDocById(item.docId ?? undefined);
-  const category = item.customProps.category ?? undefined;
+  const category = item.customProps ? item.customProps.category ?? undefined : null;
   return (
     <CardLayout
       href={item.href}
