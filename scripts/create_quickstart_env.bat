@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set url=https://supaglue-public-config.s3.us-west-2.amazonaws.com/quickstart.env
+set url=https://d379ao5oasu7j7.cloudfront.net/quickstart.env
 set output=.env
 
 echo Downloading file from %url%...
