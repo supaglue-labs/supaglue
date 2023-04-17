@@ -70,7 +70,6 @@ properties:
     example: false
   last_modified_at:
     type: string
-    nullable: true # we should make this required
     format: date-time
     example: '2022-02-27T00:00:00Z'
 required:
@@ -86,3 +85,7 @@ required:
   - owner_id
   - phone_numbers
   - title
+  - remote_created_at	
+  - remote_updated_at	
+  - remote_was_deleted	
+  - last_modified_at	

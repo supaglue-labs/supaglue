@@ -186,19 +186,19 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at?: Date | null;
+      remote_created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at?: Date | null;
+      remote_updated_at: Date | null;
       /** @example false */
-      remote_was_deleted?: boolean;
+      remote_was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date | null;
+      last_modified_at: Date;
     };
     create_update_account: {
       /** @example Integration API */
@@ -246,19 +246,19 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at?: Date | null;
+      remote_created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at?: Date | null;
+      remote_updated_at: Date | null;
       /** @example false */
-      remote_was_deleted?: boolean;
+      remote_was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date | null;
+      last_modified_at: Date;
     };
     create_update_contact: {
       /** @example George */
@@ -314,19 +314,19 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at?: Date | null;
+      remote_created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at?: Date | null;
+      remote_updated_at: Date | null;
       /** @example false */
-      remote_was_deleted?: boolean;
+      remote_was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date | null;
+      last_modified_at: Date;
     };
     create_update_event: {
       /** @example Meeting */
@@ -386,19 +386,19 @@ export interface components {
        * Format: date-time 
        * @example 2023-02-10T00:00:00Z
        */
-      remote_created_at?: Date | null;
+      remote_created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2023-02-10T00:00:00Z
        */
-      remote_updated_at?: Date | null;
+      remote_updated_at: Date | null;
       /** @example false */
-      remote_was_deleted?: boolean;
+      remote_was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date | null;
+      last_modified_at: Date;
     };
     create_update_lead: {
       /** @example Supaglue */
@@ -453,19 +453,19 @@ export interface components {
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      remote_created_at?: Date | null;
+      remote_created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      remote_updated_at?: Date | null;
+      remote_updated_at: Date | null;
       /** @example false */
-      remote_was_deleted?: boolean;
+      remote_was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date | null;
+      last_modified_at: Date;
     };
     user: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -481,19 +481,19 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at?: Date | null;
+      remote_created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at?: Date | null;
+      remote_updated_at: Date | null;
       /** @example false */
-      remote_was_deleted?: boolean;
+      remote_was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      last_modified_at?: Date | null;
+      last_modified_at: Date;
     };
     create_update_opportunity: {
       /** @example 100000 */
