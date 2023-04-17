@@ -1,15 +1,15 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/ms_dynamics_365_sales.png
-  category: 'CRM'
+  icon: /img/connector_icons/salesloft.png
+  category: 'Sales engagement'
 description: ''
 ---
 
-# HubSpot
+# Salesloft
 
 ## Overview
 
-Supaglue interfaces with the HubSpot V3 API.
+Supaglue uses the Salesloft v2 API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
@@ -21,7 +21,9 @@ Supaglue interfaces with the HubSpot V3 API.
 
 Supported object types:
 
-- Company
-- Contact
-- Deal
-- User
+- Users
+- Accounts
+- Contacts
+- Emails
+- Sequences
+- Mailboxes

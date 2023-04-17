@@ -1,6 +1,7 @@
 ---
 sidebar_custom_props:
   icon: /img/connector_icons/copper.png
+  category: 'CRM'
 description: ''
 ---
 
@@ -17,6 +18,5 @@ Supaglue interfaces with the Copper V1 API.
 | Reads: Incremental refresh | No        |
 | Creates                    | No        |
 | Updates                    | No        |
-| Handles rate limits        | No        |
 
 Supported object types: -
