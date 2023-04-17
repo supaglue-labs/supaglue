@@ -1,6 +1,7 @@
 ---
 sidebar_custom_props:
   icon: /img/connector_icons/salesforce.png
+  category: 'CRM'
 description: ''
 ---
 
@@ -17,7 +18,6 @@ Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 | Reads: Incremental refresh | Yes       |
 | Creates                    | Yes       |
 | Updates                    | Yes       |
-| Handles rate limits        | Yes       |
 
 Supported object types:
 

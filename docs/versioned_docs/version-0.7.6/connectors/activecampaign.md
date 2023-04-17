@@ -1,10 +1,11 @@
 ---
 sidebar_custom_props:
   icon: /img/connector_icons/activecampaign.png
+  category: 'CRM'
 description: ''
 ---
 
-# Active Campaign
+# ActiveCampaign
 
 ## Overview
 
@@ -18,6 +19,5 @@ Supaglue interfaces with the ActiveCampaign V3 API.
 | Reads: Incremental refresh | No        |
 | Creates                    | No        |
 | Updates                    | No        |
-| Handles rate limits        | No        |
 
 Supported object types: -

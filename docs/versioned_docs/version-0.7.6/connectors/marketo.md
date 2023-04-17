@@ -1,15 +1,15 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/ms_dynamics_365_sales.png
-  category: 'CRM'
+  icon: /img/connector_icons/marketo.png
+  category: 'Marketing automation'
 description: ''
 ---
 
-# HubSpot
+# Marketo
 
 ## Overview
 
-Supaglue interfaces with the HubSpot V3 API.
+Supaglue uses the Marketo REST API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
@@ -21,7 +21,13 @@ Supaglue interfaces with the HubSpot V3 API.
 
 Supported object types:
 
-- Company
-- Contact
-- Deal
-- User
+- Actions
+- Automations
+- Campaigns
+- Contacts
+- Emails
+- Events
+- Lists
+- Messages
+- Templates
+- Users
