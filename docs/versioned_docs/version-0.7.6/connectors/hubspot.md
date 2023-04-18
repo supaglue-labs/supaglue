@@ -1,6 +1,7 @@
 ---
 sidebar_custom_props:
   icon: /img/connector_icons/ms_dynamics_365_sales.png
+  category: 'CRM'
 description: ''
 ---
 
@@ -17,7 +18,6 @@ Supaglue interfaces with the HubSpot V3 API.
 | Reads: Incremental refresh | Yes       |
 | Creates                    | Yes       |
 | Updates                    | Yes       |
-| Handles rate limits        | Yes       |
 
 Supported object types:
 

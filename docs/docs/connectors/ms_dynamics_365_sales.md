@@ -1,10 +1,11 @@
 ---
 sidebar_custom_props:
   icon: /img/connector_icons/ms_dynamics_365_sales.png
+  category: 'CRM'
 description: ''
 ---
 
-# Microsoft Dynamics 365 Sales
+# Dynamics 365 Sales
 
 ## Overview
 
@@ -17,7 +18,5 @@ Supaglue interfaces with the Microsoft Dynamics 365 V9 API.
 | Reads: Incremental refresh | No        |
 | Creates                    | No        |
 | Updates                    | No        |
-| Handles rate limits        | No        |
 
 Supported object types: -
-

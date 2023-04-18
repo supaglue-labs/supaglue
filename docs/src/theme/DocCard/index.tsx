@@ -25,22 +25,46 @@ function CardContainer({ href, children }: { href: string; children: ReactNode }
   );
 }
 
+function getBadgeColor(category) {
+  switch (category) {
+    case 'CRM':
+      return 'green';
+    case 'Sales engagement':
+      return 'navy';
+    case 'Marketing automation':
+      return 'orange';
+    default:
+      return 'gray';
+  }
+}
+
 function CardLayout({
   href,
   icon,
   title,
   description,
+  category,
 }: {
   href: string;
   icon: ReactNode;
   title: string;
   description?: string;
+  category?: string;
 }): JSX.Element {
+  const badgeColor = category ? getBadgeColor(category) : 'gray';
+
   return (
     <CardContainer href={href}>
-      <Heading as="h2" className={clsx('text--truncate', styles.cardTitle)} title={title}>
-        {icon} {title}
-      </Heading>
+      <div className={styles.cardHeader}>
+        <Heading as="h2" className={clsx(styles.cardTitle)} title={title}>
+          {icon}&nbsp;&nbsp;&nbsp;{title}
+        </Heading>
+        {category && (
+          <span className={clsx('badge', styles.cardLabel)} style={{ backgroundColor: badgeColor }}>
+            {category}
+          </span>
+        )}
+      </div>
       {description && (
         <p className={clsx('text--truncate', styles.cardDescription)} title={description}>
           {description}
@@ -63,6 +87,7 @@ function CardCategory({ item }: { item: PropSidebarItemCategory }): JSX.Element 
       href={href}
       icon="🗃️"
       title={item.label}
+      category={item.category}
       description={
         item.description ??
         translate(
@@ -86,11 +111,13 @@ function CardLink({ item }: { item: PropSidebarItemLink }): JSX.Element {
     ) : null
   ) : null;
   const doc = useDocById(item.docId ?? undefined);
+  const category = item.customProps ? item.customProps.category ?? undefined : null;
   return (
     <CardLayout
       href={item.href}
       icon={icon ? icon : '📄'}
       title={item.label}
+      category={category}
       description={item.description ?? doc?.description}
     />
   );
