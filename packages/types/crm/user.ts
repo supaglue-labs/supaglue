@@ -1,19 +1,11 @@
-type BaseUser = {
-  remoteId: string;
+import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams } from '..';
+
+type BaseUser = BaseCrmModel & {
   name: string | null;
   email: string | null;
   isActive: boolean | null;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
 };
 
-export type User = BaseUser & {
-  id: string;
-  lastModifiedAt: Date | null;
-};
+export type User = BaseUser & BaseCrmModelNonRemoteParams;
 
-export type RemoteUser = BaseUser & {
-  remoteDeletedAt: Date | null;
-  detectedOrRemoteDeletedAt: Date | null;
-};
+export type RemoteUser = BaseUser & BaseCrmModelRemoteOnlyParams;

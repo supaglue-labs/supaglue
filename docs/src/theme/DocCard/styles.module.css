@@ -27,8 +27,29 @@
   
   .cardTitle {
     font-size: 1.2rem;
+    margin-right: 50px;
+    white-space: normal;
+    word-wrap: break-word;
+    padding-bottom: 0;
   }
   
   .cardDescription {
     font-size: 0.8rem;
+  }
+
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .cardLabel {
+    background-color: green;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
   }

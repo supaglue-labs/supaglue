@@ -16,6 +16,7 @@ export default function HttpMethodSelect({ value, onChange }: HttpMethodSelectPr
       <FormControl fullWidth size="small">
         <InputLabel id="http-method-select-label">Http Method</InputLabel>
         <Select
+          disabled
           labelId="http-method-select-label"
           id="http-method-select"
           value={value}

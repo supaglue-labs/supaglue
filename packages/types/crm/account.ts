@@ -1,8 +1,16 @@
-import type { Address, CustomFields, LifecycleStage, PhoneNumber, User } from '..';
+import type {
+  Address,
+  BaseCrmModel,
+  BaseCrmModelNonRemoteParams,
+  BaseCrmModelRemoteOnlyParams,
+  CustomFields,
+  LifecycleStage,
+  PhoneNumber,
+  User,
+} from '..';
 import { Filter } from '../filter';
 
-type BaseAccount = {
-  remoteId: string;
+type BaseAccount = BaseCrmModel & {
   name: string | null;
   description: string | null;
   industry: string | null;
@@ -12,24 +20,19 @@ type BaseAccount = {
   phoneNumbers: PhoneNumber[];
   lastActivityAt: Date | null;
   lifecycleStage: LifecycleStage | null;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
 };
 
-export type Account = BaseAccount & {
-  id: string;
-  ownerId: string | null;
-  owner?: User;
-  lastModifiedAt: Date | null;
-  // TODO: Support remote data
-};
+export type Account = BaseAccount &
+  BaseCrmModelNonRemoteParams & {
+    ownerId: string | null;
+    owner?: User;
+    // TODO: Support remote data
+  };
 
-export type RemoteAccount = BaseAccount & {
-  remoteOwnerId: string | null;
-  remoteDeletedAt: Date | null;
-  detectedOrRemoteDeletedAt: Date | null;
-};
+export type RemoteAccount = BaseAccount &
+  BaseCrmModelRemoteOnlyParams & {
+    remoteOwnerId: string | null;
+  };
 
 type BaseAccountCreateParams = {
   // TODO: Associations

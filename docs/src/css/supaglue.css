@@ -82,6 +82,17 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/marketo"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/marketo.png);
+  background-repeat: no-repeat;
+}
+
 .theme-doc-sidebar-item-category-level-1 a[href$="/connectors/ms_dynamics_365_sales"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
@@ -90,6 +101,17 @@ li > a.menu__link {
   height: 20px;
   content:"";
   background-image: url(/static/img/connector_icons/ms_dynamics_365_sales.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/outreach"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/outreach.png);
   background-repeat: no-repeat;
 }
 
@@ -112,6 +134,17 @@ li > a.menu__link {
   height: 20px;
   content:"";
   background-image: url(/static/img/connector_icons/salesforce.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/salesloft"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/salesloft.png);
   background-repeat: no-repeat;
 }
 

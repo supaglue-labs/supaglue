@@ -1,6 +1,7 @@
 ---
 sidebar_custom_props:
   icon: /img/connector_icons/pipedrive.png
+  category: 'CRM'
 description: ''
 ---
 
@@ -13,10 +14,9 @@ Supaglue interfaces with the Pipedrive V1 API.
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes       |
-| Reads: Full refresh        | No        |
-| Reads: Incremental refresh | No        |
-| Creates                    | No        |
-| Updates                    | No        |
-| Handles rate limits        | No        |
+| Reads: Full refresh        | Yes       |
+| Reads: Incremental refresh | Yes       |
+| Creates                    | Yes       |
+| Updates                    | Yes       |
 
 Supported object types: -

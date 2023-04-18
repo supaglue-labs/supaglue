@@ -188,32 +188,44 @@ const config = {
             title: 'Connectors',
             items: [
               {
-                label: 'HubSpot',
-                href: '/connectors/hubspot',
-              },
-              {
-                label: 'Salesforce',
-                href: '/connectors/salesforce',
-              },
-              {
-                label: 'Pipedrive',
-                href: '/connectors/pipedrive',
-              },
-              {
-                label: 'Microsoft Dynamics 365 Sales',
-                href: '/connectors/ms_dynamics_365_sales',
-              },
-              {
-                label: 'Zoho CRM',
-                href: '/connectors/zoho_crm',
+                label: 'ActiveCampaign',
+                href: '/connectors/activecampaign',
               },
               {
                 label: 'Copper',
                 href: '/connectors/copper',
               },
               {
-                label: 'Active Campaign',
-                href: '/connectors/activecampaign',
+                label: 'HubSpot',
+                href: '/connectors/hubspot',
+              },
+              {
+                label: 'Marketo',
+                href: '/connectors/marketo',
+              },
+              {
+                label: 'Microsoft Dynamics 365 Sales',
+                href: '/connectors/ms_dynamics_365_sales',
+              },
+              {
+                label: 'Outreach',
+                href: '/connectors/outreach',
+              },
+              {
+                label: 'Pipedrive',
+                href: '/connectors/pipedrive',
+              },
+              {
+                label: 'Salesforce',
+                href: '/connectors/salesforce',
+              },
+              {
+                label: 'Salesloft',
+                href: '/connectors/salesloft',
+              },
+              {
+                label: 'Zoho CRM',
+                href: '/connectors/zoho_crm',
               },
             ],
           },

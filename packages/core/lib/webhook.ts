@@ -18,31 +18,16 @@ export const maybeSendWebhookPayload = async (
   // Note: this is best effort.
   // TODO: Make webhooks more durable
   try {
-    const { url, requestType, headers } = config;
+    const { url, headers } = config;
     const data = { type: payloadType, payload: snakecaseKeys(payload) };
 
-    switch (requestType) {
-      case 'GET':
-        return await axios.get(url, {
-          headers,
-          data,
-          timeout: WEBHOOK_TIMEOUT,
-        });
-      case 'POST':
-        return await axios.post(url, data, { headers, timeout: WEBHOOK_TIMEOUT });
-      case 'PATCH':
-        return await axios.patch(url, data, { headers, timeout: WEBHOOK_TIMEOUT });
-      case 'PUT':
-        return await axios.put(url, data, { headers, timeout: WEBHOOK_TIMEOUT });
-      case 'DELETE':
-        return await axios.delete(url, {
-          headers,
-          data,
-          timeout: WEBHOOK_TIMEOUT,
-        });
-      default:
-        throw new Error(`Unsupported requestType: ${requestType}`);
-    }
+    return await axios.post(url, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      timeout: WEBHOOK_TIMEOUT,
+    });
   } catch (e) {
     // TODO: Don't swallow this error.
     logger.error(e, 'Failed to send webhook');

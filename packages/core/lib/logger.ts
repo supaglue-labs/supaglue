@@ -20,6 +20,7 @@ if (sentryEnabled) {
     dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
     // Log everything warning or above.
     level: 'error',
+    stackAttributeKey: 'err.stack',
   });
 
   streams.push(sentryStream);
