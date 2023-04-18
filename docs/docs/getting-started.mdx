@@ -58,7 +58,7 @@ Once Supaglue is up and running on your infrastructure, navigate to the manageme
 </TabItem>
 </Tabs>
 
-## 2. Configure customer-facing integrations
+## 2. Configure integrations
 
 Go to the "Configurations" tab to configure the integrations your customers will connect to.
 
@@ -99,32 +99,22 @@ Go to Configuration -> API Keys and click "Regenerate" to generate a new API key
 You will not be able to view the API key after leaving the page, so make sure you store it in a safe place.
 :::
 
-## 4. Create a customer
+## 4. Create a Supaglue customer
 
-Create a Supaglue customer using the [Management API](/api/mgmt#tag/Customers/operation/createCustomer).
-
-You will need four pieces of information when hitting this endpoint:
+Navigate to the Customers page and click on the plus button to create a Supaglue customer:
 
 - **customer_id**: the primary key you use in your application that uniquely identifies this customer.
 - **name**: the name of the customer.
 - **email**: the email associated with the customer.
-- **api_key**: the Supaglue API key for Supaglue Application.
 
-Here's a sample request:
+<BrowserWindow url="http://localhost:3000/applications/5c4887c6-ae29-45ce-bc37-158e8dbe7b7f">
 
-```shell
-curl --location --request PUT 'http://localhost:8080/mgmt/v1/customers' \
---header 'x-api-key: {{api_key}}'
---header 'Content-Type: application/json' \
---data-raw '{
- "name": "Customer 1",
- "email": "customer-1@email.com",
- "customer_id": "your_application_customer_id"
-}'
-```
+![image](/img/create-customer.png)
+
+</BrowserWindow>
 
 :::info
-A customer is an end-user in your application. You can create a Supaglue customer when they signup or update their profile in your application. You can also backfill your existing customers in Supaglue by running a script to hit the customers API endpoint.
+A customer is an end-user in your application. You can create a Supaglue customer through the management portal, or programatically when they signup in your application using the [Management API](/api/mgmt#tag/Customers/operation/createCustomer).
 :::
 
 ## 5. Add Embedded Link to your application
