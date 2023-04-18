@@ -320,7 +320,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
     while (startTime + timeout > Date.now()) {
       const pollResponse = await poll();
-      logger.info(`poll response: `, pollResponse);
       const { state } = pollResponse;
       switch (state) {
         case 'Open':
@@ -357,8 +356,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
   async #getBulk2QueryJobResults(soql: string): Promise<Readable> {
     const response = await this.#submitBulk2QueryJob(soql);
-    // TODO: Delete this
-    logger.info(`bulk job submission response: `, response);
     const { id } = response;
 
     await this.#pollBulk2QueryJob(id);
@@ -373,8 +370,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       let locator: string | undefined = undefined;
       do {
         const response = await this.#getBulk2QueryJobResponse(id, locator);
-        // TODO: Delete this
-        logger.info(`get bulk job response: `, response);
         const readable = getBulk2QueryJobResultsFromResponse(response);
         locator = getBulk2QueryJobNextLocatorFromResponse(response);
 

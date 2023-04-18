@@ -1,7 +1,6 @@
-import * as Sentry from '@sentry/node';
 import pino, { Level } from 'pino';
-import build from 'pino-abstract-transport';
 import pretty from 'pino-pretty';
+import { createWriteStream } from 'pino-sentry';
 
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 
@@ -15,26 +14,13 @@ if (process.env.SUPAGLUE_PRETTY_LOGS) {
 }
 
 if (sentryEnabled) {
-  const sentryStream = build(async (source) => {
-    for await (const obj of source) {
-      if (!obj) {
-        return;
-      }
-
-      const { err, msg, level } = obj;
-
-      // warning is 40, error is 50, fatal is 60
-      if (level >= 40) {
-        if (err) {
-          const mappedErr = new Error(err.message);
-          mappedErr.stack = err.stack;
-          Sentry.captureException(mappedErr);
-          return;
-        }
-
-        Sentry.captureMessage(msg);
-      }
-    }
+  const sentryStream = createWriteStream({
+    // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
+    // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
+    dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
+    // Log everything warning or above.
+    level: 'error',
+    stackAttributeKey: 'err.stack',
   });
 
   streams.push(sentryStream);
