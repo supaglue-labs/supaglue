@@ -1,3 +1,7 @@
+---
+description: ''
+---
+
 # Salesforce Connected App
 
 import BrowserWindow from '@site/src/components/BrowserWindow';

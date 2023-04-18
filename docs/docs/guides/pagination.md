@@ -4,10 +4,6 @@ description: ''
 
 # Pagination
 
-Learn how to paginate the results of list endpoints.
-
-## Overview
-
 If there are too many records to be returned for an object in one request, you can divide them up into pages. This is done using the `cursor` and `page_size` query parameters:
 
 - `page_size`: specifies how many results to return per list request.
