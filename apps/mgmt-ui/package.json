@@ -40,7 +40,6 @@
   },
   "devDependencies": {
     "@types/luxon": "^3",
-    "@types/sharp": "^0",
-    "vercel": "^28.18.4"
+    "@types/sharp": "^0"
   }
 }
