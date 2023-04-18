@@ -1,9 +1,18 @@
-import type { Address, CustomFields, EmailAddress, LifecycleStage, PhoneNumber, User } from '..';
+import type {
+  Address,
+  BaseCrmModel,
+  BaseCrmModelNonRemoteParams,
+  BaseCrmModelRemoteOnlyParams,
+  CustomFields,
+  EmailAddress,
+  LifecycleStage,
+  PhoneNumber,
+  User,
+} from '..';
 import { Filter } from '../filter';
 import type { Account } from './account';
 
-export type BaseContact = {
-  remoteId: string;
+export type BaseContact = BaseCrmModel & {
   firstName: string | null;
   lastName: string | null;
   addresses: Address[];
@@ -11,27 +20,22 @@ export type BaseContact = {
   phoneNumbers: PhoneNumber[];
   lastActivityAt: Date | null;
   lifecycleStage: LifecycleStage | null;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
 };
 
-export type Contact = BaseContact & {
-  id: string;
-  ownerId: string | null;
-  owner?: User;
-  accountId: string | null;
-  account?: Account;
-  lastModifiedAt: Date | null;
-  // TODO: Support remote data and field mappings
-};
+export type Contact = BaseContact &
+  BaseCrmModelNonRemoteParams & {
+    ownerId: string | null;
+    owner?: User;
+    accountId: string | null;
+    account?: Account;
+    // TODO: Support remote data and field mappings
+  };
 
-export type RemoteContact = BaseContact & {
-  remoteAccountId: string | null;
-  remoteOwnerId: string | null;
-  remoteDeletedAt: Date | null;
-  detectedOrRemoteDeletedAt: Date | null;
-};
+export type RemoteContact = BaseContact &
+  BaseCrmModelRemoteOnlyParams & {
+    remoteAccountId: string | null;
+    remoteOwnerId: string | null;
+  };
 
 type BaseContactCreateParams = {
   firstName?: string | null;
