@@ -116,7 +116,12 @@ export function createImportRecords(
       }
     }
 
-    logEvent({ eventName: 'Completed Sync', syncId, providerName: connection.providerName, modelName: commonModel });
+    logEvent({
+      eventName: 'Partially Completed Sync',
+      syncId,
+      providerName: connection.providerName,
+      modelName: commonModel,
+    });
 
     return {
       maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : 0,

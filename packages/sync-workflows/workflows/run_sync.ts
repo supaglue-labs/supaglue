@@ -78,6 +78,8 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
     await Promise.all(
       CRM_COMMON_MODELS.map(async (commonModel) => {
         await logSyncFinish({
+          syncId,
+          connectionId,
           historyId: historyIdsMap[commonModel],
           status: 'FAILURE',
           errorMessage,
@@ -103,7 +105,7 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
 
   await Promise.all(
     CRM_COMMON_MODELS.map(async (commonModel) => {
-      await logSyncFinish({ historyId: historyIdsMap[commonModel], status: 'SUCCESS' });
+      await logSyncFinish({ syncId, connectionId, historyId: historyIdsMap[commonModel], status: 'SUCCESS' });
       await maybeSendSyncFinishWebhook({
         historyId: historyIdsMap[commonModel],
         status: 'SYNC_SUCCESS',
