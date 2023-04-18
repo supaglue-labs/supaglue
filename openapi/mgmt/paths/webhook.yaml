@@ -18,7 +18,6 @@ get:
             Example:
               value:
                 url: http://localhost:8080
-                request_type: POST
                 notify_on_sync_success: true
                 notify_on_sync_error: true
                 notify_on_connection_success: true

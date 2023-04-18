@@ -217,8 +217,6 @@ export interface components {
     };
     webhook: {
       url: string;
-      /** @enum {string} */
-      request_type: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
       notify_on_sync_success: boolean;
       notify_on_sync_error: boolean;
       notify_on_connection_success: boolean;

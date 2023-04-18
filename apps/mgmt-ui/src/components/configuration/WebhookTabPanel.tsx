@@ -15,7 +15,6 @@ const defaultWebhook: WebhookConfig = {
   notifyOnConnectionSuccess: false,
   notifyOnSyncError: false,
   notifyOnSyncSuccess: false,
-  requestType: 'POST',
 };
 const defaultHeadersList = [{ name: '', value: '' }];
 
@@ -30,21 +29,13 @@ export default function WebhookTabPanel() {
   const [headersList, setHeadersList] = useState<{ name: string; value: string }[]>(defaultHeadersList);
 
   useEffect(() => {
-    const {
-      url,
-      notifyOnConnectionError,
-      notifyOnConnectionSuccess,
-      notifyOnSyncError,
-      notifyOnSyncSuccess,
-      requestType,
-      headers,
-    } = activeApplication?.config.webhook ?? defaultWebhook;
+    const { url, notifyOnConnectionError, notifyOnConnectionSuccess, notifyOnSyncError, notifyOnSyncSuccess, headers } =
+      activeApplication?.config.webhook ?? defaultWebhook;
     setWebhookUrl(url);
     setNotifyOnConnectionSuccess(notifyOnConnectionSuccess);
     setNotifyOnSyncSuccess(notifyOnSyncSuccess);
     setNotifyOnConnectionError(notifyOnConnectionError);
     setNotifyOnSyncError(notifyOnSyncError);
-    setRequestType(requestType);
     if (headers && Object.keys(headers).length) {
       setHeadersList(Object.entries(headers).map(([name, value]) => ({ name, value: value.toString() })));
     } else {
@@ -75,7 +66,7 @@ export default function WebhookTabPanel() {
                 setWebhookUrl(event.target.value);
               }}
             />
-            <HttpMethodSelect value={requestType} onChange={setRequestType} />
+            <HttpMethodSelect value={'POST'} onChange={setRequestType} />
           </Stack>
           <Typography sx={{ fontSize: 16 }} className="pl-2 pt-2">
             Events

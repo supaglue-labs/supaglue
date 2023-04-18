@@ -663,7 +663,6 @@
                   "Example": {
                     "value": {
                       "url": "http://localhost:8080",
-                      "request_type": "POST",
                       "notify_on_sync_success": true,
                       "notify_on_sync_error": true,
                       "notify_on_connection_success": true,
@@ -1225,16 +1224,6 @@
           "url": {
             "type": "string"
           },
-          "request_type": {
-            "type": "string",
-            "enum": [
-              "GET",
-              "POST",
-              "PUT",
-              "DELETE",
-              "PATCH"
-            ]
-          },
           "notify_on_sync_success": {
             "type": "boolean"
           },
@@ -1254,7 +1243,6 @@
         },
         "required": [
           "url",
-          "request_type",
           "notify_on_sync_success",
           "notify_on_sync_error",
           "notify_on_connection_success",
