@@ -1,3 +1,7 @@
+---
+description: ''
+---
+
 # Authentication
 
 Learn how to authenticate your requests to Supaglue's API.
