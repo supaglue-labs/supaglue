@@ -162,7 +162,7 @@ export default function init(app: Router): void {
         ...additionalAuthParams,
       });
 
-      let remoteId = tokenWrapper.token['refresh_token'] as string;
+      let remoteId = tokenWrapper.token['instance_url'] as string;
 
       if (providerName === 'hubspot') {
         const accessToken = tokenWrapper.token['access_token'] as string;
