@@ -1,4 +1,13 @@
-import { Application, Customer, Integration, IntegrationCreateParams, WebhookConfig } from '@supaglue/types';
+import type {
+  Application,
+  Customer,
+  Destination,
+  DestinationCreateParams,
+  DestinationUpdateParams,
+  Integration,
+  IntegrationCreateParams,
+  WebhookConfig,
+} from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
 // TODO: use Supaglue TS client
@@ -76,6 +85,34 @@ export async function updateRemoteIntegration(applicationId: string, data: Integ
     headers: {
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  const r = await result.json();
+  return r;
+}
+
+export async function createDestination(data: DestinationCreateParams): Promise<Destination> {
+  const result = await fetch(`/api/internal/destinations/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': data.applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  const r = await result.json();
+  return r;
+}
+
+export async function updateDestination(data: DestinationUpdateParams): Promise<Destination> {
+  const result = await fetch(`/api/internal/destinations/update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': data.applicationId,
     },
     body: JSON.stringify(snakecaseKeys(data)),
   });
