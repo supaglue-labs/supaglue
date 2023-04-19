@@ -12,7 +12,6 @@ import {
   RemoteService,
   SgUserService,
   SyncHistoryService,
-  UserService,
 } from './services';
 
 export type CoreDependencyContainer = {
@@ -31,7 +30,6 @@ export type CoreDependencyContainer = {
   contactService: ContactService;
   leadService: LeadService;
   opportunityService: OpportunityService;
-  userService: UserService;
   eventService: EventService;
   syncHistoryService: SyncHistoryService;
 };
@@ -58,7 +56,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const opportunityService = new OpportunityService(pgPool, prisma, remoteService);
   const contactService = new ContactService(pgPool, prisma, remoteService);
   const syncHistoryService = new SyncHistoryService(prisma, connectionService);
-  const userService = new UserService(pgPool, prisma, remoteService);
   const eventService = new EventService(pgPool, prisma, remoteService);
 
   return {
@@ -75,7 +72,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     accountService,
     leadService,
     opportunityService,
-    userService,
     eventService,
     syncHistoryService,
   };

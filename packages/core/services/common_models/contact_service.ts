@@ -1,10 +1,7 @@
-import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type { Contact, ContactCreateParams, ContactUpdateParams } from '@supaglue/types';
-import { Readable } from 'stream';
-import { logger } from '../../lib';
 import { getRemoteId } from '../../lib/remote_id';
-import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
+import { fromContactModel } from '../../mappers';
+import { CommonModelBaseService, getLastModifiedAt } from './base_service';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -75,121 +72,5 @@ export class ContactService extends CommonModelBaseService {
       },
     });
     return fromContactModel(contactModel);
-  }
-
-  public async upsertRemoteContacts(
-    connectionId: string,
-    customerId: string,
-    remoteContactsReadable: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = COMMON_MODEL_DB_TABLES['contacts'];
-    const tempTable = 'crm_contacts_temp';
-    const columnsWithoutId = [
-      'remote_id',
-      'customer_id',
-      'connection_id',
-      'first_name',
-      'last_name',
-      'addresses',
-      'email_addresses',
-      'phone_numbers',
-      'lifecycle_stage',
-      'last_activity_at',
-      'remote_created_at',
-      'remote_updated_at',
-      'remote_was_deleted',
-      'remote_deleted_at',
-      'detected_or_remote_deleted_at',
-      'last_modified_at',
-      '_remote_account_id',
-      '_remote_owner_id',
-      'updated_at', // TODO: We should have default for this column in Postgres
-    ];
-
-    return await this.upsertRemoteCommonModels(
-      connectionId,
-      customerId,
-      remoteContactsReadable,
-      table,
-      tempTable,
-      columnsWithoutId,
-      fromRemoteContactToDbContactParams,
-      onUpsertBatchCompletion
-    );
-  }
-
-  public async updateDanglingAccounts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
-    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
-
-    await this.prisma.crmContact.updateMany({
-      where: {
-        // Only update contacts for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteAccountId: null,
-        accountId: {
-          not: null,
-        },
-      },
-      data: {
-        accountId: null,
-      },
-    });
-
-    logger.info('ContactService.updateDanglingAccounts: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${contactsTable} c
-      SET account_id = a.id
-      FROM ${accountsTable} a
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = a.connection_id
-        AND c.account_id IS NULL
-        AND c._remote_account_id IS NOT NULL
-        AND c._remote_account_id = a.remote_id
-      `);
-  }
-
-  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
-    const usersTable = COMMON_MODEL_DB_TABLES['users'];
-
-    await this.prisma.crmContact.updateMany({
-      where: {
-        // Only update contacts for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteOwnerId: null,
-        ownerId: {
-          not: null,
-        },
-      },
-      data: {
-        ownerId: null,
-      },
-    });
-
-    logger.info('ContactService.updateDanglingOwners: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${contactsTable} c
-      SET owner_id = u.id
-      FROM ${usersTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.owner_id IS NULL
-        AND c._remote_owner_id IS NOT NULL
-        AND c._remote_owner_id = u.remote_id
-      `);
   }
 }
