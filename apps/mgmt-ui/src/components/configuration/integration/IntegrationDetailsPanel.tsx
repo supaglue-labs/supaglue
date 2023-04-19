@@ -132,6 +132,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             size="small"
             label="Client Secret"
             variant="outlined"
+            type="password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setClientSecret(event.target.value);
             }}
