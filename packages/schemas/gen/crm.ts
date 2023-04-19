@@ -93,8 +93,6 @@ export interface components {
       addresses: components["schemas"]["addresses"];
       /** @example Integration API */
       description: string | null;
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example 1234 */
       remote_id: string;
       /** @example API's */
@@ -162,8 +160,6 @@ export interface components {
       email_addresses: components["schemas"]["email_addresses"];
       /** @example George */
       first_name: string | null;
-      /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
-      id: string;
       /** @example 54312 */
       remote_id: string;
       /**
@@ -209,8 +205,6 @@ export interface components {
       custom_fields?: components["schemas"]["custom_fields"];
     };
     event: {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example 1234 */
       remote_id: string;
       /** @example Meeting */
@@ -301,8 +295,6 @@ export interface components {
       email_addresses?: components["schemas"]["email_addresses"];
       /** @example George */
       first_name?: string | null;
-      /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
-      id: string;
       /** @example 54312 */
       remote_id: string;
       /** @example Xing */
@@ -363,8 +355,6 @@ export interface components {
       close_date?: Date | null;
       /** @example Wants to use open source unified API for third-party integrations */
       description: string | null;
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example 54312 */
       remote_id: string;
       /**
@@ -401,8 +391,6 @@ export interface components {
       last_modified_at: Date;
     };
     user: {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example 54312 */
       remote_id: string;
       /** @example George Xing */

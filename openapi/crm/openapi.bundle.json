@@ -996,10 +996,6 @@
             "nullable": true,
             "example": "Integration API"
           },
-          "id": {
-            "type": "string",
-            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-          },
           "remote_id": {
             "type": "string",
             "example": 1234
@@ -1069,7 +1065,6 @@
         "required": [
           "addresses",
           "description",
-          "id",
           "remote_id",
           "industry",
           "last_activity_at",
@@ -1162,10 +1157,6 @@
             "nullable": true,
             "example": "George"
           },
-          "id": {
-            "type": "string",
-            "example": "88cc44ca-7a34-4e8b-b0da-51c3aae34daf"
-          },
           "remote_id": {
             "type": "string",
             "example": 54312
@@ -1213,7 +1204,6 @@
           "account_id",
           "owner_id",
           "description",
-          "id",
           "remote_id",
           "addresses",
           "email_addresses",
@@ -1271,10 +1261,6 @@
       "event": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-          },
           "remote_id": {
             "type": "string",
             "example": 1234
@@ -1368,7 +1354,6 @@
           }
         },
         "required": [
-          "id",
           "remote_id",
           "subject",
           "type",
@@ -1484,10 +1469,6 @@
             "nullable": true,
             "example": "George"
           },
-          "id": {
-            "type": "string",
-            "example": "e774484c-4ff2-421f-adfa-12f66ed75b91"
-          },
           "remote_id": {
             "type": "string",
             "example": 54312
@@ -1546,7 +1527,6 @@
           "converted_account_id",
           "converted_contact_id",
           "converted_date",
-          "id",
           "remote_id",
           "last_name",
           "lead_source",
@@ -1629,10 +1609,6 @@
             "nullable": true,
             "example": "Wants to use open source unified API for third-party integrations"
           },
-          "id": {
-            "type": "string",
-            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-          },
           "remote_id": {
             "type": "string",
             "example": 54312
@@ -1696,7 +1672,6 @@
           "account_id",
           "amount",
           "description",
-          "id",
           "remote_id",
           "last_activity_at",
           "name",
@@ -1713,10 +1688,6 @@
       "user": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-          },
           "remote_id": {
             "type": "string",
             "example": 54312

@@ -20,9 +20,6 @@ properties:
     type: string
     nullable: true
     example: George
-  id:
-    type: string
-    example: 88cc44ca-7a34-4e8b-b0da-51c3aae34daf
   remote_id:
     type: string
     example: 54312
@@ -60,7 +57,6 @@ required:
   - account_id
   - owner_id
   - description
-  - id
   - remote_id
   - addresses
   - email_addresses
