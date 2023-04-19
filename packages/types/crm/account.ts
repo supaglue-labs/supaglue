@@ -1,16 +1,7 @@
-import type {
-  Address,
-  BaseCrmModel,
-  BaseCrmModelNonRemoteParams,
-  BaseCrmModelRemoteOnlyParams,
-  CustomFields,
-  LifecycleStage,
-  PhoneNumber,
-  User,
-} from '..';
+import type { Address, BaseCrmModel, CustomFields, LifecycleStage, PhoneNumber } from '..';
 import { Filter } from '../filter';
 
-type BaseAccount = BaseCrmModel & {
+export type Account = BaseCrmModel & {
   name: string | null;
   description: string | null;
   industry: string | null;
@@ -18,26 +9,14 @@ type BaseAccount = BaseCrmModel & {
   numberOfEmployees: number | null;
   addresses: Address[];
   phoneNumbers: PhoneNumber[];
-  lastActivityAt: Date | null;
   lifecycleStage: LifecycleStage | null;
+
+  ownerId: string | null;
+
+  lastActivityAt: Date | null;
 };
 
-export type Account = BaseAccount &
-  BaseCrmModelNonRemoteParams & {
-    ownerId: string | null;
-    owner?: User;
-    // TODO: Support remote data
-  };
-
-export type RemoteAccount = BaseAccount &
-  BaseCrmModelRemoteOnlyParams & {
-    remoteOwnerId: string | null;
-  };
-
-type BaseAccountCreateParams = {
-  // TODO: Associations
-  // owner?: string | null;
-
+export type AccountCreateParams = {
   name?: string | null;
   description?: string | null;
   industry?: string | null;
@@ -54,14 +33,7 @@ type BaseAccountCreateParams = {
   customFields?: CustomFields;
 };
 
-export type AccountCreateParams = BaseAccountCreateParams;
-export type RemoteAccountCreateParams = BaseAccountCreateParams;
-
 export type AccountUpdateParams = AccountCreateParams & {
-  id: string;
-};
-
-export type RemoteAccountUpdateParams = RemoteAccountCreateParams & {
   remoteId: string;
 };
 
