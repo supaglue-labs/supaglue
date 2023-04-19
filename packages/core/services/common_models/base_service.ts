@@ -15,20 +15,3 @@ export abstract class CommonModelBaseService {
     this.remoteService = remoteService;
   }
 }
-
-export type UpsertRemoteCommonModelsResult = {
-  maxLastModifiedAt: Date | null;
-  numRecords: number;
-};
-
-export function getLastModifiedAt(remoteCommonModel: {
-  remoteUpdatedAt: Date | null;
-  detectedOrRemoteDeletedAt: Date | null;
-}) {
-  return new Date(
-    Math.max(
-      remoteCommonModel.remoteUpdatedAt?.getTime() || 0,
-      remoteCommonModel.detectedOrRemoteDeletedAt?.getTime() || 0
-    )
-  );
-}

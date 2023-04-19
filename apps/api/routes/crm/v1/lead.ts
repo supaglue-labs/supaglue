@@ -36,7 +36,7 @@ export default function init(app: Router): void {
     ) => {
       const { customerId, id: connectionId } = req.customerConnection;
       const lead = await leadService.update(customerId, connectionId, {
-        id: req.params.lead_id,
+        remoteId: req.params.lead_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: toSnakecasedKeysLead(lead) });

@@ -1,50 +1,50 @@
 import {
+  Account,
+  AccountCreateParams,
+  AccountUpdateParams,
   ConnectionUnsafe,
+  Contact,
+  ContactCreateParams,
+  ContactUpdateParams,
   CRMProviderName,
+  Event,
+  EventCreateParams,
+  EventUpdateParams,
   Integration,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteAccountUpdateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteEvent,
-  RemoteEventCreateParams,
-  RemoteEventUpdateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteLeadUpdateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteOpportunityUpdateParams,
+  Lead,
+  LeadCreateParams,
+  LeadUpdateParams,
+  Opportunity,
+  OpportunityCreateParams,
+  OpportunityUpdateParams,
 } from '@supaglue/types';
 import { EventEmitter } from 'events';
 import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface CrmRemoteClient extends RemoteClient {
-  listAccounts(updatedAfter?: Date): Promise<Readable>; // streams RemoteAccount
-  createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount>;
-  updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount>;
+  listAccounts(updatedAfter?: Date): Promise<Readable>; // streams Account
+  createAccount(params: AccountCreateParams): Promise<Account>;
+  updateAccount(params: AccountUpdateParams): Promise<Account>;
 
-  listContacts(updatedAfter?: Date): Promise<Readable>; // streams RemoteContact
-  createContact(params: RemoteContactCreateParams): Promise<RemoteContact>;
-  updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact>;
+  listContacts(updatedAfter?: Date): Promise<Readable>; // streams Contact
+  createContact(params: ContactCreateParams): Promise<Contact>;
+  updateContact(params: ContactUpdateParams): Promise<Contact>;
 
-  listLeads(updatedAfter?: Date): Promise<Readable>; // streams RemoteLead
-  createLead(params: RemoteLeadCreateParams): Promise<RemoteLead>;
-  updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead>;
+  listLeads(updatedAfter?: Date): Promise<Readable>; // streams Lead
+  createLead(params: LeadCreateParams): Promise<Lead>;
+  updateLead(params: LeadUpdateParams): Promise<Lead>;
 
-  listOpportunities(updatedAfter?: Date): Promise<Readable>; // streams RemoteOpportunity
-  createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity>;
-  updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity>;
+  listOpportunities(updatedAfter?: Date): Promise<Readable>; // streams Opportunity
+  createOpportunity(params: OpportunityCreateParams): Promise<Opportunity>;
+  updateOpportunity(params: OpportunityUpdateParams): Promise<Opportunity>;
 
   // Note: User creation/updates are not supported
-  listUsers(updatedAfter?: Date): Promise<Readable>; // streams RemoteUser
+  listUsers(updatedAfter?: Date): Promise<Readable>; // streams User
 
-  listEvents(updatedAfter?: Date): Promise<Readable>; // streams RemoteEvent
-  createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent>;
-  updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent>;
+  listEvents(updatedAfter?: Date): Promise<Readable>; // streams Event
+  createEvent(params: EventCreateParams): Promise<Event>;
+  updateEvent(params: EventUpdateParams): Promise<Event>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
@@ -52,28 +52,28 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     super(...args);
   }
 
-  abstract listAccounts(updatedAfter?: Date): Promise<Readable>; // streams RemoteAccount
-  abstract createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount>;
-  abstract updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount>;
+  abstract listAccounts(updatedAfter?: Date): Promise<Readable>; // streams Account
+  abstract createAccount(params: AccountCreateParams): Promise<Account>;
+  abstract updateAccount(params: AccountUpdateParams): Promise<Account>;
 
-  abstract listContacts(updatedAfter?: Date): Promise<Readable>; // streams RemoteContact
-  abstract createContact(params: RemoteContactCreateParams): Promise<RemoteContact>;
-  abstract updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact>;
+  abstract listContacts(updatedAfter?: Date): Promise<Readable>; // streams Contact
+  abstract createContact(params: ContactCreateParams): Promise<Contact>;
+  abstract updateContact(params: ContactUpdateParams): Promise<Contact>;
 
-  abstract listLeads(updatedAfter?: Date): Promise<Readable>; // streams RemoteLead
-  abstract createLead(params: RemoteLeadCreateParams): Promise<RemoteLead>;
-  abstract updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead>;
+  abstract listLeads(updatedAfter?: Date): Promise<Readable>; // streams Lead
+  abstract createLead(params: LeadCreateParams): Promise<Lead>;
+  abstract updateLead(params: LeadUpdateParams): Promise<Lead>;
 
-  abstract listOpportunities(updatedAfter?: Date): Promise<Readable>; // streams RemoteOpportunity
-  abstract createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity>;
-  abstract updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity>;
+  abstract listOpportunities(updatedAfter?: Date): Promise<Readable>; // streams Opportunity
+  abstract createOpportunity(params: OpportunityCreateParams): Promise<Opportunity>;
+  abstract updateOpportunity(params: OpportunityUpdateParams): Promise<Opportunity>;
 
   // Note: User creation/updates are not supported
-  abstract listUsers(updatedAfter?: Date): Promise<Readable>; // streams RemoteUser
+  abstract listUsers(updatedAfter?: Date): Promise<Readable>; // streams User
 
-  abstract listEvents(updatedAfter?: Date): Promise<Readable>; // streams RemoteEvent
-  abstract createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent>;
-  abstract updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent>;
+  abstract listEvents(updatedAfter?: Date): Promise<Readable>; // streams Event
+  abstract createEvent(params: EventCreateParams): Promise<Event>;
+  abstract updateEvent(params: EventUpdateParams): Promise<Event>;
 }
 
 export abstract class CrmRemoteClientEventEmitter extends EventEmitter {}

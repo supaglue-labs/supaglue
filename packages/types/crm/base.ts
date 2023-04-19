@@ -3,13 +3,9 @@ export type BaseCrmModel = {
   remoteCreatedAt: Date | null;
   remoteUpdatedAt: Date | null;
   remoteWasDeleted: boolean;
-};
 
-export type BaseCrmModelNonRemoteParams = {
-  lastModifiedAt: Date;
-};
-
-export type BaseCrmModelRemoteOnlyParams = {
   remoteDeletedAt: Date | null;
   detectedOrRemoteDeletedAt: Date | null;
+
+  lastModifiedAt: Date;
 };

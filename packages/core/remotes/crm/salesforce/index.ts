@@ -3,23 +3,23 @@
 /// <reference lib="dom" />
 
 import {
+  Account,
   AccountCreateParams,
+  AccountUpdateParams,
   ConnectionUnsafe,
+  Contact,
+  ContactCreateParams,
+  ContactUpdateParams,
+  Event,
+  EventCreateParams,
+  EventUpdateParams,
   Integration,
-  RemoteAccount,
-  RemoteAccountUpdateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteEvent,
-  RemoteEventCreateParams,
-  RemoteEventUpdateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteLeadUpdateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteOpportunityUpdateParams,
+  Lead,
+  LeadCreateParams,
+  LeadUpdateParams,
+  Opportunity,
+  OpportunityCreateParams,
+  OpportunityUpdateParams,
 } from '@supaglue/types';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
@@ -29,11 +29,11 @@ import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromSalesforceAccountToRemoteAccount,
-  fromSalesforceContactToRemoteContact,
-  fromSalesforceLeadToRemoteLead,
-  fromSalesforceOpportunityToRemoteOpportunity,
-  fromSalesforceUserToRemoteUser,
+  fromSalesforceAccountToAccount,
+  fromSalesforceContactToContact,
+  fromSalesforceLeadToLead,
+  fromSalesforceOpportunityToOpportunity,
+  fromSalesforceUserToUser,
   toSalesforceAccountCreateParams,
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
@@ -396,15 +396,15 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     const soql = updatedAfter
       ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
       : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceAccountToRemoteAccount);
+    return this.listCommonModelRecords(soql, fromSalesforceAccountToAccount);
   }
 
-  public async getAccount(remoteId: string): Promise<RemoteAccount> {
+  public async getAccount(remoteId: string): Promise<Account> {
     const account = await this.#client.retrieve('Account', remoteId);
-    return fromSalesforceAccountToRemoteAccount(account);
+    return fromSalesforceAccountToAccount(account);
   }
 
-  public async createAccount(params: AccountCreateParams): Promise<RemoteAccount> {
+  public async createAccount(params: AccountCreateParams): Promise<Account> {
     const response = await this.#client.create('Account', toSalesforceAccountCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce account');
@@ -413,7 +413,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getAccount(response.id);
   }
 
-  public async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
+  public async updateAccount(params: AccountUpdateParams): Promise<Account> {
     const response = await this.#client.update('Account', toSalesforceAccountUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce account');
@@ -429,15 +429,15 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     const soql = updatedAfter
       ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
       : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceContactToRemoteContact);
+    return this.listCommonModelRecords(soql, fromSalesforceContactToContact);
   }
 
-  public async getContact(remoteId: string): Promise<RemoteContact> {
+  public async getContact(remoteId: string): Promise<Contact> {
     const contact = await this.#client.retrieve('Contact', remoteId);
-    return fromSalesforceContactToRemoteContact(contact);
+    return fromSalesforceContactToContact(contact);
   }
 
-  public async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+  public async createContact(params: ContactCreateParams): Promise<Contact> {
     const response = await this.#client.create('Contact', toSalesforceContactCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce contact');
@@ -445,7 +445,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getContact(response.id);
   }
 
-  public async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+  public async updateContact(params: ContactUpdateParams): Promise<Contact> {
     const response = await this.#client.update('Contact', toSalesforceContactUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce contact');
@@ -461,15 +461,15 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     const soql = updatedAfter
       ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
       : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceOpportunityToRemoteOpportunity);
+    return this.listCommonModelRecords(soql, fromSalesforceOpportunityToOpportunity);
   }
 
-  public async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
+  public async getOpportunity(remoteId: string): Promise<Opportunity> {
     const contact = await this.#client.retrieve('Opportunity', remoteId);
-    return fromSalesforceOpportunityToRemoteOpportunity(contact);
+    return fromSalesforceOpportunityToOpportunity(contact);
   }
 
-  public async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
+  public async createOpportunity(params: OpportunityCreateParams): Promise<Opportunity> {
     const response = await this.#client.create('Opportunity', toSalesforceOpportunityCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce opportunity');
@@ -477,7 +477,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getOpportunity(response.id);
   }
 
-  public async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
+  public async updateOpportunity(params: OpportunityUpdateParams): Promise<Opportunity> {
     const response = await this.#client.update('Opportunity', toSalesforceOpportunityUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce opportunity');
@@ -493,15 +493,15 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     const soql = updatedAfter
       ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
       : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceLeadToRemoteLead);
+    return this.listCommonModelRecords(soql, fromSalesforceLeadToLead);
   }
 
-  public async getLead(remoteId: string): Promise<RemoteLead> {
+  public async getLead(remoteId: string): Promise<Lead> {
     const contact = await this.#client.retrieve('Lead', remoteId);
-    return fromSalesforceLeadToRemoteLead(contact);
+    return fromSalesforceLeadToLead(contact);
   }
 
-  public async createLead(params: RemoteLeadCreateParams): Promise<RemoteLead> {
+  public async createLead(params: LeadCreateParams): Promise<Lead> {
     const response = await this.#client.create('Lead', toSalesforceLeadCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce lead');
@@ -509,7 +509,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getLead(response.id);
   }
 
-  public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
+  public async updateLead(params: LeadUpdateParams): Promise<Lead> {
     const response = await this.#client.update('Lead', toSalesforceLeadUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce lead');
@@ -525,7 +525,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     const soql = updatedAfter
       ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
       : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceUserToRemoteUser);
+    return this.listCommonModelRecords(soql, fromSalesforceUserToUser);
   }
 
   public async listEvents(updatedAfter?: Date): Promise<Readable> {
@@ -537,16 +537,16 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     // const soql = updatedAfter
     //   ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
     //   : baseSoql;
-    // return this.listCommonModelRecords(soql, fromSalesforceEventToRemoteEvent);
+    // return this.listCommonModelRecords(soql, fromSalesforceEventToEvent);
   }
 
-  public async getEvent(remoteId: string): Promise<RemoteEvent> {
+  public async getEvent(remoteId: string): Promise<Event> {
     throw new Error('Not implemented');
     // const event = await this.#client.retrieve('Event', remoteId);
-    // return fromSalesforceEventToRemoteEvent(event);
+    // return fromSalesforceEventToEvent(event);
   }
 
-  public async createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent> {
+  public async createEvent(params: EventCreateParams): Promise<Event> {
     throw new Error('Not implemented');
     // const response = await this.#client.create('Event', toSalesforceEventCreateParams(params));
     // if (!response.success) {
@@ -555,7 +555,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     // return await this.getEvent(response.id);
   }
 
-  public async updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent> {
+  public async updateEvent(params: EventUpdateParams): Promise<Event> {
     throw new Error('Not implemented');
     // const response = await this.#client.update('Event', toSalesforceEventUpdateParams(params));
     // if (!response.success) {

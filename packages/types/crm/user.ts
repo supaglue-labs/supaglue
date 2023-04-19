@@ -1,11 +1,7 @@
-import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams } from '..';
+import { BaseCrmModel } from '..';
 
-type BaseUser = BaseCrmModel & {
+export type User = BaseCrmModel & {
   name: string | null;
   email: string | null;
   isActive: boolean | null;
 };
-
-export type User = BaseUser & BaseCrmModelNonRemoteParams;
-
-export type RemoteUser = BaseUser & BaseCrmModelRemoteOnlyParams;

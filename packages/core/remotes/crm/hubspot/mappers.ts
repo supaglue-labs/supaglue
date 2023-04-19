@@ -3,28 +3,28 @@ import { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/a
 import { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
+  Account,
+  AccountCreateParams,
   Address,
+  Contact,
+  ContactCreateParams,
   EmailAddress,
   LifecycleStage,
+  Opportunity,
+  OpportunityCreateParams,
   OpportunityStatus,
   PhoneNumber,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteUser,
+  User,
 } from '@supaglue/types';
 
-export const fromHubSpotCompanyToRemoteAccount = ({
+export const fromHubSpotCompanyToAccount = ({
   id,
   properties,
   createdAt,
   updatedAt,
   archived,
   archivedAt,
-}: HubSpotCompany): RemoteAccount => {
+}: HubSpotCompany): Account => {
   const addresses: Address[] =
     properties.address ||
     properties.address2 ||
@@ -58,7 +58,7 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     remoteId: id,
     name: properties.name ?? null,
     description: properties.description ?? null,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    ownerId: properties.hubspot_owner_id ?? null,
     industry: properties.industry ?? null,
     website: properties.website ?? null,
     numberOfEmployees: properties.numberofemployees ? parseInt(properties.numberofemployees) : null,
@@ -72,10 +72,11 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     remoteWasDeleted: !!archived,
     remoteDeletedAt: archivedAt ?? null,
     detectedOrRemoteDeletedAt: archivedAt ?? null,
+    lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
 
-export const fromHubSpotContactToRemoteContact = ({
+export const fromHubSpotContactToContact = ({
   id,
   properties,
   createdAt,
@@ -83,7 +84,7 @@ export const fromHubSpotContactToRemoteContact = ({
   associations,
   archived,
   archivedAt,
-}: HubSpotContact): RemoteContact => {
+}: HubSpotContact): Contact => {
   const emailAddresses = [
     properties.email
       ? {
@@ -98,9 +99,9 @@ export const fromHubSpotContactToRemoteContact = ({
         }
       : null,
   ].filter(Boolean) as EmailAddress[];
-  let remoteAccountId = null;
+  let accountId = null;
   if (associations?.companies?.results?.length) {
-    remoteAccountId = associations.companies.results[0].id ?? null;
+    accountId = associations.companies.results[0].id ?? null;
   }
 
   const phoneNumbers = [
@@ -141,8 +142,8 @@ export const fromHubSpotContactToRemoteContact = ({
 
   return {
     remoteId: id,
-    remoteAccountId,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    accountId,
+    ownerId: properties.hubspot_owner_id ?? null,
     firstName: properties.firstname ?? null,
     lastName: properties.lastname ?? null,
     addresses,
@@ -155,10 +156,11 @@ export const fromHubSpotContactToRemoteContact = ({
     remoteWasDeleted: !!archived,
     remoteDeletedAt: archivedAt ?? null,
     detectedOrRemoteDeletedAt: archivedAt ?? null,
+    lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
 
-export const fromHubSpotDealToRemoteOpportunity = ({
+export const fromHubSpotDealToOpportunity = ({
   id,
   properties,
   createdAt,
@@ -166,26 +168,26 @@ export const fromHubSpotDealToRemoteOpportunity = ({
   associations,
   archived,
   archivedAt,
-}: HubSpotDeal): RemoteOpportunity => {
+}: HubSpotDeal): Opportunity => {
   let status: OpportunityStatus = 'OPEN';
   if (properties.hs_is_closed_won) {
     status = 'WON';
   } else if (properties.hs_is_closed === 'true') {
     status = 'LOST';
   }
-  let remoteAccountId = null;
+  let accountId = null;
   if (associations?.companies?.results?.length) {
-    remoteAccountId = associations.companies.results[0].id ?? null;
+    accountId = associations.companies.results[0].id ?? null;
   }
   return {
     remoteId: id,
     name: properties.dealname ?? null,
     description: properties.description ?? null,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    ownerId: properties.hubspot_owner_id ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     status,
     pipeline: properties.pipeline ?? null,
-    remoteAccountId,
+    accountId,
     amount: properties.amount ? parseInt(properties.amount) : null,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage: properties.dealstage,
@@ -194,10 +196,11 @@ export const fromHubSpotDealToRemoteOpportunity = ({
     remoteWasDeleted: !!archived,
     remoteDeletedAt: archivedAt ?? null,
     detectedOrRemoteDeletedAt: archivedAt ?? null,
+    lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
 
-export const fromHubspotOwnerToRemoteUser = ({
+export const fromHubspotOwnerToUser = ({
   id,
   firstName,
   lastName,
@@ -205,7 +208,9 @@ export const fromHubspotOwnerToRemoteUser = ({
   createdAt,
   updatedAt,
   archived,
-}: HubspotOwner): RemoteUser => {
+}: HubspotOwner): User => {
+  const detectedOrRemoteDeletedAt = archived ? new Date() : null;
+
   return {
     remoteId: id,
     name: getFullName(firstName, lastName),
@@ -215,7 +220,10 @@ export const fromHubspotOwnerToRemoteUser = ({
     remoteUpdatedAt: updatedAt,
     remoteWasDeleted: !!archived,
     remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: archived ? new Date() : null,
+    detectedOrRemoteDeletedAt,
+    // TODO: This isn't accurate. Every time we pull in data, we'll think it was deleted just recently
+    // https://github.com/supaglue-labs/supaglue/issues/664
+    lastModifiedAt: new Date(Math.max(updatedAt.getTime(), detectedOrRemoteDeletedAt?.getTime() ?? 0)),
   };
 };
 
@@ -232,7 +240,7 @@ const getFullName = (firstName?: string, lastName?: string): string | null => {
   return null;
 };
 
-export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams): Record<string, string> => {
+export const toHubspotAccountCreateParams = (params: AccountCreateParams): Record<string, string> => {
   const phoneParams = toHubspotPhoneCreateParams(params.phoneNumbers);
   const out = {
     name: nullToEmptyString(params.name),
@@ -252,7 +260,7 @@ export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams):
 
 export const toHubspotAccountUpdateParams = toHubspotAccountCreateParams;
 
-export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreateParams): Record<string, string> => {
+export const toHubspotOpportunityCreateParams = (params: OpportunityCreateParams): Record<string, string> => {
   const out = {
     amount: nullToEmptyString(params.amount?.toString()),
     closedate: nullToEmptyString(params.closeDate?.toISOString()),
@@ -268,7 +276,7 @@ export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreate
 };
 export const toHubspotOpportunityUpdateParams = toHubspotOpportunityCreateParams;
 
-export const toHubspotContactCreateParams = (params: RemoteContactCreateParams): Record<string, string> => {
+export const toHubspotContactCreateParams = (params: ContactCreateParams): Record<string, string> => {
   const out = {
     firstname: nullToEmptyString(params.firstName),
     lastname: nullToEmptyString(params.lastName),

@@ -1,65 +1,37 @@
-import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
-import { Filter } from '../filter';
-import type { Account } from './account';
-import { User } from './user';
+import { BaseCrmModel, CustomFields } from '.';
 
 export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
 
-type BaseOpportunity = BaseCrmModel & {
+export type Opportunity = BaseCrmModel & {
   name: string | null;
   description: string | null;
   amount: number | null;
   stage: string | null;
   status: OpportunityStatus | null;
-  lastActivityAt: Date | null;
   closeDate: Date | null;
   pipeline: string | null;
+
+  accountId: string | null;
+  ownerId: string | null;
+
+  lastActivityAt: Date | null;
 };
 
-export type Opportunity = BaseOpportunity &
-  BaseCrmModelNonRemoteParams & {
-    accountId: string | null;
-    account?: Account;
-    ownerId: string | null;
-    owner?: User;
-    // Support field mappings + remote data etc
-  };
-
-export type RemoteOpportunity = BaseOpportunity &
-  BaseCrmModelRemoteOnlyParams & {
-    remoteAccountId: string | null;
-    remoteOwnerId: string | null;
-  };
-
-type BaseOpportunityCreateParams = {
-  amount?: number | null;
-  closeDate?: Date | null;
-  description?: string | null;
-
-  // TODO: Need extra permissions to create/update this derived field in SF
-  // lastActivityAt?: Date | null;
-
+export type OpportunityCreateParams = {
   name?: string | null;
+  description?: string | null;
+  amount?: number | null;
   stage?: string | null;
+  closeDate?: Date | null;
+  pipeline?: string | null;
+
   accountId?: string | null;
   ownerId?: string | null;
-  pipeline?: string | null;
 
   customFields?: CustomFields;
 };
 
-export type OpportunityCreateParams = BaseOpportunityCreateParams;
-export type RemoteOpportunityCreateParams = BaseOpportunityCreateParams;
-
 export type OpportunityUpdateParams = OpportunityCreateParams & {
-  id: string;
-};
-
-export type RemoteOpportunityUpdateParams = RemoteOpportunityCreateParams & {
   remoteId: string;
-};
-
-export type OpportunityFilters = {
-  accountId?: Filter;
 };
