@@ -14,14 +14,6 @@ const { importRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   },
 });
 
-const { populateAssociations } = proxyActivities<ReturnType<typeof createActivities>>({
-  startToCloseTimeout: '120 minute',
-  heartbeatTimeout: '8 minute',
-  retry: {
-    maximumAttempts: 3,
-  },
-});
-
 const { getSync, updateSyncState, logSyncStart, logSyncFinish } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '10 second',
   retry: {
@@ -164,11 +156,6 @@ async function doFullThenIncrementalSync({
       },
     });
 
-    await populateAssociations({
-      connectionId: sync.connectionId,
-      originalMaxLastModifiedAtMsMap: defaultMaxLastModifiedAtMsMap,
-    });
-
     await updateSyncState({
       syncId: sync.id,
       state: {
@@ -256,11 +243,6 @@ async function doFullThenIncrementalSync({
     //     maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
     //   },
     // });
-
-    await populateAssociations({
-      connectionId: sync.connectionId,
-      originalMaxLastModifiedAtMsMap: getOriginalMaxLastModifiedAtMsMap(),
-    });
 
     await updateSyncState({
       syncId: sync.id,

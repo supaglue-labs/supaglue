@@ -9,7 +9,6 @@ import {
   OpportunityService,
   RemoteService,
   SyncHistoryService,
-  UserService,
 } from '@supaglue/core/services';
 import type { PrismaClient } from '@supaglue/db';
 import { Client, Connection } from '@temporalio/client';
@@ -24,7 +23,6 @@ type DependencyContainer = {
   remoteService: RemoteService;
   accountService: AccountService;
   leadService: LeadService;
-  userService: UserService;
   eventService: EventService;
   opportunityService: OpportunityService;
   syncService: SyncService;
@@ -44,7 +42,6 @@ function createDependencyContainer(): DependencyContainer {
     remoteService,
     accountService,
     leadService,
-    userService,
     eventService,
     opportunityService,
     syncHistoryService,
@@ -85,7 +82,6 @@ function createDependencyContainer(): DependencyContainer {
     remoteService,
     accountService,
     leadService,
-    userService,
     eventService,
     opportunityService,
     syncService,
