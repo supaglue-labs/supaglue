@@ -19,9 +19,6 @@ properties:
     type: string
     nullable: true
     example: Wants to use open source unified API for third-party integrations
-  id:
-    type: string
-    example: e888cedf-e9d0-42c5-9485-2d72984faef2
   remote_id:
     type: string
     example: 54312
@@ -72,7 +69,6 @@ required:
   - account_id
   - amount
   - description
-  - id
   - remote_id
   - last_activity_at
   - name

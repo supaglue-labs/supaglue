@@ -6,7 +6,6 @@ export type BaseCrmModel = {
 };
 
 export type BaseCrmModelNonRemoteParams = {
-  id: string;
   lastModifiedAt: Date;
 };
 

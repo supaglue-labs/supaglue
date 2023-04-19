@@ -29,9 +29,6 @@ properties:
     type: string
     nullable: true
     example: George
-  id:
-    type: string
-    example: e774484c-4ff2-421f-adfa-12f66ed75b91
   remote_id:
     type: string
     example: 54312
@@ -78,7 +75,6 @@ required:
   - converted_account_id
   - converted_contact_id
   - converted_date
-  - id
   - remote_id
   - last_name
   - lead_source

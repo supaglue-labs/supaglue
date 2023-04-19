@@ -1,8 +1,5 @@
 type: object
 properties:
-  id:
-    type: string
-    example: e888cedf-e9d0-42c5-9485-2d72984faef2
   remote_id:
     type: string
     example: 1234
@@ -75,7 +72,6 @@ properties:
     format: date-time
     example: '2022-02-27T00:00:00Z'
 required:
-  - id
   - remote_id
   - subject
   - type
