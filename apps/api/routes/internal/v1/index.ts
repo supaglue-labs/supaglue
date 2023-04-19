@@ -10,6 +10,7 @@ import apiKey from './api_key';
 import application from './application';
 import auth from './auth';
 import customer from './customer';
+import destination from './destination';
 import integration from './integration';
 import syncHistory from './sync_history';
 import syncInfo from './sync_info';
@@ -81,6 +82,7 @@ WHERE last_modified_at IS NULL;
 
   apiKey(v1Router);
   customer(v1Router);
+  destination(v1Router);
   integration(v1Router);
   webhook(v1Router);
   syncInfo(v1Router);
