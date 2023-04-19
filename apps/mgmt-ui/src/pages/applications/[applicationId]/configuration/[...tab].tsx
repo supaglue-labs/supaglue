@@ -1,4 +1,6 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
+import DestinationTabPanelContainer from '@/components/configuration/destination/DestinationTabPanelContainer';
+import IntegrationTabPanelContainer from '@/components/configuration/integration/IntegrationTabPanelContainer';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
@@ -8,8 +10,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useState } from 'react';
-import DestinationTabPanelContainer from '../../../../components/configuration/DestinationTabPanelContainer';
-import IntegrationTabPanelContainer from '../../../../components/configuration/IntegrationTabPanelContainer';
 
 export { getServerSideProps };
 

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createRemoteIntegration, updateRemoteIntegration } from '@/client';
+import Spinner from '@/components/Spinner';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
@@ -8,7 +9,6 @@ import Card from '@mui/material/Card';
 import { CRMProviderName, Integration, IntegrationCategory } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import Spinner from '../Spinner';
 import { integrationCardsInfo } from './IntegrationTabPanelContainer';
 
 export type IntegrationDetailsPanelProps = {

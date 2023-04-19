@@ -1,6 +1,6 @@
+import Spinner from '@/components/Spinner';
 import { Grid } from '@mui/material';
 import { Destination } from '@supaglue/types';
-import Spinner from '../Spinner';
 import DestinationCard from './DestinationCard';
 import { DestinationCardInfo } from './DestinationTabPanelContainer';
 
