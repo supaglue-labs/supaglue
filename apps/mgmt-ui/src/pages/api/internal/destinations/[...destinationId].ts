@@ -1,3 +1,4 @@
+import { getApplicationIdScopedHeaders } from '@/utils/headers';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
