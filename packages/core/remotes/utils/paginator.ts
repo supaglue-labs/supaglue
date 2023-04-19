@@ -14,9 +14,9 @@ type GetNextCursor<T> = (response: T) => string | undefined;
  * @param {Array} fetchersAndHandlers - An array of objects containing:
  *   - `pageFetcher`: A function that fetches data and returns a Promise that resolves to
  *                    the paginated response.
- *   - `getResponseResults`: A function that takes the paginated response as input and
+ *   - `createStreamFromPage`: A function that takes the paginated response as input and
  *                           returns a Readable stream of processed results.
- *   - `getNextCursor`: A function that takes the paginated response as input and returns
+ *   - `getNextCursorFromPage`: A function that takes the paginated response as input and returns
  *                      the cursor for the next set of results, if available.
  *
  * @returns {Promise<Readable>} A Readable stream of results from all fetchers combined.
@@ -24,14 +24,14 @@ type GetNextCursor<T> = (response: T) => string | undefined;
  * @example
  * const fetchersAndHandlers = [
  *   {
- *     fetcher: fetchData1,
- *     getResponseResults: processResults1,
- *     getNextCursor: getCursor1,
+ *     pageFetcher: fetchData1,
+ *     createStreamFromPage: processResults1,
+ *     getNextCursorFromPage: getCursor1,
  *   },
  *   {
- *     fetcher: fetchData2,
- *     getResponseResults: processResults2,
- *     getNextCursor: getCursor2,
+ *     pageFetcher: fetchData2,
+ *     createStreamFromPage: processResults2,
+ *     getNextCursorFromPage: getCursor2,
  *   },
  * ];
  *
