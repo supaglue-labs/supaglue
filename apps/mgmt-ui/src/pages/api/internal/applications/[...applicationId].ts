@@ -1,3 +1,4 @@
+import { getHeaders } from '@/utils/headers';
 import { getOrgId } from '@/utils/org';
 import { Application } from '@supaglue/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -8,11 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'GET': {
       const result = await fetch(`${API_HOST}/internal/v1/applications/${req.query.applicationId}`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-sg-internal-token': SG_INTERNAL_TOKEN,
-          'x-org-id': getOrgId(req),
-        },
+        headers: getHeaders(req),
       });
 
       if (!result.ok) {
@@ -26,11 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'PATCH': {
       const result = await fetch(`${API_HOST}/internal/v1/applications/${req.query.applicationId}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-sg-internal-token': SG_INTERNAL_TOKEN,
-          'x-org-id': getOrgId(req),
-        },
+        headers: getHeaders(req),
         body: JSON.stringify(req.body),
       });
 

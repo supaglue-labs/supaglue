@@ -8,6 +8,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useState } from 'react';
+import DestinationTabPanelContainer from '../../../../components/configuration/DestinationTabPanelContainer';
 import IntegrationTabPanelContainer from '../../../../components/configuration/IntegrationTabPanelContainer';
 
 export { getServerSideProps };
@@ -20,6 +21,10 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
   {
     label: 'Integrations',
     value: 'integrations',
+  },
+  {
+    label: 'Destinations',
+    value: 'destinations',
   },
   {
     label: 'Webhook',
@@ -97,6 +102,7 @@ export default function Home() {
           tabs={
             <Tabs value={value} textColor="inherit" onChange={handleChange}>
               <Tab label="Integrations" />
+              <Tab label="Destinations" />
               <Tab label="Webhook" />
               <Tab label="API Key" />
             </Tabs>
@@ -109,9 +115,12 @@ export default function Home() {
             <IntegrationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={1} className="w-full">
-            <WebhookTabPanel />
+            <DestinationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={2} className="w-full">
+            <WebhookTabPanel />
+          </TabPanel>
+          <TabPanel value={value} index={3} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
         </Box>
