@@ -4,6 +4,7 @@ export * from './common';
 export * from './connection';
 export * from './crm';
 export * from './customer';
+export * from './destination';
 export * from './integration';
 export * from './passthrough';
 export * from './sg_user';

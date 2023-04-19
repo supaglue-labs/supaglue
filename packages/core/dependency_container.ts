@@ -13,6 +13,7 @@ import {
   SgUserService,
   SyncHistoryService,
 } from './services';
+import { DestinationService } from './services/destination_service';
 
 export type CoreDependencyContainer = {
   pgPool: Pool;
@@ -24,6 +25,7 @@ export type CoreDependencyContainer = {
   integrationService: IntegrationService;
   customerService: CustomerService;
   remoteService: RemoteService;
+  destinationService: DestinationService;
 
   // crm
   accountService: AccountService;
@@ -49,6 +51,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const connectionService = new ConnectionService(prisma, integrationService);
   const customerService = new CustomerService(prisma);
   const remoteService = new RemoteService(connectionService, integrationService);
+  const destinationService = new DestinationService(prisma);
 
   // crm
   const accountService = new AccountService(pgPool, prisma, remoteService);
@@ -67,6 +70,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     customerService,
     integrationService,
     remoteService,
+    destinationService,
     // crm
     contactService,
     accountService,
