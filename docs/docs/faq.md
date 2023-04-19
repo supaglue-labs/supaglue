@@ -10,27 +10,23 @@ Supaglue is an open source unified API that makes it easy for developers to ship
 
 ## Who should use this?
 
-Currently, Supaglue is a good fit for developers at B2B SaaS companies who need to build user-facing Salesforce integrations into their product. Some common use cases would be building Salesforce integrations for sales enablement, sales automation, or marketing automation tools.
+Currently, Supaglue is a good fit for developers at B2B SaaS companies who need to build user-facing CRM and Sales engagement integrations into their product. Some common use cases for Supaglue are lead scoring, CRM enrichment, and sales enablement software.
 
 ## Why is this better than alternatives?
 
-Supaglue helps you ship customer-facing CRM integrations 10x faster through its unified API and common data model for CRMs. Because it is open source, Supaglue has several advantages over traditional unified APIs: it has no vendor lock-in, it's privacy-first, and it's fully extensible.
+Supaglue helps you ship customer-facing CRM and Sales engagement integrations 10x faster through its unified API and common data model for CRMs. Because it is open source, Supaglue has several advantages over traditional unified APIs: it has no vendor lock-in, it's privacy-first, and it's fully extensible.
 
 ## Is there a hosted version of Supaglue?
 
-We're currently building a cloud/managed version of Supaglue (which is how we plan to make money). Please reach out to us at hello@supaglue.com if you’re interested.
+Yes! We've opened up Supaglue Cloud for early access. Please [sign up](https://form.typeform.com/to/jv9ucMZR) for our waitlist if interested.
 
-## How do I self-host this?
+## Can I self-host this?
 
-We're early and are working on documentation for self-hosting. Please reach out to us in Slack or at hello@supaglue.com in the meantime and we can help you get set up.
+Yes! Please reach out to us in Slack or at hello@supaglue.com, and we can help you get set up.
 
-## When are you going to be production-ready?
+## Are you planning to support X connector?
 
-We're still early in our journey (public alpha) but will be ready soon. Join our Slack community and/or sign up for our mailing list for updates!
-
-## Are you planning to support non-CRM integrations?
-
-Yes, we plan to expand to other verticals. Please let us know if you have a specific use case Supaglue can help with.
+We're building more [connectors](/connectors) and have a bunch more on our roadmap. If there's a specific connector you're looking for, let us know and we may be able to prioritize.
 
 ## What kind of tracking/analytics do you collect?
 

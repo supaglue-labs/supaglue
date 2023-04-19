@@ -1,16 +1,16 @@
+---
+description: ''
+---
+
 import ThemedImage from '@theme/ThemedImage';
 
-# Embedded Links
+# Embedded links
 
-Learn how to use an Embedded Link in your frontend application so your customers can connect their third-party tools to your application using Supaglue.
+An embedded link is a HTTP link that initiates an authentication flow in your customer's third-party CRM to install your Connected App. Once installed, a connection is created in Supaglue allowing Supaglue to sync CRM data into its database. Embedded links allow your customers to connect their CRMs to your application using Supaglue.
 
-## Overview
+## Link format
 
-An Embedded Link is a HTTP link that initiates an authentication flow in your customer's third-party CRM to install your Connected App. Once installed, a connection is created in Supaglue allowing Supaglue to sync CRM data into its database.
-
-### Embedded Link format
-
-An Embedded Link takes the following form:
+An embedded link takes the following form:
 
 `{PROTOCOL}{DOMAIN}`/oauth/connect?applicationId=`{APPLICATION_ID}`&customerId=`{CUSTOMER_ID}`&providerName=`{PROVIDER_NAME}`&returnUrl=`{RETURN_URL}`
 
@@ -47,7 +47,7 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
   </div>
 );
 
-### Embedded Links in UI components
+## Embedded links in UI components
 
 Embedded Links can be used in any UI components in your frontend application. For example, below are two cards that can be used to connect to Salesforce and Hubspot:
 

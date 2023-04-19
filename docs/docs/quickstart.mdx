@@ -174,6 +174,25 @@ curl localhost:8080/mgmt/v1/sync-info \
   -H 'x-api-key: some-api-key' \
 ```
 
+Example result:
+
+```console
+[
+  {
+    "model_name": "account",
+    "last_sync_start": "2023-02-24T07:52:00.076Z",
+    "next_sync_start": "2023-02-24T07:53:00.000Z",
+    "status": "DONE",
+    "connection_id": "1c36e9c1-1ed7-4055-ba00-41caf5b8875a",
+    "application_id": "a4398523-03a2-42dd-9681-c91e3e2efaf4",
+    "customer_id": "external-customer-salesforce",
+    "category": "crm",
+    "provider_name": "salesforce"
+  },
+  ...
+]
+```
+
 </TabItem>
 <TabItem value="hubspot" label="HubSpot">
 
@@ -181,9 +200,6 @@ curl localhost:8080/mgmt/v1/sync-info \
 curl localhost:8080/mgmt/v1/sync-info \
   -H 'x-api-key: some-api-key' \
 ```
-
-</TabItem>
-</Tabs>
 
 Example result:
 
@@ -204,11 +220,12 @@ Example result:
 ]
 ```
 
-## References
+</TabItem>
+</Tabs>
 
-- Visit the [API Reference](/api) to view supported objects and HTTP methods.
-- Visit the [Supaglue Postman Collection](https://www.postman.com/supaglue/workspace/supaglue-public/overview) to make HTTP requests against your instance of Supaglue.
 
-## Use your own Salesforce or HubSpot App
 
-Please reach out to us if you'd like to try Supaglue using your Salesforce Connected App or HubSpot App: [support@supaglue.com](mailto:support@supaglue.com).
+## Next steps
+Check out the [API Reference](/api) to view supported objects and HTTP methods, or the [Supaglue Postman Collection](https://www.postman.com/supaglue/workspace/supaglue-public/overview) to make HTTP requests against your instance of Supaglue.
+
+Continue to [Getting Started](/getting-started) to integrate Supaglue with your own Salesforce or HubSpot connected app and your own customers' CRMs.

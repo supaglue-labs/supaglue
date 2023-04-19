@@ -1,3 +1,7 @@
+---
+description: ''
+---
+
 # Syncing data to your app
 
 We recommending syncing data from Supaglue into your application using a [webhook](#1-create-an-http-endpoint-that-will-be-called-by-a-supaglue-webhook)

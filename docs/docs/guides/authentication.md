@@ -1,8 +1,8 @@
+---
+description: ''
+---
+
 # Authentication
-
-Learn how to authenticate your requests to Supaglue's API.
-
-## Overview
 
 When you make a request to the Supaglue API, you will need to be an authorized user. Use an API key to identify yourself as an authorized user.
 
