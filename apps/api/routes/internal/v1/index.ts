@@ -6,6 +6,7 @@ import apiKey from './api_key';
 import application from './application';
 import auth from './auth';
 import customer from './customer';
+import destination from './destination';
 import integration from './integration';
 import syncHistory from './sync_history';
 import syncInfo from './sync_info';
@@ -31,6 +32,7 @@ export default function init(app: Router): void {
 
   apiKey(v1Router);
   customer(v1Router);
+  destination(v1Router);
   integration(v1Router);
   webhook(v1Router);
   syncInfo(v1Router);

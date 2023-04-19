@@ -6,6 +6,7 @@ export * from './common';
 export * from './connection';
 export * as crm from './crm';
 export * from './customer';
+export * from './destination';
 export * as engagement from './engagement';
 export * from './integration';
 export * from './passthrough';
