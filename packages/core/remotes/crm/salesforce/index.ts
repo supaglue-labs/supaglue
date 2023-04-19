@@ -24,8 +24,9 @@ import {
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
-import { PassThrough, pipeline, Readable, Transform } from 'stream';
+import { pipeline, Readable, Transform } from 'stream';
 import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
+import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToRemoteAccount,
@@ -360,33 +361,13 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
     await this.#pollBulk2QueryJob(id);
 
-    const passThrough = new PassThrough({ objectMode: true });
-
-    // TODO: Simplify / clean up this code. Maybe we should start considering
-    // deploying data syncs in separate Docker containers to isolate work.
-    // It may also be easier to reason about stdout.
-    // Return `passThrough` before we fetch all the data chunks
-    (async () => {
-      let locator: string | undefined = undefined;
-      do {
-        const response = await this.#getBulk2QueryJobResponse(id, locator);
-        const readable = getBulk2QueryJobResultsFromResponse(response);
-        locator = getBulk2QueryJobNextLocatorFromResponse(response);
-
-        // Do not emit 'end' event until the last batch
-        readable.pipe(passThrough, { end: !locator });
-        readable.on('error', (err) => passThrough.emit('error', err));
-
-        // Wait until we finish downloading the stream before moving onto the next chunk
-        await new Promise((resolve) => readable.on('end', resolve));
-      } while (locator);
-    })().catch((err: unknown) => {
-      // We need to forward the error to the returned `Readable` because there
-      // is no way for the caller to find out about errors in the above async block otherwise.
-      passThrough.emit('error', err);
-    });
-
-    return passThrough;
+    return await paginator([
+      {
+        pageFetcher: this.#getBulk2QueryJobResponse.bind(this, id),
+        createStreamFromPage: getBulk2QueryJobResultsFromResponse,
+        getNextCursorFromPage: getBulk2QueryJobNextLocatorFromResponse,
+      },
+    ]);
   }
 
   private async listCommonModelRecords(soql: string, mapper: (record: Record<string, any>) => any): Promise<Readable> {
