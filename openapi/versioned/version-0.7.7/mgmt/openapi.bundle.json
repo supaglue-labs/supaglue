@@ -24,9 +24,7 @@
     "/customers": {
       "get": {
         "operationId": "getCustomers",
-        "tags": [
-          "Customers"
-        ],
+        "tags": ["Customers"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -71,9 +69,7 @@
       "put": {
         "operationId": "upsertCustomer",
         "summary": "Upsert customer",
-        "tags": [
-          "Customers"
-        ],
+        "tags": ["Customers"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -108,9 +104,7 @@
       "get": {
         "operationId": "getCustomer",
         "summary": "Get customer",
-        "tags": [
-          "Customers"
-        ],
+        "tags": ["Customers"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -142,9 +136,7 @@
       "delete": {
         "operationId": "deleteCustomer",
         "summary": "Delete customer",
-        "tags": [
-          "Customers"
-        ],
+        "tags": ["Customers"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -188,9 +180,7 @@
     "/integrations": {
       "get": {
         "operationId": "getIntegrations",
-        "tags": [
-          "Integrations"
-        ],
+        "tags": ["Integrations"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -277,9 +267,7 @@
       "post": {
         "operationId": "createIntegration",
         "summary": "Create integration",
-        "tags": [
-          "Integrations"
-        ],
+        "tags": ["Integrations"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -314,9 +302,7 @@
       "get": {
         "operationId": "getIntegration",
         "summary": "Get integration",
-        "tags": [
-          "Integrations"
-        ],
+        "tags": ["Integrations"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -369,9 +355,7 @@
       "put": {
         "operationId": "updateIntegration",
         "summary": "Update integration",
-        "tags": [
-          "Integrations"
-        ],
+        "tags": ["Integrations"],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -430,9 +414,7 @@
       "delete": {
         "operationId": "deleteIntegration",
         "summary": "Delete integration",
-        "tags": [
-          "Integrations"
-        ],
+        "tags": ["Integrations"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -497,9 +479,7 @@
     "/customers/{customer_id}/connections": {
       "get": {
         "operationId": "getConnections",
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -565,9 +545,7 @@
       "get": {
         "operationId": "getConnection",
         "summary": "Get connection",
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -603,9 +581,7 @@
       "delete": {
         "operationId": "deleteConnection",
         "summary": "Delete connection",
-        "tags": [
-          "Connections"
-        ],
+        "tags": ["Connections"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -641,9 +617,7 @@
     "/webhook": {
       "get": {
         "operationId": "getWebhook",
-        "tags": [
-          "Webhook"
-        ],
+        "tags": ["Webhook"],
         "summary": "Get webhook",
         "description": "Get webhook details",
         "security": [
@@ -678,9 +652,7 @@
       "post": {
         "operationId": "createWebhook",
         "summary": "Create webhook",
-        "tags": [
-          "Webhook"
-        ],
+        "tags": ["Webhook"],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -713,9 +685,7 @@
       "delete": {
         "operationId": "deleteWebhook",
         "summary": "Delete webhook",
-        "tags": [
-          "Webhook"
-        ],
+        "tags": ["Webhook"],
         "parameters": [],
         "security": [
           {
@@ -732,9 +702,7 @@
     "/sync-history": {
       "get": {
         "operationId": "getSyncHistory",
-        "tags": [
-          "Sync"
-        ],
+        "tags": ["Sync"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -865,9 +833,7 @@
     "/sync-info": {
       "get": {
         "operationId": "getSyncInfos",
-        "tags": [
-          "Sync"
-        ],
+        "tags": ["Sync"],
         "security": [
           {
             "ApiKeyAuth": []
@@ -978,12 +944,7 @@
             }
           }
         },
-        "required": [
-          "application_id",
-          "name",
-          "email",
-          "customer_id"
-        ]
+        "required": ["application_id", "name", "email", "customer_id"]
       },
       "integration": {
         "type": "object",
@@ -1001,9 +962,7 @@
           },
           "auth_type": {
             "type": "string",
-            "enum": [
-              "oauth2"
-            ]
+            "enum": ["oauth2"]
           },
           "provider_name": {
             "$ref": "#/components/schemas/provider_name"
@@ -1012,13 +971,7 @@
             "$ref": "#/components/schemas/integration_config"
           }
         },
-        "required": [
-          "id",
-          "application_id",
-          "category",
-          "auth_type",
-          "provider_name"
-        ]
+        "required": ["id", "application_id", "category", "auth_type", "provider_name"]
       },
       "connection": {
         "type": "object",
@@ -1029,12 +982,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "available",
-              "added",
-              "authorized",
-              "callable"
-            ],
+            "enum": ["available", "added", "authorized", "callable"],
             "example": "available"
           },
           "application_id": {
@@ -1074,9 +1022,7 @@
       },
       "category": {
         "type": "string",
-        "enum": [
-          "crm"
-        ]
+        "enum": ["crm"]
       },
       "integration_config": {
         "type": "object",
@@ -1107,16 +1053,10 @@
                     "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
                   }
                 },
-                "required": [
-                  "oauth_client_id",
-                  "oauth_client_secret"
-                ]
+                "required": ["oauth_client_id", "oauth_client_secret"]
               }
             },
-            "required": [
-              "oauth_scopes",
-              "credentials"
-            ]
+            "required": ["oauth_scopes", "credentials"]
           },
           "sync": {
             "type": "object",
@@ -1126,16 +1066,10 @@
                 "example": 60000
               }
             },
-            "required": [
-              "period_ms"
-            ]
+            "required": ["period_ms"]
           }
         },
-        "required": [
-          "provider_app_id",
-          "oauth",
-          "sync"
-        ],
+        "required": ["provider_app_id", "oauth", "sync"],
         "example": {
           "provider_app_id": "my_app_id",
           "oauth": {
@@ -1160,15 +1094,7 @@
       },
       "provider_name": {
         "type": "string",
-        "enum": [
-          "hubspot",
-          "salesforce",
-          "pipedrive",
-          "zendesk_sell",
-          "ms_dynamics_365_sales",
-          "zoho_crm",
-          "capsule"
-        ]
+        "enum": ["hubspot", "salesforce", "pipedrive", "zendesk_sell", "ms_dynamics_365_sales", "zoho_crm", "capsule"]
       },
       "create_update_customer": {
         "type": "object",
@@ -1186,11 +1112,7 @@
             "example": "contact@mycompany.com"
           }
         },
-        "required": [
-          "name",
-          "email",
-          "customer_id"
-        ]
+        "required": ["name", "email", "customer_id"]
       },
       "create_update_integration": {
         "type": "object",
@@ -1200,9 +1122,7 @@
           },
           "auth_type": {
             "type": "string",
-            "enum": [
-              "oauth2"
-            ]
+            "enum": ["oauth2"]
           },
           "provider_name": {
             "$ref": "#/components/schemas/provider_name"
@@ -1211,12 +1131,7 @@
             "$ref": "#/components/schemas/integration_config"
           }
         },
-        "required": [
-          "category",
-          "auth_type",
-          "provider_name",
-          "config"
-        ]
+        "required": ["category", "auth_type", "provider_name", "config"]
       },
       "webhook": {
         "type": "object",
@@ -1269,10 +1184,7 @@
           "status": {
             "type": "string",
             "nullable": true,
-            "enum": [
-              "SYNCING",
-              "DONE"
-            ]
+            "enum": ["SYNCING", "DONE"]
           },
           "application_id": {
             "type": "string",
@@ -1288,9 +1200,7 @@
           },
           "category": {
             "type": "string",
-            "enum": [
-              "crm"
-            ]
+            "enum": ["crm"]
           },
           "connection_id": {
             "type": "string",
@@ -1343,9 +1253,7 @@
           },
           "category": {
             "type": "string",
-            "enum": [
-              "crm"
-            ]
+            "enum": ["crm"]
           },
           "connection_id": {
             "type": "string",
@@ -1353,11 +1261,7 @@
           },
           "status": {
             "type": "string",
-            "enum": [
-              "SUCCESS",
-              "IN_PROGRESS",
-              "FAILURE"
-            ]
+            "enum": ["SUCCESS", "IN_PROGRESS", "FAILURE"]
           }
         },
         "required": [
@@ -1380,10 +1284,7 @@
             "title": "Sync Finished Event",
             "properties": {
               "type": {
-                "enum": [
-                  "SYNC_SUCCESS",
-                  "SYNC_ERROR"
-                ]
+                "enum": ["SYNC_SUCCESS", "SYNC_ERROR"]
               },
               "payload": {
                 "type": "object",
@@ -1398,10 +1299,7 @@
                   },
                   "provider_name": {
                     "type": "string",
-                    "enum": [
-                      "hubspot",
-                      "salesforce"
-                    ],
+                    "enum": ["hubspot", "salesforce"],
                     "example": "hubspot"
                   },
                   "history_id": {
@@ -1414,42 +1312,24 @@
                   },
                   "common_model": {
                     "type": "string",
-                    "enum": [
-                      "opportunity",
-                      "contact",
-                      "account",
-                      "lead",
-                      "user"
-                    ],
+                    "enum": ["opportunity", "contact", "account", "lead", "user"],
                     "example": "contact"
                   },
                   "error_message": {
                     "type": "string"
                   }
                 },
-                "required": [
-                  "connection_id",
-                  "customer_id",
-                  "history_id",
-                  "num_records_synced",
-                  "common_model"
-                ]
+                "required": ["connection_id", "customer_id", "history_id", "num_records_synced", "common_model"]
               }
             },
-            "required": [
-              "type",
-              "payload"
-            ]
+            "required": ["type", "payload"]
           },
           {
             "type": "object",
             "title": "Connection Created Event",
             "properties": {
               "type": {
-                "enum": [
-                  "CONNECTION_SUCCESS",
-                  "CONNECTION_ERROR"
-                ]
+                "enum": ["CONNECTION_SUCCESS", "CONNECTION_ERROR"]
               },
               "payload": {
                 "type": "object",
@@ -1464,31 +1344,18 @@
                   },
                   "category": {
                     "type": "string",
-                    "enum": [
-                      "crm"
-                    ]
+                    "enum": ["crm"]
                   },
                   "provider_name": {
                     "type": "string",
-                    "enum": [
-                      "hubspot",
-                      "salesforce"
-                    ],
+                    "enum": ["hubspot", "salesforce"],
                     "example": "hubspot"
                   }
                 },
-                "required": [
-                  "customer_id",
-                  "integration_id",
-                  "category",
-                  "provider_name"
-                ]
+                "required": ["customer_id", "integration_id", "category", "provider_name"]
               }
             },
-            "required": [
-              "type",
-              "payload"
-            ]
+            "required": ["type", "payload"]
           }
         ]
       }
@@ -1537,9 +1404,7 @@
       "post": {
         "operationId": "webhook",
         "summary": "Webhook",
-        "tags": [
-          "Webhook"
-        ],
+        "tags": ["Webhook"],
         "requestBody": {
           "content": {
             "application/json": {
