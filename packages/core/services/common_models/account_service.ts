@@ -1,19 +1,7 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
-import type {
-  Account,
-  AccountCreateParams,
-  AccountFilters,
-  AccountUpdateParams,
-  GetParams,
-  ListInternalParams,
-  PaginatedResult,
-  PaginationInternalParams,
-} from '@supaglue/types';
+import type { Account, AccountCreateParams, AccountUpdateParams } from '@supaglue/types';
 import { Readable } from 'stream';
-import { NotFoundError, UnauthorizedError } from '../../errors';
 import { logger } from '../../lib';
-import { getExpandedAssociations } from '../../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
@@ -21,89 +9,6 @@ import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResu
 export class AccountService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
     super(...args);
-  }
-
-  // TODO: implement getParams
-  public async getById(id: string, connectionId: string, getParams: GetParams): Promise<Account> {
-    const { expand } = getParams;
-    const expandedAssociations = getExpandedAssociations(expand);
-    const model = await this.prisma.crmAccount.findUnique({
-      where: { id },
-      include: {
-        owner: expandedAssociations.includes('owner'),
-      },
-    });
-    if (!model) {
-      throw new NotFoundError(`Can't find account with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
-    }
-    return fromAccountModel(model, expandedAssociations);
-  }
-
-  public async search(
-    connectionId: string,
-    paginationParams: PaginationInternalParams,
-    filters: AccountFilters
-  ): Promise<PaginatedResult<Account>> {
-    const { page_size, cursor } = paginationParams;
-    const models = await this.prisma.crmAccount.findMany({
-      ...getPaginationParams(page_size, cursor),
-      where: {
-        connectionId,
-        website: filters.website?.type === 'equals' ? filters.website.value : undefined,
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    const results = models.map((model) => fromAccountModel(model));
-    return {
-      ...getPaginationResult(page_size, cursor, results),
-      results,
-    };
-  }
-
-  // TODO: implement rest of list params
-  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Account>> {
-    const {
-      page_size,
-      cursor,
-      include_deleted_data,
-      created_after,
-      created_before,
-      modified_after,
-      modified_before,
-      expand,
-    } = listParams;
-    const expandedAssociations = getExpandedAssociations(expand);
-    const models = await this.prisma.crmAccount.findMany({
-      ...getPaginationParams(page_size, cursor),
-      where: {
-        connectionId,
-        remoteCreatedAt: {
-          gt: created_after,
-          lt: created_before,
-        },
-        lastModifiedAt: {
-          gt: modified_after,
-          lt: modified_before,
-        },
-        remoteWasDeleted: include_deleted_data ? undefined : false,
-      },
-      include: {
-        owner: expandedAssociations.includes('owner'),
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    const results = models.map((model) => fromAccountModel(model, expandedAssociations));
-    return {
-      ...getPaginationResult(page_size, cursor, results),
-      results,
-    };
   }
 
   public async create(customerId: string, connectionId: string, createParams: AccountCreateParams): Promise<Account> {

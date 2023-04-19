@@ -6,23 +6,11 @@
 
 export interface paths {
   "/accounts": {
-    /**
-     * List accounts 
-     * @description Get a list of accounts
-     */
-    get: operations["getAccounts"];
     /** Create account */
     post: operations["createAccount"];
     
   };
-  "/accounts/_search": {
-    /** Search accounts */
-    post: operations["searchAccounts"];
-    
-  };
   "/accounts/{account_id}": {
-    /** Get account */
-    get: operations["getAccount"];
     /** Update account */
     patch: operations["updateAccount"];
     parameters: {
@@ -32,23 +20,11 @@ export interface paths {
     };
   };
   "/contacts": {
-    /**
-     * List contacts 
-     * @description Get a list of contacts
-     */
-    get: operations["getContacts"];
     /** Create contact */
     post: operations["createContact"];
     
   };
-  "/contacts/_search": {
-    /** Search contacts */
-    post: operations["searchContacts"];
-    
-  };
   "/contacts/{contact_id}": {
-    /** Get contact */
-    get: operations["getContact"];
     /** Update contact */
     patch: operations["updateContact"];
     parameters: {
@@ -58,18 +34,11 @@ export interface paths {
     };
   };
   "/leads": {
-    /**
-     * List leads 
-     * @description Get a list of leads
-     */
-    get: operations["getLeads"];
     /** Create lead */
     post: operations["createLead"];
     
   };
   "/leads/{lead_id}": {
-    /** Get lead */
-    get: operations["getLead"];
     /** Update lead */
     patch: operations["updateLead"];
     parameters: {
@@ -79,18 +48,11 @@ export interface paths {
     };
   };
   "/events": {
-    /**
-     * List events 
-     * @description Get a list of events
-     */
-    get: operations["getEvents"];
     /** Create event */
     post: operations["createEvent"];
     
   };
   "/events/{event_id}": {
-    /** Get event */
-    get: operations["getEvent"];
     /** Update event */
     patch: operations["updateEvent"];
     parameters: {
@@ -100,45 +62,16 @@ export interface paths {
     };
   };
   "/opportunities": {
-    /**
-     * List opportunities 
-     * @description Get a list of opportunities
-     */
-    get: operations["getOpportunities"];
     /** Create opportunity */
     post: operations["createOpportunity"];
     
   };
-  "/opportunities/_search": {
-    /** Search Opportunities */
-    post: operations["searchOpportunities"];
-    
-  };
   "/opportunities/{opportunity_id}": {
-    /** Get opportunity */
-    get: operations["getOpportunity"];
     /** Update opportunity */
     patch: operations["updateOpportunity"];
     parameters: {
       path: {
         opportunity_id: string;
-      };
-    };
-  };
-  "/users": {
-    /**
-     * List users 
-     * @description Get a list of users
-     */
-    get: operations["getUsers"];
-    
-  };
-  "/users/{user_id}": {
-    /** Get user */
-    get: operations["getUser"];
-    parameters: {
-      path: {
-        user_id: string;
       };
     };
   };
@@ -670,22 +603,6 @@ export interface components {
   };
   responses: never;
   parameters: {
-    /** @description Whether to include data that was deleted in providers. */
-    include_deleted_data: boolean;
-    /** @description If provided, will only return objects created after this datetime */
-    created_after: Date;
-    /** @description If provided, will only return objects created before this datetime */
-    created_before: Date;
-    /** @description If provided, will only return objects modified after this datetime */
-    modified_after: Date;
-    /** @description If provided, will only return objects modified before this datetime */
-    modified_before: Date;
-    /** @description The pagination cursor value */
-    cursor: string;
-    /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces */
-    expand: string;
-    /** @description Number of results to return per page */
-    page_size: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
     /** @description The provider name */
@@ -700,22 +617,6 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  getAccounts: {
-    /**
-     * List accounts 
-     * @description Get a list of accounts
-     */
-    responses: {
-      /** @description Accounts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["account"])[];
-          };
-        };
-      };
-    };
-  };
   createAccount: {
     /** Create account */
     requestBody: {
@@ -739,39 +640,6 @@ export interface operations {
       };
     };
   };
-  searchAccounts: {
-    /** Search accounts */
-    requestBody: {
-      content: {
-        "application/json": {
-          filters: {
-            website?: components["schemas"]["filter"];
-          };
-        };
-      };
-    };
-    responses: {
-      /** @description Accounts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["account"])[];
-          };
-        };
-      };
-    };
-  };
-  getAccount: {
-    /** Get account */
-    responses: {
-      /** @description Account */
-      200: {
-        content: {
-          "application/json": components["schemas"]["account"];
-        };
-      };
-    };
-  };
   updateAccount: {
     /** Update account */
     requestBody: {
@@ -790,22 +658,6 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["account"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getContacts: {
-    /**
-     * List contacts 
-     * @description Get a list of contacts
-     */
-    responses: {
-      /** @description Contacts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["contact"])[];
           };
         };
       };
@@ -844,39 +696,6 @@ export interface operations {
       };
     };
   };
-  searchContacts: {
-    /** Search contacts */
-    requestBody: {
-      content: {
-        "application/json": {
-          filters: {
-            email_address?: components["schemas"]["filter"];
-          };
-        };
-      };
-    };
-    responses: {
-      /** @description Contacts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["contact"])[];
-          };
-        };
-      };
-    };
-  };
-  getContact: {
-    /** Get contact */
-    responses: {
-      /** @description Contact */
-      200: {
-        content: {
-          "application/json": components["schemas"]["contact"];
-        };
-      };
-    };
-  };
   updateContact: {
     /** Update contact */
     requestBody: {
@@ -895,22 +714,6 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["contact"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getLeads: {
-    /**
-     * List leads 
-     * @description Get a list of leads
-     */
-    responses: {
-      /** @description Leads */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["lead"])[];
           };
         };
       };
@@ -950,17 +753,6 @@ export interface operations {
       };
     };
   };
-  getLead: {
-    /** Get lead */
-    responses: {
-      /** @description Lead */
-      200: {
-        content: {
-          "application/json": components["schemas"]["lead"];
-        };
-      };
-    };
-  };
   updateLead: {
     /** Update lead */
     requestBody: {
@@ -979,22 +771,6 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["lead"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getEvents: {
-    /**
-     * List events 
-     * @description Get a list of events
-     */
-    responses: {
-      /** @description Events */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["event"])[];
           };
         };
       };
@@ -1023,17 +799,6 @@ export interface operations {
       };
     };
   };
-  getEvent: {
-    /** Get event */
-    responses: {
-      /** @description Event */
-      200: {
-        content: {
-          "application/json": components["schemas"]["event"];
-        };
-      };
-    };
-  };
   updateEvent: {
     /** Update event */
     requestBody: {
@@ -1052,22 +817,6 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["event"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getOpportunities: {
-    /**
-     * List opportunities 
-     * @description Get a list of opportunities
-     */
-    responses: {
-      /** @description Opportunities */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["opportunity"])[];
           };
         };
       };
@@ -1108,39 +857,6 @@ export interface operations {
       };
     };
   };
-  searchOpportunities: {
-    /** Search Opportunities */
-    requestBody: {
-      content: {
-        "application/json": {
-          filters: {
-            account_id?: components["schemas"]["filter"];
-          };
-        };
-      };
-    };
-    responses: {
-      /** @description Opportunities */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["opportunity"])[];
-          };
-        };
-      };
-    };
-  };
-  getOpportunity: {
-    /** Get opportunity */
-    responses: {
-      /** @description Opportunity */
-      200: {
-        content: {
-          "application/json": components["schemas"]["opportunity"];
-        };
-      };
-    };
-  };
   updateOpportunity: {
     /** Update opportunity */
     requestBody: {
@@ -1160,33 +876,6 @@ export interface operations {
             model?: components["schemas"]["opportunity"];
             warnings?: components["schemas"]["warnings"];
           };
-        };
-      };
-    };
-  };
-  getUsers: {
-    /**
-     * List users 
-     * @description Get a list of users
-     */
-    responses: {
-      /** @description Users */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["user"])[];
-          };
-        };
-      };
-    };
-  };
-  getUser: {
-    /** Get user */
-    responses: {
-      /** @description User */
-      200: {
-        content: {
-          "application/json": components["schemas"]["user"];
         };
       };
     };

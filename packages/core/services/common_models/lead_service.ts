@@ -1,17 +1,7 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
-import type {
-  GetParams,
-  Lead,
-  LeadCreateParams,
-  LeadUpdateParams,
-  ListInternalParams,
-  PaginatedResult,
-} from '@supaglue/types';
+import type { Lead, LeadCreateParams, LeadUpdateParams } from '@supaglue/types';
 import { Readable } from 'stream';
-import { NotFoundError, UnauthorizedError } from '../../errors';
 import { logger } from '../../lib';
-import { getExpandedAssociations } from '../../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
@@ -19,70 +9,6 @@ import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResu
 export class LeadService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
     super(...args);
-  }
-
-  // TODO: implement getParams
-  public async getById(id: string, connectionId: string, getParams: GetParams): Promise<Lead> {
-    const { expand } = getParams;
-    const expandedAssociations = getExpandedAssociations(expand);
-    const model = await this.prisma.crmLead.findUnique({
-      where: { id },
-      include: {
-        convertedAccount: expandedAssociations.includes('converted_account'),
-        convertedContact: expandedAssociations.includes('converted_contact'),
-        owner: expandedAssociations.includes('owner'),
-      },
-    });
-    if (!model) {
-      throw new NotFoundError(`Can't find Lead with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
-    }
-    return fromLeadModel(model, expandedAssociations);
-  }
-
-  // TODO: implement rest of list params
-  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Lead>> {
-    const {
-      page_size,
-      cursor,
-      include_deleted_data,
-      created_after,
-      created_before,
-      modified_after,
-      modified_before,
-      expand,
-    } = listParams;
-    const expandedAssociations = getExpandedAssociations(expand);
-    const models = await this.prisma.crmLead.findMany({
-      ...getPaginationParams(page_size, cursor),
-      where: {
-        connectionId,
-        remoteCreatedAt: {
-          gt: created_after,
-          lt: created_before,
-        },
-        lastModifiedAt: {
-          gt: modified_after,
-          lt: modified_before,
-        },
-        remoteWasDeleted: include_deleted_data ? undefined : false,
-      },
-      include: {
-        convertedAccount: expandedAssociations.includes('converted_account'),
-        convertedContact: expandedAssociations.includes('converted_contact'),
-        owner: expandedAssociations.includes('owner'),
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    const results = models.map((model) => fromLeadModel(model, expandedAssociations));
-    return {
-      ...getPaginationResult(page_size, cursor, results),
-      results,
-    };
   }
 
   public async create(customerId: string, connectionId: string, createParams: LeadCreateParams): Promise<Lead> {
