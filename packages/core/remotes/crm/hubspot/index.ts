@@ -167,34 +167,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const normalPageFetcher = await this.#getListNormalAccountsFetcher(updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listAccountsFull(/* archived */ true, after);
-      return {
-        ...response,
-        results: response.results.filter((user) => {
-          if (!updatedAfter) {
-            return true;
-          }
-
-          if (!user.updatedAt) {
-            return true;
-          }
-
-          return updatedAfter < user.updatedAt;
-        }),
-      };
+      return filterForUpdatedAfter(response, updatedAfter);
     };
 
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response: HubspotPaginatedCompanies) =>
-          Readable.from(response.results.map(fromHubSpotCompanyToRemoteAccount)),
-        getNextCursorFromPage: (response: HubspotPaginatedCompanies) => response.paging?.next?.after,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToRemoteAccount)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response: HubspotPaginatedCompanies) =>
-          Readable.from(response.results.map(fromHubSpotCompanyToRemoteAccount)),
-        getNextCursorFromPage: (response: HubspotPaginatedCompanies) => response.paging?.next?.after,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToRemoteAccount)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
   }
@@ -207,7 +192,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       // If we get back more than 10k results, we need to fall back to the full fetch.
       const response = await this.#listAccountsIncremental(updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        return this.#listAccountsFull.bind(this, /* archived */ false);
+        return async (after?: string) => {
+          const response = await this.#listAccountsFull(/* archived */ false, after);
+          return filterForUpdatedAfter(response, updatedAfter);
+        };
       }
       return this.#listAccountsIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
     }
@@ -289,34 +277,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listOpportunitiesFull(/* archived */ true, after);
-      return {
-        ...response,
-        results: response.results.filter((opportunity) => {
-          if (!updatedAfter) {
-            return true;
-          }
-
-          if (!opportunity.updatedAt) {
-            return true;
-          }
-
-          return updatedAfter < opportunity.updatedAt;
-        }),
-      };
+      return filterForUpdatedAfter(response, updatedAfter);
     };
 
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response: HubspotPaginatedDeals) =>
-          Readable.from(response.results.map(fromHubSpotDealToRemoteOpportunity)),
-        getNextCursorFromPage: (response: HubspotPaginatedDeals) => response.paging?.next?.after,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotDealToRemoteOpportunity)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response: HubspotPaginatedDeals) =>
-          Readable.from(response.results.map(fromHubSpotDealToRemoteOpportunity)),
-        getNextCursorFromPage: (response: HubspotPaginatedDeals) => response.paging?.next?.after,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotDealToRemoteOpportunity)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
   }
@@ -329,7 +302,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       // If we get back more than 10k results, we need to fall back to the full fetch.
       const response = await this.#listOpportunitiesIncremental(updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        return this.#listOpportunitiesFull.bind(this, /* archived */ false);
+        return async (after?: string) => {
+          const response = await this.#listOpportunitiesFull(/* archived */ false, after);
+          return filterForUpdatedAfter(response, updatedAfter);
+        };
       }
       return this.#listOpportunitiesIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
     }
@@ -448,34 +424,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const normalPageFetcher = await this.#getListNormalContactsFetcher(updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listContactsFull(/* archived */ true, after);
-      return {
-        ...response,
-        results: response.results.filter((contact) => {
-          if (!updatedAfter) {
-            return true;
-          }
-
-          if (!contact.updatedAt) {
-            return true;
-          }
-
-          return updatedAfter < contact.updatedAt;
-        }),
-      };
+      return filterForUpdatedAfter(response, updatedAfter);
     };
 
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response: HubspotPaginatedContacts) =>
-          Readable.from(response.results.map(fromHubSpotContactToRemoteContact)),
-        getNextCursorFromPage: (response: HubspotPaginatedContacts) => response.paging?.next?.after,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotContactToRemoteContact)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response: HubspotPaginatedContacts) =>
-          Readable.from(response.results.map(fromHubSpotContactToRemoteContact)),
-        getNextCursorFromPage: (response: HubspotPaginatedContacts) => response.paging?.next?.after,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotContactToRemoteContact)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
   }
@@ -488,7 +449,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       // If we get back more than 10k results, we need to fall back to the full fetch.
       const response = await this.#listContactsIncremental(updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        return this.#listContactsFull.bind(this, /* archived */ false);
+        return async (after?: string) => {
+          const response = await this.#listContactsFull(/* archived */ false, after);
+          return filterForUpdatedAfter(response, updatedAfter);
+        };
       }
       return this.#listContactsIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
     }
@@ -640,44 +604,25 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listUsers(updatedAfter?: Date): Promise<Readable> {
-    const mapper = (response: HubspotPaginatedOwners) => {
-      return {
-        ...response,
-        results: response.results.filter((user) => {
-          if (!updatedAfter) {
-            return true;
-          }
-
-          if (!user.updatedAt) {
-            return true;
-          }
-
-          return updatedAfter < user.updatedAt;
-        }),
-      };
-    };
-
     const normalPageFetcher = async (after?: string) => {
       const response = await this.#listUsersFull(/* archived */ false, after);
-      return mapper(response);
+      return filterForUpdatedAfter(response, updatedAfter);
     };
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listUsersFull(/* archived */ true, after);
-      return mapper(response);
+      return filterForUpdatedAfter(response, updatedAfter);
     };
 
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response: HubspotPaginatedOwners) =>
-          Readable.from(response.results.map(fromHubspotOwnerToRemoteUser)),
-        getNextCursorFromPage: (response: HubspotPaginatedOwners) => response.paging?.next?.after,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToRemoteUser)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response: HubspotPaginatedOwners) =>
-          Readable.from(response.results.map(fromHubspotOwnerToRemoteUser)),
-        getNextCursorFromPage: (response: HubspotPaginatedOwners) => response.paging?.next?.after,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToRemoteUser)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
   }
@@ -758,3 +703,24 @@ const retryWhenRateLimited = async <Args extends any[], Return>(
   };
   return await retry(helper, ASYNC_RETRY_OPTIONS);
 };
+
+function filterForUpdatedAfter<
+  R extends {
+    results: { updatedAt?: Date }[];
+  }
+>(response: R, updatedAfter?: Date): R {
+  return {
+    ...response,
+    results: response.results.filter((record) => {
+      if (!updatedAfter) {
+        return true;
+      }
+
+      if (!record.updatedAt) {
+        return true;
+      }
+
+      return updatedAfter < record.updatedAt;
+    }),
+  };
+}
