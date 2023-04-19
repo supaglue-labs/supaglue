@@ -1,21 +1,21 @@
 import {
+  Account,
   AccountCreateParams,
+  AccountUpdateParams,
   ConnectionUnsafe,
+  Contact,
+  ContactCreateParams,
+  ContactUpdateParams,
+  Event,
+  EventCreateParams,
+  EventUpdateParams,
   Integration,
-  RemoteAccount,
-  RemoteAccountUpdateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteEvent,
-  RemoteEventCreateParams,
-  RemoteEventUpdateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteLeadUpdateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteOpportunityUpdateParams,
+  Lead,
+  LeadCreateParams,
+  LeadUpdateParams,
+  Opportunity,
+  OpportunityCreateParams,
+  OpportunityUpdateParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -34,15 +34,15 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getAccount(remoteId: string): Promise<RemoteAccount> {
+  public async getAccount(remoteId: string): Promise<Account> {
     throw new Error('Not implemented');
   }
 
-  public async createAccount(params: AccountCreateParams): Promise<RemoteAccount> {
+  public async createAccount(params: AccountCreateParams): Promise<Account> {
     throw new Error('Not implemented');
   }
 
-  public async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
+  public async updateAccount(params: AccountUpdateParams): Promise<Account> {
     throw new Error('Not implemented');
   }
 
@@ -50,15 +50,15 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getContact(remoteId: string): Promise<RemoteContact> {
+  public async getContact(remoteId: string): Promise<Contact> {
     throw new Error('Not implemented');
   }
 
-  public async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+  public async createContact(params: ContactCreateParams): Promise<Contact> {
     throw new Error('Not implemented');
   }
 
-  public async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+  public async updateContact(params: ContactUpdateParams): Promise<Contact> {
     throw new Error('Not implemented');
   }
 
@@ -66,15 +66,15 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
+  public async getOpportunity(remoteId: string): Promise<Opportunity> {
     throw new Error('Not implemented');
   }
 
-  public async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
+  public async createOpportunity(params: OpportunityCreateParams): Promise<Opportunity> {
     throw new Error('Not implemented');
   }
 
-  public async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
+  public async updateOpportunity(params: OpportunityUpdateParams): Promise<Opportunity> {
     throw new Error('Not implemented');
   }
 
@@ -82,15 +82,15 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getLead(remoteId: string): Promise<RemoteLead> {
+  public async getLead(remoteId: string): Promise<Lead> {
     throw new Error('Not implemented');
   }
 
-  public async createLead(params: RemoteLeadCreateParams): Promise<RemoteLead> {
+  public async createLead(params: LeadCreateParams): Promise<Lead> {
     throw new Error('Not implemented');
   }
 
-  public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
+  public async updateLead(params: LeadUpdateParams): Promise<Lead> {
     throw new Error('Not implemented');
   }
 
@@ -102,15 +102,15 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getEvent(remoteId: string): Promise<RemoteEvent> {
+  public async getEvent(remoteId: string): Promise<Event> {
     throw new Error('Not implemented');
   }
 
-  public async createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent> {
+  public async createEvent(params: EventCreateParams): Promise<Event> {
     throw new Error('Not implemented');
   }
 
-  public async updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent> {
+  public async updateEvent(params: EventUpdateParams): Promise<Event> {
     throw new Error('Not implemented');
   }
 }
