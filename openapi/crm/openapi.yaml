@@ -25,14 +25,10 @@ servers:
 paths:
   '/accounts':
     $ref: paths/accounts.yaml
-  '/accounts/_search':
-    $ref: paths/accounts@_search.yaml
   '/accounts/{account_id}':
     $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
-  '/contacts/_search':
-    $ref: paths/contacts@_search.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
   '/leads':
@@ -45,14 +41,8 @@ paths:
     $ref: paths/events@{event_id}.yaml
   '/opportunities':
     $ref: paths/opportunities.yaml
-  '/opportunities/_search':
-    $ref: paths/opportunities@_search.yaml
   '/opportunities/{opportunity_id}':
     $ref: paths/opportunities@{opportunity_id}.yaml
-  '/users':
-    $ref: paths/users.yaml
-  '/users/{user_id}':
-    $ref: paths/users@{user_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
 tags:
@@ -118,22 +108,6 @@ components:
     lifecycle_stage:
       $ref: ./components/schemas/objects/lifecycle_stage.yaml
   parameters:
-    include_deleted_data:
-      $ref: ../common/components/parameters/query/include_deleted_data.yaml
-    created_after:
-      $ref: ../common/components/parameters/query/created_after.yaml
-    created_before:
-      $ref: ../common/components/parameters/query/created_before.yaml
-    modified_after:
-      $ref: ../common/components/parameters/query/modified_after.yaml
-    modified_before:
-      $ref: ../common/components/parameters/query/modified_before.yaml
-    cursor:
-      $ref: ../common/components/parameters/query/cursor.yaml
-    expand:
-      $ref: ../common/components/parameters/query/expand.yaml
-    page_size:
-      $ref: ../common/components/parameters/query/page_size.yaml
     x-customer-id:
       $ref: ../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:

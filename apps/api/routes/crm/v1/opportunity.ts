@@ -1,74 +1,21 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
-import { toPaginationInternalParams } from '@supaglue/core/lib';
 import { toSnakecasedKeysOpportunity } from '@supaglue/core/mappers';
-import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import {
   CreateOpportunityPathParams,
   CreateOpportunityRequest,
   CreateOpportunityResponse,
-  GetOpportunitiesPathParams,
-  GetOpportunitiesRequest,
-  GetOpportunitiesResponse,
-  GetOpportunityPathParams,
-  GetOpportunityRequest,
-  GetOpportunityResponse,
-  SearchOpportunitiesPathParams,
-  SearchOpportunitiesRequest,
-  SearchOpportunitiesResponse,
   UpdateOpportunityPathParams,
   UpdateOpportunityRequest,
   UpdateOpportunityResponse,
 } from '@supaglue/schemas/crm';
-import { GetParams, ListParams } from '@supaglue/types/common';
-import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
+import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
 const { opportunityService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
-
-  router.get(
-    '/',
-    async (
-      req: Request<
-        GetOpportunitiesPathParams,
-        GetOpportunitiesResponse,
-        GetOpportunitiesRequest,
-        /* GetOpportunitiesQueryParams */ ListParams
-      >,
-      res: Response<GetOpportunitiesResponse>
-    ) => {
-      const { next, previous, results } = await opportunityService.list(
-        req.customerConnection.id,
-        toListInternalParams(req.query)
-      );
-      const snakeCaseKeysResults = results.map(toSnakecasedKeysOpportunity);
-      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
-    }
-  );
-
-  router.get(
-    '/:opportunity_id',
-    async (
-      req: Request<
-        GetOpportunityPathParams,
-        GetOpportunityResponse,
-        GetOpportunityRequest,
-        /* GetOpportunityQueryParams */ GetParams
-      >,
-      res: Response<GetOpportunityResponse>
-    ) => {
-      const opportunity = await opportunityService.getById(
-        req.params.opportunity_id,
-        req.customerConnection.id,
-        req.query
-      );
-      return res.status(200).send(toSnakecasedKeysOpportunity(opportunity));
-    }
-  );
-
   router.post(
     '/',
     async (
@@ -101,28 +48,6 @@ export default function init(app: Router): void {
       };
       const opportunity = await opportunityService.update(customerId, connectionId, opportunityUpdateParams);
       return res.status(200).send({ model: toSnakecasedKeysOpportunity(opportunity) });
-    }
-  );
-
-  router.delete('/:opportunity_id', () => {
-    throw new Error('Not implemented');
-  });
-
-  router.post(
-    '/_search',
-    async (
-      req: Request<SearchOpportunitiesPathParams, SearchOpportunitiesResponse, SearchOpportunitiesRequest>,
-      res: Response<SearchOpportunitiesResponse>
-    ) => {
-      const { next, previous, results } = await opportunityService.search(
-        req.customerConnection.id,
-        toPaginationInternalParams(req.params),
-        camelcaseKeys(req.body.filters)
-      );
-
-      const snakeCaseKeysResults = results.map(toSnakecasedKeysOpportunity);
-
-      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
 

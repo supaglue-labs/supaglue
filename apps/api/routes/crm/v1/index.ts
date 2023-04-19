@@ -6,7 +6,6 @@ import events from './event';
 import leads from './lead';
 import opportunities from './opportunity';
 import passthrough from './passthrough';
-import users from './user';
 
 export default function init(app: Router): void {
   const v1Router = Router();
@@ -17,7 +16,6 @@ export default function init(app: Router): void {
   accounts(v1Router);
   leads(v1Router);
   opportunities(v1Router);
-  users(v1Router);
   events(v1Router);
 
   passthrough(v1Router);

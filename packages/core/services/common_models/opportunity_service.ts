@@ -1,19 +1,7 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import type {
-  GetParams,
-  ListInternalParams,
-  Opportunity,
-  OpportunityCreateParams,
-  OpportunityFilters,
-  OpportunityUpdateParams,
-  PaginatedResult,
-  PaginationInternalParams,
-} from '@supaglue/types';
+import type { Opportunity, OpportunityCreateParams, OpportunityUpdateParams } from '@supaglue/types';
 import { Readable } from 'stream';
-import { NotFoundError, UnauthorizedError } from '../../errors';
 import { logger } from '../../lib';
-import { getExpandedAssociations } from '../../lib/expand';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../mappers';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
@@ -21,91 +9,6 @@ import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResu
 export class OpportunityService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
     super(...args);
-  }
-
-  // TODO: implement getParams
-  public async getById(id: string, connectionId: string, getParams: GetParams): Promise<Opportunity> {
-    const { expand } = getParams;
-    const expandedAssociations = getExpandedAssociations(expand);
-    const model = await this.prisma.crmOpportunity.findUnique({
-      where: { id },
-      include: {
-        account: expandedAssociations.includes('account'),
-        owner: expandedAssociations.includes('owner'),
-      },
-    });
-    if (!model) {
-      throw new NotFoundError(`Can't find Opportunity with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
-    }
-    return fromOpportunityModel(model, expandedAssociations);
-  }
-
-  // TODO: implement rest of list params
-  public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Opportunity>> {
-    const {
-      page_size,
-      cursor,
-      include_deleted_data,
-      created_after,
-      created_before,
-      modified_after,
-      modified_before,
-      expand,
-    } = listParams;
-    const expandedAssociations = getExpandedAssociations(expand);
-    const models = await this.prisma.crmOpportunity.findMany({
-      ...getPaginationParams(page_size, cursor),
-      where: {
-        connectionId,
-        remoteCreatedAt: {
-          gt: created_after,
-          lt: created_before,
-        },
-        lastModifiedAt: {
-          gt: modified_after,
-          lt: modified_before,
-        },
-        remoteWasDeleted: include_deleted_data ? undefined : false,
-      },
-      include: {
-        account: expandedAssociations.includes('account'),
-        owner: expandedAssociations.includes('owner'),
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    const results = models.map((model) => fromOpportunityModel(model, expandedAssociations));
-    return {
-      ...getPaginationResult(page_size, cursor, results),
-      results,
-    };
-  }
-
-  public async search(
-    connectionId: string,
-    paginationParams: PaginationInternalParams,
-    filters: OpportunityFilters
-  ): Promise<PaginatedResult<Opportunity>> {
-    const { page_size, cursor } = paginationParams;
-    const models = await this.prisma.crmOpportunity.findMany({
-      ...getPaginationParams(page_size, cursor),
-      where: {
-        connectionId,
-        accountId: filters.accountId?.type === 'equals' ? filters.accountId.value : undefined,
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    const results = models.map((model) => fromOpportunityModel(model));
-    return {
-      ...getPaginationResult(page_size, cursor, results),
-      results,
-    };
   }
 
   public async create(

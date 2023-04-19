@@ -1,19 +1,3 @@
-get:
-  operationId: getEvent
-  summary: Get event
-  tags:
-    - Events
-  security:
-    - ApiKeyAuth: []
-  parameters:
-    - $ref: ../../common/components/parameters/query/expand.yaml
-  responses:
-    200:
-      description: Event
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/objects/event.yaml
 patch:
   operationId: updateEvent
   summary: Update event
