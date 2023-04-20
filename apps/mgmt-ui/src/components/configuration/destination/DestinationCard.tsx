@@ -50,7 +50,6 @@ export default function DestinationCard({
         <Divider />
         <Grid container justifyContent="flex-end">
           <Button
-            disabled={destinationInfo.type === 'postgres'}
             variant="text"
             onClick={() => {
               router.push(`/applications/${applicationId}/configuration/destinations/${type}`);

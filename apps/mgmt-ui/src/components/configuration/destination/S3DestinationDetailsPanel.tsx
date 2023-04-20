@@ -1,38 +1,35 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createDestination, updateDestination } from '@/client';
+import Spinner from '@/components/Spinner';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
-import destinationTypeToIcon from '@/utils/destinationTypeToIcon';
+import getIcon from '@/utils/companyToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import { Destination } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import Spinner from '../Spinner';
-import { destinationCardsInfo } from './DestinationTabPanelContainer';
+import { s3DestinationCardInfo } from './DestinationTabPanelContainer';
 
-export type DestinationDetailsPanelProps = {
-  type: 's3' | 'postgres';
+export type S3DestinationDetailsPanelProps = {
   isLoading: boolean;
 };
 
-export default function DestinationDetailsPanel({ type, isLoading }: DestinationDetailsPanelProps) {
+export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
+
+  const { destinations: existingDestinations = [], mutate } = useDestinations();
+
+  const destination = existingDestinations.find((existingDestination) => existingDestination.type === 's3');
+
   const [region, setRegion] = useState<string>('');
   const [bucket, setBucket] = useState<string>('');
   const [accessKeyId, setAccessKeyId] = useState<string>('');
   const [secretAccessKey, setSecretAccessKey] = useState<string>('');
   const router = useRouter();
 
-  const { destinations: existingDestinations = [], mutate } = useDestinations();
-
-  const destination = existingDestinations.find((existingDestination) => existingDestination.type === type);
-
-  const destinationCardInfo = destinationCardsInfo.find((destinationCardInfo) => destinationCardInfo.type === type);
-
   useEffect(() => {
-    // TODO: support postgres`
-    if (destination && destination.type !== 's3') {
+    if (destination?.type !== 's3') {
       return;
     }
     if (!region) {
@@ -74,10 +71,6 @@ export default function DestinationDetailsPanel({ type, isLoading }: Destination
     });
   };
 
-  if (!destinationCardInfo) {
-    return null;
-  }
-
   if (isLoading) {
     return <Spinner />;
   }
@@ -87,9 +80,9 @@ export default function DestinationDetailsPanel({ type, isLoading }: Destination
       <Stack direction="column" className="gap-4" sx={{ padding: '2rem' }}>
         <Stack direction="row" className="items-center justify-between w-full">
           <Stack direction="row" className="items-center justify-center gap-2">
-            {destinationTypeToIcon(destinationCardInfo.type, 35)}
+            {getIcon(s3DestinationCardInfo.type, 35)}
             <Stack direction="column">
-              <Typography variant="subtitle1">{destinationCardInfo.name}</Typography>
+              <Typography variant="subtitle1">{s3DestinationCardInfo.name}</Typography>
             </Stack>
           </Stack>
         </Stack>
@@ -110,6 +103,7 @@ export default function DestinationDetailsPanel({ type, isLoading }: Destination
             size="small"
             label="Secret Access Key"
             variant="outlined"
+            type="password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setSecretAccessKey(event.target.value);
             }}
@@ -150,7 +144,7 @@ export default function DestinationDetailsPanel({ type, isLoading }: Destination
                 router.back();
               }}
             >
-              Cancel
+              Back
             </Button>
             <Button
               variant="contained"
