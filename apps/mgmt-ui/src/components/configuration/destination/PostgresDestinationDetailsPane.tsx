@@ -44,7 +44,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
       setDatabase(destination.config.database);
     }
     if (!schema) {
-      setDatabase(destination.config.schema);
+      setSchema(destination.config.schema);
     }
     if (!user) {
       setUser(destination.config.user);
