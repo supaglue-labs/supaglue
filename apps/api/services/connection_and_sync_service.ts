@@ -19,7 +19,7 @@ import {
   runSync,
   RUN_SYNC_PREFIX,
 } from '@supaglue/sync-workflows/workflows/run_sync';
-import { CRM_COMMON_MODELS, Sync, SyncState, SyncType } from '@supaglue/types';
+import { CRM_COMMON_MODEL_TYPES, Sync, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
   ConnectionSafeAny,
@@ -441,7 +441,7 @@ export class ConnectionAndSyncService {
         throw new Error('Unexpectedly could not find connection for sync');
       }
       const { id: connectionId, applicationId, customerId, category, providerName } = connection;
-      return CRM_COMMON_MODELS.map((commonModel) => ({
+      return CRM_COMMON_MODEL_TYPES.map((commonModel) => ({
         modelName: commonModel,
         lastSyncStart,
         nextSyncStart,

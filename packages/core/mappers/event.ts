@@ -1,6 +1,6 @@
-import { Event } from '@supaglue/types';
+import { Event, SnakecasedKeysEvent } from '@supaglue/types';
 
-export const toSnakecasedKeysEvent = (event: Event) => {
+export const toSnakecasedKeysEvent = (event: Event): SnakecasedKeysEvent => {
   return {
     owner_id: event.ownerId,
     account_id: event.accountId,
@@ -17,5 +17,7 @@ export const toSnakecasedKeysEvent = (event: Event) => {
     remote_created_at: event.remoteCreatedAt,
     remote_updated_at: event.remoteUpdatedAt,
     remote_was_deleted: event.remoteWasDeleted,
+    remote_deleted_at: event.remoteDeletedAt,
+    detected_or_remote_deleted_at: event.detectedOrRemoteDeletedAt,
   };
 };

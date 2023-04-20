@@ -142,7 +142,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
         <Stack className="gap-2">
           <Typography variant="subtitle1">Schema</Typography>
           <TextField
-            value={database}
+            value={schema}
             size="small"
             label="Schema"
             variant="outlined"

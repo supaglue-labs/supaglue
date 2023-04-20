@@ -1,5 +1,13 @@
 import type { Address, BaseCrmModel, CustomFields, EmailAddress, LifecycleStage, PhoneNumber } from '..';
 import { Filter } from '../filter';
+import { SnakecasedKeys } from '../snakecased_keys';
+
+export type SnakecasedKeysContact = SnakecasedKeys<Contact>;
+
+export type SnakecasedKeysContactWithTenant = SnakecasedKeysContact & {
+  provider_name: string;
+  customer_id: string;
+};
 
 export type Contact = BaseCrmModel & {
   firstName: string | null;

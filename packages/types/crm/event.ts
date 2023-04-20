@@ -1,5 +1,13 @@
 import { CustomFields } from '..';
+import { SnakecasedKeys } from '../snakecased_keys';
 import { BaseCrmModel } from './base';
+
+export type SnakecasedKeysEvent = SnakecasedKeys<Event>;
+
+export type SnakecasedKeysEventWithTenant = SnakecasedKeysEvent & {
+  provider_name: string;
+  customer_id: string;
+};
 
 export type Event = BaseCrmModel & {
   type: string | null;

@@ -1,6 +1,6 @@
-import { Opportunity } from '@supaglue/types';
+import { Opportunity, SnakecasedKeysOpportunity } from '@supaglue/types';
 
-export const toSnakecasedKeysOpportunity = (opportunity: Opportunity) => {
+export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): SnakecasedKeysOpportunity => {
   return {
     owner_id: opportunity.ownerId,
     account_id: opportunity.accountId,
@@ -17,5 +17,7 @@ export const toSnakecasedKeysOpportunity = (opportunity: Opportunity) => {
     remote_created_at: opportunity.remoteCreatedAt,
     remote_updated_at: opportunity.remoteUpdatedAt,
     remote_was_deleted: opportunity.remoteWasDeleted,
+    remote_deleted_at: opportunity.remoteDeletedAt,
+    detected_or_remote_deleted_at: opportunity.detectedOrRemoteDeletedAt,
   };
 };

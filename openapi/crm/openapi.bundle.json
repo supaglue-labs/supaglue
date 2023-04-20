@@ -1968,12 +1968,12 @@
               "nullable": true,
               "example": "CA"
             },
-            "street1": {
+            "street_1": {
               "type": "string",
               "nullable": true,
               "example": "525 Brannan"
             },
-            "street2": {
+            "street_2": {
               "type": "string",
               "nullable": true,
               "example": null
@@ -1985,7 +1985,8 @@
             "country",
             "postal_code",
             "state",
-            "street1"
+            "street_1",
+            "street_2"
           ]
         },
         "example": [
@@ -1995,8 +1996,8 @@
             "country": "US",
             "postal_code": "94107",
             "state": "CA",
-            "street1": "525 Brannan",
-            "street2": null
+            "street_1": "525 Brannan",
+            "street_2": null
           }
         ]
       },
