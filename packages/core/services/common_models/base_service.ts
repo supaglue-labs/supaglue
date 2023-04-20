@@ -64,6 +64,7 @@ export abstract class CommonModelBaseService {
         cast: {
           boolean: (value: boolean) => value.toString(),
         },
+        quoted: true,
       });
 
       // Keep track of stuff
