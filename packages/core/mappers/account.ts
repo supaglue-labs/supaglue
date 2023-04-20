@@ -1,8 +1,8 @@
-import { Account } from '@supaglue/types';
+import { Account, SnakecasedKeysAccount } from '@supaglue/types';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 
-export const toSnakecasedKeysAccount = (account: Account) => {
+export const toSnakecasedKeysAccount = (account: Account): SnakecasedKeysAccount => {
   return {
     owner_id: account.ownerId,
     last_modified_at: account.lastModifiedAt,
@@ -19,5 +19,7 @@ export const toSnakecasedKeysAccount = (account: Account) => {
     remote_created_at: account.remoteCreatedAt,
     remote_updated_at: account.remoteUpdatedAt,
     remote_was_deleted: account.remoteWasDeleted,
+    remote_deleted_at: account.remoteDeletedAt,
+    detected_or_remote_deleted_at: account.detectedOrRemoteDeletedAt,
   };
 };

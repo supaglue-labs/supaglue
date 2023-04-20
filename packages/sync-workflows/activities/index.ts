@@ -1,14 +1,5 @@
-import type {
-  AccountService,
-  ConnectionService,
-  ContactService,
-  EventService,
-  IntegrationService,
-  LeadService,
-  OpportunityService,
-  RemoteService,
-  SyncHistoryService,
-} from '@supaglue/core/services';
+import type { ConnectionService, IntegrationService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
+import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetSync } from './get_sync';
@@ -19,43 +10,27 @@ import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webho
 import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
-  accountService,
   connectionService,
-  contactService,
   remoteService,
-  opportunityService,
-  leadService,
-  eventService,
   syncService,
   syncHistoryService,
   integrationService,
   applicationService,
+  destinationService,
 }: {
-  accountService: AccountService;
   connectionService: ConnectionService;
-  contactService: ContactService;
   remoteService: RemoteService;
-  opportunityService: OpportunityService;
-  leadService: LeadService;
-  eventService: EventService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
   applicationService: ApplicationService;
+  destinationService: DestinationService;
 }) => {
   return {
     getSync: createGetSync(syncService),
     doProcessSyncChanges: createDoProcessSyncChanges(syncService),
     updateSyncState: createUpdateSyncState(syncService),
-    importRecords: createImportRecords(
-      accountService,
-      connectionService,
-      contactService,
-      remoteService,
-      opportunityService,
-      leadService,
-      eventService
-    ),
+    importRecords: createImportRecords(connectionService, remoteService, destinationService),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
     logSyncFinish: createLogSyncFinish({ syncHistoryService }),
     maybeSendSyncFinishWebhook: createMaybeSendSyncFinishWebhook({

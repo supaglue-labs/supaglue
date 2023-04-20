@@ -1,15 +1,6 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
-import {
-  AccountService,
-  ConnectionService,
-  ContactService,
-  EventService,
-  IntegrationService,
-  LeadService,
-  OpportunityService,
-  RemoteService,
-  SyncHistoryService,
-} from '@supaglue/core/services';
+import { ConnectionService, IntegrationService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
+import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { PrismaClient } from '@supaglue/db';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';
@@ -19,34 +10,20 @@ type DependencyContainer = {
   prisma: PrismaClient;
   temporalClient: Client;
   connectionService: ConnectionService;
-  contactService: ContactService;
   remoteService: RemoteService;
-  accountService: AccountService;
-  leadService: LeadService;
-  eventService: EventService;
-  opportunityService: OpportunityService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
   applicationService: ApplicationService;
+  destinationService: DestinationService;
 };
 
 // global
 let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
-  const {
-    prisma,
-    connectionService,
-    contactService,
-    remoteService,
-    accountService,
-    leadService,
-    eventService,
-    opportunityService,
-    syncHistoryService,
-    integrationService,
-  } = getCoreDependencyContainer();
+  const { prisma, connectionService, remoteService, syncHistoryService, integrationService } =
+    getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
     process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
@@ -72,21 +49,18 @@ function createDependencyContainer(): DependencyContainer {
 
   const syncService = new SyncService(prisma, temporalClient, connectionService, integrationService);
   const applicationService = new ApplicationService(prisma);
+  const destinationService = new DestinationService(prisma);
 
   return {
     prisma,
     temporalClient,
     applicationService,
     connectionService,
-    contactService,
     remoteService,
-    accountService,
-    leadService,
-    eventService,
-    opportunityService,
     syncService,
     syncHistoryService,
     integrationService,
+    destinationService,
   };
 }
 

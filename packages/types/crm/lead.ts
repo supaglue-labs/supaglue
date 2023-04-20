@@ -1,4 +1,12 @@
 import type { Address, BaseCrmModel, CustomFields, EmailAddress, PhoneNumber } from '..';
+import { SnakecasedKeys } from '../snakecased_keys';
+
+export type SnakecasedKeysLead = SnakecasedKeys<Lead>;
+
+export type SnakecasedKeysLeadWithTenant = SnakecasedKeysLead & {
+  provider_name: string;
+  customer_id: string;
+};
 
 export type Lead = BaseCrmModel & {
   leadSource: string | null;

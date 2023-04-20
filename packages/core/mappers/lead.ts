@@ -1,9 +1,9 @@
-import { Lead } from '@supaglue/types';
+import { Lead, SnakecasedKeysLead } from '@supaglue/types';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 
-export const toSnakecasedKeysLead = (lead: Lead) => {
+export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
   return {
     owner_id: lead.ownerId,
     last_modified_at: lead.lastModifiedAt,
@@ -22,5 +22,7 @@ export const toSnakecasedKeysLead = (lead: Lead) => {
     remote_was_deleted: lead.remoteWasDeleted,
     converted_contact_id: lead.convertedContactId,
     converted_account_id: lead.convertedAccountId,
+    remote_deleted_at: lead.remoteDeletedAt,
+    detected_or_remote_deleted_at: lead.detectedOrRemoteDeletedAt,
   };
 };
