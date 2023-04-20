@@ -22,15 +22,9 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
   }) {
     await syncHistoryService.logFinish({ historyId, status, errorMessage });
     if (status === 'FAILURE') {
-      logger.error(
-        {
-          message: errorMessage,
-          stack: errorStack,
-          syncId,
-          connectionId,
-        },
-        'Sync failed'
-      );
+      const error = new Error(errorMessage);
+      error.stack = errorStack;
+      logger.error(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
     }
 
     if (!distinctId) {
