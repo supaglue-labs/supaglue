@@ -6177,7 +6177,6 @@ __metadata:
     express: ">=5.0.0-beta.1"
     express-openapi-validator: ^5.0.2
     express-prom-bundle: ^6.6.0
-    kysely: ^0.24.2
     pino-http: ^8.3.3
     prom-client: ^14.2.0
     simple-oauth2: ^5.0.0
@@ -12009,13 +12008,6 @@ __metadata:
   version: 2.0.6
   resolution: "klona@npm:2.0.6"
   checksum: ac9ee3732e42b96feb67faae4d27cf49494e8a3bf3fa7115ce242fe04786788e0aff4741a07a45a2462e2079aa983d73d38519c85d65b70ef11447bbc3c58ce7
-  languageName: node
-  linkType: hard
-
-"kysely@npm:^0.24.2":
-  version: 0.24.2
-  resolution: "kysely@npm:0.24.2"
-  checksum: b45a820c098f60440d6d601aae227cdbb58503a94a71dda928095b0f2cf7205a0b173a0940a36c89b4ff99c95174f223c0ff018c3845c1575fa779a6e297ca93
   languageName: node
   linkType: hard
 
