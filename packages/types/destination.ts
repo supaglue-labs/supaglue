@@ -46,6 +46,7 @@ export type PostgresConfig = {
   host: string;
   port: number;
   database: string;
+  schema: string;
   user: string;
   // TODO(670): encrypt
   password: string;
