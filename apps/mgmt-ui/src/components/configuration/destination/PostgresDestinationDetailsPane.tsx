@@ -25,6 +25,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const [host, setHost] = useState<string>('');
   const [port, setPort] = useState<number>(5432);
   const [database, setDatabase] = useState<string>('');
+  const [schema, setSchema] = useState<string>('');
   const [user, setUser] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const router = useRouter();
@@ -42,6 +43,9 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
     if (!database) {
       setDatabase(destination.config.database);
     }
+    if (!schema) {
+      setSchema(destination.config.schema);
+    }
     if (!user) {
       setUser(destination.config.user);
     }
@@ -58,6 +62,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
         config: {
           host,
           port,
+          schema,
           database,
           user,
           password,
@@ -71,6 +76,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
         host,
         port,
         database,
+        schema,
         user,
         password,
       },
@@ -129,6 +135,19 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             variant="outlined"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDatabase(event.target.value);
+            }}
+          />
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Schema</Typography>
+          <TextField
+            value={database}
+            size="small"
+            label="Schema"
+            variant="outlined"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setSchema(event.target.value);
             }}
           />
         </Stack>
