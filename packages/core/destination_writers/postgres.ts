@@ -1,4 +1,4 @@
-import { ConnectionSafeAny, CRMCommonModel, PostgresDestination } from '@supaglue/types';
+import { ConnectionSafeAny, CRMCommonModelType, PostgresDestination } from '@supaglue/types';
 import { stringify } from 'csv-stringify';
 import { Pool, PoolClient } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
@@ -42,17 +42,16 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
-  async #writeObjects<T>(
-    commonModel: CRMCommonModel,
-    snakecasedKeysMapper: (object: T) => Record<string, unknown>,
+  public override async writeObjects(
     { id: connectionId, providerName, customerId }: ConnectionSafeAny,
+    commonModelType: CRMCommonModelType,
     inputStream: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<WriteCommonModelsResult> {
-    const childLogger = logger.child({ connectionId, providerName, customerId, commonModel });
+    const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
 
     const schema = 'synced'; // TODO: replace with setting from PostgresDestination when it's available
-    const table = tableNamesByCommonModel[commonModel];
+    const table = tableNamesByCommonModelType[commonModelType];
     const qualifiedTable = `${schema}.${table}`;
     const tempTable = `temp_${table}`;
 
@@ -61,7 +60,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(schemaSetupSqlByCommonModel[commonModel](schema));
+      await client.query(schemaSetupSqlByCommonModelType[commonModelType](schema));
 
       // Create a temporary table
       // TODO: on the first run, we should be able to directly write into the table and skip the temp table
@@ -71,7 +70,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_remote_id_idx ON ${tempTable} (provider_name, customer_id, remote_id)`
       );
 
-      const columns = columnsByCommonModel[commonModel];
+      const columns = columnsByCommonModelType[commonModelType];
       const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'remote_id');
 
       // Output
@@ -90,6 +89,8 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         quoted: true,
       });
 
+      const mapper = snakecasedKeysMapperByCommonModelType[commonModelType];
+
       // Keep track of stuff
       let tempTableRowCount = 0;
       let maxLastModifiedAt: Date | null = null;
@@ -104,7 +105,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
               const mappedRecord = {
                 provider_name: providerName,
                 customer_id: customerId,
-                ...snakecasedKeysMapper(chunk),
+                ...mapper(chunk),
               };
 
               ++tempTableRowCount;
@@ -158,75 +159,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       client.release();
     }
   }
-
-  public override async writeAccounts(
-    connection: ConnectionSafeAny,
-    inputStream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<WriteCommonModelsResult> {
-    return await this.#writeObjects(
-      'account',
-      toSnakecasedKeysAccount,
-      connection,
-      inputStream,
-      onUpsertBatchCompletion
-    );
-  }
-
-  public override async writeContacts(
-    connection: ConnectionSafeAny,
-    inputStream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<WriteCommonModelsResult> {
-    return await this.#writeObjects(
-      'contact',
-      toSnakecasedKeysContact,
-      connection,
-      inputStream,
-      onUpsertBatchCompletion
-    );
-  }
-
-  public override async writeLeads(
-    connection: ConnectionSafeAny,
-    inputStream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<WriteCommonModelsResult> {
-    return await this.#writeObjects('lead', toSnakecasedKeysLead, connection, inputStream, onUpsertBatchCompletion);
-  }
-
-  public override async writeOpportunities(
-    connection: ConnectionSafeAny,
-    inputStream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<WriteCommonModelsResult> {
-    return await this.#writeObjects(
-      'opportunity',
-      toSnakecasedKeysOpportunity,
-      connection,
-      inputStream,
-      onUpsertBatchCompletion
-    );
-  }
-
-  public override async writeUsers(
-    connection: ConnectionSafeAny,
-    inputStream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<WriteCommonModelsResult> {
-    return await this.#writeObjects('user', toSnakecasedKeysUser, connection, inputStream, onUpsertBatchCompletion);
-  }
-
-  public override async writeEvents(
-    connection: ConnectionSafeAny,
-    inputStream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<WriteCommonModelsResult> {
-    return await this.#writeObjects('event', toSnakecasedKeysEvent, connection, inputStream, onUpsertBatchCompletion);
-  }
 }
 
-const tableNamesByCommonModel: Record<CRMCommonModel, string> = {
+const tableNamesByCommonModelType: Record<CRMCommonModelType, string> = {
   account: 'crm_accounts',
   contact: 'crm_contacts',
   lead: 'crm_leads',
@@ -235,7 +170,7 @@ const tableNamesByCommonModel: Record<CRMCommonModel, string> = {
   event: 'crm_events',
 };
 
-const columnsByCommonModel: Record<CRMCommonModel, string[]> = {
+const columnsByCommonModelType: Record<CRMCommonModelType, string[]> = {
   account: keysOfSnakecasedAccountWithTenant,
   contact: keysOfSnakecasedContactWithTenant,
   lead: keysOfSnakecasedLeadWithTenant,
@@ -244,7 +179,16 @@ const columnsByCommonModel: Record<CRMCommonModel, string[]> = {
   event: keysOfSnakecasedEventWithTenant,
 };
 
-const schemaSetupSqlByCommonModel: Record<CRMCommonModel, (schema: string) => string> = {
+const snakecasedKeysMapperByCommonModelType: Record<CRMCommonModelType, (obj: any) => any> = {
+  account: toSnakecasedKeysAccount,
+  contact: toSnakecasedKeysContact,
+  lead: toSnakecasedKeysLead,
+  opportunity: toSnakecasedKeysOpportunity,
+  user: toSnakecasedKeysUser,
+  event: toSnakecasedKeysEvent,
+};
+
+const schemaSetupSqlByCommonModelType: Record<CRMCommonModelType, (schema: string) => string> = {
   account: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "provider_name" TEXT NOT NULL,

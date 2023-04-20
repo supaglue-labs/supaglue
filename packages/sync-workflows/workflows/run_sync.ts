@@ -1,5 +1,5 @@
 import { CommonModel } from '@supaglue/types/common';
-import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
+import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/types/sync';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
@@ -39,14 +39,14 @@ export type RunSyncArgs = {
 
 export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<void> {
   const historyIdsMap = Object.fromEntries(
-    CRM_COMMON_MODELS.map((commonModel) => {
+    CRM_COMMON_MODEL_TYPES.map((commonModel) => {
       const entry: [CommonModel, string] = [commonModel, uuid4()];
       return entry;
     })
   ) as Record<CommonModel, string>;
 
   await Promise.all(
-    CRM_COMMON_MODELS.map(async (commonModel) => {
+    CRM_COMMON_MODEL_TYPES.map(async (commonModel) => {
       await logSyncStart({ syncId, historyId: historyIdsMap[commonModel], commonModel });
     })
   );
@@ -68,7 +68,7 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
   } catch (err: any) {
     const errorMessage = getErrorMessage(err);
     await Promise.all(
-      CRM_COMMON_MODELS.map(async (commonModel) => {
+      CRM_COMMON_MODEL_TYPES.map(async (commonModel) => {
         await logSyncFinish({
           syncId,
           connectionId,
@@ -96,7 +96,7 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
   }
 
   await Promise.all(
-    CRM_COMMON_MODELS.map(async (commonModel) => {
+    CRM_COMMON_MODEL_TYPES.map(async (commonModel) => {
       await logSyncFinish({ syncId, connectionId, historyId: historyIdsMap[commonModel], status: 'SUCCESS' });
       await maybeSendSyncFinishWebhook({
         historyId: historyIdsMap[commonModel],
@@ -128,7 +128,7 @@ async function doFullThenIncrementalSync({
 
     const importRecordsResultList = Object.fromEntries(
       await Promise.all(
-        CRM_COMMON_MODELS.map(async (commonModel) => {
+        CRM_COMMON_MODEL_TYPES.map(async (commonModel) => {
           const entry: [CommonModel, ImportRecordsResult] = [
             commonModel,
             await importRecords({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
@@ -166,7 +166,7 @@ async function doFullThenIncrementalSync({
     });
 
     return Object.fromEntries(
-      CRM_COMMON_MODELS.map((commonModel) => [commonModel, importRecordsResultList[commonModel].numRecordsSynced])
+      CRM_COMMON_MODEL_TYPES.map((commonModel) => [commonModel, importRecordsResultList[commonModel].numRecordsSynced])
     ) as Record<CommonModel, number>;
   }
 
@@ -196,7 +196,7 @@ async function doFullThenIncrementalSync({
       const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMap();
 
       return Object.fromEntries(
-        CRM_COMMON_MODELS.map((commonModel) => [
+        CRM_COMMON_MODEL_TYPES.map((commonModel) => [
           commonModel,
           Math.max(
             originalMaxLastModifiedAtMsMap[commonModel],
@@ -217,7 +217,7 @@ async function doFullThenIncrementalSync({
 
     const importRecordsResultList = Object.fromEntries(
       await Promise.all(
-        CRM_COMMON_MODELS.map(async (commonModel) => {
+        CRM_COMMON_MODEL_TYPES.map(async (commonModel) => {
           const entry: [CommonModel, ImportRecordsResult] = [
             commonModel,
             await importRecords({
@@ -254,7 +254,7 @@ async function doFullThenIncrementalSync({
     });
 
     return Object.fromEntries(
-      CRM_COMMON_MODELS.map((commonModel) => [commonModel, importRecordsResultList[commonModel].numRecordsSynced])
+      CRM_COMMON_MODEL_TYPES.map((commonModel) => [commonModel, importRecordsResultList[commonModel].numRecordsSynced])
     ) as Record<CommonModel, number>;
   }
 

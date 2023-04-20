@@ -1,4 +1,4 @@
-import type { CRMCommonModel } from './crm';
+import type { CRMCommonModelType } from './crm';
 
 export type ListParams = GetParams &
   PaginationParams & {
@@ -39,4 +39,4 @@ export type PaginatedResult<T> = {
 };
 
 export type IntegrationCategory = 'crm';
-export type CommonModel = CRMCommonModel;
+export type CommonModel = CRMCommonModelType;
