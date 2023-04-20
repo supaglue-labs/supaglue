@@ -63,6 +63,7 @@ export abstract class CommonModelBaseService {
         columns,
         cast: {
           boolean: (value: boolean) => value.toString(),
+          string: (value: string) => value.replaceAll('\n', '\\n'),
         },
       });
 
