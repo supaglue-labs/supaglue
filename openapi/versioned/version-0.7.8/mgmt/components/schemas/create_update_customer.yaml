@@ -1,0 +1,15 @@
+type: object
+properties:
+  customer_id:
+    type: string
+    example: your-customers-unique-application-id
+  name:
+    type: string
+    example: MyCompany Inc
+  email:
+    type: string
+    example: contact@mycompany.com
+required:
+  - name
+  - email
+  - customer_id
