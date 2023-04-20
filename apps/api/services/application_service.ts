@@ -1,4 +1,4 @@
-import { NotFoundError } from '@supaglue/core/errors';
+import { NotFoundError, UnauthorizedError } from '@supaglue/core/errors';
 import { cryptoHash, generateApiKey } from '@supaglue/core/lib/crypt';
 import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
@@ -45,7 +45,7 @@ export class ApplicationService {
     });
 
     if (!application || application.length === 0) {
-      throw new NotFoundError(`Can't find application by api key`);
+      throw new UnauthorizedError(`Can't find application by api key`);
     }
 
     if (application.length > 1) {

@@ -94,7 +94,7 @@ app.use(
     serializers: {
       req: (req) => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { cookie, authorization, ...headers } = req.headers;
+        const { cookie, authorization, ['x-api-key']: apiKey, ...headers } = req.headers;
         return { ...req, headers };
       },
     },
