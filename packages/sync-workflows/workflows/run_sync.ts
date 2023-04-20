@@ -74,7 +74,7 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
         break;
     }
   } catch (err: any) {
-    const errorMessage = getErrorMessage(err);
+    const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
     await Promise.all(
       CRM_COMMON_MODELS.map(async (commonModel) => {
         await logSyncFinish({
@@ -83,6 +83,7 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
           historyId: historyIdsMap[commonModel],
           status: 'FAILURE',
           errorMessage,
+          errorStack,
         });
         await maybeSendSyncFinishWebhook({
           historyId: historyIdsMap[commonModel],
@@ -309,12 +310,15 @@ const defaultMaxLastModifiedAtMsMap = {
   event: 0,
 };
 
-const getErrorMessage = (err: Error): string => {
+const getErrorMessageStack = (err: Error): { message: string; stack: string } => {
   if (err instanceof ActivityFailure) {
-    return err.failure?.cause?.message ?? 'Unknown error';
+    return {
+      message: err.failure?.cause?.message ?? 'Unknown error',
+      stack: err.failure?.cause?.stackTrace ?? 'No proto stack',
+    };
   }
   if (err instanceof ApplicationFailure) {
-    return err.failure?.message ?? 'Unknown error';
+    return { message: err.failure?.message ?? 'Unknown error', stack: err.failure?.stackTrace ?? 'No proto stack' };
   }
-  return err.message ?? 'Unknown error';
+  return { message: err.message ?? 'Unknown error', stack: err.stack ?? 'No stack' };
 };

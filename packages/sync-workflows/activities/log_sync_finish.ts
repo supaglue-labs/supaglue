@@ -11,18 +11,20 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
     historyId,
     status,
     errorMessage,
+    errorStack,
   }: {
     syncId: string;
     connectionId: string;
     historyId: string;
     status: SyncHistoryStatus;
     errorMessage?: string;
+    errorStack?: string;
   }) {
     await syncHistoryService.logFinish({ historyId, status, errorMessage });
     if (status === 'FAILURE') {
-      logger.error(
-        new Error(`Sync failed for syncId ${syncId} and connectionId ${connectionId} with the message: ${errorMessage}`)
-      );
+      const error = new Error(errorMessage);
+      error.stack = errorStack;
+      logger.error(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
     }
 
     if (!distinctId) {
