@@ -1,8 +1,8 @@
 ---
-sidebar_position: 7
+sidebar_position: 4
 ---
 
-# Architecture
+# Core concepts
 
 import ThemedImage from '@theme/ThemedImage';
 
@@ -14,14 +14,6 @@ import ThemedImage from '@theme/ThemedImage';
     dark: '/img/arch.png',
   }}
 />
-
-## Components
-
-- Sync workflows
-- Workflow engine (Temporal)
-- DB Cache (Postgres)
-- Backend API (Node.js Express)
-- Common Model
 
 ## Overview
 
@@ -45,3 +37,24 @@ The workflow engine is responsible for scheduling and executing Sync workflows w
 2. Read sync
    - Object sync - this sync is responsible for reading one type of third-party object and saving it to Supaglue's database cache in a raw and Common Model format.
    - Association sync - this sync is run after all object syncs, scoped to a Connection, are finished running to associate related objects to one another.
+
+## Common Model
+A canonical data model that has been standardized across all CRMs.
+
+## Connector
+A code package that is used by Supaglue to interact with a CRM's auth, APIs, and object model.
+
+## Connection
+A link between a Customer's CRM and a Supaglue Integration.
+
+## Customer
+An end-user of a developer's application.
+
+## Embedded Link
+A Customer-facing HTTP link that developers embed into their applications so their customers can authenticate their CRMs to the developers' application using Supaglue.
+
+## Integration
+An offering made available by a developer to their customers so that Customers can connect their CRMs.
+
+## Provider
+A CRM such as Salesforce or HubSpot.

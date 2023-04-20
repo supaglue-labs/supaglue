@@ -1,3 +1,7 @@
+---
+description: ''
+---
+
 # API Reference
 
 Supaglue supports 2 APIs:
