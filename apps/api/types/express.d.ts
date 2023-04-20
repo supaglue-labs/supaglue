@@ -5,6 +5,7 @@ declare global {
     // Inject additional properties on express.Request
     // See: https://www.typescriptlang.org/docs/handbook/declaration-merging.html
     interface Request {
+      customerId: string;
       supaglueApplication: SupaglueApplication;
       customerConnection: ConnectionSafe;
       orgId: string;

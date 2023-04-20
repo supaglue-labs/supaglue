@@ -98,6 +98,14 @@ app.use(
         return { ...req, headers };
       },
     },
+    customProps: function (req) {
+      return {
+        applicationId: (req as Request).supaglueApplication?.id,
+        connectionId: (req as Request).customerConnection?.id,
+        customerId: (req as Request).customerId,
+        orgId: (req as Request).orgId,
+      };
+    },
     genReqId: () => uuidv4(),
     quietReqLogger: true, // only log the reqId from req.log.*, not the whole request
   })
