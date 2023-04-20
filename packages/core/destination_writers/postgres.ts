@@ -50,7 +50,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   ): Promise<WriteCommonModelsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
 
-    const schema = 'synced'; // TODO: replace with setting from PostgresDestination when it's available
+    const { schema } = this.#destination.config;
     const table = tableNamesByCommonModelType[commonModelType];
     const qualifiedTable = `${schema}.${table}`;
     const tempTable = `temp_${table}`;
