@@ -17,20 +17,21 @@ export type DestinationCardInfo = {
   description: string;
 };
 
-export const destinationCardsInfo: DestinationCardInfo[] = [
-  {
-    icon: <Image alt="s3" src={S3Icon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'AWS S3',
-    type: 's3',
-    description: 'Configure your S3 destination.',
-  },
-  {
-    icon: <Image alt="postgres" src={PostgresIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Postgres',
-    type: 'postgres',
-    description: 'Configure your Postgres destination.',
-  },
-];
+export const s3DestinationCardInfo: DestinationCardInfo = {
+  icon: <Image alt="s3" src={S3Icon} width={ICON_SIZE} height={ICON_SIZE} />,
+  name: 'AWS S3',
+  type: 's3',
+  description: 'Configure your S3 destination.',
+};
+
+export const postgresDestinationCardInfo: DestinationCardInfo = {
+  icon: <Image alt="postgres" src={PostgresIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  name: 'Postgres',
+  type: 'postgres',
+  description: 'Configure your Postgres destination.',
+};
+
+export const destinationCardsInfo: DestinationCardInfo[] = [s3DestinationCardInfo, postgresDestinationCardInfo];
 
 interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;

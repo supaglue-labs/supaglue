@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createRemoteIntegration, updateRemoteIntegration } from '@/client';
+import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useIntegrations } from '@/hooks/useIntegrations';
@@ -10,7 +11,6 @@ import { Integration, IntegrationCategory, ProviderName } from '@supaglue/types'
 import { CRMProviderName } from '@supaglue/types/crm';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import Spinner from '../Spinner';
 import { integrationCardsInfo } from './IntegrationTabPanelContainer';
 
 const ONE_HOUR_SECONDS = 60 * 60;
@@ -148,6 +148,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             size="small"
             label="Client Secret"
             variant="outlined"
+            type="password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setClientSecret(event.target.value);
             }}
