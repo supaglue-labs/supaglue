@@ -155,7 +155,7 @@ const config = {
               },
               {
                 label: 'Quickstart',
-                docId: 'quickstart',
+                to: 'quickstart',
               },
               {
                 label: 'Connectors',
