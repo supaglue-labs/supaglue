@@ -32,7 +32,7 @@ Supaglue is an open source unified API for CRMs. It handles authentication, cach
 
 ## How it works
 
-You can [integrate Supaglue with your application](/getting-started) in about 15 minutes:
+You can [integrate Supaglue with your application](getting-started) in about 15 minutes:
 
 1. Create a Supaglue Cloud account or spin up Supaglue locally, and get your API key.
 2. Configure your integration scopes and OAuth credentials.
@@ -72,28 +72,28 @@ You can [integrate Supaglue with your application](/getting-started) in about 15
 
 <details>
   <summary>Can I self-host Supaglue?</summary>
-  <div>    
+  <div>
     Yes! Please reach out to us in Slack or at <a href="mailto:hello@supaglue.com">hello@supaglue.com</a>, and we can help you get set up.
   </div>
 </details>
 
 <details>
   <summary>Are you planning to support X connector?</summary>
-  <div>    
+  <div>
     We support the following <a href="./connectors">connectors</a> today and have many more on our roadmap. If there's a specific one you're looking for, let us know and we may be able to prioritize.
   </div>
 </details>
 
 <details>
   <summary>What's on your product roadmap?</summary>
-  <div>    
+  <div>
     Our product roadmap and long-term version is <a href="./roadmap">here</a>. We welcome suggestions and feature requests.
   </div>
 </details>
 
 <details>
   <summary>What kind of tracking/analytics do you collect?</summary>
-  <div>    
+  <div>
     We use PostHog to anonymized, session-level event data in our API to help us improve the developer experience. We use Sentry for error reporting. You can opt out of tracking by setting `SUPAGLUE_DISABLE_ERROR_REPORTING=1` and `SUPAGLUE_DISABLE_ANALYTICS=1` in your `.env` file.
   </div>
 </details>

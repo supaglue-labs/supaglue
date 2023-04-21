@@ -73,21 +73,21 @@ const config = {
             .map((version) => [
               {
                 spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
-                route: version === LATEST_VERSION ? '/api/crm' : `/${version}/api/crm`,
+                route: version === LATEST_VERSION ? '/references/api/crm' : `/${version}/references/api/crm`,
               },
               {
                 spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
-                route: version === LATEST_VERSION ? '/api/mgmt' : `/${version}/api/mgmt`,
+                route: version === LATEST_VERSION ? '/references/api/mgmt' : `/${version}/references/api/mgmt`,
               },
             ])
             .flat(),
           {
             spec: '../openapi/crm/openapi.bundle.json',
-            route: '/next/api/crm',
+            route: '/next/references/api/crm',
           },
           {
             spec: '../openapi/mgmt/openapi.bundle.json',
-            route: '/next/api/mgmt',
+            route: '/next/references/api/mgmt',
           },
         ],
         // Theme Options for modifying how redoc renders them
@@ -132,7 +132,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'api',
+            docId: 'references/api',
             position: 'left',
             label: 'API Reference',
           },
@@ -155,7 +155,7 @@ const config = {
               },
               {
                 label: 'Quickstart',
-                to: 'quickstart',
+                docId: 'quickstart',
               },
               {
                 label: 'Connectors',
@@ -163,7 +163,7 @@ const config = {
               },
               {
                 label: 'API Reference',
-                to: 'api',
+                to: 'references/api',
               },
             ],
           },
