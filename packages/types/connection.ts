@@ -28,7 +28,7 @@ export type ConnectionCreateParams<T extends CRMProviderName> = {
   category: 'crm';
   providerName: T;
   credentials: ConnectionCredentialsDecrypted<T>;
-  remoteId: string;
+  instanceUrl: string;
 };
 
 export type ConnectionCreateParamsAny = {

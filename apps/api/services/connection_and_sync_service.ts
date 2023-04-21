@@ -76,7 +76,7 @@ export class ConnectionAndSyncService {
         customerId,
         integrationId: integration.id,
         status,
-        remoteId: params.remoteId,
+        instanceUrl: params.instanceUrl,
         credentials: await encrypt(JSON.stringify(params.credentials)),
       },
       update: {
@@ -85,7 +85,7 @@ export class ConnectionAndSyncService {
         customerId,
         integrationId: integration.id,
         status,
-        remoteId: params.remoteId,
+        instanceUrl: params.instanceUrl,
         credentials: await encrypt(JSON.stringify(params.credentials)),
       },
       where: {
@@ -122,7 +122,7 @@ export class ConnectionAndSyncService {
             customerId: getCustomerIdPk(params.applicationId, params.customerId),
             integrationId: integration.id,
             status,
-            remoteId: params.remoteId,
+            instanceUrl: params.instanceUrl,
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         }),

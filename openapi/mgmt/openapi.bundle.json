@@ -529,7 +529,7 @@
                         "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
                         "provider_name": "salesforce",
                         "category": "crm",
-                        "remote_id": "https://mycompany-dev-ed.develop.my.salesforce.com"
+                        "instance_url": "https://mycompany-dev-ed.develop.my.salesforce.com"
                       },
                       {
                         "id": "e888cedf-e9d0-42c5-9485-2d72984faef7",
@@ -539,7 +539,7 @@
                         "integration_id": "db40a684-3150-46d2-bfd2-acb341a72681",
                         "provider_name": "hubspot",
                         "category": "crm",
-                        "remote_id": 1234567
+                        "instance_url": "https://app.hubspot.com/contacts/1234567"
                       }
                     ]
                   }
@@ -591,7 +591,7 @@
                       "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
                       "provider_name": "salesforce",
                       "category": "crm",
-                      "remote_id": "https://supaglue-dev-ed.develop.my.salesforce.com"
+                      "instance_url": "https://supaglue-dev-ed.develop.my.salesforce.com"
                     }
                   }
                 }
@@ -1055,9 +1055,9 @@
           "category": {
             "$ref": "#/components/schemas/category"
           },
-          "remote_id": {
+          "instance_url": {
             "type": "string",
-            "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+            "description": "For Hubspot, this https://app.hubspot.com/contacts/HUBSPOT_ID. For Salesforce, this is the instance URL.",
             "example": 123456
           }
         },
@@ -1069,7 +1069,7 @@
           "integration_id",
           "provider_name",
           "category",
-          "remote_id"
+          "instance_url"
         ]
       },
       "category": {
