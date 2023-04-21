@@ -42,7 +42,7 @@ export default function init(app: Router): void {
       const { customerId, id: connectionId } = req.customerConnection;
       const originalParams = camelcaseKeysSansCustomFields(req.body.model);
       const opportunityUpdateParams = {
-        remoteId: req.params.opportunity_id,
+        id: req.params.opportunity_id,
         ...originalParams,
         closeDate: stringOrNullOrUndefinedToDate(originalParams.closeDate),
       };

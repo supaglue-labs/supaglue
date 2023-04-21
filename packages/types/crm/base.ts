@@ -1,11 +1,11 @@
 export type BaseCrmModel = {
-  remoteId: string;
-  remoteCreatedAt: Date | null;
-  remoteUpdatedAt: Date | null;
-  remoteWasDeleted: boolean;
+  id: string;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+  wasDeleted: boolean;
 
-  remoteDeletedAt: Date | null;
-  detectedOrRemoteDeletedAt: Date | null;
+  deletedAt: Date | null;
+  detectedOrDeletedAt: Date | null;
 
   lastModifiedAt: Date;
 };

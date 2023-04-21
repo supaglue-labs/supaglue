@@ -55,7 +55,7 @@ export const fromHubSpotCompanyToAccount = ({
     : [];
 
   return {
-    remoteId: id,
+    id: id,
     name: properties.name ?? null,
     description: properties.description ?? null,
     ownerId: properties.hubspot_owner_id ?? null,
@@ -67,11 +67,11 @@ export const fromHubSpotCompanyToAccount = ({
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     // Figure out where this comes from
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    wasDeleted: !!archived,
+    deletedAt: archivedAt ?? null,
+    detectedOrDeletedAt: archivedAt ?? null,
     lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
@@ -141,7 +141,7 @@ export const fromHubSpotContactToContact = ({
       : [];
 
   return {
-    remoteId: id,
+    id: id,
     accountId,
     ownerId: properties.hubspot_owner_id ?? null,
     firstName: properties.firstname ?? null,
@@ -151,11 +151,11 @@ export const fromHubSpotContactToContact = ({
     emailAddresses,
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    wasDeleted: !!archived,
+    deletedAt: archivedAt ?? null,
+    detectedOrDeletedAt: archivedAt ?? null,
     lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
@@ -180,7 +180,7 @@ export const fromHubSpotDealToOpportunity = ({
     accountId = associations.companies.results[0].id ?? null;
   }
   return {
-    remoteId: id,
+    id: id,
     name: properties.dealname ?? null,
     description: properties.description ?? null,
     ownerId: properties.hubspot_owner_id ?? null,
@@ -191,11 +191,11 @@ export const fromHubSpotDealToOpportunity = ({
     amount: properties.amount ? parseInt(properties.amount) : null,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage: properties.dealstage,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    wasDeleted: !!archived,
+    deletedAt: archivedAt ?? null,
+    detectedOrDeletedAt: archivedAt ?? null,
     lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
@@ -212,15 +212,15 @@ export const fromHubspotOwnerToUser = ({
   const detectedOrRemoteDeletedAt = archived ? new Date() : null;
 
   return {
-    remoteId: id,
+    id: id,
     name: getFullName(firstName, lastName),
     email: email ?? null,
     isActive: !archived,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    wasDeleted: !!archived,
+    deletedAt: null,
+    detectedOrDeletedAt: detectedOrRemoteDeletedAt,
     // TODO: This isn't accurate. Every time we pull in data, we'll think it was deleted just recently
     // https://github.com/supaglue-labs/supaglue/issues/664
     lastModifiedAt: new Date(Math.max(updatedAt.getTime(), detectedOrRemoteDeletedAt?.getTime() ?? 0)),

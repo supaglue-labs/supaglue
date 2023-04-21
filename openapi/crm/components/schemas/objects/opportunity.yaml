@@ -19,7 +19,7 @@ properties:
     type: string
     nullable: true
     example: Wants to use open source unified API for third-party integrations
-  remote_id:
+  id:
     type: string
     example: 54312
   last_activity_at:
@@ -48,17 +48,17 @@ properties:
     type: string # TODO: enum
     nullable: true
     example: OPEN
-  remote_created_at:
+  created_at:
     type: string
     nullable: true
     format: date-time
     example: '2023-02-27T00:00:00Z'
-  remote_updated_at:
+  updated_at:
     type: string
     nullable: true
     format: date-time
     example: '2023-02-27T00:00:00Z'
-  remote_was_deleted:
+  was_deleted:
     type: boolean
     example: false
   last_modified_at:
@@ -69,14 +69,14 @@ required:
   - account_id
   - amount
   - description
-  - remote_id
+  - id
   - last_activity_at
   - name
   - owner_id
   - stage
   - status
   - pipeline
-  - remote_created_at	
-  - remote_updated_at	
-  - remote_was_deleted	
+  - created_at	
+  - updated_at	
+  - was_deleted	
   - last_modified_at	

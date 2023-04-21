@@ -51,7 +51,7 @@ export default function init(app: Router): void {
         endTime: stringOrNullOrUndefinedToDate(originalParams.endTime),
       };
       const event = await eventService.update(customerId, connectionId, {
-        remoteId: req.params.event_id,
+        id: req.params.event_id,
         ...eventUpdateParams,
       });
       return res.status(200).send({ model: toSnakecasedKeysEvent(event) });

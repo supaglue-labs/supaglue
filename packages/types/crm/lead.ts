@@ -42,5 +42,5 @@ export type LeadCreateParams = {
 };
 
 export type LeadUpdateParams = LeadCreateParams & {
-  remoteId: string;
+  id: string;
 };

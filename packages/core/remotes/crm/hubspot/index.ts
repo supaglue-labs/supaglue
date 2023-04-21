@@ -251,9 +251,9 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getAccount(remoteId: string): Promise<Account> {
+  private async getAccount(id: string): Promise<Account> {
     await this.maybeRefreshAccessToken();
-    const company = await this.#client.crm.companies.basicApi.getById(remoteId, propertiesToFetch.company);
+    const company = await this.#client.crm.companies.basicApi.getById(id, propertiesToFetch.company);
     return fromHubSpotCompanyToAccount(company);
   }
 
@@ -267,7 +267,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async updateAccount(params: AccountUpdateParams): Promise<Account> {
     await this.maybeRefreshAccessToken();
-    const company = await this.#client.crm.companies.basicApi.update(params.remoteId, {
+    const company = await this.#client.crm.companies.basicApi.update(params.id, {
       properties: toHubspotAccountUpdateParams(params),
     });
     return await this.getAccount(company.id);
@@ -383,10 +383,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getOpportunity(remoteId: string): Promise<Opportunity> {
+  private async getOpportunity(id: string): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
-      remoteId,
+      id,
       propertiesToFetch.deal,
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
@@ -409,7 +409,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async updateOpportunity(params: OpportunityUpdateParams): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
-    const deal = await this.#client.crm.deals.basicApi.update(params.remoteId, {
+    const deal = await this.#client.crm.deals.basicApi.update(params.id, {
       properties: toHubspotOpportunityUpdateParams(params),
     });
     if (params.accountId && parseInt(params.accountId)) {
@@ -532,10 +532,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getContact(remoteId: string): Promise<Contact> {
+  private async getContact(id: string): Promise<Contact> {
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
-      remoteId,
+      id,
       propertiesToFetch.contact,
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
@@ -561,7 +561,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async updateContact(params: ContactUpdateParams): Promise<Contact> {
     await this.maybeRefreshAccessToken();
-    const contact = await this.#client.crm.contacts.basicApi.update(params.remoteId, {
+    const contact = await this.#client.crm.contacts.basicApi.update(params.id, {
       properties: toHubspotContactUpdateParams(params),
     });
     if (params.accountId && parseInt(params.accountId)) {
@@ -591,7 +591,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return Readable.from([]);
   }
 
-  public async getEvent(remoteId: string): Promise<Event> {
+  public async getEvent(id: string): Promise<Event> {
     throw new Error('Not fetcheremented');
   }
 

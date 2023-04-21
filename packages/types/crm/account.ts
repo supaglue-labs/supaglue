@@ -42,7 +42,7 @@ export type AccountCreateParams = {
 };
 
 export type AccountUpdateParams = AccountCreateParams & {
-  remoteId: string;
+  id: string;
 };
 
 export type AccountFilters = {

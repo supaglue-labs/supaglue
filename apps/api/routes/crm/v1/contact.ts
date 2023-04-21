@@ -42,7 +42,7 @@ export default function init(app: Router): void {
     ) => {
       const { customerId, id: connectionId } = req.customerConnection;
       const contact = await contactService.update(customerId, connectionId, {
-        remoteId: req.params.contact_id,
+        id: req.params.contact_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: toSnakecasedKeysContact(contact) });

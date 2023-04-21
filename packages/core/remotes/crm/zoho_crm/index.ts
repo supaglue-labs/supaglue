@@ -34,7 +34,7 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getAccount(remoteId: string): Promise<Account> {
+  public async getAccount(id: string): Promise<Account> {
     throw new Error('Not implemented');
   }
 
@@ -50,7 +50,7 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getContact(remoteId: string): Promise<Contact> {
+  public async getContact(id: string): Promise<Contact> {
     throw new Error('Not implemented');
   }
 
@@ -66,7 +66,7 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getOpportunity(remoteId: string): Promise<Opportunity> {
+  public async getOpportunity(id: string): Promise<Opportunity> {
     throw new Error('Not implemented');
   }
 
@@ -82,7 +82,7 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getLead(remoteId: string): Promise<Lead> {
+  public async getLead(id: string): Promise<Lead> {
     throw new Error('Not implemented');
   }
 
@@ -102,7 +102,7 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public async getEvent(remoteId: string): Promise<Event> {
+  public async getEvent(id: string): Promise<Event> {
     throw new Error('Not implemented');
   }
 
