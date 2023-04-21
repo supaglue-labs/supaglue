@@ -18,6 +18,5 @@ export const toSnakecasedKeysEvent = (event: Event): SnakecasedKeysEvent => {
     updated_at: event.updatedAt,
     was_deleted: event.wasDeleted,
     deleted_at: event.deletedAt,
-    detected_or_deleted_at: event.detectedOrDeletedAt,
   };
 };

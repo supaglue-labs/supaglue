@@ -71,7 +71,6 @@ export const fromHubSpotCompanyToAccount = ({
     updatedAt: updatedAt,
     wasDeleted: !!archived,
     deletedAt: archivedAt ?? null,
-    detectedOrDeletedAt: archivedAt ?? null,
     lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
@@ -155,7 +154,6 @@ export const fromHubSpotContactToContact = ({
     updatedAt: updatedAt,
     wasDeleted: !!archived,
     deletedAt: archivedAt ?? null,
-    detectedOrDeletedAt: archivedAt ?? null,
     lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
@@ -195,7 +193,6 @@ export const fromHubSpotDealToOpportunity = ({
     updatedAt: updatedAt,
     wasDeleted: !!archived,
     deletedAt: archivedAt ?? null,
-    detectedOrDeletedAt: archivedAt ?? null,
     lastModifiedAt: new Date(Math.max(updatedAt.getTime(), archivedAt?.getTime() ?? 0)),
   };
 };
@@ -220,7 +217,6 @@ export const fromHubspotOwnerToUser = ({
     updatedAt: updatedAt,
     wasDeleted: !!archived,
     deletedAt: null,
-    detectedOrDeletedAt: detectedOrRemoteDeletedAt,
     // TODO: This isn't accurate. Every time we pull in data, we'll think it was deleted just recently
     // https://github.com/supaglue-labs/supaglue/issues/664
     lastModifiedAt: new Date(Math.max(updatedAt.getTime(), detectedOrRemoteDeletedAt?.getTime() ?? 0)),

@@ -23,6 +23,5 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
     converted_contact_id: lead.convertedContactId,
     converted_account_id: lead.convertedAccountId,
     deleted_at: lead.deletedAt,
-    detected_or_deleted_at: lead.detectedOrDeletedAt,
   };
 };

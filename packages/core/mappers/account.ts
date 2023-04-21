@@ -20,6 +20,5 @@ export const toSnakecasedKeysAccount = (account: Account): SnakecasedKeysAccount
     updated_at: account.updatedAt,
     was_deleted: account.wasDeleted,
     deleted_at: account.deletedAt,
-    detected_or_deleted_at: account.detectedOrDeletedAt,
   };
 };

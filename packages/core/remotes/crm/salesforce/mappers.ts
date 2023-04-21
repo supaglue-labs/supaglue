@@ -35,7 +35,6 @@ export const fromSalesforceUserToUser = (record: Record<string, any>): User => {
     updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     wasDeleted: record.IsDeleted === 'true',
     deletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
   };
 };
@@ -63,7 +62,6 @@ export const fromSalesforceEventToEvent = (record: Record<string, any>): Event =
     updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     wasDeleted: false,
     deletedAt: null,
-    detectedOrDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
   };
 };
@@ -157,7 +155,6 @@ export const fromSalesforceAccountToAccount = (record: Record<string, any>): Acc
     updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     wasDeleted: record.IsDeleted === 'true',
     deletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
   };
 };
@@ -253,7 +250,6 @@ export const fromSalesforceContactToContact = (record: Record<string, any>): Con
     updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     wasDeleted: record.IsDeleted === 'true',
     deletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
   };
 };
@@ -317,7 +313,6 @@ export const fromSalesforceLeadToLead = (
     updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     wasDeleted: record.IsDeleted === 'true',
     deletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
   };
 };
@@ -369,7 +364,6 @@ export const fromSalesforceOpportunityToOpportunity = (
     updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     wasDeleted: record.IsDeleted === 'true',
     deletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
   };
 };

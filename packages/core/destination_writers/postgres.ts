@@ -208,7 +208,6 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "remote_updated_at" TIMESTAMP(3),
   "remote_was_deleted" BOOLEAN NOT NULL,
   "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "owner_id" TEXT,
 
@@ -231,7 +230,6 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "remote_updated_at" TIMESTAMP(3),
   "remote_was_deleted" BOOLEAN NOT NULL,
   "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "account_id" TEXT,
   "owner_id" TEXT,
@@ -256,7 +254,6 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "remote_updated_at" TIMESTAMP(3),
   "remote_was_deleted" BOOLEAN NOT NULL,
   "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "converted_date" TIMESTAMP(3),
   "converted_account_id" TEXT,
@@ -282,7 +279,6 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "remote_updated_at" TIMESTAMP(3),
   "remote_was_deleted" BOOLEAN NOT NULL,
   "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "account_id" TEXT,
   "owner_id" TEXT,
@@ -301,7 +297,6 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
     "remote_updated_at" TIMESTAMP(3),
     "remote_was_deleted" BOOLEAN NOT NULL,
     "remote_deleted_at" TIMESTAMP(3),
-    "detected_or_remote_deleted_at" TIMESTAMP(3),
     "last_modified_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "crm_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
@@ -320,7 +315,6 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_events" (
   "remote_updated_at" TIMESTAMP(3),
   "remote_was_deleted" BOOLEAN NOT NULL,
   "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "account_id" TEXT,
   "contact_id" TEXT,

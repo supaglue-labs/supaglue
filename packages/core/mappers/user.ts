@@ -11,6 +11,5 @@ export const toSnakecasedKeysUser = (user: User): SnakecasedKeysUser => {
     updated_at: user.updatedAt,
     was_deleted: user.wasDeleted,
     deleted_at: user.deletedAt,
-    detected_or_deleted_at: user.detectedOrDeletedAt,
   };
 };

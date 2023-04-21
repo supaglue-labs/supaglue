@@ -5,7 +5,6 @@ export type BaseCrmModel = {
   wasDeleted: boolean;
 
   deletedAt: Date | null;
-  detectedOrDeletedAt: Date | null;
 
   lastModifiedAt: Date;
 };

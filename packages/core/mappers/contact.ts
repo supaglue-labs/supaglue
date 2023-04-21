@@ -20,6 +20,5 @@ export const toSnakecasedKeysContact = (contact: Contact): SnakecasedKeysContact
     updated_at: contact.updatedAt,
     was_deleted: contact.wasDeleted,
     deleted_at: contact.deletedAt,
-    detected_or_deleted_at: contact.detectedOrDeletedAt,
   };
 };

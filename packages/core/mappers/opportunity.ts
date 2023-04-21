@@ -18,6 +18,5 @@ export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): Snakecase
     updated_at: opportunity.updatedAt,
     was_deleted: opportunity.wasDeleted,
     deleted_at: opportunity.deletedAt,
-    detected_or_deleted_at: opportunity.detectedOrDeletedAt,
   };
 };

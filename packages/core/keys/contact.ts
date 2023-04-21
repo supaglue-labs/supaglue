@@ -9,7 +9,6 @@ export const keysOfSnakecasedContactWithTenant = arrayOfAllKeys<SnakecasedKeysCo
   'updated_at',
   'was_deleted',
   'deleted_at',
-  'detected_or_deleted_at',
   'last_modified_at',
   'first_name',
   'last_name',
