@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toPaginationInternalParams } from '@supaglue/core/lib';
 import { toSnakecasedKeysLead } from '@supaglue/core/mappers';
 import { toListInternalParams } from '@supaglue/core/mappers/list_params';
 import {
@@ -11,12 +12,15 @@ import {
   GetLeadsPathParams,
   GetLeadsRequest,
   GetLeadsResponse,
+  SearchLeadsPathParams,
+  SearchLeadsRequest,
+  SearchLeadsResponse,
   UpdateLeadPathParams,
   UpdateLeadRequest,
   UpdateLeadResponse,
 } from '@supaglue/schemas/crm';
 import { GetParams, ListParams } from '@supaglue/types/common';
-import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
+import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
 const { leadService } = getDependencyContainer();
@@ -74,6 +78,24 @@ export default function init(app: Router): void {
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: toSnakecasedKeysLead(lead) });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchLeadsPathParams, SearchLeadsResponse, SearchLeadsRequest>,
+      res: Response<SearchLeadsResponse>
+    ) => {
+      const { next, previous, results } = await leadService.search(
+        req.customerConnection.id,
+        toPaginationInternalParams(req.params),
+        camelcaseKeys(req.body.filters)
+      );
+
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysLead);
+
+      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
 

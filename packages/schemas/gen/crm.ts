@@ -78,6 +78,11 @@ export interface paths {
       };
     };
   };
+  "/leads/_search": {
+    /** Search leads */
+    post: operations["searchLeads"];
+    
+  };
   "/events": {
     /**
      * List events 
@@ -979,6 +984,28 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["lead"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  searchLeads: {
+    /** Search leads */
+    requestBody: {
+      content: {
+        "application/json": {
+          filters: {
+            email_address?: components["schemas"]["filter"];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Leads */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["lead"])[];
           };
         };
       };
