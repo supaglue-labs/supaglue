@@ -4,5 +4,6 @@ export type SnakecasedKeysPhoneNumber = SnakecasedKeys<PhoneNumber>;
 
 export type PhoneNumber = {
   phoneNumber: string | null;
-  phoneNumberType: 'primary' | 'mobile' | 'fax';
+  phoneNumberType: 'work' | 'personal' | 'other';
+  isPrimary: boolean;
 };

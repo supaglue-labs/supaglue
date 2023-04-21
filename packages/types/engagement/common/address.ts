@@ -9,5 +9,4 @@ export type Address = {
   state: string | null;
   postalCode: string | null;
   country: string | null;
-  addressType: 'primary' | 'billing' | 'mailing' | 'other' | 'shipping';
 };
