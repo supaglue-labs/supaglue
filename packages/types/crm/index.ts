@@ -15,28 +15,14 @@ export type CRMProviderName = (typeof SUPPORTED_CRM_CONNECTIONS)[number];
 export const CRM_COMMON_MODEL_TYPES = ['account', 'contact', 'lead', 'opportunity', 'user', 'event'] as const;
 export type CRMCommonModelType = (typeof CRM_COMMON_MODEL_TYPES)[number];
 
-export type CRMCommonModelTypeMap<T extends CRMCommonModelType> = T extends 'account'
-  ? AccountTypes
-  : T extends 'contact'
-  ? ContactTypes
-  : T extends 'lead'
-  ? LeadTypes
-  : T extends 'opportunity'
-  ? OpportunityTypes
-  : T extends 'user'
-  ? UserTypes
-  : T extends 'event'
-  ? EventTypes
-  : never;
-
-// export type CRMCommonModelTypeMap<T extends CRMCommonModelType> = {
-//   account: AccountTypes;
-//   contact: ContactTypes;
-//   lead: LeadTypes;
-//   opportunity: OpportunityTypes;
-//   user: UserTypes;
-//   event: EventTypes;
-// }[T];
+export type CRMCommonModelTypeMap<T extends CRMCommonModelType> = {
+  account: AccountTypes;
+  contact: ContactTypes;
+  lead: LeadTypes;
+  opportunity: OpportunityTypes;
+  user: UserTypes;
+  event: EventTypes;
+}[T];
 
 export type CustomFields = Record<string, any>;
 
