@@ -24,9 +24,9 @@ properties:
     $ref: ./provider_name.yaml
   category:
     $ref: ./category.yaml
-  remote_id:
+  instance_url:
     type: string
-    description: For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.
+    description: For Hubspot, this https://app.hubspot.com/contacts/HUBSPOT_ID. For Salesforce, this is the instance URL.
     example: 123456
 required:
   - id
@@ -36,4 +36,4 @@ required:
   - integration_id
   - provider_name
   - category
-  - remote_id
+  - instance_url

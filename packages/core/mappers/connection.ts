@@ -11,7 +11,7 @@ export const fromConnectionModelToConnectionUnsafe = async ({
   providerName,
   status,
   credentials,
-  remoteId,
+  instanceUrl,
 }: ConnectionModel): Promise<ConnectionUnsafeAny> => {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
@@ -23,7 +23,7 @@ export const fromConnectionModelToConnectionUnsafe = async ({
     status: status as ConnectionStatus,
     providerName: providerName as CRMProviderName,
     credentials: JSON.parse(await decrypt(credentials)),
-    remoteId,
+    instanceUrl,
   };
 };
 
@@ -34,7 +34,7 @@ export const fromConnectionModelToConnectionSafe = ({
   integrationId,
   providerName,
   status,
-  remoteId,
+  instanceUrl,
 }: ConnectionModel): ConnectionSafeAny => {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
@@ -45,6 +45,6 @@ export const fromConnectionModelToConnectionSafe = ({
     category: category as 'crm',
     status: status as ConnectionStatus,
     providerName: providerName as CRMProviderName,
-    remoteId,
+    instanceUrl,
   };
 };
