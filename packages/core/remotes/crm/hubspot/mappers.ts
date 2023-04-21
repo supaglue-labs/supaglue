@@ -55,7 +55,7 @@ export const fromHubSpotCompanyToAccount = ({
     : [];
 
   return {
-    id: id,
+    id,
     name: properties.name ?? null,
     description: properties.description ?? null,
     ownerId: properties.hubspot_owner_id ?? null,
@@ -140,7 +140,7 @@ export const fromHubSpotContactToContact = ({
       : [];
 
   return {
-    id: id,
+    id,
     accountId,
     ownerId: properties.hubspot_owner_id ?? null,
     firstName: properties.firstname ?? null,
@@ -178,7 +178,7 @@ export const fromHubSpotDealToOpportunity = ({
     accountId = associations.companies.results[0].id ?? null;
   }
   return {
-    id: id,
+    id,
     name: properties.dealname ?? null,
     description: properties.description ?? null,
     ownerId: properties.hubspot_owner_id ?? null,
@@ -207,7 +207,7 @@ export const fromHubspotOwnerToUser = ({
   archived,
 }: HubspotOwner): User => {
   return {
-    id: id,
+    id,
     name: getFullName(firstName, lastName),
     email: email ?? null,
     isActive: !archived,
