@@ -229,7 +229,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const normalPageFetcher = await this.#getListNormalAccountsFetcher(updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listAccountsFull(/* archived */ true, after);
-      return filterForUpdatedAfter(response, updatedAfter);
+      return filterForArchivedAfter(response, updatedAfter);
     };
 
     return await paginator([
@@ -339,7 +339,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listOpportunitiesFull(/* archived */ true, after);
-      return filterForUpdatedAfter(response, updatedAfter);
+      return filterForArchivedAfter(response, updatedAfter);
     };
 
     return await paginator([
@@ -486,7 +486,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const normalPageFetcher = await this.#getListNormalContactsFetcher(updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listContactsFull(/* archived */ true, after);
-      return filterForUpdatedAfter(response, updatedAfter);
+      return filterForArchivedAfter(response, updatedAfter);
     };
 
     return await paginator([
@@ -763,6 +763,27 @@ function filterForUpdatedAfter<
       }
 
       return updatedAfter < record.updatedAt;
+    }),
+  };
+}
+
+function filterForArchivedAfter<
+  R extends {
+    results: { archivedAt?: Date }[];
+  }
+>(response: R, archivedAfter?: Date): R {
+  return {
+    ...response,
+    results: response.results.filter((record) => {
+      if (!archivedAfter) {
+        return true;
+      }
+
+      if (!record.archivedAt) {
+        return true;
+      }
+
+      return archivedAfter < record.archivedAt;
     }),
   };
 }
