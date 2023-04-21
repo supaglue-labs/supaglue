@@ -1,4 +1,4 @@
-import { CustomFields } from '..';
+import { CustomFields } from '.';
 import { SnakecasedKeys } from '../snakecased_keys';
 import { BaseCrmModel } from './base';
 

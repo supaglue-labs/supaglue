@@ -1,4 +1,4 @@
-import { BaseCrmModel, CustomFields } from '..';
+import { BaseCrmModel, CustomFields } from '.';
 import { SnakecasedKeys } from '../snakecased_keys';
 import { Address } from './common/address';
 import { EmailAddress } from './common/email_address';

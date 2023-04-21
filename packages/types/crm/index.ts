@@ -1,4 +1,4 @@
-import { AccountTypes, ContactTypes, EventTypes, LeadTypes, OpportunityTypes, UserTypes } from '..';
+import { AccountTypes, ContactTypes, EventTypes, LeadTypes, OpportunityTypes, UserTypes } from '.';
 
 export const SUPPORTED_CRM_CONNECTIONS = [
   'salesforce',

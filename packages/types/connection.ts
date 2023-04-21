@@ -1,4 +1,5 @@
-import { CRMProviderName, ProviderName } from '.';
+import { ProviderName } from '.';
+import { CRMProviderName } from './crm';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
@@ -25,7 +26,8 @@ export type ConnectionCreateParams<T extends ProviderName> = {
   applicationId: string;
   customerId: string; // external customer id
   integrationId: string;
-  category: 'crm';
+  // TODO: do better generics
+  category: T extends CRMProviderName ? 'crm' : 'engagement';
   providerName: T;
   credentials: ConnectionCredentialsDecrypted<T>;
   instanceUrl: string;
