@@ -3,9 +3,11 @@ import type {
   GetParams,
   Lead,
   LeadCreateParams,
+  LeadFilters,
   LeadUpdateParams,
   ListInternalParams,
   PaginatedResult,
+  PaginationInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
@@ -40,6 +42,34 @@ export class LeadService extends CommonModelBaseService {
       throw new UnauthorizedError('Unauthorized');
     }
     return fromLeadModel(model, expandedAssociations);
+  }
+
+  public async search(
+    connectionId: string,
+    paginationParams: PaginationInternalParams,
+    filters: LeadFilters
+  ): Promise<PaginatedResult<Lead>> {
+    const { page_size, cursor } = paginationParams;
+    const models = await this.prisma.crmLead.findMany({
+      ...getPaginationParams(page_size, cursor),
+      where: {
+        connectionId,
+        emailAddresses:
+          filters.emailAddress?.type === 'equals'
+            ? {
+                array_contains: [{ emailAddress: filters.emailAddress.value }],
+              }
+            : undefined,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    const results = models.map((model) => fromLeadModel(model));
+    return {
+      ...getPaginationResult(page_size, cursor, results),
+      results,
+    };
   }
 
   // TODO: implement rest of list params
