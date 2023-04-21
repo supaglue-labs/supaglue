@@ -14,9 +14,15 @@ WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${WORKSP
 # fetch the posthog api key from 1password and pass it as an arg
 # to the docker build
 
+if [ "$(op -v | cut -d. -f1)" -lt 2 ]; then
+  echo "op version must be >= 2.0.0"
+  echo "run: brew update && brew upgrade 1password-cli"
+  exit 1
+fi
+
 eval "$(op signin supaglue)"
 
-POSTHOG_API_KEY=$(op get item dl4y3dryfib2huqpultgp7wlcq --fields credential)
+POSTHOG_API_KEY=$(op read op://engineering/dl4y3dryfib2huqpultgp7wlcq/credential)
 
 ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
 
