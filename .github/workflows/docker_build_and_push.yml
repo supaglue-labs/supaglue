@@ -58,7 +58,6 @@ jobs:
           images: |
             supaglue/${{ inputs.image-name }}
           tags: |
-            type=ref,event=pr
             type=ref,event=branch,prefix=branch-,enable=${{ github.ref != 'refs/heads/main' }}
             type=edge,branch=main
           labels: |
@@ -88,7 +87,7 @@ jobs:
           context: .
           file: ./${{ env.directory }}/Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: ${{ !env.ACT }}
+          push: ${{ github.event_name != 'pull_request' && !env.ACT }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
