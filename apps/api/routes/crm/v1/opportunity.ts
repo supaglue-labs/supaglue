@@ -12,7 +12,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { opportunityService } = getDependencyContainer();
+const { commonModelService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -22,13 +22,13 @@ export default function init(app: Router): void {
       req: Request<CreateOpportunityPathParams, CreateOpportunityResponse, CreateOpportunityRequest>,
       res: Response<CreateOpportunityResponse>
     ) => {
-      const { customerId, id: connectionId } = req.customerConnection;
+      const { id: connectionId } = req.customerConnection;
       const originalParams = camelcaseKeysSansCustomFields(req.body.model);
       const opportunityCreateParams = {
         ...originalParams,
         closeDate: stringOrNullOrUndefinedToDate(originalParams.closeDate),
       };
-      const opportunity = await opportunityService.create(customerId, connectionId, opportunityCreateParams);
+      const opportunity = await commonModelService.create('opportunity', connectionId, opportunityCreateParams);
       return res.status(200).send({ model: toSnakecasedKeysOpportunity(opportunity) });
     }
   );
@@ -39,14 +39,14 @@ export default function init(app: Router): void {
       req: Request<UpdateOpportunityPathParams, UpdateOpportunityResponse, UpdateOpportunityRequest>,
       res: Response<UpdateOpportunityResponse>
     ) => {
-      const { customerId, id: connectionId } = req.customerConnection;
+      const { id: connectionId } = req.customerConnection;
       const originalParams = camelcaseKeysSansCustomFields(req.body.model);
       const opportunityUpdateParams = {
         remoteId: req.params.opportunity_id,
         ...originalParams,
         closeDate: stringOrNullOrUndefinedToDate(originalParams.closeDate),
       };
-      const opportunity = await opportunityService.update(customerId, connectionId, opportunityUpdateParams);
+      const opportunity = await commonModelService.update('opportunity', connectionId, opportunityUpdateParams);
       return res.status(200).send({ model: toSnakecasedKeysOpportunity(opportunity) });
     }
   );

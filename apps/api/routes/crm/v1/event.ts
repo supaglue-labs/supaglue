@@ -14,7 +14,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { eventService } = getDependencyContainer();
+const { commonModelService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -25,14 +25,14 @@ export default function init(app: Router): void {
       req: Request<CreateEventPathParams, CreateEventResponse, CreateEventRequest>,
       res: Response<CreateEventResponse>
     ) => {
-      const { customerId, id: connectionId } = req.customerConnection;
+      const { id: connectionId } = req.customerConnection;
       const originalParams = camelcaseKeysSansCustomFields(req.body.model);
       const eventCreateParams = {
         ...originalParams,
         startTime: stringOrNullOrUndefinedToDate(originalParams.startTime),
         endTime: stringOrNullOrUndefinedToDate(originalParams.endTime),
       };
-      const event = await eventService.create(customerId, connectionId, eventCreateParams);
+      const event = await commonModelService.create('event', connectionId, eventCreateParams);
       return res.status(200).send({ model: toSnakecasedKeysEvent(event) });
     }
   );
@@ -43,14 +43,14 @@ export default function init(app: Router): void {
       req: Request<UpdateEventPathParams, UpdateEventResponse, UpdateEventRequest>,
       res: Response<UpdateEventResponse>
     ) => {
-      const { customerId, id: connectionId } = req.customerConnection;
+      const { id: connectionId } = req.customerConnection;
       const originalParams = camelcaseKeysSansCustomFields(req.body.model);
       const eventUpdateParams = {
         ...originalParams,
         startTime: stringOrNullOrUndefinedToDate(originalParams.startTime),
         endTime: stringOrNullOrUndefinedToDate(originalParams.endTime),
       };
-      const event = await eventService.update(customerId, connectionId, {
+      const event = await commonModelService.update('event', connectionId, {
         remoteId: req.params.event_id,
         ...eventUpdateParams,
       });

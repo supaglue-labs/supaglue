@@ -13,3 +13,9 @@ export type User = BaseCrmModel & {
   email: string | null;
   isActive: boolean | null;
 };
+
+export type UserTypes = {
+  object: User;
+  createParams: never;
+  updateParams: never;
+};
