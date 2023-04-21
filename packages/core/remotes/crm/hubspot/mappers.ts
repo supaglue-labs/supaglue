@@ -206,8 +206,6 @@ export const fromHubspotOwnerToUser = ({
   updatedAt,
   archived,
 }: HubspotOwner): User => {
-  const detectedOrRemoteDeletedAt = archived ? new Date() : null;
-
   return {
     id: id,
     name: getFullName(firstName, lastName),
@@ -219,7 +217,7 @@ export const fromHubspotOwnerToUser = ({
     deletedAt: null,
     // TODO: This isn't accurate. Every time we pull in data, we'll think it was deleted just recently
     // https://github.com/supaglue-labs/supaglue/issues/664
-    lastModifiedAt: new Date(Math.max(updatedAt.getTime(), detectedOrRemoteDeletedAt?.getTime() ?? 0)),
+    lastModifiedAt: updatedAt,
   };
 };
 
