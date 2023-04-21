@@ -21,7 +21,6 @@
     "pino": "^8.11.0",
     "pino-abstract-transport": "^1.0.0",
     "pino-pretty": "^9.4.0",
-    "pino-sentry": "^0.14.0",
     "posthog-node": "^2.5.4",
     "uuid": "^9.0.0"
   },

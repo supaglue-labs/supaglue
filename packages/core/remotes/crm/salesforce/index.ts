@@ -282,7 +282,9 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       if (response.status === 200) {
         return response;
       }
-      const error = new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`);
+      const error = new Error(
+        `Status code ${response.status} and status ${response.statusText} when calling salesforce API. Error: ${response.text}. Body: ${response.body}`
+      );
       logger.error(error);
       if (response.status !== 429) {
         bail(error);
@@ -317,7 +319,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
     const startTime = Date.now();
     const timeout = 5 * 60 * 1000; // TODO: make configurable
-    const interval = 1000; // TODO: make configurable
+    const interval = 10000; // TODO: make configurable
 
     while (startTime + timeout > Date.now()) {
       const pollResponse = await poll();
