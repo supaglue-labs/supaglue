@@ -24,3 +24,9 @@ export type SequenceStartParams = {
     mailboxId: string;
   };
 };
+
+export type SequenceTypes = {
+  object: Sequence;
+  createParams: SequenceCreateParams;
+  startParams: SequenceStartParams;
+};

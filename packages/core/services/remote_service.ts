@@ -35,4 +35,28 @@ export class RemoteService {
 
     return client;
   }
+
+  public async getEngagementRemoteClient(connectionId: string): Promise<EngagementRemoteClient> {
+    const connection = await this.#connectionService.getUnsafeById(connectionId);
+    const integration = await this.#integrationService.getById(connection.integrationId);
+
+    if (!integration.config) {
+      throw new Error('Integration must have config');
+    }
+
+    const client = getEngagementRemoteClient(connection, integration);
+
+    // Persist the refreshed token
+    client.on('token_refreshed', (accessToken: string, expiresAt: string | null) => {
+      this.#connectionService
+        .updateConnectionWithNewAccessToken(connectionId, accessToken, expiresAt)
+        .catch((err: unknown) => {
+          // TODO: Use logger
+          // eslint-disable-next-line no-console
+          console.error(`Failed to persist refreshed token for connection ${connectionId}`, err);
+        });
+    });
+
+    return client;
+  }
 }

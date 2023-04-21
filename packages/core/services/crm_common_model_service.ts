@@ -1,7 +1,7 @@
 import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types';
 import { RemoteService } from './remote_service';
 
-export class CommonModelService {
+export class CRMCommonModelService {
   readonly #remoteService: RemoteService;
 
   public constructor(remoteService: RemoteService) {

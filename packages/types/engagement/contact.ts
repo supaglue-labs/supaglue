@@ -23,3 +23,8 @@ export type ContactCreateParams = {
   address?: Address | null;
   emailAddresses?: EmailAddress[];
 };
+
+export type ContactTypes = {
+  object: Contact;
+  createParams: ContactCreateParams;
+};

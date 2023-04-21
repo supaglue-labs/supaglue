@@ -8,7 +8,7 @@ import {
   SgUserService,
   SyncHistoryService,
 } from './services';
-import { CommonModelService } from './services/common_model_service';
+import { CRMCommonModelService } from './services/crm_common_model_service';
 import { DestinationService } from './services/destination_service';
 
 export type CoreDependencyContainer = {
@@ -24,7 +24,7 @@ export type CoreDependencyContainer = {
   destinationService: DestinationService;
 
   // crm
-  commonModelService: CommonModelService;
+  commonModelService: CRMCommonModelService;
   syncHistoryService: SyncHistoryService;
 };
 
@@ -46,7 +46,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const destinationService = new DestinationService(prisma);
 
   // crm
-  const commonModelService = new CommonModelService(remoteService);
+  const commonModelService = new CRMCommonModelService(remoteService);
   const syncHistoryService = new SyncHistoryService(prisma, connectionService);
 
   return {
