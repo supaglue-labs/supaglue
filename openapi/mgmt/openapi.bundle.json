@@ -1123,6 +1123,7 @@
             "properties": {
               "period_ms": {
                 "type": "integer",
+                "minimum": 60000,
                 "example": 60000
               }
             },
