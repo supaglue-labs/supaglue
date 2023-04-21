@@ -3,8 +3,6 @@ name: Build and push API Docker image
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
     paths:
       - apps/api/**
       - packages/core/**

@@ -112,6 +112,14 @@ export type UpdateLeadRequest = operations['updateLead']['requestBody']['content
 export type UpdateLeadResponse =
   operations['updateLead']['responses'][keyof operations['updateLead']['responses']]['content']['application/json'];
 
+export type SearchLeadsPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type SearchLeadsQueryParams = Required<operations['searchLeads']>['parameters']['query'];
+export type SearchLeadsQueryParams = any;
+export type SearchLeadsRequest = operations['searchLeads']['requestBody']['content']['application/json'];
+export type SearchLeadsResponse =
+  operations['searchLeads']['responses'][keyof operations['searchLeads']['responses']]['content']['application/json'];
+
 export type GetOpportunitiesPathParams = never;
 // TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
 // export type GetOpportunitiesQueryParams = Required<operations['getOpportunities']>['parameters']['query'];

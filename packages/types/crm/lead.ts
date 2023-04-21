@@ -10,6 +10,7 @@ import type {
   PhoneNumber,
   User,
 } from '..';
+import { Filter } from '../filter';
 
 type BaseLead = BaseCrmModel & {
   leadSource: string | null;
@@ -67,4 +68,8 @@ export type LeadUpdateParams = LeadCreateParams & {
 
 export type RemoteLeadUpdateParams = RemoteLeadCreateParams & {
   remoteId: string;
+};
+
+export type LeadFilters = {
+  emailAddress?: Filter;
 };
