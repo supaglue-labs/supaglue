@@ -4,9 +4,7 @@ description: ''
 
 # Authentication
 
-When you make a request to the Supaglue API, you will need to be an authorized user. Use an API key to identify yourself as an authorized user.
-
-API keys are generated using the Management Portal under the Configuration -> API Key page.
+All requests to the Supaglue API must be authenticated via an API key. API keys can be generated in the Management Portal on the Configuration -> API Key page.
 
 ![configuration-api-key](/img/configuration-api-key.png)
 

@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 import BrowserWindow from '@site/src/components/BrowserWindow';
 import ThemedImage from '@theme/ThemedImage';
 
-# Getting Started
+# Getting started
 
 This guide will show you how to integrate Supaglue with your application in about 15 minutes. By the end, you will have configured a CRM integration, connected a sample customer's CRM, and queried their account records.
 
@@ -71,7 +71,7 @@ Go to the "Configurations" tab to configure the integrations your customers will
 Click on "Configure" and enter OAuth2 credentials for your HubSpot or Salesforce Connected Apps. You can find the credentials by following these guides:
 
 - [Salesforce](references/salesforce)
-- [Hubspot](references/hubspot)
+- [HubSpot](references/hubspot)
 
 Add the scopes your application needs from your application.
 
@@ -155,7 +155,7 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
 <IntegrationCard
   icon="/img/hubspot.svg"
   provider="Hubspot"
-  description="Sync your leads in and out of Hubspot"
+  description="Sync your leads in and out of HubSpot"
   to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
 />
 </div>
@@ -178,7 +178,7 @@ Click on the Embedded Link you added in step 5. Go through the OAuth flow and in
 
 <div>
   <ThemedImage
-    alt="Hubspot Example App"
+    alt="HubSpot Example App"
     width="100%"
     sources={{
       light: '/img/hubspot_app.png',
@@ -208,7 +208,7 @@ Once syncs have completed, you can start making API calls to Supaglue to read an
 The following API call lists all customer account records:
 
 ```bash
-curl https://api.supaglue.com/crm/v1/accounts \
+curl https://api.supaglue.io/crm/v1/accounts \
   -H 'x-api-key: {API_KEY}' \
   -H 'x-customer-id: {CUSTOMER_ID}' \
   -H 'x-provider-name: {PROVIDER_NAME}'
