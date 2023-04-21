@@ -1,18 +1,14 @@
 import prisma, { PrismaClient } from '@supaglue/db';
 import { Pool } from 'pg';
 import {
-  AccountService,
   ConnectionService,
-  ContactService,
   CustomerService,
-  EventService,
   IntegrationService,
-  LeadService,
-  OpportunityService,
   RemoteService,
   SgUserService,
   SyncHistoryService,
 } from './services';
+import { CommonModelService } from './services/common_model_service';
 import { DestinationService } from './services/destination_service';
 
 export type CoreDependencyContainer = {
@@ -28,11 +24,7 @@ export type CoreDependencyContainer = {
   destinationService: DestinationService;
 
   // crm
-  accountService: AccountService;
-  contactService: ContactService;
-  leadService: LeadService;
-  opportunityService: OpportunityService;
-  eventService: EventService;
+  commonModelService: CommonModelService;
   syncHistoryService: SyncHistoryService;
 };
 
@@ -54,12 +46,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const destinationService = new DestinationService(prisma);
 
   // crm
-  const accountService = new AccountService(pgPool, prisma, remoteService);
-  const leadService = new LeadService(pgPool, prisma, remoteService);
-  const opportunityService = new OpportunityService(pgPool, prisma, remoteService);
-  const contactService = new ContactService(pgPool, prisma, remoteService);
+  const commonModelService = new CommonModelService(remoteService);
   const syncHistoryService = new SyncHistoryService(prisma, connectionService);
-  const eventService = new EventService(pgPool, prisma, remoteService);
 
   return {
     pgPool,
@@ -72,11 +60,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     remoteService,
     destinationService,
     // crm
-    contactService,
-    accountService,
-    leadService,
-    opportunityService,
-    eventService,
+    commonModelService,
     syncHistoryService,
   };
 }

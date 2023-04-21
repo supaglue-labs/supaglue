@@ -43,3 +43,9 @@ export type OpportunityCreateParams = {
 export type OpportunityUpdateParams = OpportunityCreateParams & {
   id: string;
 };
+
+export type OpportunityTypes = {
+  object: Opportunity;
+  createParams: OpportunityCreateParams;
+  updateParams: OpportunityUpdateParams;
+};

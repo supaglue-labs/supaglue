@@ -44,3 +44,9 @@ export type LeadCreateParams = {
 export type LeadUpdateParams = LeadCreateParams & {
   id: string;
 };
+
+export type LeadTypes = {
+  object: Lead;
+  createParams: LeadCreateParams;
+  updateParams: LeadUpdateParams;
+};

@@ -10,9 +10,8 @@ import {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  Event,
-  EventCreateParams,
-  EventUpdateParams,
+  CRMCommonModelType,
+  CRMCommonModelTypeMap,
   Integration,
   Lead,
   LeadCreateParams,
@@ -222,6 +221,72 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     });
   }
 
+  public override async listObjects(
+    commonModelType: CRMCommonModelType,
+    updatedAfter?: Date | undefined
+  ): Promise<Readable> {
+    switch (commonModelType) {
+      case 'account':
+        return this.listAccounts(updatedAfter);
+      case 'contact':
+        return this.listContacts(updatedAfter);
+      case 'lead':
+        return this.listLeads(updatedAfter);
+      case 'opportunity':
+        return this.listOpportunities(updatedAfter);
+      case 'user':
+        return this.listUsers(updatedAfter);
+      case 'event':
+        return this.listEvents(updatedAfter);
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
+  }
+
+  public override async createObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    params: CRMCommonModelTypeMap<T>['createParams']
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    switch (commonModelType) {
+      case 'account':
+        return this.createAccount(params);
+      case 'contact':
+        return this.createContact(params);
+      case 'lead':
+        return this.createLead(params);
+      case 'opportunity':
+        return this.createOpportunity(params);
+      case 'user':
+        throw new Error('Cannot create users in Salesforce');
+      case 'event':
+        throw new Error('Cannot create events in Salesforce');
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
+  }
+
+  public override async updateObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    params: CRMCommonModelTypeMap<T>['updateParams']
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    switch (commonModelType) {
+      case 'account':
+        return this.updateAccount(params);
+      case 'contact':
+        return this.updateContact(params);
+      case 'lead':
+        return this.updateLead(params);
+      case 'opportunity':
+        return this.updateOpportunity(params);
+      case 'user':
+        throw new Error('Cannot update users in Salesforce');
+      case 'event':
+        throw new Error('Cannot update events in Salesforce');
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
+  }
+
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
     return {
       Authorization: `Bearer ${this.#accessToken}`,
@@ -282,7 +347,9 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       if (response.status === 200) {
         return response;
       }
-      const error = new Error(`Status code ${response.status} when calling salesforce API. Error: ${response.text}`);
+      const error = new Error(
+        `Status code ${response.status} and status ${response.statusText} when calling salesforce API. Error: ${response.text}. Body: ${response.body}`
+      );
       logger.error(error);
       if (response.status !== 429) {
         bail(error);
@@ -317,7 +384,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
     const startTime = Date.now();
     const timeout = 5 * 60 * 1000; // TODO: make configurable
-    const interval = 1000; // TODO: make configurable
+    const interval = 10000; // TODO: make configurable
 
     while (startTime + timeout > Date.now()) {
       const pollResponse = await poll();
@@ -530,38 +597,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
   public async listEvents(updatedAfter?: Date): Promise<Readable> {
     return Readable.from([]);
-    // const baseSoql = `
-    //   SELECT ${propertiesToFetch.event.join(', ')}
-    //   FROM Event
-    // `;
-    // const soql = updatedAfter
-    //   ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-    //   : baseSoql;
-    // return this.listCommonModelRecords(soql, fromSalesforceEventToEvent);
-  }
-
-  public async getEvent(id: string): Promise<Event> {
-    throw new Error('Not implemented');
-    // const event = await this.#client.retrieve('Event', id);
-    // return fromSalesforceEventToEvent(event);
-  }
-
-  public async createEvent(params: EventCreateParams): Promise<Event> {
-    throw new Error('Not implemented');
-    // const response = await this.#client.create('Event', toSalesforceEventCreateParams(params));
-    // if (!response.success) {
-    //   throw new Error('Failed to create Salesforce event');
-    // }
-    // return await this.getEvent(response.id);
-  }
-
-  public async updateEvent(params: EventUpdateParams): Promise<Event> {
-    throw new Error('Not implemented');
-    // const response = await this.#client.update('Event', toSalesforceEventUpdateParams(params));
-    // if (!response.success) {
-    //   throw new Error('Failed to update Salesforce event');
-    // }
-    // return await this.getEvent(response.id);
   }
 }
 

@@ -20,13 +20,9 @@ import {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  Event,
-  EventCreateParams,
-  EventUpdateParams,
+  CRMCommonModelType,
+  CRMCommonModelTypeMap,
   Integration,
-  Lead,
-  LeadCreateParams,
-  LeadUpdateParams,
   Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
@@ -160,6 +156,72 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
       this.#client.setAccessToken(newAccessToken);
       this.emit('token_refreshed', newAccessToken, newExpiresAt);
+    }
+  }
+
+  public override async listObjects(
+    commonModelType: CRMCommonModelType,
+    updatedAfter?: Date | undefined
+  ): Promise<Readable> {
+    switch (commonModelType) {
+      case 'account':
+        return this.listAccounts(updatedAfter);
+      case 'contact':
+        return this.listContacts(updatedAfter);
+      case 'lead':
+        return this.listLeads(updatedAfter);
+      case 'opportunity':
+        return this.listOpportunities(updatedAfter);
+      case 'user':
+        return this.listUsers();
+      case 'event':
+        return this.listEvents();
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
+  }
+
+  public override async createObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    params: CRMCommonModelTypeMap<T>['createParams']
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    switch (commonModelType) {
+      case 'account':
+        return this.createAccount(params);
+      case 'contact':
+        return this.createContact(params);
+      case 'lead':
+        throw new Error('Cannot create leads in HubSpot');
+      case 'opportunity':
+        return this.createOpportunity(params);
+      case 'user':
+        throw new Error('Cannot create users in HubSpot');
+      case 'event':
+        throw new Error('Cannot create events in HubSpot');
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
+  }
+
+  public override async updateObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    params: CRMCommonModelTypeMap<T>['updateParams']
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    switch (commonModelType) {
+      case 'account':
+        return this.updateAccount(params);
+      case 'contact':
+        return this.updateContact(params);
+      case 'lead':
+        throw new Error('Cannot update leads in HubSpot');
+      case 'opportunity':
+        return this.updateOpportunity(params);
+      case 'user':
+        throw new Error('Cannot update users in HubSpot');
+      case 'event':
+        throw new Error('Cannot update events in HubSpot');
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
   }
 
@@ -579,28 +641,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return Readable.from([]);
   }
 
-  public async createLead(params: LeadCreateParams): Promise<Lead> {
-    throw new Error('Not supported');
-  }
-
-  public async updateLead(params: LeadUpdateParams): Promise<Lead> {
-    throw new Error('Not supported');
-  }
-
   public async listEvents(): Promise<Readable> {
     return Readable.from([]);
-  }
-
-  public async getEvent(id: string): Promise<Event> {
-    throw new Error('Not fetcheremented');
-  }
-
-  public async createEvent(params: EventCreateParams): Promise<Event> {
-    throw new Error('Not fetcheremented');
-  }
-
-  public async updateEvent(params: EventUpdateParams): Promise<Event> {
-    throw new Error('Not fetcheremented');
   }
 
   public async listUsers(updatedAfter?: Date): Promise<Readable> {
