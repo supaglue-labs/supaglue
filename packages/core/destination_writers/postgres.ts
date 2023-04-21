@@ -67,11 +67,11 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${qualifiedTable})`);
       await client.query(
-        `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_remote_id_idx ON ${tempTable} (provider_name, customer_id, remote_id)`
+        `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_id_idx ON ${tempTable} (provider_name, customer_id, id)`
       );
 
       const columns = columnsByCommonModelType[commonModelType];
-      const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'remote_id');
+      const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'id');
 
       // Output
       const stream = client.query(
@@ -136,14 +136,14 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       const batchSize = 10000;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
         childLogger.info({ offset }, 'Copying from temp table to main table [IN PROGRESS]');
-        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same remote_id
+        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
         // For example, hubspot will return the same record twice when querying for `archived: true` if
         // the record was archived, restored, and archived again.
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable}
-SELECT DISTINCT ON (remote_id) * FROM (SELECT * FROM ${tempTable} ORDER BY remote_id OFFSET ${offset} limit ${batchSize}) AS batch
-ON CONFLICT (provider_name, customer_id, remote_id)
+SELECT DISTINCT ON (id) * FROM (SELECT * FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
+ON CONFLICT (provider_name, customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
         onUpsertBatchCompletion(offset, tempTableRowCount);
@@ -193,7 +193,7 @@ const schemaSetupSqlByCommonModelType: Record<CRMCommonModelType, (schema: strin
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
+  "id" TEXT NOT NULL,
   "name" TEXT,
   "description" TEXT,
   "industry" TEXT,
@@ -203,22 +203,20 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "phone_numbers" JSONB,
   "lifecycle_stage" TEXT,
   "last_activity_at" TIMESTAMP(3),
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "was_deleted" BOOLEAN NOT NULL,
+  "deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "owner_id" TEXT,
 
-  CONSTRAINT "crm_accounts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  CONSTRAINT "crm_accounts_pkey" PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
   contact: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
+  "id" TEXT NOT NULL,
   "first_name" TEXT,
   "last_name" TEXT,
   "addresses" JSONB NOT NULL,
@@ -226,23 +224,21 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "phone_numbers" JSONB NOT NULL,
   "last_activity_at" TIMESTAMP(3),
   "lifecycle_stage" TEXT,
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "was_deleted" BOOLEAN NOT NULL,
+  "deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "account_id" TEXT,
   "owner_id" TEXT,
 
-  CONSTRAINT "crm_contacts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  CONSTRAINT "crm_contacts_pkey" PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
   lead: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
+  "id" TEXT NOT NULL,
   "lead_source" TEXT,
   "title" TEXT,
   "company" TEXT,
@@ -251,25 +247,23 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "addresses" JSONB,
   "phone_numbers" JSONB,
   "email_addresses" JSONB,
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "was_deleted" BOOLEAN NOT NULL,
+  "deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "converted_date" TIMESTAMP(3),
   "converted_account_id" TEXT,
   "converted_contact_id" TEXT,
   "owner_id" TEXT,
 
-  CONSTRAINT "crm_leads_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  CONSTRAINT "crm_leads_pkey" PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
   opportunity: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
+  "id" TEXT NOT NULL,
   "name" TEXT,
   "description" TEXT,
   "amount" INTEGER,
@@ -278,49 +272,46 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "last_activity_at" TIMESTAMP(3),
   "pipeline" TEXT,
   "close_date" TIMESTAMP(3),
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "was_deleted" BOOLEAN NOT NULL,
+  "deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "account_id" TEXT,
   "owner_id" TEXT,
 
-  CONSTRAINT "crm_opportunities_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  CONSTRAINT "crm_opportunities_pkey" PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
   user: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
     "provider_name" TEXT NOT NULL,
     "customer_id" TEXT NOT NULL,
-    "remote_id" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT,
     "email" TEXT,
     "is_active" BOOLEAN,
-    "remote_created_at" TIMESTAMP(3),
-    "remote_updated_at" TIMESTAMP(3),
-    "remote_was_deleted" BOOLEAN NOT NULL,
-    "remote_deleted_at" TIMESTAMP(3),
-    "detected_or_remote_deleted_at" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3),
+    "updated_at" TIMESTAMP(3),
+    "was_deleted" BOOLEAN NOT NULL,
+    "deleted_at" TIMESTAMP(3),
     "last_modified_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "crm_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+    CONSTRAINT "crm_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
   event: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_events" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
+  "id" TEXT NOT NULL,
   "type" TEXT,
   "subject" TEXT,
   "content" TEXT,
   "start_time" TIMESTAMP(3),
   "end_time" TIMESTAMP(3),
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "was_deleted" BOOLEAN NOT NULL,
+  "deleted_at" TIMESTAMP(3),
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "account_id" TEXT,
   "contact_id" TEXT,
@@ -328,6 +319,6 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_events" (
   "opportunity_id" TEXT,
   "owner_id" TEXT,
 
-  CONSTRAINT "crm_events_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  CONSTRAINT "crm_events_pkey" PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
 };

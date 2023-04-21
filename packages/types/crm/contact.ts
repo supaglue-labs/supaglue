@@ -41,7 +41,7 @@ export type ContactCreateParams = {
 };
 
 export type ContactUpdateParams = ContactCreateParams & {
-  remoteId: string;
+  id: string;
 };
 
 export type ContactFilters = {

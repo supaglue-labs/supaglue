@@ -1,6 +1,6 @@
 type: object
 properties:
-  remote_id:
+  id:
     type: string
     example: 1234
   type:
@@ -54,17 +54,17 @@ properties:
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
   opportunity:
     $ref: ./opportunity.yaml
-  remote_created_at:
+  created_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  remote_updated_at:
+  updated_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  remote_was_deleted:
+  was_deleted:
     type: boolean
     example: false
   last_modified_at:
@@ -72,7 +72,7 @@ properties:
     format: date-time
     example: '2022-02-27T00:00:00Z'
 required:
-  - remote_id
+  - id
   - subject
   - type
   - content
@@ -83,7 +83,7 @@ required:
   - contact_id
   - lead_id
   - opportunity_id
-  - remote_created_at	
-  - remote_updated_at	
-  - remote_was_deleted	
+  - created_at	
+  - updated_at	
+  - was_deleted	
   - last_modified_at	

@@ -6,7 +6,7 @@ properties:
     type: string
     nullable: true
     example: Integration API
-  remote_id:
+  id:
     type: string
     example: 1234
   industry:
@@ -40,17 +40,17 @@ properties:
     type: string
     nullable: true
     example: https://supaglue.com/
-  remote_created_at:
+  created_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  remote_updated_at:
+  updated_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  remote_was_deleted:
+  was_deleted:
     type: boolean
     example: false
   last_modified_at:
@@ -60,7 +60,7 @@ properties:
 required:
   - addresses
   - description
-  - remote_id
+  - id
   - industry
   - last_activity_at
   - name
@@ -69,7 +69,7 @@ required:
   - phone_numbers
   - website
   - lifecycle_stage
-  - remote_created_at	
-  - remote_updated_at	
-  - remote_was_deleted	
+  - created_at	
+  - updated_at	
+  - was_deleted	
   - last_modified_at	

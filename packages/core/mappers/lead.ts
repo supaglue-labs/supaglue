@@ -7,7 +7,7 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
   return {
     owner_id: lead.ownerId,
     last_modified_at: lead.lastModifiedAt,
-    remote_id: lead.remoteId,
+    id: lead.id,
     lead_source: lead.leadSource,
     title: lead.title,
     company: lead.company,
@@ -17,12 +17,11 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
     email_addresses: lead.emailAddresses.map(toSnakecasedKeysEmailAddress),
     phone_numbers: lead.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
     converted_date: lead.convertedDate,
-    remote_updated_at: lead.remoteUpdatedAt,
-    remote_created_at: lead.remoteCreatedAt,
-    remote_was_deleted: lead.remoteWasDeleted,
+    updated_at: lead.updatedAt,
+    created_at: lead.createdAt,
+    was_deleted: lead.wasDeleted,
     converted_contact_id: lead.convertedContactId,
     converted_account_id: lead.convertedAccountId,
-    remote_deleted_at: lead.remoteDeletedAt,
-    detected_or_remote_deleted_at: lead.detectedOrRemoteDeletedAt,
+    deleted_at: lead.deletedAt,
   };
 };

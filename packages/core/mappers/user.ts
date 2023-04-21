@@ -3,14 +3,13 @@ import { SnakecasedKeysUser, User } from '@supaglue/types';
 export const toSnakecasedKeysUser = (user: User): SnakecasedKeysUser => {
   return {
     last_modified_at: user.lastModifiedAt,
-    remote_id: user.remoteId,
+    id: user.id,
     name: user.name,
     email: user.email,
     is_active: user.isActive,
-    remote_created_at: user.remoteCreatedAt,
-    remote_updated_at: user.remoteUpdatedAt,
-    remote_was_deleted: user.remoteWasDeleted,
-    remote_deleted_at: user.remoteDeletedAt,
-    detected_or_remote_deleted_at: user.detectedOrRemoteDeletedAt,
+    created_at: user.createdAt,
+    updated_at: user.updatedAt,
+    was_deleted: user.wasDeleted,
+    deleted_at: user.deletedAt,
   };
 };

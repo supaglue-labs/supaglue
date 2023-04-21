@@ -40,7 +40,7 @@ export type EventCreateParams = {
 };
 
 export type EventUpdateParams = EventCreateParams & {
-  remoteId: string;
+  id: string;
 };
 
 export type EventTypes = {

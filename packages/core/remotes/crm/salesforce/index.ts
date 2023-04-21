@@ -466,8 +466,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return this.listCommonModelRecords(soql, fromSalesforceAccountToAccount);
   }
 
-  public async getAccount(remoteId: string): Promise<Account> {
-    const account = await this.#client.retrieve('Account', remoteId);
+  public async getAccount(id: string): Promise<Account> {
+    const account = await this.#client.retrieve('Account', id);
     return fromSalesforceAccountToAccount(account);
   }
 
@@ -499,8 +499,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return this.listCommonModelRecords(soql, fromSalesforceContactToContact);
   }
 
-  public async getContact(remoteId: string): Promise<Contact> {
-    const contact = await this.#client.retrieve('Contact', remoteId);
+  public async getContact(id: string): Promise<Contact> {
+    const contact = await this.#client.retrieve('Contact', id);
     return fromSalesforceContactToContact(contact);
   }
 
@@ -531,8 +531,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return this.listCommonModelRecords(soql, fromSalesforceOpportunityToOpportunity);
   }
 
-  public async getOpportunity(remoteId: string): Promise<Opportunity> {
-    const contact = await this.#client.retrieve('Opportunity', remoteId);
+  public async getOpportunity(id: string): Promise<Opportunity> {
+    const contact = await this.#client.retrieve('Opportunity', id);
     return fromSalesforceOpportunityToOpportunity(contact);
   }
 
@@ -563,8 +563,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return this.listCommonModelRecords(soql, fromSalesforceLeadToLead);
   }
 
-  public async getLead(remoteId: string): Promise<Lead> {
-    const contact = await this.#client.retrieve('Lead', remoteId);
+  public async getLead(id: string): Promise<Lead> {
+    const contact = await this.#client.retrieve('Lead', id);
     return fromSalesforceLeadToLead(contact);
   }
 

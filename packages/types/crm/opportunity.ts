@@ -41,7 +41,7 @@ export type OpportunityCreateParams = {
 };
 
 export type OpportunityUpdateParams = OpportunityCreateParams & {
-  remoteId: string;
+  id: string;
 };
 
 export type OpportunityTypes = {

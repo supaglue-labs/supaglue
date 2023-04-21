@@ -94,7 +94,7 @@ export interface components {
       /** @example Integration API */
       description: string | null;
       /** @example 1234 */
-      remote_id: string;
+      id: string;
       /** @example API's */
       industry: string | null;
       /**
@@ -117,14 +117,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -161,7 +161,7 @@ export interface components {
       /** @example George */
       first_name: string | null;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -175,14 +175,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -206,7 +206,7 @@ export interface components {
     };
     event: {
       /** @example 1234 */
-      remote_id: string;
+      id: string;
       /** @example Meeting */
       type: string | null;
       /** @example Meeting */
@@ -241,14 +241,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -296,7 +296,7 @@ export interface components {
       /** @example George */
       first_name?: string | null;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example Xing */
       last_name: string | null;
       /** @example API Blogger */
@@ -311,14 +311,14 @@ export interface components {
        * Format: date-time 
        * @example 2023-02-10T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2023-02-10T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -356,7 +356,7 @@ export interface components {
       /** @example Wants to use open source unified API for third-party integrations */
       description: string | null;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
@@ -376,14 +376,14 @@ export interface components {
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -392,7 +392,7 @@ export interface components {
     };
     user: {
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example George Xing */
       name: string | null;
       /** @example george@supaglue.com */
@@ -402,14 +402,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z

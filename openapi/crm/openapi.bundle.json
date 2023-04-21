@@ -996,7 +996,7 @@
             "nullable": true,
             "example": "Integration API"
           },
-          "remote_id": {
+          "id": {
             "type": "string",
             "example": 1234
           },
@@ -1040,19 +1040,19 @@
             "nullable": true,
             "example": "https://supaglue.com/"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "was_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1065,7 +1065,7 @@
         "required": [
           "addresses",
           "description",
-          "remote_id",
+          "id",
           "industry",
           "last_activity_at",
           "name",
@@ -1074,9 +1074,9 @@
           "phone_numbers",
           "website",
           "lifecycle_stage",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "was_deleted",
           "last_modified_at"
         ]
       },
@@ -1157,7 +1157,7 @@
             "nullable": true,
             "example": "George"
           },
-          "remote_id": {
+          "id": {
             "type": "string",
             "example": 54312
           },
@@ -1178,19 +1178,19 @@
           "lifecycle_stage": {
             "$ref": "#/components/schemas/lifecycle_stage"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "was_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1204,7 +1204,7 @@
           "account_id",
           "owner_id",
           "description",
-          "remote_id",
+          "id",
           "addresses",
           "email_addresses",
           "first_name",
@@ -1212,9 +1212,9 @@
           "last_name",
           "phone_numbers",
           "lifecycle_stage",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "was_deleted",
           "last_modified_at"
         ]
       },
@@ -1261,7 +1261,7 @@
       "event": {
         "type": "object",
         "properties": {
-          "remote_id": {
+          "id": {
             "type": "string",
             "example": 1234
           },
@@ -1331,19 +1331,19 @@
           "opportunity": {
             "$ref": "#/components/schemas/opportunity"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "was_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1354,7 +1354,7 @@
           }
         },
         "required": [
-          "remote_id",
+          "id",
           "subject",
           "type",
           "content",
@@ -1365,9 +1365,9 @@
           "contact_id",
           "lead_id",
           "opportunity_id",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "was_deleted",
           "last_modified_at"
         ]
       },
@@ -1469,7 +1469,7 @@
             "nullable": true,
             "example": "George"
           },
-          "remote_id": {
+          "id": {
             "type": "string",
             "example": 54312
           },
@@ -1499,19 +1499,19 @@
             "nullable": true,
             "example": "Co-Founder"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2023-02-10T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2023-02-10T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "was_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1527,15 +1527,15 @@
           "converted_account_id",
           "converted_contact_id",
           "converted_date",
-          "remote_id",
+          "id",
           "last_name",
           "lead_source",
           "owner_id",
           "phone_numbers",
           "title",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "was_deleted",
           "last_modified_at"
         ]
       },
@@ -1609,7 +1609,7 @@
             "nullable": true,
             "example": "Wants to use open source unified API for third-party integrations"
           },
-          "remote_id": {
+          "id": {
             "type": "string",
             "example": 54312
           },
@@ -1646,19 +1646,19 @@
             "nullable": true,
             "example": "OPEN"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2023-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2023-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "was_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1672,23 +1672,23 @@
           "account_id",
           "amount",
           "description",
-          "remote_id",
+          "id",
           "last_activity_at",
           "name",
           "owner_id",
           "stage",
           "status",
           "pipeline",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "was_deleted",
           "last_modified_at"
         ]
       },
       "user": {
         "type": "object",
         "properties": {
-          "remote_id": {
+          "id": {
             "type": "string",
             "example": 54312
           },
@@ -1706,19 +1706,19 @@
             "type": "boolean",
             "nullable": true
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "was_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1730,13 +1730,12 @@
         },
         "required": [
           "id",
-          "remote_id",
           "name",
           "email",
           "is_active",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "was_deleted",
           "last_modified_at"
         ]
       },

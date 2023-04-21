@@ -40,7 +40,7 @@ export default function init(app: Router): void {
     ) => {
       const { id: connectionId } = req.customerConnection;
       const account = await commonModelService.update('account', connectionId, {
-        remoteId: req.params.account_id,
+        id: req.params.account_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
       return res.status(200).send({ model: toSnakecasedKeysAccount(account) });

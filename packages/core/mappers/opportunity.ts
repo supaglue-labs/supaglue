@@ -5,7 +5,7 @@ export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): Snakecase
     owner_id: opportunity.ownerId,
     account_id: opportunity.accountId,
     last_modified_at: opportunity.lastModifiedAt,
-    remote_id: opportunity.remoteId,
+    id: opportunity.id,
     name: opportunity.name,
     description: opportunity.description,
     amount: opportunity.amount,
@@ -14,10 +14,9 @@ export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): Snakecase
     last_activity_at: opportunity.lastActivityAt,
     close_date: opportunity.closeDate,
     pipeline: opportunity.pipeline,
-    remote_created_at: opportunity.remoteCreatedAt,
-    remote_updated_at: opportunity.remoteUpdatedAt,
-    remote_was_deleted: opportunity.remoteWasDeleted,
-    remote_deleted_at: opportunity.remoteDeletedAt,
-    detected_or_remote_deleted_at: opportunity.detectedOrRemoteDeletedAt,
+    created_at: opportunity.createdAt,
+    updated_at: opportunity.updatedAt,
+    was_deleted: opportunity.wasDeleted,
+    deleted_at: opportunity.deletedAt,
   };
 };
