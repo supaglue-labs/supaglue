@@ -1,4 +1,4 @@
-import { Event, SnakecasedKeysEvent } from '@supaglue/types';
+import { Event, SnakecasedKeysEvent } from '@supaglue/types/crm';
 
 export const toSnakecasedKeysEvent = (event: Event): SnakecasedKeysEvent => {
   return {

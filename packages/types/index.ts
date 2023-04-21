@@ -4,7 +4,7 @@ import { EngagementProviderName } from './engagement';
 export * from './application';
 export * from './common';
 export * from './connection';
-export * from './crm';
+export * as crm from './crm';
 export * from './customer';
 export * from './destination';
 // TODO: crm already has duplicate 'Contact' common model type

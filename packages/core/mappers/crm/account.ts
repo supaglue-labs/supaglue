@@ -1,4 +1,4 @@
-import { Account, SnakecasedKeysAccount } from '@supaglue/types';
+import { Account, SnakecasedKeysAccount } from '@supaglue/types/crm';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 

@@ -1,4 +1,4 @@
-import { Contact, SnakecasedKeysContact } from '@supaglue/types';
+import { Contact, SnakecasedKeysContact } from '@supaglue/types/crm';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';

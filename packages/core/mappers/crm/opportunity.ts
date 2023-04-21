@@ -1,4 +1,4 @@
-import { Opportunity, SnakecasedKeysOpportunity } from '@supaglue/types';
+import { Opportunity, SnakecasedKeysOpportunity } from '@supaglue/types/crm';
 
 export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): SnakecasedKeysOpportunity => {
   return {
