@@ -48,3 +48,9 @@ export type AccountUpdateParams = AccountCreateParams & {
 export type AccountFilters = {
   website?: Filter;
 };
+
+export type AccountTypes = {
+  object: Account;
+  createParams: AccountCreateParams;
+  updateParams: AccountUpdateParams;
+};

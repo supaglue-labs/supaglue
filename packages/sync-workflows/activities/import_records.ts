@@ -40,39 +40,8 @@ export function createImportRecords(
     logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: commonModel });
 
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
-
-    switch (commonModel) {
-      case 'account': {
-        const readable = await client.listAccounts(updatedAfter);
-        await writer.writeObjects(connection, 'account', toHeartbeatingStream(readable), onUpsertBatchCompletion);
-        break;
-      }
-      case 'contact': {
-        const readable = await client.listContacts(updatedAfter);
-        await writer.writeObjects(connection, 'contact', toHeartbeatingStream(readable), onUpsertBatchCompletion);
-        break;
-      }
-      case 'opportunity': {
-        const readable = await client.listOpportunities(updatedAfter);
-        await writer.writeObjects(connection, 'opportunity', toHeartbeatingStream(readable), onUpsertBatchCompletion);
-        break;
-      }
-      case 'lead': {
-        const readable = await client.listLeads(updatedAfter);
-        await writer.writeObjects(connection, 'lead', toHeartbeatingStream(readable), onUpsertBatchCompletion);
-        break;
-      }
-      case 'user': {
-        const readable = await client.listUsers(updatedAfter);
-        await writer.writeObjects(connection, 'user', toHeartbeatingStream(readable), onUpsertBatchCompletion);
-        break;
-      }
-      case 'event': {
-        const readable = await client.listEvents(updatedAfter);
-        await writer.writeObjects(connection, 'event', toHeartbeatingStream(readable), onUpsertBatchCompletion);
-        break;
-      }
-    }
+    const readable = await client.listObjects(commonModel, updatedAfter);
+    await writer.writeObjects(connection, commonModel, toHeartbeatingStream(readable), onUpsertBatchCompletion);
 
     logEvent({
       eventName: 'Partially Completed Sync',

@@ -13,7 +13,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { contactService } = getDependencyContainer();
+const { commonModelService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -24,9 +24,9 @@ export default function init(app: Router): void {
       req: Request<CreateContactPathParams, CreateContactResponse, CreateContactRequest>,
       res: Response<CreateContactResponse>
     ) => {
-      const { customerId, id: connectionId } = req.customerConnection;
-      const contact = await contactService.create(
-        customerId,
+      const { id: connectionId } = req.customerConnection;
+      const contact = await commonModelService.create(
+        'contact',
         connectionId,
         camelcaseKeysSansCustomFields(req.body.model)
       );
@@ -40,8 +40,8 @@ export default function init(app: Router): void {
       req: Request<UpdateContactPathParams, UpdateContactResponse, UpdateContactRequest>,
       res: Response<UpdateContactResponse>
     ) => {
-      const { customerId, id: connectionId } = req.customerConnection;
-      const contact = await contactService.update(customerId, connectionId, {
+      const { id: connectionId } = req.customerConnection;
+      const contact = await commonModelService.update('contact', connectionId, {
         remoteId: req.params.contact_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });

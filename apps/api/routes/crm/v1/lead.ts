@@ -11,7 +11,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { leadService } = getDependencyContainer();
+const { commonModelService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -22,8 +22,8 @@ export default function init(app: Router): void {
       req: Request<CreateLeadPathParams, CreateLeadResponse, CreateLeadRequest>,
       res: Response<CreateLeadResponse>
     ) => {
-      const { customerId, id: connectionId } = req.customerConnection;
-      const lead = await leadService.create(customerId, connectionId, camelcaseKeysSansCustomFields(req.body.model));
+      const { id: connectionId } = req.customerConnection;
+      const lead = await commonModelService.create('lead', connectionId, camelcaseKeysSansCustomFields(req.body.model));
       return res.status(200).send({ model: toSnakecasedKeysLead(lead) });
     }
   );
@@ -34,8 +34,8 @@ export default function init(app: Router): void {
       req: Request<UpdateLeadPathParams, UpdateLeadResponse, UpdateLeadRequest>,
       res: Response<UpdateLeadResponse>
     ) => {
-      const { customerId, id: connectionId } = req.customerConnection;
-      const lead = await leadService.update(customerId, connectionId, {
+      const { id: connectionId } = req.customerConnection;
+      const lead = await commonModelService.update('lead', connectionId, {
         remoteId: req.params.lead_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });

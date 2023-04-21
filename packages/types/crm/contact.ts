@@ -47,3 +47,9 @@ export type ContactUpdateParams = ContactCreateParams & {
 export type ContactFilters = {
   emailAddress?: Filter;
 };
+
+export type ContactTypes = {
+  object: Contact;
+  createParams: ContactCreateParams;
+  updateParams: ContactUpdateParams;
+};
