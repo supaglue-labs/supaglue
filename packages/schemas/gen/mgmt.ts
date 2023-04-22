@@ -200,6 +200,10 @@ export interface components {
     };
     /** @enum {string} */
     provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+    /** @enum {string} */
+    provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
+    /** @enum {string} */
+    provider_name_engagement: "outreach";
     create_update_customer: {
       /** @example your-customers-unique-application-id */
       customer_id: string;
@@ -209,12 +213,18 @@ export interface components {
       email: string;
     };
     create_update_integration: {
-      category: components["schemas"]["category"];
       /** @enum {string} */
       auth_type: "oauth2";
-      provider_name: components["schemas"]["provider_name"];
       config: components["schemas"]["integration_config"];
-    };
+    } & OneOf<[{
+      /** @enum {string} */
+      category: "crm";
+      provider_name: components["schemas"]["provider_name_crm"];
+    }, {
+      /** @enum {string} */
+      category: "engagement";
+      provider_name: components["schemas"]["provider_name_engagement"];
+    }]>;
     webhook: {
       url: string;
       notify_on_sync_success: boolean;
