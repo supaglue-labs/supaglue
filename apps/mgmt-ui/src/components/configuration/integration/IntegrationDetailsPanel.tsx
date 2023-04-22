@@ -15,10 +15,16 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { integrationCardsInfo } from './IntegrationTabPanelContainer';
 
+const ONE_HOUR_SECONDS = 60 * 60;
+
 export type IntegrationDetailsPanelProps = {
   category: IntegrationCategory;
   providerName: CRMProviderName;
   isLoading: boolean;
+};
+
+const isSyncPeriodSecsValid = (syncPeriodSecs: number) => {
+  return syncPeriodSecs < 60 ? false : true;
 };
 
 export default function IntegrationDetailsPanel({ providerName, category, isLoading }: IntegrationDetailsPanelProps) {
@@ -29,6 +35,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
+  const [isFormValid, setIsFormValid] = useState<boolean>(true);
   const [destinationId, setDestinationId] = useState<string | undefined>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const router = useRouter();
@@ -44,21 +51,16 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
   );
 
   useEffect(() => {
-    if (!clientId) {
-      setClientId(integration?.config?.oauth?.credentials?.oauthClientId ?? '');
-    }
-    if (!clientSecret) {
-      setClientSecret(integration?.config?.oauth?.credentials?.oauthClientSecret ?? '');
-    }
-    if (!oauthScopes) {
-      setOauthScopes(integration?.config?.oauth?.oauthScopes?.join(',') ?? '');
-    }
-    if (!syncPeriodSecs) {
-      setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
-    }
-    if (!destinationId) {
-      setDestinationId(integration?.destinationId ?? undefined);
-    }
+    setClientId(integration?.config?.oauth?.credentials?.oauthClientId ?? '');
+
+    setClientSecret(integration?.config?.oauth?.credentials?.oauthClientSecret ?? '');
+
+    setOauthScopes(integration?.config?.oauth?.oauthScopes?.join(',') ?? '');
+
+    setSyncPeriodSecs(
+      integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : ONE_HOUR_SECONDS
+    );
+    setDestinationId(integration?.destinationId ?? undefined);
   }, [integration?.id]);
 
   const createOrUpdateIntegration = async (): Promise<Integration> => {
@@ -80,7 +82,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             oauthScopes: oauthScopes.split(','),
           },
           sync: {
-            periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : 3600,
+            periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
           },
         },
       };
@@ -102,7 +104,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
           oauthScopes: oauthScopes.split(','),
         },
         sync: {
-          periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : 3600,
+          periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
         },
       },
     });
@@ -185,8 +187,15 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             label="Sync every (in seconds)"
             variant="outlined"
             type="number"
+            helperText="Value needs to be 60 seconds or greater."
+            error={syncPeriodSecs === undefined || !isSyncPeriodSecsValid(syncPeriodSecs)}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setSyncPeriodSecs(parseInt(event.target.value, 10));
+              let value: number | undefined = parseInt(event.target.value, 10);
+              if (Number.isNaN(value)) {
+                value = undefined;
+              }
+              setSyncPeriodSecs(value);
+              setIsFormValid(value !== undefined && isSyncPeriodSecsValid(value));
             }}
           />
         </Stack>
@@ -204,12 +213,20 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             </Button>
             <Button
               variant="contained"
-              disabled={isSaving || isLoading}
+              disabled={isSaving || isLoading || !isFormValid}
               onClick={async () => {
                 setIsSaving(true);
                 const newIntegration = await createOrUpdateIntegration();
+                const latestIntegrations = [
+                  ...existingIntegrations.filter((integration) => integration.id !== newIntegration.id),
+                  newIntegration,
+                ];
                 addNotification({ message: 'Successfully updated integration', severity: 'success' });
-                mutate([...existingIntegrations, newIntegration], false);
+                await mutate(latestIntegrations, {
+                  optimisticData: latestIntegrations,
+                  revalidate: false,
+                  populateCache: false,
+                });
                 setIsSaving(false);
               }}
             >
