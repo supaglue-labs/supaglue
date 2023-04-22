@@ -1,4 +1,4 @@
-import { SnakecasedKeysUserWithTenant } from '@supaglue/types';
+import { SnakecasedKeysUserWithTenant } from '@supaglue/types/crm';
 import { arrayOfAllKeys } from './util';
 
 export const keysOfSnakecasedUserWithTenant = arrayOfAllKeys<SnakecasedKeysUserWithTenant>()([

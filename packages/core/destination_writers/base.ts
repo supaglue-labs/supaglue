@@ -1,4 +1,5 @@
-import { ConnectionSafeAny, CRMCommonModelType } from '@supaglue/types';
+import { ConnectionSafeAny } from '@supaglue/types';
+import { CRMCommonModelType } from '@supaglue/types/crm';
 import type { Readable } from 'stream';
 
 export type WriteCommonModelsResult = {

@@ -1,10 +1,9 @@
+import { ConnectionUnsafe, Integration } from '@supaglue/types';
 import {
-  ConnectionUnsafe,
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
-  Integration,
   SequenceStartParams,
-} from '@supaglue/types';
+} from '@supaglue/types/engagement';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 
 class OutreachClient extends AbstractEngagementRemoteClient {

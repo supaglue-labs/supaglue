@@ -28,7 +28,7 @@ export const fromIntegrationModel = async ({
     authType: 'oauth2',
     providerName: providerName as ProviderName,
     config: await fromIntegrationConfigModel(config),
-  };
+  } as Integration; // TODO: better type
 };
 
 const fromIntegrationConfigModel = async (config: Prisma.JsonValue): Promise<IntegrationConfigDecrypted> => {

@@ -19,7 +19,7 @@ import {
   OpportunityUpdateParams,
   PhoneNumber,
   User,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 
 const CONTACT_ID_PREFIX = '003';
 const LEAD_ID_PREFIX = '00Q';

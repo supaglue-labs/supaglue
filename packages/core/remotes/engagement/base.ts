@@ -1,11 +1,10 @@
+import { ConnectionUnsafe, Integration } from '@supaglue/types';
 import {
-  ConnectionUnsafe,
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
   EngagementProviderName,
-  Integration,
   SequenceStartParams,
-} from '@supaglue/types';
+} from '@supaglue/types/engagement';
 import { EventEmitter } from 'events';
 import { AbstractRemoteClient, RemoteClient } from '../base';
 

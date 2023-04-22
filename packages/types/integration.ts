@@ -1,4 +1,3 @@
-import { IntegrationCategory } from './common';
 import { CRMProviderName } from './crm';
 import { EngagementProviderName } from './engagement';
 import { SyncConfig } from './sync_config';
@@ -7,7 +6,7 @@ export type CRMIntegration = {
   id: string;
   applicationId: string;
   authType: 'oauth2';
-  category: IntegrationCategory;
+  category: 'crm';
   providerName: CRMProviderName;
   config: IntegrationConfigDecrypted;
 };
@@ -16,7 +15,7 @@ export type EngagementIntegration = {
   id: string;
   applicationId: string;
   authType: 'oauth2';
-  category: IntegrationCategory;
+  category: 'engagement';
   providerName: EngagementProviderName;
   config: IntegrationConfigDecrypted;
 };

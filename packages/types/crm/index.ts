@@ -11,6 +11,7 @@ export const SUPPORTED_CRM_CONNECTIONS = [
 ] as const;
 
 export type CRMProviderName = (typeof SUPPORTED_CRM_CONNECTIONS)[number];
+export type CRMProviderCategory = 'crm';
 
 export const CRM_COMMON_MODEL_TYPES = ['account', 'contact', 'lead', 'opportunity', 'user', 'event'] as const;
 export type CRMCommonModelType = (typeof CRM_COMMON_MODEL_TYPES)[number];
@@ -28,6 +29,7 @@ export type CustomFields = Record<string, any>;
 
 export * from './account';
 export * from './base';
+export * from './common';
 export * from './contact';
 export * from './event';
 export * from './lead';

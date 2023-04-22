@@ -2,24 +2,23 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
+import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
 import {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
-  ConnectionUnsafe,
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  Integration,
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
   Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
@@ -600,7 +599,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'salesforce'>, integration: Integration): SalesforceClient {
+export function newClient(connection: ConnectionUnsafe<'salesforce'>, integration: CRMIntegration): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,

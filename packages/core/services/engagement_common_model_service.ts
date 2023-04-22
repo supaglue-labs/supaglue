@@ -1,4 +1,8 @@
-import { EngagementCommonModelType, EngagementCommonModelTypeMap, SequenceStartParams } from '@supaglue/types';
+import {
+  EngagementCommonModelType,
+  EngagementCommonModelTypeMap,
+  SequenceStartParams,
+} from '@supaglue/types/engagement';
 import { RemoteService } from './remote_service';
 
 export class EngagementCommonModelService {

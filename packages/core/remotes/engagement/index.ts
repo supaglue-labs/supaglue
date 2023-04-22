@@ -1,4 +1,5 @@
-import { ConnectionUnsafe, EngagementProviderName, Integration } from '@supaglue/types';
+import { ConnectionUnsafe, Integration } from '@supaglue/types';
+import { EngagementProviderName } from '@supaglue/types/engagement';
 import { logger } from '../../lib/logger';
 import { ConnectorAuthConfig, EngagementConnectorConfig, EngagementRemoteClient } from './base';
 import * as outreach from './outreach';
@@ -14,7 +15,7 @@ export function getConnectorAuthConfig(providerName: EngagementProviderName): Co
   return authConfig;
 }
 
-export function getCrmRemoteClient<T extends EngagementProviderName>(
+export function getEngagementRemoteClient<T extends EngagementProviderName>(
   connection: ConnectionUnsafe<T>,
   integration: Integration
 ): EngagementRemoteClient {

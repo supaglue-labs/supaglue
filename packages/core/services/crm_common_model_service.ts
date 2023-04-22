@@ -1,4 +1,4 @@
-import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { RemoteService } from './remote_service';
 
 export class CRMCommonModelService {

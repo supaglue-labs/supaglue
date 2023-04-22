@@ -1,5 +1,7 @@
 import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
+import { getEngagementRemoteClient } from '../remotes/engagement';
+import { EngagementRemoteClient } from '../remotes/engagement/base';
 import type { ConnectionService } from './connection_service';
 import type { IntegrationService } from './integration_service';
 
@@ -14,7 +16,16 @@ export class RemoteService {
 
   public async getCrmRemoteClient(connectionId: string): Promise<CrmRemoteClient> {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
+    if (connection.category !== 'crm') {
+      // TODO: fix this
+      throw new Error('Connection must be of category "crm"');
+    }
+
     const integration = await this.#integrationService.getById(connection.integrationId);
+    if (integration.category !== 'crm') {
+      // TODO: fix this
+      throw new Error('Integration must be of category "crm"');
+    }
 
     if (!integration.config) {
       throw new Error('Integration must have config');
@@ -38,7 +49,16 @@ export class RemoteService {
 
   public async getEngagementRemoteClient(connectionId: string): Promise<EngagementRemoteClient> {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
+    if (connection.category !== 'engagement') {
+      // TODO: fix this
+      throw new Error('Connection must be of category "engagement"');
+    }
+
     const integration = await this.#integrationService.getById(connection.integrationId);
+    if (integration.category !== 'engagement') {
+      // TODO: fix this
+      throw new Error('Integration must be of category "engagement"');
+    }
 
     if (!integration.config) {
       throw new Error('Integration must have config');

@@ -6,7 +6,8 @@ import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { CRMProviderName, Integration, IntegrationCategory } from '@supaglue/types';
+import { Integration, IntegrationCategory } from '@supaglue/types';
+import { CRMProviderName } from '@supaglue/types/crm';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { integrationCardsInfo } from './IntegrationTabPanelContainer';
@@ -77,7 +78,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     return await createRemoteIntegration(activeApplicationId, {
       applicationId: activeApplicationId,
       authType: 'oauth2',
-      category,
+      category: category as 'crm', // TODO: allow engagement too
       providerName,
       config: {
         providerAppId: '', // TODO: add input field for this

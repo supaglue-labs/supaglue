@@ -1,4 +1,5 @@
-import { ConnectionSafeAny, CRMCommonModelType, PostgresDestination } from '@supaglue/types';
+import { ConnectionSafeAny, PostgresDestination } from '@supaglue/types';
+import { CRMCommonModelType } from '@supaglue/types/crm';
 import { stringify } from 'csv-stringify';
 import { Pool, PoolClient } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
@@ -11,14 +12,12 @@ import { keysOfSnakecasedLeadWithTenant } from '../keys/lead';
 import { keysOfSnakecasedOpportunityWithTenant } from '../keys/opportunity';
 import { keysOfSnakecasedUserWithTenant } from '../keys/user';
 import { logger } from '../lib';
-import {
-  toSnakecasedKeysAccount,
-  toSnakecasedKeysContact,
-  toSnakecasedKeysLead,
-  toSnakecasedKeysOpportunity,
-  toSnakecasedKeysUser,
-} from '../mappers';
-import { toSnakecasedKeysEvent } from '../mappers/event';
+import { toSnakecasedKeysAccount } from '../mappers/crm/account';
+import { toSnakecasedKeysContact } from '../mappers/crm/contact';
+import { toSnakecasedKeysEvent } from '../mappers/crm/event';
+import { toSnakecasedKeysLead } from '../mappers/crm/lead';
+import { toSnakecasedKeysOpportunity } from '../mappers/crm/opportunity';
+import { toSnakecasedKeysUser } from '../mappers/crm/user';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
 
 const destinationIdToPool: Record<string, Pool> = {};

@@ -1,10 +1,5 @@
-import {
-  ConnectionUnsafe,
-  CRMCommonModelType,
-  CRMCommonModelTypeMap,
-  CRMProviderName,
-  Integration,
-} from '@supaglue/types';
+import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
 import { EventEmitter } from 'events';
 import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
@@ -48,5 +43,5 @@ export type ConnectorAuthConfig = {
 
 export type CrmConnectorConfig<T extends CRMProviderName> = {
   authConfig: ConnectorAuthConfig;
-  newClient: (connection: ConnectionUnsafe<T>, integration: Integration) => AbstractCrmRemoteClient;
+  newClient: (connection: ConnectionUnsafe<T>, integration: CRMIntegration) => AbstractCrmRemoteClient;
 };
