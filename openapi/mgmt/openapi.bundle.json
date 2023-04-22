@@ -1345,7 +1345,8 @@
           "category": {
             "type": "string",
             "enum": [
-              "crm"
+              "crm",
+              "engagement"
             ]
           },
           "connection_id": {

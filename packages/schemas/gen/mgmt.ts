@@ -251,7 +251,7 @@ export interface components {
       /** @example hubspot */
       provider_name: string;
       /** @enum {string} */
-      category: "crm";
+      category: "crm" | "engagement";
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
     };
