@@ -24,6 +24,9 @@
       ],
       "outputs": ["build/**"]
     },
+    "mgmt-ui#build": {
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
     "lint-staged": {},
     "lint": {
       "inputs": ["**/*.{js,ts,tsx}"]
