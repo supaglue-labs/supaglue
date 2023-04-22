@@ -12,6 +12,7 @@ export class PassthroughService {
     connectionId: string,
     request: SendPassthroughRequestRequest
   ): Promise<SendPassthroughRequestResponse> {
+    // TODO: support passthrough for engagement remote client too
     const client = await this.#remoteService.getCrmRemoteClient(connectionId);
     return await client.sendPassthroughRequest(request);
   }
