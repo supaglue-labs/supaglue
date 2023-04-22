@@ -10,7 +10,7 @@ export type SyncInfo = {
   // External Id
   customerId: string;
   providerName: string;
-  category: 'crm';
+  category: 'crm' | 'engagement'; // TODO: centralize
   connectionId: string;
 };
 
