@@ -157,7 +157,7 @@ export interface components {
       instance_url: string;
     };
     /** @enum {string} */
-    category: "crm";
+    category: "crm" | "engagement";
     /**
      * @example {
      *   "provider_app_id": "my_app_id",
@@ -199,7 +199,7 @@ export interface components {
       };
     };
     /** @enum {string} */
-    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
     create_update_customer: {
       /** @example your-customers-unique-application-id */
       customer_id: string;
