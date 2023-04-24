@@ -38,7 +38,7 @@ export function createImportRecords(
     }
 
     const client = await remoteService.getCrmRemoteClient(connectionId);
-    const writer = await destinationService.getWriterByApplicationId(connection.applicationId);
+    const writer = await destinationService.getWriterByIntegrationId(connection.integrationId);
 
     const result = {
       maxLastModifiedAt: null as Date | null,
