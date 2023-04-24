@@ -20,7 +20,7 @@ if [ "$(op -v | cut -d. -f1)" -lt 2 ]; then
   exit 1
 fi
 
-eval "$(op signin supaglue)"
+eval "$(op signin --account supaglue.1password.com)"
 
 POSTHOG_API_KEY=$(op read op://engineering/dl4y3dryfib2huqpultgp7wlcq/credential)
 
