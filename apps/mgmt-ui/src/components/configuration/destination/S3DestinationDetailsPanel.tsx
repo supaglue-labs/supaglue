@@ -22,6 +22,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
 
   const destination = existingDestinations.find((existingDestination) => existingDestination.type === 's3');
 
+  const [name, setName] = useState<string>('');
   const [region, setRegion] = useState<string>('');
   const [bucket, setBucket] = useState<string>('');
   const [accessKeyId, setAccessKeyId] = useState<string>('');
@@ -34,6 +35,9 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
     }
     if (!region) {
       setRegion(destination?.config?.region ?? '');
+    }
+    if (!name) {
+      setName(destination?.name ?? '');
     }
     if (!bucket) {
       setBucket(destination?.config?.bucket ?? '');
@@ -61,7 +65,8 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
     }
     return await createDestination({
       applicationId: activeApplicationId,
-      type: 's3', // TODO: allow postgres
+      type: 's3',
+      name,
       config: {
         region,
         bucket,
@@ -85,6 +90,19 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
               <Typography variant="subtitle1">{s3DestinationCardInfo.name}</Typography>
             </Stack>
           </Stack>
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Destination Name</Typography>
+          <TextField
+            value={name}
+            size="small"
+            label="Name (must be unique)"
+            variant="outlined"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setName(event.target.value);
+            }}
+          />
         </Stack>
 
         <Stack className="gap-2">
