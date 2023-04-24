@@ -1,8 +1,10 @@
 type BaseDestinationCreateParams = {
   applicationId: string;
+  name: string;
 };
 type BaseDestination = BaseDestinationCreateParams & {
   id: string;
+  name: string;
 };
 type BaseDestinationUpdateParams = BaseDestination;
 
