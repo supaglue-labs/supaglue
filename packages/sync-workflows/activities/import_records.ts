@@ -21,6 +21,9 @@ export type ImportRecordsArgs = {
 };
 
 export type ImportRecordsResult = {
+  syncId: string;
+  connectionId: string;
+  commonModel: CommonModel;
   maxLastModifiedAtMs: number;
   numRecordsSynced: number;
 };
@@ -124,6 +127,9 @@ export function createImportRecords(
     });
 
     return {
+      syncId,
+      connectionId,
+      commonModel,
       maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : 0,
       numRecordsSynced: result.numRecords,
     };
