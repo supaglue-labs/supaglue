@@ -79,7 +79,6 @@ const propertiesToFetch = {
     'Email',
     'Phone',
     'Fax',
-    'HomePhone',
     'MobilePhone',
     'LastActivityDate',
     // We may not need all of these fields in order to map to common model
@@ -347,7 +346,9 @@ class SalesforceClient extends AbstractCrmRemoteClient {
         return response;
       }
       const error = new Error(
-        `Status code ${response.status} and status ${response.statusText} when calling salesforce API. Error: ${response.text}. Body: ${response.body}`
+        `Status code ${response.status} and status ${
+          response.statusText
+        } when calling salesforce API. Error: ${await response.text()}. Body: ${response.body}`
       );
       logger.error(error);
       if (response.status !== 429) {
@@ -436,7 +437,32 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listCommonModelRecords(soql: string, mapper: (record: Record<string, any>) => any): Promise<Readable> {
+  private async getCommonModelSchema(commonModelName: CRMCommonModelType): Promise<string[]> {
+    const response = await this.#fetch(`/services/data/v57.0/sobjects/${commonModelName}/describe`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.fields.map((field: { name: string }) => field.name);
+  }
+
+  private async listCommonModelRecords(
+    commonModelName: CRMCommonModelType,
+    mapper: (record: Record<string, any>) => any,
+    updatedAfter?: Date
+  ): Promise<Readable> {
+    const availableProperties = await this.getCommonModelSchema(commonModelName);
+
+    const properties = intersection(propertiesToFetch[commonModelName], availableProperties);
+    const baseSoql = `
+      SELECT ${properties.join(', ')}
+      FROM ${capitalizeString(commonModelName)}
+    `;
+    const soql = updatedAfter
+      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
+      : baseSoql;
     return pipeline(
       await this.#getBulk2QueryJobResults(soql),
       new Transform({
@@ -455,14 +481,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listAccounts(updatedAfter?: Date): Promise<Readable> {
-    const baseSoql = `
-      SELECT ${propertiesToFetch.account.join(', ')}
-      FROM Account
-    `;
-    const soql = updatedAfter
-      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-      : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceAccountToAccount);
+    return this.listCommonModelRecords('account', fromSalesforceAccountToAccount, updatedAfter);
   }
 
   public async getAccount(id: string): Promise<Account> {
@@ -488,14 +507,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const baseSoql = `
-      SELECT ${propertiesToFetch.contact.join(', ')}
-      FROM Contact
-    `;
-    const soql = updatedAfter
-      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-      : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceContactToContact);
+    return this.listCommonModelRecords('contact', fromSalesforceContactToContact, updatedAfter);
   }
 
   public async getContact(id: string): Promise<Contact> {
@@ -520,14 +532,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
-    const baseSoql = `
-      SELECT ${propertiesToFetch.opportunity.join(', ')}
-      FROM Opportunity
-    `;
-    const soql = updatedAfter
-      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-      : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceOpportunityToOpportunity);
+    return this.listCommonModelRecords('opportunity', fromSalesforceOpportunityToOpportunity, updatedAfter);
   }
 
   public async getOpportunity(id: string): Promise<Opportunity> {
@@ -552,14 +557,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listLeads(updatedAfter?: Date): Promise<Readable> {
-    const baseSoql = `
-      SELECT ${propertiesToFetch.lead.join(', ')}
-      FROM Lead 
-    `;
-    const soql = updatedAfter
-      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-      : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceLeadToLead);
+    return this.listCommonModelRecords('lead', fromSalesforceLeadToLead, updatedAfter);
   }
 
   public async getLead(id: string): Promise<Lead> {
@@ -584,14 +582,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listUsers(updatedAfter?: Date): Promise<Readable> {
-    const baseSoql = `
-      SELECT ${propertiesToFetch.user.join(', ')}
-      FROM User
-    `;
-    const soql = updatedAfter
-      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-      : baseSoql;
-    return this.listCommonModelRecords(soql, fromSalesforceUserToUser);
+    return this.listCommonModelRecords('user', fromSalesforceUserToUser, updatedAfter);
   }
 
   public async listEvents(updatedAfter?: Date): Promise<Readable> {
@@ -616,3 +607,24 @@ export const authConfig: ConnectorAuthConfig = {
   authorizeHost: 'https://login.salesforce.com',
   authorizePath: '/services/oauth2/authorize',
 };
+
+function capitalizeString(str: string): string {
+  if (!str) {
+    return str;
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function intersection(listA: string[], listB: string[]): string[] {
+  const setB: Set<string> = new Set(listB);
+
+  const result: string[] = [];
+
+  listA.forEach((value: string) => {
+    if (setB.has(value)) {
+      result.push(value);
+    }
+  });
+
+  return result;
+}
