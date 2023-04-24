@@ -281,9 +281,10 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       if (response.status === 200) {
         return response;
       }
+      const responseText = await response.text();
       const error = new Error(
-        `Status code ${response.status} and status ${response.statusText} when calling salesforce API. Error: ${response.text}. Body: ${response.body}`
-      );
+        `Status code ${response.status} and status ${response.statusText} when calling salesforce API. Error: ${responseText}. Body: ${response.body}`
+      ); // TODO: move the dynamic out of the message
       logger.error(error);
       if (response.status !== 429) {
         bail(error);
