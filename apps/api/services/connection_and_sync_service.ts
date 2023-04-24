@@ -19,7 +19,7 @@ import {
   runSync,
   RUN_SYNC_PREFIX,
 } from '@supaglue/sync-workflows/workflows/run_sync';
-import { CRM_COMMON_MODEL_TYPES, Sync, SyncState, SyncType } from '@supaglue/types';
+import { Sync, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
   ConnectionSafeAny,
@@ -27,6 +27,7 @@ import type {
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
+import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
 import { Client, ScheduleAlreadyRunning, WorkflowNotFoundError } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';

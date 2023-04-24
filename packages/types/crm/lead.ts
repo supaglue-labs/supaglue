@@ -1,5 +1,8 @@
-import type { Address, BaseCrmModel, CustomFields, EmailAddress, PhoneNumber } from '..';
+import { BaseCrmModel, CustomFields } from '.';
 import { SnakecasedKeys } from '../snakecased_keys';
+import { Address } from './common/address';
+import { EmailAddress } from './common/email_address';
+import { PhoneNumber } from './common/phone_number';
 
 export type SnakecasedKeysLead = SnakecasedKeys<Lead>;
 

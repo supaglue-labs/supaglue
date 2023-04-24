@@ -1,4 +1,4 @@
-import { SnakecasedKeysUser, User } from '@supaglue/types';
+import { SnakecasedKeysUser, User } from '@supaglue/types/crm';
 
 export const toSnakecasedKeysUser = (user: User): SnakecasedKeysUser => {
   return {

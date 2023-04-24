@@ -1,6 +1,10 @@
-import type { Address, BaseCrmModel, CustomFields, EmailAddress, LifecycleStage, PhoneNumber } from '..';
+import { BaseCrmModel, CustomFields } from '.';
 import { Filter } from '../filter';
 import { SnakecasedKeys } from '../snakecased_keys';
+import { Address } from './common/address';
+import { EmailAddress } from './common/email_address';
+import { LifecycleStage } from './common/lifecycle_stage';
+import { PhoneNumber } from './common/phone_number';
 
 export type SnakecasedKeysContact = SnakecasedKeys<Contact>;
 

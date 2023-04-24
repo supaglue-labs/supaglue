@@ -1,4 +1,5 @@
-import { ConnectionUnsafe, CRMCommonModelType, CRMCommonModelTypeMap, Integration } from '@supaglue/types';
+import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 
@@ -31,7 +32,10 @@ class ZendeskSellClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'zendesk_sell'>, integration: Integration): ZendeskSellClient {
+export function newClient(
+  connection: ConnectionUnsafe<'zendesk_sell'>,
+  integration: CRMIntegration
+): ZendeskSellClient {
   return new ZendeskSellClient();
 }
 

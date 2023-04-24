@@ -13,22 +13,24 @@ import {
 } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
+  ConnectionUnsafe,
+  CRMIntegration,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+} from '@supaglue/types';
+import {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
-  ConnectionUnsafe,
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  Integration,
   Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
-  SendPassthroughRequestRequest,
-  SendPassthroughRequestResponse,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 import retry from 'async-retry';
 import { Readable } from 'stream';
 import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
@@ -706,7 +708,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'hubspot'>, integration: Integration): HubSpotClient {
+export function newClient(connection: ConnectionUnsafe<'hubspot'>, integration: CRMIntegration): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,

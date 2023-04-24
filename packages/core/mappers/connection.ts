@@ -1,5 +1,5 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
-import { ConnectionSafeAny, ConnectionStatus, ConnectionUnsafeAny, CRMProviderName } from '@supaglue/types';
+import { ConnectionSafeAny, ConnectionStatus, ConnectionUnsafeAny, ProviderName } from '@supaglue/types';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 
@@ -19,12 +19,12 @@ export const fromConnectionModelToConnectionUnsafe = async ({
     applicationId,
     customerId: externalCustomerId,
     integrationId,
-    category: category as 'crm',
+    category: category as 'crm' | 'engagement',
     status: status as ConnectionStatus,
-    providerName: providerName as CRMProviderName,
+    providerName: providerName as ProviderName,
     credentials: JSON.parse(await decrypt(credentials)),
     instanceUrl,
-  };
+  } as ConnectionUnsafeAny; // TODO: fix this typing
 };
 
 export const fromConnectionModelToConnectionSafe = ({
@@ -42,9 +42,9 @@ export const fromConnectionModelToConnectionSafe = ({
     applicationId,
     customerId: externalCustomerId,
     integrationId,
-    category: category as 'crm',
+    category: category as 'crm' | 'engagement',
     status: status as ConnectionStatus,
-    providerName: providerName as CRMProviderName,
+    providerName: providerName as ProviderName,
     instanceUrl,
-  };
+  } as ConnectionSafeAny; // TODO: fix this typing
 };

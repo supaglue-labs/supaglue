@@ -1,4 +1,4 @@
-import { BaseCrmModel } from '..';
+import { BaseCrmModel } from '.';
 import { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysUser = SnakecasedKeys<User>;

@@ -15,7 +15,7 @@ import {
   OpportunityStatus,
   PhoneNumber,
   User,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 
 export const fromHubSpotCompanyToAccount = ({
   id,

@@ -2,25 +2,23 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
+import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
 import {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
-  CommonModel,
-  ConnectionUnsafe,
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  Integration,
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
   Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
@@ -439,7 +437,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async getCommonModelSchema(commonModelName: CommonModel): Promise<string[]> {
+  private async getCommonModelSchema(commonModelName: CRMCommonModelType): Promise<string[]> {
     const response = await this.#fetch(`/services/data/v57.0/sobjects/${commonModelName}/describe`, {
       method: 'GET',
       headers: {
@@ -451,7 +449,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   private async listCommonModelRecords(
-    commonModelName: CommonModel,
+    commonModelName: CRMCommonModelType,
     mapper: (record: Record<string, any>) => any,
     updatedAfter?: Date
   ): Promise<Readable> {
@@ -592,7 +590,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'salesforce'>, integration: Integration): SalesforceClient {
+export function newClient(connection: ConnectionUnsafe<'salesforce'>, integration: CRMIntegration): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,
