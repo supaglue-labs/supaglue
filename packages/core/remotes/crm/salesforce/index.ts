@@ -80,7 +80,6 @@ const propertiesToFetch = {
     'Email',
     'Phone',
     'Fax',
-    'HomePhone',
     'MobilePhone',
     'LastActivityDate',
     // We may not need all of these fields in order to map to common model
