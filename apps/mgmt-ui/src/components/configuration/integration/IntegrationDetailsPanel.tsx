@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createRemoteIntegration, updateRemoteIntegration } from '@/client';
+import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import { useDestinations } from '@/hooks/useDestinations';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
@@ -20,10 +22,12 @@ export type IntegrationDetailsPanelProps = {
 
 export default function IntegrationDetailsPanel({ providerName, category, isLoading }: IntegrationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
+  const { destinations, isLoading: isLoadingDestinations } = useDestinations();
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
+  const [destinationId, setDestinationId] = useState<string | undefined>();
   const router = useRouter();
 
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
@@ -48,6 +52,9 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     }
     if (!syncPeriodSecs) {
       setSyncPeriodSecs(integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : 3600);
+    }
+    if (!destinationId) {
+      setDestinationId(integration?.destinationId ?? undefined);
     }
   }, [integration?.id]);
 
@@ -77,6 +84,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     }
     return await createRemoteIntegration(activeApplicationId, {
       applicationId: activeApplicationId,
+      destinationId: destinationId ?? null,
       authType: 'oauth2',
       category: category as 'crm', // TODO: allow engagement too
       providerName,
@@ -150,6 +158,18 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setOauthScopes(event.target.value);
             }}
+          />
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Destination</Typography>
+          <Select
+            name="Destination"
+            disabled={isLoadingDestinations}
+            onChange={setDestinationId}
+            value={destinationId ?? ''}
+            options={destinations?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
+            unselect
           />
         </Stack>
 
