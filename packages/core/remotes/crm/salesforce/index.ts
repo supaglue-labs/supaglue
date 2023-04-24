@@ -282,7 +282,9 @@ class SalesforceClient extends AbstractCrmRemoteClient {
         return response;
       }
       const error = new Error(
-        `Status code ${response.status} and status ${response.statusText} when calling salesforce API. Error: ${response.text}. Body: ${response.body}`
+        `Status code ${response.status} and status ${
+          response.statusText
+        } when calling salesforce API. Error: ${await response.text()}. Body: ${response.body}`
       );
       logger.error(error);
       if (response.status !== 429) {
