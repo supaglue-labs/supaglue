@@ -604,12 +604,11 @@ function capitalizeString(str: string): string {
 }
 
 function intersection(listA: string[], listB: string[]): string[] {
-  const setA: Set<string> = new Set(listA);
   const setB: Set<string> = new Set(listB);
 
   const result: string[] = [];
 
-  setA.forEach((value: string) => {
+  listA.forEach((value: string) => {
     if (setB.has(value)) {
       result.push(value);
     }
