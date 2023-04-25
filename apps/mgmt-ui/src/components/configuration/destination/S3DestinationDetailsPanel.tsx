@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createDestination, updateDestination } from '@/client';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
@@ -19,6 +20,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
   const activeApplicationId = useActiveApplicationId();
 
   const { destinations: existingDestinations = [], mutate } = useDestinations();
+  const { addNotification } = useNotification();
 
   const destination = existingDestinations.find((existingDestination) => existingDestination.type === 's3');
 
@@ -27,6 +29,9 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
   const [bucket, setBucket] = useState<string>('');
   const [accessKeyId, setAccessKeyId] = useState<string>('');
   const [secretAccessKey, setSecretAccessKey] = useState<string>('');
+
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -158,6 +163,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           <Stack direction="row" className="gap-2">
             <Button
               variant="outlined"
+              disabled={isSaving}
               onClick={() => {
                 router.back();
               }}
@@ -166,10 +172,13 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
             </Button>
             <Button
               variant="contained"
+              disabled={isSaving || isLoading}
               onClick={async () => {
+                setIsSaving(true);
                 const newDestination = await createOrUpdateDestination();
+                addNotification({ message: 'Successfully updated s3 destination', severity: 'success' });
                 mutate([...existingDestinations, newDestination], false);
-                router.push(`/applications/${activeApplicationId}/configuration/destinations/${newDestination.type}`);
+                setIsSaving(false);
               }}
             >
               Save

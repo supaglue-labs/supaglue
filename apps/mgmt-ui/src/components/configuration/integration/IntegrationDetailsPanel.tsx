@@ -2,6 +2,7 @@
 import { createRemoteIntegration, updateRemoteIntegration } from '@/client';
 import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useIntegrations } from '@/hooks/useIntegrations';
@@ -23,11 +24,13 @@ export type IntegrationDetailsPanelProps = {
 export default function IntegrationDetailsPanel({ providerName, category, isLoading }: IntegrationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
   const { destinations, isLoading: isLoadingDestinations } = useDestinations();
+  const { addNotification } = useNotification();
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const [destinationId, setDestinationId] = useState<string | undefined>();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const router = useRouter();
 
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
@@ -191,20 +194,22 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
           <Stack direction="row" className="gap-2">
             <Button
               variant="outlined"
+              disabled={isSaving}
               onClick={() => {
                 router.back();
               }}
             >
-              Cancel
+              Back
             </Button>
             <Button
               variant="contained"
+              disabled={isSaving || isLoading}
               onClick={async () => {
+                setIsSaving(true);
                 const newIntegration = await createOrUpdateIntegration();
+                addNotification({ message: 'Successfully updated integration', severity: 'success' });
                 mutate([...existingIntegrations, newIntegration], false);
-                router.push(
-                  `/applications/${activeApplicationId}/configuration/integrations/${newIntegration.category}`
-                );
+                setIsSaving(false);
               }}
             >
               Save

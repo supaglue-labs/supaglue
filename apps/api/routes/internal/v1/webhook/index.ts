@@ -59,8 +59,7 @@ export default function init(app: Router): void {
       await applicationService.update(req.supaglueApplication.id, req.orgId, {
         config: { ...req.supaglueApplication.config, webhook: null },
       });
-      // TODO: Figure out why typing doesn't work here
-      return res.status(200).send();
+      return res.status(204).send();
     }
   );
 
