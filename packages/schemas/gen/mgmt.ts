@@ -30,6 +30,26 @@ export interface paths {
       };
     };
   };
+  "/destinations": {
+    /**
+     * List destinations 
+     * @description Get a list of destinations
+     */
+    get: operations["getDestinations"];
+    /** Create destination */
+    post: operations["createDestination"];
+  };
+  "/destinations/{destination_id}": {
+    /** Get destination */
+    get: operations["getDestination"];
+    /** Update destination */
+    put: operations["updateDestination"];
+    parameters: {
+      path: {
+        destination_id: string;
+      };
+    };
+  };
   "/integrations": {
     /**
      * List integrations 
@@ -136,6 +156,44 @@ export interface components {
       provider_name: components["schemas"]["provider_name"];
       config?: components["schemas"]["integration_config"];
     };
+    destination: {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      /** @example My Destination */
+      name: string;
+    } & OneOf<[{
+      /** @enum {string} */
+      type: "s3";
+      config: components["schemas"]["s3_config"];
+    }, {
+      /** @enum {string} */
+      type: "postgres";
+      config: components["schemas"]["postgres_config"];
+    }]>;
+    s3_config: {
+      /** @example us-west-2 */
+      region: string;
+      /** @example my-test-bucket */
+      bucket: string;
+      access_key_id: string;
+      secret_access_key: string;
+    };
+    postgres_config: {
+      /** @example https://mydb.com */
+      host: string;
+      /** @example 5432 */
+      port: number;
+      /** @example my_database */
+      database: string;
+      /** @example public */
+      schema: string;
+      /** @example myuser */
+      user: string;
+      /** @example password */
+      password: string;
+    };
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -227,6 +285,18 @@ export interface components {
       /** @enum {string} */
       category: "engagement";
       provider_name: components["schemas"]["provider_name_engagement"];
+    }]>;
+    create_update_destination: {
+      /** @example My Destination */
+      name: string;
+    } & OneOf<[{
+      /** @enum {string} */
+      type: "s3";
+      config: components["schemas"]["s3_config"];
+    }, {
+      /** @enum {string} */
+      type: "postgres";
+      config: components["schemas"]["postgres_config"];
     }]>;
     webhook: {
       url: string;
@@ -389,6 +459,63 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["customer"];
+        };
+      };
+    };
+  };
+  getDestinations: {
+    /**
+     * List destinations 
+     * @description Get a list of destinations
+     */
+    responses: {
+      /** @description Destinations */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["destination"])[];
+        };
+      };
+    };
+  };
+  createDestination: {
+    /** Create destination */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_destination"];
+      };
+    };
+    responses: {
+      /** @description Destination created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["destination"];
+        };
+      };
+    };
+  };
+  getDestination: {
+    /** Get destination */
+    responses: {
+      /** @description Destination */
+      200: {
+        content: {
+          "application/json": components["schemas"]["destination"];
+        };
+      };
+    };
+  };
+  updateDestination: {
+    /** Update destination */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_destination"];
+      };
+    };
+    responses: {
+      /** @description Destination */
+      200: {
+        content: {
+          "application/json": components["schemas"]["destination"];
         };
       };
     };
