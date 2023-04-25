@@ -216,6 +216,7 @@
                         "id": "e888cedf-e9d0-42c5-9485-2d72984faef8",
                         "category": "crm",
                         "auth_type": "oauth2",
+                        "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
                         "provider_name": "hubspot",
                         "config": {
                           "provider_app_id": "my_app_id",
@@ -243,6 +244,7 @@
                         "id": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
                         "category": "crm",
                         "auth_type": "oauth2",
+                        "destination_id": null,
                         "provider_name": "salesforce",
                         "config": {
                           "provider_app_id": "my_app_id2",
@@ -996,6 +998,11 @@
             "type": "string",
             "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
           },
+          "destination_id": {
+            "type": "string",
+            "example": "0a292508-d254-4929-98d3-dc23416efff8",
+            "nullable": true
+          },
           "category": {
             "$ref": "#/components/schemas/category"
           },
@@ -1015,6 +1022,7 @@
         "required": [
           "id",
           "application_id",
+          "destination_id",
           "category",
           "auth_type",
           "provider_name"
@@ -1225,6 +1233,10 @@
               },
               "config": {
                 "$ref": "#/components/schemas/integration_config"
+              },
+              "destination_id": {
+                "type": "string",
+                "nullable": true
               }
             },
             "required": [

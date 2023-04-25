@@ -128,6 +128,8 @@ export interface components {
       id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       application_id: string;
+      /** @example 0a292508-d254-4929-98d3-dc23416efff8 */
+      destination_id: string | null;
       category: components["schemas"]["category"];
       /** @enum {string} */
       auth_type: "oauth2";
@@ -212,11 +214,12 @@ export interface components {
       /** @example contact@mycompany.com */
       email: string;
     };
-    create_update_integration: {
+    create_update_integration: ({
       /** @enum {string} */
       auth_type: "oauth2";
       config: components["schemas"]["integration_config"];
-    } & OneOf<[{
+      destination_id?: string | null;
+    }) & OneOf<[{
       /** @enum {string} */
       category: "crm";
       provider_name: components["schemas"]["provider_name_crm"];

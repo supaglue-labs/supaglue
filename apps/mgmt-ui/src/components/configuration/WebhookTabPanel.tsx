@@ -5,9 +5,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { createOrUpdateWebhook, deleteWebhook } from '@/client';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { Box, Button, IconButton, Stack, Switch, TextField, Typography } from '@mui/material';
-import { HttpRequestType, WebhookConfig } from '@supaglue/types';
+import { WebhookConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
-import HttpMethodSelect from '../logs/HttpMethodSelect';
+import Select from '../Select';
 
 const defaultWebhook: WebhookConfig = {
   url: '',
@@ -25,7 +25,6 @@ export default function WebhookTabPanel() {
   const [notifyOnSyncSuccess, setNotifyOnSyncSuccess] = useState<boolean>(false);
   const [notifyOnConnectionError, setNotifyOnConnectionError] = useState<boolean>(false);
   const [notifyOnSyncError, setNotifyOnSyncError] = useState<boolean>(false);
-  const [requestType, setRequestType] = useState<HttpRequestType>('POST');
   const [headersList, setHeadersList] = useState<{ name: string; value: string }[]>(defaultHeadersList);
 
   useEffect(() => {
@@ -66,7 +65,7 @@ export default function WebhookTabPanel() {
                 setWebhookUrl(event.target.value);
               }}
             />
-            <HttpMethodSelect value={'POST'} onChange={setRequestType} />
+            <Select name="Http Method" value="POST" options={[{ value: 'POST' }]} disabled />
           </Stack>
           <Typography sx={{ fontSize: 16 }} className="pl-2 pt-2">
             Events
@@ -117,7 +116,7 @@ export default function WebhookTabPanel() {
                 );
                 const webhook = {
                   url: webhookUrl.trim(),
-                  requestType,
+                  requestType: 'POST',
                   notifyOnSyncSuccess,
                   notifyOnSyncError,
                   notifyOnConnectionSuccess,
