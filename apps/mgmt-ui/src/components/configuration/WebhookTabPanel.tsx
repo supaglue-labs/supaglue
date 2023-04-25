@@ -3,6 +3,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { createOrUpdateWebhook, deleteWebhook } from '@/client';
+import { useNotification } from '@/context/notification';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { Box, Button, IconButton, Stack, Switch, TextField, Typography } from '@mui/material';
 import { WebhookConfig } from '@supaglue/types';
@@ -20,12 +21,14 @@ const defaultHeadersList = [{ name: '', value: '' }];
 
 export default function WebhookTabPanel() {
   const { activeApplication, isLoading, mutate } = useActiveApplication();
+  const { addNotification } = useNotification();
   const [webhookUrl, setWebhookUrl] = useState<string>('');
   const [notifyOnConnectionSuccess, setNotifyOnConnectionSuccess] = useState<boolean>(false);
   const [notifyOnSyncSuccess, setNotifyOnSyncSuccess] = useState<boolean>(false);
   const [notifyOnConnectionError, setNotifyOnConnectionError] = useState<boolean>(false);
   const [notifyOnSyncError, setNotifyOnSyncError] = useState<boolean>(false);
   const [headersList, setHeadersList] = useState<{ name: string; value: string }[]>(defaultHeadersList);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
 
   useEffect(() => {
     const { url, notifyOnConnectionError, notifyOnConnectionSuccess, notifyOnSyncError, notifyOnSyncSuccess, headers } =
@@ -106,11 +109,12 @@ export default function WebhookTabPanel() {
           <Stack direction="row" className="gap-2">
             <Button
               variant="contained"
-              disabled={isLoading || !activeApplication}
+              disabled={isLoading || isSaving || !activeApplication}
               onClick={async () => {
                 if (!activeApplication) {
                   return;
                 }
+                setIsSaving(true);
                 const headers = Object.fromEntries(
                   headersList.filter(({ name }) => !!name).map(({ name, value }) => [name, value])
                 );
@@ -123,8 +127,10 @@ export default function WebhookTabPanel() {
                   notifyOnConnectionError,
                   headers,
                 };
-                mutate({ ...activeApplication, config: { ...activeApplication.config, webhook } }, false);
                 await createOrUpdateWebhook(activeApplication.id, webhook);
+                mutate({ ...activeApplication, config: { ...activeApplication.config, webhook } }, false);
+                addNotification({ message: 'Successfully updated webhook', severity: 'success' });
+                setIsSaving(false);
               }}
             >
               Update
@@ -134,13 +140,16 @@ export default function WebhookTabPanel() {
             <Button
               variant="text"
               color="error"
-              disabled={isLoading || !activeApplication}
+              disabled={isLoading || isSaving || !activeApplication}
               onClick={async () => {
                 if (!activeApplication) {
                   return;
                 }
+                setIsSaving(true);
+                await deleteWebhook(activeApplication.id);
                 mutate({ ...activeApplication, config: { ...activeApplication.config, webhook: null } }, false);
-                deleteWebhook(activeApplication.id);
+                addNotification({ message: 'Successfully deleted webhook', severity: 'success' });
+                setIsSaving(false);
               }}
             >
               Delete

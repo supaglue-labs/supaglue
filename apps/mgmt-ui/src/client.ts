@@ -52,7 +52,7 @@ export async function createOrUpdateWebhook(applicationId: string, data: Webhook
   return r;
 }
 
-export async function deleteWebhook(applicationId: string): Promise<void> {
+export async function deleteWebhook(applicationId: string) {
   await fetch(`/api/internal/webhook/delete`, {
     method: 'POST',
     headers: {

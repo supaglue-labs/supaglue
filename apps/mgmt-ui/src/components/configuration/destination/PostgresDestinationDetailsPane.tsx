@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createDestination, updateDestination } from '@/client';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
@@ -19,6 +20,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const activeApplicationId = useActiveApplicationId();
 
   const { destinations: existingDestinations = [], mutate } = useDestinations();
+  const { addNotification } = useNotification();
 
   const destination = existingDestinations.find((existingDestination) => existingDestination.type === 'postgres');
 
@@ -29,6 +31,9 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const [schema, setSchema] = useState<string>('');
   const [user, setUser] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -197,6 +202,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           <Stack direction="row" className="gap-2">
             <Button
               variant="outlined"
+              disabled={isSaving}
               onClick={() => {
                 router.back();
               }}
@@ -205,10 +211,13 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             </Button>
             <Button
               variant="contained"
+              disabled={isSaving || isLoading}
               onClick={async () => {
+                setIsSaving(true);
                 const newDestination = await createOrUpdateDestination();
+                addNotification({ message: 'Successfully updated postgres destination', severity: 'success' });
                 mutate([...existingDestinations, newDestination], false);
-                router.push(`/applications/${activeApplicationId}/configuration/destinations/${newDestination.type}`);
+                setIsSaving(false);
               }}
             >
               Save
