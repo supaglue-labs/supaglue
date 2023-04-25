@@ -29,7 +29,7 @@ model Destination {
   id            String        @id @default(uuid())
   name          String
   type          String
-  applicationId String        @unique @map("application_id")
+  applicationId String        @map("application_id")
   application   Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   config        Json
   createdAt     DateTime      @default(now()) @map("created_at")
