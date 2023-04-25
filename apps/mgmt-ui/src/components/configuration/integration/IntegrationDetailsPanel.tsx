@@ -65,6 +65,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     if (integration) {
       const newIntegration: Integration = {
         ...integration,
+        destinationId: destinationId || null,
         config: {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -87,7 +88,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     }
     return await createRemoteIntegration(activeApplicationId, {
       applicationId: activeApplicationId,
-      destinationId: destinationId ?? null,
+      destinationId: destinationId || null,
       authType: 'oauth2',
       category: category as 'crm', // TODO: allow engagement too
       providerName,
