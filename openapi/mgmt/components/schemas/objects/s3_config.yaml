@@ -1,0 +1,17 @@
+type: object
+properties:
+  region:
+    type: string
+    example: us-west-2
+  bucket:
+    type: string
+    example: my-test-bucket
+  access_key_id:
+    type: string
+  secret_access_key:
+    type: string
+required:
+  - region
+  - bucket
+  - access_key_id
+  - secret_access_key

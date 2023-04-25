@@ -185,6 +185,206 @@
         }
       ]
     },
+    "/destinations": {
+      "get": {
+        "operationId": "getDestinations",
+        "tags": [
+          "Destinations"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List destinations",
+        "description": "Get a list of destinations",
+        "responses": {
+          "200": {
+            "description": "Destinations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/destination"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "0a292508-d254-4929-98d3-dc23416efff8",
+                        "application_id": "e52286c9-3038-4fa2-a2b8-3ec9759d20cb",
+                        "name": "My S3 Destination",
+                        "type": "s3",
+                        "config": {
+                          "region": "us-west-2",
+                          "bucket": "my-bucket",
+                          "access_key_id": "MY_ACCESS_KEY_ID",
+                          "secret_access_key": "MY_SECRET_ACCESS_KEY"
+                        }
+                      },
+                      {
+                        "id": "92bc3460-a301-4116-8d1f-6e5f8252c2e2",
+                        "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
+                        "name": "My Postgres Destination",
+                        "type": "postgres",
+                        "config": {
+                          "host": "https://mydb.com",
+                          "port": 5432,
+                          "database": "my_database",
+                          "schema": "public",
+                          "user": "user",
+                          "password": "password"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createDestination",
+        "summary": "Create destination",
+        "tags": [
+          "Destinations"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_destination"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Destination created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/destination"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/destinations/{destination_id}": {
+      "get": {
+        "operationId": "getDestination",
+        "summary": "Get destination",
+        "tags": [
+          "Destinations"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Destination",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/destination"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "92bc3460-a301-4116-8d1f-6e5f8252c2e2",
+                      "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
+                      "name": "My Postgres Destination",
+                      "type": "postgres",
+                      "config": {
+                        "host": "https://mydb.com",
+                        "port": 5432,
+                        "database": "my_database",
+                        "schema": "public",
+                        "user": "user",
+                        "password": "password"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateDestination",
+        "summary": "Update destination",
+        "tags": [
+          "Destinations"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_destination"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Destination",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/destination"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "92bc3460-a301-4116-8d1f-6e5f8252c2e2",
+                      "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
+                      "name": "My Postgres Destination",
+                      "type": "postgres",
+                      "config": {
+                        "host": "https://mydb.com",
+                        "port": 5432,
+                        "database": "my_database",
+                        "schema": "public",
+                        "user": "user",
+                        "password": "password"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "destination_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/integrations": {
       "get": {
         "operationId": "getIntegrations",
@@ -1028,6 +1228,134 @@
           "provider_name"
         ]
       },
+      "destination": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name"
+            ]
+          },
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "s3"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/s3_config"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "postgres"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/postgres_config"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "s3_config": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "bucket": {
+            "type": "string",
+            "example": "my-test-bucket"
+          },
+          "access_key_id": {
+            "type": "string"
+          },
+          "secret_access_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "region",
+          "bucket",
+          "access_key_id",
+          "secret_access_key"
+        ]
+      },
+      "postgres_config": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "https://mydb.com"
+          },
+          "port": {
+            "type": "number",
+            "example": 5432
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "public"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "database",
+          "schema",
+          "user",
+          "password"
+        ]
+      },
       "connection": {
         "type": "object",
         "properties": {
@@ -1280,6 +1608,62 @@
                 "required": [
                   "category",
                   "provider_name"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "create_update_destination": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "s3"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/s3_config"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "postgres"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/postgres_config"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
                 ]
               }
             ]
