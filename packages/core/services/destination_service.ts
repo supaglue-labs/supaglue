@@ -72,6 +72,7 @@ export class DestinationService {
         applicationId: params.applicationId,
         type: params.type,
         config: safeConfig,
+        name: params.name,
       },
     });
     if (params.type === 'postgres') {
