@@ -178,7 +178,6 @@ export interface components {
       /** @example my-test-bucket */
       bucket: string;
       access_key_id: string;
-      secret_access_key: string;
     };
     postgres_config: {
       /** @example https://mydb.com */
@@ -191,8 +190,6 @@ export interface components {
       schema: string;
       /** @example myuser */
       user: string;
-      /** @example password */
-      password: string;
     };
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
