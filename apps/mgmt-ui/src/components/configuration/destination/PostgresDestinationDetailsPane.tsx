@@ -218,7 +218,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
                 const newDestination = await createOrUpdateDestination();
                 addNotification({ message: 'Successfully updated postgres destination', severity: 'success' });
                 const latestDestinations = [
-                  ...existingDestinations.filter(({ id }) => id === newDestination.id),
+                  ...existingDestinations.filter(({ id }) => id !== newDestination.id),
                   newDestination,
                 ];
                 mutate(latestDestinations, {
