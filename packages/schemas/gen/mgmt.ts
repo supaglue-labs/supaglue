@@ -200,6 +200,24 @@ export interface components {
       user: string;
       /** @example password */
       password: string;
+      /**
+       * @example require 
+       * @enum {string}
+       */
+      sslmode: "disable" | "require";
+      /**
+       * @example strict 
+       * @enum {string}
+       */
+      sslaccept: "strict" | "accept_invalid_certs";
+      /** @example -----BEGIN CERTIFICATE-----\nMIID... */
+      ca: string;
+      /** @example -----BEGIN CERTIFICATE-----\nMIID... */
+      cert: string;
+      /** @example -----RSA PRIVATE KEY-----\nMIIE... */
+      key: string;
+      /** @example password */
+      passphrase: string;
     };
     postgres_config_safe: {
       /** @example https://mydb.com */

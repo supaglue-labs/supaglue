@@ -56,14 +56,22 @@ type BasePostgresConfig = {
   database: string;
   schema: string;
   user: string;
+  sslmode: 'disable' | 'require';
+  sslaccept: 'strict' | 'accept_invalid_certs';
+  ca: string;
+  cert: string;
 };
 
 export type PostgresConfigSafe = BasePostgresConfig & {
   passwordEncrypted: string;
+  keyEncrypted: string;
+  passphraseEncrypted: string;
 };
 
 export type PostgresConfigUnsafe = BasePostgresConfig & {
   password: string;
+  key: string;
+  passphrase: string;
 };
 
 export type Destination = S3Destination | PostgresDestination;

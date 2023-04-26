@@ -36,7 +36,20 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       return await existingPool.connect();
     }
 
-    const pool = new Pool(this.#destination.config);
+    const { sslmode, sslaccept, ca, cert, key, passphrase, ...config } = this.#destination.config;
+    const pool = new Pool({
+      ...config,
+      ssl:
+        sslmode === 'disable'
+          ? false
+          : {
+              rejectUnauthorized: sslaccept === 'strict',
+              ca: ca ? ca : undefined,
+              cert: cert ? cert : undefined,
+              key: key ? key : undefined,
+              passphrase: passphrase ? passphrase : undefined,
+            },
+    });
     return await pool.connect();
   }
 

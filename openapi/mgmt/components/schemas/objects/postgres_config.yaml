@@ -9,7 +9,7 @@ properties:
   database:
     type: string
     example: my_database
-  schema: 
+  schema:
     type: string
     example: public
   user:
@@ -18,6 +18,31 @@ properties:
   password:
     type: string
     example: password
+  sslmode:
+    type: string
+    enum:
+      - disable
+      - require
+    example: require
+  sslaccept:
+    type: string
+    enum:
+      - strict
+      - accept_invalid_certs
+    example: strict
+  ca:
+    type: string
+    example: -----BEGIN CERTIFICATE-----\nMIID...
+  cert:
+    type: string
+    example: -----BEGIN CERTIFICATE-----\nMIID...
+  key:
+    type: string
+    example: -----RSA PRIVATE KEY-----\nMIIE...
+  passphrase:
+    type: string
+    example: password
+
 required:
   - host
   - port
@@ -25,3 +50,9 @@ required:
   - schema
   - user
   - password
+  - sslmode
+  - sslaccept
+  - ca
+  - cert
+  - key
+  - passphrase

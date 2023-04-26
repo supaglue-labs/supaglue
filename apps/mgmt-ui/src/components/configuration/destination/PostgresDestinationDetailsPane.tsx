@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createDestination, updateDestination } from '@/client';
 import Spinner from '@/components/Spinner';
+import { SwitchWithLabel } from '@/components/SwitchWithLabel';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { Destination } from '@supaglue/types';
+import { Destination, PostgresConfigSafe } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { postgresDestinationCardInfo } from './DestinationTabPanelContainer';
@@ -31,7 +32,12 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const [schema, setSchema] = useState<string>('');
   const [user, setUser] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
+  const [sslmode, setSslmode] = useState<PostgresConfigSafe['sslmode']>('disable');
+  const [sslaccept, setSslaccept] = useState<PostgresConfigSafe['sslaccept']>('accept_invalid_certs');
+  const [ca, setCa] = useState<string>('');
+  const [cert, setCert] = useState<string>('');
+  const [key, setKey] = useState<string>('');
+  const [passphrase, setPassphrase] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const router = useRouter();
@@ -58,6 +64,14 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
     if (!user) {
       setUser(destination.config.user);
     }
+    if (!ca) {
+      setCa(destination.config.ca);
+    }
+    if (!cert) {
+      setCert(destination.config.cert);
+    }
+    setSslmode(destination.config.sslmode ?? 'disable');
+    setSslaccept(destination.config.sslaccept ?? 'accept_invalid_certs');
   }, [destination?.id]);
 
   const createOrUpdateDestination = async (): Promise<Destination> => {
@@ -74,6 +88,12 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           database,
           user,
           password,
+          sslmode,
+          sslaccept,
+          ca,
+          cert,
+          key,
+          passphrase,
         },
       });
     }
@@ -88,6 +108,12 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
         schema,
         user,
         password,
+        sslmode,
+        sslaccept,
+        ca,
+        cert,
+        key,
+        passphrase,
       },
     });
   };
@@ -195,6 +221,70 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
               setPassword(event.target.value);
             }}
           />
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">SSL</Typography>
+          <SwitchWithLabel
+            label="Require SSL"
+            isLoading={isLoading}
+            checked={sslmode === 'require'}
+            onToggle={(checked) => {
+              setSslmode(checked ? 'require' : 'disable');
+            }}
+          />
+          <TextField
+            value={ca}
+            placeholder={'-----BEGIN CERTIFICATE-----\nMIID...'}
+            label="CA Certificate"
+            variant="outlined"
+            multiline
+            rows={4}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setCa(event.target.value);
+            }}
+          />
+          <TextField
+            value={cert}
+            placeholder={'-----BEGIN CERTIFICATE-----\nMIID...'}
+            label="Certificate"
+            variant="outlined"
+            multiline
+            rows={4}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setCert(event.target.value);
+            }}
+          />
+          <TextField
+            value={key}
+            placeholder={'-----RSA PRIVATE KEY-----\nMIIE...'}
+            label="Key"
+            variant="outlined"
+            multiline
+            rows={4}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setKey(event.target.value);
+            }}
+          />
+          <TextField
+            value={passphrase}
+            placeholder={'passphrase'}
+            label="Passphrase"
+            variant="outlined"
+            type="password"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setPassphrase(event.target.value);
+            }}
+          />
+          <SwitchWithLabel
+            label="Verify server certificate"
+            isLoading={isLoading}
+            checked={sslaccept === 'strict'}
+            onToggle={(checked) => {
+              setSslaccept(checked ? 'strict' : 'accept_invalid_certs');
+            }}
+          />
+          <Typography variant="caption">Note: you must set a CA Certificate for this to work</Typography>
         </Stack>
 
         <Stack direction="row" className="gap-2 justify-between">

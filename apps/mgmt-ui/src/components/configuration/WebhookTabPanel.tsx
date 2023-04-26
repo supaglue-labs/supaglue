@@ -5,10 +5,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { createOrUpdateWebhook, deleteWebhook } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
-import { Box, Button, IconButton, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Box, Button, IconButton, Stack, TextField, Typography } from '@mui/material';
 import { WebhookConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
 import Select from '../Select';
+import { SwitchWithLabel } from '../SwitchWithLabel';
 
 const defaultWebhook: WebhookConfig = {
   url: '',
@@ -158,22 +159,6 @@ export default function WebhookTabPanel() {
         </Stack>
       </Stack>
     </Box>
-  );
-}
-
-type SwitchWithLabelProps = {
-  label: string;
-  isLoading: boolean;
-  checked: boolean;
-  onToggle: (checked: boolean) => void;
-};
-
-function SwitchWithLabel({ label, isLoading, checked, onToggle }: SwitchWithLabelProps) {
-  return (
-    <Stack direction="row" className="gap-2 items-center">
-      <Switch disabled={isLoading} checked={checked} onChange={(_, checked) => onToggle(checked)} />
-      <Typography>{label}</Typography>
-    </Stack>
   );
 }
 

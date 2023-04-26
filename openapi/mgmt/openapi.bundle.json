@@ -1364,6 +1364,38 @@
           "password": {
             "type": "string",
             "example": "password"
+          },
+          "sslmode": {
+            "type": "string",
+            "enum": [
+              "disable",
+              "require"
+            ],
+            "example": "require"
+          },
+          "sslaccept": {
+            "type": "string",
+            "enum": [
+              "strict",
+              "accept_invalid_certs"
+            ],
+            "example": "strict"
+          },
+          "ca": {
+            "type": "string",
+            "example": "-----BEGIN CERTIFICATE-----\\nMIID..."
+          },
+          "cert": {
+            "type": "string",
+            "example": "-----BEGIN CERTIFICATE-----\\nMIID..."
+          },
+          "key": {
+            "type": "string",
+            "example": "-----RSA PRIVATE KEY-----\\nMIIE..."
+          },
+          "passphrase": {
+            "type": "string",
+            "example": "password"
           }
         },
         "required": [
@@ -1372,7 +1404,13 @@
           "database",
           "schema",
           "user",
-          "password"
+          "password",
+          "sslmode",
+          "sslaccept",
+          "ca",
+          "cert",
+          "key",
+          "passphrase"
         ]
       },
       "postgres_config_safe": {

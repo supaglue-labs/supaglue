@@ -19,6 +19,11 @@ export const toPostgresDestinationConfigSafe = async ({
   schema,
   user,
   password,
+  sslmode,
+  ca,
+  cert,
+  key,
+  passphrase,
 }: PostgresConfigUnsafe): Promise<PostgresConfigSafe> => {
   return {
     host,
@@ -27,6 +32,11 @@ export const toPostgresDestinationConfigSafe = async ({
     schema,
     user,
     passwordEncrypted: await encryptAsString(password),
+    sslmode,
+    ca,
+    cert,
+    keyEncrypted: await encryptAsString(key),
+    passphraseEncrypted: await encryptAsString(passphrase),
   };
 };
 
