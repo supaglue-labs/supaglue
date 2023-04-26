@@ -68,6 +68,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
       return await updateDestination({
         ...destination,
         type: 'postgres',
+        name,
         config: {
           host,
           port,
@@ -216,7 +217,15 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
                 setIsSaving(true);
                 const newDestination = await createOrUpdateDestination();
                 addNotification({ message: 'Successfully updated postgres destination', severity: 'success' });
-                mutate([...existingDestinations, newDestination], false);
+                const latestDestinations = [
+                  ...existingDestinations.filter(({ id }) => id !== newDestination.id),
+                  newDestination,
+                ];
+                mutate(latestDestinations, {
+                  optimisticData: latestDestinations,
+                  revalidate: false,
+                  populateCache: false,
+                });
                 setIsSaving(false);
               }}
             >
