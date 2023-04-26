@@ -82,18 +82,49 @@ and we want to make sure that the component is included in the name.
 
 {{- define "supaglue.syncWorker.databaseUrl" -}}
 {{- $databaseUrl := include "supaglue.databaseUrl" . -}}
-{{- $connectionLimit := default 5 ((.Values.syncWorker.db).parameters).connectionLimit -}}
-{{- $poolTimeout := default 10 ((.Values.syncWorker.db).parameters).poolTimeout -}}
-{{- printf "%s?connection_limit=%d&pool_timeout=%d" $databaseUrl $connectionLimit $poolTimeout -}}
+{{- $connectionLimit := ((.Values.syncWorker.db).parameters).connectionLimit -}}
+{{- $poolTimeout := ((.Values.syncWorker.db).parameters).poolTimeout -}}
+{{- $sslCert := empty ((.Values.syncWorker.db).parameters).sslCert | ternary nil (urlquery ((.Values.syncWorker.db).parameters).sslCert)  -}}
+{{- $sslMode := ((.Values.syncWorker.db).parameters).sslMode -}}
+{{- $sslIdentity := ((.Values.syncWorker.db).parameters).sslIdentity -}}
+{{- $sslPassword := ((.Values.syncWorker.db).parameters).sslPassword -}}
+{{- $sslAccept := ((.Values.syncWorker.db).parameters).sslAccept -}}
+{{- $params := dict "connection_limit" $connectionLimit "pool_timeout" $poolTimeout "sslcert" $sslCert "sslmode" $sslMode "sslidentity" $sslIdentity "sslpassword" $sslPassword "sslaccept" $sslAccept -}}
+{{- $lastIndex := sub (len (keys $params)) 1 -}}
+{{- print $databaseUrl "?" -}}
+{{- range $index, $key := keys $params -}}
+  {{- $value := get $params $key -}}
+  {{- if $value -}}
+    {{- print $key "=" $value -}}
+    {{- if ne $index $lastIndex -}}
+      {{- print "&" -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "supaglue.api.databaseUrl" -}}
 {{- $databaseUrl := include "supaglue.databaseUrl" . -}}
-{{- $connectionLimit := default 5 ((.Values.api.db).parameters).connectionLimit -}}
-{{- $poolTimeout := default 10 ((.Values.api.db).parameters).poolTimeout -}}
-{{- printf "%s?connection_limit=%d&pool_timeout=%d" $databaseUrl $connectionLimit $poolTimeout -}}
+{{- $connectionLimit := ((.Values.api.db).parameters).connectionLimit -}}
+{{- $poolTimeout := ((.Values.api.db).parameters).poolTimeout -}}
+{{- $sslCert := empty ((.Values.api.db).parameters).sslCert | ternary nil (urlquery ((.Values.syncWorker.db).parameters).sslCert) -}}
+{{- $sslMode := ((.Values.api.db).parameters).sslMode -}}
+{{- $sslIdentity := ((.Values.api.db).parameters).sslIdentity -}}
+{{- $sslPassword := ((.Values.api.db).parameters).sslPassword -}}
+{{- $sslAccept := ((.Values.api.db).parameters).sslAccept -}}
+{{- $params := dict "connection_limit" $connectionLimit "pool_timeout" $poolTimeout "sslcert" $sslCert "sslmode" $sslMode "sslidentity" $sslIdentity "sslpassword" $sslPassword "sslaccept" $sslAccept -}}
+{{- $lastIndex := sub (len (keys $params)) 1 -}}
+{{- print $databaseUrl "?" -}}
+{{- range $index, $key := keys $params -}}
+  {{- $value := get $params $key -}}
+  {{- if $value -}}
+    {{- print $key "=" $value -}}
+    {{- if ne $index $lastIndex -}}
+      {{- print "&" -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
-
+{{- end -}}
 
 {{- define "supaglue.secretName" -}}
 {{- if .Values.existingSecret -}}

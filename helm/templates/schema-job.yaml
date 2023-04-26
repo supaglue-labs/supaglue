@@ -47,7 +47,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ template "supaglue.secretName" . }}
-                  key: {{ .Values.secretKeys.databaseUrl }}
+                  key: {{ default "api-database-url" .Values.secretKeys.apiDatabaseUrl }}
             - name: NODE_ENV
               value: production
             - name: SUPAGLUE_API_ENCRYPTION_SECRET
