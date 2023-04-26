@@ -3,7 +3,11 @@ import type { Destination, DestinationCreateParams, DestinationUpdateParams } fr
 import { DestinationWriter } from '../destination_writers/base';
 import { DESTINATION_ID_TO_POOL, PostgresDestinationWriter } from '../destination_writers/postgres';
 import { NotFoundError } from '../errors';
-import { fromDestinationModel } from '../mappers/destination';
+import {
+  fromDestinationModel,
+  toPostgresDestinationConfigSafe,
+  toS3DestinationConfigSafe,
+} from '../mappers/destination';
 
 export class DestinationService {
   #prisma: PrismaClient;
@@ -42,24 +46,32 @@ export class DestinationService {
   }
 
   public async createDestination(params: DestinationCreateParams): Promise<Destination> {
+    const safeConfig =
+      params.type === 's3'
+        ? await toS3DestinationConfigSafe(params.config)
+        : await toPostgresDestinationConfigSafe(params.config);
     const model = await this.#prisma.destination.create({
       data: {
         name: params.name,
         applicationId: params.applicationId,
         type: params.type,
-        config: params.config,
+        config: safeConfig,
       },
     });
     return fromDestinationModel(model);
   }
 
   public async updateDestination(params: DestinationUpdateParams): Promise<Destination> {
+    const safeConfig =
+      params.type === 's3'
+        ? await toS3DestinationConfigSafe(params.config)
+        : await toPostgresDestinationConfigSafe(params.config);
     const model = await this.#prisma.destination.update({
       where: { id: params.id },
       data: {
         applicationId: params.applicationId,
         type: params.type,
-        config: params.config,
+        config: safeConfig,
       },
     });
     if (params.type === 'postgres') {

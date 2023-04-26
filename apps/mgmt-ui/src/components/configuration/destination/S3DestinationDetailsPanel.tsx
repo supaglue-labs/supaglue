@@ -51,14 +51,16 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
       setAccessKeyId(destination?.config?.accessKeyId ?? '');
     }
     if (!secretAccessKey) {
-      setSecretAccessKey(destination?.config?.secretAccessKey ?? '');
+      setSecretAccessKey(destination?.config?.secretAccessKeyEncrypted ?? '');
     }
   }, [destination?.id]);
 
   const createOrUpdateDestination = async (): Promise<Destination> => {
     if (destination) {
       return await updateDestination({
-        ...destination,
+        id: destination.id,
+        applicationId: activeApplicationId,
+        name,
         type: 's3', // TODO: allow postgres
         config: {
           region,
