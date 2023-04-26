@@ -21,6 +21,8 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
@@ -225,6 +227,14 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return {
       Authorization: `Bearer ${this.#accessToken}`,
     };
+  }
+
+  public override async sendPassthroughRequest(
+    request: SendPassthroughRequestRequest
+  ): Promise<SendPassthroughRequestResponse> {
+    // TODO(735): We should have a periodic workflow for refreshing tokens for all connections
+    await this.#refreshAccessToken();
+    return await super.sendPassthroughRequest(request);
   }
 
   async #refreshAccessToken(): Promise<void> {
