@@ -60,6 +60,7 @@ export class DestinationService {
         applicationId: params.applicationId,
         type: params.type,
         config: params.config,
+        name: params.name,
       },
     });
     return fromDestinationModel(model);
