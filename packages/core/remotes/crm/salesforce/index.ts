@@ -2,7 +2,12 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
+import {
+  ConnectionUnsafe,
+  CRMIntegration,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+} from '@supaglue/types';
 import {
   Account,
   AccountCreateParams,
@@ -289,6 +294,14 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return {
       Authorization: `Bearer ${this.#accessToken}`,
     };
+  }
+
+  public override async sendPassthroughRequest(
+    request: SendPassthroughRequestRequest
+  ): Promise<SendPassthroughRequestResponse> {
+    // TODO(735): We should have a periodic workflow for refreshing tokens for all connections
+    await this.#refreshAccessToken();
+    return await super.sendPassthroughRequest(request);
   }
 
   async #refreshAccessToken(): Promise<void> {
