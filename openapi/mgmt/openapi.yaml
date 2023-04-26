@@ -61,8 +61,12 @@ components:
       $ref: ./components/schemas/objects/destination.yaml
     s3_config:
       $ref: ./components/schemas/objects/s3_config.yaml
+    s3_config_safe:
+      $ref: ./components/schemas/objects/s3_config_safe.yaml
     postgres_config:
       $ref: ./components/schemas/objects/postgres_config.yaml
+    postgres_config_safe:
+      $ref: ./components/schemas/objects/postgres_config_safe.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
     category:

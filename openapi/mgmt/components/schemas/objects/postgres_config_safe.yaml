@@ -15,13 +15,9 @@ properties:
   user:
     type: string
     example: myuser
-  password:
-    type: string
-    example: password
 required:
   - host
   - port
   - database
   - schema
   - user
-  - password

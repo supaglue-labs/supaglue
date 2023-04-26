@@ -166,11 +166,11 @@ export interface components {
     } & OneOf<[{
       /** @enum {string} */
       type: "s3";
-      config: components["schemas"]["s3_config"];
+      config: components["schemas"]["s3_config_safe"];
     }, {
       /** @enum {string} */
       type: "postgres";
-      config: components["schemas"]["postgres_config"];
+      config: components["schemas"]["postgres_config_safe"];
     }]>;
     s3_config: {
       /** @example us-west-2 */
@@ -178,8 +178,30 @@ export interface components {
       /** @example my-test-bucket */
       bucket: string;
       access_key_id: string;
+      secret_access_key: string;
+    };
+    s3_config_safe: {
+      /** @example us-west-2 */
+      region: string;
+      /** @example my-test-bucket */
+      bucket: string;
+      access_key_id: string;
     };
     postgres_config: {
+      /** @example https://mydb.com */
+      host: string;
+      /** @example 5432 */
+      port: number;
+      /** @example my_database */
+      database: string;
+      /** @example public */
+      schema: string;
+      /** @example myuser */
+      user: string;
+      /** @example password */
+      password: string;
+    };
+    postgres_config_safe: {
       /** @example https://mydb.com */
       host: string;
       /** @example 5432 */
