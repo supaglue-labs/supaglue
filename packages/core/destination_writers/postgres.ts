@@ -20,7 +20,7 @@ import { toSnakecasedKeysOpportunity } from '../mappers/crm/opportunity';
 import { toSnakecasedKeysUser } from '../mappers/crm/user';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
 
-const destinationIdToPool: Record<string, Pool> = {};
+export const DESTINATION_ID_TO_POOL: Record<string, Pool> = {};
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
   readonly #destination: PostgresDestination;
@@ -31,13 +31,12 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   }
 
   async #getClient(): Promise<PoolClient> {
-    const existingPool = destinationIdToPool[this.#destination.id];
+    const existingPool = DESTINATION_ID_TO_POOL[this.#destination.id];
     if (existingPool) {
       return await existingPool.connect();
     }
 
     const pool = new Pool(this.#destination.config);
-    destinationIdToPool[this.#destination.id] = pool;
     return await pool.connect();
   }
 
