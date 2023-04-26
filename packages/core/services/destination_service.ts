@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { Destination, DestinationCreateParams, DestinationUpdateParams } from '@supaglue/types';
 import { DestinationWriter } from '../destination_writers/base';
-import { PostgresDestinationWriter } from '../destination_writers/postgres';
+import { DESTINATION_ID_TO_POOL, PostgresDestinationWriter } from '../destination_writers/postgres';
 import { NotFoundError } from '../errors';
 import { fromDestinationModel } from '../mappers/destination';
 
@@ -62,6 +62,9 @@ export class DestinationService {
         config: params.config,
       },
     });
+    if (params.type === 'postgres') {
+      delete DESTINATION_ID_TO_POOL[params.id];
+    }
     return fromDestinationModel(model);
   }
 
