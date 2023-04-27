@@ -58,15 +58,13 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
     if (!user) {
       setUser(destination.config.user);
     }
-    if (!password) {
-      setPassword(destination.config.password);
-    }
   }, [destination?.id]);
 
   const createOrUpdateDestination = async (): Promise<Destination> => {
     if (destination) {
       return await updateDestination({
-        ...destination,
+        id: destination.id,
+        applicationId: activeApplicationId,
         type: 'postgres',
         name,
         config: {
