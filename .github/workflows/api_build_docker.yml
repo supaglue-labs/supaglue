@@ -11,6 +11,8 @@ on:
       - packages/sync-workflows/**
       - packages/types/**
       - packages/utils/**
+    branches:
+      - **
   pull_request:
     paths:
       - apps/api/**
