@@ -1,0 +1,99 @@
+---
+description: ''
+---
+
+import ThemedImage from '@theme/ThemedImage';
+
+# Embedded links
+
+An embedded link is a HTTP link that initiates an authentication flow in your customer's third-party CRM to install your Connected App. Once installed, a connection is created in Supaglue allowing Supaglue to sync CRM data into its database. Embedded links allow your customers to connect their CRMs to your application using Supaglue.
+
+## Link format
+
+An embedded link takes the following form:
+
+`{PROTOCOL}{DOMAIN}`/oauth/connect?applicationId=`{APPLICATION_ID}`&customerId=`{CUSTOMER_ID}`&providerName=`{PROVIDER_NAME}`&returnUrl=`{RETURN_URL}`
+
+| Parameter          | Description                                                                              | Required |
+| ------------------ | ---------------------------------------------------------------------------------------- | -------- |
+| `{PROTOCOL}`       | `http://` if running locally or `https://` if hosted on the cloud                        | Yes      |
+| `{DOMAIN}`         | The domain at which the Supaglue backend is hosted (e.g. `localhost:8080`)               | Yes      |
+| `{APPLICATION_ID}` | The unique identifier for your Supaglue application                                      | Yes      |
+| `{CUSTOMER_ID}`    | The unique identifier for a customer in your application                                 | Yes      |
+| `{PROVIDER_NAME}`  | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                | Yes      |
+| `{RETURN_URL}`     | The URL to return to once the OAuth connection is complete, note: this can be uriEncoded | No       |
+
+To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](references/api/crm) to create new integrations for your customers to have available for them to connect to.
+
+Examples:
+
+- [http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot](http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot)
+
+- [http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api](http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api)
+
+export const IntegrationCard = ({ icon, provider, description, to }) => (
+  <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
+    <img src={icon} style={{ width: 'auto', height: '36px' }} />
+    <div className="font-semibold mt-4">{provider}</div>
+    <div className="text-xs mt-2">{description}</div>
+    <div
+      onClick={() => {
+        window.location.href = to;
+      }}
+      className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
+    >
+      Connect
+    </div>
+  </div>
+);
+
+## Embedded links in UI components
+
+Embedded Links can be used in any UI components in your frontend application. For example, below are two cards that can be used to connect to Salesforce and HubSpot:
+
+<div className="grid grid-cols-2 gap-4">
+
+<IntegrationCard
+  icon="/img/salesforce.svg"
+  provider="Salesforce"
+  description="Sync your leads in and out of Salesforce"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-salesforce&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+/>
+
+<IntegrationCard
+  icon="/img/hubspot.svg"
+  provider="Hubspot"
+  description="Sync your leads in and out of HubSpot"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+/>
+</div>
+
+The code template for the cards above (using Typescript + React + Tailwindcss) is:
+
+```jsx
+const IntegrationCard = ({
+  icon,
+  provider,
+  description,
+  to,
+}: {
+  icon: ReactNode,
+  provider: string,
+  description: string,
+  to: string,
+}) => (
+  <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
+    <img src={icon} className="w-auto h-9" />
+    <div className="font-semibold mt-4">{provider}</div>
+    <div className="text-xs mt-2">{description}</div>
+    <div
+      onClick={() => {
+        window.location.href = to;
+      }}
+      className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
+    >
+      Connect
+    </div>
+  </div>
+);
+```
