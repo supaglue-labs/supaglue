@@ -16,6 +16,8 @@ import {
   RemoteOpportunityCreateParams,
   RemoteUser,
 } from '@supaglue/types';
+import { PipelineStageMapping } from '.';
+import { BadRequestError } from '../../../errors';
 
 export const fromHubSpotCompanyToRemoteAccount = ({
   id,
@@ -158,15 +160,10 @@ export const fromHubSpotContactToRemoteContact = ({
   };
 };
 
-export const fromHubSpotDealToRemoteOpportunity = ({
-  id,
-  properties,
-  createdAt,
-  updatedAt,
-  associations,
-  archived,
-  archivedAt,
-}: HubSpotDeal): RemoteOpportunity => {
+export const fromHubSpotDealToRemoteOpportunity = (
+  { id, properties, createdAt, updatedAt, associations, archived, archivedAt }: HubSpotDeal,
+  pipelineStageMapping: PipelineStageMapping
+): RemoteOpportunity => {
   let status: OpportunityStatus = 'OPEN';
   if (properties.hs_is_closed_won) {
     status = 'WON';
@@ -177,6 +174,18 @@ export const fromHubSpotDealToRemoteOpportunity = ({
   if (associations?.companies?.results?.length) {
     remoteAccountId = associations.companies.results[0].id ?? null;
   }
+
+  let pipeline = properties.pipeline ?? null;
+  let stage = properties.dealstage ?? null;
+
+  if (pipeline && pipelineStageMapping[pipeline]) {
+    const pipelineId = pipeline;
+    pipeline = pipelineStageMapping[pipeline].label;
+    if (stage && pipelineStageMapping[pipelineId].stageIdsToLabels[stage]) {
+      stage = pipelineStageMapping[pipelineId].stageIdsToLabels[stage];
+    }
+  }
+
   return {
     remoteId: id,
     name: properties.dealname ?? null,
@@ -184,11 +193,11 @@ export const fromHubSpotDealToRemoteOpportunity = ({
     remoteOwnerId: properties.hubspot_owner_id ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     status,
-    pipeline: properties.pipeline ?? null,
+    pipeline,
     remoteAccountId,
     amount: properties.amount ? parseInt(properties.amount) : null,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,
-    stage: properties.dealstage,
+    stage,
     remoteCreatedAt: createdAt,
     remoteUpdatedAt: updatedAt,
     remoteWasDeleted: !!archived,
@@ -252,14 +261,58 @@ export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams):
 
 export const toHubspotAccountUpdateParams = toHubspotAccountCreateParams;
 
-export const toHubspotOpportunityCreateParams = (params: RemoteOpportunityCreateParams): Record<string, string> => {
+const getPipelineId = (
+  pipelineNameOrId: string | null | undefined,
+  pipelineStageMapping: PipelineStageMapping
+): string | null => {
+  if (!pipelineNameOrId) {
+    return null;
+  }
+  if (pipelineStageMapping[pipelineNameOrId]) {
+    return pipelineNameOrId;
+  }
+  const entry = Object.entries(pipelineStageMapping).find(([, { label }]) => label === pipelineNameOrId);
+  if (entry) {
+    return entry[0];
+  }
+  throw new BadRequestError(`Pipeline not found: ${pipelineNameOrId}`);
+};
+
+const getStageId = (
+  pipelineId: string | null,
+  stageNameOrId: string | undefined | null,
+  pipelineStageMapping: PipelineStageMapping
+): string | null => {
+  if (!pipelineId || !stageNameOrId) {
+    return null;
+  }
+  if (!pipelineStageMapping[pipelineId]) {
+    throw new BadRequestError(`Pipeline not found: ${pipelineId}`);
+  }
+  const stageMapping = pipelineStageMapping[pipelineId].stageIdsToLabels;
+  if (stageMapping[stageNameOrId]) {
+    return stageNameOrId;
+  }
+  const entry = Object.entries(stageMapping).find(([, label]) => label === stageNameOrId);
+  if (entry) {
+    return entry[0];
+  }
+  throw new BadRequestError(`Stage not found: ${stageNameOrId}`);
+};
+
+export const toHubspotOpportunityCreateParams = (
+  params: RemoteOpportunityCreateParams,
+  pipelineStageMapping: PipelineStageMapping
+): Record<string, string> => {
+  const pipelineId = getPipelineId(params.pipeline, pipelineStageMapping);
+  const stageId = getStageId(pipelineId, params.stage, pipelineStageMapping);
   const out = {
     amount: nullToEmptyString(params.amount?.toString()),
     closedate: nullToEmptyString(params.closeDate?.toISOString()),
     dealname: nullToEmptyString(params.name),
     description: nullToEmptyString(params.description),
-    dealstage: nullToEmptyString(params.stage),
-    pipeline: nullToEmptyString(params.pipeline),
+    dealstage: nullToEmptyString(stageId),
+    pipeline: nullToEmptyString(pipelineId),
     hubspot_owner_id: nullToEmptyString(params.ownerId),
     ...params.customFields,
   };
