@@ -39,7 +39,7 @@ export type S3ConfigUnsafe = BaseS3Config & {
 
 export type PostgresDestination = BaseDestination & {
   type: 'postgres';
-  config: PostgresConfigSafe;
+  config: PostgresConfigUnsafe;
 };
 
 export type PostgresDestinationCreateParams = BaseDestinationCreateParams & {
