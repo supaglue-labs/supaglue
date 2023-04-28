@@ -28,6 +28,11 @@ properties:
     type: string
     description: For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.
     example: 123456
+    deprecated: true
+  instance_url:
+    type: string
+    description: Instance URL for the connected customer.
+    example: https://app.hubspot.com/contacts/123456
 required:
   - id
   - status
@@ -37,3 +42,4 @@ required:
   - provider_name
   - category
   - remote_id
+  - instance_url

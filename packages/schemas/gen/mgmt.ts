@@ -151,10 +151,16 @@ export interface components {
       provider_name: components["schemas"]["provider_name"];
       category: components["schemas"]["category"];
       /**
+       * @deprecated 
        * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
        * @example 123456
        */
       remote_id: string;
+      /**
+       * @description Instance URL for the connected customer. 
+       * @example https://app.hubspot.com/contacts/123456
+       */
+      instance_url: string;
     };
     /** @enum {string} */
     category: "crm";

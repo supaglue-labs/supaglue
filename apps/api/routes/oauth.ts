@@ -162,7 +162,8 @@ export default function init(app: Router): void {
         ...additionalAuthParams,
       });
 
-      let remoteId = tokenWrapper.token['instance_url'] as string;
+      const instanceUrl = tokenWrapper.token['instance_url'] as string;
+      let remoteId = instanceUrl;
 
       if (providerName === 'hubspot') {
         const accessToken = tokenWrapper.token['access_token'] as string;
@@ -183,6 +184,7 @@ export default function init(app: Router): void {
           expiresAt: (tokenWrapper.token['expires_at'] as string | undefined) ?? null,
         },
         remoteId,
+        instanceUrl,
       };
 
       const payload =

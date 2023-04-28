@@ -27,6 +27,7 @@ get:
                   provider_name: salesforce
                   category: crm
                   remote_id: https://mycompany-dev-ed.develop.my.salesforce.com
+                  instance_url: https://mycompany-dev-ed.develop.my.salesforce.com
                 - id: e888cedf-e9d0-42c5-9485-2d72984faef7
                   application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
                   customer_id: my-customer-2
@@ -35,6 +36,7 @@ get:
                   provider_name: hubspot 
                   category: crm
                   remote_id: 1234567
+                  instance_url: https://app.hubspot.com/contacts/1234567
 parameters:
   - name: customer_id
     in: path
