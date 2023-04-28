@@ -5,7 +5,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import type { IntegrationService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
+import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
@@ -363,7 +363,20 @@ export class ConnectionAndSyncService {
           workflowType: runSync,
           workflowId: getRunSyncWorkflowId(syncId),
           taskQueue: SYNC_TASK_QUEUE,
-          args: [{ syncId, connectionId: connection.id }],
+          args: [
+            {
+              syncId,
+              connectionId: connection.id,
+              context: {
+                [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
+                [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
+                [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
+                [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
+                [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
+                [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
+              },
+            },
+          ],
           searchAttributes: {
             [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
             [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],

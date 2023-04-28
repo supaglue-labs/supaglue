@@ -4,10 +4,18 @@ import { logger } from '@supaglue/core/lib';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createActivities } from '@supaglue/sync-workflows';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import { LogLevel, LogMetadata, NativeConnection, Runtime, Worker } from '@temporalio/worker';
+import {
+  appendDefaultInterceptors,
+  LogLevel,
+  LogMetadata,
+  NativeConnection,
+  Runtime,
+  Worker,
+} from '@temporalio/worker';
 import fs from 'fs';
 import path from 'path';
 import { getDependencyContainer } from './dependency_container';
+import ActivityLogInterceptor from './interceptors/activity_log_interceptor';
 
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
@@ -100,6 +108,10 @@ async function run() {
     taskQueue: SYNC_TASK_QUEUE,
     connection,
     namespace: process.env.TEMPORAL_NAMESPACE ?? 'default',
+    interceptors: appendDefaultInterceptors({
+      activityInbound: [(ctx) => new ActivityLogInterceptor(ctx)],
+      workflowModules: [`${__dirname}/interceptors/workflow_log_interceptor`],
+    }),
   });
 
   await worker.run();

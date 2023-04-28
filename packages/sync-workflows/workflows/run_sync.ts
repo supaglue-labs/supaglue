@@ -43,6 +43,7 @@ export const getRunSyncWorkflowId = (syncId: string): string => `${RUN_SYNC_PREF
 export type RunSyncArgs = {
   syncId: string;
   connectionId: string;
+  context: Record<string, unknown>;
 };
 
 export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<void> {

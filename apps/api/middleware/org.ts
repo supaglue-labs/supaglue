@@ -1,4 +1,5 @@
 import { UnauthorizedError } from '@supaglue/core/errors';
+import { addLogContext } from '@supaglue/core/lib/logger';
 import { NextFunction, Request, Response } from 'express';
 
 export async function orgHeaderMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -9,6 +10,8 @@ export async function orgHeaderMiddleware(req: Request, res: Response, next: Nex
   }
 
   req.orgId = orgId;
+
+  addLogContext('orgId', orgId);
 
   next();
 }
