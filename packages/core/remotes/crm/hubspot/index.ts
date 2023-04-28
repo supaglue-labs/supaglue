@@ -34,8 +34,9 @@ import {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import retry from 'async-retry';
-import { PassThrough, Readable } from 'stream';
+import { Readable } from 'stream';
 import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
+import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromHubSpotCompanyToRemoteAccount,
@@ -163,78 +164,46 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listAccounts(updatedAfter?: Date): Promise<Readable> {
-    // TODO(585): Incremental uses the Search endpoint which doesn't allow for more than 10000 results. We need to introduce another layer of pagination.
-    let impl = updatedAfter
-      ? this.#listAccountsIncrementalImpl.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT)
-      : this.#listAccountsFullImpl.bind(this);
+    const normalPageFetcher = await this.#getListNormalAccountsFetcher(updatedAfter);
+    const archivedPageFetcher = async (after?: string) => {
+      const response = await this.#listAccountsFull(/* archived */ true, after);
+      return filterForUpdatedAfter(response, updatedAfter);
+    };
 
-    if (updatedAfter) {
-      const response = await this.#listAccountsIncrementalImpl(updatedAfter, 0);
-      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        impl = this.#listAccountsFullImpl.bind(this);
-      }
-    }
-
-    const passThrough = new PassThrough({ objectMode: true });
-
-    (async () => {
-      // Accounts
+    return await paginator([
       {
-        let after = undefined;
-        do {
-          const currResults: HubspotPaginatedCompanies = await impl(after);
-          const remoteAccounts = currResults.results.map(fromHubSpotCompanyToRemoteAccount);
-          after = currResults.paging?.next?.after;
-
-          // Do not emit 'end' event until the last batch
-          const readable = Readable.from(remoteAccounts);
-          readable.pipe(passThrough, { end: false });
-          readable.on('error', (err) => passThrough.emit('error', err));
-
-          // Wait
-          await new Promise((resolve) => readable.on('end', resolve));
-        } while (after);
-      }
-      // Archived Accounts
-      // TODO: this doesn't respect the `updatedAfter` parameter because we can't use the search API for archived accounts
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToRemoteAccount)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
+      },
       {
-        let after = undefined;
-        do {
-          const currResults: HubspotPaginatedCompanies = await this.#listAccountsFullImpl(after, /* archived */ true);
-          const remoteAccounts = currResults.results.map(fromHubSpotCompanyToRemoteAccount);
-          after = currResults.paging?.next?.after;
-
-          // Do not emit 'end' event until the last batch
-          const readable = Readable.from(
-            remoteAccounts.filter((remoteAccount) => {
-              if (!updatedAfter) {
-                return true;
-              }
-
-              if (!remoteAccount.remoteUpdatedAt) {
-                return true;
-              }
-
-              return updatedAfter < remoteAccount.remoteUpdatedAt;
-            })
-          );
-          readable.pipe(passThrough, { end: !after });
-          readable.on('error', (err) => passThrough.emit('error', err));
-
-          // Wait
-          await new Promise((resolve) => readable.on('end', resolve));
-        } while (after);
-      }
-    })().catch((err: unknown) => {
-      // We need to forward the error to the returned `Readable` because there
-      // is no way for the caller to find out about errors in the above async block otherwise.
-      passThrough.emit('error', err);
-    });
-
-    return passThrough;
+        pageFetcher: archivedPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToRemoteAccount)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
+      },
+    ]);
   }
 
-  async #listAccountsFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedCompanies> {
+  async #getListNormalAccountsFetcher(
+    updatedAfter?: Date
+  ): Promise<(after?: string) => Promise<HubspotPaginatedCompanies>> {
+    if (updatedAfter) {
+      // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
+      // If we get back more than 10k results, we need to fall back to the full fetch.
+      const response = await this.#listAccountsIncremental(updatedAfter, 0);
+      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
+        return async (after?: string) => {
+          const response = await this.#listAccountsFull(/* archived */ false, after);
+          return filterForUpdatedAfter(response, updatedAfter);
+        };
+      }
+      return this.#listAccountsIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
+    }
+
+    return this.#listAccountsFull.bind(this, /* archived */ false);
+  }
+
+  async #listAccountsFull(archived: boolean, after?: string): Promise<HubspotPaginatedCompanies> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const companies = await this.#client.crm.companies.basicApi.getPage(
@@ -249,7 +218,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #listAccountsIncrementalImpl(
+  async #listAccountsIncremental(
     updatedAfter: Date,
     limit: number,
     after?: string
@@ -305,78 +274,46 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
-    // TODO(585): Incremental uses the Search endpoint which doesn't allow for more than 10000 results. We need to introduce another layer of pagination.
-    let impl = updatedAfter
-      ? this.#listOpportunitiesIncrementalImpl.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT)
-      : this.#listOpportunitiesFullImpl.bind(this);
+    const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(updatedAfter);
+    const archivedPageFetcher = async (after?: string) => {
+      const response = await this.#listOpportunitiesFull(/* archived */ true, after);
+      return filterForUpdatedAfter(response, updatedAfter);
+    };
 
-    if (updatedAfter) {
-      const response = await this.#listOpportunitiesIncrementalImpl(updatedAfter, 0);
-      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        impl = this.#listOpportunitiesFullImpl.bind(this);
-      }
-    }
-
-    const passThrough = new PassThrough({ objectMode: true });
-
-    (async () => {
-      // Opportunities
+    return await paginator([
       {
-        let after = undefined;
-        do {
-          const currResults: HubspotPaginatedDeals = await impl(after);
-          const remoteOpportunities = currResults.results.map(fromHubSpotDealToRemoteOpportunity);
-          after = currResults.paging?.next?.after;
-
-          // Do not emit 'end' event until the last batch
-          const readable = Readable.from(remoteOpportunities);
-          readable.pipe(passThrough, { end: false });
-          readable.on('error', (err) => passThrough.emit('error', err));
-
-          // Wait
-          await new Promise((resolve) => readable.on('end', resolve));
-        } while (after);
-      }
-      // Archived Opportunities
-      // TODO: this doesn't respect the `updatedAfter` parameter because we can't use the search API for archived opportunities
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotDealToRemoteOpportunity)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
+      },
       {
-        let after = undefined;
-        do {
-          const currResults: HubspotPaginatedDeals = await this.#listOpportunitiesFullImpl(after, /* archived */ true);
-          const remoteOpportunities = currResults.results.map(fromHubSpotDealToRemoteOpportunity);
-          after = currResults.paging?.next?.after;
-
-          // Do not emit 'end' event until the last batch
-          const readable = Readable.from(
-            remoteOpportunities.filter((remoteOpportunity) => {
-              if (!updatedAfter) {
-                return true;
-              }
-
-              if (!remoteOpportunity.remoteUpdatedAt) {
-                return true;
-              }
-
-              return updatedAfter < remoteOpportunity.remoteUpdatedAt;
-            })
-          );
-          readable.pipe(passThrough, { end: !after });
-          readable.on('error', (err) => passThrough.emit('error', err));
-
-          // Wait
-          await new Promise((resolve) => readable.on('end', resolve));
-        } while (after);
-      }
-    })().catch((err: unknown) => {
-      // We need to forward the error to the returned `Readable` because there
-      // is no way for the caller to find out about errors in the above async block otherwise.
-      passThrough.emit('error', err);
-    });
-
-    return passThrough;
+        pageFetcher: archivedPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotDealToRemoteOpportunity)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
+      },
+    ]);
   }
 
-  async #listOpportunitiesFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedDeals> {
+  async #getListNormalOpportunitiesFetcher(
+    updatedAfter?: Date
+  ): Promise<(after?: string) => Promise<HubspotPaginatedDeals>> {
+    if (updatedAfter) {
+      // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
+      // If we get back more than 10k results, we need to fall back to the full fetch.
+      const response = await this.#listOpportunitiesIncremental(updatedAfter, 0);
+      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
+        return async (after?: string) => {
+          const response = await this.#listOpportunitiesFull(/* archived */ false, after);
+          return filterForUpdatedAfter(response, updatedAfter);
+        };
+      }
+      return this.#listOpportunitiesIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
+    }
+
+    return this.#listOpportunitiesFull.bind(this, /* archived */ false);
+  }
+
+  async #listOpportunitiesFull(archived: boolean, after?: string): Promise<HubspotPaginatedDeals> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const deals = await this.#client.crm.deals.basicApi.getPage(
@@ -391,7 +328,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #listOpportunitiesIncrementalImpl(
+  async #listOpportunitiesIncremental(
     updatedAfter: Date,
     limit: number,
     after?: string
@@ -484,78 +421,46 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listContacts(updatedAfter?: Date): Promise<Readable> {
-    // TODO(585): Incremental uses the Search endpoint which doesn't allow for more than 10000 results. We need to introduce another layer of pagination.
-    let impl = updatedAfter
-      ? this.#listContactsIncrementalImpl.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT)
-      : this.#listContactsFullImpl.bind(this);
+    const normalPageFetcher = await this.#getListNormalContactsFetcher(updatedAfter);
+    const archivedPageFetcher = async (after?: string) => {
+      const response = await this.#listContactsFull(/* archived */ true, after);
+      return filterForUpdatedAfter(response, updatedAfter);
+    };
 
-    if (updatedAfter) {
-      const response = await this.#listContactsIncrementalImpl(updatedAfter, 0);
-      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        impl = this.#listContactsFullImpl.bind(this);
-      }
-    }
-
-    const passThrough = new PassThrough({ objectMode: true });
-
-    (async () => {
-      // Contacts
+    return await paginator([
       {
-        let after = undefined;
-        do {
-          const currResults: HubspotPaginatedContacts = await impl(after);
-          const remoteContacts = currResults.results.map(fromHubSpotContactToRemoteContact);
-          after = currResults.paging?.next?.after;
-
-          // Do not emit 'end' event until the last batch
-          const readable = Readable.from(remoteContacts);
-          readable.pipe(passThrough, { end: false });
-          readable.on('error', (err) => passThrough.emit('error', err));
-
-          // Wait
-          await new Promise((resolve) => readable.on('end', resolve));
-        } while (after);
-      }
-      // Archived Contacts
-      // TODO: this doesn't respect the `updatedAfter` parameter because we can't use the search API for archived contacts
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotContactToRemoteContact)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
+      },
       {
-        let after = undefined;
-        do {
-          const currResults: HubspotPaginatedContacts = await this.#listContactsFullImpl(after, /* archived */ true);
-          const remoteContacts = currResults.results.map(fromHubSpotContactToRemoteContact);
-          after = currResults.paging?.next?.after;
-
-          // Do not emit 'end' event until the last batch
-          const readable = Readable.from(
-            remoteContacts.filter((remoteContact) => {
-              if (!updatedAfter) {
-                return true;
-              }
-
-              if (!remoteContact.remoteUpdatedAt) {
-                return true;
-              }
-
-              return updatedAfter < remoteContact.remoteUpdatedAt;
-            })
-          );
-          readable.pipe(passThrough, { end: !after });
-          readable.on('error', (err) => passThrough.emit('error', err));
-
-          // Wait
-          await new Promise((resolve) => readable.on('end', resolve));
-        } while (after);
-      }
-    })().catch((err: unknown) => {
-      // We need to forward the error to the returned `Readable` because there
-      // is no way for the caller to find out about errors in the above async block otherwise.
-      passThrough.emit('error', err);
-    });
-
-    return passThrough;
+        pageFetcher: archivedPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotContactToRemoteContact)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
+      },
+    ]);
   }
 
-  async #listContactsFullImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedContacts> {
+  async #getListNormalContactsFetcher(
+    updatedAfter?: Date
+  ): Promise<(after?: string) => Promise<HubspotPaginatedContacts>> {
+    if (updatedAfter) {
+      // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
+      // If we get back more than 10k results, we need to fall back to the full fetch.
+      const response = await this.#listContactsIncremental(updatedAfter, 0);
+      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
+        return async (after?: string) => {
+          const response = await this.#listContactsFull(/* archived */ false, after);
+          return filterForUpdatedAfter(response, updatedAfter);
+        };
+      }
+      return this.#listContactsIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
+    }
+
+    return this.#listContactsFull.bind(this, /* archived */ false);
+  }
+
+  async #listContactsFull(archived: boolean, after?: string): Promise<HubspotPaginatedContacts> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const contacts = await this.#client.crm.contacts.basicApi.getPage(
@@ -570,7 +475,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #listContactsIncrementalImpl(
+  async #listContactsIncremental(
     updatedAfter: Date,
     limit: number,
     after?: string
@@ -699,78 +604,30 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listUsers(updatedAfter?: Date): Promise<Readable> {
-    const passThrough = new PassThrough({ objectMode: true });
+    const normalPageFetcher = async (after?: string) => {
+      const response = await this.#listUsersFull(/* archived */ false, after);
+      return filterForUpdatedAfter(response, updatedAfter);
+    };
+    const archivedPageFetcher = async (after?: string) => {
+      const response = await this.#listUsersFull(/* archived */ true, after);
+      return filterForUpdatedAfter(response, updatedAfter);
+    };
 
-    (async () => {
-      // Users
+    return await paginator([
       {
-        let after = undefined;
-        do {
-          const currResults: HubspotPaginatedOwners = await this.#listUsersImpl(after);
-          const remoteUsers = currResults.results.map(fromHubspotOwnerToRemoteUser);
-          after = currResults.paging?.next?.after;
-
-          // Do not emit 'end' event until the last batch
-          const readable = Readable.from(
-            remoteUsers.filter((remoteUser) => {
-              if (!updatedAfter) {
-                return true;
-              }
-
-              if (!remoteUser.remoteUpdatedAt) {
-                return true;
-              }
-
-              return updatedAfter < remoteUser.remoteUpdatedAt;
-            })
-          );
-          readable.pipe(passThrough, { end: false });
-          readable.on('error', (err) => passThrough.emit('error', err));
-
-          // Wait
-          await new Promise((resolve) => readable.on('end', resolve));
-        } while (after);
-      }
-      // Archived Users
-      // TODO: this doesn't respect the `updatedAfter` parameter because we can't use the search API for archived users
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToRemoteUser)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
+      },
       {
-        let after = undefined;
-        do {
-          const currResults: HubspotPaginatedOwners = await this.#listUsersImpl(after, /* archived */ true);
-          const remoteUsers = currResults.results.map(fromHubspotOwnerToRemoteUser);
-          after = currResults.paging?.next?.after;
-
-          // Do not emit 'end' event until the last batch
-          const readable = Readable.from(
-            remoteUsers.filter((remoteUser) => {
-              if (!updatedAfter) {
-                return true;
-              }
-
-              if (!remoteUser.remoteUpdatedAt) {
-                return true;
-              }
-
-              return updatedAfter < remoteUser.remoteUpdatedAt;
-            })
-          );
-          readable.pipe(passThrough, { end: !after });
-          readable.on('error', (err) => passThrough.emit('error', err));
-
-          // Wait
-          await new Promise((resolve) => readable.on('end', resolve));
-        } while (after);
-      }
-    })().catch((err: unknown) => {
-      // We need to forward the error to the returned `Readable` because there
-      // is no way for the caller to find out about errors in the above async block otherwise.
-      passThrough.emit('error', err);
-    });
-
-    return passThrough;
+        pageFetcher: archivedPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToRemoteUser)),
+        getNextCursorFromPage: (response) => response.paging?.next?.after,
+      },
+    ]);
   }
 
-  async #listUsersImpl(after?: string, archived?: boolean): Promise<HubspotPaginatedOwners> {
+  async #listUsersFull(archived: boolean, after?: string): Promise<HubspotPaginatedOwners> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const owners = await this.#client.crm.owners.ownersApi.getPage(
@@ -846,3 +703,24 @@ const retryWhenRateLimited = async <Args extends any[], Return>(
   };
   return await retry(helper, ASYNC_RETRY_OPTIONS);
 };
+
+function filterForUpdatedAfter<
+  R extends {
+    results: { updatedAt?: Date }[];
+  }
+>(response: R, updatedAfter?: Date): R {
+  return {
+    ...response,
+    results: response.results.filter((record) => {
+      if (!updatedAfter) {
+        return true;
+      }
+
+      if (!record.updatedAt) {
+        return true;
+      }
+
+      return updatedAfter < record.updatedAt;
+    }),
+  };
+}
