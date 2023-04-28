@@ -22,7 +22,7 @@ if (process.env.SUPAGLUE_PRETTY_LOGS) {
 if (sentryEnabled) {
   const sentryStream = createWriteStream({
     dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
-    environment: process.env.NODE_ENV,
+    environment: process.env.SUPAGLUE_ENVIRONMENT,
     // Temporal logs all errors as warnings (with a stack trace), so we capture warnings to sentry as well.
     // TODO: Consider only doing this for sync-worker and not for api.
     level: 'warning',
