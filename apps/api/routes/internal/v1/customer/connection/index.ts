@@ -14,6 +14,7 @@ import {
 } from '@supaglue/schemas/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
+import * as jsforce from 'jsforce';
 
 const { connectionService, integrationService, connectionAndSyncService } = getDependencyContainer();
 
@@ -40,44 +41,74 @@ export default function init(app: Router): void {
       req.supaglueApplication.id
     );
 
-    if (integration.providerName !== 'hubspot') {
-      throw new Error('Currently only support creating hubspot connections');
+    if (integration.providerName === 'hubspot') {
+      const hubspotClient = new HubspotClient();
+      const token = await hubspotClient.oauth.tokensApi.createToken(
+        'refresh_token',
+        undefined,
+        undefined,
+        integration.config.oauth.credentials.oauthClientId,
+        integration.config.oauth.credentials.oauthClientSecret,
+        req.body.credentials.refresh_token
+      );
+      const expiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
+
+      const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(token.accessToken);
+      const remoteId = hubId.toString();
+
+      const connection = await connectionAndSyncService.create({
+        // TODO: don't denormalize this?
+        category: integration.category,
+        providerName: integration.providerName,
+        applicationId: req.supaglueApplication.id,
+        customerId: req.params.customer_id,
+        integrationId: req.body.integration_id,
+        credentials: {
+          type: req.body.credentials.type,
+          accessToken: token.accessToken,
+          refreshToken: req.body.credentials.refresh_token,
+          expiresAt,
+        },
+        remoteId,
+      });
+      return res.status(200).send(snakecaseKeys(connection));
     }
 
-    // TODO: Share this logic with oauth path
-    let remoteId = req.body.credentials.refresh_token;
-
-    const hubspotClient = new HubspotClient();
-    const token = await hubspotClient.oauth.tokensApi.createToken(
-      'refresh_token',
-      undefined,
-      undefined,
-      integration.config.oauth.credentials.oauthClientId,
-      integration.config.oauth.credentials.oauthClientSecret,
-      req.body.credentials.refresh_token
-    );
-    const expiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
-
-    const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(token.accessToken);
-    remoteId = hubId.toString();
-
-    const connection = await connectionAndSyncService.create({
-      // TODO: don't denormalize this?
-      category: integration.category,
-      providerName: integration.providerName,
-      applicationId: req.supaglueApplication.id,
-      customerId: req.params.customer_id,
-      integrationId: req.body.integration_id,
-      credentials: {
-        type: req.body.credentials.type,
-        accessToken: token.accessToken,
+    // salesforce
+    if (integration.providerName === 'salesforce') {
+      const salesforceClient = new jsforce.Connection({
+        oauth2: new jsforce.OAuth2({
+          loginUrl: req.body.credentials.loginUrl ?? 'https://login.salesforce.com',
+          clientId: integration.config.oauth.credentials.oauthClientId,
+          clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+        }),
+        instanceUrl: req.body.credentials.instance_url,
         refreshToken: req.body.credentials.refresh_token,
-        expiresAt,
-      },
-      remoteId,
-    });
+        maxRequest: 10,
+      });
+      const { access_token } = await salesforceClient.oauth2.refreshToken(req.body.credentials.refreshToken);
 
-    return res.status(200).send(snakecaseKeys(connection));
+      const connection = await connectionAndSyncService.create({
+        // TODO: don't denormalize this?
+        category: integration.category,
+        providerName: integration.providerName,
+        applicationId: req.supaglueApplication.id,
+        customerId: req.params.customer_id,
+        integrationId: req.body.integration_id,
+        credentials: {
+          type: req.body.credentials.type,
+          accessToken: access_token,
+          refreshToken: req.body.credentials.refresh_token,
+          instanceUrl: req.body.credentials.instance_url,
+          // salesforce does not specify expiresAt
+          expiresAt: null,
+        },
+        remoteId: req.body.credentials.instance_url,
+      });
+      return res.status(200).send(snakecaseKeys(connection));
+    }
+
+    return res.status(200).send(null);
   });
 
   connectionRouter.get(
