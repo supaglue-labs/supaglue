@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createRemoteIntegration, updateRemoteIntegration } from '@/client';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
@@ -25,11 +26,13 @@ const isSyncPeriodSecsValid = (syncPeriodSecs: number) => {
 
 export default function IntegrationDetailsPanel({ providerName, category, isLoading }: IntegrationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
+  const { addNotification } = useNotification();
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const router = useRouter();
 
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
@@ -180,29 +183,30 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
           <Stack direction="row" className="gap-2">
             <Button
               variant="outlined"
+              disabled={isSaving}
               onClick={() => {
                 router.back();
               }}
             >
-              Cancel
+              Back
             </Button>
             <Button
               variant="contained"
-              disabled={!isFormValid}
+              disabled={!isFormValid || isSaving || isLoading}
               onClick={async () => {
+                setIsSaving(true);
                 const newIntegration = await createOrUpdateIntegration();
                 const latestIntegrations = [
                   ...existingIntegrations.filter((integration) => integration.id !== newIntegration.id),
                   newIntegration,
                 ];
+                addNotification({ message: 'Successfully updated integration', severity: 'success' });
                 await mutate(latestIntegrations, {
                   optimisticData: latestIntegrations,
                   revalidate: false,
                   populateCache: false,
                 });
-                router.push(
-                  `/applications/${activeApplicationId}/configuration/integrations/${newIntegration.category}`
-                );
+                setIsSaving(false);
               }}
             >
               Save
