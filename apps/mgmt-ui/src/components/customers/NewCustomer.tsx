@@ -1,3 +1,4 @@
+import { useNotification } from '@/context/notification';
 import AddIcon from '@mui/icons-material/Add';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material';
 import { useState } from 'react';
@@ -7,6 +8,7 @@ export type NewCustomerProps = {
 };
 
 export function NewCustomer({ onCreate }: NewCustomerProps) {
+  const { addNotification } = useNotification();
   const [customerId, setCustomerId] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -84,6 +86,7 @@ export function NewCustomer({ onCreate }: NewCustomerProps) {
           <Button
             onClick={() => {
               onCreate(customerId, name, email);
+              addNotification({ message: 'Successfully added customer', severity: 'success' });
               handleClose();
             }}
           >
