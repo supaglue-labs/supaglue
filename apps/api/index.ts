@@ -24,6 +24,7 @@ if (sentryEnabled) {
     // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
     // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
     dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
+    environment: process.env.SUPAGLUE_ENVIRONMENT,
     integrations: [
       new RewriteFrames({
         root: __dirname,
