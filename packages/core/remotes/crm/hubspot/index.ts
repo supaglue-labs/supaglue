@@ -114,6 +114,8 @@ const propertiesToFetch = {
 const CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 1;
 const OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 5;
 
+export type PipelineStageMapping = Record<string, { label: string; stageIdsToLabels: Record<string, string> }>;
+
 type Credentials = {
   accessToken: string;
   refreshToken: string;
@@ -273,7 +275,27 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await this.getAccount(company.id);
   }
 
+  async #getPipelineStageMapping(): Promise<
+    Record<string, { label: string; stageIdsToLabels: Record<string, string> }>
+  > {
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await this.#client.crm.pipelines.pipelinesApi.getAll('deal');
+      const pipelineStageMapping: PipelineStageMapping = {};
+      response.results.forEach((pipeline) => {
+        const stageIdsToLabels: Record<string, string> = {};
+        pipeline.stages.forEach((stage) => {
+          stageIdsToLabels[stage.id] = stage.label;
+        });
+
+        pipelineStageMapping[pipeline.id] = { label: pipeline.label, stageIdsToLabels };
+      });
+      return pipelineStageMapping;
+    });
+  }
+
   public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
     const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listOpportunitiesFull(/* archived */ true, after);
@@ -283,12 +305,14 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotDealToRemoteOpportunity)),
+        createStreamFromPage: (response) =>
+          Readable.from(response.results.map((deal) => fromHubSpotDealToRemoteOpportunity(deal, pipelineStageMapping))),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotDealToRemoteOpportunity)),
+        createStreamFromPage: (response) =>
+          Readable.from(response.results.map((deal) => fromHubSpotDealToRemoteOpportunity(deal, pipelineStageMapping))),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -383,7 +407,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
+  private async getOpportunity(
+    remoteId: string,
+    pipelineStageMapping?: PipelineStageMapping
+  ): Promise<RemoteOpportunity> {
+    if (!pipelineStageMapping) {
+      pipelineStageMapping = await this.#getPipelineStageMapping();
+    }
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
       remoteId,
@@ -391,33 +421,35 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
     );
-    return fromHubSpotDealToRemoteOpportunity(deal);
+    return fromHubSpotDealToRemoteOpportunity(deal, pipelineStageMapping);
   }
 
   public async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.create({
-      properties: toHubspotOpportunityCreateParams(params),
+      properties: toHubspotOpportunityCreateParams(params, pipelineStageMapping),
     });
     if (params.accountId && parseInt(params.accountId)) {
       await this.#client.crm.deals.associationsApi.create(parseInt(deal.id), 'company', parseInt(params.accountId), [
         { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
       ]);
     }
-    return await this.getOpportunity(deal.id);
+    return await this.getOpportunity(deal.id, pipelineStageMapping);
   }
 
   public async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.update(params.remoteId, {
-      properties: toHubspotOpportunityUpdateParams(params),
+      properties: toHubspotOpportunityUpdateParams(params, pipelineStageMapping),
     });
     if (params.accountId && parseInt(params.accountId)) {
       await this.#client.crm.deals.associationsApi.create(parseInt(deal.id), 'company', parseInt(params.accountId), [
         { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
       ]);
     }
-    return await this.getOpportunity(deal.id);
+    return await this.getOpportunity(deal.id, pipelineStageMapping);
   }
 
   public async listContacts(updatedAfter?: Date): Promise<Readable> {
