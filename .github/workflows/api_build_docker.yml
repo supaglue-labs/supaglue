@@ -12,7 +12,7 @@ on:
       - packages/types/**
       - packages/utils/**
     branches:
-      - **
+      - '**'
   pull_request:
     paths:
       - apps/api/**
