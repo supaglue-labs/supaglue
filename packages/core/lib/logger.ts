@@ -1,7 +1,9 @@
 import pino, { Level, Logger } from 'pino';
+// @ts-expect-error this package doesn't have types
 import { addContext, wrapLogger } from 'pino-context';
 import pretty from 'pino-pretty';
 import { createWriteStream } from 'pino-sentry';
+// @ts-expect-error this package doesn't have types
 export { default as expressScopeMiddleware } from 'pino-context/integrations/express';
 export { addLogContext };
 
