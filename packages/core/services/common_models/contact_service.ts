@@ -4,7 +4,6 @@ import type {
   ContactCreateParams,
   ContactFilters,
   ContactUpdateParams,
-  GetParams,
   ListInternalParams,
   PaginatedResult,
   PaginationInternalParams,
@@ -12,7 +11,6 @@ import type {
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { logger } from '../../lib';
-import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
@@ -23,15 +21,9 @@ export class ContactService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async getById(id: string, connectionId: string, getParams: GetParams): Promise<Contact> {
-    const { expand } = getParams;
-    const expandedAssociations = getExpandedAssociations(expand);
+  public async getById(id: string, connectionId: string): Promise<Contact> {
     const model = await this.prisma.crmContact.findUnique({
       where: { id },
-      include: {
-        account: expandedAssociations.includes('account'),
-        owner: expandedAssociations.includes('owner'),
-      },
     });
     if (!model) {
       throw new NotFoundError(`Can't find contact with id: ${id}`);
@@ -39,7 +31,7 @@ export class ContactService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromContactModel(model, expandedAssociations);
+    return fromContactModel(model);
   }
 
   public async search(
@@ -63,7 +55,7 @@ export class ContactService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map((model) => fromContactModel(model));
+    const results = models.map(fromContactModel);
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,
@@ -71,18 +63,9 @@ export class ContactService extends CommonModelBaseService {
   }
 
   public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Contact>> {
-    const {
-      page_size,
-      cursor,
-      include_deleted_data,
-      created_after,
-      created_before,
-      modified_after,
-      modified_before,
-      expand,
-    } = listParams;
+    const { page_size, cursor, include_deleted_data, created_after, created_before, modified_after, modified_before } =
+      listParams;
 
-    const expandedAssociations = getExpandedAssociations(expand);
     const models = await this.prisma.crmContact.findMany({
       ...getPaginationParams(page_size, cursor),
       where: {
@@ -97,15 +80,11 @@ export class ContactService extends CommonModelBaseService {
         },
         remoteWasDeleted: include_deleted_data ? undefined : false,
       },
-      include: {
-        account: expandedAssociations.includes('account'),
-        owner: expandedAssociations.includes('owner'),
-      },
       orderBy: {
         id: 'asc',
       },
     });
-    const results = models.map((model) => fromContactModel(model, expandedAssociations));
+    const results = models.map(fromContactModel);
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,

@@ -18,7 +18,7 @@ import {
   UpdateEventRequest,
   UpdateEventResponse,
 } from '@supaglue/schemas/crm';
-import { GetParams, ListParams } from '@supaglue/types';
+import { ListParams } from '@supaglue/types';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
@@ -44,11 +44,8 @@ export default function init(app: Router): void {
 
   router.get(
     '/:event_id',
-    async (
-      req: Request<GetEventPathParams, GetEventResponse, GetEventRequest, /* GetEventQueryParams */ GetParams>,
-      res: Response<GetEventResponse>
-    ) => {
-      const event = await eventService.getById(req.params.event_id, req.customerConnection.id, req.query);
+    async (req: Request<GetEventPathParams, GetEventResponse, GetEventRequest>, res: Response<GetEventResponse>) => {
+      const event = await eventService.getById(req.params.event_id, req.customerConnection.id);
       return res.status(200).send(toSnakecasedKeysEvent(event));
     }
   );

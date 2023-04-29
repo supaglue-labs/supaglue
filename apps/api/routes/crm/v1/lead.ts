@@ -19,7 +19,7 @@ import {
   UpdateLeadRequest,
   UpdateLeadResponse,
 } from '@supaglue/schemas/crm';
-import { GetParams, ListParams } from '@supaglue/types/common';
+import { ListParams } from '@supaglue/types/common';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
@@ -45,11 +45,8 @@ export default function init(app: Router): void {
 
   router.get(
     '/:lead_id',
-    async (
-      req: Request<GetLeadPathParams, GetLeadResponse, GetLeadRequest, /* GetLeadQueryParams */ GetParams>,
-      res: Response<GetLeadResponse>
-    ) => {
-      const lead = await leadService.getById(req.params.lead_id, req.customerConnection.id, req.query);
+    async (req: Request<GetLeadPathParams, GetLeadResponse, GetLeadRequest>, res: Response<GetLeadResponse>) => {
+      const lead = await leadService.getById(req.params.lead_id, req.customerConnection.id);
       return res.status(200).send(toSnakecasedKeysLead(lead));
     }
   );

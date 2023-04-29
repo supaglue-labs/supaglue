@@ -687,8 +687,6 @@ export interface components {
     modified_before: Date;
     /** @description The pagination cursor value */
     cursor: string;
-    /** @description Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces */
-    expand: string;
     /** @description Number of results to return per page */
     page_size: string;
     /** @description The customer ID that uniquely identifies the customer in your application */

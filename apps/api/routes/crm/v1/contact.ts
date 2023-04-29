@@ -21,7 +21,7 @@ import {
   UpdateContactRequest,
   UpdateContactResponse,
 } from '@supaglue/schemas/crm';
-import { GetParams, ListParams } from '@supaglue/types';
+import { ListParams } from '@supaglue/types';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
@@ -53,10 +53,10 @@ export default function init(app: Router): void {
   router.get(
     '/:contact_id',
     async (
-      req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, /* GetContactQueryParams */ GetParams>,
+      req: Request<GetContactPathParams, GetContactResponse, GetContactRequest>,
       res: Response<GetContactResponse>
     ) => {
-      const contact = await contactService.getById(req.params.contact_id, req.customerConnection.id, req.query);
+      const contact = await contactService.getById(req.params.contact_id, req.customerConnection.id);
       return res.status(200).send(toSnakecasedKeysContact(contact));
     }
   );

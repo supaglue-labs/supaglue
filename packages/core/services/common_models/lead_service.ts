@@ -1,6 +1,5 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
 import type {
-  GetParams,
   Lead,
   LeadCreateParams,
   LeadFilters,
@@ -12,7 +11,6 @@ import type {
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { logger } from '../../lib';
-import { getExpandedAssociations } from '../../lib/expand';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
@@ -23,17 +21,9 @@ export class LeadService extends CommonModelBaseService {
     super(...args);
   }
 
-  // TODO: implement getParams
-  public async getById(id: string, connectionId: string, getParams: GetParams): Promise<Lead> {
-    const { expand } = getParams;
-    const expandedAssociations = getExpandedAssociations(expand);
+  public async getById(id: string, connectionId: string): Promise<Lead> {
     const model = await this.prisma.crmLead.findUnique({
       where: { id },
-      include: {
-        convertedAccount: expandedAssociations.includes('converted_account'),
-        convertedContact: expandedAssociations.includes('converted_contact'),
-        owner: expandedAssociations.includes('owner'),
-      },
     });
     if (!model) {
       throw new NotFoundError(`Can't find Lead with id: ${id}`);
@@ -41,7 +31,7 @@ export class LeadService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromLeadModel(model, expandedAssociations);
+    return fromLeadModel(model);
   }
 
   public async search(
@@ -65,7 +55,7 @@ export class LeadService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map((model) => fromLeadModel(model));
+    const results = models.map(fromLeadModel);
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,
@@ -74,17 +64,8 @@ export class LeadService extends CommonModelBaseService {
 
   // TODO: implement rest of list params
   public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Lead>> {
-    const {
-      page_size,
-      cursor,
-      include_deleted_data,
-      created_after,
-      created_before,
-      modified_after,
-      modified_before,
-      expand,
-    } = listParams;
-    const expandedAssociations = getExpandedAssociations(expand);
+    const { page_size, cursor, include_deleted_data, created_after, created_before, modified_after, modified_before } =
+      listParams;
     const models = await this.prisma.crmLead.findMany({
       ...getPaginationParams(page_size, cursor),
       where: {
@@ -99,16 +80,11 @@ export class LeadService extends CommonModelBaseService {
         },
         remoteWasDeleted: include_deleted_data ? undefined : false,
       },
-      include: {
-        convertedAccount: expandedAssociations.includes('converted_account'),
-        convertedContact: expandedAssociations.includes('converted_contact'),
-        owner: expandedAssociations.includes('owner'),
-      },
       orderBy: {
         id: 'asc',
       },
     });
-    const results = models.map((model) => fromLeadModel(model, expandedAssociations));
+    const results = models.map(fromLeadModel);
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,

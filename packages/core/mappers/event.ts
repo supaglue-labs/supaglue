@@ -1,18 +1,13 @@
+import { CrmEvent } from '@supaglue/db';
 import { Event, RemoteEvent } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  fromAccountModel,
-  fromContactModel,
-  fromLeadModel,
-  fromOpportunityModel,
-  fromUserModel,
   toSnakecasedKeysAccount,
   toSnakecasedKeysContact,
   toSnakecasedKeysLead,
   toSnakecasedKeysOpportunity,
   toSnakecasedKeysUser,
 } from '.';
-import { CrmEventModelExpanded } from '../types';
 
 export const toSnakecasedKeysEvent = (event: Event) => {
   return {
@@ -40,42 +35,28 @@ export const toSnakecasedKeysEvent = (event: Event) => {
   };
 };
 
-export const fromEventModel = (
-  {
-    id,
-    remoteId,
-    ownerId,
-    owner,
-    subject,
-    content,
-    startTime,
-    endTime,
-    type,
-    accountId,
-    account,
-    contactId,
-    contact,
-    leadId,
-    lead,
-    opportunityId,
-    opportunity,
-    lastModifiedAt,
-    remoteCreatedAt,
-    remoteUpdatedAt,
-    remoteWasDeleted,
-  }: CrmEventModelExpanded,
-  expandedAssociations: string[] = []
-): Event => {
-  const expandAccount = expandedAssociations.includes('account');
-  const expandContact = expandedAssociations.includes('contact');
-  const expandOwner = expandedAssociations.includes('owner');
-  const expandLead = expandedAssociations.includes('lead');
-  const expandOpportunity = expandedAssociations.includes('opportunity');
+export const fromEventModel = ({
+  id,
+  remoteId,
+  ownerId,
+  subject,
+  content,
+  startTime,
+  endTime,
+  type,
+  accountId,
+  contactId,
+  leadId,
+  opportunityId,
+  lastModifiedAt,
+  remoteCreatedAt,
+  remoteUpdatedAt,
+  remoteWasDeleted,
+}: CrmEvent): Event => {
   return {
     id,
     remoteId,
     ownerId,
-    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     subject,
     content,
     startTime,
@@ -85,10 +66,6 @@ export const fromEventModel = (
     contactId,
     leadId,
     opportunityId,
-    account: expandAccount && account ? fromAccountModel(account) : undefined,
-    contact: expandContact && contact ? fromContactModel(contact) : undefined,
-    lead: expandLead && lead ? fromLeadModel(lead) : undefined,
-    opportunity: expandOpportunity && opportunity ? fromOpportunityModel(opportunity) : undefined,
     lastModifiedAt,
     remoteCreatedAt,
     remoteUpdatedAt,

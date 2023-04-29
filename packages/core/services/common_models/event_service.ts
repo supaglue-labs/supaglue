@@ -1,15 +1,8 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
-import {
-  Event,
-  EventCreateParams,
-  EventUpdateParams,
-  GetParams,
-  ListInternalParams,
-  PaginatedResult,
-} from '@supaglue/types';
+import { Event, EventCreateParams, EventUpdateParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getExpandedAssociations, getPaginationParams, getPaginationResult, getRemoteId, logger } from '../../lib';
+import { getPaginationParams, getPaginationResult, getRemoteId, logger } from '../../lib';
 import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/event';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
@@ -18,17 +11,9 @@ export class EventService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async getById(id: string, connectionId: string, { expand }: GetParams): Promise<Event> {
-    const expandedAssociations = getExpandedAssociations(expand);
+  public async getById(id: string, connectionId: string): Promise<Event> {
     const model = await this.prisma.crmEvent.findUnique({
       where: { id },
-      include: {
-        account: expandedAssociations.includes('account'),
-        owner: expandedAssociations.includes('owner'),
-        lead: expandedAssociations.includes('lead'),
-        contact: expandedAssociations.includes('contact'),
-        opportunity: expandedAssociations.includes('opportunity'),
-      },
     });
     if (!model) {
       throw new NotFoundError(`Can't find event with id: ${id}`);
@@ -36,21 +21,12 @@ export class EventService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromEventModel(model, expandedAssociations);
+    return fromEventModel(model);
   }
 
   public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Event>> {
-    const {
-      page_size,
-      cursor,
-      include_deleted_data,
-      created_after,
-      created_before,
-      modified_after,
-      modified_before,
-      expand,
-    } = listParams;
-    const expandedAssociations = getExpandedAssociations(expand);
+    const { page_size, cursor, include_deleted_data, created_after, created_before, modified_after, modified_before } =
+      listParams;
     const models = await this.prisma.crmEvent.findMany({
       ...getPaginationParams(page_size, cursor),
       where: {
@@ -65,18 +41,11 @@ export class EventService extends CommonModelBaseService {
         },
         remoteWasDeleted: include_deleted_data ? undefined : false,
       },
-      include: {
-        account: expandedAssociations.includes('account'),
-        owner: expandedAssociations.includes('owner'),
-        lead: expandedAssociations.includes('lead'),
-        opportunity: expandedAssociations.includes('opportunity'),
-        contact: expandedAssociations.includes('contact'),
-      },
       orderBy: {
         id: 'asc',
       },
     });
-    const results = models.map((model) => fromEventModel(model, expandedAssociations));
+    const results = models.map(fromEventModel);
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,

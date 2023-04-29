@@ -1,14 +1,7 @@
+import { CrmLead } from '@supaglue/db';
 import { Address, EmailAddress, Lead, PhoneNumber, RemoteLead } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  fromAccountModel,
-  fromContactModel,
-  fromUserModel,
-  toSnakecasedKeysAccount,
-  toSnakecasedKeysContact,
-  toSnakecasedKeysUser,
-} from '.';
-import { CrmLeadModelExpanded } from '../types';
+import { toSnakecasedKeysAccount, toSnakecasedKeysContact, toSnakecasedKeysUser } from '.';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
@@ -39,40 +32,30 @@ export const toSnakecasedKeysLead = (lead: Lead) => {
   };
 };
 
-export const fromLeadModel = (
-  {
-    id,
-    remoteId,
-    ownerId,
-    owner,
-    leadSource,
-    title,
-    company,
-    firstName,
-    lastName,
-    addresses,
-    phoneNumbers,
-    emailAddresses,
-    convertedDate,
-    convertedAccountId,
-    convertedContactId,
-    convertedAccount,
-    convertedContact,
-    remoteCreatedAt,
-    remoteUpdatedAt,
-    remoteWasDeleted,
-    lastModifiedAt,
-  }: CrmLeadModelExpanded,
-  expandedAssociations: string[] = []
-): Lead => {
-  const expandAccount = expandedAssociations.includes('converted_account');
-  const expandContact = expandedAssociations.includes('converted_contact');
-  const expandOwner = expandedAssociations.includes('owner');
+export const fromLeadModel = ({
+  id,
+  remoteId,
+  ownerId,
+  leadSource,
+  title,
+  company,
+  firstName,
+  lastName,
+  addresses,
+  phoneNumbers,
+  emailAddresses,
+  convertedDate,
+  convertedAccountId,
+  convertedContactId,
+  remoteCreatedAt,
+  remoteUpdatedAt,
+  remoteWasDeleted,
+  lastModifiedAt,
+}: CrmLead): Lead => {
   return {
     id,
     remoteId,
     ownerId,
-    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     leadSource,
     title,
     company,
@@ -84,8 +67,6 @@ export const fromLeadModel = (
     convertedDate,
     convertedAccountId,
     convertedContactId,
-    convertedAccount: expandAccount && convertedAccount ? fromAccountModel(convertedAccount) : undefined,
-    convertedContact: expandContact && convertedContact ? fromContactModel(convertedContact) : undefined,
     remoteCreatedAt,
     remoteUpdatedAt,
     remoteWasDeleted,

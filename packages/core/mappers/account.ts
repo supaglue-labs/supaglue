@@ -1,9 +1,9 @@
+import { CrmAccount } from '@supaglue/db';
 import { Account, Address, LifecycleStage, PhoneNumber, RemoteAccount } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { CrmAccountModelExpanded } from '../types';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
-import { fromUserModel, toSnakecasedKeysUser } from './user';
+import { toSnakecasedKeysUser } from './user';
 
 export const toSnakecasedKeysAccount = (account: Account) => {
   return {
@@ -27,34 +27,28 @@ export const toSnakecasedKeysAccount = (account: Account) => {
   };
 };
 
-export const fromAccountModel = (
-  {
-    id,
-    remoteId,
-    remoteWasDeleted,
-    ownerId,
-    owner,
-    name,
-    description,
-    industry,
-    website,
-    numberOfEmployees,
-    addresses,
-    phoneNumbers,
-    lifecycleStage,
-    lastActivityAt,
-    remoteCreatedAt,
-    remoteUpdatedAt,
-    lastModifiedAt,
-  }: CrmAccountModelExpanded,
-  expandedAssociations: string[] = []
-): Account => {
-  const expandOwner = expandedAssociations.includes('owner');
+export const fromAccountModel = ({
+  id,
+  remoteId,
+  remoteWasDeleted,
+  ownerId,
+  name,
+  description,
+  industry,
+  website,
+  numberOfEmployees,
+  addresses,
+  phoneNumbers,
+  lifecycleStage,
+  lastActivityAt,
+  remoteCreatedAt,
+  remoteUpdatedAt,
+  lastModifiedAt,
+}: CrmAccount): Account => {
   return {
     id,
     remoteId,
     ownerId,
-    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     name,
     description,
     industry,
