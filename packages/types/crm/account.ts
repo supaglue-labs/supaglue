@@ -32,7 +32,6 @@ export type Account = BaseAccount &
 export type RemoteAccount = BaseAccount &
   BaseCrmModelRemoteOnlyParams & {
     remoteOwnerId: string | null;
-    rawData: Record<string, any>;
   };
 
 type BaseAccountCreateParams = {

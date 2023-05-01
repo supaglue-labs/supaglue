@@ -172,7 +172,6 @@ export class AccountService extends CommonModelBaseService {
       'connection_id',
       '_remote_owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
-      'raw_data',
     ];
 
     return await this.upsertRemoteCommonModels(

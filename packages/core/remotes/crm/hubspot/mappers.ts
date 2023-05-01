@@ -74,7 +74,6 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     remoteWasDeleted: !!archived,
     remoteDeletedAt: archivedAt ?? null,
     detectedOrRemoteDeletedAt: archivedAt ?? null,
-    rawData: properties,
   };
 };
 
@@ -158,7 +157,6 @@ export const fromHubSpotContactToRemoteContact = ({
     remoteWasDeleted: !!archived,
     remoteDeletedAt: archivedAt ?? null,
     detectedOrRemoteDeletedAt: archivedAt ?? null,
-    rawData: properties,
   };
 };
 
@@ -205,7 +203,6 @@ export const fromHubSpotDealToRemoteOpportunity = (
     remoteWasDeleted: !!archived,
     remoteDeletedAt: archivedAt ?? null,
     detectedOrRemoteDeletedAt: archivedAt ?? null,
-    rawData: properties,
   };
 };
 
@@ -217,8 +214,6 @@ export const fromHubspotOwnerToRemoteUser = ({
   createdAt,
   updatedAt,
   archived,
-  userId,
-  teams,
 }: HubspotOwner): RemoteUser => {
   return {
     remoteId: id,
@@ -230,18 +225,6 @@ export const fromHubspotOwnerToRemoteUser = ({
     remoteWasDeleted: !!archived,
     remoteDeletedAt: null,
     detectedOrRemoteDeletedAt: archived ? new Date() : null,
-    rawData: {
-      // List of fields comes from `HubspotOwner`, which is a class, not an object
-      id,
-      firstName,
-      lastName,
-      email,
-      createdAt,
-      updatedAt,
-      archived,
-      userId,
-      teams,
-    },
   };
 };
 
