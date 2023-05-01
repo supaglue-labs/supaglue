@@ -2,7 +2,7 @@
 description: ''
 ---
 
-# HubSpot Connected App
+# HubSpot setup
 
 import BrowserWindow from '@site/src/components/BrowserWindow';
 import Tabs from '@theme/Tabs';

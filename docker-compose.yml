@@ -1,6 +1,7 @@
 x-common-env:
   &common-env
   NODE_ENV: production
+  SUPAGLUE_ENVIRONMENT: docker
   SUPAGLUE_DATABASE_URL: ${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}
   SUPAGLUE_PRETTY_LOGS: 1
   SUPAGLUE_POSTHOG_API_KEY: ${SUPAGLUE_POSTHOG_API_KEY:-phc_thv3N2dFQcJDh2vPz6FtGE9oKDiBSdYp5oKS1Cu9U8j}
@@ -16,6 +17,7 @@ x-fe-api-common-env:
   SUPAGLUE_INTERNAL_TOKEN: some-internal-token
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-some-key}
   CLERK_SECRET_KEY: ${CLERK_SECRET_KEY:-some-key}
+  NEXT_PUBLIC_SUPAGLUE_ENVIRONMENT: docker
   NEXT_PUBLIC_IS_CLOUD:
 
 

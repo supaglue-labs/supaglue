@@ -34,7 +34,7 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
       distinctId,
       event: `Sync ${status}`,
       properties: {
-        result: status === 'FAILURE' ? 'success' : 'error',
+        result: status === 'FAILURE' ? 'error' : 'success',
         params: {
           syncId,
           connectionId,

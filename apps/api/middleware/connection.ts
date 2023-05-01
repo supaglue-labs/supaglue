@@ -1,5 +1,6 @@
 import { UnauthorizedError } from '@supaglue/core/errors';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
+import { addLogContext } from '@supaglue/core/lib/logger';
 import { NextFunction, Request, Response } from 'express';
 import { getDependencyContainer } from '../dependency_container';
 
@@ -19,6 +20,10 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
     applicationId: req.supaglueApplication.id,
     providerName,
   });
+
+  addLogContext('customerId', req.customerId);
+  addLogContext('providerName', providerName);
+  addLogContext('connectionId', req.customerConnection?.id);
 
   next();
 }

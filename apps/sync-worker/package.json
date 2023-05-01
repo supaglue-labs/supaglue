@@ -11,7 +11,8 @@
     "@supaglue/types": "workspace:*",
     "@swc/core": "^1.3.35",
     "@temporalio/client": "^1.6.0",
-    "@temporalio/worker": "^1.6.0"
+    "@temporalio/worker": "^1.6.0",
+    "async-local-storage": "^2.3.1"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",

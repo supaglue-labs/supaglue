@@ -3,7 +3,7 @@ import { createTerminus } from '@godaddy/terminus';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import { HTTPError } from '@supaglue/core/errors';
-import { logger } from '@supaglue/core/lib';
+import { expressScopeMiddleware, logger } from '@supaglue/core/lib';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import cors from 'cors';
@@ -24,6 +24,7 @@ if (sentryEnabled) {
     // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
     // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
     dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
+    environment: process.env.SUPAGLUE_ENVIRONMENT,
     integrations: [
       new RewriteFrames({
         root: __dirname,
@@ -56,6 +57,8 @@ app.use(
 );
 
 app.use(Sentry.Handlers.requestHandler());
+app.use(expressScopeMiddleware());
+
 // Body parsing Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -97,14 +100,6 @@ app.use(
         const { cookie, authorization, ['x-api-key']: apiKey, ...headers } = req.headers;
         return { ...req, headers };
       },
-    },
-    customProps: function (req) {
-      return {
-        applicationId: (req as Request).supaglueApplication?.id,
-        connectionId: (req as Request).customerConnection?.id,
-        customerId: (req as Request).customerId,
-        orgId: (req as Request).orgId,
-      };
     },
     genReqId: () => uuidv4(),
     quietReqLogger: true, // only log the reqId from req.log.*, not the whole request

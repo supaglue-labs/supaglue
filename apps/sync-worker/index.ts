@@ -4,10 +4,18 @@ import { logger } from '@supaglue/core/lib';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createActivities } from '@supaglue/sync-workflows';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import { LogLevel, LogMetadata, NativeConnection, Runtime, Worker } from '@temporalio/worker';
+import {
+  appendDefaultInterceptors,
+  LogLevel,
+  LogMetadata,
+  NativeConnection,
+  Runtime,
+  Worker,
+} from '@temporalio/worker';
 import fs from 'fs';
 import path from 'path';
 import { getDependencyContainer } from './dependency_container';
+import ActivityLogInterceptor from './interceptors/activity_log_interceptor';
 
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
@@ -17,6 +25,7 @@ if (sentryEnabled) {
     // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
     // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
     dsn: 'https://168e6ed7afc74379ba0608da6173649c@o4504573112745984.ingest.sentry.io/4504844378505216',
+    environment: process.env.SUPAGLUE_ENVIRONMENT,
     integrations: [
       new RewriteFrames({
         root: __dirname,
@@ -100,6 +109,10 @@ async function run() {
     taskQueue: SYNC_TASK_QUEUE,
     connection,
     namespace: process.env.TEMPORAL_NAMESPACE ?? 'default',
+    interceptors: appendDefaultInterceptors({
+      activityInbound: [(ctx) => new ActivityLogInterceptor(ctx)],
+      workflowModules: [`${__dirname}/interceptors/workflow_log_interceptor`],
+    }),
   });
 
   await worker.run();
