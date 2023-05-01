@@ -40,6 +40,7 @@ export type RemoteLead = BaseLead &
     convertedRemoteContactId: string | null;
     convertedRemoteAccountId: string | null;
     remoteOwnerId: string | null;
+    rawData: Record<string, any>;
   };
 
 type BaseLeadCreateParams = {

@@ -30,6 +30,7 @@ export type RemoteOpportunity = BaseOpportunity &
   BaseCrmModelRemoteOnlyParams & {
     remoteAccountId: string | null;
     remoteOwnerId: string | null;
+    rawData: Record<string, any>;
   };
 
 type BaseOpportunityCreateParams = {
