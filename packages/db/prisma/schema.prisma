@@ -98,7 +98,7 @@ model CrmAccount {
   phoneNumbers              Json?            @map("phone_numbers")
   lifecycleStage            String?          @map("lifecycle_stage")
   lastActivityAt            DateTime?        @map("last_activity_at")
-  remoteData                Json?            @map("remote_data")
+  rawData                   Json?            @map("raw_data")
   remoteCreatedAt           DateTime?        @map("remote_created_at")
   remoteUpdatedAt           DateTime?        @map("remote_updated_at")
   remoteWasDeleted          Boolean          @default(false) @map("remote_was_deleted")
@@ -133,7 +133,7 @@ model CrmContact {
   phoneNumbers              Json        @map("phone_numbers")
   lastActivityAt            DateTime?   @map("last_activity_at")
   lifecycleStage            String?     @map("lifecycle_stage")
-  remoteData                Json?       @map("remote_data")
+  rawData                   Json?       @map("raw_data")
   remoteCreatedAt           DateTime?   @map("remote_created_at")
   remoteUpdatedAt           DateTime?   @map("remote_updated_at")
   remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
@@ -170,7 +170,7 @@ model CrmLead {
   addresses                 Json?
   phoneNumbers              Json?       @map("phone_numbers")
   emailAddresses            Json?       @map("email_addresses")
-  remoteData                Json?       @map("remote_data")
+  rawData                   Json?       @map("raw_data")
   remoteCreatedAt           DateTime?   @map("remote_created_at")
   remoteUpdatedAt           DateTime?   @map("remote_updated_at")
   remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
@@ -210,6 +210,7 @@ model CrmOpportunity {
   lastActivityAt            DateTime?   @map("last_activity_at")
   pipeline                  String?
   closeDate                 DateTime?   @map("close_date")
+  rawData                   Json?       @map("raw_data")
   remoteCreatedAt           DateTime?   @map("remote_created_at")
   remoteUpdatedAt           DateTime?   @map("remote_updated_at")
   remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
@@ -240,6 +241,7 @@ model CrmUser {
   name                      String?
   email                     String?
   isActive                  Boolean?         @map("is_active")
+  rawData                   Json?            @map("raw_data")
   remoteCreatedAt           DateTime?        @map("remote_created_at")
   remoteUpdatedAt           DateTime?        @map("remote_updated_at")
   remoteWasDeleted          Boolean          @default(false) @map("remote_was_deleted")
@@ -269,6 +271,7 @@ model CrmEvent {
   content                   String?
   startTime                 DateTime? @map("start_time")
   endTime                   DateTime? @map("end_time")
+  rawData                   Json?     @map("raw_data")
   remoteCreatedAt           DateTime? @map("remote_created_at")
   remoteUpdatedAt           DateTime? @map("remote_updated_at")
   remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
