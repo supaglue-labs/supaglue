@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
+import { BadRequestError } from '@supaglue/core/errors';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes/crm';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
 import { Request, Response, Router } from 'express';
@@ -23,15 +24,15 @@ export default function init(app: Router): void {
       const { applicationId, customerId, providerName, returnUrl, loginUrl } = req.query;
 
       if (!applicationId) {
-        throw new Error('Missing applicationId');
+        throw new BadRequestError('Missing applicationId');
       }
 
       if (!customerId) {
-        throw new Error('Missing customerId');
+        throw new BadRequestError('Missing customerId');
       }
 
       if (!providerName) {
-        throw new Error('Missing providerName');
+        throw new BadRequestError('Missing providerName');
       }
 
       const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
