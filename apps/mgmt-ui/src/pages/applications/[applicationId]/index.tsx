@@ -76,7 +76,7 @@ export default function Home() {
     addNotification({ message: 'Copied to clipboard', severity: 'success' });
 
     await navigator.clipboard.writeText(
-      `${nextLambdaEnv.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+      `${nextLambdaEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
         params.id
       )}&providerName={{REPLACE_ME}}&returnUrl={{REPLACE_ME}}`
     );
