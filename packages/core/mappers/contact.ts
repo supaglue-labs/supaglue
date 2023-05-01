@@ -1,11 +1,11 @@
+import { CrmContact } from '@supaglue/db';
 import { Address, Contact, EmailAddress, LifecycleStage, PhoneNumber, RemoteContact } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { CrmContactModelExpanded } from '../types';
-import { fromAccountModel, toSnakecasedKeysAccount } from './account';
+import { toSnakecasedKeysAccount } from './account';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
-import { fromUserModel, toSnakecasedKeysUser } from './user';
+import { toSnakecasedKeysUser } from './user';
 
 export const toSnakecasedKeysContact = (contact: Contact) => {
   return {
@@ -29,37 +29,28 @@ export const toSnakecasedKeysContact = (contact: Contact) => {
   };
 };
 
-export const fromContactModel = (
-  {
-    id,
-    remoteId,
-    ownerId,
-    owner,
-    accountId,
-    account,
-    firstName,
-    lastName,
-    addresses,
-    emailAddresses,
-    phoneNumbers,
-    lifecycleStage,
-    lastActivityAt,
-    remoteCreatedAt,
-    remoteUpdatedAt,
-    remoteWasDeleted,
-    lastModifiedAt,
-  }: CrmContactModelExpanded,
-  expandedAssociations: string[] = []
-): Contact => {
-  const expandAccount = expandedAssociations.includes('account');
-  const expandOwner = expandedAssociations.includes('owner');
+export const fromContactModel = ({
+  id,
+  remoteId,
+  ownerId,
+  accountId,
+  firstName,
+  lastName,
+  addresses,
+  emailAddresses,
+  phoneNumbers,
+  lifecycleStage,
+  lastActivityAt,
+  remoteCreatedAt,
+  remoteUpdatedAt,
+  remoteWasDeleted,
+  lastModifiedAt,
+}: CrmContact): Contact => {
   return {
     id,
     remoteId,
     ownerId,
-    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     accountId,
-    account: expandAccount && account ? fromAccountModel(account) : undefined,
     firstName,
     lastName,
     addresses: addresses as Address[],

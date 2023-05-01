@@ -14,7 +14,6 @@ get:
     - $ref: ../../common/components/parameters/query/modified_after.yaml
     - $ref: ../../common/components/parameters/query/modified_before.yaml
     - $ref: ../../common/components/parameters/query/cursor.yaml
-    - $ref: ../../common/components/parameters/query/expand.yaml
     - $ref: ../../common/components/parameters/query/page_size.yaml
   responses:
     '200':

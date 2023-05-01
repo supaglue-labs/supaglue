@@ -5,8 +5,6 @@ get:
     - Contacts
   security:
     - ApiKeyAuth: []
-  parameters:
-    - $ref: ../../common/components/parameters/query/expand.yaml
   responses:
     200:
       description: Contact

@@ -19,7 +19,7 @@ import {
   UpdateAccountRequest,
   UpdateAccountResponse,
 } from '@supaglue/schemas/crm';
-import { GetParams, ListParams } from '@supaglue/types';
+import { ListParams } from '@supaglue/types';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
@@ -53,10 +53,10 @@ export default function init(app: Router): void {
   router.get(
     '/:account_id',
     async (
-      req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest, /* GetAccountQueryParams */ GetParams>,
+      req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest>,
       res: Response<GetAccountResponse>
     ) => {
-      const account = await accountService.getById(req.params.account_id, req.customerConnection.id, req.query);
+      const account = await accountService.getById(req.params.account_id, req.customerConnection.id);
       return res.status(200).send(toSnakecasedKeysAccount(account));
     }
   );

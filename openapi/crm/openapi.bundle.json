@@ -54,9 +54,6 @@
             "$ref": "#/components/parameters/cursor"
           },
           {
-            "$ref": "#/components/parameters/expand"
-          },
-          {
             "$ref": "#/components/parameters/page_size"
           }
         ],
@@ -386,11 +383,6 @@
             "ApiKeyAuth": []
           }
         ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/expand"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Account",
@@ -553,9 +545,6 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           },
           {
             "$ref": "#/components/parameters/page_size"
@@ -903,11 +892,6 @@
             "ApiKeyAuth": []
           }
         ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/expand"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Contact",
@@ -1038,9 +1022,6 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           },
           {
             "$ref": "#/components/parameters/page_size"
@@ -1245,11 +1226,6 @@
         "security": [
           {
             "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/expand"
           }
         ],
         "responses": {
@@ -1552,9 +1528,6 @@
             "$ref": "#/components/parameters/cursor"
           },
           {
-            "$ref": "#/components/parameters/expand"
-          },
-          {
             "$ref": "#/components/parameters/page_size"
           }
         ],
@@ -1684,11 +1657,6 @@
         "security": [
           {
             "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/expand"
           }
         ],
         "responses": {
@@ -1825,9 +1793,6 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           },
           {
             "$ref": "#/components/parameters/page_size"
@@ -2113,11 +2078,6 @@
             "ApiKeyAuth": []
           }
         ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/expand"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Opportunity",
@@ -2257,9 +2217,6 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           },
           {
             "$ref": "#/components/parameters/page_size"
@@ -3776,15 +3733,6 @@
           "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
         },
         "description": "The pagination cursor value"
-      },
-      "expand": {
-        "name": "expand",
-        "in": "query",
-        "schema": {
-          "type": "string",
-          "example": "owner"
-        },
-        "description": "Which relations should be returned in expanded form. Multiple relation names should be comma separated without spaces"
       },
       "page_size": {
         "name": "page_size",

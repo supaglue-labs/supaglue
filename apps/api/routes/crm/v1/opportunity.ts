@@ -20,7 +20,7 @@ import {
   UpdateOpportunityRequest,
   UpdateOpportunityResponse,
 } from '@supaglue/schemas/crm';
-import { GetParams, ListParams } from '@supaglue/types/common';
+import { ListParams } from '@supaglue/types/common';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
@@ -52,19 +52,10 @@ export default function init(app: Router): void {
   router.get(
     '/:opportunity_id',
     async (
-      req: Request<
-        GetOpportunityPathParams,
-        GetOpportunityResponse,
-        GetOpportunityRequest,
-        /* GetOpportunityQueryParams */ GetParams
-      >,
+      req: Request<GetOpportunityPathParams, GetOpportunityResponse, GetOpportunityRequest>,
       res: Response<GetOpportunityResponse>
     ) => {
-      const opportunity = await opportunityService.getById(
-        req.params.opportunity_id,
-        req.customerConnection.id,
-        req.query
-      );
+      const opportunity = await opportunityService.getById(req.params.opportunity_id, req.customerConnection.id);
       return res.status(200).send(toSnakecasedKeysOpportunity(opportunity));
     }
   );

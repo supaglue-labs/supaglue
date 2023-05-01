@@ -1,8 +1,8 @@
+import { CrmOpportunity } from '@supaglue/db';
 import { Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import { CrmOpportunityModelExpanded } from '../types';
-import { fromAccountModel, toSnakecasedKeysAccount } from './account';
-import { fromUserModel, toSnakecasedKeysUser } from './user';
+import { toSnakecasedKeysAccount } from './account';
+import { toSnakecasedKeysUser } from './user';
 
 export const toSnakecasedKeysOpportunity = (opportunity: Opportunity) => {
   return {
@@ -27,40 +27,31 @@ export const toSnakecasedKeysOpportunity = (opportunity: Opportunity) => {
   };
 };
 
-export const fromOpportunityModel = (
-  {
-    id,
-    remoteId,
-    ownerId,
-    owner,
-    name,
-    description,
-    stage,
-    status,
-    amount,
-    lastActivityAt,
-    pipeline,
-    closeDate,
-    accountId,
-    account,
-    remoteCreatedAt,
-    remoteUpdatedAt,
-    remoteWasDeleted,
-    lastModifiedAt,
-  }: CrmOpportunityModelExpanded,
-  expandedAssociations: string[] = []
-): Opportunity => {
-  const expandAccount = expandedAssociations.includes('account');
-  const expandOwner = expandedAssociations.includes('owner');
+export const fromOpportunityModel = ({
+  id,
+  remoteId,
+  ownerId,
+  name,
+  description,
+  stage,
+  status,
+  amount,
+  lastActivityAt,
+  pipeline,
+  closeDate,
+  accountId,
+  remoteCreatedAt,
+  remoteUpdatedAt,
+  remoteWasDeleted,
+  lastModifiedAt,
+}: CrmOpportunity): Opportunity => {
   return {
     id,
     remoteId,
     ownerId,
-    owner: expandOwner && owner ? fromUserModel(owner) : undefined,
     name,
     description,
     accountId,
-    account: expandAccount && account ? fromAccountModel(account) : undefined,
     stage,
     lastActivityAt,
     closeDate,
