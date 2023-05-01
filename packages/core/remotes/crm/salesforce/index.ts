@@ -49,6 +49,8 @@ import {
 
 const FETCH_TIMEOUT = 60 * 1000;
 
+const COMPOUND_TYPES = ['location', 'address'];
+
 // this is incomplete; it only includes the fields that we need to use
 type SalesforceBulk2QueryJob = {
   id: string;
@@ -285,7 +287,9 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       },
     });
     const responseJson = await response.json();
-    return responseJson.fields.map((field: { name: string }) => field.name);
+    return responseJson.fields
+      .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
+      .map((field: { name: string; type: string }) => field.name);
   }
 
   private async listCommonModelRecords(
