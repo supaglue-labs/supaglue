@@ -47,7 +47,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
   );
 
   useEffect(() => {
-    setFriendlyIntegrationId(integration?.id ? integration.id : '--');
+    setFriendlyIntegrationId(integration?.id ?? '--');
 
     setClientId(integration?.config?.oauth?.credentials?.oauthClientId ?? '');
 
