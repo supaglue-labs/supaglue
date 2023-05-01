@@ -9,7 +9,6 @@ const { integrationService, connectionAndSyncService } = getDependencyContainer(
 
 const SERVER_URL = process.env.SUPAGLUE_SERVER_URL ?? 'http://localhost:8080';
 const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
-const RETURN_URL = process.env.SUPAGLUE_OAUTH_RETURN_URL ?? 'http://localhost:3000';
 
 export default function init(app: Router): void {
   const publicOauthRouter = Router();
@@ -32,6 +31,10 @@ export default function init(app: Router): void {
 
       if (!providerName) {
         throw new Error('Missing providerName');
+      }
+
+      if (!returnUrl) {
+        throw new Error('Missing returnUrl');
       }
 
       const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
@@ -68,7 +71,7 @@ export default function init(app: Router): void {
         redirect_uri: REDIRECT_URI,
         scope: oauthScopes.join(' '),
         state: JSON.stringify({
-          returnUrl: returnUrl ?? RETURN_URL,
+          returnUrl,
           applicationId,
           customerId,
           providerName,
