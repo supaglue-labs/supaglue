@@ -5,6 +5,7 @@ import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useCustomers } from '@/hooks/useCustomers';
+import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import providerToIcon from '@/utils/providerToIcon';
@@ -51,6 +52,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 };
 
 export default function Home() {
+  const { nextLambdaEnv } = useNextLambdaEnv();
   const { addNotification } = useNotification();
   const { customers = [], isLoading, mutate } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -73,12 +75,10 @@ export default function Home() {
   const handleEmebedLinkClick = async (params: GridRenderCellParams) => {
     addNotification({ message: 'Copied to clipboard', severity: 'success' });
 
-    // NOTE: assumes one connection per customer
-    // TODO: data-drive `returnURL`
     await navigator.clipboard.writeText(
-      `https://api.supaglue.io/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+      `${nextLambdaEnv.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
         params.id
-      )}&providerName={{providerName}}&returnUrl={{returnUrl}}`
+      )}&providerName={{REPLACE_ME}}&returnUrl={{REPLACE_ME}}`
     );
   };
 
