@@ -39,6 +39,7 @@ export type RemoteEvent = BaseEvent &
     remoteContactId: string | null;
     remoteLeadId: string | null;
     remoteOpportunityId: string | null;
+    rawData: Record<string, any>;
   };
 
 type BaseEventCreateParams = {

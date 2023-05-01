@@ -74,6 +74,7 @@ export class UserService extends CommonModelBaseService {
       'detected_or_remote_deleted_at',
       'last_modified_at',
       'updated_at', // TODO: We should have default for this column in Postgres
+      'raw_data',
     ];
 
     return await this.upsertRemoteCommonModels(

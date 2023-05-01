@@ -107,5 +107,6 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     _converted_remote_contact_id: remoteLead.convertedRemoteContactId,
     _remote_owner_id: remoteLead.remoteOwnerId,
     updated_at: new Date().toISOString(),
+    raw_data: remoteLead.rawData,
   };
 };
