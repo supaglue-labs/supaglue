@@ -1,3 +1,7 @@
+---
+description: ''
+---
+
 # Privacy policy
 
 Last updated: February 9, 2023
