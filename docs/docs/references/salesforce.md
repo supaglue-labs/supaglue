@@ -2,7 +2,7 @@
 description: ''
 ---
 
-# Salesforce Connected App
+# Salesforce setup
 
 import BrowserWindow from '@site/src/components/BrowserWindow';
 import Tabs from '@theme/Tabs';
