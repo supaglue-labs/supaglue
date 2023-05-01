@@ -2,6 +2,7 @@ import { createCustomer } from '@/client';
 import MetricCard from '@/components/customers/MetricCard';
 import { NewCustomer } from '@/components/customers/NewCustomer';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useCustomers } from '@/hooks/useCustomers';
 import Header from '@/layout/Header';
@@ -9,8 +10,9 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import providerToIcon from '@/utils/providerToIcon';
 import { getAuth } from '@clerk/nextjs/server';
 import { Link, PeopleAltOutlined } from '@mui/icons-material';
-import { Box, Grid, Stack } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import LinkIcon from '@mui/icons-material/Link';
+import { Box, Grid, IconButton, Stack } from '@mui/material';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { ConnectionSafeAny } from '@supaglue/types/connection';
 import { type GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
@@ -49,6 +51,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 };
 
 export default function Home() {
+  const { addNotification } = useNotification();
   const { customers = [], isLoading, mutate } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
   const applicationId = useActiveApplicationId();
@@ -67,6 +70,18 @@ export default function Home() {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleEmebedLinkClick = async (params: GridRenderCellParams) => {
+    addNotification({ message: 'Copied to clipboard', severity: 'success' });
+
+    // NOTE: assumes one connection per customer
+    // TODO: data-drive `returnURL`
+    await navigator.clipboard.writeText(
+      `https://api.supaglue.io/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+        params.id
+      )}&providerName={{providerName}}&returnUrl={{returnUrl}}`
+    );
+  };
+
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 300 },
     { field: 'name', headerName: 'Name', width: 250 },
@@ -74,9 +89,21 @@ export default function Home() {
     {
       field: 'connections',
       headerName: 'Connections',
-      width: 300,
+      width: 150,
       renderCell: (params) => {
         return params.value.map((connection: ConnectionSafeAny) => providerToIcon(connection.providerName));
+      },
+    },
+    {
+      field: 'link',
+      headerName: 'Embed Link',
+      width: 100,
+      renderCell: (params) => {
+        return (
+          <IconButton onClick={() => handleEmebedLinkClick(params)}>
+            <LinkIcon />
+          </IconButton>
+        );
       },
     },
   ];
