@@ -231,6 +231,7 @@ export const fromHubspotOwnerToRemoteUser = ({
     remoteDeletedAt: null,
     detectedOrRemoteDeletedAt: archived ? new Date() : null,
     rawData: {
+      // List of fields comes from `HubspotOwner`, which is a class, not an object
       id,
       firstName,
       lastName,
