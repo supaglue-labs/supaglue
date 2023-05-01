@@ -27,6 +27,7 @@ const isSyncPeriodSecsValid = (syncPeriodSecs: number) => {
 export default function IntegrationDetailsPanel({ providerName, category, isLoading }: IntegrationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
+  const [friendlyIntegrationId, setFriendlyIntegrationId] = useState<string>('--');
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
@@ -46,6 +47,8 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
   );
 
   useEffect(() => {
+    setFriendlyIntegrationId(integration?.id ?? '--');
+
     setClientId(integration?.config?.oauth?.credentials?.oauthClientId ?? '');
 
     setClientSecret(integration?.config?.oauth?.credentials?.oauthClientSecret ?? '');
@@ -121,6 +124,11 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
               <Typography fontSize={12}>{integrationCardInfo.category.toUpperCase()}</Typography>
             </Stack>
           </Stack>
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Integration Metadata</Typography>
+          <TextField value={friendlyIntegrationId} size="small" label="ID" variant="outlined" disabled />
         </Stack>
 
         <Stack className="gap-2">
