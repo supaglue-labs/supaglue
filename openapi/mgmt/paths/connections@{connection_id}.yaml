@@ -23,6 +23,7 @@ get:
                 provider_name: salesforce
                 category: crm
                 remote_id: https://supaglue-dev-ed.develop.my.salesforce.com
+                instance_url: https://supaglue-dev-ed.develop.my.salesforce.com
 delete:
   operationId: deleteConnection
   summary: Delete connection

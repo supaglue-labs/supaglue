@@ -75,7 +75,9 @@ model Connection {
   credentials   Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
   customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId    String      @map("customer_id")
+  /// Deprecated
   remoteId      String      @map("remote_id")
+  instanceUrl   String      @default("") @map("instance_url")
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
   sync          Sync?
