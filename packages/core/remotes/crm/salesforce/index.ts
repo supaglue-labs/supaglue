@@ -47,113 +47,6 @@ import {
   toSalesforceOpportunityUpdateParams,
 } from './mappers';
 
-const propertiesToFetch = {
-  account: [
-    'Id',
-    'OwnerId',
-    'Name',
-    'Description',
-    'Industry',
-    'Website',
-    'NumberOfEmployees',
-    // We may not need all of these fields in order to map to common model
-    'BillingCity',
-    'BillingCountry',
-    'BillingPostalCode',
-    'BillingState',
-    'BillingStreet',
-    // We may not need all of these fields in order to map to common model
-    'ShippingCity',
-    'ShippingCountry',
-    'ShippingPostalCode',
-    'ShippingState',
-    'ShippingStreet',
-    'Phone',
-    'Fax',
-    'LastActivityDate',
-    'CreatedDate',
-    'SystemModstamp',
-    'IsDeleted',
-  ],
-  contact: [
-    'Id',
-    'OwnerId',
-    'AccountId',
-    'FirstName',
-    'LastName',
-    'Email',
-    'Phone',
-    'Fax',
-    'MobilePhone',
-    'LastActivityDate',
-    // We may not need all of these fields in order to map to common model
-    'MailingCity',
-    'MailingCountry',
-    'MailingPostalCode',
-    'MailingState',
-    'MailingStreet',
-    // We may not need all of these fields in order to map to common model
-    'OtherCity',
-    'OtherCountry',
-    'OtherPostalCode',
-    'OtherState',
-    'OtherStreet',
-    'IsDeleted',
-    'CreatedDate',
-    'SystemModstamp',
-  ],
-  opportunity: [
-    'Id',
-    'OwnerId',
-    'Name',
-    'Description',
-    'LastActivityDate',
-    'Amount',
-    'IsClosed',
-    'IsDeleted',
-    'IsWon',
-    'StageName',
-    'CloseDate',
-    'CreatedDate',
-    'SystemModstamp',
-    'AccountId',
-  ],
-  lead: [
-    'Id',
-    'OwnerId',
-    'Title',
-    'FirstName',
-    'LastName',
-    'ConvertedDate',
-    'CreatedDate',
-    'SystemModstamp',
-    'ConvertedContactId',
-    'ConvertedAccountId',
-    'Company',
-    'City',
-    'State',
-    'Street',
-    'Country',
-    'PostalCode',
-    'Phone',
-    'Email',
-    'IsDeleted',
-  ],
-  user: ['Id', 'Name', 'Email', 'IsActive', 'CreatedDate', 'SystemModstamp'],
-  event: [
-    'Id',
-    'StartDateTime',
-    'EndDateTime',
-    'OwnerId',
-    'Subject',
-    'CreatedDate',
-    'SystemModstamp',
-    'WhoId',
-    'AccountId',
-    'WhatId',
-  ],
-};
-
 const FETCH_TIMEOUT = 60 * 1000;
 
 // this is incomplete; it only includes the fields that we need to use
@@ -401,10 +294,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     updatedAfter?: Date
   ): Promise<Readable> {
     const availableProperties = await this.getCommonModelSchema(commonModelName);
-
-    const properties = intersection(propertiesToFetch[commonModelName], availableProperties);
     const baseSoql = `
-    SELECT ${properties.join(', ')}
+    SELECT ${availableProperties.join(', ')}
     FROM ${capitalizeString(commonModelName)}
   `;
     const soql = updatedAfter

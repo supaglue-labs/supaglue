@@ -104,5 +104,6 @@ export const fromRemoteEventToDbEventParams = (connectionId: string, customerId:
     _remote_opportunity_id: remoteEvent.remoteOpportunityId,
     _remote_owner_id: remoteEvent.remoteOwnerId,
     updated_at: new Date().toISOString(),
+    raw_data: remoteEvent.rawData,
   };
 };

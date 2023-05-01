@@ -102,5 +102,6 @@ export const fromRemoteContactToDbContactParams = (
     _remote_account_id: remoteContact.remoteAccountId,
     _remote_owner_id: remoteContact.remoteOwnerId,
     updated_at: new Date().toISOString(),
+    raw_data: remoteContact.rawData,
   };
 };

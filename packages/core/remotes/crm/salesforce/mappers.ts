@@ -36,6 +36,7 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
     remoteWasDeleted: record.IsDeleted === 'true',
     remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    rawData: record,
   };
 };
 
@@ -63,6 +64,7 @@ export const fromSalesforceEventToRemoteEvent = (record: Record<string, any>): R
     remoteWasDeleted: false,
     remoteDeletedAt: null,
     detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    rawData: record,
   };
 };
 
@@ -156,6 +158,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     remoteWasDeleted: record.IsDeleted === 'true',
     remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    rawData: record,
   };
 };
 
@@ -251,6 +254,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     remoteWasDeleted: record.IsDeleted === 'true',
     remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    rawData: record,
   };
 };
 
@@ -314,6 +318,7 @@ export const fromSalesforceLeadToRemoteLead = (
     remoteWasDeleted: record.IsDeleted === 'true',
     remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    rawData: record,
   };
 };
 
@@ -365,6 +370,7 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     remoteWasDeleted: record.IsDeleted === 'true',
     remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    rawData: record,
   };
 };
 
