@@ -28,6 +28,7 @@ import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { pipeline, Readable, Transform } from 'stream';
+import { TooManyRequestsError } from '../../../errors';
 import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -187,17 +188,27 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       if (response.status === 200) {
         return response;
       }
+      if (response.status === 429) {
+        logger.warn(
+          {
+            status: response.status,
+            statusText: response.statusText,
+            text: await response.text(),
+            body: response.body,
+          },
+          `Encountered Salesforce rate limiting.`
+        );
+        throw new TooManyRequestsError(`Encountered Salesforce rate limiting.`);
+      }
+
       const error = new Error(
         `Status code ${response.status} and status ${
           response.statusText
         } when calling salesforce API. Error: ${await response.text()}. Body: ${response.body}`
       );
       logger.error(error);
-      if (response.status !== 429) {
-        bail(error);
-        return null as unknown as ReturnType<typeof fetch>;
-      }
-      throw error;
+      bail(error);
+      return null as unknown as ReturnType<typeof fetch>;
     };
     return await retry(helper, ASYNC_RETRY_OPTIONS);
   }

@@ -46,3 +46,11 @@ export class UnauthorizedError extends HTTPError {
     super(message, cause);
   }
 }
+
+export class TooManyRequestsError extends HTTPError {
+  code = 429;
+  problemType = 'TOO_MANY_REQUESTS_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
