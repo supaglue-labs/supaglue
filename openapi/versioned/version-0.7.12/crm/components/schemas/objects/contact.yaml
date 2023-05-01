@@ -1,0 +1,75 @@
+type: object
+properties:
+  account_id:
+    type: string
+    nullable: true
+    example: fd089246-09b1-4e3b-a60a-7a76314bbcce 
+  account: 
+    $ref: ./account.yaml
+  owner_id:
+    type: string
+    nullable: true
+    example: 23e640fe-6105-4a11-a636-3aa6b6c6e762
+  owner:
+    $ref: ./user.yaml
+  addresses:
+    $ref: ./addresses.yaml
+  email_addresses:
+    $ref: ./email_addresses.yaml
+  first_name:
+    type: string
+    nullable: true
+    example: George
+  id:
+    type: string
+    example: 88cc44ca-7a34-4e8b-b0da-51c3aae34daf
+  remote_id:
+    type: string
+    example: 54312
+  last_activity_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  last_name:
+    type: string
+    nullable: true
+    example: Xing
+  phone_numbers:
+    $ref: ./phone_numbers.yaml
+  lifecycle_stage:
+    $ref: './lifecycle_stage.yaml'
+  remote_created_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_updated_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_was_deleted:
+    type: boolean
+    example: false
+  last_modified_at:
+    type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+required:
+  - account_id
+  - owner_id
+  - description
+  - id
+  - remote_id
+  - addresses
+  - email_addresses
+  - first_name
+  - last_activity_at
+  - last_name
+  - phone_numbers
+  - lifecycle_stage
+  - remote_created_at	
+  - remote_updated_at	
+  - remote_was_deleted	
+  - last_modified_at	
