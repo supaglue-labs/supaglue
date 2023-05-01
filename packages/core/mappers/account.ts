@@ -103,6 +103,5 @@ export const fromRemoteAccountToDbAccountParams = (
     connection_id: connectionId,
     _remote_owner_id: remoteAccount.remoteOwnerId,
     updated_at: new Date().toISOString(),
-    raw_data: remoteAccount.rawData,
   };
 };

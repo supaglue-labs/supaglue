@@ -8,7 +8,4 @@ type BaseUser = BaseCrmModel & {
 
 export type User = BaseUser & BaseCrmModelNonRemoteParams;
 
-export type RemoteUser = BaseUser &
-  BaseCrmModelRemoteOnlyParams & {
-    rawData: Record<string, any>;
-  };
+export type RemoteUser = BaseUser & BaseCrmModelRemoteOnlyParams;

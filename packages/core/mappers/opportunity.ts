@@ -103,6 +103,5 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     _remote_account_id: remoteOpportunity.remoteAccountId,
     _remote_owner_id: remoteOpportunity.remoteOwnerId,
     updated_at: new Date().toISOString(),
-    raw_data: remoteOpportunity.rawData,
   };
 };
