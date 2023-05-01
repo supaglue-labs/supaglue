@@ -35,6 +35,7 @@ export type RemoteContact = BaseContact &
   BaseCrmModelRemoteOnlyParams & {
     remoteAccountId: string | null;
     remoteOwnerId: string | null;
+    rawData: Record<string, any>;
   };
 
 type BaseContactCreateParams = {
