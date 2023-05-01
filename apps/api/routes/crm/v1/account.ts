@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toPaginationInternalParams } from '@supaglue/core/lib';
-import { toSnakecasedKeysAccount } from '@supaglue/core/mappers';
-import { toListInternalParams } from '@supaglue/core/mappers/list_params';
+import { toSearchInternalParams, toSnakecasedKeysAccount } from '@supaglue/core/mappers';
+import { toGetInternalParams, toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateAccountPathParams,
   CreateAccountRequest,
@@ -56,7 +55,11 @@ export default function init(app: Router): void {
       req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest>,
       res: Response<GetAccountResponse>
     ) => {
-      const account = await accountService.getById(req.params.account_id, req.customerConnection.id);
+      const account = await accountService.getById(
+        req.params.account_id,
+        req.customerConnection.id,
+        toGetInternalParams(req.query)
+      );
       return res.status(200).send(toSnakecasedKeysAccount(account));
     }
   );
@@ -100,7 +103,7 @@ export default function init(app: Router): void {
     ) => {
       const { next, previous, results } = await accountService.search(
         req.customerConnection.id,
-        toPaginationInternalParams(req.params),
+        toSearchInternalParams(req.query),
         req.body.filters
       );
 

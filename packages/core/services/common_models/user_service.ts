@@ -1,5 +1,5 @@
 import { schemaPrefix } from '@supaglue/db';
-import { ListInternalParams, PaginatedResult, User } from '@supaglue/types';
+import { GetInternalParams, ListInternalParams, PaginatedResult, User } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
@@ -11,7 +11,7 @@ export class UserService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async getById(id: string, connectionId: string): Promise<User> {
+  public async getById(id: string, connectionId: string, getParams: GetInternalParams): Promise<User> {
     const model = await this.prisma.crmUser.findUnique({
       where: { id },
     });
@@ -21,7 +21,7 @@ export class UserService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromUserModel(model);
+    return fromUserModel(model, getParams);
   }
 
   public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<User>> {
@@ -45,7 +45,7 @@ export class UserService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromUserModel);
+    const results = models.map((model) => fromUserModel(model, listParams));
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,

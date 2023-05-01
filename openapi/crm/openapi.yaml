@@ -122,6 +122,8 @@ components:
   parameters:
     include_deleted_data:
       $ref: ../common/components/parameters/query/include_deleted_data.yaml
+    include_raw_data:
+      $ref: ../common/components/parameters/query/include_raw_data.yaml
     created_after:
       $ref: ../common/components/parameters/query/created_after.yaml
     created_before:

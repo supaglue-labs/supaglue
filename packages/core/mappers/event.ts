@@ -1,5 +1,5 @@
 import { CrmEvent } from '@supaglue/db';
-import { Event, RemoteEvent } from '@supaglue/types';
+import { Event, GetInternalParams, RemoteEvent } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import {
   toSnakecasedKeysAccount,
@@ -32,27 +32,32 @@ export const toSnakecasedKeysEvent = (event: Event) => {
     remote_created_at: event.remoteCreatedAt,
     remote_updated_at: event.remoteUpdatedAt,
     remote_was_deleted: event.remoteWasDeleted,
+    raw_data: event.rawData,
   };
 };
 
-export const fromEventModel = ({
-  id,
-  remoteId,
-  ownerId,
-  subject,
-  content,
-  startTime,
-  endTime,
-  type,
-  accountId,
-  contactId,
-  leadId,
-  opportunityId,
-  lastModifiedAt,
-  remoteCreatedAt,
-  remoteUpdatedAt,
-  remoteWasDeleted,
-}: CrmEvent): Event => {
+export const fromEventModel = (
+  {
+    id,
+    remoteId,
+    ownerId,
+    subject,
+    content,
+    startTime,
+    endTime,
+    type,
+    accountId,
+    contactId,
+    leadId,
+    opportunityId,
+    lastModifiedAt,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    rawData,
+  }: CrmEvent,
+  getParams?: GetInternalParams
+): Event => {
   return {
     id,
     remoteId,
@@ -70,6 +75,7 @@ export const fromEventModel = ({
     remoteCreatedAt,
     remoteUpdatedAt,
     remoteWasDeleted,
+    rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
   };
 };
 

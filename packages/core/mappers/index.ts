@@ -5,7 +5,7 @@ export * from './contact';
 export * from './customer';
 export * from './integration';
 export * from './lead';
-export * from './list_params';
 export * from './opportunity';
+export * from './params';
 export * from './sync_history';
 export * from './user';

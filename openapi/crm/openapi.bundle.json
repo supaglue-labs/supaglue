@@ -39,6 +39,9 @@
             "$ref": "#/components/parameters/include_deleted_data"
           },
           {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
             "$ref": "#/components/parameters/created_after"
           },
           {
@@ -234,6 +237,9 @@
           },
           {
             "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           }
         ],
         "security": [
@@ -383,6 +389,11 @@
             "ApiKeyAuth": []
           }
         ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Account",
@@ -530,6 +541,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           },
           {
             "$ref": "#/components/parameters/created_after"
@@ -739,6 +753,9 @@
           },
           {
             "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           }
         ],
         "security": [
@@ -892,6 +909,11 @@
             "ApiKeyAuth": []
           }
         ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Contact",
@@ -1007,6 +1029,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           },
           {
             "$ref": "#/components/parameters/created_after"
@@ -1228,6 +1253,11 @@
             "ApiKeyAuth": []
           }
         ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Lead",
@@ -1342,6 +1372,9 @@
           },
           {
             "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           }
         ],
         "security": [
@@ -1513,6 +1546,9 @@
             "$ref": "#/components/parameters/include_deleted_data"
           },
           {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
             "$ref": "#/components/parameters/created_after"
           },
           {
@@ -1659,6 +1695,11 @@
             "ApiKeyAuth": []
           }
         ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Event",
@@ -1778,6 +1819,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           },
           {
             "$ref": "#/components/parameters/created_after"
@@ -1957,6 +2001,9 @@
           },
           {
             "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           }
         ],
         "security": [
@@ -2076,6 +2123,11 @@
         "security": [
           {
             "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           }
         ],
         "responses": {
@@ -2204,6 +2256,9 @@
             "$ref": "#/components/parameters/include_deleted_data"
           },
           {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
             "$ref": "#/components/parameters/created_after"
           },
           {
@@ -2297,6 +2352,11 @@
         "security": [
           {
             "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
           }
         ],
         "responses": {
@@ -2735,6 +2795,10 @@
             "type": "string",
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
+          },
+          "raw_data": {
+            "type": "object",
+            "additionalProperties": true
           }
         },
         "required": [
@@ -3684,6 +3748,15 @@
           "example": true
         },
         "description": "Whether to include data that was deleted in providers."
+      },
+      "include_raw_data": {
+        "name": "include_raw_data",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include raw data fetched from the 3rd party provider."
       },
       "created_after": {
         "name": "created_after",

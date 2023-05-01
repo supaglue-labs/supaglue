@@ -1,8 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
-import { toPaginationInternalParams } from '@supaglue/core/lib';
-import { toSnakecasedKeysOpportunity } from '@supaglue/core/mappers';
-import { toListInternalParams } from '@supaglue/core/mappers/list_params';
+import { toGetInternalParams, toSearchInternalParams, toSnakecasedKeysOpportunity } from '@supaglue/core/mappers';
+import { toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateOpportunityPathParams,
   CreateOpportunityRequest,
@@ -55,7 +54,11 @@ export default function init(app: Router): void {
       req: Request<GetOpportunityPathParams, GetOpportunityResponse, GetOpportunityRequest>,
       res: Response<GetOpportunityResponse>
     ) => {
-      const opportunity = await opportunityService.getById(req.params.opportunity_id, req.customerConnection.id);
+      const opportunity = await opportunityService.getById(
+        req.params.opportunity_id,
+        req.customerConnection.id,
+        toGetInternalParams(req.query)
+      );
       return res.status(200).send(toSnakecasedKeysOpportunity(opportunity));
     }
   );
@@ -107,7 +110,7 @@ export default function init(app: Router): void {
     ) => {
       const { next, previous, results } = await opportunityService.search(
         req.customerConnection.id,
-        toPaginationInternalParams(req.params),
+        toSearchInternalParams(req.params),
         camelcaseKeys(req.body.filters)
       );
 

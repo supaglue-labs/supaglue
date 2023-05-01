@@ -6,6 +6,7 @@ post:
   parameters:
     - $ref: ../../common/components/parameters/query/cursor.yaml
     - $ref: ../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../common/components/parameters/query/include_raw_data.yaml
   security:
     - ApiKeyAuth: []
   requestBody:

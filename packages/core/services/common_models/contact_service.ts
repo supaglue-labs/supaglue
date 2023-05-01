@@ -4,9 +4,10 @@ import type {
   ContactCreateParams,
   ContactFilters,
   ContactUpdateParams,
+  GetInternalParams,
   ListInternalParams,
   PaginatedResult,
-  PaginationInternalParams,
+  SearchInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
@@ -21,7 +22,7 @@ export class ContactService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async getById(id: string, connectionId: string): Promise<Contact> {
+  public async getById(id: string, connectionId: string, getParams: GetInternalParams): Promise<Contact> {
     const model = await this.prisma.crmContact.findUnique({
       where: { id },
     });
@@ -31,15 +32,15 @@ export class ContactService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromContactModel(model);
+    return fromContactModel(model, getParams);
   }
 
   public async search(
     connectionId: string,
-    paginationParams: PaginationInternalParams,
+    searchParams: SearchInternalParams,
     filters: ContactFilters
   ): Promise<PaginatedResult<Contact>> {
-    const { page_size, cursor } = paginationParams;
+    const { page_size, cursor } = searchParams;
     const models = await this.prisma.crmContact.findMany({
       ...getPaginationParams(page_size, cursor),
       where: {
@@ -55,7 +56,7 @@ export class ContactService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromContactModel);
+    const results = models.map((model) => fromContactModel(model, searchParams));
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,
@@ -84,7 +85,7 @@ export class ContactService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromContactModel);
+    const results = models.map((model) => fromContactModel(model, listParams));
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,

@@ -23,7 +23,7 @@ export type Opportunity = BaseOpportunity &
     account?: Account;
     ownerId: string | null;
     owner?: User;
-    // Support field mappings + remote data etc
+    rawData?: Record<string, any>;
   };
 
 export type RemoteOpportunity = BaseOpportunity &

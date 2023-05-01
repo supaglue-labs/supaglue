@@ -30,6 +30,7 @@ export type Event = BaseEvent &
     lead?: Lead;
     opportunityId: string | null;
     opportunity?: Opportunity;
+    rawData?: Record<string, any>;
   };
 
 export type RemoteEvent = BaseEvent &

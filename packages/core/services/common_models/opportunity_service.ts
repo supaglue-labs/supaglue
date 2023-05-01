@@ -1,12 +1,13 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type {
+  GetInternalParams,
   ListInternalParams,
   Opportunity,
   OpportunityCreateParams,
   OpportunityFilters,
   OpportunityUpdateParams,
   PaginatedResult,
-  PaginationInternalParams,
+  SearchInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
@@ -21,7 +22,7 @@ export class OpportunityService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async getById(id: string, connectionId: string): Promise<Opportunity> {
+  public async getById(id: string, connectionId: string, getParams: GetInternalParams): Promise<Opportunity> {
     const model = await this.prisma.crmOpportunity.findUnique({
       where: { id },
     });
@@ -31,7 +32,7 @@ export class OpportunityService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromOpportunityModel(model);
+    return fromOpportunityModel(model, getParams);
   }
 
   // TODO: implement rest of list params
@@ -56,7 +57,7 @@ export class OpportunityService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromOpportunityModel);
+    const results = models.map((model) => fromOpportunityModel(model, listParams));
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,
@@ -65,10 +66,10 @@ export class OpportunityService extends CommonModelBaseService {
 
   public async search(
     connectionId: string,
-    paginationParams: PaginationInternalParams,
+    searchParams: SearchInternalParams,
     filters: OpportunityFilters
   ): Promise<PaginatedResult<Opportunity>> {
-    const { page_size, cursor } = paginationParams;
+    const { page_size, cursor } = searchParams;
     const models = await this.prisma.crmOpportunity.findMany({
       ...getPaginationParams(page_size, cursor),
       where: {
@@ -79,7 +80,7 @@ export class OpportunityService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromOpportunityModel);
+    const results = models.map((model) => fromOpportunityModel(model, searchParams));
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,

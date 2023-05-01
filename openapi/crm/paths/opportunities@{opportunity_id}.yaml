@@ -5,6 +5,8 @@ get:
     - Opportunities
   security:
     - ApiKeyAuth: []
+  parameters:
+    - $ref: ../../common/components/parameters/query/include_raw_data.yaml
   responses:
     200:
       description: Opportunity

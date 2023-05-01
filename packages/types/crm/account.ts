@@ -26,7 +26,7 @@ export type Account = BaseAccount &
   BaseCrmModelNonRemoteParams & {
     ownerId: string | null;
     owner?: User;
-    // TODO: Support remote data
+    rawData?: Record<string, any>;
   };
 
 export type RemoteAccount = BaseAccount &

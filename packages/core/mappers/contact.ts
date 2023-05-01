@@ -1,5 +1,13 @@
 import { CrmContact } from '@supaglue/db';
-import { Address, Contact, EmailAddress, LifecycleStage, PhoneNumber, RemoteContact } from '@supaglue/types';
+import {
+  Address,
+  Contact,
+  EmailAddress,
+  GetInternalParams,
+  LifecycleStage,
+  PhoneNumber,
+  RemoteContact,
+} from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import { toSnakecasedKeysAccount } from './account';
 import { toSnakecasedKeysAddress } from './address';
@@ -26,26 +34,31 @@ export const toSnakecasedKeysContact = (contact: Contact) => {
     remote_created_at: contact.remoteCreatedAt,
     remote_updated_at: contact.remoteUpdatedAt,
     remote_was_deleted: contact.remoteWasDeleted,
+    raw_data: contact.rawData,
   };
 };
 
-export const fromContactModel = ({
-  id,
-  remoteId,
-  ownerId,
-  accountId,
-  firstName,
-  lastName,
-  addresses,
-  emailAddresses,
-  phoneNumbers,
-  lifecycleStage,
-  lastActivityAt,
-  remoteCreatedAt,
-  remoteUpdatedAt,
-  remoteWasDeleted,
-  lastModifiedAt,
-}: CrmContact): Contact => {
+export const fromContactModel = (
+  {
+    id,
+    remoteId,
+    ownerId,
+    accountId,
+    firstName,
+    lastName,
+    addresses,
+    emailAddresses,
+    phoneNumbers,
+    lifecycleStage,
+    lastActivityAt,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
+    rawData,
+  }: CrmContact,
+  getParams?: GetInternalParams
+): Contact => {
   return {
     id,
     remoteId,
@@ -62,6 +75,7 @@ export const fromContactModel = ({
     remoteUpdatedAt,
     remoteWasDeleted,
     lastModifiedAt,
+    rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
   };
 };
 

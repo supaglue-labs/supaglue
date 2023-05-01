@@ -1,5 +1,12 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
-import { Event, EventCreateParams, EventUpdateParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
+import {
+  Event,
+  EventCreateParams,
+  EventUpdateParams,
+  GetInternalParams,
+  ListInternalParams,
+  PaginatedResult,
+} from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId, logger } from '../../lib';
@@ -11,7 +18,7 @@ export class EventService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async getById(id: string, connectionId: string): Promise<Event> {
+  public async getById(id: string, connectionId: string, getParams: GetInternalParams): Promise<Event> {
     const model = await this.prisma.crmEvent.findUnique({
       where: { id },
     });
@@ -21,7 +28,7 @@ export class EventService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromEventModel(model);
+    return fromEventModel(model, getParams);
   }
 
   public async list(connectionId: string, listParams: ListInternalParams): Promise<PaginatedResult<Event>> {
@@ -45,7 +52,7 @@ export class EventService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromEventModel);
+    const results = models.map((model) => fromEventModel(model, listParams));
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,
