@@ -69,7 +69,6 @@ export default function WebhookTabPanel() {
               }}
             />
           </Stack>
-
           <Stack>
             <Typography sx={{ fontSize: 16 }}>Events</Typography>
             <SwitchWithLabel
