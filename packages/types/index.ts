@@ -2,7 +2,6 @@ import { CRMProviderCategory, CRMProviderName } from './crm';
 import { EngagementProviderCategory, EngagementProviderName } from './engagement';
 
 export * from './application';
-export * from './base';
 export * from './common';
 export * from './connection';
 export * from './crm';

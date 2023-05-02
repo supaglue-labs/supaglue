@@ -1,14 +1,6 @@
-import type {
-  Address,
-  BaseCrmModel,
-  BaseCrmModelNonRemoteParams,
-  BaseCrmModelRemoteOnlyParams,
-  CustomFields,
-  LifecycleStage,
-  PhoneNumber,
-  User,
-} from '..';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '..';
 import { Filter } from '../filter';
+import { Address, LifecycleStage, PhoneNumber } from './common';
 
 type BaseAccount = BaseCrmModel & {
   name: string | null;

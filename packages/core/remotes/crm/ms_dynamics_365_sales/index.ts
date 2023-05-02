@@ -1,7 +1,7 @@
 import {
   AccountCreateParams,
   ConnectionUnsafe,
-  Integration,
+  CRMIntegration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -117,7 +117,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
 export function newClient(
   connection: ConnectionUnsafe<'ms_dynamics_365_sales'>,
-  integration: Integration
+  integration: CRMIntegration
 ): MsDynamics365Sales {
   return new MsDynamics365Sales();
 }

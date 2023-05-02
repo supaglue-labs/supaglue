@@ -14,7 +14,7 @@ import {
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
   ConnectionUnsafe,
-  Integration,
+  CRMIntegration,
   RemoteAccount,
   RemoteAccountCreateParams,
   RemoteAccountUpdateParams,
@@ -667,7 +667,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'hubspot'>, integration: Integration): HubSpotClient {
+export function newClient(connection: ConnectionUnsafe<'hubspot'>, integration: CRMIntegration): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,

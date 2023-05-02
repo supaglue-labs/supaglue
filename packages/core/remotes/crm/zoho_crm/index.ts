@@ -1,7 +1,7 @@
 import {
   AccountCreateParams,
   ConnectionUnsafe,
-  Integration,
+  CRMIntegration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -115,7 +115,7 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'zoho_crm'>, integration: Integration): ZohoCrmClient {
+export function newClient(connection: ConnectionUnsafe<'zoho_crm'>, integration: CRMIntegration): ZohoCrmClient {
   return new ZohoCrmClient();
 }
 

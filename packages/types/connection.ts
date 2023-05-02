@@ -1,4 +1,4 @@
-import type { CRMProviderName } from './crm';
+import { ProviderName } from '.';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
@@ -9,7 +9,7 @@ type BaseConnectionCredentialsDecrypted = {
   expiresAt: string | null; // null means unknown expiry time
 };
 
-export type ConnectionCredentialsDecrypted<T extends CRMProviderName> = BaseConnectionCredentialsDecrypted &
+export type ConnectionCredentialsDecrypted<T extends ProviderName> = BaseConnectionCredentialsDecrypted &
   (T extends 'salesforce'
     ? {
         instanceUrl: string;
@@ -18,10 +18,10 @@ export type ConnectionCredentialsDecrypted<T extends CRMProviderName> = BaseConn
     : object);
 
 export type ConnectionCredentialsDecryptedAny = {
-  [K in CRMProviderName]: ConnectionCredentialsDecrypted<K>;
-}[CRMProviderName];
+  [K in ProviderName]: ConnectionCredentialsDecrypted<K>;
+}[ProviderName];
 
-export type ConnectionCreateParams<T extends CRMProviderName> = {
+export type ConnectionCreateParams<T extends ProviderName> = {
   applicationId: string;
   customerId: string; // external customer id
   integrationId: string;
@@ -34,16 +34,16 @@ export type ConnectionCreateParams<T extends CRMProviderName> = {
 };
 
 export type ConnectionCreateParamsAny = {
-  [K in CRMProviderName]: ConnectionCreateParams<K>;
-}[CRMProviderName];
+  [K in ProviderName]: ConnectionCreateParams<K>;
+}[ProviderName];
 
-export type ConnectionUpsertParams<T extends CRMProviderName> = ConnectionCreateParams<T>;
+export type ConnectionUpsertParams<T extends ProviderName> = ConnectionCreateParams<T>;
 
 export type ConnectionUpsertParamsAny = {
-  [K in CRMProviderName]: ConnectionUpsertParams<K>;
-}[CRMProviderName];
+  [K in ProviderName]: ConnectionUpsertParams<K>;
+}[ProviderName];
 
-export type ConnectionSafe<T extends CRMProviderName> = Omit<ConnectionCreateParams<T>, 'credentials'> & {
+export type ConnectionSafe<T extends ProviderName> = Omit<ConnectionCreateParams<T>, 'credentials'> & {
   id: string;
   status: ConnectionStatus;
   category: 'crm';
@@ -51,10 +51,10 @@ export type ConnectionSafe<T extends CRMProviderName> = Omit<ConnectionCreatePar
 };
 
 export type ConnectionSafeAny = {
-  [K in CRMProviderName]: ConnectionSafe<K>;
-}[CRMProviderName];
+  [K in ProviderName]: ConnectionSafe<K>;
+}[ProviderName];
 
-export type ConnectionUnsafe<T extends CRMProviderName> = ConnectionCreateParams<T> & {
+export type ConnectionUnsafe<T extends ProviderName> = ConnectionCreateParams<T> & {
   id: string;
   status: ConnectionStatus;
   category: 'crm';
@@ -62,5 +62,5 @@ export type ConnectionUnsafe<T extends CRMProviderName> = ConnectionCreateParams
 };
 
 export type ConnectionUnsafeAny = {
-  [K in CRMProviderName]: ConnectionUnsafe<K>;
-}[CRMProviderName];
+  [K in ProviderName]: ConnectionUnsafe<K>;
+}[ProviderName];

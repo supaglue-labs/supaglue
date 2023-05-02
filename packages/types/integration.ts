@@ -1,13 +1,22 @@
-import { IntegrationCategory } from './common';
 import { CRMProviderName } from './crm';
+import { EngagementProviderName } from './engagement';
 import { SyncConfig } from './sync_config';
 
 export type CRMIntegration = {
   id: string;
   applicationId: string;
   authType: 'oauth2';
-  category: IntegrationCategory;
+  category: 'crm';
   providerName: CRMProviderName;
+  config: IntegrationConfigDecrypted;
+};
+
+export type EngagementIntegration = {
+  id: string;
+  applicationId: string;
+  authType: 'oauth2';
+  category: 'engagement';
+  providerName: EngagementProviderName;
   config: IntegrationConfigDecrypted;
 };
 
@@ -42,4 +51,9 @@ export type OauthCredentials = {
 export type CRMIntegrationCreateParams = Omit<CRMIntegration, 'id'>;
 export type CRMIntegrationUpdateParams = Omit<CRMIntegration, 'id'>;
 
-export type Integration = CRMIntegration;
+export type EngagementIntegrationCreateParams = Omit<EngagementIntegration, 'id'>;
+export type EngagementIntegrationUpdateParams = Omit<EngagementIntegration, 'id'>;
+
+export type Integration = CRMIntegration | EngagementIntegration;
+export type IntegrationCreateParams = CRMIntegrationCreateParams | EngagementIntegrationCreateParams;
+export type IntegrationUpdateParams = CRMIntegrationUpdateParams | EngagementIntegrationUpdateParams;

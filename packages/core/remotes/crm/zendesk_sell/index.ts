@@ -1,7 +1,7 @@
 import {
   AccountCreateParams,
   ConnectionUnsafe,
-  Integration,
+  CRMIntegration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -115,7 +115,10 @@ class ZendeskSellClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'zendesk_sell'>, integration: Integration): ZendeskSellClient {
+export function newClient(
+  connection: ConnectionUnsafe<'zendesk_sell'>,
+  integration: CRMIntegration
+): ZendeskSellClient {
   return new ZendeskSellClient();
 }
 

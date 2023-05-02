@@ -1,7 +1,7 @@
 import {
   AccountCreateParams,
   ConnectionUnsafe,
-  Integration,
+  CRMIntegration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -115,7 +115,7 @@ class CapsuleClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'capsule'>, integration: Integration): CapsuleClient {
+export function newClient(connection: ConnectionUnsafe<'capsule'>, integration: CRMIntegration): CapsuleClient {
   return new CapsuleClient();
 }
 

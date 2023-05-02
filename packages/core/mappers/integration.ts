@@ -1,11 +1,11 @@
 import type { Integration as IntegrationModel, Prisma } from '@supaglue/db';
 import {
-  CRMIntegrationCreateParams,
-  CRMProviderName,
   Integration,
   IntegrationCategory,
   IntegrationConfigDecrypted,
   IntegrationConfigEncrypted,
+  IntegrationCreateParams,
+  ProviderName,
 } from '@supaglue/types';
 import { decryptFromString, encryptAsString } from '../lib/crypt';
 
@@ -26,9 +26,9 @@ export const fromIntegrationModel = async ({
     applicationId,
     category: category as IntegrationCategory,
     authType: 'oauth2',
-    providerName: providerName as CRMProviderName,
+    providerName: providerName as ProviderName,
     config: await fromIntegrationConfigModel(config),
-  };
+  } as Integration; // TODO: better type;
 };
 
 const fromIntegrationConfigModel = async (config: Prisma.JsonValue): Promise<IntegrationConfigDecrypted> => {
@@ -51,7 +51,7 @@ export const toIntegrationModel = async ({
   authType,
   providerName,
   config,
-}: CRMIntegrationCreateParams) => {
+}: IntegrationCreateParams) => {
   return {
     applicationId,
     category,

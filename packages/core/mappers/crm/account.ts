@@ -1,5 +1,6 @@
 import { CrmAccount } from '@supaglue/db';
-import { Account, Address, GetInternalParams, LifecycleStage, PhoneNumber, RemoteAccount } from '@supaglue/types';
+import { Account, GetInternalParams, RemoteAccount } from '@supaglue/types';
+import { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v4 as uuidv4 } from 'uuid';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';

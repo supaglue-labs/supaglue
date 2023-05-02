@@ -1,7 +1,7 @@
 import {
   ConnectionUnsafe,
+  CRMIntegration,
   CRMProviderName,
-  Integration,
   RemoteAccount,
   RemoteAccountCreateParams,
   RemoteAccountUpdateParams,
@@ -87,5 +87,5 @@ export type ConnectorAuthConfig = {
 
 export type CrmConnectorConfig<T extends CRMProviderName> = {
   authConfig: ConnectorAuthConfig;
-  newClient: (connection: ConnectionUnsafe<T>, integration: Integration) => AbstractCrmRemoteClient;
+  newClient: (connection: ConnectionUnsafe<T>, integration: CRMIntegration) => AbstractCrmRemoteClient;
 };
