@@ -79,7 +79,7 @@ export class EventService extends CommonModelBaseService {
       remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteEvent = await remoteClient.createEvent(remoteCreateParams);
+    const remoteEvent = await remoteClient.createObject('event', remoteCreateParams);
     const contactModel = await this.prisma.crmEvent.create({
       data: {
         customerId,
@@ -123,7 +123,7 @@ export class EventService extends CommonModelBaseService {
       remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteEvent = await remoteClient.updateEvent({
+    const remoteEvent = await remoteClient.updateObject('event', {
       ...remoteUpdateParams,
       remoteId: foundEventModel.remoteId,
     });

@@ -59,3 +59,9 @@ export type RemoteContactUpdateParams = RemoteContactCreateParams & {
 export type ContactFilters = {
   emailAddress?: Filter;
 };
+
+export type RemoteContactTypes = {
+  object: RemoteContact;
+  createParams: RemoteContactCreateParams;
+  updateParams: RemoteContactUpdateParams;
+};
