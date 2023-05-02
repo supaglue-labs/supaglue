@@ -10,7 +10,7 @@ import {
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId, logger } from '../../lib';
-import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/event';
+import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/crm';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class EventService extends CommonModelBaseService {
