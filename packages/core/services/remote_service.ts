@@ -16,8 +16,18 @@ export class RemoteService {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
     const integration = await this.#integrationService.getById(connection.integrationId);
 
+    if (connection.category !== 'crm') {
+      // TODO: fix this
+      throw new Error('Connection must be of category "crm"');
+    }
+
     if (!integration.config) {
       throw new Error('Integration must have config');
+    }
+
+    if (integration.category !== 'crm') {
+      // TODO: fix this
+      throw new Error('Integration must be of category "crm"');
     }
 
     const client = getCrmRemoteClient(connection, integration);

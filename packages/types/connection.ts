@@ -1,4 +1,4 @@
-import { ProviderName } from '.';
+import { CategoryOfProviderName, ProviderName } from '.';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
@@ -25,7 +25,7 @@ export type ConnectionCreateParams<T extends ProviderName> = {
   applicationId: string;
   customerId: string; // external customer id
   integrationId: string;
-  category: 'crm';
+  category: CategoryOfProviderName<T>;
   providerName: T;
   credentials: ConnectionCredentialsDecrypted<T>;
   // Deprecated -- use instanceUrl instead
@@ -46,7 +46,7 @@ export type ConnectionUpsertParamsAny = {
 export type ConnectionSafe<T extends ProviderName> = Omit<ConnectionCreateParams<T>, 'credentials'> & {
   id: string;
   status: ConnectionStatus;
-  category: 'crm';
+  category: CategoryOfProviderName<T>;
   providerName: T;
 };
 
@@ -57,7 +57,7 @@ export type ConnectionSafeAny = {
 export type ConnectionUnsafe<T extends ProviderName> = ConnectionCreateParams<T> & {
   id: string;
   status: ConnectionStatus;
-  category: 'crm';
+  category: CategoryOfProviderName<T>;
   providerName: T;
 };
 
