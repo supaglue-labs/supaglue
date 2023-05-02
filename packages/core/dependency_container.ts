@@ -1,4 +1,5 @@
 import prisma, { PrismaClient } from '@supaglue/db';
+import fs from 'fs';
 import { Pool } from 'pg';
 import {
   AccountService,
@@ -40,9 +41,28 @@ export type CoreDependencyContainer = {
 let coreDependencyContainer: CoreDependencyContainer | undefined = undefined;
 
 function createCoreDependencyContainer(): CoreDependencyContainer {
+  const connectionString = process.env.SUPAGLUE_DATABASE_URL!;
+  // parse the connectionString URL to get the ssl config from the query string
+  const parsedConnectionString = new URL(connectionString);
+  const caCertPath = parsedConnectionString.searchParams.get('sslcert');
+  const sslMode = parsedConnectionString.searchParams.get('sslmode');
+  const sslAccept = parsedConnectionString.searchParams.get('sslaccept');
+  // delete from the query string so that the connectionString can be passed to the pgPool
+  parsedConnectionString.searchParams.delete('sslcert');
+  parsedConnectionString.searchParams.delete('sslmode');
+  parsedConnectionString.searchParams.delete('sslaccept');
+  const ssl =
+    sslMode === 'require' || sslMode === 'prefer'
+      ? {
+          ca: caCertPath ? fs.readFileSync(caCertPath).toString() : undefined,
+          rejectUnauthorized: sslAccept === 'strict',
+        }
+      : undefined;
+
   const pgPool = new Pool({
-    connectionString: process.env.SUPAGLUE_DATABASE_URL,
+    connectionString: parsedConnectionString.toString(),
     max: 5,
+    ssl,
   });
 
   // mgmt
