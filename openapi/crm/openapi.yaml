@@ -68,8 +68,6 @@ tags:
     description: The `Opportunity` Common Model is used to represent a "deal opportunity" in CRMs.
   - name: Users
     description: The `User` Common Model is used to represent a "user" that can login to CRMs.
-  - name: Sync
-    description: Get information and history for the sync process.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
 components:

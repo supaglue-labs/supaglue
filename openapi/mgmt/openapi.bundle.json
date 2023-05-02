@@ -1085,7 +1085,8 @@
       "category": {
         "type": "string",
         "enum": [
-          "crm"
+          "crm",
+          "engagement"
         ]
       },
       "integration_config": {
@@ -1178,7 +1179,26 @@
           "zendesk_sell",
           "ms_dynamics_365_sales",
           "zoho_crm",
+          "capsule",
+          "outreach"
+        ]
+      },
+      "provider_name_crm": {
+        "type": "string",
+        "enum": [
+          "hubspot",
+          "salesforce",
+          "pipedrive",
+          "zendesk_sell",
+          "ms_dynamics_365_sales",
+          "zoho_crm",
           "capsule"
+        ]
+      },
+      "provider_name_engagement": {
+        "type": "string",
+        "enum": [
+          "outreach"
         ]
       },
       "create_update_customer": {
@@ -1204,29 +1224,65 @@
         ]
       },
       "create_update_integration": {
-        "type": "object",
-        "properties": {
-          "category": {
-            "$ref": "#/components/schemas/category"
-          },
-          "auth_type": {
-            "type": "string",
-            "enum": [
-              "oauth2"
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "oauth2"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/integration_config"
+              }
+            },
+            "required": [
+              "auth_type",
+              "config"
             ]
           },
-          "provider_name": {
-            "$ref": "#/components/schemas/provider_name"
-          },
-          "config": {
-            "$ref": "#/components/schemas/integration_config"
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "crm"
+                    ]
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name_crm"
+                  }
+                },
+                "required": [
+                  "category",
+                  "provider_name"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "engagement"
+                    ]
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name_engagement"
+                  }
+                },
+                "required": [
+                  "category",
+                  "provider_name"
+                ]
+              }
+            ]
           }
-        },
-        "required": [
-          "category",
-          "auth_type",
-          "provider_name",
-          "config"
         ]
       },
       "webhook": {
@@ -1300,7 +1356,8 @@
           "category": {
             "type": "string",
             "enum": [
-              "crm"
+              "crm",
+              "engagement"
             ]
           },
           "connection_id": {
