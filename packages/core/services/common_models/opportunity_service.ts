@@ -10,8 +10,8 @@ import type {
   SearchInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
+import { v5 as uuidv5 } from 'uuid';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { logger } from '../../lib';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../mappers';
@@ -105,6 +105,7 @@ export class OpportunityService extends CommonModelBaseService {
     const remoteOpportunity = await remoteClient.createOpportunity(remoteCreateParams);
     const opportunityModel = await this.prisma.crmOpportunity.create({
       data: {
+        id: uuidv5(remoteOpportunity.remoteId, connectionId),
         customerId,
         connectionId,
         lastModifiedAt: getLastModifiedAt(remoteOpportunity),
@@ -188,7 +189,9 @@ export class OpportunityService extends CommonModelBaseService {
       'detected_or_remote_deleted_at',
       'last_modified_at',
       '_remote_account_id',
+      'account_id',
       '_remote_owner_id',
+      'owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
       'raw_data',
     ];
@@ -203,79 +206,5 @@ export class OpportunityService extends CommonModelBaseService {
       fromRemoteOpportunityToDbOpportunityParams,
       onUpsertBatchCompletion
     );
-  }
-
-  public async updateDanglingAccounts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
-    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
-
-    await this.prisma.crmOpportunity.updateMany({
-      where: {
-        // Only update opportunities for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteAccountId: null,
-        accountId: {
-          not: null,
-        },
-      },
-      data: {
-        accountId: null,
-      },
-    });
-
-    logger.info('OpportunityService.updateDanglingAccounts: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${opportunitiesTable} o
-      SET account_id = a.id
-      FROM ${accountsTable} a
-      WHERE
-        o.connection_id = '${connectionId}'
-        AND o.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND o.connection_id = a.connection_id
-        AND o.account_id IS NULL
-        AND o._remote_account_id IS NOT NULL
-        AND o._remote_account_id = a.remote_id
-      `);
-  }
-
-  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
-    const usersTable = COMMON_MODEL_DB_TABLES['users'];
-
-    await this.prisma.crmOpportunity.updateMany({
-      where: {
-        // Only update opportunities for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteOwnerId: null,
-        ownerId: {
-          not: null,
-        },
-      },
-      data: {
-        ownerId: null,
-      },
-    });
-
-    logger.info('OpportunityService.updateDanglingOwners: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${opportunitiesTable} c
-      SET owner_id = u.id
-      FROM ${usersTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.owner_id IS NULL
-        AND c._remote_owner_id IS NOT NULL
-        AND c._remote_owner_id = u.remote_id
-      `);
   }
 }

@@ -87,36 +87,31 @@ model Connection {
 }
 
 model CrmAccount {
-  id                        String           @id @default(uuid())
-  remoteId                  String           @map("remote_id")
-  customerId                String           @map("customer_id")
-  connectionId              String           @map("connection_id")
+  id                        String    @id @db.Uuid
+  remoteId                  String    @map("remote_id")
+  customerId                String    @map("customer_id")
+  connectionId              String    @map("connection_id")
   name                      String?
   description               String?
   industry                  String?
   website                   String?
-  numberOfEmployees         Int?             @map("number_of_employees")
+  numberOfEmployees         Int?      @map("number_of_employees")
   addresses                 Json?
-  phoneNumbers              Json?            @map("phone_numbers")
-  lifecycleStage            String?          @map("lifecycle_stage")
-  lastActivityAt            DateTime?        @map("last_activity_at")
-  rawData                   Json?            @map("raw_data")
-  remoteCreatedAt           DateTime?        @map("remote_created_at")
-  remoteUpdatedAt           DateTime?        @map("remote_updated_at")
-  remoteWasDeleted          Boolean          @default(false) @map("remote_was_deleted")
-  remoteDeletedAt           DateTime?        @map("remote_deleted_at")
-  detectedOrRemoteDeletedAt DateTime?        @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime         @map("last_modified_at")
-  createdAt                 DateTime         @default(now()) @map("created_at")
-  updatedAt                 DateTime         @updatedAt @map("updated_at")
+  phoneNumbers              Json?     @map("phone_numbers")
+  lifecycleStage            String?   @map("lifecycle_stage")
+  lastActivityAt            DateTime? @map("last_activity_at")
+  rawData                   Json?     @map("raw_data")
+  remoteCreatedAt           DateTime? @map("remote_created_at")
+  remoteUpdatedAt           DateTime? @map("remote_updated_at")
+  remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
+  remoteDeletedAt           DateTime? @map("remote_deleted_at")
+  detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime  @map("last_modified_at")
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
   // Associations
-  contacts                  CrmContact[]
-  opportunities             CrmOpportunity[]
-  leadsConverted            CrmLead[]
-  remoteOwnerId             String?          @map("_remote_owner_id")
-  ownerId                   String?          @map("owner_id")
-  owner                     CrmUser?         @relation(fields: [ownerId], references: [id])
-  events                    CrmEvent[]
+  remoteOwnerId             String?   @map("_remote_owner_id")
+  ownerId                   String?   @map("owner_id")
 
   @@unique([connectionId, remoteId])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
@@ -124,35 +119,31 @@ model CrmAccount {
 }
 
 model CrmContact {
-  id                        String      @id @default(uuid())
-  remoteId                  String      @map("remote_id")
-  customerId                String      @map("customer_id")
-  connectionId              String      @map("connection_id")
-  firstName                 String?     @map("first_name")
-  lastName                  String?     @map("last_name")
+  id                        String    @id @db.Uuid
+  remoteId                  String    @map("remote_id")
+  customerId                String    @map("customer_id")
+  connectionId              String    @map("connection_id")
+  firstName                 String?   @map("first_name")
+  lastName                  String?   @map("last_name")
   addresses                 Json
-  emailAddresses            Json        @map("email_addresses")
-  phoneNumbers              Json        @map("phone_numbers")
-  lastActivityAt            DateTime?   @map("last_activity_at")
-  lifecycleStage            String?     @map("lifecycle_stage")
-  rawData                   Json?       @map("raw_data")
-  remoteCreatedAt           DateTime?   @map("remote_created_at")
-  remoteUpdatedAt           DateTime?   @map("remote_updated_at")
-  remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
-  remoteDeletedAt           DateTime?   @map("remote_deleted_at")
-  detectedOrRemoteDeletedAt DateTime?   @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime    @map("last_modified_at")
-  createdAt                 DateTime    @default(now()) @map("created_at")
-  updatedAt                 DateTime    @updatedAt @map("updated_at")
+  emailAddresses            Json      @map("email_addresses")
+  phoneNumbers              Json      @map("phone_numbers")
+  lastActivityAt            DateTime? @map("last_activity_at")
+  lifecycleStage            String?   @map("lifecycle_stage")
+  rawData                   Json?     @map("raw_data")
+  remoteCreatedAt           DateTime? @map("remote_created_at")
+  remoteUpdatedAt           DateTime? @map("remote_updated_at")
+  remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
+  remoteDeletedAt           DateTime? @map("remote_deleted_at")
+  detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime  @map("last_modified_at")
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
   // Associations
-  remoteAccountId           String?     @map("_remote_account_id")
-  accountId                 String?     @map("account_id")
-  account                   CrmAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
-  leadsConverted            CrmLead[]
-  remoteOwnerId             String?     @map("_remote_owner_id")
-  ownerId                   String?     @map("owner_id")
-  owner                     CrmUser?    @relation(fields: [ownerId], references: [id])
-  events                    CrmEvent[]
+  remoteAccountId           String?   @map("_remote_account_id")
+  accountId                 String?   @map("account_id")
+  remoteOwnerId             String?   @map("_remote_owner_id")
+  ownerId                   String?   @map("owner_id")
 
   @@unique([connectionId, remoteId])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
@@ -160,39 +151,35 @@ model CrmContact {
 }
 
 model CrmLead {
-  id                        String      @id @default(uuid())
-  remoteId                  String      @map("remote_id")
-  customerId                String      @map("customer_id")
-  connectionId              String      @map("connection_id")
-  leadSource                String?     @map("lead_source")
+  id                        String    @id @db.Uuid
+  remoteId                  String    @map("remote_id")
+  customerId                String    @map("customer_id")
+  connectionId              String    @map("connection_id")
+  leadSource                String?   @map("lead_source")
   title                     String?
   company                   String?
-  firstName                 String?     @map("first_name")
-  lastName                  String?     @map("last_name")
+  firstName                 String?   @map("first_name")
+  lastName                  String?   @map("last_name")
   addresses                 Json?
-  phoneNumbers              Json?       @map("phone_numbers")
-  emailAddresses            Json?       @map("email_addresses")
-  rawData                   Json?       @map("raw_data")
-  remoteCreatedAt           DateTime?   @map("remote_created_at")
-  remoteUpdatedAt           DateTime?   @map("remote_updated_at")
-  remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
-  remoteDeletedAt           DateTime?   @map("remote_deleted_at")
-  detectedOrRemoteDeletedAt DateTime?   @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime    @map("last_modified_at")
-  convertedDate             DateTime?   @map("converted_date")
-  createdAt                 DateTime    @default(now()) @map("created_at")
-  updatedAt                 DateTime    @updatedAt @map("updated_at")
+  phoneNumbers              Json?     @map("phone_numbers")
+  emailAddresses            Json?     @map("email_addresses")
+  rawData                   Json?     @map("raw_data")
+  remoteCreatedAt           DateTime? @map("remote_created_at")
+  remoteUpdatedAt           DateTime? @map("remote_updated_at")
+  remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
+  remoteDeletedAt           DateTime? @map("remote_deleted_at")
+  detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime  @map("last_modified_at")
+  convertedDate             DateTime? @map("converted_date")
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
   // Associations
-  convertedRemoteAccountId  String?     @map("_converted_remote_account_id")
-  convertedAccountId        String?     @map("converted_account_id")
-  convertedAccount          CrmAccount? @relation(fields: [convertedAccountId], references: [id], onDelete: SetNull)
-  convertedRemoteContactId  String?     @map("_converted_remote_contact_id")
-  convertedContactId        String?     @map("converted_contact_id")
-  convertedContact          CrmContact? @relation(fields: [convertedContactId], references: [id], onDelete: SetNull)
-  remoteOwnerId             String?     @map("_remote_owner_id")
-  ownerId                   String?     @map("owner_id")
-  owner                     CrmUser?    @relation(fields: [ownerId], references: [id])
-  events                    CrmEvent[]
+  convertedRemoteAccountId  String?   @map("_converted_remote_account_id")
+  convertedAccountId        String?   @map("converted_account_id")
+  convertedRemoteContactId  String?   @map("_converted_remote_contact_id")
+  convertedContactId        String?   @map("converted_contact_id")
+  remoteOwnerId             String?   @map("_remote_owner_id")
+  ownerId                   String?   @map("owner_id")
 
   @@unique([connectionId, remoteId])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
@@ -200,35 +187,32 @@ model CrmLead {
 }
 
 model CrmOpportunity {
-  id                        String      @id @default(uuid())
-  remoteId                  String      @map("remote_id")
-  customerId                String      @map("customer_id")
-  connectionId              String      @map("connection_id")
+  id                        String    @id @db.Uuid
+  remoteId                  String    @map("remote_id")
+  customerId                String    @map("customer_id")
+  connectionId              String    @map("connection_id")
   name                      String?
   description               String?
   amount                    Int?
   stage                     String?
   status                    String?
-  lastActivityAt            DateTime?   @map("last_activity_at")
+  lastActivityAt            DateTime? @map("last_activity_at")
   pipeline                  String?
-  closeDate                 DateTime?   @map("close_date")
-  rawData                   Json?       @map("raw_data")
-  remoteCreatedAt           DateTime?   @map("remote_created_at")
-  remoteUpdatedAt           DateTime?   @map("remote_updated_at")
-  remoteWasDeleted          Boolean     @default(false) @map("remote_was_deleted")
-  remoteDeletedAt           DateTime?   @map("remote_deleted_at")
-  detectedOrRemoteDeletedAt DateTime?   @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime    @map("last_modified_at")
-  createdAt                 DateTime    @default(now()) @map("created_at")
-  updatedAt                 DateTime    @updatedAt @map("updated_at")
+  closeDate                 DateTime? @map("close_date")
+  rawData                   Json?     @map("raw_data")
+  remoteCreatedAt           DateTime? @map("remote_created_at")
+  remoteUpdatedAt           DateTime? @map("remote_updated_at")
+  remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
+  remoteDeletedAt           DateTime? @map("remote_deleted_at")
+  detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime  @map("last_modified_at")
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
   // Associations
-  remoteAccountId           String?     @map("_remote_account_id")
-  accountId                 String?     @map("account_id")
-  account                   CrmAccount? @relation(fields: [accountId], references: [id], onDelete: SetNull)
-  remoteOwnerId             String?     @map("_remote_owner_id")
-  ownerId                   String?     @map("owner_id")
-  owner                     CrmUser?    @relation(fields: [ownerId], references: [id])
-  events                    CrmEvent[]
+  remoteAccountId           String?   @map("_remote_account_id")
+  accountId                 String?   @map("account_id")
+  remoteOwnerId             String?   @map("_remote_owner_id")
+  ownerId                   String?   @map("owner_id")
 
   @@unique([connectionId, remoteId])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
@@ -236,27 +220,22 @@ model CrmOpportunity {
 }
 
 model CrmUser {
-  id                        String           @id @default(uuid())
-  remoteId                  String           @map("remote_id")
-  customerId                String           @map("customer_id")
-  connectionId              String           @map("connection_id")
+  id                        String    @id @db.Uuid
+  remoteId                  String    @map("remote_id")
+  customerId                String    @map("customer_id")
+  connectionId              String    @map("connection_id")
   name                      String?
   email                     String?
-  isActive                  Boolean?         @map("is_active")
-  rawData                   Json?            @map("raw_data")
-  remoteCreatedAt           DateTime?        @map("remote_created_at")
-  remoteUpdatedAt           DateTime?        @map("remote_updated_at")
-  remoteWasDeleted          Boolean          @default(false) @map("remote_was_deleted")
-  remoteDeletedAt           DateTime?        @map("remote_deleted_at")
-  detectedOrRemoteDeletedAt DateTime?        @map("detected_or_remote_deleted_at")
-  lastModifiedAt            DateTime         @map("last_modified_at")
-  createdAt                 DateTime         @default(now()) @map("created_at")
-  updatedAt                 DateTime         @updatedAt @map("updated_at")
-  leads                     CrmLead[]
-  opportunities             CrmOpportunity[]
-  contacts                  CrmContact[]
-  accounts                  CrmAccount[]
-  events                    CrmEvent[]
+  isActive                  Boolean?  @map("is_active")
+  rawData                   Json?     @map("raw_data")
+  remoteCreatedAt           DateTime? @map("remote_created_at")
+  remoteUpdatedAt           DateTime? @map("remote_updated_at")
+  remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
+  remoteDeletedAt           DateTime? @map("remote_deleted_at")
+  detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime  @map("last_modified_at")
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
 
   @@unique([connectionId, remoteId])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
@@ -264,7 +243,7 @@ model CrmUser {
 }
 
 model CrmEvent {
-  id                        String    @id @default(uuid())
+  id                        String    @id @db.Uuid
   remoteId                  String    @map("remote_id")
   customerId                String    @map("customer_id")
   connectionId              String    @map("connection_id")
@@ -285,21 +264,16 @@ model CrmEvent {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Associations
-  remoteAccountId     String?         @map("_remote_account_id")
-  accountId           String?         @map("account_id")
-  account             CrmAccount?     @relation(fields: [accountId], references: [id], onDelete: SetNull)
-  remoteContactId     String?         @map("_remote_contact_id")
-  contactId           String?         @map("contact_id")
-  contact             CrmContact?     @relation(fields: [contactId], references: [id], onDelete: SetNull)
-  remoteLeadId        String?         @map("_remote_lead_id")
-  leadId              String?         @map("lead_id")
-  lead                CrmLead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  remoteOpportunityId String?         @map("_remote_opportunity_id")
-  opportunityId       String?         @map("opportunity_id")
-  opportunity         CrmOpportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
-  remoteOwnerId       String?         @map("_remote_owner_id")
-  ownerId             String?         @map("owner_id")
-  owner               CrmUser?        @relation(fields: [ownerId], references: [id])
+  remoteAccountId     String? @map("_remote_account_id")
+  accountId           String? @map("account_id")
+  remoteContactId     String? @map("_remote_contact_id")
+  contactId           String? @map("contact_id")
+  remoteLeadId        String? @map("_remote_lead_id")
+  leadId              String? @map("lead_id")
+  remoteOpportunityId String? @map("_remote_opportunity_id")
+  opportunityId       String? @map("opportunity_id")
+  remoteOwnerId       String? @map("_remote_owner_id")
+  ownerId             String? @map("owner_id")
 
   @@unique([connectionId, remoteId])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`

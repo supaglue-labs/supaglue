@@ -17,7 +17,6 @@ import { createImportRecords } from './import_records';
 import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
-import { createPopulateAssociations } from './populate_associations';
 import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
@@ -59,13 +58,6 @@ export const createActivities = ({
       opportunityService,
       leadService,
       userService,
-      eventService
-    ),
-    populateAssociations: createPopulateAssociations(
-      accountService,
-      contactService,
-      opportunityService,
-      leadService,
       eventService
     ),
     logSyncStart: createLogSyncStart({ syncHistoryService }),

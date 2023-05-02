@@ -1,4 +1,4 @@
-import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
+import { schemaPrefix } from '@supaglue/db';
 import {
   Event,
   EventCreateParams,
@@ -8,8 +8,9 @@ import {
   PaginatedResult,
 } from '@supaglue/types';
 import { Readable } from 'stream';
+import { v5 as uuidv5 } from 'uuid';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getPaginationParams, getPaginationResult, getRemoteId, logger } from '../../lib';
+import { getPaginationParams, getPaginationResult, getRemoteId } from '../../lib';
 import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/event';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
@@ -82,6 +83,7 @@ export class EventService extends CommonModelBaseService {
     const remoteEvent = await remoteClient.createEvent(remoteCreateParams);
     const contactModel = await this.prisma.crmEvent.create({
       data: {
+        id: uuidv5(remoteEvent.remoteId, connectionId),
         customerId,
         connectionId,
         lastModifiedAt: getLastModifiedAt(remoteEvent),
@@ -166,10 +168,15 @@ export class EventService extends CommonModelBaseService {
       'detected_or_remote_deleted_at',
       'last_modified_at',
       '_remote_account_id',
+      'account_id',
       '_remote_contact_id',
+      'contact_id',
       '_remote_lead_id',
+      'lead_id',
       '_remote_opportunity_id',
+      'opportunity_id',
       '_remote_owner_id',
+      'owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
       'raw_data',
     ];
@@ -184,190 +191,5 @@ export class EventService extends CommonModelBaseService {
       fromRemoteEventToDbEventParams,
       onUpsertBatchCompletion
     );
-  }
-
-  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const eventsTable = COMMON_MODEL_DB_TABLES['events'];
-    const usersTable = COMMON_MODEL_DB_TABLES['users'];
-
-    await this.prisma.crmEvent.updateMany({
-      where: {
-        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteOwnerId: null,
-        ownerId: {
-          not: null,
-        },
-      },
-      data: {
-        ownerId: null,
-      },
-    });
-
-    logger.info('EventService.updateDanglingOwners: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${eventsTable} c
-      SET owner_id = u.id
-      FROM ${usersTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.owner_id IS NULL
-        AND c._remote_owner_id IS NOT NULL
-        AND c._remote_owner_id = u.remote_id
-      `);
-  }
-
-  public async updateDanglingAccounts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const eventsTable = COMMON_MODEL_DB_TABLES['events'];
-    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
-
-    await this.prisma.crmEvent.updateMany({
-      where: {
-        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteAccountId: null,
-        accountId: {
-          not: null,
-        },
-      },
-      data: {
-        accountId: null,
-      },
-    });
-
-    logger.info('EventService.updateDanglingAccounts: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${eventsTable} c
-      SET account_id = u.id
-      FROM ${accountsTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.account_id IS NULL
-        AND c._remote_account_id IS NOT NULL
-        AND c._remote_account_id = u.remote_id
-      `);
-  }
-
-  public async updateDanglingContacts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const eventsTable = COMMON_MODEL_DB_TABLES['events'];
-    const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
-
-    await this.prisma.crmEvent.updateMany({
-      where: {
-        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteContactId: null,
-        contactId: {
-          not: null,
-        },
-      },
-      data: {
-        contactId: null,
-      },
-    });
-
-    logger.info('EventService.updateDanglingContacts: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${eventsTable} c
-      SET contact_id = u.id
-      FROM ${contactsTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.contact_id IS NULL
-        AND c._remote_contact_id IS NOT NULL
-        AND c._remote_contact_id = u.remote_id
-      `);
-  }
-
-  public async updateDanglingLeads(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const eventsTable = COMMON_MODEL_DB_TABLES['events'];
-    const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
-
-    await this.prisma.crmEvent.updateMany({
-      where: {
-        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteLeadId: null,
-        leadId: {
-          not: null,
-        },
-      },
-      data: {
-        leadId: null,
-      },
-    });
-
-    logger.info('EventService.updateDanglingLeads: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${eventsTable} c
-      SET lead_id = u.id
-      FROM ${leadsTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.lead_id IS NULL
-        AND c._remote_lead_id IS NOT NULL
-        AND c._remote_lead_id = u.remote_id
-      `);
-  }
-
-  public async updateDanglingOpportunities(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const eventsTable = COMMON_MODEL_DB_TABLES['events'];
-    const opportunitiesTable = COMMON_MODEL_DB_TABLES['opportunities'];
-
-    await this.prisma.crmEvent.updateMany({
-      where: {
-        // Only update events for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteOpportunityId: null,
-        opportunityId: {
-          not: null,
-        },
-      },
-      data: {
-        opportunityId: null,
-      },
-    });
-
-    logger.info('EventService.updateDanglingOpportunitiess: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${eventsTable} c
-      SET opportunity_id = u.id
-      FROM ${opportunitiesTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.opportunity_id IS NULL
-        AND c._remote_opportunity_id IS NOT NULL
-        AND c._remote_opportunity_id = u.remote_id
-      `);
   }
 }

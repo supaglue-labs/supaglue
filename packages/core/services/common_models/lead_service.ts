@@ -1,4 +1,4 @@
-import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
+import { schemaPrefix } from '@supaglue/db';
 import type {
   GetInternalParams,
   Lead,
@@ -10,8 +10,8 @@ import type {
   SearchInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
+import { v5 as uuidv5 } from 'uuid';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { logger } from '../../lib';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../mappers';
@@ -103,6 +103,7 @@ export class LeadService extends CommonModelBaseService {
     const remoteLead = await remoteClient.createLead(remoteCreateParams);
     const leadModel = await this.prisma.crmLead.create({
       data: {
+        id: uuidv5(remoteLead.remoteId, connectionId),
         customerId,
         connectionId,
         lastModifiedAt: getLastModifiedAt(remoteLead),
@@ -178,8 +179,11 @@ export class LeadService extends CommonModelBaseService {
       'last_modified_at',
       'converted_date',
       '_converted_remote_account_id',
+      'converted_account_id',
       '_converted_remote_contact_id',
+      'converted_contact_id',
       '_remote_owner_id',
+      'owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
       'raw_data',
     ];
@@ -194,116 +198,5 @@ export class LeadService extends CommonModelBaseService {
       fromRemoteLeadToDbLeadParams,
       onUpsertBatchCompletion
     );
-  }
-
-  public async updateDanglingAccounts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
-    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
-
-    await this.prisma.crmLead.updateMany({
-      where: {
-        // Only update accounts for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        convertedRemoteAccountId: null,
-        convertedAccountId: {
-          not: null,
-        },
-      },
-      data: {
-        convertedAccountId: null,
-      },
-    });
-
-    logger.info('LeadService.updateDanglingAccounts: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${leadsTable} l
-      SET converted_account_id = a.id
-      FROM ${accountsTable} a
-      WHERE
-        l.connection_id = '${connectionId}'
-        AND l.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND l.connection_id = a.connection_id
-        AND l.converted_account_id IS NULL
-        AND l._converted_remote_account_id IS NOT NULL
-        AND l._converted_remote_account_id = a.remote_id
-      `);
-  }
-
-  public async updateDanglingContacts(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
-    const contactsTable = COMMON_MODEL_DB_TABLES['contacts'];
-
-    await this.prisma.crmLead.updateMany({
-      where: {
-        // Only update contacts for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        convertedRemoteContactId: null,
-        convertedContactId: {
-          not: null,
-        },
-      },
-      data: {
-        convertedContactId: null,
-      },
-    });
-
-    logger.info('LeadService.updateDanglingContact: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${leadsTable} l
-      SET converted_contact_id = c.id
-      FROM ${contactsTable} c
-      WHERE
-        l.connection_id = '${connectionId}'
-        AND l.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND l.connection_id = c.connection_id
-        AND l.converted_contact_id IS NULL
-        AND l._converted_remote_contact_id IS NOT NULL
-        AND l._converted_remote_contact_id = c.remote_id
-      `);
-  }
-
-  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const leadsTable = COMMON_MODEL_DB_TABLES['leads'];
-    const usersTable = COMMON_MODEL_DB_TABLES['users'];
-
-    await this.prisma.crmLead.updateMany({
-      where: {
-        // Only update leads for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteOwnerId: null,
-        ownerId: {
-          not: null,
-        },
-      },
-      data: {
-        ownerId: null,
-      },
-    });
-
-    logger.info('LeadService.updateDanglingOwners: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${leadsTable} c
-      SET owner_id = u.id
-      FROM ${usersTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.owner_id IS NULL
-        AND c._remote_owner_id IS NOT NULL
-        AND c._remote_owner_id = u.remote_id
-      `);
   }
 }

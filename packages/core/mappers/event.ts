@@ -1,6 +1,6 @@
 import { CrmEvent } from '@supaglue/db';
 import { Event, GetInternalParams, RemoteEvent } from '@supaglue/types';
-import { v4 as uuidv4 } from 'uuid';
+import { v5 as uuidv5 } from 'uuid';
 import {
   toSnakecasedKeysAccount,
   toSnakecasedKeysContact,
@@ -89,7 +89,7 @@ export const fromRemoteEventToDbEventParams = (connectionId: string, customerId:
       : undefined;
 
   return {
-    id: uuidv4(),
+    id: uuidv5(remoteEvent.remoteId, connectionId),
     remote_id: remoteEvent.remoteId,
     customer_id: customerId,
     connection_id: connectionId,
@@ -105,10 +105,15 @@ export const fromRemoteEventToDbEventParams = (connectionId: string, customerId:
     detected_or_remote_deleted_at: remoteEvent.detectedOrRemoteDeletedAt?.toISOString(),
     last_modified_at: lastModifiedAt?.toISOString(),
     _remote_account_id: remoteEvent.remoteAccountId,
+    account_id: remoteEvent.remoteAccountId ? uuidv5(remoteEvent.remoteAccountId, connectionId) : null,
     _remote_contact_id: remoteEvent.remoteContactId,
+    contact_id: remoteEvent.remoteContactId ? uuidv5(remoteEvent.remoteContactId, connectionId) : null,
     _remote_lead_id: remoteEvent.remoteLeadId,
+    lead_id: remoteEvent.remoteLeadId ? uuidv5(remoteEvent.remoteLeadId, connectionId) : null,
     _remote_opportunity_id: remoteEvent.remoteOpportunityId,
+    opportunity_id: remoteEvent.remoteOpportunityId ? uuidv5(remoteEvent.remoteOpportunityId, connectionId) : null,
     _remote_owner_id: remoteEvent.remoteOwnerId,
+    owner_id: remoteEvent.remoteOwnerId ? uuidv5(remoteEvent.remoteOwnerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteEvent.rawData,
   };
