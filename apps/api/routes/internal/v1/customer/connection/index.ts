@@ -41,6 +41,10 @@ export default function init(app: Router): void {
       req.supaglueApplication.id
     );
 
+    if (integration.category !== 'crm') {
+      throw new Error(`Unable to backfill category ${integration.category}`);
+    }
+
     if (integration.providerName === 'hubspot') {
       const hubspotClient = new HubspotClient();
       const token = await hubspotClient.oauth.tokensApi.createToken(
