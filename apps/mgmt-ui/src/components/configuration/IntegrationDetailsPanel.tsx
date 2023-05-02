@@ -6,7 +6,7 @@ import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { CRMProviderName, Integration, IntegrationCategory } from '@supaglue/types';
+import { CRMProviderName, Integration, IntegrationCategory, ProviderName } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Spinner from '../Spinner';
@@ -16,7 +16,7 @@ const ONE_HOUR_SECONDS = 60 * 60;
 
 export type IntegrationDetailsPanelProps = {
   category: IntegrationCategory;
-  providerName: CRMProviderName;
+  providerName: ProviderName;
   isLoading: boolean;
 };
 
@@ -87,8 +87,9 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     return await createRemoteIntegration(activeApplicationId, {
       applicationId: activeApplicationId,
       authType: 'oauth2',
-      category,
-      providerName,
+      // TODO: Support creating engagement integrations
+      category: category as 'crm',
+      providerName: providerName as CRMProviderName,
       config: {
         providerAppId: '', // TODO: add input field for this
         oauth: {
