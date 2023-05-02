@@ -9,6 +9,7 @@ export const SUPPORTED_CRM_CONNECTIONS = [
 ] as const;
 
 export type CRMProviderName = (typeof SUPPORTED_CRM_CONNECTIONS)[number];
+export type CRMProviderCategory = 'crm';
 
 export const CRM_COMMON_MODELS = ['account', 'contact', 'lead', 'opportunity', 'user', 'event'] as const;
 export type CRMCommonModel = (typeof CRM_COMMON_MODELS)[number];
