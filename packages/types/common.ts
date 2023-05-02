@@ -45,5 +45,5 @@ export type PaginatedResult<T> = {
   results: T[];
 };
 
-export type IntegrationCategory = 'crm';
+export type IntegrationCategory = 'crm' | 'engagement';
 export type CommonModel = CRMCommonModel;
