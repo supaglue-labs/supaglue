@@ -29,6 +29,7 @@ export type Contact = BaseContact &
     accountId: string | null;
     account?: Account;
     // TODO: Support remote data and field mappings
+    rawData?: Record<string, any>;
   };
 
 export type RemoteContact = BaseContact &

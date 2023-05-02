@@ -264,6 +264,9 @@ export interface components {
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
+      raw_data?: {
+        [key: string]: unknown | undefined;
+      };
     };
     create_update_contact: {
       /** @example George */
@@ -677,6 +680,8 @@ export interface components {
   parameters: {
     /** @description Whether to include data that was deleted in providers. */
     include_deleted_data: boolean;
+    /** @description Whether to include raw data fetched from the 3rd party provider. */
+    include_raw_data: boolean;
     /** @description If provided, will only return objects created after this datetime */
     created_after: Date;
     /** @description If provided, will only return objects created before this datetime */

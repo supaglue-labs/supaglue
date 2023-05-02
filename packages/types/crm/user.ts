@@ -6,7 +6,10 @@ type BaseUser = BaseCrmModel & {
   isActive: boolean | null;
 };
 
-export type User = BaseUser & BaseCrmModelNonRemoteParams;
+export type User = BaseUser &
+  BaseCrmModelNonRemoteParams & {
+    rawData?: Record<string, any>;
+  };
 
 export type RemoteUser = BaseUser &
   BaseCrmModelRemoteOnlyParams & {

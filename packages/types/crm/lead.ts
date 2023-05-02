@@ -32,7 +32,7 @@ export type Lead = BaseLead &
     convertedAccount?: Account;
     ownerId: string | null;
     owner?: User;
-    // Support field mappings + remote data etc
+    rawData?: Record<string, any>;
   };
 
 export type RemoteLead = BaseLead &

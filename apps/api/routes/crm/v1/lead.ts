@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toPaginationInternalParams } from '@supaglue/core/lib';
-import { toSnakecasedKeysLead } from '@supaglue/core/mappers';
-import { toListInternalParams } from '@supaglue/core/mappers/list_params';
+import { toSearchInternalParams, toSnakecasedKeysLead } from '@supaglue/core/mappers';
+import { toGetInternalParams, toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateLeadPathParams,
   CreateLeadRequest,
@@ -46,7 +45,11 @@ export default function init(app: Router): void {
   router.get(
     '/:lead_id',
     async (req: Request<GetLeadPathParams, GetLeadResponse, GetLeadRequest>, res: Response<GetLeadResponse>) => {
-      const lead = await leadService.getById(req.params.lead_id, req.customerConnection.id);
+      const lead = await leadService.getById(
+        req.params.lead_id,
+        req.customerConnection.id,
+        toGetInternalParams(req.query)
+      );
       return res.status(200).send(toSnakecasedKeysLead(lead));
     }
   );
@@ -86,7 +89,7 @@ export default function init(app: Router): void {
     ) => {
       const { next, previous, results } = await leadService.search(
         req.customerConnection.id,
-        toPaginationInternalParams(req.params),
+        toSearchInternalParams(req.query),
         camelcaseKeys(req.body.filters)
       );
 

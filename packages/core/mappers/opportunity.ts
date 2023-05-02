@@ -1,5 +1,5 @@
 import { CrmOpportunity } from '@supaglue/db';
-import { Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
+import { GetInternalParams, Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import { toSnakecasedKeysAccount } from './account';
 import { toSnakecasedKeysUser } from './user';
@@ -24,27 +24,32 @@ export const toSnakecasedKeysOpportunity = (opportunity: Opportunity) => {
     remote_created_at: opportunity.remoteCreatedAt,
     remote_updated_at: opportunity.remoteUpdatedAt,
     remote_was_deleted: opportunity.remoteWasDeleted,
+    raw_data: opportunity.rawData,
   };
 };
 
-export const fromOpportunityModel = ({
-  id,
-  remoteId,
-  ownerId,
-  name,
-  description,
-  stage,
-  status,
-  amount,
-  lastActivityAt,
-  pipeline,
-  closeDate,
-  accountId,
-  remoteCreatedAt,
-  remoteUpdatedAt,
-  remoteWasDeleted,
-  lastModifiedAt,
-}: CrmOpportunity): Opportunity => {
+export const fromOpportunityModel = (
+  {
+    id,
+    remoteId,
+    ownerId,
+    name,
+    description,
+    stage,
+    status,
+    amount,
+    lastActivityAt,
+    pipeline,
+    closeDate,
+    accountId,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
+    rawData,
+  }: CrmOpportunity,
+  getParams?: GetInternalParams
+): Opportunity => {
   return {
     id,
     remoteId,
@@ -62,6 +67,7 @@ export const fromOpportunityModel = ({
     remoteUpdatedAt,
     remoteWasDeleted,
     lastModifiedAt,
+    rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
   };
 };
 

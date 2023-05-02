@@ -66,7 +66,7 @@ export const toPaginationInternalParams = (paginationParams: PaginationParams): 
     throw new BadRequestError(`page_size cannot exceed ${MAX_PAGE_SIZE}`);
   }
   return {
-    ...paginationParams,
+    cursor: paginationParams.cursor,
     page_size: paginationParams.page_size ? parseInt(paginationParams.page_size) : MAX_PAGE_SIZE,
   };
 };

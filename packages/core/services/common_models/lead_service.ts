@@ -1,12 +1,13 @@
 import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
 import type {
+  GetInternalParams,
   Lead,
   LeadCreateParams,
   LeadFilters,
   LeadUpdateParams,
   ListInternalParams,
   PaginatedResult,
-  PaginationInternalParams,
+  SearchInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
@@ -21,7 +22,7 @@ export class LeadService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async getById(id: string, connectionId: string): Promise<Lead> {
+  public async getById(id: string, connectionId: string, getParams: GetInternalParams): Promise<Lead> {
     const model = await this.prisma.crmLead.findUnique({
       where: { id },
     });
@@ -31,15 +32,15 @@ export class LeadService extends CommonModelBaseService {
     if (model.connectionId !== connectionId) {
       throw new UnauthorizedError('Unauthorized');
     }
-    return fromLeadModel(model);
+    return fromLeadModel(model, getParams);
   }
 
   public async search(
     connectionId: string,
-    paginationParams: PaginationInternalParams,
+    searchParams: SearchInternalParams,
     filters: LeadFilters
   ): Promise<PaginatedResult<Lead>> {
-    const { page_size, cursor } = paginationParams;
+    const { page_size, cursor } = searchParams;
     const models = await this.prisma.crmLead.findMany({
       ...getPaginationParams(page_size, cursor),
       where: {
@@ -55,7 +56,7 @@ export class LeadService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromLeadModel);
+    const results = models.map((model) => fromLeadModel(model, searchParams));
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,
@@ -84,7 +85,7 @@ export class LeadService extends CommonModelBaseService {
         id: 'asc',
       },
     });
-    const results = models.map(fromLeadModel);
+    const results = models.map((model) => fromLeadModel(model, listParams));
     return {
       ...getPaginationResult(page_size, cursor, results),
       results,

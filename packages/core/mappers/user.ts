@@ -1,5 +1,5 @@
 import { CrmUser } from '@supaglue/db';
-import { RemoteUser, User } from '@supaglue/types';
+import { GetInternalParams, RemoteUser, User } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export const toSnakecasedKeysUser = (user: User) => {
@@ -13,20 +13,25 @@ export const toSnakecasedKeysUser = (user: User) => {
     remote_created_at: user.remoteCreatedAt,
     remote_updated_at: user.remoteUpdatedAt,
     remote_was_deleted: user.remoteWasDeleted,
+    raw_data: user.rawData,
   };
 };
 
-export const fromUserModel = ({
-  id,
-  remoteId,
-  name,
-  email,
-  isActive,
-  remoteCreatedAt,
-  remoteUpdatedAt,
-  remoteWasDeleted,
-  lastModifiedAt,
-}: CrmUser): User => {
+export const fromUserModel = (
+  {
+    id,
+    remoteId,
+    name,
+    email,
+    isActive,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
+    rawData,
+  }: CrmUser,
+  getParams?: GetInternalParams
+): User => {
   return {
     id,
     remoteId,
@@ -37,6 +42,7 @@ export const fromUserModel = ({
     remoteUpdatedAt,
     remoteWasDeleted,
     lastModifiedAt,
+    rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
   };
 };
 

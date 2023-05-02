@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toSnakecasedKeysUser } from '@supaglue/core/mappers';
-import { toListInternalParams } from '@supaglue/core/mappers/list_params';
+import { toGetInternalParams, toSnakecasedKeysUser } from '@supaglue/core/mappers';
+import { toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   GetUserPathParams,
   GetUserRequest,
@@ -35,7 +35,11 @@ export default function init(app: Router): void {
   router.get(
     '/:user_id',
     async (req: Request<GetUserPathParams, GetUserResponse, GetUserRequest>, res: Response<GetUserResponse>) => {
-      const user = await userService.getById(req.params.user_id, req.customerConnection.id);
+      const user = await userService.getById(
+        req.params.user_id,
+        req.customerConnection.id,
+        toGetInternalParams(req.query)
+      );
       return res.status(200).send(toSnakecasedKeysUser(user));
     }
   );

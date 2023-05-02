@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toPaginationInternalParams } from '@supaglue/core/lib';
 import { toSnakecasedKeysContact } from '@supaglue/core/mappers';
-import { toListInternalParams } from '@supaglue/core/mappers/list_params';
+import { toGetInternalParams, toListInternalParams, toSearchInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateContactPathParams,
   CreateContactRequest,
@@ -53,15 +52,19 @@ export default function init(app: Router): void {
   router.get(
     '/:contact_id',
     async (
-      req: Request<GetContactPathParams, GetContactResponse, GetContactRequest>,
+      req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, GetContactQueryParams>,
       res: Response<GetContactResponse>
     ) => {
-      const contact = await contactService.getById(req.params.contact_id, req.customerConnection.id);
+      const contact = await contactService.getById(
+        req.params.contact_id,
+        req.customerConnection.id,
+        toGetInternalParams(req.query)
+      );
       return res.status(200).send(toSnakecasedKeysContact(contact));
     }
   );
 
-  router.post<string, CreateContactPathParams, CreateContactResponse, CreateContactRequest, GetContactQueryParams>(
+  router.post(
     '/',
     async (
       req: Request<CreateContactPathParams, CreateContactResponse, CreateContactRequest>,
@@ -100,7 +103,7 @@ export default function init(app: Router): void {
     ) => {
       const { next, previous, results } = await contactService.search(
         req.customerConnection.id,
-        toPaginationInternalParams(req.params),
+        toSearchInternalParams(req.query),
         camelcaseKeys(req.body.filters)
       );
 

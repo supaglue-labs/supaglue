@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
 import { toSnakecasedKeysEvent } from '@supaglue/core/mappers/event';
-import { toListInternalParams } from '@supaglue/core/mappers/list_params';
+import { toGetInternalParams, toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateEventPathParams,
   CreateEventRequest,
@@ -45,7 +45,11 @@ export default function init(app: Router): void {
   router.get(
     '/:event_id',
     async (req: Request<GetEventPathParams, GetEventResponse, GetEventRequest>, res: Response<GetEventResponse>) => {
-      const event = await eventService.getById(req.params.event_id, req.customerConnection.id);
+      const event = await eventService.getById(
+        req.params.event_id,
+        req.customerConnection.id,
+        toGetInternalParams(req.query)
+      );
       return res.status(200).send(toSnakecasedKeysEvent(event));
     }
   );
