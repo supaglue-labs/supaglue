@@ -9,7 +9,7 @@ import {
   UserService,
 } from '@supaglue/core/services';
 import { CommonModel } from '@supaglue/types';
-import { Context } from '@temporalio/activity';
+import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 
@@ -45,6 +45,12 @@ export function createImportRecords(
     updatedAfterMs,
   }: ImportRecordsArgs): Promise<ImportRecordsResult> {
     const connection = await connectionService.getSafeById(connectionId);
+
+    if (connection.category !== 'crm') {
+      // TODO: support non-CRM syncs
+      throw ApplicationFailure.nonRetryable('Only CRM connections are supported');
+    }
+
     const client = await remoteService.getCrmRemoteClient(connectionId);
 
     let result = {
