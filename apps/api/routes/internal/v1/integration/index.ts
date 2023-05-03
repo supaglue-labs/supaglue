@@ -1,5 +1,4 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError } from '@supaglue/core/errors';
 import {
   CreateIntegrationPathParams,
   CreateIntegrationRequest,
@@ -43,9 +42,6 @@ export default function init(app: Router): void {
       req: Request<CreateIntegrationPathParams, CreateIntegrationResponse, CreateIntegrationRequest>,
       res: Response<CreateIntegrationResponse>
     ) => {
-      if (req.body.category !== 'crm') {
-        throw new BadRequestError(`Category ${req.body.category} is not supported`);
-      }
       const integration = await integrationService.create({
         applicationId: req.supaglueApplication.id,
         ...camelcaseKeys(req.body),
@@ -74,9 +70,6 @@ export default function init(app: Router): void {
       req: Request<UpdateIntegrationPathParams, UpdateIntegrationResponse, UpdateIntegrationRequest>,
       res: Response<UpdateIntegrationResponse>
     ) => {
-      if (req.body.category !== 'crm') {
-        throw new BadRequestError(`Category ${req.body.category} is not supported`);
-      }
       const integration = await integrationService.update(req.params.integration_id, {
         applicationId: req.supaglueApplication.id,
         ...camelcaseKeys(req.body),
