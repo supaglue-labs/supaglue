@@ -1,6 +1,6 @@
 import { CommonModel } from '@supaglue/types/common';
 import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
-import { FullThenIncrementalSync, ReverseThenForwardSync, Sync } from '@supaglue/types/sync';
+import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/types/sync';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
 import { ImportRecordsResult } from '../activities/import_records';
@@ -64,12 +64,6 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
 
   // Read sync from DB
   const { sync } = await getSync({ syncId });
-
-  if (SyncStateFSM.isResetFlagSet(sync)) {
-    // NOTE: keep the resetted sync state in memory only and let the subsequent sync implementations transition it to the next state
-    SyncStateFSM.setInitialState(sync);
-    await setForceSyncFlag({ syncId }, false);
-  }
 
   let numRecordsSyncedMap: Record<CommonModel, number> | undefined;
   try {
@@ -288,6 +282,14 @@ async function doFullThenIncrementalSync({
     ) as Record<CommonModel, number>;
   }
 
+  // Short circuit normal state transitions if we're forcing a sync which will reset the state
+  if (sync.forceSyncFlag) {
+    const results = await doFullStage();
+    await setForceSyncFlag({ syncId: sync.id }, false);
+    return results;
+  }
+
+  // Sync state transitions
   switch (sync.state.phase) {
     case 'created':
       return await doFullStage();
@@ -333,18 +335,3 @@ const getErrorMessageStack = (err: Error): { message: string; stack: string } =>
   }
   return { message: err.message ?? 'Unknown error', stack: err.stack ?? 'No stack' };
 };
-
-class SyncStateFSM {
-  static isResetFlagSet(sync: Sync): boolean {
-    return sync.forceSyncFlag;
-  }
-
-  static setInitialState(sync: Sync): Sync {
-    sync.state = {
-      phase: 'created',
-    };
-    return sync;
-  }
-
-  // @todo: move other state transitions here
-}
