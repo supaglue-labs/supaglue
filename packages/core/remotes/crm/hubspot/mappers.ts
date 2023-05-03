@@ -3,11 +3,7 @@ import { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/a
 import { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
-  Address,
-  EmailAddress,
-  LifecycleStage,
   OpportunityStatus,
-  PhoneNumber,
   RemoteAccount,
   RemoteAccountCreateParams,
   RemoteContact,
@@ -16,6 +12,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteUser,
 } from '@supaglue/types';
+import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 

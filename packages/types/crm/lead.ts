@@ -1,16 +1,14 @@
 import type {
   Account,
-  Address,
   BaseCrmModel,
   BaseCrmModelNonRemoteParams,
   BaseCrmModelRemoteOnlyParams,
   Contact,
   CustomFields,
-  EmailAddress,
-  PhoneNumber,
   User,
 } from '..';
 import { Filter } from '../filter';
+import { Address, EmailAddress, PhoneNumber } from './common';
 
 type BaseLead = BaseCrmModel & {
   leadSource: string | null;
@@ -73,4 +71,10 @@ export type RemoteLeadUpdateParams = RemoteLeadCreateParams & {
 
 export type LeadFilters = {
   emailAddress?: Filter;
+};
+
+export type RemoteLeadTypes = {
+  object: RemoteLead;
+  createParams: RemoteLeadCreateParams;
+  updateParams: RemoteLeadUpdateParams;
 };

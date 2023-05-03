@@ -3,7 +3,7 @@ import { GetInternalParams, ListInternalParams, PaginatedResult, User } from '@s
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
-import { fromRemoteUserToDbUserParams, fromUserModel } from '../../mappers/user';
+import { fromRemoteUserToDbUserParams, fromUserModel } from '../../mappers';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class UserService extends CommonModelBaseService {

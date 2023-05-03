@@ -1,3 +1,5 @@
+import { IntegrationCategory } from '.';
+
 export type SyncStatus = 'SYNCING' | 'DONE';
 
 export type SyncInfo = {
@@ -10,7 +12,7 @@ export type SyncInfo = {
   // External Id
   customerId: string;
   providerName: string;
-  category: 'crm';
+  category: IntegrationCategory;
   connectionId: string;
 };
 

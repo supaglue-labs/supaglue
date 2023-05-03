@@ -95,7 +95,7 @@ export class AccountService extends CommonModelBaseService {
       remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteAccount = await remoteClient.createAccount(remoteCreateParams);
+    const remoteAccount = await remoteClient.createObject('account', remoteCreateParams);
     const accountModel = await this.prisma.crmAccount.create({
       data: {
         customerId,
@@ -126,7 +126,7 @@ export class AccountService extends CommonModelBaseService {
       remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteAccount = await remoteClient.updateAccount({
+    const remoteAccount = await remoteClient.updateObject('account', {
       ...remoteUpdateParams,
       remoteId: foundAccountModel.remoteId,
     });

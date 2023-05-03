@@ -68,3 +68,9 @@ export type EventUpdateParams = EventCreateParams & {
 export type RemoteEventUpdateParams = RemoteEventCreateParams & {
   remoteId: string;
 };
+
+export type RemoteEventTypes = {
+  object: RemoteEvent;
+  createParams: RemoteEventCreateParams;
+  updateParams: RemoteEventUpdateParams;
+};

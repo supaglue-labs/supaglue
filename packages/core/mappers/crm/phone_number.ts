@@ -1,4 +1,4 @@
-import { PhoneNumber } from '@supaglue/types';
+import { PhoneNumber } from '@supaglue/types/crm/common';
 
 export const toSnakecasedKeysPhoneNumber = (phoneNumber: PhoneNumber) => {
   return {
