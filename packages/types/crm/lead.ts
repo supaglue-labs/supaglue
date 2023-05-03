@@ -72,3 +72,9 @@ export type RemoteLeadUpdateParams = RemoteLeadCreateParams & {
 export type LeadFilters = {
   emailAddress?: Filter;
 };
+
+export type RemoteLeadTypes = {
+  object: RemoteLead;
+  createParams: RemoteLeadCreateParams;
+  updateParams: RemoteLeadUpdateParams;
+};

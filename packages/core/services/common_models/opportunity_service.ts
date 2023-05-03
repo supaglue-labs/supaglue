@@ -102,7 +102,7 @@ export class OpportunityService extends CommonModelBaseService {
       remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteOpportunity = await remoteClient.createOpportunity(remoteCreateParams);
+    const remoteOpportunity = await remoteClient.createObject('opportunity', remoteCreateParams);
     const opportunityModel = await this.prisma.crmOpportunity.create({
       data: {
         customerId,
@@ -142,7 +142,7 @@ export class OpportunityService extends CommonModelBaseService {
     }
 
     const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
-    const remoteOpportunity = await remoteClient.updateOpportunity({
+    const remoteOpportunity = await remoteClient.updateObject('opportunity', {
       ...remoteUpdateParams,
       remoteId: foundOpportunityModel.remoteId,
     });
