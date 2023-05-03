@@ -1,6 +1,6 @@
 import { CommonModel } from '@supaglue/types/common';
 import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
-import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/types/sync';
+import { FullThenIncrementalSync, ReverseThenForwardSync, Sync } from '@supaglue/types/sync';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
 import { ImportRecordsResult } from '../activities/import_records';
@@ -22,7 +22,9 @@ const { populateAssociations } = proxyActivities<ReturnType<typeof createActivit
   },
 });
 
-const { getSync, updateSyncState, logSyncStart, logSyncFinish } = proxyActivities<ReturnType<typeof createActivities>>({
+const { getSync, updateSyncState, logSyncStart, logSyncFinish, setForceSyncFlag } = proxyActivities<
+  ReturnType<typeof createActivities>
+>({
   startToCloseTimeout: '10 second',
   retry: {
     maximumAttempts: 3,
@@ -63,6 +65,12 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
   // Read sync from DB
   const { sync } = await getSync({ syncId });
 
+  if (SyncStateFSM.isResetFlagSet(sync)) {
+    // NOTE: keep the resetted sync state in memory only and let the subsequent sync implementations transition it to the next state
+    SyncStateFSM.setInitialState(sync);
+    await setForceSyncFlag({ syncId }, false);
+  }
+
   let numRecordsSyncedMap: Record<CommonModel, number> | undefined;
   try {
     // Figure out what to do based on sync strategy
@@ -73,6 +81,8 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
       case 'reverse then forward':
         numRecordsSyncedMap = await doReverseThenForwardSync({ sync });
         break;
+      default:
+        throw new Error('Sync type not supported.');
     }
   } catch (err: any) {
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
@@ -323,3 +333,16 @@ const getErrorMessageStack = (err: Error): { message: string; stack: string } =>
   }
   return { message: err.message ?? 'Unknown error', stack: err.stack ?? 'No stack' };
 };
+
+class SyncStateFSM {
+  static isResetFlagSet(sync: Sync): boolean {
+    return sync.resync;
+  }
+
+  static setInitialState(sync: Sync): Sync {
+    sync.state = {
+      phase: 'created',
+    };
+    return sync;
+  }
+}

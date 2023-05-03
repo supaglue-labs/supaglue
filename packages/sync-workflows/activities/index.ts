@@ -18,6 +18,7 @@ import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
 import { createPopulateAssociations } from './populate_associations';
+import { createSetForceSyncFlag } from './set_force_sync_flag';
 import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
@@ -50,6 +51,7 @@ export const createActivities = ({
   return {
     getSync: createGetSync(syncService),
     doProcessSyncChanges: createDoProcessSyncChanges(syncService),
+    setForceSyncFlag: createSetForceSyncFlag(syncService),
     updateSyncState: createUpdateSyncState(syncService),
     importRecords: createImportRecords(
       accountService,
