@@ -26,7 +26,7 @@ export default function WebhookTabPanel() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   useEffect(() => {
-    const { url, notifyOnConnectionError, notifyOnConnectionSuccess, notifyOnSyncError, notifyOnSyncSuccess, headers } =
+    const { url, notifyOnConnectionError, notifyOnConnectionSuccess, notifyOnSyncError, notifyOnSyncSuccess } =
       activeApplication?.config.webhook ?? defaultWebhook;
     setWebhookUrl(url);
     setNotifyOnConnectionSuccess(notifyOnConnectionSuccess);
