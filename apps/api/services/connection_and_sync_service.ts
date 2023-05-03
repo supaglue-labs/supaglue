@@ -446,7 +446,7 @@ export class ConnectionAndSyncService {
 
     const model = await this.#prisma.sync.update({
       data: {
-        resync: flag,
+        forceSyncFlag: flag,
       },
       where: {
         connectionId: connection.id,

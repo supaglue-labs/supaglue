@@ -3,7 +3,7 @@ import { CommonModel } from './common';
 type BaseSync = {
   id: string;
   connectionId: string;
-  resync: boolean; // flag: whether to treat the sync as phase "created"
+  forceSyncFlag: boolean; // flag: whether to transition a sync to the phase "created"
 };
 
 export type FullThenIncrementalSync = BaseSync & {

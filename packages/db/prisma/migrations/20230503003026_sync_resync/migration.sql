@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "syncs" ADD COLUMN     "resync" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "syncs" ADD COLUMN "force_sync_flag" BOOLEAN NOT NULL DEFAULT false;

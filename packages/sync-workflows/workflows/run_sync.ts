@@ -336,7 +336,7 @@ const getErrorMessageStack = (err: Error): { message: string; stack: string } =>
 
 class SyncStateFSM {
   static isResetFlagSet(sync: Sync): boolean {
-    return sync.resync;
+    return sync.forceSyncFlag;
   }
 
   static setInitialState(sync: Sync): Sync {
