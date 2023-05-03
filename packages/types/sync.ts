@@ -3,6 +3,7 @@ import { CommonModel } from './common';
 type BaseSync = {
   id: string;
   connectionId: string;
+  forceSyncFlag: boolean; // flag: whether to transition a sync to the phase "created"
 };
 
 export type FullThenIncrementalSync = BaseSync & {
@@ -78,3 +79,10 @@ export type ReverseThenForwardSyncState =
   | ReverseThenForwardSyncStateForwardPhase;
 
 export type SyncState = FullThenIncrementalSyncState | ReverseThenForwardSyncState;
+
+// The triplet of customer-provided identifiers to uniquely identify a sync. @todo: use this elsewhere.
+export type SyncIdentifier = {
+  applicationId: string;
+  externalCustomerId: string;
+  providerName: string;
+};

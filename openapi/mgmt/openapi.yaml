@@ -43,6 +43,8 @@ paths:
     $ref: paths/sync_history.yaml
   '/sync-info':
     $ref: paths/sync_info.yaml
+  '/force-sync':
+    $ref: paths/force_sync.yaml
 tags: []
 components:
   securitySchemes:
@@ -71,6 +73,8 @@ components:
       $ref: ./components/schemas/sync_info.yaml
     sync_history:
       $ref: ./components/schemas/sync_history.yaml
+    force_sync:
+      $ref: ./components/schemas/force_sync.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
   parameters:
