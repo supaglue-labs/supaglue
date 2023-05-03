@@ -345,4 +345,6 @@ class SyncStateFSM {
     };
     return sync;
   }
+
+  // @todo: move other state transitions here
 }
