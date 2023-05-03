@@ -14,7 +14,9 @@ const { importRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   },
 });
 
-const { getSync, updateSyncState, logSyncStart, logSyncFinish } = proxyActivities<ReturnType<typeof createActivities>>({
+const { getSync, updateSyncState, logSyncStart, logSyncFinish, setForceSyncFlag } = proxyActivities<
+  ReturnType<typeof createActivities>
+>({
   startToCloseTimeout: '10 second',
   retry: {
     maximumAttempts: 3,
@@ -65,6 +67,8 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
       case 'reverse then forward':
         numRecordsSyncedMap = await doReverseThenForwardSync({ sync });
         break;
+      default:
+        throw new Error('Sync type not supported.');
     }
   } catch (err: any) {
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
@@ -260,6 +264,14 @@ async function doFullThenIncrementalSync({
     ) as Record<CommonModel, number>;
   }
 
+  // Short circuit normal state transitions if we're forcing a sync which will reset the state
+  if (sync.forceSyncFlag) {
+    const results = await doFullStage();
+    await setForceSyncFlag({ syncId: sync.id }, false);
+    return results;
+  }
+
+  // Sync state transitions
   switch (sync.state.phase) {
     case 'created':
       return await doFullStage();

@@ -101,6 +101,13 @@ export interface paths {
      */
     get: operations["getSyncInfos"];
   };
+  "/force-sync": {
+    /**
+     * Force a full sync 
+     * @description Force a full sync
+     */
+    post: operations["createForceSync"];
+  };
 }
 
 export interface webhooks {
@@ -271,6 +278,10 @@ export interface components {
       connection_id: string;
       /** @enum {string} */
       status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
+    };
+    force_sync: {
+      /** @example true */
+      success: boolean;
     };
     "webhook-payload": OneOf<[{
       /** @enum {unknown} */
@@ -576,6 +587,28 @@ export interface operations {
       200: {
         content: {
           "application/json": (components["schemas"]["sync_info"])[];
+        };
+      };
+    };
+  };
+  createForceSync: {
+    /**
+     * Force a full sync 
+     * @description Force a full sync
+     */
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      query: {
+        customer_id: string;
+        provider_name: string;
+      };
+    };
+    responses: {
+      /** @description Force a full sync */
+      200: {
+        content: {
+          "application/json": components["schemas"]["force_sync"];
         };
       };
     };

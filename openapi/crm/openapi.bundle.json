@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.7.13",
+    "version": "0.7.14",
     "title": "Supaglue CRM API",
     "contact": {
       "name": "Supaglue",
@@ -2553,10 +2553,6 @@
     {
       "name": "Users",
       "description": "The `User` Common Model is used to represent a \"user\" that can login to CRMs."
-    },
-    {
-      "name": "Sync",
-      "description": "Get information and history for the sync process."
     },
     {
       "name": "Passthrough",

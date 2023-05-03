@@ -91,3 +91,9 @@ export type GetSyncHistoryQueryParams = Required<operations['getSyncHistory']>['
 export type GetSyncHistoryRequest = never;
 export type GetSyncHistoryResponse =
   operations['getSyncHistory']['responses'][keyof operations['getSyncHistory']['responses']]['content']['application/json'];
+
+export type CreateForceSyncPathParams = never;
+export type CreateForceSyncQueryParams = Required<operations['createForceSync']>['parameters']['query'];
+export type CreateForceSyncRequest = never;
+export type CreateForceSyncResponse =
+  operations['createForceSync']['responses'][keyof operations['createForceSync']['responses']]['content']['application/json'];

@@ -35,6 +35,7 @@ import {
 } from '@supaglue/types';
 import retry from 'async-retry';
 import { Readable } from 'stream';
+import { TooManyRequestsError } from '../../../errors';
 import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -695,12 +696,14 @@ const retryWhenRateLimited = async <Args extends any[], Return>(
     try {
       return await operation(...parameters);
     } catch (e: any) {
-      logger.error(e, `Error encountered: ${e.message}`);
-      if (!isRateLimited(e)) {
-        bail(e);
-        return null as Return;
+      if (isRateLimited(e)) {
+        logger.warn(e, `Encountered Hubspot rate limiting.`);
+        throw new TooManyRequestsError(`Encountered Hubspot rate limiting.`);
       }
-      throw e;
+
+      logger.error(e, `Encountered Hubspot error.`);
+      bail(e);
+      return null as Return;
     }
   };
   return await retry(helper, ASYNC_RETRY_OPTIONS);
