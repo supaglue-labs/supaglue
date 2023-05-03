@@ -21,6 +21,7 @@ function fromSyncModel(model: SyncModel): Sync {
     type,
     ...otherStrategyProps,
     state: model.state as SyncState,
+    forceSyncFlag: model.forceSyncFlag,
   } as Sync;
 }
 
@@ -48,6 +49,19 @@ export class SyncService {
         id,
       },
     });
+    return fromSyncModel(model);
+  }
+
+  public async setForceSyncFlag({ syncId }: { syncId: string }, flag: boolean): Promise<Sync> {
+    const model = await this.#prisma.sync.update({
+      data: {
+        forceSyncFlag: flag,
+      },
+      where: {
+        id: syncId,
+      },
+    });
+
     return fromSyncModel(model);
   }
 

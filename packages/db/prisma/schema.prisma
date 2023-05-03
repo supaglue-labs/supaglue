@@ -309,6 +309,7 @@ model CrmEvent {
 model Sync {
   id              String        @id @default(uuid())
   state           Json
+  forceSyncFlag   Boolean       @default(false) @map("force_sync_flag")
   strategy        Json
   connectionId    String        @unique @map("connection_id")
   connection      Connection    @relation(fields: [connectionId], references: [id])

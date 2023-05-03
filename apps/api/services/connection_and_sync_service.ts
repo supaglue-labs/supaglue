@@ -19,7 +19,7 @@ import {
   runSync,
   RUN_SYNC_PREFIX,
 } from '@supaglue/sync-workflows/workflows/run_sync';
-import { CRM_COMMON_MODELS, Sync, SyncState, SyncType } from '@supaglue/types';
+import { CRM_COMMON_MODELS, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
   ConnectionSafeAny,
@@ -431,6 +431,29 @@ export class ConnectionAndSyncService {
       },
     });
     return models.map(fromSyncModel);
+  }
+
+  public async setForceSyncFlag(
+    { applicationId, externalCustomerId, providerName }: SyncIdentifier,
+    flag: boolean
+  ): Promise<Sync> {
+    const customerId = getCustomerIdPk(applicationId, externalCustomerId);
+    const connection = await this.#connectionService.getSafeByCustomerIdAndApplicationIdAndProviderName({
+      applicationId,
+      customerId,
+      providerName,
+    });
+
+    const model = await this.#prisma.sync.update({
+      data: {
+        forceSyncFlag: flag,
+      },
+      where: {
+        connectionId: connection.id,
+      },
+    });
+
+    return fromSyncModel(model);
   }
 
   public async getSyncInfoList({
