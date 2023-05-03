@@ -80,7 +80,7 @@ export type ReverseThenForwardSyncState =
 
 export type SyncState = FullThenIncrementalSyncState | ReverseThenForwardSyncState;
 
-// The triplet of customer-provided identifiers to uniquely identify a sync. @todo: this triple can also be used elsewhere to uniquel identifer Supaglue resources.
+// The triplet of customer-provided identifiers to uniquely identify a sync. @todo: use this elsewhere.
 export type SyncIdentifier = {
   applicationId: string;
   externalCustomerId: string;
