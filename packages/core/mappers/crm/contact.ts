@@ -1,7 +1,7 @@
 import { CrmContact } from '@supaglue/db';
 import { Contact, GetInternalParams, RemoteContact } from '@supaglue/types';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
-import { v4 as uuidv4 } from 'uuid';
+import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAccount } from './account';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
@@ -89,7 +89,7 @@ export const fromRemoteContactToDbContactParams = (
       : undefined;
 
   return {
-    id: uuidv4(),
+    id: uuidv5(remoteContact.remoteId, connectionId),
     remote_id: remoteContact.remoteId,
     customer_id: customerId,
     connection_id: connectionId,
@@ -107,7 +107,9 @@ export const fromRemoteContactToDbContactParams = (
     detected_or_remote_deleted_at: remoteContact.detectedOrRemoteDeletedAt?.toISOString(),
     last_modified_at: lastModifiedAt?.toISOString(),
     _remote_account_id: remoteContact.remoteAccountId,
+    account_id: remoteContact.remoteAccountId ? uuidv5(remoteContact.remoteAccountId, connectionId) : null,
     _remote_owner_id: remoteContact.remoteOwnerId,
+    owner_id: remoteContact.remoteOwnerId ? uuidv5(remoteContact.remoteOwnerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteContact.rawData,
   };
