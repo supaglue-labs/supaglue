@@ -3,17 +3,17 @@ import {
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
   EngagementProviderName,
-  SequenceStartParams,
 } from '@supaglue/types/engagement';
 import { EventEmitter } from 'events';
+import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface EngagementRemoteClient extends RemoteClient {
+  listObjects(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
   createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']>;
-  startSequence(params: SequenceStartParams): Promise<void>;
 }
 
 export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClient implements EngagementRemoteClient {
@@ -21,11 +21,11 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     super(...args);
   }
 
+  abstract listObjects(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
   abstract createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']>;
-  abstract startSequence(params: SequenceStartParams): Promise<void>;
 }
 
 export abstract class EngagementRemoteClientEventEmitter extends EventEmitter {}
