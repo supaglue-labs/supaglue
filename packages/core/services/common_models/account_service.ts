@@ -15,6 +15,7 @@ import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
+import { CrmRemoteClient } from '../../remotes/crm/base';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class AccountService extends CommonModelBaseService {
@@ -94,7 +95,7 @@ export class AccountService extends CommonModelBaseService {
     if (createParams.ownerId) {
       remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
-    const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
+    const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteAccount = await remoteClient.createObject('account', remoteCreateParams);
     const accountModel = await this.prisma.crmAccount.create({
       data: {
@@ -126,7 +127,7 @@ export class AccountService extends CommonModelBaseService {
     if (updateParams.ownerId) {
       remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
-    const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
+    const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteAccount = await remoteClient.updateObject('account', {
       ...remoteUpdateParams,
       remoteId: foundAccountModel.remoteId,

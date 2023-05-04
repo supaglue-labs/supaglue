@@ -23,14 +23,12 @@ servers:
   - url: 'http://localhost:8080/engagement/v1'
     description: Local Supaglue API
 paths:
+  '/passthrough':
+    $ref: paths/passthrough.yaml
   '/contacts':
     $ref: paths/contacts.yaml
-  # '/contacts/{contact_id}':
-  #   $ref: paths/contacts@{contact_id}.yaml
   '/sequences':
     $ref: paths/sequences.yaml
-  # '/sequences/{sequence_id}':
-  #   $ref: paths/sequences@{sequence_id}.yaml
 tags:
   - name: Contacts
     description: The `Contact` Common Model is used to represent a "contact" in Engagements.

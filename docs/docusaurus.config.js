@@ -75,6 +75,12 @@ const config = {
                 spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
                 route: version === LATEST_VERSION ? '/references/api/crm' : `/${version}/references/api/crm`,
               },
+              // TODO: Add this
+              // {
+              //   spec: `../openapi/versioned/version-${version}/engagement/openapi.bundle.json`,
+              //   route:
+              //     version === LATEST_VERSION ? '/references/api/engagement' : `/${version}/references/api/engagement`,
+              // },
               {
                 spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
                 route: version === LATEST_VERSION ? '/references/api/mgmt' : `/${version}/references/api/mgmt`,
@@ -84,6 +90,10 @@ const config = {
           {
             spec: '../openapi/crm/openapi.bundle.json',
             route: '/next/references/api/crm',
+          },
+          {
+            spec: '../openapi/engagement/openapi.bundle.json',
+            route: '/next/references/api/engagement',
           },
           {
             spec: '../openapi/mgmt/openapi.bundle.json',

@@ -1,5 +1,9 @@
+import { ConnectionUnsafe } from '@supaglue/types';
+import { RemoteClient } from '../remotes/base';
 import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
+import { getEngagementRemoteClient } from '../remotes/engagement';
+import { EngagementRemoteClient } from '../remotes/engagement/base';
 import type { ConnectionService } from './connection_service';
 import type { IntegrationService } from './integration_service';
 
@@ -12,25 +16,34 @@ export class RemoteService {
     this.#integrationService = integrationService;
   }
 
-  public async getCrmRemoteClient(connectionId: string): Promise<CrmRemoteClient> {
+  public async getRemoteClient(connectionId: string): Promise<RemoteClient> {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
     const integration = await this.#integrationService.getById(connection.integrationId);
 
-    if (connection.category !== 'crm') {
-      // TODO: fix this
-      throw new Error('Connection must be of category "crm"');
+    if (connection.category !== integration.category) {
+      throw new Error(
+        `Connection category ${connection.category} does not match integration category ${integration.category}.`
+      );
+    }
+
+    if (connection.providerName !== integration.providerName) {
+      throw new Error(
+        `Connection providerName ${connection.providerName} does not match integration providerName ${integration.providerName}.`
+      );
     }
 
     if (!integration.config) {
       throw new Error('Integration must have config');
     }
 
-    if (integration.category !== 'crm') {
-      // TODO: fix this
-      throw new Error('Integration must be of category "crm"');
+    let client: CrmRemoteClient | EngagementRemoteClient;
+    if (integration.category === 'crm') {
+      const { providerName } = integration;
+      client = getCrmRemoteClient(connection as ConnectionUnsafe<typeof providerName>, integration);
+    } else {
+      const { providerName } = integration;
+      client = getEngagementRemoteClient(connection as ConnectionUnsafe<typeof providerName>, integration);
     }
-
-    const client = getCrmRemoteClient(connection, integration);
 
     // Persist the refreshed token
     client.on('token_refreshed', (accessToken: string, expiresAt: string | null) => {

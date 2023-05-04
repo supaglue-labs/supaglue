@@ -12,7 +12,7 @@ export class PassthroughService {
     connectionId: string,
     request: SendPassthroughRequestRequest
   ): Promise<SendPassthroughRequestResponse> {
-    const client = await this.#remoteService.getCrmRemoteClient(connectionId);
+    const client = await this.#remoteService.getRemoteClient(connectionId);
     return await client.sendPassthroughRequest(request);
   }
 }
