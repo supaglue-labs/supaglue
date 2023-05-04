@@ -1,15 +1,12 @@
-import type {
+import type { ConnectionService, IntegrationService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
+import {
   AccountService,
-  ConnectionService,
   ContactService,
   EventService,
-  IntegrationService,
   LeadService,
   OpportunityService,
-  RemoteService,
-  SyncHistoryService,
   UserService,
-} from '@supaglue/core/services';
+} from '@supaglue/core/services/common_models/crm';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetSync } from './get_sync';

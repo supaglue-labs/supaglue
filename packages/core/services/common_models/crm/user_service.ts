@@ -1,4 +1,4 @@
-import { schemaPrefix } from '@supaglue/db';
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { GetInternalParams, ListInternalParams, PaginatedResult, User } from '@supaglue/types';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
@@ -58,7 +58,7 @@ export class UserService extends CommonModelBaseService {
     remoteUsersReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = `${schemaPrefix}crm_users`;
+    const table = COMMON_MODEL_DB_TABLES.crm.users;
     const tempTable = 'crm_users_temp';
     const columnsWithoutId = [
       'remote_id',

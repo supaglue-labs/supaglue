@@ -1,4 +1,4 @@
-import { schemaPrefix } from '@supaglue/db';
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type {
   GetInternalParams,
   Lead,
@@ -157,7 +157,7 @@ export class LeadService extends CommonModelBaseService {
     remoteLeadsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = `${schemaPrefix}crm_leads`;
+    const table = COMMON_MODEL_DB_TABLES.crm.leads;
     const tempTable = 'crm_leads_temp';
     const columnsWithoutId = [
       'remote_id',

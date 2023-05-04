@@ -165,7 +165,7 @@ export class ContactService extends CommonModelBaseService {
     remoteContactsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = COMMON_MODEL_DB_TABLES['contacts'];
+    const table = COMMON_MODEL_DB_TABLES.crm.contacts;
     const tempTable = 'crm_contacts_temp';
     const columnsWithoutId = [
       'remote_id',

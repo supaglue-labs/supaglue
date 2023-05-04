@@ -1,4 +1,4 @@
-import { schemaPrefix } from '@supaglue/db';
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type {
   Account,
   AccountCreateParams,
@@ -151,7 +151,7 @@ export class AccountService extends CommonModelBaseService {
     remoteAccountsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = `${schemaPrefix}crm_accounts`;
+    const table = COMMON_MODEL_DB_TABLES.crm.accounts;
     const tempTable = 'crm_accounts_temp';
     const columnsWithoutId = [
       'name',

@@ -2,19 +2,21 @@ import prisma, { PrismaClient } from '@supaglue/db';
 import fs from 'fs';
 import { Pool } from 'pg';
 import {
-  AccountService,
   ConnectionService,
-  ContactService,
   CustomerService,
-  EventService,
   IntegrationService,
-  LeadService,
-  OpportunityService,
   RemoteService,
   SgUserService,
   SyncHistoryService,
-  UserService,
 } from './services';
+import {
+  AccountService,
+  ContactService,
+  EventService,
+  LeadService,
+  OpportunityService,
+  UserService,
+} from './services/common_models/crm';
 
 export type CoreDependencyContainer = {
   pgPool: Pool;

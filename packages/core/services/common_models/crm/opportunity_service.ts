@@ -168,7 +168,7 @@ export class OpportunityService extends CommonModelBaseService {
     remoteOpportunitiesReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = COMMON_MODEL_DB_TABLES['opportunities'];
+    const table = COMMON_MODEL_DB_TABLES.crm.opportunities;
     const tempTable = 'crm_opportunities_temp';
     const columnsWithoutId = [
       'remote_id',

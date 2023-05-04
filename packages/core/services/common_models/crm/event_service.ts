@@ -1,4 +1,4 @@
-import { schemaPrefix } from '@supaglue/db';
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import {
   Event,
   EventCreateParams,
@@ -151,7 +151,7 @@ export class EventService extends CommonModelBaseService {
     remoteEventsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = `${schemaPrefix}crm_events`;
+    const table = COMMON_MODEL_DB_TABLES.crm.events;
     const tempTable = 'crm_events_temp';
     const columnsWithoutId = [
       'remote_id',

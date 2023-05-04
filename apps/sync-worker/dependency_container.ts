@@ -1,16 +1,13 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
+import { ConnectionService, IntegrationService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
 import {
   AccountService,
-  ConnectionService,
   ContactService,
   EventService,
-  IntegrationService,
   LeadService,
   OpportunityService,
-  RemoteService,
-  SyncHistoryService,
   UserService,
-} from '@supaglue/core/services';
+} from '@supaglue/core/services/common_models/crm';
 import type { PrismaClient } from '@supaglue/db';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';

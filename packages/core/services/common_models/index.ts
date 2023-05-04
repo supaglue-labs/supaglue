@@ -1,2 +1,3 @@
 export * from './base_service';
-export * from './crm';
+export * as crm from './crm';
+export * as engagement from './engagement';
