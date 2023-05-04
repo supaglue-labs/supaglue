@@ -1,5 +1,6 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
 import { logger } from '@supaglue/core/lib/logger';
+import { CDCChangeType, CDCWebhookPayload } from '@supaglue/types/cdc';
 import * as jsforce from 'jsforce';
 import { createClient } from './client';
 import { ReplayPreset } from './gen/pubsub_api_pb';
@@ -12,6 +13,18 @@ const EVENT_TYPES_TO_SUBSCRIBE_TO = [
   'EventChangeEvent',
   'UserChangeEvent',
 ];
+
+const salesforceChangeTypeToCDCChangeType = (changeType: string): CDCChangeType => {
+  switch (changeType) {
+    case 'CREATE':
+    case 'UPDATE':
+    case 'DELETE':
+    case 'UNDELETE':
+      return changeType;
+    default:
+      throw new Error(`Unknown changeType ${changeType}`);
+  }
+};
 
 const { connectionService, integrationService } = getCoreDependencyContainer();
 (async () => {
@@ -61,11 +74,23 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
         replayId = latestReplayId;
         logger.debug({ event, eventType }, 'received event');
         const { ChangeEventHeader, ...rest } = event;
-        const { changeType, nulledFields, changedFields, diffFields, recordIds } = ChangeEventHeader;
+        const { changeType, nulledFields, changedFields, diffFields, recordIds, entityName } = ChangeEventHeader;
+        // skip gap events for now, since consumers wouldn't be able to do anything with them
+        if (
+          changeType === 'GAP_CREATE' ||
+          changeType === 'GAP_DELETE' ||
+          changeType === 'GAP_UPDATE' ||
+          changeType === 'GAP_UNDELETE' ||
+          changeType === 'GAP_OVERFLOW'
+        ) {
+          logger.debug({ changeType, connectionId, eventType }, 'skipping gap event');
+          continue;
+        }
         for (const recordId of recordIds) {
-          const webhookPayload = {
+          const webhookPayload: CDCWebhookPayload = {
             id: recordId,
-            changeType,
+            entityName,
+            changeType: salesforceChangeTypeToCDCChangeType(changeType),
             nulledFields,
             changedFields,
             diffFields,
