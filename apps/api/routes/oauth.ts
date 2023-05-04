@@ -1,8 +1,10 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError } from '@supaglue/core/errors';
-import { getConnectorAuthConfig } from '@supaglue/core/remotes/crm';
+import { getConnectorAuthConfig } from '@supaglue/core/remotes';
+import { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, ProviderName } from '@supaglue/types';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
+import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supaglue/types/engagement';
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
@@ -47,7 +49,7 @@ export default function init(app: Router): void {
       const { oauthScopes } = integration.config.oauth;
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
-      const auth = getConnectorAuthConfig(providerName);
+      const auth = getConnectorAuthConfig(integration.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
@@ -110,12 +112,16 @@ export default function init(app: Router): void {
         returnUrl: string;
         scope?: string;
         applicationId?: string;
-        providerName?: CRMProviderName;
+        providerName?: ProviderName;
         customerId?: string;
         loginUrl?: string;
       } = JSON.parse(decodeURIComponent(state));
 
-      if (!providerName || !SUPPORTED_CRM_CONNECTIONS.includes(providerName)) {
+      if (
+        !providerName ||
+        (!SUPPORTED_CRM_CONNECTIONS.includes(providerName as CRMProviderName) &&
+          !SUPPORTED_ENGAGEMENT_CONNECTIONS.includes(providerName as EngagementProviderName))
+      ) {
         throw new Error('No providerName or supported providerName on state object');
       }
 
@@ -139,7 +145,7 @@ export default function init(app: Router): void {
 
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
-      const auth = getConnectorAuthConfig(providerName);
+      const auth = getConnectorAuthConfig(integration.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
@@ -166,8 +172,8 @@ export default function init(app: Router): void {
         ...additionalAuthParams,
       });
 
-      const instanceUrl = tokenWrapper.token['instance_url'] as string;
-      let remoteId = instanceUrl;
+      const instanceUrl = (tokenWrapper.token['instance_url'] as string) ?? '';
+      let remoteId = instanceUrl ?? '';
 
       if (providerName === 'hubspot') {
         const accessToken = tokenWrapper.token['access_token'] as string;
@@ -205,10 +211,10 @@ export default function init(app: Router): void {
           : { ...basePayload, providerName };
 
       try {
-        await connectionAndSyncService.create(payload);
+        await connectionAndSyncService.create(payload as ConnectionCreateParamsAny);
       } catch (e: any) {
         if (e.code === 'P2002') {
-          await connectionAndSyncService.upsert(payload);
+          await connectionAndSyncService.upsert(payload as ConnectionUpsertParamsAny);
         } else {
           throw e;
         }

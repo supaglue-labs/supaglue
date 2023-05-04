@@ -1,31 +1,20 @@
-import { ConnectionUnsafe, CRMIntegration, CRMProviderName } from '@supaglue/types';
+import { ConnectionUnsafe, Integration } from '@supaglue/types';
+import { EngagementProviderName } from '@supaglue/types/engagement';
 import { logger } from '../../lib/logger';
-import { CrmConnectorConfig, CrmRemoteClient } from './base';
-import * as capsule from './capsule';
-import * as hubspot from './hubspot';
-import * as ms_dynamics_365_sales from './ms_dynamics_365_sales';
-import * as pipedrive from './pipedrive';
-import * as salesforce from './salesforce';
-import * as zendesk_sell from './zendesk_sell';
-import * as zoho_crm from './zoho_crm';
+import { EngagementConnectorConfig, EngagementRemoteClient } from './base';
+import * as outreach from './outreach';
 
-export const crmConnectorConfigMap: {
-  [K in CRMProviderName]: CrmConnectorConfig<K>;
+export const engagementConnectorConfigMap: {
+  [K in EngagementProviderName]: EngagementConnectorConfig<K>;
 } = {
-  salesforce,
-  hubspot,
-  pipedrive,
-  zendesk_sell,
-  ms_dynamics_365_sales,
-  capsule,
-  zoho_crm,
+  outreach,
 };
 
-export function getCrmRemoteClient<T extends CRMProviderName>(
+export function getEngagementRemoteClient<T extends EngagementProviderName>(
   connection: ConnectionUnsafe<T>,
-  integration: CRMIntegration
-): CrmRemoteClient {
-  const { newClient } = crmConnectorConfigMap[connection.providerName];
+  integration: Integration
+): EngagementRemoteClient {
+  const { newClient } = engagementConnectorConfigMap[connection.providerName];
   const client = newClient(connection, integration);
 
   // Intercept and log errors to remotes
