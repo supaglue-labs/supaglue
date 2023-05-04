@@ -1,5 +1,6 @@
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
+import contact from './contact';
 import passthrough from './passthrough';
 
 export default function init(app: Router): void {
@@ -7,6 +8,7 @@ export default function init(app: Router): void {
 
   v1Router.use(openapiMiddleware('crm'));
 
+  contact(v1Router);
   passthrough(v1Router);
 
   v1Router.use(openApiErrorHandlerMiddleware);

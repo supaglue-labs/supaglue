@@ -280,6 +280,36 @@ model CrmEvent {
   @@map("crm_events")
 }
 
+model EngagementContact {
+  id                        String    @id @db.Uuid
+  remoteId                  String    @map("remote_id")
+  customerId                String    @map("customer_id")
+  connectionId              String    @map("connection_id")
+  firstName                 String?   @map("first_name")
+  lastName                  String?   @map("last_name")
+  jobTitle                  String?   @map("job_title")
+  address                   Json
+  emailAddresses            Json      @map("email_addresses")
+  phoneNumbers              Json      @map("phone_numbers")
+  openCount                 Int       @map("open_count")
+  clickCount                Int       @map("click_count")
+  replyCount                Int       @map("reply_count")
+  bouncedCount              Int       @map("bounced_count")
+  rawData                   Json?     @map("raw_data")
+  remoteCreatedAt           DateTime? @map("remote_created_at")
+  remoteUpdatedAt           DateTime? @map("remote_updated_at")
+  remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
+  remoteDeletedAt           DateTime? @map("remote_deleted_at")
+  detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime  @map("last_modified_at")
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
+
+  @@unique([connectionId, remoteId])
+  @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
+  @@map("engagement_contacts")
+}
+
 model Sync {
   id              String        @id @default(uuid())
   state           Json

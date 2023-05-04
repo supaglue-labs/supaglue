@@ -27,6 +27,8 @@ paths:
     $ref: paths/passthrough.yaml
   '/contacts':
     $ref: paths/contacts.yaml
+  '/contacts/{contact_id}':
+    $ref: paths/contacts@{contact_id}.yaml
   '/sequences':
     $ref: paths/sequences.yaml
 tags:
@@ -44,7 +46,7 @@ components:
     contact:
       $ref: ./components/schemas/objects/contact.yaml
     create_contact:
-      $ref: ./components/schemas/create_contact.yaml
+      $ref: ./components/schemas/create_update_contact.yaml
     sequence:
       $ref: ./components/schemas/objects/sequence.yaml
     create_sequence:
@@ -59,6 +61,12 @@ components:
       $ref: ./components/schemas/objects/email_addresses.yaml
     custom_fields:
       $ref: ./components/schemas/objects/custom_fields.yaml
+    logs:
+      $ref: ../common/components/schemas/logs.yaml
+    errors:
+      $ref: ../common/components/schemas/errors.yaml
+    warnings:
+      $ref: ../common/components/schemas/warnings.yaml
   parameters:
     x-customer-id:
       $ref: ../common/components/parameters/header/x-customer-id.yaml
