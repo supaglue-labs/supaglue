@@ -1,7 +1,6 @@
 import { createPromiseClient, PromiseClient } from '@bufbuild/connect';
 // @ts-expect-error this is an ESM module, but we are only using the types
 import type { PartialMessage } from '@bufbuild/protobuf';
-import { logger } from '@supaglue/core/lib/logger';
 import { LRUCache } from 'lru-cache';
 import { PubSub } from './gen/pubsub_api_connect';
 import { FetchRequest, ReplayPreset } from './gen/pubsub_api_pb';
@@ -53,21 +52,18 @@ export class PubSubClient {
       for (;;) {
         const request = requestQueue.shift();
         if (request) {
-          logger.debug(request, 'sending request');
           yield request;
         }
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
     }
 
-    logger.debug('starting subscription');
     const stream = this.grpcClient.subscribe(requestStream(), {
       headers: this.getHeaders(),
       timeoutMs: SUBSCRIBE_TIMEOUT_MS,
     });
 
     for await (const response of stream) {
-      logger.debug(response, 'got response');
       for (const eventEnvelope of response.events) {
         const { event } = eventEnvelope;
         if (!event) {
@@ -76,7 +72,6 @@ export class PubSubClient {
         const { schemaId, payload } = event;
         let schema = this.schemas.get(schemaId);
         if (!schema) {
-          logger.debug({ schemaId }, 'fetching schema');
           const schemaRequest = {
             schemaId,
           };
@@ -95,7 +90,6 @@ export class PubSubClient {
       }
 
       if (response.pendingNumRequested === 0) {
-        logger.debug('batch finished, requesting more');
         requestQueue.push(fetchRequest);
       }
     }
@@ -119,6 +113,7 @@ export async function createClient({
   instanceUrl: string;
   tenantId: string;
 }) {
+  // this is an ESM module, so it must be imported dynamically
   const { createGrpcTransport } = await import('@bufbuild/connect-node');
   const transport = createGrpcTransport({
     httpVersion: '2',

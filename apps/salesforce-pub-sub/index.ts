@@ -38,7 +38,6 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
 
     const integration = await integrationService.getById(connection.integrationId);
 
-    logger.debug('setting up jsforce connection');
     const conn = new jsforce.Connection({
       oauth2: new jsforce.OAuth2({
         loginUrl,
@@ -50,20 +49,18 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
       maxRequest: 10,
     });
 
-    // make sure we have the latest accessToken
-    const { access_token: accessToken } = await conn.oauth2.refreshToken(refreshToken);
-    const { organization_id: tenantId } = await conn.identity();
-
-    const client = await createClient({
-      accessToken,
-      instanceUrl,
-      tenantId,
-    });
-
     let replayId: Uint8Array | undefined;
 
     const processStream = async (eventType: string, replayPreset = ReplayPreset.LATEST, replayId?: Uint8Array) => {
-      logger.debug({ connectionId, eventType }, 'setting up stream');
+      // make sure we have the latest accessToken
+      const { access_token: accessToken } = await conn.oauth2.refreshToken(refreshToken);
+      const { organization_id: tenantId } = await conn.identity();
+      const client = await createClient({
+        accessToken,
+        instanceUrl,
+        tenantId,
+      });
+
       const stream = client.subscribe({
         topicName: `/data/${eventType}`,
         replayPreset,
@@ -72,7 +69,6 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
       });
       for await (const { event, latestReplayId } of stream) {
         replayId = latestReplayId;
-        logger.debug({ event, eventType }, 'received event');
         const { ChangeEventHeader, ...rest } = event;
         const { changeType, nulledFields, changedFields, diffFields, recordIds, entityName } = ChangeEventHeader;
         // skip gap events for now, since consumers wouldn't be able to do anything with them
@@ -83,7 +79,7 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
           changeType === 'GAP_UNDELETE' ||
           changeType === 'GAP_OVERFLOW'
         ) {
-          logger.debug({ changeType, connectionId, eventType }, 'skipping gap event');
+          logger.info({ changeType, connectionId, eventType }, 'skipping gap event');
           continue;
         }
         for (const recordId of recordIds) {
