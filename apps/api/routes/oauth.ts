@@ -183,7 +183,7 @@ export default function init(app: Router): void {
       }
 
       const basePayload = {
-        category: 'crm' as const,
+        category: integration.category,
         applicationId,
         customerId,
         integrationId: integration.id,
