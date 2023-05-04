@@ -1,5 +1,11 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
-import { ConnectionSafeAny, ConnectionStatus, ConnectionUnsafe, CRMProviderName } from '@supaglue/types';
+import {
+  CategoryOfProviderName,
+  ConnectionSafeAny,
+  ConnectionStatus,
+  ConnectionUnsafe,
+  CRMProviderName,
+} from '@supaglue/types';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 
@@ -20,7 +26,7 @@ export async function fromConnectionModelToConnectionUnsafe<T extends CRMProvide
     applicationId,
     customerId: externalCustomerId,
     integrationId,
-    category: category as 'crm',
+    category: category as CategoryOfProviderName<T>,
     status: status as ConnectionStatus,
     providerName: providerName as T,
     credentials: JSON.parse(await decrypt(credentials)),
