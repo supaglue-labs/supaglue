@@ -44,3 +44,7 @@ yarn workspace mgmt-ui dev
 - `SUPAGLUE_JWT_SECRET`: secret used for JWT in the mgmt-ui.
 - `SUPAGLUE_INTERNAL_TOKEN`: the matching shared token with `.env` in API.
 - `NEXTAUTH_URL`: the URL for the mgmt-ui Nextjs app.
+
+#### Note about Outreach
+
+When developing locally with the Outreach integration, you will have to support https traffic. The easiest way to do this is by using `ngrok` Secure Tunnels and setting  `SUPAGLUE_API_HOST` to your `ngrok`-forwarded URL. Be sure to set the redirect URL to that same URL in your Outreach Oauth settings.
