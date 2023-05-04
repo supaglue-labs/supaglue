@@ -69,12 +69,7 @@ export default function Home() {
   }, [tab]);
 
   const handleChange = async (event: React.SyntheticEvent, newValue: number) => {
-    let tab = configurationHeaderTabs[newValue].value;
-
-    // default to crm
-    if (newValue === 0) {
-      tab += '/crm';
-    }
+    const tab = configurationHeaderTabs[newValue].value;
 
     await router.push(`/applications/${activeApplicationId}/configuration/${tab}`);
   };

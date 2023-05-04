@@ -53,7 +53,7 @@ export default function Navigator(props: DrawerProps) {
         },
         {
           id: 'Configuration',
-          to: `/applications/${applicationId}/configuration/integrations/crm`,
+          to: `/applications/${applicationId}/configuration/integrations`,
           icon: <Tune />,
           active: false,
         },

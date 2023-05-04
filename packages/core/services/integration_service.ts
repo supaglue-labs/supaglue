@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { CRMIntegrationUpdateParams, Integration, IntegrationCreateParams } from '@supaglue/types';
+import type { Integration, IntegrationCreateParams, IntegrationUpdateParams } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { fromIntegrationModel, toIntegrationModel } from '../mappers';
 
@@ -65,7 +65,7 @@ export class IntegrationService {
     return fromIntegrationModel(createdIntegration);
   }
 
-  public async update(id: string, integration: CRMIntegrationUpdateParams): Promise<Integration> {
+  public async update(id: string, integration: IntegrationUpdateParams): Promise<Integration> {
     // TODO: we should only need to do this if the integration's sync config has changed
     const [updatedIntegration] = await this.#prisma.$transaction([
       this.#prisma.integration.update({

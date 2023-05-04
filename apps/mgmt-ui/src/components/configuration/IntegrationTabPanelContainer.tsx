@@ -1,4 +1,5 @@
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
+import OutreachIcon from '@/assets/connector_icons/outreach.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import Box from '@mui/material/Box';
@@ -14,7 +15,7 @@ const ICON_SIZE = 35;
 export type IntegrationCardInfo = {
   icon?: React.ReactNode;
   name: string;
-  category: 'crm';
+  category: 'crm' | 'engagement';
   providerName: string;
   description: string;
 };
@@ -33,6 +34,13 @@ export const integrationCardsInfo: IntegrationCardInfo[] = [
     providerName: 'hubspot',
     category: 'crm',
     description: 'Configure your HubSpot integration.',
+  },
+  {
+    icon: <Image alt="outreach" src={OutreachIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+    name: 'Outreach',
+    providerName: 'outreach',
+    category: 'engagement',
+    description: 'Configure your Outreach integration.',
   },
 ];
 
@@ -64,7 +72,7 @@ export default function IntegrationTabPanelContainer() {
   const [_, category, providerName] = Array.isArray(tab) ? tab : [tab];
   const { integrations: existingIntegrations = [], isLoading } = useIntegrations();
 
-  const isListPage = tab.length === 2;
+  const isListPage = tab.length === 1;
   const isDetailPage = tab.length === 3;
 
   return (
