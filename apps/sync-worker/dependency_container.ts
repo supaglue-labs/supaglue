@@ -2,12 +2,13 @@ import { getCoreDependencyContainer } from '@supaglue/core';
 import { ConnectionService, IntegrationService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
 import {
   AccountService,
-  ContactService,
+  ContactService as CrmContactService,
   EventService,
   LeadService,
   OpportunityService,
   UserService,
 } from '@supaglue/core/services/common_models/crm';
+import { ContactService as EngagementContactService } from '@supaglue/core/services/common_models/engagement';
 import type { PrismaClient } from '@supaglue/db';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';
@@ -23,12 +24,15 @@ type DependencyContainer = {
   integrationService: IntegrationService;
   applicationService: ApplicationService;
   crm: {
-    contactService: ContactService;
+    contactService: CrmContactService;
     accountService: AccountService;
     leadService: LeadService;
     userService: UserService;
     eventService: EventService;
     opportunityService: OpportunityService;
+  };
+  engagement: {
+    contactService: EngagementContactService;
   };
 };
 
@@ -36,7 +40,7 @@ type DependencyContainer = {
 let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
-  const { prisma, connectionService, remoteService, syncHistoryService, integrationService, crm } =
+  const { prisma, connectionService, remoteService, syncHistoryService, integrationService, crm, engagement } =
     getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
@@ -74,6 +78,7 @@ function createDependencyContainer(): DependencyContainer {
     syncHistoryService,
     integrationService,
     crm,
+    engagement,
   };
 }
 

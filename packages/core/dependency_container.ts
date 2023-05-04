@@ -11,12 +11,13 @@ import {
 } from './services';
 import {
   AccountService,
-  ContactService,
+  ContactService as CrmContactService,
   EventService,
   LeadService,
   OpportunityService,
   UserService,
 } from './services/common_models/crm';
+import { ContactService as EngagementContactService } from './services/common_models/engagement';
 
 export type CoreDependencyContainer = {
   pgPool: Pool;
@@ -33,11 +34,16 @@ export type CoreDependencyContainer = {
   // crm
   crm: {
     accountService: AccountService;
-    contactService: ContactService;
+    contactService: CrmContactService;
     leadService: LeadService;
     opportunityService: OpportunityService;
     userService: UserService;
     eventService: EventService;
+  };
+
+  // engagement
+  engagement: {
+    contactService: EngagementContactService;
   };
 };
 
@@ -80,10 +86,13 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const accountService = new AccountService(pgPool, prisma, remoteService);
   const leadService = new LeadService(pgPool, prisma, remoteService);
   const opportunityService = new OpportunityService(pgPool, prisma, remoteService);
-  const contactService = new ContactService(pgPool, prisma, remoteService);
+  const contactService = new CrmContactService(pgPool, prisma, remoteService);
   const syncHistoryService = new SyncHistoryService(prisma, connectionService);
   const userService = new UserService(pgPool, prisma, remoteService);
   const eventService = new EventService(pgPool, prisma, remoteService);
+
+  // engagement
+  const engagementContactService = new EngagementContactService(pgPool, prisma, remoteService);
 
   return {
     pgPool,
@@ -103,6 +112,10 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
       opportunityService,
       userService,
       eventService,
+    },
+    // engagement
+    engagement: {
+      contactService: engagementContactService,
     },
   };
 }
