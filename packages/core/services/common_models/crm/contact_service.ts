@@ -11,12 +11,11 @@ import type {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { v5 as uuidv5 } from 'uuid';
-import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
-import { getRemoteId } from '../../lib/remote_id';
-import { fromContactModel, fromRemoteContactToDbContactParams } from '../../mappers';
-import { CrmRemoteClient } from '../../remotes/crm/base';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
+import { fromContactModel, fromRemoteContactToDbContactParams } from '../../../mappers';
+import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {

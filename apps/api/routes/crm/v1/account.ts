@@ -22,7 +22,9 @@ import { ListParams } from '@supaglue/types';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { accountService } = getDependencyContainer();
+const {
+  crm: { accountService },
+} = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();

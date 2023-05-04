@@ -9,11 +9,11 @@ import {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { v5 as uuidv5 } from 'uuid';
-import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getPaginationParams, getPaginationResult, getRemoteId } from '../../lib';
-import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/crm';
-import { CrmRemoteClient } from '../../remotes/crm/base';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
+import { fromEventModel, fromRemoteEventToDbEventParams } from '../../../mappers';
+import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class EventService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {

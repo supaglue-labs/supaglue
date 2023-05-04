@@ -1,10 +1,10 @@
 import { schemaPrefix } from '@supaglue/db';
 import { GetInternalParams, ListInternalParams, PaginatedResult, User } from '@supaglue/types';
 import { Readable } from 'stream';
-import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
-import { fromRemoteUserToDbUserParams, fromUserModel } from '../../mappers';
-import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
+import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { getPaginationParams, getPaginationResult } from '../../../lib';
+import { fromRemoteUserToDbUserParams, fromUserModel } from '../../../mappers';
 
 export class UserService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {

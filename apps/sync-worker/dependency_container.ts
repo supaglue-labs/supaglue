@@ -20,36 +20,27 @@ type DependencyContainer = {
   prisma: PrismaClient;
   temporalClient: Client;
   connectionService: ConnectionService;
-  contactService: ContactService;
   remoteService: RemoteService;
-  accountService: AccountService;
-  leadService: LeadService;
-  userService: UserService;
-  eventService: EventService;
-  opportunityService: OpportunityService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
   applicationService: ApplicationService;
+  crm: {
+    contactService: ContactService;
+    accountService: AccountService;
+    leadService: LeadService;
+    userService: UserService;
+    eventService: EventService;
+    opportunityService: OpportunityService;
+  };
 };
 
 // global
 let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
-  const {
-    prisma,
-    connectionService,
-    contactService,
-    remoteService,
-    accountService,
-    leadService,
-    userService,
-    eventService,
-    opportunityService,
-    syncHistoryService,
-    integrationService,
-  } = getCoreDependencyContainer();
+  const { prisma, connectionService, remoteService, syncHistoryService, integrationService, crm } =
+    getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
     process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
@@ -81,16 +72,11 @@ function createDependencyContainer(): DependencyContainer {
     temporalClient,
     applicationService,
     connectionService,
-    contactService,
     remoteService,
-    accountService,
-    leadService,
-    userService,
-    eventService,
-    opportunityService,
     syncService,
     syncHistoryService,
     integrationService,
+    crm,
   };
 }
 

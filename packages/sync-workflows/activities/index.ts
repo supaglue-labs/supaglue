@@ -21,31 +21,28 @@ import { createSetForceSyncFlag } from './set_force_sync_flag';
 import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
-  accountService,
   connectionService,
-  contactService,
   remoteService,
-  opportunityService,
-  leadService,
-  userService,
-  eventService,
   syncService,
   syncHistoryService,
   integrationService,
   applicationService,
+  crm: { accountService, contactService, opportunityService, leadService, userService, eventService },
 }: {
-  accountService: AccountService;
   connectionService: ConnectionService;
-  contactService: ContactService;
   remoteService: RemoteService;
-  opportunityService: OpportunityService;
-  leadService: LeadService;
-  userService: UserService;
-  eventService: EventService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
   applicationService: ApplicationService;
+  crm: {
+    contactService: ContactService;
+    accountService: AccountService;
+    opportunityService: OpportunityService;
+    leadService: LeadService;
+    userService: UserService;
+    eventService: EventService;
+  };
 }) => {
   return {
     getSync: createGetSync(syncService),

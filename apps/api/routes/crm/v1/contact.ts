@@ -24,7 +24,9 @@ import { ListParams } from '@supaglue/types';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { contactService } = getDependencyContainer();
+const {
+  crm: { contactService },
+} = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();

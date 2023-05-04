@@ -26,15 +26,17 @@ export type CoreDependencyContainer = {
   integrationService: IntegrationService;
   customerService: CustomerService;
   remoteService: RemoteService;
+  syncHistoryService: SyncHistoryService;
 
   // crm
-  accountService: AccountService;
-  contactService: ContactService;
-  leadService: LeadService;
-  opportunityService: OpportunityService;
-  userService: UserService;
-  eventService: EventService;
-  syncHistoryService: SyncHistoryService;
+  crm: {
+    accountService: AccountService;
+    contactService: ContactService;
+    leadService: LeadService;
+    opportunityService: OpportunityService;
+    userService: UserService;
+    eventService: EventService;
+  };
 };
 
 // global
@@ -90,14 +92,16 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     customerService,
     integrationService,
     remoteService,
-    // crm
-    contactService,
-    accountService,
-    leadService,
-    opportunityService,
-    userService,
-    eventService,
     syncHistoryService,
+    // crm
+    crm: {
+      contactService,
+      accountService,
+      leadService,
+      opportunityService,
+      userService,
+      eventService,
+    },
   };
 }
 
