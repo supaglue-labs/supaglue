@@ -11,5 +11,5 @@ export default function init(app: Router): void {
 
   v1(managementRouter);
 
-  app.use('/management', managementRouter);
+  app.use('/engagement', managementRouter);
 }
