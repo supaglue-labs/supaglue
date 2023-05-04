@@ -6,7 +6,6 @@ import {
 } from '@supaglue/types/engagement';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 
-<<<<<<< HEAD
 type Credentials = {
   accessToken: string;
   refreshToken: string;
@@ -24,16 +23,6 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return {
       Authorization: `Bearer ${this.#credentials.accessToken}`,
     };
-=======
-class OutreachClient extends AbstractEngagementRemoteClient {
-  public constructor() {
-    // TODO: Support baseUrl
-    super('missing-base-url');
-  }
-
-  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
-    throw new Error('Not implemented');
->>>>>>> 2d64d5f5cf95da1c98c8fc072d71886bb1a03946
   }
 
   public override createObject<T extends EngagementCommonModelType>(
@@ -49,11 +38,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
 }
 
 export function newClient(connection: ConnectionUnsafe<'outreach'>, integration: Integration): OutreachClient {
-<<<<<<< HEAD
   return new OutreachClient(connection.credentials);
-=======
-  return new OutreachClient();
->>>>>>> 2d64d5f5cf95da1c98c8fc072d71886bb1a03946
 }
 
 export const authConfig: ConnectorAuthConfig = {
