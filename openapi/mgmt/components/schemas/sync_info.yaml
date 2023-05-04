@@ -28,7 +28,7 @@ properties:
     example: hubspot
   category:
     type: string
-    enum: [crm]
+    enum: [crm, engagement]
   connection_id:
     type: string
     example: 3217ea51-11c8-43c9-9547-6f197e02e5e4

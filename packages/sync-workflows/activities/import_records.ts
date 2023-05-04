@@ -9,7 +9,7 @@ import {
   UserService,
 } from '@supaglue/core/services';
 import { CommonModel } from '@supaglue/types';
-import { Context } from '@temporalio/activity';
+import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 
@@ -45,6 +45,12 @@ export function createImportRecords(
     updatedAfterMs,
   }: ImportRecordsArgs): Promise<ImportRecordsResult> {
     const connection = await connectionService.getSafeById(connectionId);
+
+    if (connection.category !== 'crm') {
+      // TODO: support non-CRM syncs
+      throw ApplicationFailure.nonRetryable('Only CRM connections are supported');
+    }
+
     const client = await remoteService.getCrmRemoteClient(connectionId);
 
     let result = {
@@ -56,9 +62,10 @@ export function createImportRecords(
 
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
 
+    const readable = await client.listObjects(commonModel, updatedAfter);
+
     switch (commonModel) {
       case 'account': {
-        const readable = await client.listAccounts(updatedAfter);
         result = await accountService.upsertRemoteAccounts(
           connection.id,
           connection.customerId,
@@ -68,7 +75,6 @@ export function createImportRecords(
         break;
       }
       case 'contact': {
-        const readable = await client.listContacts(updatedAfter);
         result = await contactService.upsertRemoteContacts(
           connection.id,
           connection.customerId,
@@ -78,7 +84,6 @@ export function createImportRecords(
         break;
       }
       case 'opportunity': {
-        const readable = await client.listOpportunities(updatedAfter);
         result = await opportunityService.upsertRemoteOpportunities(
           connection.id,
           connection.customerId,
@@ -88,7 +93,6 @@ export function createImportRecords(
         break;
       }
       case 'lead': {
-        const readable = await client.listLeads(updatedAfter);
         result = await leadService.upsertRemoteLeads(
           connection.id,
           connection.customerId,
@@ -98,7 +102,6 @@ export function createImportRecords(
         break;
       }
       case 'user': {
-        const readable = await client.listUsers(updatedAfter);
         result = await userService.upsertRemoteUsers(
           connection.id,
           connection.customerId,
@@ -108,7 +111,6 @@ export function createImportRecords(
         break;
       }
       case 'event': {
-        const readable = await client.listEvents(updatedAfter);
         result = await eventService.upsertRemoteEvents(
           connection.id,
           connection.customerId,

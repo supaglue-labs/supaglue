@@ -1,5 +1,7 @@
+import { CRMProviderCategory, CRMProviderName } from './crm';
+import { EngagementProviderCategory, EngagementProviderName } from './engagement';
+
 export * from './application';
-export * from './base';
 export * from './common';
 export * from './connection';
 export * from './crm';
@@ -12,3 +14,8 @@ export * from './sync_config';
 export * from './sync_history';
 export * from './sync_info';
 export * from './webhook';
+
+export type ProviderName = CRMProviderName | EngagementProviderName;
+export type CategoryOfProviderName<T extends ProviderName> = T extends CRMProviderName
+  ? CRMProviderCategory
+  : EngagementProviderCategory;

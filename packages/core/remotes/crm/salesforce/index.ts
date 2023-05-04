@@ -6,7 +6,9 @@ import {
   AccountCreateParams,
   CommonModel,
   ConnectionUnsafe,
-  Integration,
+  CRMCommonModelType,
+  CRMCommonModelTypeMap,
+  CRMIntegration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -118,6 +120,72 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       refreshToken,
       maxRequest: 10,
     });
+  }
+
+  public override async listObjects(
+    commonModelType: CRMCommonModelType,
+    updatedAfter?: Date | undefined
+  ): Promise<Readable> {
+    switch (commonModelType) {
+      case 'account':
+        return this.listAccounts(updatedAfter);
+      case 'contact':
+        return this.listContacts(updatedAfter);
+      case 'lead':
+        return this.listLeads(updatedAfter);
+      case 'opportunity':
+        return this.listOpportunities(updatedAfter);
+      case 'user':
+        return this.listUsers(updatedAfter);
+      case 'event':
+        return this.listEvents(updatedAfter);
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
+  }
+
+  public override async createObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    params: CRMCommonModelTypeMap<T>['createParams']
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    switch (commonModelType) {
+      case 'account':
+        return this.createAccount(params);
+      case 'contact':
+        return this.createContact(params);
+      case 'lead':
+        return this.createLead(params);
+      case 'opportunity':
+        return this.createOpportunity(params);
+      case 'user':
+        throw new Error('Cannot create users in Salesforce');
+      case 'event':
+        throw new Error('Cannot create events in Salesforce');
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
+  }
+
+  public override async updateObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    params: CRMCommonModelTypeMap<T>['updateParams']
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    switch (commonModelType) {
+      case 'account':
+        return this.updateAccount(params);
+      case 'contact':
+        return this.updateContact(params);
+      case 'lead':
+        return this.updateLead(params);
+      case 'opportunity':
+        return this.updateOpportunity(params);
+      case 'user':
+        throw new Error('Cannot update users in Salesforce');
+      case 'event':
+        throw new Error('Cannot update events in Salesforce');
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
@@ -475,7 +543,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'salesforce'>, integration: Integration): SalesforceClient {
+export function newClient(connection: ConnectionUnsafe<'salesforce'>, integration: CRMIntegration): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,

@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { CRMIntegrationCreateParams, CRMIntegrationUpdateParams, Integration } from '@supaglue/types';
+import type { CRMIntegrationUpdateParams, Integration, IntegrationCreateParams } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { fromIntegrationModel, toIntegrationModel } from '../mappers';
 
@@ -58,7 +58,7 @@ export class IntegrationService {
     return Promise.all(integrations.map(fromIntegrationModel));
   }
 
-  public async create(integration: CRMIntegrationCreateParams): Promise<Integration> {
+  public async create(integration: IntegrationCreateParams): Promise<Integration> {
     const createdIntegration = await this.#prisma.integration.create({
       data: await toIntegrationModel(integration),
     });

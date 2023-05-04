@@ -1,4 +1,4 @@
-import { Application, CRMIntegrationCreateParams, Customer, Integration, WebhookConfig } from '@supaglue/types';
+import { Application, Customer, Integration, IntegrationCreateParams, WebhookConfig } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
 // TODO: use Supaglue TS client
@@ -55,7 +55,7 @@ export async function deleteWebhook(applicationId: string): Promise<void> {
 
 export async function createRemoteIntegration(
   applicationId: string,
-  data: CRMIntegrationCreateParams
+  data: IntegrationCreateParams
 ): Promise<Integration> {
   const result = await fetch(`/api/internal/integrations/create`, {
     method: 'POST',

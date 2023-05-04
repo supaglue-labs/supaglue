@@ -63,6 +63,10 @@ components:
       $ref: ./components/schemas/objects/integration_config.yaml
     provider_name:
       $ref: ./components/schemas/objects/provider_name.yaml
+    provider_name_crm:
+      $ref: ./components/schemas/objects/provider_name_crm.yaml
+    provider_name_engagement:
+      $ref: ./components/schemas/objects/provider_name_engagement.yaml
     create_update_customer:
       $ref: ./components/schemas/create_update_customer.yaml
     create_update_integration:

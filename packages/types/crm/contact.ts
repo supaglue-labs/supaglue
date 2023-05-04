@@ -1,16 +1,7 @@
-import type {
-  Address,
-  BaseCrmModel,
-  BaseCrmModelNonRemoteParams,
-  BaseCrmModelRemoteOnlyParams,
-  CustomFields,
-  EmailAddress,
-  LifecycleStage,
-  PhoneNumber,
-  User,
-} from '..';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '..';
 import { Filter } from '../filter';
 import type { Account } from './account';
+import { Address, EmailAddress, LifecycleStage, PhoneNumber } from './common';
 
 export type BaseContact = BaseCrmModel & {
   firstName: string | null;
@@ -67,4 +58,10 @@ export type RemoteContactUpdateParams = RemoteContactCreateParams & {
 
 export type ContactFilters = {
   emailAddress?: Filter;
+};
+
+export type RemoteContactTypes = {
+  object: RemoteContact;
+  createParams: RemoteContactCreateParams;
+  updateParams: RemoteContactUpdateParams;
 };

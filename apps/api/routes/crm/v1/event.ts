@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
-import { toSnakecasedKeysEvent } from '@supaglue/core/mappers/event';
+import { toSnakecasedKeysEvent } from '@supaglue/core/mappers';
 import { toGetInternalParams, toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateEventPathParams,

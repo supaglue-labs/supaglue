@@ -1,17 +1,35 @@
-type: object
-properties:
-  category:
-    $ref: ./objects/category.yaml
-  auth_type:
-    type: string
-    enum:
-      - oauth2
-  provider_name:
-    $ref: ./objects/provider_name.yaml
-  config:
-    $ref: ./objects/integration_config.yaml
-required:
-  - category
-  - auth_type
-  - provider_name
-  - config
+allOf:
+  - type: object
+    properties:
+      auth_type:
+        type: string
+        enum:
+          - oauth2
+      config:
+        $ref: ./objects/integration_config.yaml
+    required:
+      - auth_type
+      - config
+  - oneOf:
+    - type: object
+      properties:
+        category:
+          type: string
+          enum:
+            - crm
+        provider_name:
+          $ref: ./objects/provider_name_crm.yaml
+      required:
+        - category
+        - provider_name
+    - type: object
+      properties:
+        category:
+          type: string
+          enum:
+            - engagement
+        provider_name:
+          $ref: ./objects/provider_name_engagement.yaml
+      required:
+        - category
+        - provider_name

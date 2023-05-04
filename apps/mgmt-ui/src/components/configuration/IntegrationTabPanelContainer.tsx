@@ -2,7 +2,7 @@ import HubspotIcon from '@/assets/connector_icons/hubspot.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import Box from '@mui/material/Box';
-import { CRMProviderName, IntegrationCategory } from '@supaglue/types';
+import { IntegrationCategory, ProviderName } from '@supaglue/types';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -80,7 +80,7 @@ export default function IntegrationTabPanelContainer() {
         <IntegrationDetailsPanel
           isLoading={isLoading}
           category={category as IntegrationCategory}
-          providerName={providerName as CRMProviderName}
+          providerName={providerName as ProviderName}
         />
       )}
     </TabPanel>
