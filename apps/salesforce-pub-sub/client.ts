@@ -1,0 +1,137 @@
+import { createPromiseClient, PromiseClient } from '@bufbuild/connect';
+// @ts-expect-error this is an ESM module, but we are only using the types
+import type { PartialMessage } from '@bufbuild/protobuf';
+import { logger } from '@supaglue/core/lib/logger';
+import { LRUCache } from 'lru-cache';
+import { PubSub } from './gen/pubsub_api_connect';
+import { FetchRequest, ReplayPreset } from './gen/pubsub_api_pb';
+import { parseEvent } from './parser';
+
+// Salesforce's keepalive mechanic delivers an empty event every 270 seconds,
+// so if we haven't recieved anything by 5 minutes something is wrong.
+// We should be good with timing out at that point
+// Ref: https://developer.salesforce.com/docs/platform/pub-sub-api/references/methods/subscribe-rpc.html#subscribe-keepalive-behavior
+const SUBSCRIBE_TIMEOUT_MS = 300000;
+
+type FetchRequestWithRequiredFields = PartialMessage<FetchRequest> & {
+  topicName: string;
+  replayPreset: ReplayPreset;
+  numRequested: number;
+};
+
+export class PubSubClient {
+  private grpcClient: PromiseClient<typeof PubSub>;
+  private accessToken: string;
+  private instanceUrl: string;
+  private tenantId: string;
+  private schemas: LRUCache<string, string> = new LRUCache({
+    max: 10000,
+    ttl: 1000 * 60 * 60 * 24, // 1 day
+  });
+
+  constructor({
+    grpcClient,
+    accessToken,
+    instanceUrl,
+    tenantId,
+  }: {
+    grpcClient: PromiseClient<typeof PubSub>;
+    accessToken: string;
+    instanceUrl: string;
+    tenantId: string;
+  }) {
+    this.grpcClient = grpcClient;
+    this.accessToken = accessToken;
+    this.instanceUrl = instanceUrl;
+    this.tenantId = tenantId;
+  }
+
+  async *subscribe(fetchRequest: FetchRequestWithRequiredFields) {
+    const requestQueue = [fetchRequest];
+
+    async function* requestStream() {
+      for (;;) {
+        const request = requestQueue.shift();
+        if (request) {
+          logger.debug(request, 'sending request');
+          yield request;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
+
+    logger.debug('starting subscription');
+    const stream = this.grpcClient.subscribe(requestStream(), {
+      headers: this.getHeaders(),
+      timeoutMs: SUBSCRIBE_TIMEOUT_MS,
+    });
+
+    for await (const response of stream) {
+      logger.debug(response, 'got response');
+      for (const eventEnvelope of response.events) {
+        const { event } = eventEnvelope;
+        if (!event) {
+          continue;
+        }
+        const { schemaId, payload } = event;
+        let schema = this.schemas.get(schemaId);
+        if (!schema) {
+          logger.debug({ schemaId }, 'fetching schema');
+          const schemaRequest = {
+            schemaId,
+          };
+          const schemaResponse = await this.grpcClient.getSchema(schemaRequest, {
+            headers: this.getHeaders(),
+          });
+          const { schemaJson } = schemaResponse;
+          this.schemas.set(schemaId, schemaJson);
+          schema = schemaJson;
+        }
+
+        yield {
+          event: parseEvent(schema, Buffer.from(payload)),
+          latestReplayId: response.latestReplayId,
+        };
+      }
+
+      if (response.pendingNumRequested === 0) {
+        logger.debug('batch finished, requesting more');
+        requestQueue.push(fetchRequest);
+      }
+    }
+  }
+
+  private getHeaders() {
+    return {
+      accesstoken: this.accessToken,
+      instanceurl: this.instanceUrl,
+      tenantid: this.tenantId,
+    };
+  }
+}
+
+export async function createClient({
+  accessToken,
+  instanceUrl,
+  tenantId,
+}: {
+  accessToken: string;
+  instanceUrl: string;
+  tenantId: string;
+}) {
+  const { createGrpcTransport } = await import('@bufbuild/connect-node');
+  const transport = createGrpcTransport({
+    httpVersion: '2',
+    // TODO: support the european instance
+    baseUrl: 'https://api.pubsub.salesforce.com:443',
+    keepSessionAlive: true,
+  });
+  const internalClient = createPromiseClient(PubSub, transport);
+
+  return new PubSubClient({
+    grpcClient: internalClient,
+    accessToken,
+    instanceUrl,
+    tenantId,
+  });
+}

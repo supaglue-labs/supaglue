@@ -43,7 +43,7 @@ WHERE last_modified_at IS NULL;
       },
     });
     const unsafeSalesforceConnections = await Promise.all(
-      salesforceConnectionModels.map(fromConnectionModelToConnectionUnsafe)
+      salesforceConnectionModels.map(fromConnectionModelToConnectionUnsafe<'salesforce'>)
     );
     let updated = 0;
     unsafeSalesforceConnections.map(async ({ id, remoteId, providerName, credentials }) => {

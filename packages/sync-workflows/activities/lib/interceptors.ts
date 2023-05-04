@@ -42,7 +42,7 @@ export class ActivityInboundLogInterceptor implements ActivityInboundCallsInterc
       if (error) {
         this.logger.error('activity failed', { error, durationMs });
       } else {
-        this.logger.debug('activity completed', { durationMs });
+        this.logger.info('activity completed', { durationMs });
       }
     }
   }

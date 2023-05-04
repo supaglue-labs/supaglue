@@ -27,28 +27,42 @@
     "mgmt-ui#build": {
       "outputs": [".next/**", "!.next/cache/**"]
     },
-    "lint-staged": {},
+    "lint-staged": {
+      "outputMode": "errors-only"
+    },
     "lint": {
-      "inputs": ["**/*.{js,ts,tsx}"]
+      "inputs": ["**/*.{js,ts,tsx}"],
+      "outputMode": "errors-only"
     },
     "test": {
       "dependsOn": ["build"]
     },
     "test:watch": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
-    "generate": {},
+    "generate": {
+      "outputMode": "errors-only"
+    },
     "//#bundle-openapi": {
       "inputs": ["openapi/**/*.yaml"],
-      "outputs": ["openapi/**/openapi.bundle.json"]
+      "outputs": ["openapi/**/openapi.bundle.json"],
+      "outputMode": "errors-only"
     },
     "@supaglue/schemas#generate": {
       "dependsOn": ["//#bundle-openapi"],
       "inputs": ["../../openapi/**/*.yaml"],
-      "outputs": ["gen/**"]
+      "outputs": ["gen/**"],
+      "outputMode": "errors-only"
     },
     "@supaglue/db#generate": {
-      "inputs": ["prisma/schema.prisma"]
+      "inputs": ["prisma/schema.prisma"],
+      "outputMode": "errors-only"
+    },
+    "salesforce-pub-sub#generate": {
+      "outputs": ["gen"],
+      "outputMode": "errors-only",
+      "cache": false // cache is disabled because turbo can't detect changes in the source repo
     }
   },
   "globalDependencies": [

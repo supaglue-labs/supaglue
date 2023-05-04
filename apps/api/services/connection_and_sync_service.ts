@@ -96,7 +96,7 @@ export class ConnectionAndSyncService {
       },
     });
 
-    return fromConnectionModelToConnectionUnsafe(connection);
+    return fromConnectionModelToConnectionUnsafe<any>(connection);
   }
 
   public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
@@ -145,7 +145,7 @@ export class ConnectionAndSyncService {
         }),
       ]);
 
-      const connection = await fromConnectionModelToConnectionUnsafe(connectionModel);
+      const connection = await fromConnectionModelToConnectionUnsafe<any>(connectionModel);
 
       // best-effort trigger schedule to process sync changes. even if this fails, the
       // schedule will trigger the workflow on the next run
