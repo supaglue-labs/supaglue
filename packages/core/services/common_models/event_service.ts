@@ -12,6 +12,7 @@ import { v5 as uuidv5 } from 'uuid';
 import { NotFoundError, UnauthorizedError } from '../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../lib';
 import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/crm';
+import { CrmRemoteClient } from '../../remotes/crm/base';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
 
 export class EventService extends CommonModelBaseService {
@@ -79,7 +80,7 @@ export class EventService extends CommonModelBaseService {
     if (createParams.ownerId) {
       remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
-    const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
+    const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteEvent = await remoteClient.createObject('event', remoteCreateParams);
     const contactModel = await this.prisma.crmEvent.create({
       data: {
@@ -124,7 +125,7 @@ export class EventService extends CommonModelBaseService {
     if (updateParams.ownerId) {
       remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
-    const remoteClient = await this.remoteService.getCrmRemoteClient(connectionId);
+    const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteEvent = await remoteClient.updateObject('event', {
       ...remoteUpdateParams,
       remoteId: foundEventModel.remoteId,

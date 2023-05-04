@@ -1,3 +1,4 @@
+import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import {
   AccountService,
   ConnectionService,
@@ -51,7 +52,7 @@ export function createImportRecords(
       throw ApplicationFailure.nonRetryable('Only CRM connections are supported');
     }
 
-    const client = await remoteService.getCrmRemoteClient(connectionId);
+    const client = (await remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
 
     let result = {
       maxLastModifiedAt: null as Date | null,
