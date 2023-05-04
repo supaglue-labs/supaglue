@@ -2,6 +2,7 @@ import ActiveCampaignIcon from '@/assets/connector_icons/activecampaign.png';
 import CopperIcon from '@/assets/connector_icons/copper.png';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
 import MicrosoftDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';
+import OutreachIcon from '@/assets/connector_icons/outreach.png';
 import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
 import ZendeskSellIcon from '@/assets/connector_icons/zendesk_sell.png';
@@ -19,6 +20,7 @@ export default function providerToIcon(providerName: string, size = 25): ReactNo
     ),
     pipedrive: <Image key={providerName} alt={providerName} src={PipedriveIcon} width={size} height={size} />,
     zendesk_sell: <Image key={providerName} alt={providerName} src={ZendeskSellIcon} width={size} height={size} />,
+    outreach: <Image key={providerName} alt={providerName} src={OutreachIcon} width={size} height={size} />,
   };
 
   return providerToIconMap[providerName];
