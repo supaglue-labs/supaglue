@@ -1,7 +1,7 @@
 import { CrmLead } from '@supaglue/db';
 import { GetInternalParams, Lead, RemoteLead } from '@supaglue/types';
 import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
-import { v4 as uuidv4 } from 'uuid';
+import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAccount, toSnakecasedKeysContact, toSnakecasedKeysUser } from '.';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
@@ -91,7 +91,7 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
       : undefined;
 
   return {
-    id: uuidv4(),
+    id: uuidv5(remoteLead.remoteId, connectionId),
     remote_id: remoteLead.remoteId,
     customer_id: customerId,
     connection_id: connectionId,
@@ -111,8 +111,15 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     last_modified_at: lastModifiedAt?.toISOString(),
     converted_date: remoteLead.convertedDate?.toISOString(),
     _converted_remote_account_id: remoteLead.convertedRemoteAccountId,
+    converted_account_id: remoteLead.convertedRemoteAccountId
+      ? uuidv5(remoteLead.convertedRemoteAccountId, connectionId)
+      : null,
     _converted_remote_contact_id: remoteLead.convertedRemoteContactId,
+    converted_contact_id: remoteLead.convertedRemoteContactId
+      ? uuidv5(remoteLead.convertedRemoteContactId, connectionId)
+      : null,
     _remote_owner_id: remoteLead.remoteOwnerId,
+    owner_id: remoteLead.remoteOwnerId ? uuidv5(remoteLead.remoteOwnerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteLead.rawData,
   };

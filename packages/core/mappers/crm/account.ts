@@ -1,7 +1,7 @@
 import { CrmAccount } from '@supaglue/db';
 import { Account, GetInternalParams, RemoteAccount } from '@supaglue/types';
 import { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
-import { v4 as uuidv4 } from 'uuid';
+import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 import { toSnakecasedKeysUser } from './user';
@@ -89,7 +89,7 @@ export const fromRemoteAccountToDbAccountParams = (
       : undefined;
 
   return {
-    id: uuidv4(),
+    id: uuidv5(remoteAccount.remoteId, connectionId),
     name: remoteAccount.name,
     description: remoteAccount.description,
     industry: remoteAccount.industry,
@@ -109,6 +109,7 @@ export const fromRemoteAccountToDbAccountParams = (
     customer_id: customerId,
     connection_id: connectionId,
     _remote_owner_id: remoteAccount.remoteOwnerId,
+    owner_id: remoteAccount.remoteOwnerId ? uuidv5(remoteAccount.remoteOwnerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteAccount.rawData,
   };

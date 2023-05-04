@@ -1,6 +1,6 @@
 import { CrmOpportunity } from '@supaglue/db';
 import { GetInternalParams, Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
-import { v4 as uuidv4 } from 'uuid';
+import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAccount } from './account';
 import { toSnakecasedKeysUser } from './user';
 
@@ -88,7 +88,7 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
       : undefined;
 
   return {
-    id: uuidv4(),
+    id: uuidv5(remoteOpportunity.remoteId, connectionId),
     remote_id: remoteOpportunity.remoteId,
     customer_id: customerId,
     connection_id: connectionId,
@@ -107,7 +107,9 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     detected_or_remote_deleted_at: remoteOpportunity.detectedOrRemoteDeletedAt?.toISOString(),
     last_modified_at: lastModifiedAt?.toISOString(),
     _remote_account_id: remoteOpportunity.remoteAccountId,
+    account_id: remoteOpportunity.remoteAccountId ? uuidv5(remoteOpportunity.remoteAccountId, connectionId) : null,
     _remote_owner_id: remoteOpportunity.remoteOwnerId,
+    owner_id: remoteOpportunity.remoteOwnerId ? uuidv5(remoteOpportunity.remoteOwnerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteOpportunity.rawData,
   };

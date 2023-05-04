@@ -1,4 +1,4 @@
-import { COMMON_MODEL_DB_TABLES, schemaPrefix } from '@supaglue/db';
+import { schemaPrefix } from '@supaglue/db';
 import type {
   Account,
   AccountCreateParams,
@@ -10,8 +10,8 @@ import type {
   SearchInternalParams,
 } from '@supaglue/types';
 import { Readable } from 'stream';
+import { v5 as uuidv5 } from 'uuid';
 import { NotFoundError, UnauthorizedError } from '../../errors';
-import { logger } from '../../lib';
 import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
 import { getRemoteId } from '../../lib/remote_id';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
@@ -98,6 +98,7 @@ export class AccountService extends CommonModelBaseService {
     const remoteAccount = await remoteClient.createObject('account', remoteCreateParams);
     const accountModel = await this.prisma.crmAccount.create({
       data: {
+        id: uuidv5(remoteAccount.remoteId, connectionId),
         customerId,
         connectionId,
         lastModifiedAt: getLastModifiedAt(remoteAccount),
@@ -172,6 +173,7 @@ export class AccountService extends CommonModelBaseService {
       'customer_id',
       'connection_id',
       '_remote_owner_id',
+      'owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
       'raw_data',
     ];
@@ -186,42 +188,5 @@ export class AccountService extends CommonModelBaseService {
       fromRemoteAccountToDbAccountParams,
       onUpsertBatchCompletion
     );
-  }
-
-  public async updateDanglingOwners(connectionId: string, startingLastModifiedAt: Date): Promise<void> {
-    const accountsTable = COMMON_MODEL_DB_TABLES['accounts'];
-    const usersTable = COMMON_MODEL_DB_TABLES['users'];
-
-    await this.prisma.crmAccount.updateMany({
-      where: {
-        // Only update accounts for the given connection and that have been updated since the last sync (to be more efficient).
-        connectionId,
-        lastModifiedAt: {
-          gt: startingLastModifiedAt,
-        },
-        remoteOwnerId: null,
-        ownerId: {
-          not: null,
-        },
-      },
-      data: {
-        ownerId: null,
-      },
-    });
-
-    logger.info('AccountService.updateDanglingOwners: halfway');
-
-    await this.prisma.$executeRawUnsafe(`
-      UPDATE ${accountsTable} c
-      SET owner_id = u.id
-      FROM ${usersTable} u
-      WHERE
-        c.connection_id = '${connectionId}'
-        AND c.last_modified_at > '${startingLastModifiedAt.toISOString()}'
-        AND c.connection_id = u.connection_id
-        AND c.owner_id IS NULL
-        AND c._remote_owner_id IS NOT NULL
-        AND c._remote_owner_id = u.remote_id
-      `);
   }
 }
