@@ -166,7 +166,7 @@ async function doFullThenIncrementalSync({
           }
         : {
             contact: importRecordsResultList.contact.maxLastModifiedAtMs,
-            sequence: importRecordsResultList.sequence.maxLastModifiedAtMs,
+            // sequence: importRecordsResultList.sequence.maxLastModifiedAtMs,
           };
 
     await updateSyncState({
@@ -217,7 +217,7 @@ async function doFullThenIncrementalSync({
       const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as EngagementNumRecordsSyncedMap;
       return {
         contact: maxLastModifiedAtMsMap['contact'] ?? 0,
-        sequence: maxLastModifiedAtMsMap['sequence'] ?? 0,
+        // sequence: maxLastModifiedAtMsMap['sequence'] ?? 0,
       };
     }
 
@@ -341,7 +341,7 @@ const getDefaultMaxLastModifiedAtMsMap = (category: IntegrationCategory): NumRec
   }
   return {
     contact: 0,
-    sequence: 0,
+    // sequence: 0,
   };
 };
 
