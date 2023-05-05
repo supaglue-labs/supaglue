@@ -1,5 +1,6 @@
 import { ConnectionUnsafe, Integration } from '@supaglue/types';
 import { EngagementCommonModelType, EngagementCommonModelTypeMap } from '@supaglue/types/engagement';
+import axios from 'axios';
 import { Readable } from 'stream';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 
@@ -11,19 +12,39 @@ type Credentials = {
 
 class OutreachClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
+  readonly #headers: Record<string, string>;
   public constructor(credentials: Credentials) {
     super('https://api.outreach.io');
     this.#credentials = credentials;
+    this.#headers = { Authorization: `Bearer ${this.#credentials.accessToken}` };
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
-    return {
-      Authorization: `Bearer ${this.#credentials.accessToken}`,
-    };
+    return this.#headers;
   }
 
-  public override listObjects(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable> {
-    throw new Error('Not implemented');
+  public override async listObjects(
+    commonModelType: EngagementCommonModelType,
+    updatedAfter?: Date
+  ): Promise<Readable> {
+    return await this.listContacts(updatedAfter);
+  }
+
+  private async listContacts(updatedAfter?: Date): Promise<Readable> {
+    const response = await axios.request({
+      method: 'GET',
+      baseURL: 'https://api.outreach.io', // TODO: Figure out why #baseUrl doesn't work
+      url: '/api/v2/prospects',
+      params: updatedAfter
+        ? {
+            'filter[updatedAt]': `${updatedAfter.toISOString()}..inf`,
+          }
+        : undefined,
+      headers: this.#headers,
+    });
+    // eslint-disable-next-line no-console
+    console.log(`response: `, response);
+    return Readable.from([]);
   }
 
   public override createObject<T extends EngagementCommonModelType>(

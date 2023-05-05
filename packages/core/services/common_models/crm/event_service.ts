@@ -145,10 +145,10 @@ export class EventService extends CommonModelBaseService {
     return fromEventModel(contactModel);
   }
 
-  public async upsertRemoteEvents(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteEventsReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.crm.events;
@@ -185,7 +185,7 @@ export class EventService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteEventsReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

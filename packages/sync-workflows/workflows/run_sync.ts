@@ -1,8 +1,15 @@
-import { CommonModel } from '@supaglue/types/common';
-import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
-import { FullThenIncrementalSync, ReverseThenForwardSync } from '@supaglue/types/sync';
+import { CommonModel, IntegrationCategory } from '@supaglue/types/common';
+import { CRMCommonModelType, CRM_COMMON_MODELS } from '@supaglue/types/crm';
+import {
+  CRMNumRecordsSyncedMap,
+  EngagementNumRecordsSyncedMap,
+  FullThenIncrementalSync,
+  NumRecordsSyncedMap,
+  ReverseThenForwardSync,
+} from '@supaglue/types/sync';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
+import { EngagementCommonModelType, ENGAGEMENT_COMMON_MODELS } from '@supaglue/types/engagement';
 import { ImportRecordsResult } from '../activities/import_records';
 import type { createActivities } from '../activities/index';
 
@@ -37,19 +44,20 @@ export const getRunSyncWorkflowId = (syncId: string): string => `${RUN_SYNC_PREF
 export type RunSyncArgs = {
   syncId: string;
   connectionId: string;
+  category: IntegrationCategory;
   context: Record<string, unknown>;
 };
 
-export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<void> {
+export async function runSync({ syncId, connectionId, category }: RunSyncArgs): Promise<void> {
   const historyIdsMap = Object.fromEntries(
-    CRM_COMMON_MODELS.map((commonModel) => {
+    getCommonModels(category).map((commonModel) => {
       const entry: [CommonModel, string] = [commonModel, uuid4()];
       return entry;
     })
   ) as Record<CommonModel, string>;
 
   await Promise.all(
-    CRM_COMMON_MODELS.map(async (commonModel) => {
+    getCommonModels(category).map(async (commonModel) => {
       await logSyncStart({ syncId, historyId: historyIdsMap[commonModel], commonModel });
     })
   );
@@ -57,15 +65,15 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
   // Read sync from DB
   const { sync } = await getSync({ syncId });
 
-  let numRecordsSyncedMap: Record<CommonModel, number> | undefined;
+  let numRecordsSyncedMap: NumRecordsSyncedMap | undefined;
   try {
     // Figure out what to do based on sync strategy
     switch (sync.type) {
       case 'full then incremental':
-        numRecordsSyncedMap = await doFullThenIncrementalSync({ sync });
+        numRecordsSyncedMap = await doFullThenIncrementalSync({ sync, category });
         break;
       case 'reverse then forward':
-        numRecordsSyncedMap = await doReverseThenForwardSync({ sync });
+        numRecordsSyncedMap = await doReverseThenForwardSync({ sync, category });
         break;
       default:
         throw new Error('Sync type not supported.');
@@ -119,22 +127,24 @@ export async function runSync({ syncId, connectionId }: RunSyncArgs): Promise<vo
 
 async function doFullThenIncrementalSync({
   sync,
+  category,
 }: {
   sync: FullThenIncrementalSync;
-}): Promise<Record<CommonModel, number>> {
-  async function doFullStage(): Promise<Record<CommonModel, number>> {
+  category: IntegrationCategory;
+}): Promise<NumRecordsSyncedMap> {
+  async function doFullStage(): Promise<NumRecordsSyncedMap> {
     await updateSyncState({
       syncId: sync.id,
       state: {
         phase: 'full',
         status: 'in progress',
-        maxLastModifiedAtMsMap: defaultMaxLastModifiedAtMsMap,
+        maxLastModifiedAtMsMap: getDefaultMaxLastModifiedAtMsMap(category),
       },
     });
 
     const importRecordsResultList = Object.fromEntries(
       await Promise.all(
-        CRM_COMMON_MODELS.map(async (commonModel) => {
+        getCommonModels(category).map(async (commonModel) => {
           const entry: [CommonModel, ImportRecordsResult] = [
             commonModel,
             await importRecords({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
@@ -144,14 +154,20 @@ async function doFullThenIncrementalSync({
       )
     ) as Record<CommonModel, ImportRecordsResult>;
 
-    const newMaxLastModifiedAtMsMap = {
-      account: importRecordsResultList['account'].maxLastModifiedAtMs,
-      lead: importRecordsResultList['lead'].maxLastModifiedAtMs,
-      opportunity: importRecordsResultList['opportunity'].maxLastModifiedAtMs,
-      contact: importRecordsResultList['contact'].maxLastModifiedAtMs,
-      user: importRecordsResultList['user'].maxLastModifiedAtMs,
-      event: importRecordsResultList['event'].maxLastModifiedAtMs,
-    };
+    const newMaxLastModifiedAtMsMap =
+      category === 'crm'
+        ? {
+            account: importRecordsResultList.account.maxLastModifiedAtMs,
+            lead: importRecordsResultList.lead.maxLastModifiedAtMs,
+            opportunity: importRecordsResultList.opportunity.maxLastModifiedAtMs,
+            contact: importRecordsResultList.contact.maxLastModifiedAtMs,
+            user: importRecordsResultList.user.maxLastModifiedAtMs,
+            event: importRecordsResultList.event.maxLastModifiedAtMs,
+          }
+        : {
+            contact: importRecordsResultList.contact.maxLastModifiedAtMs,
+            sequence: importRecordsResultList.sequence.maxLastModifiedAtMs,
+          };
 
     await updateSyncState({
       syncId: sync.id,
@@ -172,44 +188,55 @@ async function doFullThenIncrementalSync({
     });
 
     return Object.fromEntries(
-      CRM_COMMON_MODELS.map((commonModel) => [commonModel, importRecordsResultList[commonModel].numRecordsSynced])
+      getCommonModels(category).map((commonModel) => [
+        commonModel,
+        importRecordsResultList[commonModel].numRecordsSynced,
+      ])
     ) as Record<CommonModel, number>;
   }
 
-  async function doIncrementalPhase(): Promise<Record<CommonModel, number>> {
-    function getOriginalMaxLastModifiedAtMsMap(): Record<CommonModel, number> {
+  async function doIncrementalPhase(): Promise<NumRecordsSyncedMap> {
+    function getOriginalMaxLastModifiedAtMsMap(): NumRecordsSyncedMap {
       // TODO: we shouldn't need to do this, since it's not possible to
       // start the incremental phase if the full phase hasn't been completed.
       if (sync.state.phase === 'created') {
-        return defaultMaxLastModifiedAtMsMap;
+        return getDefaultMaxLastModifiedAtMsMap(category);
       }
 
-      // When we add a new common model, the old maxLastModifiedAtMsMap will be missing fields. We
-      // need to pull in the defaultMaxLastModifiedAtMsMap
+      if (category === 'crm') {
+        const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as CRMNumRecordsSyncedMap;
+        return {
+          account: maxLastModifiedAtMsMap['account'] ?? 0,
+          lead: maxLastModifiedAtMsMap['lead'] ?? 0,
+          opportunity: maxLastModifiedAtMsMap['opportunity'] ?? 0,
+          contact: maxLastModifiedAtMsMap['contact'] ?? 0,
+          user: maxLastModifiedAtMsMap['user'] ?? 0,
+          event: maxLastModifiedAtMsMap['event'] ?? 0,
+        };
+      }
+      const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as EngagementNumRecordsSyncedMap;
       return {
-        account: sync.state.maxLastModifiedAtMsMap['account'] ?? defaultMaxLastModifiedAtMsMap['account'],
-        lead: sync.state.maxLastModifiedAtMsMap['lead'] ?? defaultMaxLastModifiedAtMsMap['lead'],
-        opportunity: sync.state.maxLastModifiedAtMsMap['opportunity'] ?? defaultMaxLastModifiedAtMsMap['opportunity'],
-        contact: sync.state.maxLastModifiedAtMsMap['contact'] ?? defaultMaxLastModifiedAtMsMap['contact'],
-        user: sync.state.maxLastModifiedAtMsMap['user'] ?? defaultMaxLastModifiedAtMsMap['user'],
-        event: sync.state.maxLastModifiedAtMsMap['event'] ?? defaultMaxLastModifiedAtMsMap['event'],
+        contact: maxLastModifiedAtMsMap['contact'] ?? 0,
+        sequence: maxLastModifiedAtMsMap['sequence'] ?? 0,
       };
     }
 
     function computeUpdatedMaxLastModifiedAtMsMap(
-      importRecordsResultList: Record<CommonModel, ImportRecordsResult>
-    ): Record<CommonModel, number> {
+      importRecordsResultList:
+        | Record<CRMCommonModelType, ImportRecordsResult>
+        | Record<EngagementCommonModelType, ImportRecordsResult>
+    ): NumRecordsSyncedMap {
       const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMap();
 
       return Object.fromEntries(
-        CRM_COMMON_MODELS.map((commonModel) => [
+        getCommonModels(category).map((commonModel) => [
           commonModel,
           Math.max(
-            originalMaxLastModifiedAtMsMap[commonModel],
-            importRecordsResultList[commonModel].maxLastModifiedAtMs
+            (originalMaxLastModifiedAtMsMap as Record<CommonModel, number>)[commonModel],
+            (importRecordsResultList as Record<CommonModel, ImportRecordsResult>)[commonModel].maxLastModifiedAtMs
           ),
         ])
-      ) as Record<CommonModel, number>;
+      ) as NumRecordsSyncedMap;
     }
 
     await updateSyncState({
@@ -223,14 +250,14 @@ async function doFullThenIncrementalSync({
 
     const importRecordsResultList = Object.fromEntries(
       await Promise.all(
-        CRM_COMMON_MODELS.map(async (commonModel) => {
+        getCommonModels(category).map(async (commonModel) => {
           const entry: [CommonModel, ImportRecordsResult] = [
             commonModel,
             await importRecords({
               syncId: sync.id,
               connectionId: sync.connectionId,
               commonModel,
-              updatedAfterMs: getOriginalMaxLastModifiedAtMsMap()[commonModel],
+              updatedAfterMs: (getOriginalMaxLastModifiedAtMsMap() as Record<CommonModel, number>)[commonModel],
             }),
           ];
           return entry;
@@ -260,8 +287,11 @@ async function doFullThenIncrementalSync({
     });
 
     return Object.fromEntries(
-      CRM_COMMON_MODELS.map((commonModel) => [commonModel, importRecordsResultList[commonModel].numRecordsSynced])
-    ) as Record<CommonModel, number>;
+      getCommonModels(category).map((commonModel) => [
+        commonModel,
+        (importRecordsResultList as Record<CommonModel, ImportRecordsResult>)[commonModel].numRecordsSynced,
+      ])
+    ) as NumRecordsSyncedMap;
   }
 
   // Short circuit normal state transitions if we're forcing a sync which will reset the state
@@ -290,19 +320,29 @@ async function doFullThenIncrementalSync({
 
 async function doReverseThenForwardSync({
   sync,
+  category,
 }: {
   sync: ReverseThenForwardSync;
+  category: IntegrationCategory;
 }): Promise<Record<CommonModel, number>> {
   throw ApplicationFailure.nonRetryable('reverse then forward sync not currently supported');
 }
 
-const defaultMaxLastModifiedAtMsMap = {
-  account: 0,
-  lead: 0,
-  opportunity: 0,
-  contact: 0,
-  user: 0,
-  event: 0,
+const getDefaultMaxLastModifiedAtMsMap = (category: IntegrationCategory): NumRecordsSyncedMap => {
+  if (category === 'crm') {
+    return {
+      account: 0,
+      lead: 0,
+      opportunity: 0,
+      contact: 0,
+      user: 0,
+      event: 0,
+    };
+  }
+  return {
+    contact: 0,
+    sequence: 0,
+  };
 };
 
 const getErrorMessageStack = (err: Error): { message: string; stack: string } => {
@@ -317,3 +357,6 @@ const getErrorMessageStack = (err: Error): { message: string; stack: string } =>
   }
   return { message: err.message ?? 'Unknown error', stack: err.stack ?? 'No stack' };
 };
+
+const getCommonModels = (category: IntegrationCategory) =>
+  category === 'crm' ? CRM_COMMON_MODELS : ENGAGEMENT_COMMON_MODELS;

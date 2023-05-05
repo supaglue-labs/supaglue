@@ -20,6 +20,13 @@ export abstract class CommonModelBaseService {
     this.remoteService = remoteService;
   }
 
+  abstract upsertRemoteRecords(
+    connectionId: string,
+    customerId: string,
+    remoteRecordsReadable: Readable,
+    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
+  ): Promise<UpsertRemoteCommonModelsResult>;
+
   // TODO: this needs to be cleaned up a bit. this may become more type-safe
   // when/if we introduce a prisma generator to generate the db types/mappers
   protected async upsertRemoteCommonModels<T>(

@@ -243,6 +243,7 @@ export class SyncService {
             {
               syncId,
               connectionId: connection.id,
+              category: connection.category,
               context: {
                 [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
                 [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,

@@ -151,10 +151,10 @@ export class LeadService extends CommonModelBaseService {
     return fromLeadModel(leadModel);
   }
 
-  public async upsertRemoteLeads(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteLeadsReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.crm.leads;
@@ -191,7 +191,7 @@ export class LeadService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteLeadsReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

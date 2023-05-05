@@ -162,10 +162,10 @@ export class OpportunityService extends CommonModelBaseService {
     return fromOpportunityModel(opportunityModel);
   }
 
-  public async upsertRemoteOpportunities(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteOpportunitiesReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.crm.opportunities;
@@ -199,7 +199,7 @@ export class OpportunityService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteOpportunitiesReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

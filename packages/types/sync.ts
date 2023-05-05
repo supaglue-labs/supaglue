@@ -1,4 +1,5 @@
-import { CommonModel } from './common';
+import { CRMCommonModelType } from '.';
+import { EngagementCommonModelType } from './engagement';
 
 type BaseSync = {
   id: string;
@@ -48,13 +49,17 @@ export type ReverseThenForwardSync = BaseSync & {
 export type SyncType = 'full then incremental' | 'reverse then forward';
 export type Sync = FullThenIncrementalSync | ReverseThenForwardSync;
 
+export type CRMNumRecordsSyncedMap = Record<CRMCommonModelType, number>;
+export type EngagementNumRecordsSyncedMap = Record<EngagementCommonModelType, number>;
+export type NumRecordsSyncedMap = CRMNumRecordsSyncedMap | EngagementNumRecordsSyncedMap;
+
 export type FullThenIncrementalSyncStateCreatedPhase = {
   phase: 'created';
 };
 export type FullThenIncrementalSyncStateLivePhase = {
   phase: 'full' | 'incremental';
   status: 'in progress' | 'done';
-  maxLastModifiedAtMsMap: Record<CommonModel, number>;
+  maxLastModifiedAtMsMap: NumRecordsSyncedMap;
 };
 export type FullThenIncrementalSyncState =
   | FullThenIncrementalSyncStateCreatedPhase
@@ -71,7 +76,7 @@ type ReverseThenForwardSyncStateReversePhase = {
 type ReverseThenForwardSyncStateForwardPhase = {
   phase: 'forward';
   status: 'in progress' | 'done';
-  maxSyncedObjectTimestampMsMap: Record<CommonModel, number>;
+  maxSyncedObjectTimestampMsMap: NumRecordsSyncedMap;
 };
 export type ReverseThenForwardSyncState =
   | ReverseThenForwardSyncStateCreatedPhase

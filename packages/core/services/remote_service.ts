@@ -1,5 +1,4 @@
 import { ConnectionUnsafe } from '@supaglue/types';
-import { RemoteClient } from '../remotes/base';
 import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
 import { getEngagementRemoteClient } from '../remotes/engagement';
@@ -16,7 +15,7 @@ export class RemoteService {
     this.#integrationService = integrationService;
   }
 
-  public async getRemoteClient(connectionId: string): Promise<RemoteClient> {
+  public async getRemoteClient(connectionId: string): Promise<CrmRemoteClient | EngagementRemoteClient> {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
     const integration = await this.#integrationService.getById(connection.integrationId);
 

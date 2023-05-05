@@ -9,10 +9,10 @@ export class ContactService extends CommonModelBaseService {
     super(...args);
   }
 
-  public async upsertRemoteContacts(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteContactsReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.engagement.contacts;
@@ -44,7 +44,7 @@ export class ContactService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteContactsReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

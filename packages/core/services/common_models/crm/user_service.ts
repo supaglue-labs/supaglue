@@ -52,10 +52,10 @@ export class UserService extends CommonModelBaseService {
     };
   }
 
-  public async upsertRemoteUsers(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteUsersReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.crm.users;
@@ -80,7 +80,7 @@ export class UserService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteUsersReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,
