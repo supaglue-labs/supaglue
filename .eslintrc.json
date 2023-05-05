@@ -29,5 +29,5 @@
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-misused-promises": ["warn", { "checksVoidReturn": false }]
   },
-  "ignorePatterns": ["node_modules/", "dist/", "coverage/", "/packages/schemas/gen/"]
+  "ignorePatterns": ["node_modules/", "dist/", "coverage/", "/packages/schemas/gen/", "/apps/salesforce-pub-sub/gen/"]
 }

@@ -19,7 +19,7 @@ import {
   runSync,
   RUN_SYNC_PREFIX,
 } from '@supaglue/sync-workflows/workflows/run_sync';
-import { CRM_COMMON_MODELS, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
+import { CRM_COMMON_MODELS, ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
   ConnectionSafeAny,
@@ -96,7 +96,7 @@ export class ConnectionAndSyncService {
       },
     });
 
-    return fromConnectionModelToConnectionUnsafe(connection);
+    return fromConnectionModelToConnectionUnsafe<ProviderName>(connection);
   }
 
   public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
@@ -145,7 +145,7 @@ export class ConnectionAndSyncService {
         }),
       ]);
 
-      const connection = await fromConnectionModelToConnectionUnsafe(connectionModel);
+      const connection = await fromConnectionModelToConnectionUnsafe<ProviderName>(connectionModel);
 
       // best-effort trigger schedule to process sync changes. even if this fails, the
       // schedule will trigger the workflow on the next run

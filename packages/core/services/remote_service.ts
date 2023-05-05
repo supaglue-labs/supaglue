@@ -1,4 +1,5 @@
 import { ConnectionUnsafe } from '@supaglue/types';
+import { logger } from '../lib';
 import { RemoteClient } from '../remotes/base';
 import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
@@ -52,7 +53,7 @@ export class RemoteService {
         .catch((err: unknown) => {
           // TODO: Use logger
           // eslint-disable-next-line no-console
-          console.error(`Failed to persist refreshed token for connection ${connectionId}`, err);
+          logger.error({ err, connectionId }, `Failed to persist refreshed token`);
         });
     });
 

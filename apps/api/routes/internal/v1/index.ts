@@ -2,7 +2,6 @@ import { getDependencyContainer } from '@/dependency_container';
 import { internalMiddleware } from '@/middleware/internal';
 import { internalApplicationMiddleware } from '@/middleware/internal_application';
 import { orgHeaderMiddleware } from '@/middleware/org';
-import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers';
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { Router } from 'express';
 import apiKey from './api_key';
@@ -34,30 +33,6 @@ SET last_modified_at = GREATEST(
 WHERE last_modified_at IS NULL;
 `);
     }
-  });
-
-  v1ApplicationRouter.post('/_backfill_connection_remote_id', async (req, res) => {
-    const salesforceConnectionModels = await prisma.connection.findMany({
-      where: {
-        providerName: 'salesforce',
-      },
-    });
-    const unsafeSalesforceConnections = await Promise.all(
-      salesforceConnectionModels.map(fromConnectionModelToConnectionUnsafe)
-    );
-    let updated = 0;
-    unsafeSalesforceConnections.map(async ({ id, remoteId, providerName, credentials }) => {
-      if (providerName === 'salesforce' && remoteId !== credentials.instanceUrl) {
-        await prisma.connection.update({
-          where: { id },
-          data: {
-            remoteId: credentials.instanceUrl,
-          },
-        });
-        updated += 1;
-      }
-    });
-    res.status(200).send(`Updated ${updated} connections`);
   });
 
   v1ApplicationRouter.use(orgHeaderMiddleware);

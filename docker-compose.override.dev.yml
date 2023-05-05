@@ -3,8 +3,11 @@ x-common-env:
   NODE_ENV: development
   SUPAGLUE_ENVIRONMENT: development
   SUPAGLUE_PRETTY_LOGS: 1
+  SUPAGLUE_LOG_LEVEL: debug
   SUPAGLUE_DISABLE_ERROR_REPORTING: 1
   NEXT_PUBLIC_SUPAGLUE_DISABLE_ERROR_REPORTING: 1
+  SUPAGLUE_DATABASE_URL: ${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}
+  SUPAGLUE_API_ENCRYPTION_SECRET: ${SUPAGLUE_API_ENCRYPTION_SECRET:-some-per-customer-secret-salt}
 
 services:
   api:
@@ -28,6 +31,21 @@ services:
   mgmt-ui:
     profiles:
       - donotstart
+
+  salesforce-pub-sub:
+    image: node:18
+    environment:
+      <<: *common-env
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/sh -c "./apps/salesforce-pub-sub/scripts/start_dev.sh"
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_started
+      init:
+        condition: service_completed_successfully
 
   init:
     image: node:18

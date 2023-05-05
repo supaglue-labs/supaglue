@@ -1,5 +1,10 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { ConnectionCredentialsDecryptedAny, ConnectionSafeAny, ConnectionUnsafeAny } from '@supaglue/types';
+import type {
+  ConnectionCredentialsDecryptedAny,
+  ConnectionSafeAny,
+  ConnectionUnsafe,
+  CRMProviderName,
+} from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
@@ -14,14 +19,14 @@ export class ConnectionService {
     this.#integrationService = integrationService;
   }
 
-  public async getUnsafeById(id: string): Promise<ConnectionUnsafeAny> {
+  public async getUnsafeById<T extends CRMProviderName>(id: string): Promise<ConnectionUnsafe<T>> {
     const connection = await this.#prisma.connection.findUnique({
       where: { id },
     });
     if (!connection) {
       throw new NotFoundError(`Can't find connection with id: ${id}`);
     }
-    return fromConnectionModelToConnectionUnsafe(connection);
+    return fromConnectionModelToConnectionUnsafe<T>(connection);
   }
 
   public async getSafeById(id: string): Promise<ConnectionSafeAny> {
@@ -68,6 +73,19 @@ export class ConnectionService {
       where: { integrationId: { in: integrationIds }, customerId, providerName },
     });
     return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
+  public async listAllUnsafe<T extends CRMProviderName>({
+    providerName,
+    customerId,
+  }: {
+    providerName: T;
+    customerId?: string;
+  }): Promise<ConnectionUnsafe<T>[]> {
+    const connections = await this.#prisma.connection.findMany({
+      where: { customerId, providerName },
+    });
+    return await Promise.all(connections.map(fromConnectionModelToConnectionUnsafe<T>));
   }
 
   public async getSafeByCustomerIdAndApplicationIdAndProviderName({

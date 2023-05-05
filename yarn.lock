@@ -1707,6 +1707,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bufbuild/connect-node@npm:^0.8.6":
+  version: 0.8.6
+  resolution: "@bufbuild/connect-node@npm:0.8.6"
+  dependencies:
+    "@bufbuild/connect": 0.8.6
+    headers-polyfill: ^3.1.2
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.2.0
+  checksum: 0aa5a66caa39385c64b4250fc5bad486a6838966355d798a197ec9dac8ed1c232702190e7ae1f4514021366598457baf2ad548d9074a22b3319cbf4e15074453
+  languageName: node
+  linkType: hard
+
+"@bufbuild/connect@npm:0.8.6, @bufbuild/connect@npm:^0.8.6":
+  version: 0.8.6
+  resolution: "@bufbuild/connect@npm:0.8.6"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.2.0
+  checksum: cd5808d3f6e69a4936f74d8bac8d86115e485d6ccaea669e3215ed36abde494af795668b74f9b3557d801dd0b1816902c0ce97c5c598f45879ab6dc32dc3d4ca
+  languageName: node
+  linkType: hard
+
+"@bufbuild/protobuf@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@bufbuild/protobuf@npm:1.2.0"
+  checksum: f97f28423a166784d84de42c2eb6a07347c81ab5db019a94fbe98206b2169de0bab37d5b3214a0352ee86555e41d8b26141af10fa02806de06deb988ce525085
+  languageName: node
+  linkType: hard
+
 "@clerk/backend@npm:^0.13.5":
   version: 0.13.5
   resolution: "@clerk/backend@npm:0.13.5"
@@ -3291,6 +3319,13 @@ __metadata:
   version: 7.1.3
   resolution: "@jsdevtools/ono@npm:7.1.3"
   checksum: 2297fcd472ba810bffe8519d2249171132844c7174f3a16634f9260761c8c78bc0428a4190b5b6d72d45673c13918ab9844d706c3ed4ef8f62ab11a2627a08ad
+  languageName: node
+  linkType: hard
+
+"@juanelas/base64@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@juanelas/base64@npm:1.1.2"
+  checksum: a78b8fb4207fc70d4555e7d727ec860b5e4b4a3599b639d1d69e966e10f1263ba1e6423607110c6a23117cc8f873f533d6156a866d388f2edb839ebc63c3f30e
   languageName: node
   linkType: hard
 
@@ -6435,6 +6470,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"avsc@npm:^5.7.7":
+  version: 5.7.7
+  resolution: "avsc@npm:5.7.7"
+  checksum: e3361aa88a61397b3345876263f79c8c8bfe013d849142202758205459a37e24cdbf02edc49ae019d6e82d93bbc7bc73e9e7fefca049aae91626bae28de4d1a9
+  languageName: node
+  linkType: hard
+
 "axe-core@npm:^4.6.2":
   version: 4.6.3
   resolution: "axe-core@npm:4.6.3"
@@ -6641,6 +6683,15 @@ __metadata:
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
   checksum: b89b6e8419b097a8fb4ed2399a1931a68c612bce3cfd5ca8c214b2d017531191070f990598de2fc6f3f993d91c0f08aa82697717f6b3b8732c9731866d233c9e
+  languageName: node
+  linkType: hard
+
+"bigint-conversion@npm:^2.4.1":
+  version: 2.4.1
+  resolution: "bigint-conversion@npm:2.4.1"
+  dependencies:
+    "@juanelas/base64": ^1.1.2
+  checksum: 3c7342670103b29f83c12f412aaec96b64f417a27fc8587c17101d3b3156e074d44536f1048c41308cd86bdb34b534ad7e30b05ff4ad5315c33d238e2cb5496e
   languageName: node
   linkType: hard
 
@@ -10676,6 +10727,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"headers-polyfill@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "headers-polyfill@npm:3.1.2"
+  checksum: 510ca9637ef652404dbd432e680418f8d418ba18094ef2f64c3d8de955ebf6e68d553c7f0aeaa5fc937d130b139c1e2d7c2066cd4cf0f740a4627924eaaee9db
+  languageName: node
+  linkType: hard
+
 "heap-js@npm:^2.2.0":
   version: 2.2.0
   resolution: "heap-js@npm:2.2.0"
@@ -12401,6 +12459,13 @@ __metadata:
   version: 7.16.0
   resolution: "lru-cache@npm:7.16.0"
   checksum: 1a5511a0e695154c37f443c495ebcf3170ec8c291df62e140329cf0c48e2549db836e69371853a28286dc9de73a98f486a7566c64246249a6041c43d4a28bc60
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:^9.1.1":
+  version: 9.1.1
+  resolution: "lru-cache@npm:9.1.1"
+  checksum: 4d703bb9b66216bbee55ead82a9682820a2b6acbdfca491b235390b1ef1056000a032d56dfb373fdf9ad4492f1fa9d04cc9a05a77f25bd7ce6901d21ad9b68b7
   languageName: node
   linkType: hard
 
@@ -16297,6 +16362,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"salesforce-pub-sub@workspace:apps/salesforce-pub-sub":
+  version: 0.0.0-use.local
+  resolution: "salesforce-pub-sub@workspace:apps/salesforce-pub-sub"
+  dependencies:
+    "@bufbuild/connect": ^0.8.6
+    "@bufbuild/connect-node": ^0.8.6
+    "@bufbuild/protobuf": ^1.2.0
+    "@supaglue/core": "workspace:*"
+    avsc: ^5.7.7
+    bigint-conversion: ^2.4.1
+    jsforce: ^2.0.0-beta.20
+    lru-cache: ^9.1.1
+    tsx: ^3.12.6
+  languageName: unknown
+  linkType: soft
+
 "sax@npm:>=0.6.0, sax@npm:^1.2.4":
   version: 1.2.4
   resolution: "sax@npm:1.2.4"
@@ -18063,6 +18144,23 @@ __metadata:
   bin:
     tsx: dist/cli.js
   checksum: fd04a164d543ff7df030e253280b509257f2d32f9d439d26f33beb1a7c23e91a36fd8d86f150e94187e0598ab58b12e6bc5b7c6798ef0bcc8ffcbc65a31597d2
+  languageName: node
+  linkType: hard
+
+"tsx@npm:^3.12.6":
+  version: 3.12.6
+  resolution: "tsx@npm:3.12.6"
+  dependencies:
+    "@esbuild-kit/cjs-loader": ^2.4.2
+    "@esbuild-kit/core-utils": ^3.0.0
+    "@esbuild-kit/esm-loader": ^2.5.5
+    fsevents: ~2.3.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    tsx: dist/cli.js
+  checksum: f503096f3b56ea521eaf8ed65bf7ad6f04749f9251ce168981d7b7483fadd4a6247a35184099c3bc5d43574c6f4eef6f2a58e45e31f002e78ba94120765f95c5
   languageName: node
   linkType: hard
 
