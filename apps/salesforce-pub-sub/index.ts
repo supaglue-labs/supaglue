@@ -54,6 +54,9 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
     const processStream = async (eventType: string, replayPreset = ReplayPreset.LATEST, replayId?: Uint8Array) => {
       // make sure we have the latest accessToken
       const { access_token: accessToken } = await conn.oauth2.refreshToken(refreshToken);
+      // expiresAt is not returned from the refresh token response
+      await connectionService.updateConnectionWithNewAccessToken(connectionId, accessToken, /* expiresAt */ null);
+
       const { organization_id: tenantId } = await conn.identity();
       const client = await createClient({
         accessToken,
