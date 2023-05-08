@@ -8,6 +8,8 @@ x-common-env:
   NEXT_PUBLIC_SUPAGLUE_DISABLE_ERROR_REPORTING: 1
   SUPAGLUE_DATABASE_URL: ${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}
   SUPAGLUE_API_ENCRYPTION_SECRET: ${SUPAGLUE_API_ENCRYPTION_SECRET:-some-per-customer-secret-salt}
+  # Edit this when using ngrok
+  SUPAGLUE_SERVER_URL: http://localhost:8080
 
 services:
   api:
