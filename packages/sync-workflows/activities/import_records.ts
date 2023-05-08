@@ -10,7 +10,8 @@ import {
   UserService,
 } from '@supaglue/core/services/common_models/crm';
 import { ContactService as EngagementContactService } from '@supaglue/core/services/common_models/engagement';
-import { CommonModel, CRMCommonModelType, IntegrationCategory } from '@supaglue/types';
+import { CommonModel, IntegrationCategory } from '@supaglue/types';
+import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';

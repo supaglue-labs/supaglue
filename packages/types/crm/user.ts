@@ -1,4 +1,4 @@
-import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams } from '..';
+import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams } from '.';
 
 type BaseUser = BaseCrmModel & {
   name: string | null;

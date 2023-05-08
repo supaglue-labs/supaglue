@@ -1,10 +1,11 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import { GetInternalParams, ListInternalParams, PaginatedResult, User } from '@supaglue/types';
+import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
+import { User } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
-import { fromRemoteUserToDbUserParams, fromUserModel } from '../../../mappers';
+import { fromRemoteUserToDbUserParams, fromUserModel } from '../../../mappers/crm';
 
 export class UserService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {

@@ -288,7 +288,7 @@ model EngagementContact {
   firstName                 String?   @map("first_name")
   lastName                  String?   @map("last_name")
   jobTitle                  String?   @map("job_title")
-  address                   Json
+  address                   Json?
   emailAddresses            Json      @map("email_addresses")
   phoneNumbers              Json      @map("phone_numbers")
   openCount                 Int       @map("open_count")

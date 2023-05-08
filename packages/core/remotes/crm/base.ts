@@ -1,11 +1,5 @@
-import {
-  ConnectionUnsafe,
-  CRMCommonModelType,
-  CRMCommonModelTypeMap,
-  CRMIntegration,
-  CRMProviderName,
-  IntegrationCategory,
-} from '@supaglue/types';
+import { ConnectionUnsafe, CRMIntegration, IntegrationCategory } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
 import { EventEmitter } from 'events';
 import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';

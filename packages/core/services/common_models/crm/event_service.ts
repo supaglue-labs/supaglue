@@ -1,18 +1,12 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import {
-  Event,
-  EventCreateParams,
-  EventUpdateParams,
-  GetInternalParams,
-  ListInternalParams,
-  PaginatedResult,
-} from '@supaglue/types';
+import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
+import { Event, EventCreateParams, EventUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { v5 as uuidv5 } from 'uuid';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
-import { fromEventModel, fromRemoteEventToDbEventParams } from '../../../mappers';
+import { fromEventModel, fromRemoteEventToDbEventParams } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class EventService extends CommonModelBaseService {

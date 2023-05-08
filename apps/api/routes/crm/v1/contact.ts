@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toSnakecasedKeysContact } from '@supaglue/core/mappers';
+import { toSnakecasedKeysContact } from '@supaglue/core/mappers/crm';
 import { toGetInternalParams, toListInternalParams, toSearchInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateContactPathParams,

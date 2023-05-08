@@ -14,9 +14,13 @@ import {
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
   ConnectionUnsafe,
+  CRMIntegration,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+} from '@supaglue/types';
+import {
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  CRMIntegration,
   RemoteAccount,
   RemoteAccountCreateParams,
   RemoteAccountUpdateParams,
@@ -32,9 +36,7 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-  SendPassthroughRequestRequest,
-  SendPassthroughRequestResponse,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 import retry from 'async-retry';
 import { Readable } from 'stream';
 import { TooManyRequestsError } from '../../../errors';

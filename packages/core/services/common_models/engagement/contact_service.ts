@@ -2,7 +2,7 @@ import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 
 import { Readable } from 'stream';
-import { fromRemoteContactToDbContactParams } from '../../../mappers';
+import { fromRemoteContactToDbContactParams } from '../../../mappers/engagement';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {

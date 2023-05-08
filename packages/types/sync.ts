@@ -1,4 +1,4 @@
-import { CRMCommonModelType } from '.';
+import { CRMCommonModelType } from './crm';
 import { EngagementCommonModelType } from './engagement';
 
 type BaseSync = {

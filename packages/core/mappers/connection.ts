@@ -1,5 +1,6 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
-import { ConnectionSafeAny, ConnectionStatus, ConnectionUnsafeAny, CRMProviderName } from '@supaglue/types';
+import { ConnectionSafeAny, ConnectionStatus, ConnectionUnsafeAny } from '@supaglue/types';
+import { CRMProviderName } from '@supaglue/types/crm';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 

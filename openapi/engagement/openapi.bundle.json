@@ -706,20 +706,16 @@
             ]
           },
           "open_count": {
-            "type": "number",
-            "nullable": true
+            "type": "number"
           },
           "click_count": {
-            "type": "number",
-            "nullable": true
+            "type": "number"
           },
           "reply_count": {
-            "type": "number",
-            "nullable": true
+            "type": "number"
           },
           "bounced_count": {
-            "type": "number",
-            "nullable": true
+            "type": "number"
           },
           "remote_created_at": {
             "type": "string",

@@ -5,7 +5,7 @@ import {
   RemoteLeadTypes,
   RemoteOpportunityTypes,
   RemoteUserTypes,
-} from '..';
+} from '.';
 
 export const SUPPORTED_CRM_CONNECTIONS = [
   'salesforce',

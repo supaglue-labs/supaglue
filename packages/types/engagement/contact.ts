@@ -1,30 +1,55 @@
-import { BaseEngagementModel } from './base';
+import { CustomFields } from '.';
+import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
 import { Address } from './common/address';
 import { EmailAddress } from './common/email_address';
 import { PhoneNumber } from './common/phone_number';
 
-export type Contact = BaseEngagementModel & {
+export type BaseContact = BaseEngagementModel & {
   firstName: string | null;
   lastName: string | null;
   jobTitle: string | null;
-  address: Address;
+  address: Address | null;
   emailAddresses: EmailAddress[];
   phoneNumbers: PhoneNumber[];
-  openCount: number | null;
-  clickCount: number | null;
-  replyCount: number | null;
-  bouncedCount: number | null;
+  openCount: number;
+  clickCount: number;
+  replyCount: number;
+  bouncedCount: number;
 };
 
-export type ContactCreateParams = {
+export type Contact = BaseContact &
+  BaseEngagementModelNonRemoteParams & {
+    rawData?: Record<string, any>;
+  };
+
+export type RemoteContact = BaseContact &
+  BaseEngagementModelRemoteOnlyParams & {
+    rawData: Record<string, any>;
+  };
+
+export type BaseContactCreateParams = {
   firstName?: string | null;
   lastName?: string | null;
   jobTitle?: string | null;
   address?: Address | null;
   emailAddresses?: EmailAddress[];
+
+  customFields?: CustomFields;
+};
+
+export type ContactCreateParams = BaseContactCreateParams;
+export type RemoteContactCreateParams = BaseContactCreateParams;
+
+export type ContactUpdateParams = ContactCreateParams & {
+  id: string;
+};
+
+export type RemoteContactUpdateParams = RemoteContactCreateParams & {
+  remoteId: string;
 };
 
 export type ContactTypes = {
-  object: Contact;
-  createParams: ContactCreateParams;
+  object: RemoteContact;
+  createParams: RemoteContactCreateParams;
+  updateParams: RemoteContactUpdateParams;
 };

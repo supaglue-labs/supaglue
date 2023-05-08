@@ -23,16 +23,12 @@ properties:
     $ref: ./phone_numbers.yaml
   open_count:
     type: number
-    nullable: true
   click_count:
     type: number
-    nullable: true
   reply_count:
     type: number
-    nullable: true
   bounced_count:
     type: number
-    nullable: true
   remote_created_at:
     type: string
     nullable: true

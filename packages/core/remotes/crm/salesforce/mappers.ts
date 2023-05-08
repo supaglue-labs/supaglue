@@ -16,7 +16,7 @@ import {
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
   RemoteUser,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 
 const CONTACT_ID_PREFIX = '003';

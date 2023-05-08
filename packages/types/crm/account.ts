@@ -1,4 +1,4 @@
-import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '..';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '.';
 import { Filter } from '../filter';
 import { Address, LifecycleStage, PhoneNumber } from './common';
 

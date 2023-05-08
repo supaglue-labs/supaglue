@@ -4,8 +4,9 @@ import { EngagementProviderCategory, EngagementProviderName } from './engagement
 export * from './application';
 export * from './common';
 export * from './connection';
-export * from './crm';
+export * as crm from './crm';
 export * from './customer';
+export * as engagement from './engagement';
 export * from './integration';
 export * from './passthrough';
 export * from './sg_user';

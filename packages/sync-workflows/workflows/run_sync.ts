@@ -81,7 +81,7 @@ export async function runSync({ syncId, connectionId, category }: RunSyncArgs): 
   } catch (err: any) {
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
     await Promise.all(
-      CRM_COMMON_MODELS.map(async (commonModel) => {
+      getCommonModels(category).map(async (commonModel) => {
         await logSyncFinish({
           syncId,
           connectionId,
@@ -110,7 +110,7 @@ export async function runSync({ syncId, connectionId, category }: RunSyncArgs): 
   }
 
   await Promise.all(
-    CRM_COMMON_MODELS.map(async (commonModel) => {
+    getCommonModels(category).map(async (commonModel) => {
       await logSyncFinish({ syncId, connectionId, historyId: historyIdsMap[commonModel], status: 'SUCCESS' });
       await maybeSendSyncFinishWebhook({
         historyId: historyIdsMap[commonModel],

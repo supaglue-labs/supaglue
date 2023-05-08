@@ -11,7 +11,7 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteUser,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
