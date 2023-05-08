@@ -13,6 +13,12 @@ Be sure to copy the `docker-compose.override.dev.yml` to `docker-compose.overrid
 cp docker-compose.override.dev.yml docker-compose.override.yml
 ```
 
+#### Install dependencies
+
+```shell
+brew install bufbuild/buf/buf
+```
+
 ### Running
 
 ```shell

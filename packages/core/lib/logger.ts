@@ -12,7 +12,7 @@ const addLogContext: (key: string, value: unknown) => void = addContext;
 
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 
-const LOG_LEVEL = (process.env.SUPAGLUE_LOG_LEVEL ?? 'info') as Level;
+const LOG_LEVEL = process.env.SUPAGLUE_LOG_LEVEL as Level;
 
 const streams: (pino.DestinationStream | pino.StreamEntry)[] = [];
 if (process.env.SUPAGLUE_PRETTY_LOGS) {
@@ -39,5 +39,4 @@ if (sentryEnabled) {
 }
 
 // add a type for this since pino-context doesn't have any
-export const logger: Logger = wrapLogger(pino({}, pino.multistream(streams)));
-logger.level = LOG_LEVEL;
+export const logger: Logger = wrapLogger(pino({ level: LOG_LEVEL }, pino.multistream(streams)));

@@ -17,9 +17,7 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = BaseConnect
       }
     : object);
 
-export type ConnectionCredentialsDecryptedAny = {
-  [K in ProviderName]: ConnectionCredentialsDecrypted<K>;
-}[ProviderName];
+export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;
 
 export type ConnectionCreateParams<T extends ProviderName> = {
   applicationId: string;
@@ -33,15 +31,11 @@ export type ConnectionCreateParams<T extends ProviderName> = {
   instanceUrl: string;
 };
 
-export type ConnectionCreateParamsAny = {
-  [K in ProviderName]: ConnectionCreateParams<K>;
-}[ProviderName];
+export type ConnectionCreateParamsAny = ConnectionCreateParams<ProviderName>;
 
 export type ConnectionUpsertParams<T extends ProviderName> = ConnectionCreateParams<T>;
 
-export type ConnectionUpsertParamsAny = {
-  [K in ProviderName]: ConnectionUpsertParams<K>;
-}[ProviderName];
+export type ConnectionUpsertParamsAny = ConnectionUpsertParams<ProviderName>;
 
 export type ConnectionSafe<T extends ProviderName> = Omit<ConnectionCreateParams<T>, 'credentials'> & {
   id: string;
@@ -50,9 +44,7 @@ export type ConnectionSafe<T extends ProviderName> = Omit<ConnectionCreateParams
   providerName: T;
 };
 
-export type ConnectionSafeAny = {
-  [K in ProviderName]: ConnectionSafe<K>;
-}[ProviderName];
+export type ConnectionSafeAny = ConnectionSafe<ProviderName>;
 
 export type ConnectionUnsafe<T extends ProviderName> = ConnectionCreateParams<T> & {
   id: string;
@@ -61,6 +53,4 @@ export type ConnectionUnsafe<T extends ProviderName> = ConnectionCreateParams<T>
   providerName: T;
 };
 
-export type ConnectionUnsafeAny = {
-  [K in ProviderName]: ConnectionUnsafe<K>;
-}[ProviderName];
+export type ConnectionUnsafeAny = ConnectionUnsafe<ProviderName>;

@@ -1,8 +1,6 @@
-import { getDependencyContainer } from '@/dependency_container';
 import { internalMiddleware } from '@/middleware/internal';
 import { internalApplicationMiddleware } from '@/middleware/internal_application';
 import { orgHeaderMiddleware } from '@/middleware/org';
-import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers';
 import { Router } from 'express';
 import apiKey from './api_key';
 import application from './application';
@@ -13,36 +11,10 @@ import syncHistory from './sync_history';
 import syncInfo from './sync_info';
 import webhook from './webhook';
 
-const { prisma } = getDependencyContainer();
-
 export default function init(app: Router): void {
   // application routes should not require application header
   const v1ApplicationRouter = Router();
   v1ApplicationRouter.use(internalMiddleware);
-
-  v1ApplicationRouter.post('/_backfill_connection_remote_id', async (req, res) => {
-    const salesforceConnectionModels = await prisma.connection.findMany({
-      where: {
-        providerName: 'salesforce',
-      },
-    });
-    const unsafeSalesforceConnections = await Promise.all(
-      salesforceConnectionModels.map(fromConnectionModelToConnectionUnsafe)
-    );
-    let updated = 0;
-    unsafeSalesforceConnections.map(async ({ id, remoteId, providerName, credentials }) => {
-      if (providerName === 'salesforce' && remoteId !== credentials.instanceUrl) {
-        await prisma.connection.update({
-          where: { id },
-          data: {
-            remoteId: credentials.instanceUrl,
-          },
-        });
-        updated += 1;
-      }
-    });
-    res.status(200).send(`Updated ${updated} connections`);
-  });
 
   v1ApplicationRouter.use(orgHeaderMiddleware);
 
