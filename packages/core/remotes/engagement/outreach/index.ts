@@ -2,6 +2,7 @@ import { ConnectionUnsafe, Integration } from '@supaglue/types';
 import { EngagementCommonModelType, EngagementCommonModelTypeMap } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
+import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import { fromOutreachProspectToRemoteContact } from './mappers';
@@ -60,7 +61,10 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {
-    if (!this.#credentials.expiresAt || Date.parse(this.#credentials.expiresAt) < Date.now() + 300000) {
+    if (
+      !this.#credentials.expiresAt ||
+      Date.parse(this.#credentials.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS
+    ) {
       const response = await axios.post<{ access_token: string; expires_in: number }>(`${this.#baseURL}/oauth/token`, {
         client_id: this.#credentials.clientId,
         client_secret: this.#credentials.clientSecret,
