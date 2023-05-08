@@ -1,9 +1,6 @@
 import { ConnectionUnsafe, Integration } from '@supaglue/types';
-import {
-  EngagementCommonModelType,
-  EngagementCommonModelTypeMap,
-  SequenceStartParams,
-} from '@supaglue/types/engagement';
+import { EngagementCommonModelType, EngagementCommonModelTypeMap } from '@supaglue/types/engagement';
+import { Readable } from 'stream';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 
 type Credentials = {
@@ -25,14 +22,14 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     };
   }
 
+  public override listObjects(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+
   public override createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
-    throw new Error('Not implemented');
-  }
-
-  public override startSequence(params: SequenceStartParams): Promise<void> {
     throw new Error('Not implemented');
   }
 }

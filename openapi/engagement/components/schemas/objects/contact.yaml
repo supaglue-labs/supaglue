@@ -23,24 +23,36 @@ properties:
     $ref: ./phone_numbers.yaml
   open_count:
     type: number
+    nullable: true
+  click_count:
+    type: number
+    nullable: true
   reply_count:
     type: number
+    nullable: true
   bounced_count:
     type: number
-  created_at:
+    nullable: true
+  remote_created_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  updated_at:
+  remote_updated_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
+  remote_was_deleted:
+    type: boolean
+    example: false
   last_modified_at:
     type: string
     format: date-time
     example: '2022-02-27T00:00:00Z'
+  raw_data:
+    type: object
+    additionalProperties: true
 required:
   - id
   - first_name
@@ -53,6 +65,7 @@ required:
   - click_count
   - reply_count
   - bounced_count
-  - created_at
-  - updated_at
+  - remote_created_at	
+  - remote_updated_at	
+  - remote_was_deleted
   - last_modified_at	

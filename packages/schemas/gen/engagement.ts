@@ -14,9 +14,25 @@ export interface paths {
     
   };
   "/contacts": {
+    /**
+     * List contacts 
+     * @description Get a list of contacts
+     */
+    get: operations["getContacts"];
     /** Create contact */
     post: operations["createContact"];
     
+  };
+  "/contacts/{contact_id}": {
+    /** Get contact */
+    get: operations["getContact"];
+    /** Update contact */
+    patch: operations["updateContact"];
+    parameters: {
+      path: {
+        contact_id: string;
+      };
+    };
   };
   "/sequences": {
     /** Create sequence */
@@ -56,24 +72,30 @@ export interface components {
           phone_number_type: "work" | "personal" | "other";
           is_primary: boolean;
         })[];
-      open_count: number;
-      reply_count: number;
-      bounced_count: number;
+      open_count: number | null;
+      click_count: number | null;
+      reply_count: number | null;
+      bounced_count: number | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      created_at: Date | null;
+      remote_created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      updated_at: Date | null;
+      remote_updated_at: Date | null;
+      /** @example false */
+      remote_was_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
+      raw_data?: {
+        [key: string]: unknown | undefined;
+      };
     };
     create_contact: {
       /** @example George */
@@ -179,6 +201,86 @@ export interface components {
     custom_fields: {
       [key: string]: unknown | undefined;
     };
+    /**
+     * @example [
+     *   {
+     *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+     *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+     *     "log_summary": {
+     *       "method": "POST",
+     *       "status_code": 200,
+     *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+     *     }
+     *   },
+     *   {
+     *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+     *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+     *     "log_summary": {
+     *       "method": "POST",
+     *       "status_code": 200,
+     *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+     *     }
+     *   }
+     * ]
+     */
+    logs: ({
+        /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+        dashboard_view?: string;
+        /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+        log_id?: string;
+        log_summary?: {
+          /** @example POST */
+          method?: string;
+          /** @example 200 */
+          status_code?: number;
+          /** @example https://harvest.greenhouse.io/v1/candidates/ */
+          url?: string;
+        };
+      })[];
+    errors: ({
+        /** @example name is a required field on model. */
+        detail?: string;
+        /** @example MISSING_REQUIRED_FIELD */
+        problem_type?: string;
+        source?: {
+          /** @example irure consectetur */
+          pointer?: string;
+        };
+        /** @example Missing Required Field */
+        title?: string;
+      })[];
+    /**
+     * @example [
+     *   {
+     *     "detail": "An unrecognized field, age, was passed in with request data.",
+     *     "problem_type": "UNRECOGNIZED_FIELD",
+     *     "source": {
+     *       "pointer": "Lorem ipsum"
+     *     },
+     *     "title": "Unrecognized Field"
+     *   },
+     *   {
+     *     "detail": "An unrecognized field, age, was passed in with request data.",
+     *     "problem_type": "UNRECOGNIZED_FIELD",
+     *     "source": {
+     *       "pointer": "in"
+     *     },
+     *     "title": "Unrecognized Field"
+     *   }
+     * ]
+     */
+    warnings: ({
+        /** @example An unrecognized field, age, was passed in with request data. */
+        detail?: string;
+        /** @example UNRECOGNIZED_FIELD */
+        problem_type?: string;
+        source?: {
+          /** @example Lorem ipsum */
+          pointer?: string;
+        };
+        /** @example Unrecognized Field */
+        title?: string;
+      })[];
   };
   responses: never;
   parameters: {
@@ -254,6 +356,42 @@ export interface operations {
       };
     };
   };
+  getContacts: {
+    /**
+     * List contacts 
+     * @description Get a list of contacts
+     */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
+    responses: {
+      /** @description Contacts */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["contact"])[];
+          };
+        };
+      };
+    };
+  };
   createContact: {
     /** Create contact */
     requestBody: {
@@ -261,10 +399,33 @@ export interface operations {
         /**
          * @example {
          *   "model": {
+         *     "id": "43a45011-c55e-42f3-81a1-99158c956775",
+         *     "address": {
+         *       "city": "San Francisco",
+         *       "country": "USA",
+         *       "street_1": "525 Brannan St",
+         *       "street_2": null,
+         *       "postalCode": "94107",
+         *       "state": "CA"
+         *     },
+         *     "email_addresses": [
+         *       {
+         *         "email_address": "hello@supaglue.com",
+         *         "email_address_type": "workline2",
+         *         "is_primary": true
+         *       }
+         *     ],
          *     "first_name": "George",
-         *     "last_activity_at": "2022-02-10T00:00:00Z",
+         *     "remote_id": 1234,
          *     "last_name": "Xing",
-         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *     "phone_numbers": [
+         *       {
+         *         "phone_number": "+14151234567",
+         *         "phone_number_type": "mobile",
+         *         "is_primary": true
+         *       }
+         *     ],
+         *     "remote_created_at": "2023-02-27T00:00:00Z"
          *   }
          * }
          */
@@ -278,7 +439,44 @@ export interface operations {
       201: {
         content: {
           "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
             model?: components["schemas"]["contact"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getContact: {
+    /** Get contact */
+    responses: {
+      /** @description Contact */
+      200: {
+        content: {
+          "application/json": components["schemas"]["contact"];
+        };
+      };
+    };
+  };
+  updateContact: {
+    /** Update contact */
+    requestBody: {
+      content: {
+        "application/json": {
+          model: components["schemas"]["create_contact"];
+        };
+      };
+    };
+    responses: {
+      /** @description Contact updated */
+      200: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            model?: components["schemas"]["contact"];
+            warnings?: components["schemas"]["warnings"];
           };
         };
       };

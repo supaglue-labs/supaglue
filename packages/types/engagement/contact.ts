@@ -10,10 +10,10 @@ export type Contact = BaseEngagementModel & {
   address: Address;
   emailAddresses: EmailAddress[];
   phoneNumbers: PhoneNumber[];
-  openCount: number;
-  clickCount: number;
-  replyCount: number;
-  bouncedCount: number;
+  openCount: number | null;
+  clickCount: number | null;
+  replyCount: number | null;
+  bouncedCount: number | null;
 };
 
 export type ContactCreateParams = {
