@@ -1,4 +1,4 @@
-import { schemaPrefix } from '@supaglue/db';
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type {
   Account,
   AccountCreateParams,
@@ -11,12 +11,11 @@ import type {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { v5 as uuidv5 } from 'uuid';
-import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getPaginationParams, getPaginationResult } from '../../lib/pagination';
-import { getRemoteId } from '../../lib/remote_id';
-import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../mappers/index';
-import { CrmRemoteClient } from '../../remotes/crm/base';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
+import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../../mappers';
+import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class AccountService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -152,7 +151,7 @@ export class AccountService extends CommonModelBaseService {
     remoteAccountsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = `${schemaPrefix}crm_accounts`;
+    const table = COMMON_MODEL_DB_TABLES.crm.accounts;
     const tempTable = 'crm_accounts_temp';
     const columnsWithoutId = [
       'name',

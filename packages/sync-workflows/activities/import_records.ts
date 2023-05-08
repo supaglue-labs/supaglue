@@ -1,14 +1,13 @@
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
+import { ConnectionService, RemoteService } from '@supaglue/core/services';
 import {
   AccountService,
-  ConnectionService,
   ContactService,
   EventService,
   LeadService,
   OpportunityService,
-  RemoteService,
   UserService,
-} from '@supaglue/core/services';
+} from '@supaglue/core/services/common_models/crm';
 import { CommonModel } from '@supaglue/types';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';

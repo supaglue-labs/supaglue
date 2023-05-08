@@ -1,6 +1,3 @@
-export * from './account_service';
-export * from './contact_service';
-export * from './event_service';
-export * from './lead_service';
-export * from './opportunity_service';
-export * from './user_service';
+export * from './base_service';
+export * as crm from './crm';
+export * as engagement from './engagement';

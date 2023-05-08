@@ -1,15 +1,12 @@
-import type {
+import type { ConnectionService, IntegrationService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
+import {
   AccountService,
-  ConnectionService,
   ContactService,
   EventService,
-  IntegrationService,
   LeadService,
   OpportunityService,
-  RemoteService,
-  SyncHistoryService,
   UserService,
-} from '@supaglue/core/services';
+} from '@supaglue/core/services/common_models/crm';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetSync } from './get_sync';
@@ -21,31 +18,28 @@ import { createSetForceSyncFlag } from './set_force_sync_flag';
 import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
-  accountService,
   connectionService,
-  contactService,
   remoteService,
-  opportunityService,
-  leadService,
-  userService,
-  eventService,
   syncService,
   syncHistoryService,
   integrationService,
   applicationService,
+  crm: { accountService, contactService, opportunityService, leadService, userService, eventService },
 }: {
-  accountService: AccountService;
   connectionService: ConnectionService;
-  contactService: ContactService;
   remoteService: RemoteService;
-  opportunityService: OpportunityService;
-  leadService: LeadService;
-  userService: UserService;
-  eventService: EventService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
   applicationService: ApplicationService;
+  crm: {
+    contactService: ContactService;
+    accountService: AccountService;
+    opportunityService: OpportunityService;
+    leadService: LeadService;
+    userService: UserService;
+    eventService: EventService;
+  };
 }) => {
   return {
     getSync: createGetSync(syncService),

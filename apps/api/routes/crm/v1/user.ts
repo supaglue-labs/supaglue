@@ -12,7 +12,9 @@ import {
 import { ListParams } from '@supaglue/types/common';
 import { Request, Response, Router } from 'express';
 
-const { userService } = getDependencyContainer();
+const {
+  crm: { userService },
+} = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();

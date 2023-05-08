@@ -1,4 +1,4 @@
-import { schemaPrefix } from '@supaglue/db';
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import {
   Event,
   EventCreateParams,
@@ -9,11 +9,11 @@ import {
 } from '@supaglue/types';
 import { Readable } from 'stream';
 import { v5 as uuidv5 } from 'uuid';
-import { NotFoundError, UnauthorizedError } from '../../errors';
-import { getPaginationParams, getPaginationResult, getRemoteId } from '../../lib';
-import { fromEventModel, fromRemoteEventToDbEventParams } from '../../mappers/crm';
-import { CrmRemoteClient } from '../../remotes/crm/base';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from './base_service';
+import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
+import { fromEventModel, fromRemoteEventToDbEventParams } from '../../../mappers';
+import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class EventService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -151,7 +151,7 @@ export class EventService extends CommonModelBaseService {
     remoteEventsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
-    const table = `${schemaPrefix}crm_events`;
+    const table = COMMON_MODEL_DB_TABLES.crm.events;
     const tempTable = 'crm_events_temp';
     const columnsWithoutId = [
       'remote_id',
