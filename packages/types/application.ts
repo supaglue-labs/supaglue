@@ -1,4 +1,3 @@
-import { CDCConfig } from './cdc';
 import { WebhookConfig } from './webhook';
 
 type BaseApplication = {
@@ -14,7 +13,6 @@ export type Application = BaseApplication & {
 export type ApplicationConfig = {
   webhook: WebhookConfig | null;
   apiKey: string | null;
-  cdc: CDCConfig | null;
 };
 
 export type ApplicationUpsertParams = {

@@ -1,4 +1,5 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
+import CDCWebhookTabPanel from '@/components/configuration/CDCWebhookTabPanel';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
@@ -29,6 +30,10 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
     label: 'API Keys',
     value: 'api_keys',
   },
+  {
+    label: 'CDC Webhooks',
+    value: 'cdc_webhooks',
+  },
 ];
 
 interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -53,7 +58,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-export default function Home() {
+export default function Home(props: { svixDashboardUrl: string }) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { tab = [] } = router.query;
@@ -94,6 +99,7 @@ export default function Home() {
               <Tab label="Integrations" />
               <Tab label="Webhook" />
               <Tab label="API Key" />
+              <Tab label="CDC Webhooks" />
             </Tabs>
           }
           title="Configuration"
@@ -108,6 +114,9 @@ export default function Home() {
           </TabPanel>
           <TabPanel value={value} index={2} className="w-full">
             <ApiKeyTabPanel />
+          </TabPanel>
+          <TabPanel value={value} index={3} className="w-full">
+            <CDCWebhookTabPanel {...props} />
           </TabPanel>
         </Box>
       </Box>

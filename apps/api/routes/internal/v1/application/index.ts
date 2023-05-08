@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Request, Response, Router } from 'express';
 
-const { applicationService } = getDependencyContainer();
+const { applicationService, webhookService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const applicationRouter = Router();
@@ -13,6 +13,7 @@ export default function init(app: Router): void {
 
   applicationRouter.put('/', async (req: Request, res: Response) => {
     const application = await applicationService.upsert({ ...req.body, orgId: req.orgId });
+    await webhookService.createApplication(application.id, application.name);
     return res.status(201).send(application);
   });
 

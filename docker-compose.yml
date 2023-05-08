@@ -10,6 +10,7 @@ x-common-env:
   SUPAGLUE_DISABLE_ERROR_REPORTING:
   SUPAGLUE_DEPLOYMENT_ID:
   IS_CLOUD:
+  SVIX_API_TOKEN:
 
 
 x-fe-api-common-env:
@@ -104,6 +105,21 @@ services:
     volumes:
       - .env:/app/.env
     command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js'
+
+  salesforce-pub-sub:
+    image: node:18 # TODO switch to built image
+    environment:
+      <<: *common-env
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/sh -c "./apps/salesforce-pub-sub/scripts/start_dev.sh"
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_started
+      init:
+        condition: service_completed_successfully
 
 volumes:
   pgdata:
