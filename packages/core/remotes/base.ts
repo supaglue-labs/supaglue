@@ -1,4 +1,4 @@
-import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types';
+import { IntegrationCategory, SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types';
 import axios from 'axios';
 import { EventEmitter } from 'events';
 
@@ -7,6 +7,7 @@ interface RemoteClientEvents {
 }
 
 export interface RemoteClient {
+  category(): IntegrationCategory;
   on<U extends keyof RemoteClientEvents>(event: U, listener: RemoteClientEvents[U]): this;
 
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
@@ -28,6 +29,8 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   public emit<U extends keyof RemoteClientEvents>(event: U, ...args: Parameters<RemoteClientEvents[U]>): boolean {
     return super.emit(event, ...args);
   }
+
+  public abstract category(): IntegrationCategory;
 
   protected abstract getAuthHeadersForPassthroughRequest(): Record<string, string>;
 

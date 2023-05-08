@@ -1,5 +1,6 @@
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
-import { ConnectionService, RemoteService } from '@supaglue/core/services';
+import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
+import { CommonModelBaseService, ConnectionService, RemoteService } from '@supaglue/core/services';
 import {
   AccountService,
   ContactService,
@@ -8,8 +9,11 @@ import {
   OpportunityService,
   UserService,
 } from '@supaglue/core/services/common_models/crm';
-import { CommonModel } from '@supaglue/types';
-import { ApplicationFailure, Context } from '@temporalio/activity';
+import { ContactService as EngagementContactService } from '@supaglue/core/services/common_models/engagement';
+import { CommonModel, IntegrationCategory } from '@supaglue/types';
+import { CRMCommonModelType } from '@supaglue/types/crm';
+import { EngagementCommonModelType } from '@supaglue/types/engagement';
+import { Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 
@@ -29,15 +33,52 @@ export type ImportRecordsResult = {
 };
 
 export function createImportRecords(
-  accountService: AccountService,
   connectionService: ConnectionService,
-  contactService: ContactService,
   remoteService: RemoteService,
-  opportunityService: OpportunityService,
-  leadService: LeadService,
-  userService: UserService,
-  eventService: EventService
+  crm: {
+    accountService: AccountService;
+    contactService: ContactService;
+    opportunityService: OpportunityService;
+    leadService: LeadService;
+    userService: UserService;
+    eventService: EventService;
+  },
+  engagement: {
+    contactService: EngagementContactService;
+  }
 ) {
+  function getService(
+    category: IntegrationCategory,
+    commonModel: CRMCommonModelType | EngagementCommonModelType
+  ): CommonModelBaseService {
+    switch (category) {
+      case 'crm':
+        switch (commonModel) {
+          case 'account':
+            return crm.accountService;
+          case 'contact':
+            return crm.contactService;
+          case 'event':
+            return crm.eventService;
+          case 'lead':
+            return crm.leadService;
+          case 'opportunity':
+            return crm.opportunityService;
+          case 'user':
+            return crm.userService;
+          default:
+            throw new Error(`Common model ${commonModel} not supported for crm category`);
+        }
+      case 'engagement':
+        switch (commonModel) {
+          case 'contact':
+            return engagement.contactService;
+          default:
+            throw new Error(`Common model ${commonModel} not supported for engagement category`);
+        }
+    }
+  }
+
   return async function importRecords({
     syncId,
     connectionId,
@@ -45,13 +86,6 @@ export function createImportRecords(
     updatedAfterMs,
   }: ImportRecordsArgs): Promise<ImportRecordsResult> {
     const connection = await connectionService.getSafeById(connectionId);
-
-    if (connection.category !== 'crm') {
-      // TODO: support non-CRM syncs
-      throw ApplicationFailure.nonRetryable('Only CRM connections are supported');
-    }
-
-    const client = (await remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
 
     let result = {
       maxLastModifiedAt: null as Date | null,
@@ -62,64 +96,25 @@ export function createImportRecords(
 
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
 
-    const readable = await client.listObjects(commonModel, updatedAfter);
-
-    switch (commonModel) {
-      case 'account': {
-        result = await accountService.upsertRemoteAccounts(
-          connection.id,
-          connection.customerId,
-          toHeartbeatingReadable(readable),
-          onUpsertBatchCompletion
-        );
-        break;
-      }
-      case 'contact': {
-        result = await contactService.upsertRemoteContacts(
-          connection.id,
-          connection.customerId,
-          toHeartbeatingReadable(readable),
-          onUpsertBatchCompletion
-        );
-        break;
-      }
-      case 'opportunity': {
-        result = await opportunityService.upsertRemoteOpportunities(
-          connection.id,
-          connection.customerId,
-          toHeartbeatingReadable(readable),
-          onUpsertBatchCompletion
-        );
-        break;
-      }
-      case 'lead': {
-        result = await leadService.upsertRemoteLeads(
-          connection.id,
-          connection.customerId,
-          toHeartbeatingReadable(readable),
-          onUpsertBatchCompletion
-        );
-        break;
-      }
-      case 'user': {
-        result = await userService.upsertRemoteUsers(
-          connection.id,
-          connection.customerId,
-          toHeartbeatingReadable(readable),
-          onUpsertBatchCompletion
-        );
-        break;
-      }
-      case 'event': {
-        result = await eventService.upsertRemoteEvents(
-          connection.id,
-          connection.customerId,
-          toHeartbeatingReadable(readable),
-          onUpsertBatchCompletion
-        );
-        break;
-      }
+    const client = await remoteService.getRemoteClient(connectionId);
+    let readable: Readable;
+    // TODO: Have better type-safety
+    if (client.category() === 'crm') {
+      readable = await (client as CrmRemoteClient).listObjects(commonModel as CRMCommonModelType, updatedAfter);
+    } else {
+      readable = await (client as EngagementRemoteClient).listObjects(
+        commonModel as EngagementCommonModelType,
+        updatedAfter
+      );
     }
+
+    const service = getService(connection.category, commonModel);
+    result = await service.upsertRemoteRecords(
+      connection.id,
+      connection.customerId,
+      toHeartbeatingReadable(readable),
+      onUpsertBatchCompletion
+    );
 
     logEvent({
       eventName: 'Partially Completed Sync',

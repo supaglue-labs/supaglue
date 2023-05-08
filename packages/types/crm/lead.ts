@@ -6,7 +6,7 @@ import type {
   Contact,
   CustomFields,
   User,
-} from '..';
+} from '.';
 import { Filter } from '../filter';
 import { Address, EmailAddress, PhoneNumber } from './common';
 

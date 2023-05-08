@@ -1,20 +1,12 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import type {
-  GetInternalParams,
-  ListInternalParams,
-  Opportunity,
-  OpportunityCreateParams,
-  OpportunityFilters,
-  OpportunityUpdateParams,
-  PaginatedResult,
-  SearchInternalParams,
-} from '@supaglue/types';
+import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInternalParams } from '@supaglue/types';
+import { Opportunity, OpportunityCreateParams, OpportunityFilters, OpportunityUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { v5 as uuidv5 } from 'uuid';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
-import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../../mappers';
+import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class OpportunityService extends CommonModelBaseService {
@@ -162,10 +154,10 @@ export class OpportunityService extends CommonModelBaseService {
     return fromOpportunityModel(opportunityModel);
   }
 
-  public async upsertRemoteOpportunities(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteOpportunitiesReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.crm.opportunities;
@@ -199,7 +191,7 @@ export class OpportunityService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteOpportunitiesReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

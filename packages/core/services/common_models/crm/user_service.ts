@@ -1,10 +1,11 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import { GetInternalParams, ListInternalParams, PaginatedResult, User } from '@supaglue/types';
+import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
+import { User } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
-import { fromRemoteUserToDbUserParams, fromUserModel } from '../../../mappers';
+import { fromRemoteUserToDbUserParams, fromUserModel } from '../../../mappers/crm';
 
 export class UserService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -52,10 +53,10 @@ export class UserService extends CommonModelBaseService {
     };
   }
 
-  public async upsertRemoteUsers(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteUsersReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.crm.users;
@@ -80,7 +81,7 @@ export class UserService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteUsersReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

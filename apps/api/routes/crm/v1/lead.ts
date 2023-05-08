@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toSearchInternalParams, toSnakecasedKeysLead } from '@supaglue/core/mappers';
+import { toSearchInternalParams } from '@supaglue/core/mappers';
+import { toSnakecasedKeysLead } from '@supaglue/core/mappers/crm';
 import { toGetInternalParams, toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateLeadPathParams,

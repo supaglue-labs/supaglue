@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toGetInternalParams, toSnakecasedKeysUser } from '@supaglue/core/mappers';
+import { toGetInternalParams } from '@supaglue/core/mappers';
+import { toSnakecasedKeysUser } from '@supaglue/core/mappers/crm';
 import { toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   GetUserPathParams,

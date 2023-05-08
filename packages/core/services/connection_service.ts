@@ -1,10 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
-import type {
-  ConnectionCredentialsDecryptedAny,
-  ConnectionSafeAny,
-  ConnectionUnsafe,
-  CRMProviderName,
-} from '@supaglue/types';
+import type { ConnectionCredentialsDecryptedAny, ConnectionSafeAny, ConnectionUnsafe } from '@supaglue/types';
+import type { CRMProviderName } from '@supaglue/types/crm';
 import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';

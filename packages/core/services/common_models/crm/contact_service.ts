@@ -1,20 +1,12 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import type {
-  Contact,
-  ContactCreateParams,
-  ContactFilters,
-  ContactUpdateParams,
-  GetInternalParams,
-  ListInternalParams,
-  PaginatedResult,
-  SearchInternalParams,
-} from '@supaglue/types';
+import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInternalParams } from '@supaglue/types';
+import { Contact, ContactCreateParams, ContactFilters, ContactUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { v5 as uuidv5 } from 'uuid';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
-import { fromContactModel, fromRemoteContactToDbContactParams } from '../../../mappers';
+import { fromContactModel, fromRemoteContactToDbContactParams } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class ContactService extends CommonModelBaseService {
@@ -159,10 +151,10 @@ export class ContactService extends CommonModelBaseService {
     return fromContactModel(contactModel);
   }
 
-  public async upsertRemoteContacts(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteContactsReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.crm.contacts;
@@ -195,7 +187,7 @@ export class ContactService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteContactsReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

@@ -1,18 +1,12 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import {
-  Event,
-  EventCreateParams,
-  EventUpdateParams,
-  GetInternalParams,
-  ListInternalParams,
-  PaginatedResult,
-} from '@supaglue/types';
+import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
+import { Event, EventCreateParams, EventUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { v5 as uuidv5 } from 'uuid';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
-import { fromEventModel, fromRemoteEventToDbEventParams } from '../../../mappers';
+import { fromEventModel, fromRemoteEventToDbEventParams } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class EventService extends CommonModelBaseService {
@@ -145,10 +139,10 @@ export class EventService extends CommonModelBaseService {
     return fromEventModel(contactModel);
   }
 
-  public async upsertRemoteEvents(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteEventsReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.crm.events;
@@ -185,7 +179,7 @@ export class EventService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteEventsReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

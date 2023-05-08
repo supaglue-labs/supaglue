@@ -1,4 +1,5 @@
-import { CRMProviderName, IntegrationCategory, ProviderName } from '@supaglue/types';
+import { IntegrationCategory, ProviderName } from '@supaglue/types';
+import { CRMProviderName } from '@supaglue/types/crm';
 import { EngagementProviderName } from '@supaglue/types/engagement';
 import { crmConnectorConfigMap } from './crm';
 import { engagementConnectorConfigMap } from './engagement';

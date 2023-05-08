@@ -13,3 +13,5 @@ export const ASYNC_RETRY_OPTIONS = {
   minTimeout: 1000,
   maxTimeout: 60 * 1000,
 };
+
+export const REFRESH_TOKEN_THRESHOLD_MS = 300000;

@@ -1,6 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
-import { toGetInternalParams, toSearchInternalParams, toSnakecasedKeysOpportunity } from '@supaglue/core/mappers';
+import { toGetInternalParams, toSearchInternalParams } from '@supaglue/core/mappers';
+import { toSnakecasedKeysOpportunity } from '@supaglue/core/mappers/crm';
 import { toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateOpportunityPathParams,

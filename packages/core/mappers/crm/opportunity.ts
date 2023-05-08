@@ -1,5 +1,6 @@
 import { CrmOpportunity } from '@supaglue/db';
-import { GetInternalParams, Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types';
+import { GetInternalParams } from '@supaglue/types';
+import { Opportunity, OpportunityStatus, RemoteOpportunity } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAccount } from './account';
 import { toSnakecasedKeysUser } from './user';

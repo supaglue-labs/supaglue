@@ -72,10 +72,10 @@ export interface components {
           phone_number_type: "work" | "personal" | "other";
           is_primary: boolean;
         })[];
-      open_count: number | null;
-      click_count: number | null;
-      reply_count: number | null;
-      bounced_count: number | null;
+      open_count: number;
+      click_count: number;
+      reply_count: number;
+      bounced_count: number;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z

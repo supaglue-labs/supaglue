@@ -1,15 +1,11 @@
-import {
-  ConnectionUnsafe,
-  CRMCommonModelType,
-  CRMCommonModelTypeMap,
-  CRMIntegration,
-  CRMProviderName,
-} from '@supaglue/types';
+import { ConnectionUnsafe, CRMIntegration, IntegrationCategory } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
 import { EventEmitter } from 'events';
 import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface CrmRemoteClient extends RemoteClient {
+  category(): IntegrationCategory;
   listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable>;
   createObject<T extends CRMCommonModelType>(
     commonModelType: T,
@@ -24,6 +20,10 @@ export interface CrmRemoteClient extends RemoteClient {
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
   public constructor(...args: ConstructorParameters<typeof AbstractRemoteClient>) {
     super(...args);
+  }
+
+  public category(): IntegrationCategory {
+    return 'crm';
   }
 
   abstract listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable>;

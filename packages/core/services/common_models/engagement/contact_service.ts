@@ -2,17 +2,17 @@ import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 
 import { Readable } from 'stream';
-import { fromRemoteContactToDbContactParams } from '../../../mappers';
+import { fromRemoteContactToDbContactParams } from '../../../mappers/engagement';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
     super(...args);
   }
 
-  public async upsertRemoteContacts(
+  public async upsertRemoteRecords(
     connectionId: string,
     customerId: string,
-    remoteContactsReadable: Readable,
+    remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.engagement.contacts;
@@ -44,7 +44,7 @@ export class ContactService extends CommonModelBaseService {
     return await this.upsertRemoteCommonModels(
       connectionId,
       customerId,
-      remoteContactsReadable,
+      remoteRecordsReadable,
       table,
       tempTable,
       columnsWithoutId,

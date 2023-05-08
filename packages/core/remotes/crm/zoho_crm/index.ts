@@ -1,4 +1,5 @@
-import { ConnectionUnsafe, CRMCommonModelType, CRMCommonModelTypeMap, CRMIntegration } from '@supaglue/types';
+import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 

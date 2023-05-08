@@ -4,11 +4,8 @@
 
 import {
   AccountCreateParams,
-  CommonModel,
-  ConnectionUnsafe,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  CRMIntegration,
   RemoteAccount,
   RemoteAccountUpdateParams,
   RemoteContact,
@@ -23,6 +20,12 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
+} from '@supaglue/types/crm';
+
+import {
+  CommonModel,
+  ConnectionUnsafe,
+  CRMIntegration,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';

@@ -1,5 +1,6 @@
 import { CrmEvent } from '@supaglue/db';
-import { Event, GetInternalParams, RemoteEvent } from '@supaglue/types';
+import { GetInternalParams } from '@supaglue/types';
+import { Event, RemoteEvent } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
 import {
   toSnakecasedKeysAccount,

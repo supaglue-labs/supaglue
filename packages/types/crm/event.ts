@@ -7,7 +7,7 @@ import {
   Lead,
   Opportunity,
   User,
-} from '..';
+} from '.';
 import { BaseCrmModel } from './base';
 
 type BaseEvent = BaseCrmModel & {

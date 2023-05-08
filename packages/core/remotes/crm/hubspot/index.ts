@@ -14,9 +14,13 @@ import {
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
   ConnectionUnsafe,
+  CRMIntegration,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+} from '@supaglue/types';
+import {
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  CRMIntegration,
   RemoteAccount,
   RemoteAccountCreateParams,
   RemoteAccountUpdateParams,
@@ -32,13 +36,11 @@ import {
   RemoteOpportunity,
   RemoteOpportunityCreateParams,
   RemoteOpportunityUpdateParams,
-  SendPassthroughRequestRequest,
-  SendPassthroughRequestResponse,
-} from '@supaglue/types';
+} from '@supaglue/types/crm';
 import retry from 'async-retry';
 import { Readable } from 'stream';
 import { TooManyRequestsError } from '../../../errors';
-import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
+import { ASYNC_RETRY_OPTIONS, logger, REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
@@ -93,7 +95,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {
-    if (!this.#credentials.expiresAt || Date.parse(this.#credentials.expiresAt) < Date.now() + 300000) {
+    if (
+      !this.#credentials.expiresAt ||
+      Date.parse(this.#credentials.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS
+    ) {
       const token = await this.#client.oauth.tokensApi.createToken(
         'refresh_token',
         undefined,
