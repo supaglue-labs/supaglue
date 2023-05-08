@@ -1,9 +1,16 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
-import { ConnectionSafeAny, ConnectionStatus, ConnectionUnsafeAny, CRMProviderName } from '@supaglue/types';
+import {
+  CategoryOfProviderName,
+  ConnectionSafeAny,
+  ConnectionStatus,
+  ConnectionUnsafe,
+  CRMProviderName,
+  ProviderName,
+} from '@supaglue/types';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 
-export const fromConnectionModelToConnectionUnsafe = async ({
+export async function fromConnectionModelToConnectionUnsafe<T extends ProviderName>({
   id,
   customerId,
   category,
@@ -13,23 +20,23 @@ export const fromConnectionModelToConnectionUnsafe = async ({
   credentials,
   remoteId,
   instanceUrl,
-}: ConnectionModel): Promise<ConnectionUnsafeAny> => {
+}: ConnectionModel): Promise<ConnectionUnsafe<T>> {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
     id,
     applicationId,
     customerId: externalCustomerId,
     integrationId,
-    category: category as 'crm',
+    category: category as CategoryOfProviderName<T>,
     status: status as ConnectionStatus,
-    providerName: providerName as CRMProviderName,
+    providerName: providerName as T,
     credentials: JSON.parse(await decrypt(credentials)),
     remoteId,
     instanceUrl,
   };
-};
+}
 
-export const fromConnectionModelToConnectionSafe = ({
+export function fromConnectionModelToConnectionSafe({
   id,
   customerId,
   category,
@@ -38,7 +45,7 @@ export const fromConnectionModelToConnectionSafe = ({
   status,
   remoteId,
   instanceUrl,
-}: ConnectionModel): ConnectionSafeAny => {
+}: ConnectionModel): ConnectionSafeAny {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
   return {
     id,
@@ -51,4 +58,4 @@ export const fromConnectionModelToConnectionSafe = ({
     remoteId,
     instanceUrl,
   };
-};
+}

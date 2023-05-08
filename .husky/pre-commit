@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-yarn turbo run lint-staged "--filter=[HEAD^1]" --output-logs=errors-only
-yarn turbo generate --output-logs=errors-only
+yarn turbo run lint-staged "--filter=[HEAD^1]"
+yarn turbo generate "--filter=!salesforce-pub-sub"

@@ -1,0 +1,24 @@
+{
+  "name": "salesforce-pub-sub",
+  "version": "0.7.11",
+  "private": true,
+  "packageManager": "yarn@3.4.1",
+  "dependencies": {
+    "@bufbuild/connect": "^0.8.6",
+    "@bufbuild/connect-node": "^0.8.6",
+    "@bufbuild/protobuf": "^1.2.0",
+    "@supaglue/core": "workspace:*",
+    "avsc": "^5.7.7",
+    "bigint-conversion": "^2.4.1",
+    "jsforce": "^2.0.0-beta.20",
+    "lru-cache": "^9.1.1",
+    "tsx": "^3.12.6"
+  },
+  "scripts": {
+    "generate": "buf generate https://github.com/supaglue-labs/salesforce-pub-sub-api.git",
+    "start": "tsx watch --clear-screen=false ./index.ts",
+    "build": "tsc -p tsconfig.json",
+    "lint-staged": "run -T lint-staged --no-stash --quiet",
+    "lint": "run -T eslint"
+  }
+}
