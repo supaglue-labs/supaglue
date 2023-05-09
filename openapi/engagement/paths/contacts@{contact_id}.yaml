@@ -37,7 +37,7 @@ patch:
           Example:
             value:
               model:
-                id: 43a45011-c55e-42f3-81a1-99158c956775
+                id: 6c018f45-f584-4ba8-b1a8-658bb29d300e
                 address:
                   city: San Francisco
                   country: USA

@@ -178,28 +178,28 @@
         "description": "Get a list of contacts",
         "parameters": [
           {
-            "$ref": "#/paths/~1users/get/parameters/0"
+            "$ref": "#/components/parameters/include_deleted_data"
           },
           {
-            "$ref": "#/paths/~1users/get/parameters/1"
+            "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "$ref": "#/paths/~1users/get/parameters/2"
+            "$ref": "#/components/parameters/created_after"
           },
           {
-            "$ref": "#/paths/~1users/get/parameters/3"
+            "$ref": "#/components/parameters/created_before"
           },
           {
-            "$ref": "#/paths/~1users/get/parameters/4"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/paths/~1users/get/parameters/5"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
-            "$ref": "#/paths/~1users/get/parameters/6"
+            "$ref": "#/components/parameters/cursor"
           },
           {
-            "$ref": "#/paths/~1users/get/parameters/7"
+            "$ref": "#/components/parameters/page_size"
           }
         ],
         "responses": {
@@ -232,7 +232,7 @@
                       "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
                       "results": [
                         {
-                          "id": "43a45011-c55e-42f3-81a1-99158c956775",
+                          "id": "4dec71a1-e789-4006-84fe-1a797202dddb",
                           "address": {
                             "city": "San Francisco",
                             "country": "USA",
@@ -296,7 +296,7 @@
               },
               "example": {
                 "model": {
-                  "id": "43a45011-c55e-42f3-81a1-99158c956775",
+                  "id": "ed7ce0f0-8119-4b73-bf01-4e8e0296ef80",
                   "address": {
                     "city": "San Francisco",
                     "country": "USA",
@@ -376,7 +376,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1users/get/parameters/1"
+            "$ref": "#/components/parameters/include_raw_data"
           }
         ],
         "responses": {
@@ -423,7 +423,7 @@
                 "Example": {
                   "value": {
                     "model": {
-                      "id": "43a45011-c55e-42f3-81a1-99158c956775",
+                      "id": "6c018f45-f584-4ba8-b1a8-658bb29d300e",
                       "address": {
                         "city": "San Francisco",
                         "country": "USA",
@@ -515,80 +515,28 @@
         "description": "Get a list of users",
         "parameters": [
           {
-            "name": "include_deleted_data",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to include data that was deleted in providers."
+            "$ref": "#/components/parameters/include_deleted_data"
           },
           {
-            "name": "include_raw_data",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to include raw data fetched from the 3rd party provider."
+            "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "name": "created_after",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects created after this datetime"
+            "$ref": "#/components/parameters/created_after"
           },
           {
-            "name": "created_before",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects created before this datetime"
+            "$ref": "#/components/parameters/created_before"
           },
           {
-            "name": "modified_after",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects modified after this datetime"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "name": "modified_before",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects modified before this datetime"
+            "$ref": "#/components/parameters/modified_before"
           },
           {
-            "name": "cursor",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
-            },
-            "description": "The pagination cursor value"
+            "$ref": "#/components/parameters/cursor"
           },
           {
-            "name": "page_size",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "3804695"
-            },
-            "description": "Number of results to return per page"
+            "$ref": "#/components/parameters/page_size"
           }
         ],
         "responses": {
@@ -670,7 +618,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1users/get/parameters/1"
+            "$ref": "#/components/parameters/include_raw_data"
           }
         ],
         "responses": {
@@ -798,6 +746,11 @@
             "type": "string",
             "example": 54312
           },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+          },
           "first_name": {
             "type": "string",
             "nullable": true,
@@ -814,12 +767,7 @@
             "example": "CEO"
           },
           "address": {
-            "nullable": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/address"
-              }
-            ]
+            "$ref": "#/components/schemas/address"
           },
           "email_addresses": {
             "$ref": "#/components/schemas/email_addresses"
@@ -897,6 +845,7 @@
         },
         "required": [
           "id",
+          "owner_id",
           "first_name",
           "last_name",
           "job_title",
@@ -936,6 +885,11 @@
           },
           "email_addresses": {
             "$ref": "#/components/schemas/email_addresses"
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
@@ -1133,6 +1087,7 @@
       },
       "address": {
         "type": "object",
+        "nullable": true,
         "properties": {
           "city": {
             "type": "string",
@@ -1368,6 +1323,82 @@
       }
     },
     "parameters": {
+      "include_deleted_data": {
+        "name": "include_deleted_data",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include data that was deleted in providers."
+      },
+      "include_raw_data": {
+        "name": "include_raw_data",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include raw data fetched from the 3rd party provider."
+      },
+      "created_after": {
+        "name": "created_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created after this datetime"
+      },
+      "created_before": {
+        "name": "created_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created before this datetime"
+      },
+      "modified_after": {
+        "name": "modified_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified after this datetime"
+      },
+      "modified_before": {
+        "name": "modified_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified before this datetime"
+      },
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+        },
+        "description": "The pagination cursor value"
+      },
+      "page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "3804695"
+        },
+        "description": "Number of results to return per page"
+      },
       "x-customer-id": {
         "name": "x-customer-id",
         "in": "header",

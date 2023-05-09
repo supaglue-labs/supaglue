@@ -65,13 +65,15 @@ export interface components {
     contact: {
       /** @example 54312 */
       id: string;
+      /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+      owner_id: string | null;
       /** @example George */
       first_name: string | null;
       /** @example Xing */
       last_name: string | null;
       /** @example CEO */
       job_title: string | null;
-      address: components["schemas"]["address"] | null;
+      address: components["schemas"]["address"];
       email_addresses: components["schemas"]["email_addresses"];
       /**
        * @example [
@@ -121,6 +123,8 @@ export interface components {
       job_title?: string | null;
       address?: components["schemas"]["address"];
       email_addresses?: components["schemas"]["email_addresses"];
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     user: {
@@ -210,7 +214,7 @@ export interface components {
      *   }
      * ]
      */
-    address: {
+    address: ({
       /** @example San Francisco */
       city: string | null;
       /** @example USA */
@@ -223,7 +227,7 @@ export interface components {
       street_1: string | null;
       /** @example null */
       street_2: string | null;
-    };
+    }) | null;
     /**
      * @example [
      *   {
@@ -325,6 +329,22 @@ export interface components {
   };
   responses: never;
   parameters: {
+    /** @description Whether to include data that was deleted in providers. */
+    include_deleted_data: boolean;
+    /** @description Whether to include raw data fetched from the 3rd party provider. */
+    include_raw_data: boolean;
+    /** @description If provided, will only return objects created after this datetime */
+    created_after: Date;
+    /** @description If provided, will only return objects created before this datetime */
+    created_before: Date;
+    /** @description If provided, will only return objects modified after this datetime */
+    modified_after: Date;
+    /** @description If provided, will only return objects modified before this datetime */
+    modified_before: Date;
+    /** @description The pagination cursor value */
+    cursor: string;
+    /** @description Number of results to return per page */
+    page_size: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
     /** @description The provider name */
@@ -420,7 +440,7 @@ export interface operations {
         /**
          * @example {
          *   "model": {
-         *     "id": "43a45011-c55e-42f3-81a1-99158c956775",
+         *     "id": "ed7ce0f0-8119-4b73-bf01-4e8e0296ef80",
          *     "address": {
          *       "city": "San Francisco",
          *       "country": "USA",
@@ -506,26 +526,6 @@ export interface operations {
      * List users 
      * @description Get a list of users
      */
-    parameters?: {
-        /** @description Whether to include data that was deleted in providers. */
-        /** @description Whether to include raw data fetched from the 3rd party provider. */
-        /** @description If provided, will only return objects created after this datetime */
-        /** @description If provided, will only return objects created before this datetime */
-        /** @description If provided, will only return objects modified after this datetime */
-        /** @description If provided, will only return objects modified before this datetime */
-        /** @description The pagination cursor value */
-        /** @description Number of results to return per page */
-      query?: {
-        include_deleted_data?: boolean;
-        include_raw_data?: boolean;
-        created_after?: Date;
-        created_before?: Date;
-        modified_after?: Date;
-        modified_before?: Date;
-        cursor?: string;
-        page_size?: string;
-      };
-    };
     responses: {
       /** @description Users */
       200: {

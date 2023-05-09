@@ -7,6 +7,7 @@ import { toSnakecasedKeysAddress, toSnakecasedKeysEmailAddress, toSnakecasedKeys
 export const toSnakecasedKeysContact = (contact: Contact) => {
   return {
     id: contact.id,
+    owner_id: contact.ownerId,
     last_modified_at: contact.lastModifiedAt,
     remote_id: contact.remoteId,
     first_name: contact.firstName,
@@ -30,6 +31,7 @@ export const fromContactModel = (
   {
     id,
     remoteId,
+    ownerId,
     firstName,
     lastName,
     address,
@@ -51,6 +53,7 @@ export const fromContactModel = (
   return {
     id,
     remoteId,
+    ownerId,
     firstName,
     lastName,
     jobTitle,
@@ -106,6 +109,8 @@ export const fromRemoteContactToDbContactParams = (
     remote_deleted_at: remoteContact.remoteDeletedAt?.toISOString(),
     detected_or_remote_deleted_at: remoteContact.detectedOrRemoteDeletedAt?.toISOString(),
     last_modified_at: lastModifiedAt?.toISOString(),
+    _remote_owner_id: remoteContact.remoteOwnerId,
+    owner_id: remoteContact.remoteOwnerId ? uuidv5(remoteContact.remoteOwnerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteContact.rawData,
   };
