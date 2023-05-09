@@ -60,7 +60,7 @@ export class UserService extends CommonModelBaseService {
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<UpsertRemoteCommonModelsResult> {
     const table = COMMON_MODEL_DB_TABLES.engagement.users;
-    const tempTable = 'crm_users_temp';
+    const tempTable = 'engagement_users_temp';
     const columnsWithoutId = [
       'remote_id',
       'customer_id',

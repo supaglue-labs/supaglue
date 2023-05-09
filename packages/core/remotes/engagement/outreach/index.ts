@@ -10,7 +10,11 @@ import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
-import { fromOutreachProspectToRemoteContact, toOutreachProspectCreateParams } from './mappers';
+import {
+  fromOutreachProspectToRemoteContact,
+  fromOutreachUserToRemoteUser,
+  toOutreachProspectCreateParams,
+} from './mappers';
 
 const OUTREACH_RECORD_LIMIT = 50;
 
@@ -66,7 +70,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.listContacts(updatedAfter);
       case 'user':
-        throw new Error('not yet supported');
+        return await this.listUsers(updatedAfter);
       default:
         throw new Error(`Common model ${commonModelType} not supported`);
     }
@@ -122,6 +126,39 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachProspectToRemoteContact)),
+        getNextCursorFromPage: (response) => response.links?.next,
+      },
+    ]);
+  }
+
+  async #getListUsersFetcher(updatedAfter?: Date): Promise<(link?: string) => Promise<OutreachPaginatedRecords>> {
+    return async (link?: string) => {
+      await this.maybeRefreshAccessToken();
+      if (link) {
+        const response = await axios.get<OutreachPaginatedRecords>(link, {
+          headers: this.#headers,
+        });
+        return response.data;
+      }
+      const response = await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/users`, {
+        params: updatedAfter
+          ? {
+              ...DEFAULT_LIST_PARAMS,
+              ...getUpdatedAfterPathParam(updatedAfter),
+            }
+          : DEFAULT_LIST_PARAMS,
+        headers: this.#headers,
+      });
+      return response.data;
+    };
+  }
+
+  private async listUsers(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = await this.#getListUsersFetcher(updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachUserToRemoteUser)),
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
