@@ -20,10 +20,12 @@ import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import Head from 'next/head';
 import { useState } from 'react';
+import { Svix } from 'svix';
 import { IS_CLOUD } from '../../api';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
   let session: Session | null = null;
+  const applicationId = query.applicationId as string;
 
   if (!IS_CLOUD) {
     session = await getServerSession(req, res, authOptions);
@@ -46,8 +48,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
   }
 
+  const svix = new Svix(process.env.SVIX_API_TOKEN!, { serverUrl: process.env.SVIX_SERVER_URL });
+  const svixDashboardUrl = (await svix.authentication.appPortalAccess(applicationId, {})).url;
+
   return {
-    props: { session, signedIn: true },
+    props: { session, signedIn: true, svixDashboardUrl },
   };
 };
 

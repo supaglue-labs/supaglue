@@ -81,6 +81,7 @@ model Connection {
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
   sync          Sync?
+  ReplayId      ReplayId[]
 
   @@unique([customerId, integrationId])
   @@map("connections")
@@ -371,4 +372,16 @@ model SyncHistory {
   endTimestamp   DateTime? @map("end_timestamp")
 
   @@map("sync_history")
+}
+
+model ReplayId {
+  connectionId String     @map("connection_id")
+  connection   Connection @relation(fields: [connectionId], references: [id])
+  eventType    String     @map("event_type")
+  replayId     String     @map("replay_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  @@unique([connectionId, eventType])
+  @@map("replay_ids")
 }

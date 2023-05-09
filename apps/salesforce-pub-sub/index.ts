@@ -1,6 +1,6 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
 import { logger } from '@supaglue/core/lib/logger';
-import { CDCChangeType, CDCWebhookPayload } from '@supaglue/types/cdc';
+import { CDCWebhookPayload } from '@supaglue/types/cdc';
 import * as jsforce from 'jsforce';
 import { createClient } from './client';
 import { ReplayPreset } from './gen/pubsub_api_pb';
@@ -14,23 +14,13 @@ const EVENT_TYPES_TO_SUBSCRIBE_TO = [
   'UserChangeEvent',
 ];
 
-const salesforceChangeTypeToCDCChangeType = (changeType: string): CDCChangeType => {
-  switch (changeType) {
-    case 'CREATE':
-    case 'UPDATE':
-    case 'DELETE':
-    case 'UNDELETE':
-      return changeType;
-    default:
-      throw new Error(`Unknown changeType ${changeType}`);
-  }
-};
-
-const { connectionService, integrationService } = getCoreDependencyContainer();
+const { connectionService, integrationService, webhookService, applicationService } = getCoreDependencyContainer();
 (async () => {
   const connections = await connectionService.listAllUnsafe({ providerName: 'salesforce' });
 
   for (const connection of connections) {
+    const application = await applicationService.getById(connection.applicationId);
+
     const {
       credentials: { instanceUrl, refreshToken, loginUrl },
       id: connectionId,
@@ -49,13 +39,20 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
       maxRequest: 10,
     });
 
-    let replayId: Uint8Array | undefined;
-
-    const processStream = async (eventType: string, replayPreset = ReplayPreset.LATEST, replayId?: Uint8Array) => {
+    const processStream = async (eventType: string) => {
+      let replayId: Uint8Array | undefined;
+      let replayPreset = ReplayPreset.LATEST;
       // make sure we have the latest accessToken
       const { access_token: accessToken } = await conn.oauth2.refreshToken(refreshToken);
       // expiresAt is not returned from the refresh token response
       await connectionService.updateConnectionWithNewAccessToken(connectionId, accessToken, /* expiresAt */ null);
+
+      // get the latest recorded replayId, if any
+      const encodedReplayId = await webhookService.getReplayId(connectionId, eventType);
+      if (encodedReplayId) {
+        replayId = Uint8Array.from(Buffer.from(encodedReplayId, 'base64'));
+        replayPreset = ReplayPreset.CUSTOM;
+      }
 
       const { organization_id: tenantId } = await conn.identity();
       const client = await createClient({
@@ -71,9 +68,9 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
         numRequested: 100,
       });
       for await (const { event, latestReplayId } of stream) {
-        replayId = latestReplayId;
-        const { ChangeEventHeader, ...rest } = event;
-        const { changeType, nulledFields, changedFields, diffFields, recordIds, entityName } = ChangeEventHeader;
+        const { ChangeEventHeader, ...fields } = event;
+        const { changeType, nulledFields, changedFields, diffFields, recordIds, entityName, transactionKey } =
+          ChangeEventHeader;
         // skip gap events for now, since consumers wouldn't be able to do anything with them
         if (
           changeType === 'GAP_CREATE' ||
@@ -88,19 +85,20 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
         for (const recordId of recordIds) {
           const webhookPayload: CDCWebhookPayload = {
             id: recordId,
-            entityName,
-            changeType: salesforceChangeTypeToCDCChangeType(changeType),
             nulledFields,
             changedFields,
             diffFields,
-            ...rest,
+            fields,
           };
 
-          logger.info(
-            { webhookPayload, connectionId, eventType, latestReplayId: Buffer.from(latestReplayId).toString('base64') },
-            'sending webhook'
-          );
+          const eventName = `${entityName.toLowerCase()}.${changeType.toLowerCase()}`;
+
+          await webhookService.sendMessage(eventName, webhookPayload, application, `${transactionKey}-${recordId}`);
+
+          logger.debug({ webhookPayload, connectionId, eventType }, 'sent webhook');
         }
+
+        await webhookService.saveReplayId(connectionId, eventType, Buffer.from(latestReplayId).toString('base64'));
       }
     };
 
@@ -108,7 +106,7 @@ const { connectionService, integrationService } = getCoreDependencyContainer();
       const streamErrorHandler = (err: any) => {
         // TODO probably should do something a bit more sophisticated here
         logger.error({ err, connectionId, eventType }, 'error in stream, restarting');
-        processStream(eventType, ReplayPreset.CUSTOM, replayId).catch(streamErrorHandler);
+        processStream(eventType).catch(streamErrorHandler);
       };
 
       processStream(eventType).catch(streamErrorHandler);

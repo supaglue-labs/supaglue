@@ -3,7 +3,7 @@ import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
-import type { IntegrationService } from '@supaglue/core/services';
+import type { ApplicationService, IntegrationService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
@@ -31,7 +31,6 @@ import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
 import { Client, ScheduleAlreadyRunning, WorkflowNotFoundError } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
-import type { ApplicationService } from './application_service';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 

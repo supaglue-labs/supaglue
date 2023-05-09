@@ -9,6 +9,7 @@ import {
   SgUserService,
   SyncHistoryService,
 } from './services';
+import { ApplicationService } from './services/application_service';
 import {
   AccountService,
   ContactService as CrmContactService,
@@ -21,18 +22,21 @@ import {
   ContactService as EngagementContactService,
   UserService as EngagementUserService,
 } from './services/common_models/engagement';
+import { WebhookService } from './services/webhook_service';
 
 export type CoreDependencyContainer = {
   pgPool: Pool;
   prisma: PrismaClient;
 
   // mgmt
+  applicationService: ApplicationService;
   sgUserService: SgUserService;
   connectionService: ConnectionService;
   integrationService: IntegrationService;
   customerService: CustomerService;
   remoteService: RemoteService;
   syncHistoryService: SyncHistoryService;
+  webhookService: WebhookService;
 
   // crm
   crm: {
@@ -80,11 +84,13 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   });
 
   // mgmt
+  const applicationService = new ApplicationService(prisma);
   const sgUserService = new SgUserService();
   const integrationService = new IntegrationService(prisma);
   const connectionService = new ConnectionService(prisma, integrationService);
   const customerService = new CustomerService(prisma);
   const remoteService = new RemoteService(connectionService, integrationService);
+  const webhookService = new WebhookService({ prisma });
 
   // crm
   const accountService = new AccountService(pgPool, prisma, remoteService);
@@ -103,11 +109,13 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     pgPool,
     prisma,
     // mgmt
+    applicationService,
     sgUserService,
     connectionService,
     customerService,
     integrationService,
     remoteService,
+    webhookService,
     syncHistoryService,
     // crm
     crm: {
