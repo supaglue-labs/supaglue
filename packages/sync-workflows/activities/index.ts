@@ -7,7 +7,10 @@ import {
   OpportunityService,
   UserService,
 } from '@supaglue/core/services/common_models/crm';
-import { ContactService as EngagementContactService } from '@supaglue/core/services/common_models/engagement';
+import {
+  ContactService as EngagementContactService,
+  UserService as EngagementUserService,
+} from '@supaglue/core/services/common_models/engagement';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetSync } from './get_sync';
@@ -44,6 +47,7 @@ export const createActivities = ({
   };
   engagement: {
     contactService: EngagementContactService;
+    userService: EngagementUserService;
   };
 }) => {
   return {

@@ -9,7 +9,10 @@ import {
   OpportunityService,
   UserService,
 } from '@supaglue/core/services/common_models/crm';
-import { ContactService as EngagementContactService } from '@supaglue/core/services/common_models/engagement';
+import {
+  ContactService as EngagementContactService,
+  UserService as EngagementUserService,
+} from '@supaglue/core/services/common_models/engagement';
 import { CommonModel, IntegrationCategory } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
@@ -45,6 +48,7 @@ export function createImportRecords(
   },
   engagement: {
     contactService: EngagementContactService;
+    userService: EngagementUserService;
   }
 ) {
   function getService(
@@ -73,6 +77,8 @@ export function createImportRecords(
         switch (commonModel) {
           case 'contact':
             return engagement.contactService;
+          case 'user':
+            return engagement.userService;
           default:
             throw new Error(`Common model ${commonModel} not supported for engagement category`);
         }

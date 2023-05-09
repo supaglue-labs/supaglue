@@ -62,7 +62,14 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     commonModelType: EngagementCommonModelType,
     updatedAfter?: Date
   ): Promise<Readable> {
-    return await this.listContacts(updatedAfter);
+    switch (commonModelType) {
+      case 'contact':
+        return await this.listContacts(updatedAfter);
+      case 'user':
+        throw new Error('not yet supported');
+      default:
+        throw new Error(`Common model ${commonModelType} not supported`);
+    }
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {
@@ -124,7 +131,14 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
-    return await this.createContact(params);
+    switch (commonModelType) {
+      case 'contact':
+        return await this.createContact(params);
+      case 'user':
+        throw new Error('Create operation not supported for user object');
+      default:
+        throw new Error(`Common model ${commonModelType} not supported`);
+    }
   }
 
   async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
