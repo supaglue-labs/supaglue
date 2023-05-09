@@ -1076,6 +1076,7 @@
             "example": true
           },
           "name": {
+            "nullable": true,
             "type": "string"
           },
           "tags": {
