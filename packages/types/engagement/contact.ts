@@ -49,7 +49,7 @@ export type RemoteContactUpdateParams = RemoteContactCreateParams & {
   remoteId: string;
 };
 
-export type ContactTypes = {
+export type RemoteContactTypes = {
   object: RemoteContact;
   createParams: RemoteContactCreateParams;
   updateParams: RemoteContactUpdateParams;
