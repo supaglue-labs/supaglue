@@ -39,7 +39,9 @@ get:
                   - id: 13bc2a55-be6a-4cb9-8ea3-12dc1e41ac59
                     is_enabled: true
                     name: Sample Sequence
-                    tags: [tag1, tag2]
+                    tags:
+                      - tag1
+                      - tag2
                     num_steps: 5
                     schedule_count: 0
                     open_count: 0
