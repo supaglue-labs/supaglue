@@ -304,6 +304,8 @@ model EngagementContact {
   lastModifiedAt            DateTime  @map("last_modified_at")
   createdAt                 DateTime  @default(now()) @map("created_at")
   updatedAt                 DateTime  @updatedAt @map("updated_at")
+  remoteOwnerId             String?   @map("_remote_owner_id")
+  ownerId                   String?   @map("owner_id")
 
   @@unique([connectionId, remoteId])
   @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`

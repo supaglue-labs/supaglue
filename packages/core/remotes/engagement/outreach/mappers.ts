@@ -25,7 +25,7 @@ export const fromOutreachUserToRemoteUser = (record: OutreachRecord): RemoteUser
 };
 
 export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): RemoteContact => {
-  const { id, attributes } = record;
+  const { id, attributes, relationships } = record;
   return {
     remoteId: id.toString(),
     firstName: (attributes.firstName as string) ?? null,
@@ -55,6 +55,7 @@ export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): Rem
     remoteWasDeleted: false,
     remoteDeletedAt: null,
     detectedOrRemoteDeletedAt: null,
+    remoteOwnerId: relationships.owner.data.id ?? null,
     rawData: record,
   };
 };

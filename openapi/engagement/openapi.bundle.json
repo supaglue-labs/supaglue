@@ -798,6 +798,11 @@
             "type": "string",
             "example": 54312
           },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+          },
           "first_name": {
             "type": "string",
             "nullable": true,
@@ -897,6 +902,7 @@
         },
         "required": [
           "id",
+          "owner_id",
           "first_name",
           "last_name",
           "job_title",
@@ -936,6 +942,11 @@
           },
           "email_addresses": {
             "$ref": "#/components/schemas/email_addresses"
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"

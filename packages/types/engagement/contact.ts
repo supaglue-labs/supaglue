@@ -19,11 +19,13 @@ export type BaseContact = BaseEngagementModel & {
 
 export type Contact = BaseContact &
   BaseEngagementModelNonRemoteParams & {
+    ownerId?: string | null;
     rawData?: Record<string, any>;
   };
 
 export type RemoteContact = BaseContact &
   BaseEngagementModelRemoteOnlyParams & {
+    remoteOwnerId: string | null;
     rawData: Record<string, any>;
   };
 
@@ -34,6 +36,7 @@ export type BaseContactCreateParams = {
   address?: Address | null;
   emailAddresses?: EmailAddress[];
   phoneNumbers?: PhoneNumber[];
+  ownerId?: string | null;
 
   customFields?: CustomFields;
 };

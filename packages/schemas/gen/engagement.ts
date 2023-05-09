@@ -65,6 +65,8 @@ export interface components {
     contact: {
       /** @example 54312 */
       id: string;
+      /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+      owner_id: string | null;
       /** @example George */
       first_name: string | null;
       /** @example Xing */
@@ -121,6 +123,8 @@ export interface components {
       job_title?: string | null;
       address?: components["schemas"]["address"];
       email_addresses?: components["schemas"]["email_addresses"];
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     user: {

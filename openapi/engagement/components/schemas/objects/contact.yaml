@@ -3,6 +3,10 @@ properties:
   id:
     type: string
     example: 54312
+  owner_id:
+    type: string
+    nullable: true
+    example: 23e640fe-6105-4a11-a636-3aa6b6c6e762
   first_name:
     type: string
     nullable: true
@@ -53,6 +57,7 @@ properties:
     additionalProperties: true
 required:
   - id
+  - owner_id
   - first_name
   - last_name
   - job_title
