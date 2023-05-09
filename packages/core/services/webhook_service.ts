@@ -4,6 +4,9 @@ import { Svix } from 'svix';
 
 const svix = new Svix(process.env.SVIX_API_TOKEN!, { serverUrl: process.env.SVIX_SERVER_URL });
 
+/**
+ * WebhookService is a wrapper around Svix's API and is only used for CDC webhooks currently.
+ */
 export class WebhookService {
   #prisma: PrismaClient;
 
