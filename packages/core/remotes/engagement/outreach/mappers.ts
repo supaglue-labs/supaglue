@@ -55,7 +55,7 @@ export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): Rem
     remoteWasDeleted: false,
     remoteDeletedAt: null,
     detectedOrRemoteDeletedAt: null,
-    remoteOwnerId: relationships.owner?.data?.id ?? null,
+    remoteOwnerId: relationships.owner?.data?.id?.toString() ?? null,
     rawData: record,
   };
 };
