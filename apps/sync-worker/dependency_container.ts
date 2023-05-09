@@ -6,9 +6,12 @@ import {
   EventService,
   LeadService,
   OpportunityService,
-  UserService,
+  UserService as CrmUserService,
 } from '@supaglue/core/services/common_models/crm';
-import { ContactService as EngagementContactService } from '@supaglue/core/services/common_models/engagement';
+import {
+  ContactService as EngagementContactService,
+  UserService as EngagementUserService,
+} from '@supaglue/core/services/common_models/engagement';
 import type { PrismaClient } from '@supaglue/db';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';
@@ -27,12 +30,13 @@ type DependencyContainer = {
     contactService: CrmContactService;
     accountService: AccountService;
     leadService: LeadService;
-    userService: UserService;
+    userService: CrmUserService;
     eventService: EventService;
     opportunityService: OpportunityService;
   };
   engagement: {
     contactService: EngagementContactService;
+    userService: EngagementUserService;
   };
 };
 
