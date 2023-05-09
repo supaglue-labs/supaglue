@@ -10,6 +10,7 @@ import {
 } from '@supaglue/core/services/common_models/crm';
 import {
   ContactService as EngagementContactService,
+  SequenceService,
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
 import type { PrismaClient } from '@supaglue/db';
@@ -37,6 +38,7 @@ type DependencyContainer = {
   engagement: {
     contactService: EngagementContactService;
     userService: EngagementUserService;
+    sequenceService: SequenceService;
   };
 };
 

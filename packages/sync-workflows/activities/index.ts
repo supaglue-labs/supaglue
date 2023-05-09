@@ -9,6 +9,7 @@ import {
 } from '@supaglue/core/services/common_models/crm';
 import {
   ContactService as EngagementContactService,
+  SequenceService,
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
@@ -48,6 +49,7 @@ export const createActivities = ({
   engagement: {
     contactService: EngagementContactService;
     userService: EngagementUserService;
+    sequenceService: SequenceService;
   };
 }) => {
   return {

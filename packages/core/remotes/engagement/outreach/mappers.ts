@@ -4,6 +4,7 @@ import {
   PhoneNumber,
   RemoteContact,
   RemoteContactCreateParams,
+  RemoteSequence,
   RemoteUser,
 } from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
@@ -20,6 +21,29 @@ export const fromOutreachUserToRemoteUser = (record: OutreachRecord): RemoteUser
     remoteWasDeleted: false,
     remoteDeletedAt: null,
     detectedOrRemoteDeletedAt: null,
+    rawData: record,
+  };
+};
+
+export const fromOutreachSequenceToRemoteSequence = (record: OutreachRecord): RemoteSequence => {
+  const { id, attributes, relationships } = record;
+  return {
+    remoteId: id.toString(),
+    name: (attributes.name as string) ?? null,
+    isEnabled: attributes.enabled as boolean,
+    numSteps: attributes.sequenceStepCount as number,
+    tags: attributes.tags as string[],
+    scheduleCount: (attributes.scheduleCount as number) ?? 0,
+    openCount: (attributes.openCount as number) ?? 0,
+    optOutCount: (attributes.optOutCount as number) ?? 0,
+    clickCount: (attributes.clickCount as number) ?? 0,
+    replyCount: (attributes.replyCount as number) ?? 0,
+    remoteCreatedAt: new Date(attributes.createdAt as string),
+    remoteUpdatedAt: new Date(attributes.updatedAt as string),
+    remoteWasDeleted: false,
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
+    remoteOwnerId: relationships.owner?.data?.id?.toString() ?? null,
     rawData: record,
   };
 };

@@ -20,6 +20,7 @@ import {
 } from './services/common_models/crm';
 import {
   ContactService as EngagementContactService,
+  SequenceService,
   UserService as EngagementUserService,
 } from './services/common_models/engagement';
 import { WebhookService } from './services/webhook_service';
@@ -52,6 +53,7 @@ export type CoreDependencyContainer = {
   engagement: {
     contactService: EngagementContactService;
     userService: EngagementUserService;
+    sequenceService: SequenceService;
   };
 };
 
@@ -104,6 +106,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   // engagement
   const engagementContactService = new EngagementContactService(pgPool, prisma, remoteService);
   const engagementUserService = new EngagementUserService(pgPool, prisma, remoteService);
+  const sequenceService = new SequenceService(pgPool, prisma, remoteService);
 
   return {
     pgPool,
@@ -130,6 +133,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     engagement: {
       contactService: engagementContactService,
       userService: engagementUserService,
+      sequenceService,
     },
   };
 }
