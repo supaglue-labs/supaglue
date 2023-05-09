@@ -40,3 +40,19 @@ export type UpdateContactQueryParams = any;
 export type UpdateContactRequest = operations['updateContact']['requestBody']['content']['application/json'];
 export type UpdateContactResponse =
   operations['updateContact']['responses'][keyof operations['updateContact']['responses']]['content']['application/json'];
+
+export type GetUsersPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type GetUsersQueryParams = Required<operations['getUsers']>['parameters']['query'];
+export type GetUsersQueryParams = any;
+export type GetUsersRequest = never;
+export type GetUsersResponse =
+  operations['getUsers']['responses'][keyof operations['getUsers']['responses']]['content']['application/json'];
+
+export type GetUserPathParams = paths[`/users/{user_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type GetUserQueryParams = Required<operations['getUser']>['parameters']['query'];
+export type GetUserQueryParams = any;
+export type GetUserRequest = never;
+export type GetUserResponse =
+  operations['getUser']['responses'][keyof operations['getUser']['responses']]['content']['application/json'];
