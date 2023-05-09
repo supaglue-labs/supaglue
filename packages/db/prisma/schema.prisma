@@ -345,10 +345,11 @@ model EngagementSequence {
   name                      String?
   tags                      String[]
   numSteps                  Int       @map("num_steps")
-  scheduledCount            Int       @map("scheduled_count")
-  optedOutCount             Int       @map("opted_out_count")
-  repliedCount              Int       @map("replied_count")
-  clickedCount              Int       @map("clicked_count")
+  scheduleCount             Int       @map("schedule_count")
+  openCount                 Int       @map("open_count")
+  optOutCount               Int       @map("opt_out_count")
+  replyCount                Int       @map("reply_count")
+  clickCount                Int       @map("click_count")
   rawData                   Json?     @map("raw_data")
   remoteCreatedAt           DateTime? @map("remote_created_at")
   remoteUpdatedAt           DateTime? @map("remote_updated_at")

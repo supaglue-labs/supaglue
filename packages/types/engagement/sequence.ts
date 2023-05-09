@@ -1,32 +1,31 @@
-import { BaseEngagementModel } from './base';
+import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
 
-export type Sequence = BaseEngagementModel & {
+export type BaseSequence = BaseEngagementModel & {
   isEnabled: boolean | null;
   name: string | null;
   tags: string[];
   numSteps: number;
-  scheduledCount: number;
-  openedCount: number;
-  optedOutCount: number;
-  repliedCount: number;
-  clickedCount: number;
+  scheduleCount: number;
+  openCount: number;
+  optOutCount: number;
+  replyCount: number;
+  clickCount: number;
 };
 
-export type SequenceCreateParams = {
-  name: string;
-  shareType: 'team' | 'private';
-};
-
-export type SequenceStartParams = {
-  id: string;
-  fields: {
-    contactId: string;
-    mailboxId: string;
+export type Sequence = BaseSequence &
+  BaseEngagementModelNonRemoteParams & {
+    ownerId: string | null;
+    rawData?: Record<string, any>;
   };
-};
 
-export type SequenceTypes = {
+export type RemoteSequence = BaseSequence &
+  BaseEngagementModelRemoteOnlyParams & {
+    remoteOwnerId: string | null;
+    rawData: Record<string, any>;
+  };
+
+export type RemoteSequenceTypes = {
   object: Sequence;
-  createParams: SequenceCreateParams;
-  startParams: SequenceStartParams;
+  createParams: never;
+  updateParams: never;
 };

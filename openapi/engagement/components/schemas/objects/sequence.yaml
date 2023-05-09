@@ -21,13 +21,15 @@ properties:
       type: string
   num_steps:
     type: number
-  scheduled_count:
+  schedule_count:
     type: number
-  opted_out_count:
+  open_count:
     type: number
-  replied_count:
+  opt_out_count:
     type: number
-  clicked_count:
+  reply_count:
+    type: number
+  click_count:
     type: number
   remote_created_at:
     type: string
@@ -50,10 +52,11 @@ required:
   - name
   - tags
   - num_steps
-  - scheduled_count
-  - opted_out_count
-  - replied_count
-  - clicked_count
+  - schedule_count
+  - open_count
+  - opt_out_count
+  - reply_count
+  - click_count
   - remote_created_at
   - remote_updated_at
   - last_modified_at	

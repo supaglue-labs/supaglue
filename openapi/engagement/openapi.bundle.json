@@ -729,10 +729,11 @@
                             "tag2"
                           ],
                           "num_steps": 5,
-                          "scheduled_count": 0,
-                          "opted_out_count": 0,
-                          "replied_count": 0,
-                          "clicked_count": 0,
+                          "schedule_count": 0,
+                          "open_count": 0,
+                          "opt_out_count": 0,
+                          "reply_count": 0,
+                          "click_count": 0,
                           "remote_created_at": "2023-02-27T00:00:00Z",
                           "remote_updated_at": "2023-02-27T00:00:00Z",
                           "last_modified": "2023-02-27T00:00:00Z"
@@ -1086,16 +1087,19 @@
           "num_steps": {
             "type": "number"
           },
-          "scheduled_count": {
+          "schedule_count": {
             "type": "number"
           },
-          "opted_out_count": {
+          "open_count": {
             "type": "number"
           },
-          "replied_count": {
+          "opt_out_count": {
             "type": "number"
           },
-          "clicked_count": {
+          "reply_count": {
+            "type": "number"
+          },
+          "click_count": {
             "type": "number"
           },
           "remote_created_at": {
@@ -1123,10 +1127,11 @@
           "name",
           "tags",
           "num_steps",
-          "scheduled_count",
-          "opted_out_count",
-          "replied_count",
-          "clicked_count",
+          "schedule_count",
+          "open_count",
+          "opt_out_count",
+          "reply_count",
+          "click_count",
           "remote_created_at",
           "remote_updated_at",
           "last_modified_at"

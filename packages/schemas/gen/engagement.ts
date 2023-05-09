@@ -182,10 +182,11 @@ export interface components {
       name: string;
       tags: (string)[];
       num_steps: number;
-      scheduled_count: number;
-      opted_out_count: number;
-      replied_count: number;
-      clicked_count: number;
+      schedule_count: number;
+      open_count: number;
+      opt_out_count: number;
+      reply_count: number;
+      click_count: number;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
