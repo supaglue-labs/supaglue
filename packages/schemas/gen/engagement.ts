@@ -52,9 +52,21 @@ export interface paths {
     };
   };
   "/sequences": {
-    /** Create sequence */
-    post: operations["createSequence"];
+    /**
+     * List sequences 
+     * @description Get a list of sequences
+     */
+    get: operations["getSequences"];
     
+  };
+  "/sequences/{sequence_id}": {
+    /** Get sequence */
+    get: operations["getSequence"];
+    parameters: {
+      path: {
+        sequence_id: string;
+      };
+    };
   };
 }
 
@@ -63,8 +75,10 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     contact: {
-      /** @example 54312 */
+      /** @example 4cee77aa-50ae-4369-be1e-03f15a55ef10 */
       id: string;
+      /** @example 54312 */
+      remote_id: string;
       /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
       owner_id: string | null;
       /** @example George */
@@ -157,37 +171,37 @@ export interface components {
       last_modified_at: Date;
     };
     sequence: {
-      /** @example 54312 */
+      /** @example 88588bae-3785-4223-81b7-0649012fdeda */
       id: string;
+      /** @example 95fe0d29-e8cc-48ac-9afd-e02d8037a597 */
+      owner_id?: string | null;
+      /** @example 54312 */
+      remote_id: string;
       /** @example true */
       is_enabled: boolean;
       name: string;
       tags: (string)[];
       num_steps: number;
-      scheduled_count: number;
-      opted_out_count: number;
-      replied_count: number;
-      clicked_count: number;
+      schedule_count: number;
+      open_count: number;
+      opt_out_count: number;
+      reply_count: number;
+      click_count: number;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      created_at: Date | null;
+      remote_created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      updated_at: Date | null;
+      remote_updated_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
-    };
-    create_sequence: {
-      name: string;
-      /** @enum {string} */
-      share_type: "team" | "private";
     };
     start_sequence: {
       id: string;
@@ -548,22 +562,29 @@ export interface operations {
       };
     };
   };
-  createSequence: {
-    /** Create sequence */
-    requestBody: {
-      content: {
-        "application/json": {
-          model: components["schemas"]["create_sequence"];
+  getSequences: {
+    /**
+     * List sequences 
+     * @description Get a list of sequences
+     */
+    responses: {
+      /** @description Sequences */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["sequence"])[];
+          };
         };
       };
     };
+  };
+  getSequence: {
+    /** Get sequence */
     responses: {
-      /** @description Sequence created */
-      201: {
+      /** @description Sequence */
+      200: {
         content: {
-          "application/json": {
-            model?: components["schemas"]["sequence"];
-          };
+          "application/json": components["schemas"]["sequence"];
         };
       };
     };

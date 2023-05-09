@@ -2,6 +2,13 @@ type: object
 properties:
   id:
     type: string
+    example: 88588bae-3785-4223-81b7-0649012fdeda
+  owner_id:
+    type: string
+    nullable: true
+    example: 95fe0d29-e8cc-48ac-9afd-e02d8037a597
+  remote_id:
+    type: string
     example: 54312
   is_enabled:
     type: boolean
@@ -14,20 +21,22 @@ properties:
       type: string
   num_steps:
     type: number
-  scheduled_count:
+  schedule_count:
     type: number
-  opted_out_count:
+  open_count:
     type: number
-  replied_count:
+  opt_out_count:
     type: number
-  clicked_count:
+  reply_count:
     type: number
-  created_at:
+  click_count:
+    type: number
+  remote_created_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  updated_at:
+  remote_updated_at:
     type: string
     nullable: true
     format: date-time
@@ -38,14 +47,16 @@ properties:
     example: '2022-02-27T00:00:00Z'
 required:
   - id
+  - remote_id
   - is_enabled
   - name
   - tags
   - num_steps
-  - scheduled_count
-  - opted_out_count
-  - replied_count
-  - clicked_count
-  - created_at
-  - updated_at
+  - schedule_count
+  - open_count
+  - opt_out_count
+  - reply_count
+  - click_count
+  - remote_created_at
+  - remote_updated_at
   - last_modified_at	

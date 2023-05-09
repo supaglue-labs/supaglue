@@ -2,6 +2,9 @@ type: object
 properties:
   id:
     type: string
+    example: 4cee77aa-50ae-4369-be1e-03f15a55ef10
+  remote_id:
+    type: string
     example: 54312
   owner_id:
     type: string
@@ -55,6 +58,7 @@ properties:
     additionalProperties: true
 required:
   - id
+  - remote_id
   - owner_id
   - first_name
   - last_name

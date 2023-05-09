@@ -653,9 +653,9 @@
       ]
     },
     "/sequences": {
-      "post": {
-        "operationId": "createSequence",
-        "summary": "Create sequence",
+      "get": {
+        "operationId": "getSequences",
+        "summary": "List sequences",
         "tags": [
           "Sequences"
         ],
@@ -664,35 +664,81 @@
             "ApiKeyAuth": []
           }
         ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "model": {
-                    "$ref": "#/components/schemas/create_sequence"
-                  }
-                },
-                "required": [
-                  "model"
-                ]
-              }
-            }
+        "description": "Get a list of sequences ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/modified_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
           }
-        },
+        ],
         "responses": {
-          "201": {
-            "description": "Sequence created",
+          "200": {
+            "description": "Sequences",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "model": {
-                      "$ref": "#/components/schemas/sequence"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/sequence"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "id": "13bc2a55-be6a-4cb9-8ea3-12dc1e41ac59",
+                          "is_enabled": true,
+                          "name": "Sample Sequence",
+                          "tags": [
+                            "tag1",
+                            "tag2"
+                          ],
+                          "num_steps": 5,
+                          "schedule_count": 0,
+                          "open_count": 0,
+                          "opt_out_count": 0,
+                          "reply_count": 0,
+                          "click_count": 0,
+                          "remote_created_at": "2023-02-27T00:00:00Z",
+                          "remote_updated_at": "2023-02-27T00:00:00Z",
+                          "last_modified": "2023-02-27T00:00:00Z"
+                        }
+                      ]
                     }
                   }
                 }
@@ -707,6 +753,54 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/sequences/{sequence_id}": {
+      "get": {
+        "operationId": "getSequence",
+        "summary": "Get sequence",
+        "tags": [
+          "Sequences"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sequence",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sequence"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "sequence_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
         }
       ]
     }
@@ -743,6 +837,10 @@
         "type": "object",
         "properties": {
           "id": {
+            "type": "string",
+            "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+          },
+          "remote_id": {
             "type": "string",
             "example": 54312
           },
@@ -845,6 +943,7 @@
         },
         "required": [
           "id",
+          "remote_id",
           "owner_id",
           "first_name",
           "last_name",
@@ -961,6 +1060,15 @@
         "properties": {
           "id": {
             "type": "string",
+            "example": "88588bae-3785-4223-81b7-0649012fdeda"
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "95fe0d29-e8cc-48ac-9afd-e02d8037a597"
+          },
+          "remote_id": {
+            "type": "string",
             "example": 54312
           },
           "is_enabled": {
@@ -979,25 +1087,28 @@
           "num_steps": {
             "type": "number"
           },
-          "scheduled_count": {
+          "schedule_count": {
             "type": "number"
           },
-          "opted_out_count": {
+          "open_count": {
             "type": "number"
           },
-          "replied_count": {
+          "opt_out_count": {
             "type": "number"
           },
-          "clicked_count": {
+          "reply_count": {
             "type": "number"
           },
-          "created_at": {
+          "click_count": {
+            "type": "number"
+          },
+          "remote_created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "updated_at": {
+          "remote_updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
@@ -1011,36 +1122,19 @@
         },
         "required": [
           "id",
+          "remote_id",
           "is_enabled",
           "name",
           "tags",
           "num_steps",
-          "scheduled_count",
-          "opted_out_count",
-          "replied_count",
-          "clicked_count",
-          "created_at",
-          "updated_at",
+          "schedule_count",
+          "open_count",
+          "opt_out_count",
+          "reply_count",
+          "click_count",
+          "remote_created_at",
+          "remote_updated_at",
           "last_modified_at"
-        ]
-      },
-      "create_sequence": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "share_type": {
-            "type": "string",
-            "enum": [
-              "team",
-              "private"
-            ]
-          }
-        },
-        "required": [
-          "name",
-          "share_type"
         ]
       },
       "start_sequence": {
