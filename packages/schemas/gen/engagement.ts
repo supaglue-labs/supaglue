@@ -34,6 +34,23 @@ export interface paths {
       };
     };
   };
+  "/users": {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    get: operations["getUsers"];
+    
+  };
+  "/users/{user_id}": {
+    /** Get user */
+    get: operations["getUser"];
+    parameters: {
+      path: {
+        user_id: string;
+      };
+    };
+  };
   "/sequences": {
     /** Create sequence */
     post: operations["createSequence"];
@@ -105,6 +122,35 @@ export interface components {
       address?: components["schemas"]["address"];
       email_addresses?: components["schemas"]["email_addresses"];
       custom_fields?: components["schemas"]["custom_fields"];
+    };
+    user: {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example 54312 */
+      remote_id: string;
+      /** @example George */
+      first_name: string | null;
+      /** @example Xing */
+      last_name: string | null;
+      /** @example george@supaglue.com */
+      email: string | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_created_at: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_updated_at: Date | null;
+      /** @example false */
+      remote_was_deleted: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at: Date;
     };
     sequence: {
       /** @example 54312 */
@@ -356,26 +402,6 @@ export interface operations {
      * List contacts 
      * @description Get a list of contacts
      */
-    parameters?: {
-        /** @description Whether to include data that was deleted in providers. */
-        /** @description Whether to include raw data fetched from the 3rd party provider. */
-        /** @description If provided, will only return objects created after this datetime */
-        /** @description If provided, will only return objects created before this datetime */
-        /** @description If provided, will only return objects modified after this datetime */
-        /** @description If provided, will only return objects modified before this datetime */
-        /** @description The pagination cursor value */
-        /** @description Number of results to return per page */
-      query?: {
-        include_deleted_data?: boolean;
-        include_raw_data?: boolean;
-        created_after?: Date;
-        created_before?: Date;
-        modified_after?: Date;
-        modified_before?: Date;
-        cursor?: string;
-        page_size?: string;
-      };
-    };
     responses: {
       /** @description Contacts */
       200: {
@@ -471,6 +497,53 @@ export interface operations {
             model?: components["schemas"]["contact"];
             warnings?: components["schemas"]["warnings"];
           };
+        };
+      };
+    };
+  };
+  getUsers: {
+    /**
+     * List users 
+     * @description Get a list of users
+     */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
+    responses: {
+      /** @description Users */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["user"])[];
+          };
+        };
+      };
+    };
+  };
+  getUser: {
+    /** Get user */
+    responses: {
+      /** @description User */
+      200: {
+        content: {
+          "application/json": components["schemas"]["user"];
         };
       };
     };

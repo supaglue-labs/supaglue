@@ -29,6 +29,10 @@ paths:
     $ref: paths/contacts.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
+  '/users':
+    $ref: paths/users.yaml
+  '/users/{user_id}':
+    $ref: paths/users@{user_id}.yaml
   '/sequences':
     $ref: paths/sequences.yaml
 tags:
@@ -36,6 +40,8 @@ tags:
     description: The `Contact` Common Model is used to represent a "contact" in Engagements.
   - name: Sequences
     description: The `Sequence` Common Model is used to represent a "sequence" in Engagements.
+  - name: Users
+    description: The `User` Common Model is used to represent a "user" in Engagements.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
 components:
@@ -47,6 +53,8 @@ components:
       $ref: ./components/schemas/objects/contact.yaml
     create_contact:
       $ref: ./components/schemas/create_update_contact.yaml
+    user:
+      $ref: ./components/schemas/objects/user.yaml
     sequence:
       $ref: ./components/schemas/objects/sequence.yaml
     create_sequence:

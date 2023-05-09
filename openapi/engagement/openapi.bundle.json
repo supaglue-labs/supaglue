@@ -178,80 +178,28 @@
         "description": "Get a list of contacts",
         "parameters": [
           {
-            "name": "include_deleted_data",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to include data that was deleted in providers."
+            "$ref": "#/paths/~1users/get/parameters/0"
           },
           {
-            "name": "include_raw_data",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to include raw data fetched from the 3rd party provider."
+            "$ref": "#/paths/~1users/get/parameters/1"
           },
           {
-            "name": "created_after",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects created after this datetime"
+            "$ref": "#/paths/~1users/get/parameters/2"
           },
           {
-            "name": "created_before",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects created before this datetime"
+            "$ref": "#/paths/~1users/get/parameters/3"
           },
           {
-            "name": "modified_after",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects modified after this datetime"
+            "$ref": "#/paths/~1users/get/parameters/4"
           },
           {
-            "name": "modified_before",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects modified before this datetime"
+            "$ref": "#/paths/~1users/get/parameters/5"
           },
           {
-            "name": "cursor",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
-            },
-            "description": "The pagination cursor value"
+            "$ref": "#/paths/~1users/get/parameters/6"
           },
           {
-            "name": "page_size",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "3804695"
-            },
-            "description": "Number of results to return per page"
+            "$ref": "#/paths/~1users/get/parameters/7"
           }
         ],
         "responses": {
@@ -428,7 +376,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1contacts/get/parameters/1"
+            "$ref": "#/paths/~1users/get/parameters/1"
           }
         ],
         "responses": {
@@ -552,6 +500,210 @@
         }
       ]
     },
+    "/users": {
+      "get": {
+        "operationId": "getUsers",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List users",
+        "description": "Get a list of users",
+        "parameters": [
+          {
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
+          },
+          {
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
+          },
+          {
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
+          },
+          {
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/user"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                          "remote_id": 1234,
+                          "first_name": "George",
+                          "last_name": "Xing",
+                          "email": "george@supaglue.com",
+                          "remote_created_at": "2021-11-10T00:00:00Z",
+                          "remote_updated_at": "2022-01-09T00:00:00Z"
+                        },
+                        {
+                          "id": "a0f8385c-4947-41d2-a276-740f792bb0e6",
+                          "remote_id": 1235,
+                          "first_name": "Thomas",
+                          "last_name": "Chen",
+                          "email": "tom@supaglue.com",
+                          "remote_created_at": "2021-11-10T00:00:00Z",
+                          "remote_updated_at": "2022-01-09T00:00:00Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/users/{user_id}": {
+      "get": {
+        "operationId": "getUser",
+        "summary": "Get user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1users/get/parameters/1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/sequences": {
       "post": {
         "operationId": "createSequence",
@@ -619,6 +771,10 @@
     {
       "name": "Sequences",
       "description": "The `Sequence` Common Model is used to represent a \"sequence\" in Engagements."
+    },
+    {
+      "name": "Users",
+      "description": "The `User` Common Model is used to represent a \"user\" in Engagements."
     },
     {
       "name": "Passthrough",
@@ -785,6 +941,66 @@
             "$ref": "#/components/schemas/custom_fields"
           }
         }
+      },
+      "user": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          "remote_id": {
+            "type": "string",
+            "example": 54312
+          },
+          "first_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "George"
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Xing"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "example": "george@supaglue.com"
+          },
+          "remote_created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_was_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "remote_id",
+          "first_name",
+          "last_name",
+          "email",
+          "remote_created_at",
+          "remote_updated_at",
+          "remote_was_deleted",
+          "last_modified_at"
+        ]
       },
       "sequence": {
         "type": "object",
