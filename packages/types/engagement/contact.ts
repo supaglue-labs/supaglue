@@ -19,7 +19,7 @@ export type BaseContact = BaseEngagementModel & {
 
 export type Contact = BaseContact &
   BaseEngagementModelNonRemoteParams & {
-    ownerId?: string | null;
+    ownerId: string | null;
     rawData?: Record<string, any>;
   };
 
