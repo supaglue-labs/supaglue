@@ -1,4 +1,4 @@
-import { RemoteContact } from '@supaglue/types/engagement';
+import { PhoneNumber, RemoteContact } from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
 
 export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): RemoteContact => {
@@ -16,8 +16,13 @@ export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): Rem
       city: (attributes.addressCity as string) ?? null,
       country: (attributes.addressCountry as string) ?? null,
     },
-    emailAddresses: [],
-    phoneNumbers: [],
+    emailAddresses: attributes.emailContacts.map(
+      (record: { email: string; email_type: 'work' | 'personal' | null }) => ({
+        emailAddress: record.email,
+        emailAddressType: record.email_type,
+      })
+    ),
+    phoneNumbers: fromOutreachPhonesToContactPhone(record),
     openCount: (attributes.openCount as number) ?? 0,
     clickCount: (attributes.clickCount as number) ?? 0,
     replyCount: (attributes.replyCount as number) ?? 0,
@@ -30,4 +35,28 @@ export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): Rem
     rawData: record,
   };
   return out;
+};
+
+export const fromOutreachPhonesToContactPhone = ({ attributes }: OutreachRecord): PhoneNumber[] => {
+  const mobile = attributes.mobilePhones.map((phone: string) => ({
+    phoneNumber: phone,
+    phoneNumberType: 'mobile',
+  }));
+  const home = attributes.homePhones.map((phone: string) => ({
+    phoneNumber: phone,
+    phoneNumberType: 'home',
+  }));
+  const work = attributes.workPhones.map((phone: string) => ({
+    phoneNumber: phone,
+    phoneNumberType: 'work',
+  }));
+  const other = attributes.otherPhones.map((phone: string) => ({
+    phoneNumber: phone,
+    phoneNumberType: 'other',
+  }));
+  const voip = attributes.voipPhones.map((phone: string) => ({
+    phoneNumber: phone,
+    phoneNumberType: 'other',
+  }));
+  return [...mobile, ...home, ...work, ...other, ...voip];
 };

@@ -1,5 +1,4 @@
 export type PhoneNumber = {
   phoneNumber: string | null;
-  phoneNumberType: 'work' | 'personal' | 'other';
-  isPrimary: boolean;
+  phoneNumberType: 'work' | 'home' | 'mobile' | 'other' | null;
 };

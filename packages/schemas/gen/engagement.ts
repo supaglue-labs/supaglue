@@ -54,23 +54,21 @@ export interface components {
       last_name: string | null;
       /** @example CEO */
       job_title: string | null;
-      address: components["schemas"]["address"];
+      address: components["schemas"]["address"] | null;
       email_addresses: components["schemas"]["email_addresses"];
       /**
        * @example [
        *   {
        *     "phone_number": "+14151234567",
-       *     "phone_number_type": "work",
-       *     "is_primary": true
+       *     "phone_number_type": "work"
        *   }
        * ]
        */
       phone_numbers: ({
           /** @example +14151234567 */
           phone_number: string | null;
-          /** @enum {string} */
-          phone_number_type: "work" | "personal" | "other";
-          is_primary: boolean;
+          /** @enum {string|null} */
+          phone_number_type: "work" | "home" | "mobile" | "other" | null;
         })[];
       open_count: number;
       click_count: number;
@@ -184,18 +182,15 @@ export interface components {
      * @example [
      *   {
      *     "email_address": "hello@supaglue.com",
-     *     "email_address_type": "work",
-     *     "is_primary": true
+     *     "email_address_type": "work"
      *   }
      * ]
      */
     email_addresses: ({
         /** @example hello@supaglue.com */
         email_address: string;
-        /** @enum {string} */
-        email_address_type: "personal" | "work";
-        /** @example true */
-        is_primary?: boolean;
+        /** @enum {string|null} */
+        email_address_type: "personal" | "work" | null;
       })[];
     /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {

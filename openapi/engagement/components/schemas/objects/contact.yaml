@@ -16,7 +16,9 @@ properties:
     nullable: true
     example: CEO
   address:
-    $ref: ./address.yaml
+    nullable: true
+    allOf:
+      - $ref: ./address.yaml
   email_addresses:
     $ref: ./email_addresses.yaml
   phone_numbers:

@@ -1,5 +1,73 @@
-import { RemoteContact } from '@supaglue/types/engagement';
+import { EngagementContact } from '@supaglue/db';
+import { GetInternalParams } from '@supaglue/types';
+import { Address, Contact, EmailAddress, PhoneNumber, RemoteContact } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
+import { toSnakecasedKeysAddress, toSnakecasedKeysEmailAddress, toSnakecasedKeysPhoneNumber } from '.';
+
+export const toSnakecasedKeysContact = (contact: Contact) => {
+  return {
+    id: contact.id,
+    last_modified_at: contact.lastModifiedAt,
+    remote_id: contact.remoteId,
+    first_name: contact.firstName,
+    last_name: contact.lastName,
+    job_title: contact.jobTitle,
+    address: contact.address ? toSnakecasedKeysAddress(contact.address) : null,
+    phone_numbers: contact.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    email_addresses: contact.emailAddresses.map(toSnakecasedKeysEmailAddress),
+    open_count: contact.openCount,
+    click_count: contact.clickCount,
+    reply_count: contact.openCount,
+    bounced_count: contact.bouncedCount,
+    remote_created_at: contact.remoteCreatedAt,
+    remote_updated_at: contact.remoteUpdatedAt,
+    remote_was_deleted: contact.remoteWasDeleted,
+    raw_data: contact.rawData,
+  };
+};
+
+export const fromContactModel = (
+  {
+    id,
+    remoteId,
+    firstName,
+    lastName,
+    address,
+    jobTitle,
+    openCount,
+    clickCount,
+    replyCount,
+    bouncedCount,
+    emailAddresses,
+    phoneNumbers,
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
+    rawData,
+  }: EngagementContact,
+  getParams?: GetInternalParams
+): Contact => {
+  return {
+    id,
+    remoteId,
+    firstName,
+    lastName,
+    jobTitle,
+    openCount,
+    clickCount,
+    replyCount,
+    bouncedCount,
+    address: address as Address | null,
+    emailAddresses: emailAddresses as EmailAddress[],
+    phoneNumbers: phoneNumbers as PhoneNumber[],
+    remoteCreatedAt,
+    remoteUpdatedAt,
+    remoteWasDeleted,
+    lastModifiedAt,
+    rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
+  };
+};
 
 // TODO: Use prisma generator to generate return type
 export const fromRemoteContactToDbContactParams = (
