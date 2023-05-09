@@ -4,12 +4,29 @@ import {
   PhoneNumber,
   RemoteContact,
   RemoteContactCreateParams,
+  RemoteUser,
 } from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
 
+export const fromOutreachUserToRemoteUser = (record: OutreachRecord): RemoteUser => {
+  const { id, attributes } = record;
+  return {
+    remoteId: id.toString(),
+    firstName: (attributes.firstName as string) ?? null,
+    lastName: (attributes.lastName as string) ?? null,
+    email: (attributes.email as string) ?? null,
+    remoteCreatedAt: new Date(attributes.createdAt as string),
+    remoteUpdatedAt: new Date(attributes.updatedAt as string),
+    remoteWasDeleted: false,
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
+    rawData: record,
+  };
+};
+
 export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): RemoteContact => {
   const { id, attributes } = record;
-  const out = {
+  return {
     remoteId: id.toString(),
     firstName: (attributes.firstName as string) ?? null,
     lastName: (attributes.lastName as string) ?? null,
@@ -40,7 +57,6 @@ export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): Rem
     detectedOrRemoteDeletedAt: null,
     rawData: record,
   };
-  return out;
 };
 
 export const fromOutreachPhonesToContactPhone = ({ attributes }: OutreachRecord): PhoneNumber[] => {
