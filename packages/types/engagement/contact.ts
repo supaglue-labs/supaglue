@@ -33,6 +33,7 @@ export type BaseContactCreateParams = {
   jobTitle?: string | null;
   address?: Address | null;
   emailAddresses?: EmailAddress[];
+  phoneNumbers?: PhoneNumber[];
 
   customFields?: CustomFields;
 };

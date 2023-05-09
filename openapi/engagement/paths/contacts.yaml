@@ -47,14 +47,12 @@ get:
                     email_addresses:
                       - email_address: hello@supaglue.com
                         email_address_type: workline2
-                        is_primary: true
                     first_name: George
                     remote_id: 1234
                     last_name: Xing
                     phone_numbers:
                       - phone_number: '+14151234567'
                         phone_number_type: mobile
-                        is_primary: true
                     remote_created_at: '2023-02-27T00:00:00Z'
 post:
   operationId: createContact
@@ -88,14 +86,12 @@ post:
             email_addresses:
               - email_address: hello@supaglue.com
                 email_address_type: workline2
-                is_primary: true
             first_name: George
             remote_id: 1234
             last_name: Xing
             phone_numbers:
               - phone_number: '+14151234567'
                 phone_number_type: mobile
-                is_primary: true
             remote_created_at: '2023-02-27T00:00:00Z'
   responses:
     '201':

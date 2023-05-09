@@ -6,17 +6,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { MethodKind } from '@bufbuild/protobuf';
-import {
-  FetchRequest,
-  FetchResponse,
-  PublishRequest,
-  PublishResponse,
-  SchemaInfo,
-  SchemaRequest,
-  TopicInfo,
-  TopicRequest,
-} from './pubsub_api_pb.js';
+import { FetchRequest, FetchResponse, PublishRequest, PublishResponse, SchemaInfo, SchemaRequest, TopicInfo, TopicRequest } from "./pubsub_api_pb.js";
+import { MethodKind } from "@bufbuild/protobuf";
 
 /**
  *
@@ -40,7 +31,7 @@ import {
  * @generated from service eventbus.v1.PubSub
  */
 export const PubSub = {
-  typeName: 'eventbus.v1.PubSub',
+  typeName: "eventbus.v1.PubSub",
   methods: {
     /**
      *
@@ -72,7 +63,7 @@ export const PubSub = {
      * @generated from rpc eventbus.v1.PubSub.Subscribe
      */
     subscribe: {
-      name: 'Subscribe',
+      name: "Subscribe",
       I: FetchRequest,
       O: FetchResponse,
       kind: MethodKind.BiDiStreaming,
@@ -83,7 +74,7 @@ export const PubSub = {
      * @generated from rpc eventbus.v1.PubSub.GetSchema
      */
     getSchema: {
-      name: 'GetSchema',
+      name: "GetSchema",
       I: SchemaRequest,
       O: SchemaInfo,
       kind: MethodKind.Unary,
@@ -95,7 +86,7 @@ export const PubSub = {
      * @generated from rpc eventbus.v1.PubSub.GetTopic
      */
     getTopic: {
-      name: 'GetTopic',
+      name: "GetTopic",
       I: TopicRequest,
       O: TopicInfo,
       kind: MethodKind.Unary,
@@ -107,7 +98,7 @@ export const PubSub = {
      * @generated from rpc eventbus.v1.PubSub.Publish
      */
     publish: {
-      name: 'Publish',
+      name: "Publish",
       I: PublishRequest,
       O: PublishResponse,
       kind: MethodKind.Unary,
@@ -139,10 +130,11 @@ export const PubSub = {
      * @generated from rpc eventbus.v1.PubSub.PublishStream
      */
     publishStream: {
-      name: 'PublishStream',
+      name: "PublishStream",
       I: PublishRequest,
       O: PublishResponse,
       kind: MethodKind.BiDiStreaming,
     },
-  },
+  }
 };
+

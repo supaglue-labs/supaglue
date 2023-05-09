@@ -6,17 +6,20 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { proto3 } from '@bufbuild/protobuf';
+import { proto3 } from "@bufbuild/protobuf";
 
 /**
  * Supported error codes
  *
  * @generated from enum eventbus.v1.ErrorCode
  */
-export const ErrorCode = proto3.makeEnum('eventbus.v1.ErrorCode', [
-  { no: 0, name: 'UNKNOWN' },
-  { no: 1, name: 'PUBLISH' },
-]);
+export const ErrorCode = proto3.makeEnum(
+  "eventbus.v1.ErrorCode",
+  [
+    {no: 0, name: "UNKNOWN"},
+    {no: 1, name: "PUBLISH"},
+  ],
+);
 
 /**
  *
@@ -25,11 +28,14 @@ export const ErrorCode = proto3.makeEnum('eventbus.v1.ErrorCode', [
  *
  * @generated from enum eventbus.v1.ReplayPreset
  */
-export const ReplayPreset = proto3.makeEnum('eventbus.v1.ReplayPreset', [
-  { no: 0, name: 'LATEST' },
-  { no: 1, name: 'EARLIEST' },
-  { no: 2, name: 'CUSTOM' },
-]);
+export const ReplayPreset = proto3.makeEnum(
+  "eventbus.v1.ReplayPreset",
+  [
+    {no: 0, name: "LATEST"},
+    {no: 1, name: "EARLIEST"},
+    {no: 2, name: "CUSTOM"},
+  ],
+);
 
 /**
  *
@@ -37,14 +43,17 @@ export const ReplayPreset = proto3.makeEnum('eventbus.v1.ReplayPreset', [
  *
  * @generated from message eventbus.v1.TopicInfo
  */
-export const TopicInfo = proto3.makeMessageType('eventbus.v1.TopicInfo', () => [
-  { no: 1, name: 'topic_name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 2, name: 'tenant_guid', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 3, name: 'can_publish', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
-  { no: 4, name: 'can_subscribe', kind: 'scalar', T: 8 /* ScalarType.BOOL */ },
-  { no: 5, name: 'schema_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 6, name: 'rpc_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const TopicInfo = proto3.makeMessageType(
+  "eventbus.v1.TopicInfo",
+  () => [
+    { no: 1, name: "topic_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "tenant_guid", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "can_publish", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 4, name: "can_subscribe", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 5, name: "schema_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "rpc_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
 
 /**
  *
@@ -53,9 +62,12 @@ export const TopicInfo = proto3.makeMessageType('eventbus.v1.TopicInfo', () => [
  *
  * @generated from message eventbus.v1.TopicRequest
  */
-export const TopicRequest = proto3.makeMessageType('eventbus.v1.TopicRequest', () => [
-  { no: 1, name: 'topic_name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const TopicRequest = proto3.makeMessageType(
+  "eventbus.v1.TopicRequest",
+  () => [
+    { no: 1, name: "topic_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
 
 /**
  *
@@ -66,10 +78,13 @@ export const TopicRequest = proto3.makeMessageType('eventbus.v1.TopicRequest', (
  *
  * @generated from message eventbus.v1.EventHeader
  */
-export const EventHeader = proto3.makeMessageType('eventbus.v1.EventHeader', () => [
-  { no: 1, name: 'key', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 2, name: 'value', kind: 'scalar', T: 12 /* ScalarType.BYTES */ },
-]);
+export const EventHeader = proto3.makeMessageType(
+  "eventbus.v1.EventHeader",
+  () => [
+    { no: 1, name: "key", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "value", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+  ],
+);
 
 /**
  *
@@ -77,12 +92,15 @@ export const EventHeader = proto3.makeMessageType('eventbus.v1.EventHeader', () 
  *
  * @generated from message eventbus.v1.ProducerEvent
  */
-export const ProducerEvent = proto3.makeMessageType('eventbus.v1.ProducerEvent', () => [
-  { no: 1, name: 'id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 2, name: 'schema_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 3, name: 'payload', kind: 'scalar', T: 12 /* ScalarType.BYTES */ },
-  { no: 4, name: 'headers', kind: 'message', T: EventHeader, repeated: true },
-]);
+export const ProducerEvent = proto3.makeMessageType(
+  "eventbus.v1.ProducerEvent",
+  () => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "schema_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "payload", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+    { no: 4, name: "headers", kind: "message", T: EventHeader, repeated: true },
+  ],
+);
 
 /**
  *
@@ -91,10 +109,13 @@ export const ProducerEvent = proto3.makeMessageType('eventbus.v1.ProducerEvent',
  *
  * @generated from message eventbus.v1.ConsumerEvent
  */
-export const ConsumerEvent = proto3.makeMessageType('eventbus.v1.ConsumerEvent', () => [
-  { no: 1, name: 'event', kind: 'message', T: ProducerEvent },
-  { no: 2, name: 'replay_id', kind: 'scalar', T: 12 /* ScalarType.BYTES */ },
-]);
+export const ConsumerEvent = proto3.makeMessageType(
+  "eventbus.v1.ConsumerEvent",
+  () => [
+    { no: 1, name: "event", kind: "message", T: ProducerEvent },
+    { no: 2, name: "replay_id", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+  ],
+);
 
 /**
  *
@@ -102,21 +123,27 @@ export const ConsumerEvent = proto3.makeMessageType('eventbus.v1.ConsumerEvent',
  *
  * @generated from message eventbus.v1.PublishResult
  */
-export const PublishResult = proto3.makeMessageType('eventbus.v1.PublishResult', () => [
-  { no: 1, name: 'replay_id', kind: 'scalar', T: 12 /* ScalarType.BYTES */ },
-  { no: 2, name: 'error', kind: 'message', T: Error },
-  { no: 3, name: 'correlationKey', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const PublishResult = proto3.makeMessageType(
+  "eventbus.v1.PublishResult",
+  () => [
+    { no: 1, name: "replay_id", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+    { no: 2, name: "error", kind: "message", T: Error },
+    { no: 3, name: "correlationKey", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
 
 /**
  * Contains error information for an error that an RPC method returns.
  *
  * @generated from message eventbus.v1.Error
  */
-export const Error = proto3.makeMessageType('eventbus.v1.Error', () => [
-  { no: 1, name: 'code', kind: 'enum', T: proto3.getEnumType(ErrorCode) },
-  { no: 2, name: 'msg', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const Error = proto3.makeMessageType(
+  "eventbus.v1.Error",
+  () => [
+    { no: 1, name: "code", kind: "enum", T: proto3.getEnumType(ErrorCode) },
+    { no: 2, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
 
 /**
  *
@@ -131,13 +158,16 @@ export const Error = proto3.makeMessageType('eventbus.v1.Error', () => [
  *
  * @generated from message eventbus.v1.FetchRequest
  */
-export const FetchRequest = proto3.makeMessageType('eventbus.v1.FetchRequest', () => [
-  { no: 1, name: 'topic_name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 2, name: 'replay_preset', kind: 'enum', T: proto3.getEnumType(ReplayPreset) },
-  { no: 3, name: 'replay_id', kind: 'scalar', T: 12 /* ScalarType.BYTES */ },
-  { no: 4, name: 'num_requested', kind: 'scalar', T: 5 /* ScalarType.INT32 */ },
-  { no: 5, name: 'auth_refresh', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const FetchRequest = proto3.makeMessageType(
+  "eventbus.v1.FetchRequest",
+  () => [
+    { no: 1, name: "topic_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "replay_preset", kind: "enum", T: proto3.getEnumType(ReplayPreset) },
+    { no: 3, name: "replay_id", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+    { no: 4, name: "num_requested", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 5, name: "auth_refresh", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
 
 /**
  *
@@ -148,12 +178,15 @@ export const FetchRequest = proto3.makeMessageType('eventbus.v1.FetchRequest', (
  *
  * @generated from message eventbus.v1.FetchResponse
  */
-export const FetchResponse = proto3.makeMessageType('eventbus.v1.FetchResponse', () => [
-  { no: 1, name: 'events', kind: 'message', T: ConsumerEvent, repeated: true },
-  { no: 2, name: 'latest_replay_id', kind: 'scalar', T: 12 /* ScalarType.BYTES */ },
-  { no: 3, name: 'rpc_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 4, name: 'pending_num_requested', kind: 'scalar', T: 5 /* ScalarType.INT32 */ },
-]);
+export const FetchResponse = proto3.makeMessageType(
+  "eventbus.v1.FetchResponse",
+  () => [
+    { no: 1, name: "events", kind: "message", T: ConsumerEvent, repeated: true },
+    { no: 2, name: "latest_replay_id", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+    { no: 3, name: "rpc_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "pending_num_requested", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+  ],
+);
 
 /**
  *
@@ -161,9 +194,12 @@ export const FetchResponse = proto3.makeMessageType('eventbus.v1.FetchResponse',
  *
  * @generated from message eventbus.v1.SchemaRequest
  */
-export const SchemaRequest = proto3.makeMessageType('eventbus.v1.SchemaRequest', () => [
-  { no: 1, name: 'schema_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const SchemaRequest = proto3.makeMessageType(
+  "eventbus.v1.SchemaRequest",
+  () => [
+    { no: 1, name: "schema_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
 
 /**
  *
@@ -171,22 +207,28 @@ export const SchemaRequest = proto3.makeMessageType('eventbus.v1.SchemaRequest',
  *
  * @generated from message eventbus.v1.SchemaInfo
  */
-export const SchemaInfo = proto3.makeMessageType('eventbus.v1.SchemaInfo', () => [
-  { no: 1, name: 'schema_json', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 2, name: 'schema_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 3, name: 'rpc_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const SchemaInfo = proto3.makeMessageType(
+  "eventbus.v1.SchemaInfo",
+  () => [
+    { no: 1, name: "schema_json", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "schema_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "rpc_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
 
 /**
  * Request for the Publish and PublishStream RPC method.
  *
  * @generated from message eventbus.v1.PublishRequest
  */
-export const PublishRequest = proto3.makeMessageType('eventbus.v1.PublishRequest', () => [
-  { no: 1, name: 'topic_name', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 2, name: 'events', kind: 'message', T: ProducerEvent, repeated: true },
-  { no: 3, name: 'auth_refresh', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const PublishRequest = proto3.makeMessageType(
+  "eventbus.v1.PublishRequest",
+  () => [
+    { no: 1, name: "topic_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "events", kind: "message", T: ProducerEvent, repeated: true },
+    { no: 3, name: "auth_refresh", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
 
 /**
  *
@@ -198,8 +240,12 @@ export const PublishRequest = proto3.makeMessageType('eventbus.v1.PublishRequest
  *
  * @generated from message eventbus.v1.PublishResponse
  */
-export const PublishResponse = proto3.makeMessageType('eventbus.v1.PublishResponse', () => [
-  { no: 1, name: 'results', kind: 'message', T: PublishResult, repeated: true },
-  { no: 2, name: 'schema_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-  { no: 3, name: 'rpc_id', kind: 'scalar', T: 9 /* ScalarType.STRING */ },
-]);
+export const PublishResponse = proto3.makeMessageType(
+  "eventbus.v1.PublishResponse",
+  () => [
+    { no: 1, name: "results", kind: "message", T: PublishResult, repeated: true },
+    { no: 2, name: "schema_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "rpc_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+

@@ -18,6 +18,7 @@ import {
   UpdateContactResponse,
 } from '@supaglue/schemas/engagement';
 import { ListParams } from '@supaglue/types';
+import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
 const {
@@ -68,7 +69,13 @@ export default function init(app: Router): void {
       req: Request<CreateContactPathParams, CreateContactResponse, CreateContactRequest>,
       res: Response<CreateContactResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { customerId, id: connectionId } = req.customerConnection;
+      const contact = await contactService.create(
+        customerId,
+        connectionId,
+        camelcaseKeysSansCustomFields(req.body.model)
+      );
+      return res.status(200).send({ model: toSnakecasedKeysContact(contact) });
     }
   );
 

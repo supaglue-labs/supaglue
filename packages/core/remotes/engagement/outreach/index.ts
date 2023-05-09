@@ -1,11 +1,16 @@
 import { ConnectionUnsafe, Integration } from '@supaglue/types';
-import { EngagementCommonModelType, EngagementCommonModelTypeMap } from '@supaglue/types/engagement';
+import {
+  EngagementCommonModelType,
+  EngagementCommonModelTypeMap,
+  RemoteContact,
+  RemoteContactCreateParams,
+} from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
-import { fromOutreachProspectToRemoteContact } from './mappers';
+import { fromOutreachProspectToRemoteContact, toOutreachProspectCreateParams } from './mappers';
 
 const OUTREACH_RECORD_LIMIT = 50;
 
@@ -115,9 +120,28 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  public override createObject<T extends EngagementCommonModelType>(
+  public override async createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
+  ): Promise<EngagementCommonModelTypeMap<T>['object']> {
+    return await this.createContact(params);
+  }
+
+  async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/prospects`,
+      toOutreachProspectCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromOutreachProspectToRemoteContact(response.data.data);
+  }
+
+  public override updateObject<T extends EngagementCommonModelType>(
+    commonModelType: T,
+    params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
     throw new Error('Not implemented');
   }
