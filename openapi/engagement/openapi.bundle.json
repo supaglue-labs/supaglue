@@ -1118,6 +1118,7 @@
         },
         "required": [
           "id",
+          "remote_id",
           "is_enabled",
           "name",
           "tags",

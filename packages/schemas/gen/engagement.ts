@@ -176,7 +176,7 @@ export interface components {
       /** @example 95fe0d29-e8cc-48ac-9afd-e02d8037a597 */
       owner_id?: string | null;
       /** @example 54312 */
-      remote_id?: string;
+      remote_id: string;
       /** @example true */
       is_enabled: boolean;
       name: string;

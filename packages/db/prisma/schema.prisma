@@ -336,6 +336,36 @@ model EngagementUser {
   @@map("engagement_users")
 }
 
+model EngagementSequence {
+  id                        String    @id @db.Uuid
+  remoteId                  String    @map("remote_id")
+  customerId                String    @map("customer_id")
+  connectionId              String    @map("connection_id")
+  isEnabled                 Boolean   @map("is_enabled")
+  name                      String?
+  tags                      String[]
+  numSteps                  Int       @map("num_steps")
+  scheduledCount            Int       @map("scheduled_count")
+  optedOutCount             Int       @map("opted_out_count")
+  repliedCount              Int       @map("replied_count")
+  clickedCount              Int       @map("clicked_count")
+  rawData                   Json?     @map("raw_data")
+  remoteCreatedAt           DateTime? @map("remote_created_at")
+  remoteUpdatedAt           DateTime? @map("remote_updated_at")
+  remoteWasDeleted          Boolean   @default(false) @map("remote_was_deleted")
+  remoteDeletedAt           DateTime? @map("remote_deleted_at")
+  detectedOrRemoteDeletedAt DateTime? @map("detected_or_remote_deleted_at")
+  lastModifiedAt            DateTime  @map("last_modified_at")
+  createdAt                 DateTime  @default(now()) @map("created_at")
+  updatedAt                 DateTime  @updatedAt @map("updated_at")
+  remoteOwnerId             String?   @map("_remote_owner_id")
+  ownerId                   String?   @map("owner_id")
+
+  @@unique([connectionId, remoteId])
+  @@index([connectionId, lastModifiedAt(sort: Asc)]) // for incremental syncs hitting our API // TODO: consider adding index on `remoteWasDeleted`
+  @@map("engagement_sequences")
+}
+
 model Sync {
   id              String        @id @default(uuid())
   state           Json

@@ -45,6 +45,7 @@ properties:
     example: '2022-02-27T00:00:00Z'
 required:
   - id
+  - remote_id
   - is_enabled
   - name
   - tags
