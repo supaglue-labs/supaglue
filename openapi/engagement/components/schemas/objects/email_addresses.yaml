@@ -7,16 +7,13 @@ items:
       example: hello@supaglue.com
     email_address_type:
       type: string
+      nullable: true
       enum:
         - personal
         - work
-    is_primary:
-      type: boolean
-      example: true
   required:
     - email_address
     - email_address_type
 example:
   - email_address: hello@supaglue.com
     email_address_type: work
-    is_primary: true

@@ -1,3 +1,6 @@
+import { getDependencyContainer } from '@/dependency_container';
+import { toGetInternalParams, toListInternalParams } from '@supaglue/core/mappers';
+import { toSnakecasedKeysContact } from '@supaglue/core/mappers/engagement';
 import {
   CreateContactPathParams,
   CreateContactRequest,
@@ -17,6 +20,10 @@ import {
 import { ListParams } from '@supaglue/types';
 import { Request, Response, Router } from 'express';
 
+const {
+  engagement: { contactService },
+} = getDependencyContainer();
+
 export default function init(app: Router): void {
   const router = Router();
 
@@ -31,7 +38,12 @@ export default function init(app: Router): void {
       >,
       res: Response<GetContactsResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { next, previous, results } = await contactService.list(
+        req.customerConnection.id,
+        toListInternalParams(req.query)
+      );
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysContact);
+      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
 
@@ -41,7 +53,12 @@ export default function init(app: Router): void {
       req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, GetContactQueryParams>,
       res: Response<GetContactResponse>
     ) => {
-      throw new Error('Not implemented');
+      const contact = await contactService.getById(
+        req.params.contact_id,
+        req.customerConnection.id,
+        toGetInternalParams(req.query)
+      );
+      return res.status(200).send(toSnakecasedKeysContact(contact));
     }
   );
 

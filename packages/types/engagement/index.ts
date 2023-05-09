@@ -15,5 +15,6 @@ export type EngagementCommonModelTypeMap<T extends EngagementCommonModelType> = 
 export type CustomFields = Record<string, any>;
 
 export * from './base';
+export * from './common';
 export * from './contact';
 export * from './sequence';

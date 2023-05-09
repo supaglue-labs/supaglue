@@ -664,7 +664,12 @@
             "example": "CEO"
           },
           "address": {
-            "$ref": "#/components/schemas/address"
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/address"
+              }
+            ]
           },
           "email_addresses": {
             "$ref": "#/components/schemas/email_addresses"
@@ -681,27 +686,24 @@
                 },
                 "phone_number_type": {
                   "type": "string",
+                  "nullable": true,
                   "enum": [
                     "work",
-                    "personal",
+                    "home",
+                    "mobile",
                     "other"
                   ]
-                },
-                "is_primary": {
-                  "type": "boolean"
                 }
               },
               "required": [
                 "phone_number",
-                "phone_number_type",
-                "is_primary"
+                "phone_number_type"
               ]
             },
             "example": [
               {
                 "phone_number": "+14151234567",
-                "phone_number_type": "work",
-                "is_primary": true
+                "phone_number_type": "work"
               }
             ]
           },
@@ -983,14 +985,11 @@
             },
             "email_address_type": {
               "type": "string",
+              "nullable": true,
               "enum": [
                 "personal",
                 "work"
               ]
-            },
-            "is_primary": {
-              "type": "boolean",
-              "example": true
             }
           },
           "required": [
@@ -1001,8 +1000,7 @@
         "example": [
           {
             "email_address": "hello@supaglue.com",
-            "email_address_type": "work",
-            "is_primary": true
+            "email_address_type": "work"
           }
         ]
       },
