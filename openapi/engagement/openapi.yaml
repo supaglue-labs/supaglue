@@ -35,6 +35,8 @@ paths:
     $ref: paths/users@{user_id}.yaml
   '/sequences':
     $ref: paths/sequences.yaml
+  '/sequences/{sequence_id}':
+    $ref: paths/sequences@{sequence_id}.yaml
 tags:
   - name: Contacts
     description: The `Contact` Common Model is used to represent a "contact" in Engagements.
@@ -57,8 +59,6 @@ components:
       $ref: ./components/schemas/objects/user.yaml
     sequence:
       $ref: ./components/schemas/objects/sequence.yaml
-    create_sequence:
-      $ref: ./components/schemas/create_sequence.yaml
     start_sequence:
       $ref: ./components/schemas/start_sequence.yaml
     pagination:

@@ -56,3 +56,19 @@ export type GetUserQueryParams = any;
 export type GetUserRequest = never;
 export type GetUserResponse =
   operations['getUser']['responses'][keyof operations['getUser']['responses']]['content']['application/json'];
+
+export type GetSequencesPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type GetSequencesQueryParams = Required<operations['getSequences']>['parameters']['query'];
+export type GetSequencesQueryParams = any;
+export type GetSequencesRequest = never;
+export type GetSequencesResponse =
+  operations['getSequences']['responses'][keyof operations['getSequences']['responses']]['content']['application/json'];
+
+export type GetSequencePathParams = paths[`/contacts/{contact_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type GetSequenceQueryParams = Required<operations['getSequence']>['parameters']['query'];
+export type GetSequenceQueryParams = any;
+export type GetSequenceRequest = never;
+export type GetSequenceResponse =
+  operations['getSequence']['responses'][keyof operations['getSequence']['responses']]['content']['application/json'];

@@ -2,6 +2,13 @@ type: object
 properties:
   id:
     type: string
+    example: 88588bae-3785-4223-81b7-0649012fdeda
+  owner_id:
+    type: string
+    nullable: true
+    example: 95fe0d29-e8cc-48ac-9afd-e02d8037a597
+  remote_id:
+    type: string
     example: 54312
   is_enabled:
     type: boolean
@@ -22,12 +29,12 @@ properties:
     type: number
   clicked_count:
     type: number
-  created_at:
+  remote_created_at:
     type: string
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  updated_at:
+  remote_updated_at:
     type: string
     nullable: true
     format: date-time
@@ -46,6 +53,6 @@ required:
   - opted_out_count
   - replied_count
   - clicked_count
-  - created_at
-  - updated_at
+  - remote_created_at
+  - remote_updated_at
   - last_modified_at	
