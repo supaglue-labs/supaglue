@@ -15,6 +15,10 @@ export interface EngagementRemoteClient extends RemoteClient {
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']>;
+  updateObject<T extends EngagementCommonModelType>(
+    commonModelType: T,
+    params: EngagementCommonModelTypeMap<T>['updateParams']
+  ): Promise<EngagementCommonModelTypeMap<T>['object']>;
 }
 
 export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClient implements EngagementRemoteClient {
@@ -30,6 +34,10 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
   abstract createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
+  ): Promise<EngagementCommonModelTypeMap<T>['object']>;
+  abstract updateObject<T extends EngagementCommonModelType>(
+    commonModelType: T,
+    params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']>;
 }
 

@@ -406,8 +406,7 @@ export interface operations {
          *     "email_addresses": [
          *       {
          *         "email_address": "hello@supaglue.com",
-         *         "email_address_type": "workline2",
-         *         "is_primary": true
+         *         "email_address_type": "workline2"
          *       }
          *     ],
          *     "first_name": "George",
@@ -416,8 +415,7 @@ export interface operations {
          *     "phone_numbers": [
          *       {
          *         "phone_number": "+14151234567",
-         *         "phone_number_type": "mobile",
-         *         "is_primary": true
+         *         "phone_number_type": "mobile"
          *       }
          *     ],
          *     "remote_created_at": "2023-02-27T00:00:00Z"

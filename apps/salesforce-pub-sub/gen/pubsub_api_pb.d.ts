@@ -6,15 +6,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import type {
-  BinaryReadOptions,
-  FieldList,
-  JsonReadOptions,
-  JsonValue,
-  PartialMessage,
-  PlainMessage,
-} from '@bufbuild/protobuf';
-import { Message, proto3 } from '@bufbuild/protobuf';
+import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
+import { Message, proto3 } from "@bufbuild/protobuf";
 
 /**
  * Supported error codes
@@ -116,7 +109,7 @@ export declare class TopicInfo extends Message<TopicInfo> {
   constructor(data?: PartialMessage<TopicInfo>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.TopicInfo';
+  static readonly typeName = "eventbus.v1.TopicInfo";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TopicInfo;
@@ -125,10 +118,7 @@ export declare class TopicInfo extends Message<TopicInfo> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TopicInfo;
 
-  static equals(
-    a: TopicInfo | PlainMessage<TopicInfo> | undefined,
-    b: TopicInfo | PlainMessage<TopicInfo> | undefined
-  ): boolean;
+  static equals(a: TopicInfo | PlainMessage<TopicInfo> | undefined, b: TopicInfo | PlainMessage<TopicInfo> | undefined): boolean;
 }
 
 /**
@@ -149,7 +139,7 @@ export declare class TopicRequest extends Message<TopicRequest> {
   constructor(data?: PartialMessage<TopicRequest>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.TopicRequest';
+  static readonly typeName = "eventbus.v1.TopicRequest";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): TopicRequest;
@@ -158,10 +148,7 @@ export declare class TopicRequest extends Message<TopicRequest> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): TopicRequest;
 
-  static equals(
-    a: TopicRequest | PlainMessage<TopicRequest> | undefined,
-    b: TopicRequest | PlainMessage<TopicRequest> | undefined
-  ): boolean;
+  static equals(a: TopicRequest | PlainMessage<TopicRequest> | undefined, b: TopicRequest | PlainMessage<TopicRequest> | undefined): boolean;
 }
 
 /**
@@ -187,7 +174,7 @@ export declare class EventHeader extends Message<EventHeader> {
   constructor(data?: PartialMessage<EventHeader>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.EventHeader';
+  static readonly typeName = "eventbus.v1.EventHeader";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): EventHeader;
@@ -196,10 +183,7 @@ export declare class EventHeader extends Message<EventHeader> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): EventHeader;
 
-  static equals(
-    a: EventHeader | PlainMessage<EventHeader> | undefined,
-    b: EventHeader | PlainMessage<EventHeader> | undefined
-  ): boolean;
+  static equals(a: EventHeader | PlainMessage<EventHeader> | undefined, b: EventHeader | PlainMessage<EventHeader> | undefined): boolean;
 }
 
 /**
@@ -240,7 +224,7 @@ export declare class ProducerEvent extends Message<ProducerEvent> {
   constructor(data?: PartialMessage<ProducerEvent>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.ProducerEvent';
+  static readonly typeName = "eventbus.v1.ProducerEvent";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ProducerEvent;
@@ -249,10 +233,7 @@ export declare class ProducerEvent extends Message<ProducerEvent> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ProducerEvent;
 
-  static equals(
-    a: ProducerEvent | PlainMessage<ProducerEvent> | undefined,
-    b: ProducerEvent | PlainMessage<ProducerEvent> | undefined
-  ): boolean;
+  static equals(a: ProducerEvent | PlainMessage<ProducerEvent> | undefined, b: ProducerEvent | PlainMessage<ProducerEvent> | undefined): boolean;
 }
 
 /**
@@ -282,7 +263,7 @@ export declare class ConsumerEvent extends Message<ConsumerEvent> {
   constructor(data?: PartialMessage<ConsumerEvent>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.ConsumerEvent';
+  static readonly typeName = "eventbus.v1.ConsumerEvent";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ConsumerEvent;
@@ -291,10 +272,7 @@ export declare class ConsumerEvent extends Message<ConsumerEvent> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ConsumerEvent;
 
-  static equals(
-    a: ConsumerEvent | PlainMessage<ConsumerEvent> | undefined,
-    b: ConsumerEvent | PlainMessage<ConsumerEvent> | undefined
-  ): boolean;
+  static equals(a: ConsumerEvent | PlainMessage<ConsumerEvent> | undefined, b: ConsumerEvent | PlainMessage<ConsumerEvent> | undefined): boolean;
 }
 
 /**
@@ -328,7 +306,7 @@ export declare class PublishResult extends Message<PublishResult> {
   constructor(data?: PartialMessage<PublishResult>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.PublishResult';
+  static readonly typeName = "eventbus.v1.PublishResult";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PublishResult;
@@ -337,10 +315,7 @@ export declare class PublishResult extends Message<PublishResult> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PublishResult;
 
-  static equals(
-    a: PublishResult | PlainMessage<PublishResult> | undefined,
-    b: PublishResult | PlainMessage<PublishResult> | undefined
-  ): boolean;
+  static equals(a: PublishResult | PlainMessage<PublishResult> | undefined, b: PublishResult | PlainMessage<PublishResult> | undefined): boolean;
 }
 
 /**
@@ -366,7 +341,7 @@ export declare class Error extends Message<Error> {
   constructor(data?: PartialMessage<Error>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.Error';
+  static readonly typeName = "eventbus.v1.Error";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Error;
@@ -441,7 +416,7 @@ export declare class FetchRequest extends Message<FetchRequest> {
   constructor(data?: PartialMessage<FetchRequest>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.FetchRequest';
+  static readonly typeName = "eventbus.v1.FetchRequest";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): FetchRequest;
@@ -450,10 +425,7 @@ export declare class FetchRequest extends Message<FetchRequest> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): FetchRequest;
 
-  static equals(
-    a: FetchRequest | PlainMessage<FetchRequest> | undefined,
-    b: FetchRequest | PlainMessage<FetchRequest> | undefined
-  ): boolean;
+  static equals(a: FetchRequest | PlainMessage<FetchRequest> | undefined, b: FetchRequest | PlainMessage<FetchRequest> | undefined): boolean;
 }
 
 /**
@@ -498,7 +470,7 @@ export declare class FetchResponse extends Message<FetchResponse> {
   constructor(data?: PartialMessage<FetchResponse>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.FetchResponse';
+  static readonly typeName = "eventbus.v1.FetchResponse";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): FetchResponse;
@@ -507,10 +479,7 @@ export declare class FetchResponse extends Message<FetchResponse> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): FetchResponse;
 
-  static equals(
-    a: FetchResponse | PlainMessage<FetchResponse> | undefined,
-    b: FetchResponse | PlainMessage<FetchResponse> | undefined
-  ): boolean;
+  static equals(a: FetchResponse | PlainMessage<FetchResponse> | undefined, b: FetchResponse | PlainMessage<FetchResponse> | undefined): boolean;
 }
 
 /**
@@ -530,7 +499,7 @@ export declare class SchemaRequest extends Message<SchemaRequest> {
   constructor(data?: PartialMessage<SchemaRequest>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.SchemaRequest';
+  static readonly typeName = "eventbus.v1.SchemaRequest";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SchemaRequest;
@@ -539,10 +508,7 @@ export declare class SchemaRequest extends Message<SchemaRequest> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SchemaRequest;
 
-  static equals(
-    a: SchemaRequest | PlainMessage<SchemaRequest> | undefined,
-    b: SchemaRequest | PlainMessage<SchemaRequest> | undefined
-  ): boolean;
+  static equals(a: SchemaRequest | PlainMessage<SchemaRequest> | undefined, b: SchemaRequest | PlainMessage<SchemaRequest> | undefined): boolean;
 }
 
 /**
@@ -576,7 +542,7 @@ export declare class SchemaInfo extends Message<SchemaInfo> {
   constructor(data?: PartialMessage<SchemaInfo>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.SchemaInfo';
+  static readonly typeName = "eventbus.v1.SchemaInfo";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SchemaInfo;
@@ -585,10 +551,7 @@ export declare class SchemaInfo extends Message<SchemaInfo> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SchemaInfo;
 
-  static equals(
-    a: SchemaInfo | PlainMessage<SchemaInfo> | undefined,
-    b: SchemaInfo | PlainMessage<SchemaInfo> | undefined
-  ): boolean;
+  static equals(a: SchemaInfo | PlainMessage<SchemaInfo> | undefined, b: SchemaInfo | PlainMessage<SchemaInfo> | undefined): boolean;
 }
 
 /**
@@ -621,7 +584,7 @@ export declare class PublishRequest extends Message<PublishRequest> {
   constructor(data?: PartialMessage<PublishRequest>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.PublishRequest';
+  static readonly typeName = "eventbus.v1.PublishRequest";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PublishRequest;
@@ -630,10 +593,7 @@ export declare class PublishRequest extends Message<PublishRequest> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PublishRequest;
 
-  static equals(
-    a: PublishRequest | PlainMessage<PublishRequest> | undefined,
-    b: PublishRequest | PlainMessage<PublishRequest> | undefined
-  ): boolean;
+  static equals(a: PublishRequest | PlainMessage<PublishRequest> | undefined, b: PublishRequest | PlainMessage<PublishRequest> | undefined): boolean;
 }
 
 /**
@@ -671,7 +631,7 @@ export declare class PublishResponse extends Message<PublishResponse> {
   constructor(data?: PartialMessage<PublishResponse>);
 
   static readonly runtime: typeof proto3;
-  static readonly typeName = 'eventbus.v1.PublishResponse';
+  static readonly typeName = "eventbus.v1.PublishResponse";
   static readonly fields: FieldList;
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PublishResponse;
@@ -680,8 +640,6 @@ export declare class PublishResponse extends Message<PublishResponse> {
 
   static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PublishResponse;
 
-  static equals(
-    a: PublishResponse | PlainMessage<PublishResponse> | undefined,
-    b: PublishResponse | PlainMessage<PublishResponse> | undefined
-  ): boolean;
+  static equals(a: PublishResponse | PlainMessage<PublishResponse> | undefined, b: PublishResponse | PlainMessage<PublishResponse> | undefined): boolean;
 }
+

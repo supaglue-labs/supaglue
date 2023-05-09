@@ -1,4 +1,10 @@
-import { PhoneNumber, RemoteContact } from '@supaglue/types/engagement';
+import {
+  Address,
+  EmailAddress,
+  PhoneNumber,
+  RemoteContact,
+  RemoteContactCreateParams,
+} from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
 
 export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): RemoteContact => {
@@ -59,4 +65,92 @@ export const fromOutreachPhonesToContactPhone = ({ attributes }: OutreachRecord)
     phoneNumberType: 'other',
   }));
   return [...mobile, ...home, ...work, ...other, ...voip];
+};
+
+export const toOutreachProspectCreateParams = ({
+  firstName,
+  lastName,
+  jobTitle,
+  address,
+  emailAddresses,
+  phoneNumbers,
+  customFields,
+}: RemoteContactCreateParams): Record<string, any> => {
+  return {
+    data: {
+      type: 'prospect',
+      attributes: {
+        firstName,
+        lastName,
+        jobTitle,
+        ...toOutreachProspectAddressParams(address),
+        ...toOutreachProspectEmailParams(emailAddresses),
+        ...toOutreachProspectPhoneNumbers(phoneNumbers),
+        ...customFields,
+      },
+      // TODO: Handle associations
+    },
+  };
+};
+
+const toOutreachProspectAddressParams = (address?: Address | null) => {
+  if (address === undefined) {
+    return {};
+  }
+  if (address === null) {
+    return {
+      addressStreet: null,
+      addressStreet2: null,
+      addressState: null,
+      addressCity: null,
+      addressZip: null,
+      addressCountry: null,
+    };
+  }
+  return {
+    addressStreet: address.street1,
+    addressStreet2: address.street2,
+    addressState: address.state,
+    addressCity: address.city,
+    addressZip: address.postalCode,
+    addressCountry: address.country,
+  };
+};
+
+// TODO: Support email type + email object where the type is stored
+const toOutreachProspectEmailParams = (emailAddresses?: EmailAddress[]) => {
+  return {
+    emails: emailAddresses?.map(({ emailAddress }) => emailAddress) ?? [],
+  };
+};
+
+const toOutreachProspectPhoneNumbers = (phoneNumbers?: PhoneNumber[]) => {
+  const homePhones: string[] = [];
+  const workPhones: string[] = [];
+  const otherPhones: string[] = [];
+  const mobilePhones: string[] = [];
+  phoneNumbers?.forEach(({ phoneNumber, phoneNumberType }) => {
+    if (phoneNumber) {
+      switch (phoneNumberType) {
+        case 'home':
+          homePhones.push(phoneNumber);
+          break;
+        case 'mobile':
+          mobilePhones.push(phoneNumber);
+          break;
+        case 'other':
+          otherPhones.push(phoneNumber);
+          break;
+        case 'work':
+          workPhones.push(phoneNumber);
+          break;
+      }
+    }
+  });
+  return {
+    homePhones,
+    workPhones,
+    otherPhones,
+    mobilePhones,
+  };
 };

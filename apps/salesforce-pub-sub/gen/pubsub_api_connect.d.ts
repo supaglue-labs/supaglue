@@ -6,17 +6,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { MethodKind } from '@bufbuild/protobuf';
-import {
-  FetchRequest,
-  FetchResponse,
-  PublishRequest,
-  PublishResponse,
-  SchemaInfo,
-  SchemaRequest,
-  TopicInfo,
-  TopicRequest,
-} from './pubsub_api_pb.js';
+import { FetchRequest, FetchResponse, PublishRequest, PublishResponse, SchemaInfo, SchemaRequest, TopicInfo, TopicRequest } from "./pubsub_api_pb.js";
+import { MethodKind } from "@bufbuild/protobuf";
 
 /**
  *
@@ -40,7 +31,7 @@ import {
  * @generated from service eventbus.v1.PubSub
  */
 export declare const PubSub: {
-  readonly typeName: 'eventbus.v1.PubSub';
+  readonly typeName: "eventbus.v1.PubSub",
   readonly methods: {
     /**
      *
@@ -72,22 +63,22 @@ export declare const PubSub: {
      * @generated from rpc eventbus.v1.PubSub.Subscribe
      */
     readonly subscribe: {
-      readonly name: 'Subscribe';
-      readonly I: typeof FetchRequest;
-      readonly O: typeof FetchResponse;
-      readonly kind: MethodKind.BiDiStreaming;
-    };
+      readonly name: "Subscribe",
+      readonly I: typeof FetchRequest,
+      readonly O: typeof FetchResponse,
+      readonly kind: MethodKind.BiDiStreaming,
+    },
     /**
      * Get the event schema for a topic based on a schema ID.
      *
      * @generated from rpc eventbus.v1.PubSub.GetSchema
      */
     readonly getSchema: {
-      readonly name: 'GetSchema';
-      readonly I: typeof SchemaRequest;
-      readonly O: typeof SchemaInfo;
-      readonly kind: MethodKind.Unary;
-    };
+      readonly name: "GetSchema",
+      readonly I: typeof SchemaRequest,
+      readonly O: typeof SchemaInfo,
+      readonly kind: MethodKind.Unary,
+    },
     /**
      *
      * Get the topic Information related to the specified topic.
@@ -95,11 +86,11 @@ export declare const PubSub: {
      * @generated from rpc eventbus.v1.PubSub.GetTopic
      */
     readonly getTopic: {
-      readonly name: 'GetTopic';
-      readonly I: typeof TopicRequest;
-      readonly O: typeof TopicInfo;
-      readonly kind: MethodKind.Unary;
-    };
+      readonly name: "GetTopic",
+      readonly I: typeof TopicRequest,
+      readonly O: typeof TopicInfo,
+      readonly kind: MethodKind.Unary,
+    },
     /**
      *
      * Send a publish request to synchronously publish events to a topic.
@@ -107,11 +98,11 @@ export declare const PubSub: {
      * @generated from rpc eventbus.v1.PubSub.Publish
      */
     readonly publish: {
-      readonly name: 'Publish';
-      readonly I: typeof PublishRequest;
-      readonly O: typeof PublishResponse;
-      readonly kind: MethodKind.Unary;
-    };
+      readonly name: "Publish",
+      readonly I: typeof PublishRequest,
+      readonly O: typeof PublishResponse,
+      readonly kind: MethodKind.Unary,
+    },
     /**
      *
      * Bidirectional Streaming RPC to publish events to the event bus.
@@ -139,10 +130,11 @@ export declare const PubSub: {
      * @generated from rpc eventbus.v1.PubSub.PublishStream
      */
     readonly publishStream: {
-      readonly name: 'PublishStream';
-      readonly I: typeof PublishRequest;
-      readonly O: typeof PublishResponse;
-      readonly kind: MethodKind.BiDiStreaming;
-    };
-  };
+      readonly name: "PublishStream",
+      readonly I: typeof PublishRequest,
+      readonly O: typeof PublishResponse,
+      readonly kind: MethodKind.BiDiStreaming,
+    },
+  }
 };
+
