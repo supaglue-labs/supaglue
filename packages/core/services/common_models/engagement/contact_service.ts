@@ -137,6 +137,8 @@ export class ContactService extends CommonModelBaseService {
       'remote_deleted_at',
       'detected_or_remote_deleted_at',
       'last_modified_at',
+      '_remote_owner_id',
+      'owner_id',
       'updated_at', // TODO: We should have default for this column in Postgres
       'raw_data',
     ];
