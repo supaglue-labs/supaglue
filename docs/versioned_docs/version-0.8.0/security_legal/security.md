@@ -23,7 +23,7 @@ Supaglue is hosted on Amazon Web Services (AWS) and all of our AWS servers are l
 Supaglue employees have audited and as-needed access to infrastructure on AWS. All employees have dedicated user accounts and access infrastructure via two-factor authentication.
 
 ### SOC 2 Compliance
-Supaglue is SOC 2 compliant. This means that we regularly undergo third-party external penetration tests, conduct background checks of new employees, have all employees go through security awareness training, and more. To access our SOC 2 report, please email us at hello@supaglue.com.
+Supaglue is SOC 2 compliant. This means that we regularly conduct background checks of new employees, have all employees go through security awareness training, and more. To access our SOC 2 report, please email us at hello@supaglue.com.
 
 ### Encryption
 All data in transit is encrypted over HTTPS/TLS between you and Supaglue's servers.
