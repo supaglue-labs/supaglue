@@ -33,6 +33,10 @@ paths:
     $ref: paths/users.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
+  '/mailboxes':
+    $ref: paths/mailboxes.yaml
+  '/mailboxes/{mailbox_id}':
+    $ref: paths/mailboxes@{mailbox_id}.yaml
   '/sequences':
     $ref: paths/sequences.yaml
   '/sequences/{sequence_id}':
@@ -44,6 +48,8 @@ tags:
     description: The `Sequence` Common Model is used to represent a "sequence" in Engagements.
   - name: Users
     description: The `User` Common Model is used to represent a "user" in Engagements.
+  - name: Mailboxes
+    description: The `Mailbox` Common Model is used to represent email mailbox, used within the application for sending and syncing emails
   - name: Passthrough
     description: Passthrough operations to underlying providers.
 components:
@@ -55,6 +61,8 @@ components:
       $ref: ./components/schemas/objects/contact.yaml
     create_contact:
       $ref: ./components/schemas/create_update_contact.yaml
+    mailbox:
+      $ref: ./components/schemas/objects/mailbox.yaml
     user:
       $ref: ./components/schemas/objects/user.yaml
     sequence:

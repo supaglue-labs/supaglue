@@ -1,6 +1,7 @@
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
 import contact from './contact';
+import mailbox from './mailbox';
 import passthrough from './passthrough';
 import sequence from './sequence';
 import user from './user';
@@ -13,6 +14,7 @@ export default function init(app: Router): void {
   contact(v1Router);
   user(v1Router);
   sequence(v1Router);
+  mailbox(v1Router);
   passthrough(v1Router);
 
   v1Router.use(openApiErrorHandlerMiddleware);
