@@ -85,6 +85,11 @@ export interface paths {
       };
     };
   };
+  "/sequence_states": {
+    /** Create sequence state */
+    post: operations["createSequenceState"];
+    
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -157,6 +162,45 @@ export interface components {
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
+    };
+    sequence_state: {
+      /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
+      id: string;
+      /** @example 54312 */
+      remote_id: string;
+      /** @example active */
+      state?: string;
+      /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
+      contact_id: string | null;
+      /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+      mailbox_id: string | null;
+      /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
+      sequence_id: string | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_created_at: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_updated_at: Date | null;
+      /** @example false */
+      remote_was_deleted: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at: Date;
+    };
+    create_sequence_state: {
+      /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
+      contact_id?: string | null;
+      /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+      mailbox_id?: string | null;
+      /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
+      sequence_id?: string | null;
     };
     mailbox: {
       /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
@@ -656,6 +700,42 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["sequence"];
+        };
+      };
+    };
+  };
+  createSequenceState: {
+    /** Create sequence state */
+    requestBody: {
+      content: {
+        /**
+         * @example {
+         *   "model": {
+         *     "id": "355843a5-c536-4e82-b497-05160bfb7d78",
+         *     "state": "active",
+         *     "mailbox_id": "a7e860b5-cb8b-400b-812d-921fa526140c",
+         *     "contact_id": "6bdcebc2-f886-4de3-88ed-0b9eb420f7b1",
+         *     "sequence_id": "45e07817-fd59-4ec8-a727-066d2db27c9b",
+         *     "remote_created_at": "2023-02-27T00:00:00Z",
+         *     "remote_updated_at": "2023-02-27T00:00:00Z"
+         *   }
+         * }
+         */
+        "application/json": {
+          model: components["schemas"]["create_sequence_state"];
+        };
+      };
+    };
+    responses: {
+      /** @description Contact created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            model?: components["schemas"]["contact"];
+            warnings?: components["schemas"]["warnings"];
+          };
         };
       };
     };

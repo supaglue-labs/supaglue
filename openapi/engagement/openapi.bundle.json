@@ -953,6 +953,84 @@
           }
         }
       ]
+    },
+    "/sequence_states": {
+      "post": {
+        "operationId": "createSequenceState",
+        "summary": "Create sequence state",
+        "tags": [
+          "SequenceState"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "$ref": "#/components/schemas/create_sequence_state"
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "example": {
+                "model": {
+                  "id": "355843a5-c536-4e82-b497-05160bfb7d78",
+                  "state": "active",
+                  "mailbox_id": "a7e860b5-cb8b-400b-812d-921fa526140c",
+                  "contact_id": "6bdcebc2-f886-4de3-88ed-0b9eb420f7b1",
+                  "sequence_id": "45e07817-fd59-4ec8-a727-066d2db27c9b",
+                  "remote_created_at": "2023-02-27T00:00:00Z",
+                  "remote_updated_at": "2023-02-27T00:00:00Z"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "model": {
+                      "$ref": "#/components/schemas/contact"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
     }
   },
   "tags": [
@@ -1146,6 +1224,91 @@
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
+          }
+        }
+      },
+      "sequence_state": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e19a7c83-6480-46cc-9ea7-a5b82b30d04b"
+          },
+          "remote_id": {
+            "type": "string",
+            "example": 54312
+          },
+          "state": {
+            "type": "string",
+            "example": "active"
+          },
+          "contact_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "c590dc63-8e43-48a4-8154-1fbb00ac936b"
+          },
+          "mailbox_id": {
+            "nullable": true,
+            "type": "string",
+            "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+          },
+          "sequence_id": {
+            "nullable": true,
+            "type": "string",
+            "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
+          },
+          "remote_created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_was_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "remote_id",
+          "active",
+          "mailbox_id",
+          "contact_id",
+          "sequence_id",
+          "remote_created_at",
+          "remote_updated_at",
+          "remote_was_deleted",
+          "last_modified_at"
+        ]
+      },
+      "create_sequence_state": {
+        "type": "object",
+        "properties": {
+          "contact_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "c590dc63-8e43-48a4-8154-1fbb00ac936b"
+          },
+          "mailbox_id": {
+            "nullable": true,
+            "type": "string",
+            "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+          },
+          "sequence_id": {
+            "nullable": true,
+            "type": "string",
+            "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
           }
         }
       },
