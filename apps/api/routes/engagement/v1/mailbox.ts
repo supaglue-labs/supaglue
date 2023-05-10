@@ -1,3 +1,6 @@
+import { getDependencyContainer } from '@/dependency_container';
+import { toGetInternalParams, toListInternalParams } from '@supaglue/core/mappers';
+import { toSnakecasedKeysMailbox } from '@supaglue/core/mappers/engagement';
 import {
   GetMailboxesPathParams,
   GetMailboxesRequest,
@@ -8,6 +11,10 @@ import {
 } from '@supaglue/schemas/engagement';
 import { ListParams } from '@supaglue/types/common';
 import { Request, Response, Router } from 'express';
+
+const {
+  engagement: { mailboxService },
+} = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -23,7 +30,12 @@ export default function init(app: Router): void {
       >,
       res: Response<GetMailboxesResponse>
     ) => {
-      throw new Error('not implemented');
+      const { next, previous, results } = await mailboxService.list(
+        req.customerConnection.id,
+        toListInternalParams(req.query)
+      );
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysMailbox);
+      return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
 
@@ -33,7 +45,12 @@ export default function init(app: Router): void {
       req: Request<GetMailboxPathParams, GetMailboxResponse, GetMailboxRequest>,
       res: Response<GetMailboxResponse>
     ) => {
-      throw new Error('not implemented');
+      const mailbox = await mailboxService.getById(
+        req.params.mailbox_id,
+        req.customerConnection.id,
+        toGetInternalParams(req.query)
+      );
+      return res.status(200).send(toSnakecasedKeysMailbox(mailbox));
     }
   );
 

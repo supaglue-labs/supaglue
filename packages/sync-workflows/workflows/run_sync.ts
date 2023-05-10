@@ -168,6 +168,7 @@ async function doFullThenIncrementalSync({
             contact: importRecordsResultList.contact.maxLastModifiedAtMs,
             user: importRecordsResultList.user.maxLastModifiedAtMs,
             sequence: importRecordsResultList.sequence.maxLastModifiedAtMs,
+            mailbox: importRecordsResultList.mailbox.maxLastModifiedAtMs,
           };
 
     await updateSyncState({
@@ -220,6 +221,7 @@ async function doFullThenIncrementalSync({
         contact: maxLastModifiedAtMsMap['contact'] ?? 0,
         user: maxLastModifiedAtMsMap['user'] ?? 0,
         sequence: maxLastModifiedAtMsMap['sequence'] ?? 0,
+        mailbox: maxLastModifiedAtMsMap['mailbox'] ?? 0,
       };
     }
 
@@ -345,6 +347,7 @@ const getDefaultMaxLastModifiedAtMsMap = (category: IntegrationCategory): NumRec
     contact: 0,
     user: 0,
     sequence: 0,
+    mailbox: 0,
   };
 };
 

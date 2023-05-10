@@ -11,6 +11,7 @@ import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import {
+  fromOutreachMailboxToRemoteMailbox,
   fromOutreachProspectToRemoteContact,
   fromOutreachSequenceToRemoteSequence,
   fromOutreachUserToRemoteUser,
@@ -74,6 +75,8 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         return await this.listUsers(updatedAfter);
       case 'sequence':
         return await this.listSequences(updatedAfter);
+      case 'mailbox':
+        return await this.listMailboxes(updatedAfter);
       default:
         throw new Error(`Common model ${commonModelType} not supported`);
     }
@@ -138,7 +141,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   private async listUsers(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/prospects`, updatedAfter);
+    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/users`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -159,6 +162,17 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
+  private async listMailboxes(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/mailboxes`, updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachMailboxToRemoteMailbox)),
+        getNextCursorFromPage: (response) => response.links?.next,
+      },
+    ]);
+  }
+
   public override async createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
@@ -167,6 +181,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.createContact(params);
       case 'sequence':
+      case 'mailbox':
       case 'user':
         throw new Error(`Create operation not supported for ${commonModelType} object`);
       default:
