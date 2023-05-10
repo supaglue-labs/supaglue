@@ -16,7 +16,7 @@ const LOG_LEVEL = process.env.SUPAGLUE_LOG_LEVEL as Level;
 
 const streams: (pino.DestinationStream | pino.StreamEntry)[] = [];
 if (process.env.SUPAGLUE_PRETTY_LOGS) {
-  streams.push(pretty({ ignore: 'pid,hostname', translateTime: true, colorize: true }));
+  streams.push(pretty({ translateTime: true, colorize: true }));
 } else {
   streams.push({ stream: process.stdout });
 }
@@ -39,4 +39,12 @@ if (sentryEnabled) {
 }
 
 // add a type for this since pino-context doesn't have any
-export const logger: Logger = wrapLogger(pino({ level: LOG_LEVEL }, pino.multistream(streams)));
+export const logger: Logger = wrapLogger(
+  pino(
+    {
+      level: LOG_LEVEL,
+      base: undefined, // don't log hostname and pid
+    },
+    pino.multistream(streams)
+  )
+);
