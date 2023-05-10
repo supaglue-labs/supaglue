@@ -1,6 +1,6 @@
 {
   "name": "salesforce-pub-sub",
-  "version": "0.7.11",
+  "version": "0.8.0",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "dependencies": {
@@ -11,8 +11,7 @@
     "avsc": "^5.7.7",
     "bigint-conversion": "^2.4.1",
     "jsforce": "^2.0.0-beta.20",
-    "lru-cache": "^9.1.1",
-    "tsx": "^3.12.6"
+    "lru-cache": "^9.1.1"
   },
   "scripts": {
     "generate": "buf generate https://github.com/supaglue-labs/salesforce-pub-sub-api.git",
@@ -20,5 +19,9 @@
     "build": "tsc -p tsconfig.json",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint"
+  },
+  "devDependencies": {
+    "tsx": "^3.12.6",
+    "typescript": "^4.9.5"
   }
 }
