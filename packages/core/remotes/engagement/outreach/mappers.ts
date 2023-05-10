@@ -4,6 +4,7 @@ import {
   PhoneNumber,
   RemoteContact,
   RemoteContactCreateParams,
+  RemoteMailbox,
   RemoteSequence,
   RemoteUser,
 } from '@supaglue/types/engagement';
@@ -44,6 +45,21 @@ export const fromOutreachSequenceToRemoteSequence = (record: OutreachRecord): Re
     remoteDeletedAt: null,
     detectedOrRemoteDeletedAt: null,
     remoteOwnerId: relationships.owner?.data?.id?.toString() ?? null,
+    rawData: record,
+  };
+};
+
+export const fromOutreachMailboxToRemoteMailbox = (record: OutreachRecord): RemoteMailbox => {
+  const { id, attributes, relationships } = record;
+  return {
+    remoteId: id.toString(),
+    email: (attributes.email as string) ?? null,
+    remoteCreatedAt: new Date(attributes.createdAt as string),
+    remoteUpdatedAt: new Date(attributes.updatedAt as string),
+    remoteWasDeleted: false,
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
+    remoteUserId: relationships.user?.data?.id?.toString() ?? null,
     rawData: record,
   };
 };
