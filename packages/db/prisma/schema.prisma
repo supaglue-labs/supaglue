@@ -344,7 +344,7 @@ model EngagementSequence {
   connectionId              String    @map("connection_id")
   isEnabled                 Boolean   @map("is_enabled")
   name                      String?
-  tags                      String[]
+  tags                      Json
   numSteps                  Int       @map("num_steps")
   scheduleCount             Int       @map("schedule_count")
   openCount                 Int       @map("open_count")

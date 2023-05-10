@@ -12,6 +12,7 @@ import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromOutreachProspectToRemoteContact,
+  fromOutreachSequenceToRemoteSequence,
   fromOutreachUserToRemoteUser,
   toOutreachProspectCreateParams,
 } from './mappers';
@@ -71,6 +72,8 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         return await this.listContacts(updatedAfter);
       case 'user':
         return await this.listUsers(updatedAfter);
+      case 'sequence':
+        return await this.listSequences(updatedAfter);
       default:
         throw new Error(`Common model ${commonModelType} not supported`);
     }
@@ -98,7 +101,10 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  async #getListContactsFetcher(updatedAfter?: Date): Promise<(link?: string) => Promise<OutreachPaginatedRecords>> {
+  async #getListRecordsFetcher(
+    endpoint: string,
+    updatedAfter?: Date
+  ): Promise<(link?: string) => Promise<OutreachPaginatedRecords>> {
     return async (link?: string) => {
       await this.maybeRefreshAccessToken();
       if (link) {
@@ -107,7 +113,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         });
         return response.data;
       }
-      const response = await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/prospects`, {
+      const response = await axios.get<OutreachPaginatedRecords>(endpoint, {
         params: updatedAfter
           ? {
               ...DEFAULT_LIST_PARAMS,
@@ -121,7 +127,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   private async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListContactsFetcher(updatedAfter);
+    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/prospects`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -131,34 +137,23 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #getListUsersFetcher(updatedAfter?: Date): Promise<(link?: string) => Promise<OutreachPaginatedRecords>> {
-    return async (link?: string) => {
-      await this.maybeRefreshAccessToken();
-      if (link) {
-        const response = await axios.get<OutreachPaginatedRecords>(link, {
-          headers: this.#headers,
-        });
-        return response.data;
-      }
-      const response = await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/users`, {
-        params: updatedAfter
-          ? {
-              ...DEFAULT_LIST_PARAMS,
-              ...getUpdatedAfterPathParam(updatedAfter),
-            }
-          : DEFAULT_LIST_PARAMS,
-        headers: this.#headers,
-      });
-      return response.data;
-    };
-  }
-
   private async listUsers(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListUsersFetcher(updatedAfter);
+    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/prospects`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachUserToRemoteUser)),
+        getNextCursorFromPage: (response) => response.links?.next,
+      },
+    ]);
+  }
+
+  private async listSequences(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/sequences`, updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachSequenceToRemoteSequence)),
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -171,8 +166,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     switch (commonModelType) {
       case 'contact':
         return await this.createContact(params);
+      case 'sequence':
       case 'user':
-        throw new Error('Create operation not supported for user object');
+        throw new Error(`Create operation not supported for ${commonModelType} object`);
       default:
         throw new Error(`Common model ${commonModelType} not supported`);
     }

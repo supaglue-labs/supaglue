@@ -179,7 +179,7 @@ export interface components {
       remote_id: string;
       /** @example true */
       is_enabled: boolean;
-      name: string;
+      name: string | null;
       tags: (string)[];
       num_steps: number;
       schedule_count: number;

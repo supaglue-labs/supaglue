@@ -13,16 +13,20 @@ export const toSnakecasedKeysSequence = (sequence: Sequence) => {
     name: sequence.name,
     tags: sequence.tags,
     num_steps: sequence.numSteps,
-    scheduled_count: sequence.scheduleCount,
-    opened_count: sequence.openCount,
-    opted_out_count: sequence.optOutCount,
-    replied_count: sequence.replyCount,
-    clicked_count: sequence.clickCount,
+    schedule_count: sequence.scheduleCount,
+    open_count: sequence.openCount,
+    opt_out_count: sequence.optOutCount,
+    reply_count: sequence.replyCount,
+    click_count: sequence.clickCount,
     remote_created_at: sequence.remoteCreatedAt,
     remote_updated_at: sequence.remoteUpdatedAt,
     remote_was_deleted: sequence.remoteWasDeleted,
     raw_data: sequence.rawData,
   };
+};
+
+type TagsModel = {
+  tags: string[];
 };
 
 export const fromSequenceModel = (
@@ -53,7 +57,7 @@ export const fromSequenceModel = (
     ownerId,
     isEnabled,
     name,
-    tags,
+    tags: (tags as TagsModel).tags,
     numSteps,
     scheduleCount,
     openCount,
@@ -91,7 +95,8 @@ export const fromRemoteSequenceToDbSequenceParams = (
     connection_id: connectionId,
     name: remoteSequence.name,
     is_enabled: remoteSequence.isEnabled,
-    tags: remoteSequence.tags,
+    // We wrap it as an object so it's CSV-friendly
+    tags: { tags: remoteSequence.tags },
     num_steps: remoteSequence.numSteps,
     schedule_count: remoteSequence.scheduleCount,
     open_count: remoteSequence.openCount,

@@ -1,7 +1,7 @@
 import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
 
 export type BaseSequence = BaseEngagementModel & {
-  isEnabled: boolean | null;
+  isEnabled: boolean;
   name: string | null;
   tags: string[];
   numSteps: number;

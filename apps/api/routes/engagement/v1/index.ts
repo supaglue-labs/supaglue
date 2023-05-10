@@ -2,6 +2,7 @@ import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/o
 import { Router } from 'express';
 import contact from './contact';
 import passthrough from './passthrough';
+import sequence from './sequence';
 import user from './user';
 
 export default function init(app: Router): void {
@@ -11,6 +12,7 @@ export default function init(app: Router): void {
 
   contact(v1Router);
   user(v1Router);
+  sequence(v1Router);
   passthrough(v1Router);
 
   v1Router.use(openApiErrorHandlerMiddleware);
