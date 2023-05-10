@@ -51,6 +51,23 @@ export interface paths {
       };
     };
   };
+  "/mailboxes": {
+    /**
+     * List mailboxes 
+     * @description Get a list of mailboxes
+     */
+    get: operations["getMailboxes"];
+    
+  };
+  "/mailboxes/{mailbox_id}": {
+    /** Get mailbox */
+    get: operations["getMailbox"];
+    parameters: {
+      path: {
+        mailbox_id: string;
+      };
+    };
+  };
   "/sequences": {
     /**
      * List sequences 
@@ -140,6 +157,33 @@ export interface components {
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
+    };
+    mailbox: {
+      /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
+      id: string;
+      /** @example 54312 */
+      remote_id: string;
+      /** @example null */
+      email: string | null;
+      /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+      user_id: string | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_created_at: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_updated_at: Date | null;
+      /** @example false */
+      remote_was_deleted: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at: Date;
     };
     user: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -558,6 +602,33 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["user"];
+        };
+      };
+    };
+  };
+  getMailboxes: {
+    /**
+     * List mailboxes 
+     * @description Get a list of mailboxes
+     */
+    responses: {
+      /** @description Mailboxes */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["mailbox"])[];
+          };
+        };
+      };
+    };
+  };
+  getMailbox: {
+    /** Get mailbox */
+    responses: {
+      /** @description Mailbox */
+      200: {
+        content: {
+          "application/json": components["schemas"]["mailbox"];
         };
       };
     };

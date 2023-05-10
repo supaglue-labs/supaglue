@@ -72,3 +72,19 @@ export type GetSequenceQueryParams = any;
 export type GetSequenceRequest = never;
 export type GetSequenceResponse =
   operations['getSequence']['responses'][keyof operations['getSequence']['responses']]['content']['application/json'];
+
+export type GetMailboxesPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type GetMailboxesQueryParams = Required<operations['getMailboxes']>['parameters']['query'];
+export type GetMailboxesQueryParams = any;
+export type GetMailboxesRequest = never;
+export type GetMailboxesResponse =
+  operations['getMailboxes']['responses'][keyof operations['getMailboxes']['responses']]['content']['application/json'];
+
+export type GetMailboxPathParams = paths[`/mailboxes/{mailbox_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type GetMailboxQueryParams = Required<operations['getMailbox']>['parameters']['query'];
+export type GetMailboxQueryParams = any;
+export type GetMailboxRequest = never;
+export type GetMailboxResponse =
+  operations['getMailbox']['responses'][keyof operations['getMailbox']['responses']]['content']['application/json'];
