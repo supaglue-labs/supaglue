@@ -10,6 +10,7 @@ import {
 } from '@supaglue/core/services/common_models/crm';
 import {
   ContactService as EngagementContactService,
+  MailboxService,
   SequenceService,
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
@@ -39,6 +40,7 @@ type DependencyContainer = {
     contactService: EngagementContactService;
     userService: EngagementUserService;
     sequenceService: SequenceService;
+    mailboxService: MailboxService;
   };
 };
 
