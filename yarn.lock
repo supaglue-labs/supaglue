@@ -16391,6 +16391,7 @@ __metadata:
     jsforce: ^2.0.0-beta.20
     lru-cache: ^9.1.1
     tsx: ^3.12.6
+    typescript: ^4.9.5
   languageName: unknown
   linkType: soft
 
