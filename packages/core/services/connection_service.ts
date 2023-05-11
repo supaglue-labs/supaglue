@@ -1,5 +1,10 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { ConnectionCredentialsDecryptedAny, ConnectionSafeAny, ConnectionUnsafe } from '@supaglue/types';
+import type {
+  ConnectionCredentialsDecryptedAny,
+  ConnectionSafeAny,
+  ConnectionUnsafe,
+  ProviderName,
+} from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
 import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
@@ -15,7 +20,7 @@ export class ConnectionService {
     this.#integrationService = integrationService;
   }
 
-  public async getUnsafeById<T extends CRMProviderName>(id: string): Promise<ConnectionUnsafe<T>> {
+  public async getUnsafeById<T extends ProviderName>(id: string): Promise<ConnectionUnsafe<T>> {
     const connection = await this.#prisma.connection.findUnique({
       where: { id },
     });
