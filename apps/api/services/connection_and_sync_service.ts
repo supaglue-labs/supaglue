@@ -29,7 +29,13 @@ import type {
 } from '@supaglue/types/connection';
 import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
-import { Client, ScheduleAlreadyRunning, WorkflowNotFoundError } from '@temporalio/client';
+import {
+  Client,
+  IntervalSpec,
+  ScheduleAlreadyRunning,
+  ScheduleOptionsAction,
+  WorkflowNotFoundError,
+} from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
@@ -346,56 +352,69 @@ export class ConnectionAndSyncService {
     connection: ConnectionSafeAny,
     syncPeriodMs: number
   ): Promise<boolean> {
-    try {
-      await this.#temporalClient.schedule.create({
-        scheduleId: getRunSyncScheduleId(syncId),
-        spec: {
-          intervals: [
-            {
-              every: syncPeriodMs,
-              // so that not everybody is refreshing and hammering the DB at the same time
-              offset: Math.random() * syncPeriodMs,
-            },
-          ],
-        },
-        action: {
-          type: 'startWorkflow',
-          workflowType: runSync,
-          workflowId: getRunSyncWorkflowId(syncId),
-          taskQueue: SYNC_TASK_QUEUE,
-          args: [
-            {
-              syncId,
-              connectionId: connection.id,
-              category: connection.category,
-              context: {
-                [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
-                [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
-                [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
-                [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
-                [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
-                [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
-              },
-            },
-          ],
-          searchAttributes: {
-            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
-            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
-            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
-            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
-            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
-            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
-            [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+    const scheduleId = getRunSyncScheduleId(syncId);
+    const interval: IntervalSpec = {
+      every: syncPeriodMs,
+      // so that not everybody is refreshing and hammering the DB at the same time
+      offset: Math.random() * syncPeriodMs,
+    };
+    const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
+      type: 'startWorkflow' as const,
+      workflowType: runSync,
+      workflowId: getRunSyncWorkflowId(syncId),
+      taskQueue: SYNC_TASK_QUEUE,
+      args: [
+        {
+          syncId,
+          connectionId: connection.id,
+          category: connection.category,
+          context: {
+            [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
+            [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
+            [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
+            [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
+            [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
+            [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
           },
         },
+      ],
+      searchAttributes: {
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+      },
+    };
+
+    try {
+      await this.#temporalClient.schedule.create({
+        scheduleId,
+        spec: {
+          intervals: [interval],
+        },
+        action,
         state: {
           triggerImmediately: true,
         },
       });
     } catch (err: unknown) {
       if (err instanceof ScheduleAlreadyRunning) {
-        // swallow
-        // TODO: Allow updating the schedule
+        const handle = this.#temporalClient.schedule.getHandle(scheduleId);
+        await handle.update((prev) => {
+          const newInterval = prev.spec.intervals?.[0]?.every === syncPeriodMs ? prev.spec.intervals[0] : interval;
+
+          return {
+            ...prev,
+            spec: {
+              intervals: [newInterval],
+            },
+            action,
+          };
+        });
+
         return false;
       }
 
