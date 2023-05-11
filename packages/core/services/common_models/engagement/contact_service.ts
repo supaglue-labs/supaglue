@@ -79,7 +79,7 @@ export class ContactService extends CommonModelBaseService {
   public async update(customerId: string, connectionId: string, updateParams: ContactUpdateParams): Promise<Contact> {
     // TODO: We may want to have better guarantees that we update the record in both our DB
     // and the external integration.
-    const foundContactModel = await this.prisma.crmContact.findUniqueOrThrow({
+    const foundContactModel = await this.prisma.engagementContact.findUniqueOrThrow({
       where: {
         id: updateParams.id,
       },

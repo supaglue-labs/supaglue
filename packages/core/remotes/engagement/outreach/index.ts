@@ -4,6 +4,8 @@ import {
   EngagementCommonModelTypeMap,
   RemoteContact,
   RemoteContactCreateParams,
+  RemoteSequenceState,
+  RemoteSequenceStateCreateParams,
 } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -13,9 +15,11 @@ import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromOutreachMailboxToRemoteMailbox,
   fromOutreachProspectToRemoteContact,
+  fromOutreachSequenceStateToRemoteSequenceState,
   fromOutreachSequenceToRemoteSequence,
   fromOutreachUserToRemoteUser,
   toOutreachProspectCreateParams,
+  toOutreachSequenceStateCreateParams,
 } from './mappers';
 
 const OUTREACH_RECORD_LIMIT = 50;
@@ -77,6 +81,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         return await this.listSequences(updatedAfter);
       case 'mailbox':
         return await this.listMailboxes(updatedAfter);
+      case 'sequence_state':
+        // TODO: Support syncing sequence states
+        return Readable.from([]);
       default:
         throw new Error(`Common model ${commonModelType} not supported`);
     }
@@ -178,8 +185,10 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
     switch (commonModelType) {
+      case 'sequence_state':
+        return await this.createSequenceState(params as RemoteSequenceStateCreateParams);
       case 'contact':
-        return await this.createContact(params);
+        return await this.createContact(params as RemoteContactCreateParams);
       case 'sequence':
       case 'mailbox':
       case 'user':
@@ -199,6 +208,18 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       }
     );
     return fromOutreachProspectToRemoteContact(response.data.data);
+  }
+
+  async createSequenceState(params: RemoteSequenceStateCreateParams): Promise<RemoteSequenceState> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/sequenceStates`,
+      toOutreachSequenceStateCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromOutreachSequenceStateToRemoteSequenceState(response.data.data);
   }
 
   public override updateObject<T extends EngagementCommonModelType>(

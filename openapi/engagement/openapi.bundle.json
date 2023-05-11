@@ -998,7 +998,7 @@
         },
         "responses": {
           "201": {
-            "description": "Contact created",
+            "description": "Sequence state created",
             "content": {
               "application/json": {
                 "schema": {
@@ -1011,7 +1011,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/sequence_state"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -1041,6 +1041,10 @@
     {
       "name": "Sequences",
       "description": "The `Sequence` Common Model is used to represent a \"sequence\" in Engagements."
+    },
+    {
+      "name": "Sequence States",
+      "description": "The `Sequence State` Common Model is used to represent the state of a contact in a sequence."
     },
     {
       "name": "Users",
@@ -1240,6 +1244,7 @@
           },
           "state": {
             "type": "string",
+            "nullable": true,
             "example": "active"
           },
           "contact_id": {
@@ -1282,7 +1287,7 @@
         "required": [
           "id",
           "remote_id",
-          "active",
+          "state",
           "mailbox_id",
           "contact_id",
           "sequence_id",
@@ -1297,20 +1302,22 @@
         "properties": {
           "contact_id": {
             "type": "string",
-            "nullable": true,
             "example": "c590dc63-8e43-48a4-8154-1fbb00ac936b"
           },
           "mailbox_id": {
-            "nullable": true,
             "type": "string",
             "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
           },
           "sequence_id": {
-            "nullable": true,
             "type": "string",
             "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
           }
-        }
+        },
+        "required": [
+          "contact_id",
+          "mailbox_id",
+          "sequence_id"
+        ]
       },
       "mailbox": {
         "type": "object",

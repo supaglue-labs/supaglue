@@ -14,7 +14,7 @@ post:
           type: object
           properties:
             model:
-              $ref: ../components/schemas/create_update_sequence_state.yaml
+              $ref: ../components/schemas/create_sequence_state.yaml
           required:
             - model
         example:
@@ -28,7 +28,7 @@ post:
             remote_updated_at: '2023-02-27T00:00:00Z'
   responses:
     '201':
-      description: Contact created
+      description: Sequence state created
       content:
         application/json:
           schema:
@@ -39,7 +39,7 @@ post:
               logs:
                 $ref: ../../common/components/schemas/logs.yaml
               model:
-                $ref: ../components/schemas/objects/contact.yaml
+                $ref: ../components/schemas/objects/sequence_state.yaml
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:

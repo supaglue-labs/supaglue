@@ -6,6 +6,8 @@ import {
   RemoteContactCreateParams,
   RemoteMailbox,
   RemoteSequence,
+  RemoteSequenceState,
+  RemoteSequenceStateCreateParams,
   RemoteUser,
 } from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
@@ -60,6 +62,23 @@ export const fromOutreachMailboxToRemoteMailbox = (record: OutreachRecord): Remo
     remoteDeletedAt: null,
     detectedOrRemoteDeletedAt: null,
     remoteUserId: relationships.user?.data?.id?.toString() ?? null,
+    rawData: record,
+  };
+};
+
+export const fromOutreachSequenceStateToRemoteSequenceState = (record: OutreachRecord): RemoteSequenceState => {
+  const { id, attributes, relationships } = record;
+  return {
+    remoteId: id.toString(),
+    state: attributes.state as string,
+    remoteSequenceId: relationships.sequence?.data?.id?.toString() ?? null,
+    remoteMailboxId: relationships.mailbox?.data?.id?.toString() ?? null,
+    remoteContactId: relationships.prospect?.data?.id?.toString() ?? null,
+    remoteCreatedAt: new Date(attributes.createdAt as string),
+    remoteUpdatedAt: new Date(attributes.updatedAt as string),
+    remoteWasDeleted: false,
+    remoteDeletedAt: null,
+    detectedOrRemoteDeletedAt: null,
     rawData: record,
   };
 };
@@ -146,6 +165,38 @@ export const toOutreachProspectCreateParams = ({
         ...customFields,
       },
       // TODO: Handle associations
+    },
+  };
+};
+
+export const toOutreachSequenceStateCreateParams = ({
+  remoteMailboxId,
+  remoteSequenceId,
+  remoteContactId,
+}: RemoteSequenceStateCreateParams): Record<string, any> => {
+  return {
+    data: {
+      type: 'sequenceState',
+      relationships: {
+        prospect: {
+          data: {
+            type: 'prospect',
+            id: parseInt(remoteContactId, 10),
+          },
+        },
+        sequence: {
+          data: {
+            type: 'sequence',
+            id: parseInt(remoteSequenceId, 10),
+          },
+        },
+        mailbox: {
+          data: {
+            type: 'mailbox',
+            id: parseInt(remoteMailboxId, 10),
+          },
+        },
+      },
     },
   };
 };
