@@ -86,9 +86,23 @@ export interface paths {
     };
   };
   "/sequence_states": {
+    /**
+     * List mailboxes 
+     * @description Get a list of mailboxes
+     */
+    get: operations["getSequenceStates"];
     /** Create sequence state */
     post: operations["createSequenceState"];
     
+  };
+  "/sequence_states/{sequence_state_id}": {
+    /** Get sequence state */
+    get: operations["getSequenceState"];
+    parameters: {
+      path: {
+        sequence_state_id: string;
+      };
+    };
   };
 }
 
@@ -704,6 +718,22 @@ export interface operations {
       };
     };
   };
+  getSequenceStates: {
+    /**
+     * List mailboxes 
+     * @description Get a list of mailboxes
+     */
+    responses: {
+      /** @description Sequence States */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["sequence_state"])[];
+          };
+        };
+      };
+    };
+  };
   createSequenceState: {
     /** Create sequence state */
     requestBody: {
@@ -736,6 +766,17 @@ export interface operations {
             model?: components["schemas"]["sequence_state"];
             warnings?: components["schemas"]["warnings"];
           };
+        };
+      };
+    };
+  };
+  getSequenceState: {
+    /** Get sequence state */
+    responses: {
+      /** @description Sequence State */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sequence_state"];
         };
       };
     };

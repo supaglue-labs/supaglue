@@ -955,6 +955,101 @@
       ]
     },
     "/sequence_states": {
+      "get": {
+        "operationId": "getSequenceStates",
+        "tags": [
+          "SequenceStates"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List mailboxes",
+        "description": "Get a list of mailboxes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/modified_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sequence States",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/sequence_state"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "id": "6bf506a8-0a5a-419a-bd24-32b4a66d5db5",
+                          "remote_id": 1234,
+                          "state": "active",
+                          "mailbox_id": "8308b381-7e78-44d2-a820-74af1c71c6c2",
+                          "contact_id": "f3185edb-39d8-4bff-a560-3dbc8bfd8056",
+                          "sequence_id": "05660383-6bac-463d-b7d6-b8ebc4cb6e3b",
+                          "remote_created_at": "2023-02-27T00:00:00Z",
+                          "remote_updated_at": "2023-02-27T00:00:00Z"
+                        },
+                        {
+                          "id": "e86309e9-25f5-4898-904b-7b4ee87a3181",
+                          "remote_id": 1235,
+                          "mailbox_id": "a379e517-1314-48d5-8ad9-2afb793be11e",
+                          "contact_id": "41a71062-48ce-462a-8e53-af77e5df2ac3",
+                          "sequence_id": "989146f3-611c-4a55-ae1b-ad83c769b197",
+                          "remote_created_at": "2023-02-27T00:00:00Z",
+                          "remote_updated_at": "2023-02-27T00:00:00Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "operationId": "createSequenceState",
         "summary": "Create sequence state",
@@ -1029,6 +1124,54 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/sequence_states/{sequence_state_id}": {
+      "get": {
+        "operationId": "getSequenceState",
+        "summary": "Get sequence state",
+        "tags": [
+          "Sequence States"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sequence State",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sequence_state"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "sequence_state_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "ffb62704-addd-454e-bb86-ed0799703dc6"
+          }
         }
       ]
     }
