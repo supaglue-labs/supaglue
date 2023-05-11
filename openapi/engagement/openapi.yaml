@@ -48,6 +48,8 @@ tags:
     description: The `Contact` Common Model is used to represent a "contact" in Engagements.
   - name: Sequences
     description: The `Sequence` Common Model is used to represent a "sequence" in Engagements.
+  - name: Sequence States
+    description: The `Sequence State` Common Model is used to represent the state of a contact in a sequence.
   - name: Users
     description: The `User` Common Model is used to represent a "user" in Engagements.
   - name: Mailboxes
@@ -66,7 +68,7 @@ components:
     sequence_state:
       $ref: ./components/schemas/objects/sequence_state.yaml
     create_sequence_state:
-      $ref: ./components/schemas/create_update_sequence_state.yaml
+      $ref: ./components/schemas/create_sequence_state.yaml
     mailbox:
       $ref: ./components/schemas/objects/mailbox.yaml
     user:

@@ -169,7 +169,7 @@ export interface components {
       /** @example 54312 */
       remote_id: string;
       /** @example active */
-      state?: string;
+      state: string | null;
       /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
       contact_id: string | null;
       /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
@@ -196,11 +196,11 @@ export interface components {
     };
     create_sequence_state: {
       /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
-      contact_id?: string | null;
+      contact_id: string;
       /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
-      mailbox_id?: string | null;
+      mailbox_id: string;
       /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
-      sequence_id?: string | null;
+      sequence_id: string;
     };
     mailbox: {
       /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
@@ -727,13 +727,13 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Contact created */
+      /** @description Sequence state created */
       201: {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
+            model?: components["schemas"]["sequence_state"];
             warnings?: components["schemas"]["warnings"];
           };
         };

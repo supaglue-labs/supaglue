@@ -8,6 +8,7 @@ properties:
     example: 54312
   state:
     type: string
+    nullable: true
     example: active
   contact_id:
     type: string
@@ -41,7 +42,7 @@ properties:
 required:
   - id
   - remote_id
-  - active
+  - state
   - mailbox_id
   - contact_id
   - sequence_id
