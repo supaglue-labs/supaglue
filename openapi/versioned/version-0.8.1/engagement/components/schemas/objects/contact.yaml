@@ -1,0 +1,76 @@
+type: object
+properties:
+  id:
+    type: string
+    example: 4cee77aa-50ae-4369-be1e-03f15a55ef10
+  remote_id:
+    type: string
+    example: 54312
+  owner_id:
+    type: string
+    nullable: true
+    example: 23e640fe-6105-4a11-a636-3aa6b6c6e762
+  first_name:
+    type: string
+    nullable: true
+    example: George
+  last_name:
+    type: string
+    nullable: true
+    example: Xing
+  job_title:
+    type: string
+    nullable: true
+    example: CEO
+  address:
+    $ref: ./address.yaml
+  email_addresses:
+    $ref: ./email_addresses.yaml
+  phone_numbers:
+    $ref: ./phone_numbers.yaml
+  open_count:
+    type: number
+  click_count:
+    type: number
+  reply_count:
+    type: number
+  bounced_count:
+    type: number
+  remote_created_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_updated_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_was_deleted:
+    type: boolean
+    example: false
+  last_modified_at:
+    type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  raw_data:
+    type: object
+    additionalProperties: true
+required:
+  - id
+  - remote_id
+  - owner_id
+  - first_name
+  - last_name
+  - job_title
+  - address
+  - email_addresses
+  - phone_numbers
+  - open_count
+  - click_count
+  - reply_count
+  - bounced_count
+  - remote_created_at	
+  - remote_updated_at	
+  - remote_was_deleted
+  - last_modified_at	

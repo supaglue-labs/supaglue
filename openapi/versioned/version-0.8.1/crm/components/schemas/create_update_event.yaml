@@ -1,0 +1,43 @@
+type: object
+properties:
+  type:
+    type: string
+    nullable: true
+    example: Meeting
+  subject:
+    type: string
+    nullable: true
+    example: Meeting
+  start_time:
+    type: string
+    nullable: true
+    example: '2022-02-27T00:00:00Z'
+  end_time:
+    type: string
+    nullable: true
+    example: '2022-02-27T00:00:00Z'
+  content:
+    type: string
+    nullable: true
+  owner_id:
+    type: string
+    nullable: true
+    example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+  account_id:
+    type: string
+    nullable: true
+    example: 1393711e-b7ba-46ef-b9cd-49134cf2c630
+  contact_id:
+    type: string
+    nullable: true
+    example: 34288f14-7d3e-4275-8b14-3df6d116b1af
+  lead_id:
+    type: string
+    nullable: true
+    example: c1b1c601-6707-4d3a-8c1a-ec0127358019
+  opportunity_id:
+    type: string
+    nullable: true
+    example: 2506e5f3-1805-405a-a13c-baa0ac524274
+  custom_fields:
+    $ref: ./objects/custom_fields.yaml
