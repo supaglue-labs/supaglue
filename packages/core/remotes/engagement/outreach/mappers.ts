@@ -176,24 +176,24 @@ export const toOutreachSequenceStateCreateParams = ({
 }: RemoteSequenceStateCreateParams): Record<string, any> => {
   return {
     data: {
-      type: 'prospect',
+      type: 'sequenceState',
       relationships: {
         prospect: {
           data: {
             type: 'prospect',
-            id: remoteContactId,
+            id: parseInt(remoteContactId, 10),
           },
         },
         sequence: {
           data: {
             type: 'sequence',
-            id: remoteSequenceId,
+            id: parseInt(remoteSequenceId, 10),
           },
         },
         mailbox: {
           data: {
             type: 'mailbox',
-            id: remoteMailboxId,
+            id: parseInt(remoteMailboxId, 10),
           },
         },
       },
