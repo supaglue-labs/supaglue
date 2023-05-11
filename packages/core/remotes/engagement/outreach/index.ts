@@ -82,8 +82,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'mailbox':
         return await this.listMailboxes(updatedAfter);
       case 'sequence_state':
-        // TODO: Support syncing sequence states
-        return Readable.from([]);
+        return await this.listSequenceStates(updatedAfter);
       default:
         throw new Error(`Common model ${commonModelType} not supported`);
     }
@@ -175,6 +174,18 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachMailboxToRemoteMailbox)),
+        getNextCursorFromPage: (response) => response.links?.next,
+      },
+    ]);
+  }
+
+  private async listSequenceStates(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/sequenceStates`, updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) =>
+          Readable.from(response.data.map(fromOutreachSequenceStateToRemoteSequenceState)),
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);

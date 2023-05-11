@@ -43,6 +43,8 @@ paths:
     $ref: paths/sequences@{sequence_id}.yaml
   '/sequence_states':
     $ref: paths/sequence_states.yaml
+  '/sequence_states/{sequence_state_id}':
+    $ref: paths/sequence_states@{sequence_state_id}.yaml
 tags:
   - name: Contacts
     description: The `Contact` Common Model is used to represent a "contact" in Engagements.
