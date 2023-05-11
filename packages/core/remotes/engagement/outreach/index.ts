@@ -110,10 +110,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  async #getListRecordsFetcher(
-    endpoint: string,
-    updatedAfter?: Date
-  ): Promise<(link?: string) => Promise<OutreachPaginatedRecords>> {
+  #getListRecordsFetcher(endpoint: string, updatedAfter?: Date): (link?: string) => Promise<OutreachPaginatedRecords> {
     return async (link?: string) => {
       await this.maybeRefreshAccessToken();
       if (link) {
@@ -136,7 +133,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   private async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/prospects`, updatedAfter);
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/prospects`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -147,7 +144,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   private async listUsers(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/users`, updatedAfter);
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/users`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -158,7 +155,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   private async listSequences(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/sequences`, updatedAfter);
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/sequences`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -169,7 +166,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   private async listMailboxes(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/mailboxes`, updatedAfter);
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/mailboxes`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -180,7 +177,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   private async listSequenceStates(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/sequenceStates`, updatedAfter);
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/sequenceStates`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
