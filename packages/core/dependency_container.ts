@@ -24,6 +24,7 @@ import {
   SequenceService,
   UserService as EngagementUserService,
 } from './services/common_models/engagement';
+import { SequenceStateService } from './services/common_models/engagement/sequence_state_service';
 import { WebhookService } from './services/webhook_service';
 
 export type CoreDependencyContainer = {
@@ -56,6 +57,7 @@ export type CoreDependencyContainer = {
     userService: EngagementUserService;
     sequenceService: SequenceService;
     mailboxService: MailboxService;
+    sequenceStateService: SequenceStateService;
   };
 };
 
@@ -110,6 +112,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const engagementUserService = new EngagementUserService(pgPool, prisma, remoteService);
   const sequenceService = new SequenceService(pgPool, prisma, remoteService);
   const mailboxService = new MailboxService(pgPool, prisma, remoteService);
+  const sequenceStateService = new SequenceStateService(pgPool, prisma, remoteService);
 
   return {
     pgPool,
@@ -138,6 +141,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
       userService: engagementUserService,
       sequenceService,
       mailboxService,
+      sequenceStateService,
     },
   };
 }

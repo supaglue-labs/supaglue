@@ -15,6 +15,7 @@ import {
   SequenceService,
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
+import { SequenceStateService } from '@supaglue/core/services/common_models/engagement/sequence_state_service';
 import { CommonModel, IntegrationCategory } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
@@ -53,6 +54,7 @@ export function createImportRecords(
     userService: EngagementUserService;
     sequenceService: SequenceService;
     mailboxService: MailboxService;
+    sequenceStateService: SequenceStateService;
   }
 ) {
   function getService(
@@ -87,6 +89,8 @@ export function createImportRecords(
             return engagement.sequenceService;
           case 'mailbox':
             return engagement.mailboxService;
+          case 'sequence_state':
+            return engagement.sequenceStateService;
           default:
             throw new Error(`Common model ${commonModel} not supported for engagement category`);
         }

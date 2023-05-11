@@ -25,6 +25,7 @@ export const COMMON_MODEL_DB_TABLES = {
   },
   engagement: {
     contacts: `${schemaPrefix}engagement_contacts`,
+    sequence_states: `${schemaPrefix}engagement_sequence_states`,
     users: `${schemaPrefix}engagement_users`,
     sequences: `${schemaPrefix}engagement_sequences`,
     mailboxes: `${schemaPrefix}engagement_mailboxes`,

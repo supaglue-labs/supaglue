@@ -11,6 +11,7 @@ import {
   ContactService as EngagementContactService,
   MailboxService,
   SequenceService,
+  SequenceStateService,
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
@@ -52,6 +53,7 @@ export const createActivities = ({
     userService: EngagementUserService;
     sequenceService: SequenceService;
     mailboxService: MailboxService;
+    sequenceStateService: SequenceStateService;
   };
 }) => {
   return {
