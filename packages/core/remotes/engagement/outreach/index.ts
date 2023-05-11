@@ -82,7 +82,8 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'mailbox':
         return await this.listMailboxes(updatedAfter);
       case 'sequence_state':
-        throw new Error(`List not supported for common model sequence_state.`);
+        // TODO: Support syncing sequence states
+        return Readable.from([]);
       default:
         throw new Error(`Common model ${commonModelType} not supported`);
     }
