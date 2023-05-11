@@ -213,7 +213,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   async createSequenceState(params: RemoteSequenceStateCreateParams): Promise<RemoteSequenceState> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: OutreachRecord }>(
-      `${this.#baseURL}/api/v2/prospects`,
+      `${this.#baseURL}/api/v2/sequenceStates`,
       toOutreachSequenceStateCreateParams(params),
       {
         headers: this.#headers,
