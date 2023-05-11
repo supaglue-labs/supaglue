@@ -88,3 +88,12 @@ export type GetMailboxQueryParams = any;
 export type GetMailboxRequest = never;
 export type GetMailboxResponse =
   operations['getMailbox']['responses'][keyof operations['getMailbox']['responses']]['content']['application/json'];
+
+export type CreateSequenceStatePathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateSequenceStateQueryParams = Required<operations['createSequenceState']>['parameters']['query'];
+export type CreateSequenceStateQueryParams = any;
+export type CreateSequenceStateRequest =
+  operations['createSequenceState']['requestBody']['content']['application/json'];
+export type CreateSequenceStateResponse =
+  operations['createSequenceState']['responses'][keyof operations['createSequenceState']['responses']]['content']['application/json'];

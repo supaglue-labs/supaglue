@@ -4,6 +4,7 @@ import contact from './contact';
 import mailbox from './mailbox';
 import passthrough from './passthrough';
 import sequence from './sequence';
+import sequenceState from './sequence_state';
 import user from './user';
 
 export default function init(app: Router): void {
@@ -14,6 +15,7 @@ export default function init(app: Router): void {
   contact(v1Router);
   user(v1Router);
   sequence(v1Router);
+  sequenceState(v1Router);
   mailbox(v1Router);
   passthrough(v1Router);
 
