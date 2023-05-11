@@ -98,7 +98,7 @@ export class ConnectionService {
     applicationId: string;
     providerName: string;
   }): Promise<ConnectionSafeAny> {
-    const connection = await this.#prisma.connection.findFirstOrThrow({
+    const connection = await this.#prisma.connection.findFirst({
       where: {
         customerId,
         integration: {
