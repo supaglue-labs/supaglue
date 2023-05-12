@@ -752,8 +752,10 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
+          /** @description Filters are combined using a logical AND */
           filters: {
             website?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"];
           };
         };
       };
@@ -857,8 +859,10 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
+          /** @description Filters are combined using a logical AND */
           filters: {
             email_address?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"];
           };
         };
       };
@@ -997,8 +1001,10 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
+          /** @description Filters are combined using a logical AND */
           filters: {
             email_address?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"];
           };
         };
       };
@@ -1143,8 +1149,10 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
+          /** @description Filters are combined using a logical AND */
           filters: {
             account_id?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"];
           };
         };
       };

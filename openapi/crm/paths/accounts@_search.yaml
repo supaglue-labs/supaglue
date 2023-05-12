@@ -18,8 +18,11 @@ post:
           properties:
             filters:
               type: object
+              description: Filters are combined using a logical AND
               properties:
                 website:
+                  $ref: ../components/schemas/filters.yaml#/filter
+                remote_id:
                   $ref: ../components/schemas/filters.yaml#/filter
           required:
             - filters

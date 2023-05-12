@@ -256,8 +256,12 @@
                 "properties": {
                   "filters": {
                     "type": "object",
+                    "description": "Filters are combined using a logical AND",
                     "properties": {
                       "website": {
+                        "$ref": "#/components/schemas/filter"
+                      },
+                      "remote_id": {
                         "$ref": "#/components/schemas/filter"
                       }
                     }
@@ -772,8 +776,12 @@
                 "properties": {
                   "filters": {
                     "type": "object",
+                    "description": "Filters are combined using a logical AND",
                     "properties": {
                       "email_address": {
+                        "$ref": "#/components/schemas/filter"
+                      },
+                      "remote_id": {
                         "$ref": "#/components/schemas/filter"
                       }
                     }
@@ -1391,8 +1399,12 @@
                 "properties": {
                   "filters": {
                     "type": "object",
+                    "description": "Filters are combined using a logical AND",
                     "properties": {
                       "email_address": {
+                        "$ref": "#/components/schemas/filter"
+                      },
+                      "remote_id": {
                         "$ref": "#/components/schemas/filter"
                       }
                     }
@@ -2020,8 +2032,12 @@
                 "properties": {
                   "filters": {
                     "type": "object",
+                    "description": "Filters are combined using a logical AND",
                     "properties": {
                       "account_id": {
+                        "$ref": "#/components/schemas/filter"
+                      },
+                      "remote_id": {
                         "$ref": "#/components/schemas/filter"
                       }
                     }

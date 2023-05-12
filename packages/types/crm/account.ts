@@ -60,6 +60,7 @@ export type RemoteAccountUpdateParams = RemoteAccountCreateParams & {
 
 export type AccountFilters = {
   website?: Filter;
+  remoteId?: Filter;
 };
 
 export type RemoteAccountTypes = {

@@ -67,6 +67,7 @@ export class OpportunityService extends CommonModelBaseService {
       where: {
         connectionId,
         accountId: filters.accountId?.type === 'equals' ? filters.accountId.value : undefined,
+        remoteId: filters.remoteId?.type === 'equals' ? filters.remoteId.value : undefined,
       },
       orderBy: {
         id: 'asc',

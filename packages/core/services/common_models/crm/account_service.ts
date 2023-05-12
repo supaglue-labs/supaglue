@@ -38,6 +38,7 @@ export class AccountService extends CommonModelBaseService {
       where: {
         connectionId,
         website: filters.website?.type === 'equals' ? filters.website.value : undefined,
+        remoteId: filters.remoteId?.type === 'equals' ? filters.remoteId.value : undefined,
       },
       orderBy: {
         id: 'asc',
