@@ -958,15 +958,15 @@
       "get": {
         "operationId": "getSequenceStates",
         "tags": [
-          "SequenceStates"
+          "Sequence States"
         ],
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
-        "summary": "List mailboxes",
-        "description": "Get a list of mailboxes",
+        "summary": "List sequence states",
+        "description": "Get a list of sequence states",
         "parameters": [
           {
             "$ref": "#/components/parameters/include_deleted_data"

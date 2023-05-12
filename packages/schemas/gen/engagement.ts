@@ -87,8 +87,8 @@ export interface paths {
   };
   "/sequence_states": {
     /**
-     * List mailboxes 
-     * @description Get a list of mailboxes
+     * List sequence states 
+     * @description Get a list of sequence states
      */
     get: operations["getSequenceStates"];
     /** Create sequence state */
@@ -720,8 +720,8 @@ export interface operations {
   };
   getSequenceStates: {
     /**
-     * List mailboxes 
-     * @description Get a list of mailboxes
+     * List sequence states 
+     * @description Get a list of sequence states
      */
     responses: {
       /** @description Sequence States */
