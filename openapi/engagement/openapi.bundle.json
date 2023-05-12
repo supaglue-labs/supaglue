@@ -1054,7 +1054,7 @@
         "operationId": "createSequenceState",
         "summary": "Create sequence state",
         "tags": [
-          "SequenceState"
+          "Sequence States"
         ],
         "security": [
           {
