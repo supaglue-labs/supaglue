@@ -1,5 +1,6 @@
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
 import OutreachIcon from '@/assets/connector_icons/outreach.png';
+import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import Box from '@mui/material/Box';
@@ -34,6 +35,13 @@ export const integrationCardsInfo: IntegrationCardInfo[] = [
     providerName: 'hubspot',
     category: 'crm',
     description: 'Configure your HubSpot integration.',
+  },
+  {
+    icon: <Image alt="pipedrive" src={PipedriveIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+    name: 'Pipedrive',
+    providerName: 'pipedrive',
+    category: 'crm',
+    description: 'Configure your Pipedrive integration.',
   },
   {
     icon: <Image alt="outreach" src={OutreachIcon} width={ICON_SIZE} height={ICON_SIZE} />,
