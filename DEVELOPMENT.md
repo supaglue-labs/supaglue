@@ -7,22 +7,9 @@ Run:
 ./scripts/setup_dev_env.sh
 ```
 
-Be sure to copy the `docker-compose.override.dev.yml` to `docker-compose.override.yml` to get the appropriate environment variables.
-
-```shell
-cp docker-compose.override.dev.yml docker-compose.override.yml
-```
-
-#### Install dependencies
-
-```shell
-brew install bufbuild/buf/buf
-```
-
 ### Running
 
 ```shell
-cp apps/mgmt-ui/.env.sample apps/mgmt-ui/.env
 docker compose up
 
 yarn workspace mgmt-ui dev
