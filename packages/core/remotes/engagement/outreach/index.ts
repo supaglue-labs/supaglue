@@ -1,4 +1,9 @@
-import { ConnectionUnsafe, Integration } from '@supaglue/types';
+import {
+  ConnectionUnsafe,
+  Integration,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+} from '@supaglue/types';
 import {
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
@@ -235,6 +240,13 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
     throw new Error('Not implemented');
+  }
+
+  public override async sendPassthroughRequest(
+    request: SendPassthroughRequestRequest
+  ): Promise<SendPassthroughRequestResponse> {
+    await this.maybeRefreshAccessToken();
+    return await super.sendPassthroughRequest(request);
   }
 }
 
