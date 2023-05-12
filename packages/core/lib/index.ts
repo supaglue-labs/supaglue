@@ -4,4 +4,5 @@ export * from './customer_id';
 export * from './logger';
 export * from './pagination';
 export * from './remote_id';
+export * from './util';
 export * from './webhook';

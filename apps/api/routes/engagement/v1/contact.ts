@@ -85,7 +85,12 @@ export default function init(app: Router): void {
       req: Request<UpdateContactPathParams, UpdateContactResponse, UpdateContactRequest>,
       res: Response<UpdateContactResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { customerId, id: connectionId } = req.customerConnection;
+      const contact = await contactService.update(customerId, connectionId, {
+        id: req.params.contact_id,
+        ...camelcaseKeysSansCustomFields(req.body.model),
+      });
+      return res.status(200).send({ model: toSnakecasedKeysContact(contact) });
     }
   );
 

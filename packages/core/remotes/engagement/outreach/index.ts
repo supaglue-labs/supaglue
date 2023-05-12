@@ -9,6 +9,7 @@ import {
   EngagementCommonModelTypeMap,
   RemoteContact,
   RemoteContactCreateParams,
+  RemoteContactUpdateParams,
   RemoteSequenceState,
   RemoteSequenceStateCreateParams,
 } from '@supaglue/types/engagement';
@@ -24,6 +25,7 @@ import {
   fromOutreachSequenceToRemoteSequence,
   fromOutreachUserToRemoteUser,
   toOutreachProspectCreateParams,
+  toOutreachProspectUpdateParams,
   toOutreachSequenceStateCreateParams,
 } from './mappers';
 
@@ -235,11 +237,28 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return fromOutreachSequenceStateToRemoteSequenceState(response.data.data);
   }
 
-  public override updateObject<T extends EngagementCommonModelType>(
+  public override async updateObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
-    throw new Error('Not implemented');
+    switch (commonModelType) {
+      case 'contact':
+        return await this.updateContact(params as RemoteContactUpdateParams);
+      default:
+        throw new Error(`Update not supported for common model ${commonModelType}`);
+    }
+  }
+
+  async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.patch<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/prospects/${params.remoteId}`,
+      toOutreachProspectUpdateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromOutreachProspectToRemoteContact(response.data.data);
   }
 
   public override async sendPassthroughRequest(

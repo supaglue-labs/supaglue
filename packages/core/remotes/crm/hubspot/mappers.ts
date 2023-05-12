@@ -15,6 +15,7 @@ import {
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
+import { removeUndefinedValues } from '../../../lib';
 
 export const fromHubSpotCompanyToRemoteAccount = ({
   id,
@@ -396,8 +397,4 @@ export const toHubspotContactUpdateParams = toHubspotContactCreateParams;
 
 export const nullToEmptyString = (value: string | undefined | null): string | undefined => {
   return value === null ? '' : value;
-};
-
-export const removeUndefinedValues = (obj: Record<string, string | undefined>): void => {
-  Object.keys(obj).forEach((key) => (obj[key] === undefined ? delete obj[key] : {}));
 };
