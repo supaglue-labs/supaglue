@@ -172,7 +172,7 @@ export default function init(app: Router): void {
         ...additionalAuthParams,
       });
 
-      const instanceUrl = (tokenWrapper.token['instance_url'] as string) ?? '';
+      let instanceUrl = (tokenWrapper.token['instance_url'] as string) ?? '';
       let remoteId = instanceUrl ?? '';
 
       if (providerName === 'hubspot') {
@@ -180,6 +180,11 @@ export default function init(app: Router): void {
         const hubspotClient = new HubspotClient({ accessToken: tokenWrapper.token['access_token'] as string });
         const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(accessToken);
         remoteId = hubId.toString();
+      }
+
+      if (providerName === 'pipedrive') {
+        instanceUrl = tokenWrapper.token.api_domain as string;
+        remoteId = instanceUrl;
       }
 
       const basePayload = {
@@ -204,7 +209,7 @@ export default function init(app: Router): void {
               providerName,
               credentials: {
                 ...basePayload.credentials,
-                instanceUrl: tokenWrapper.token['instance_url'] as string,
+                instanceUrl,
                 loginUrl,
               },
             }
