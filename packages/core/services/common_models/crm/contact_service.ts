@@ -43,6 +43,7 @@ export class ContactService extends CommonModelBaseService {
                 array_contains: [{ emailAddress: filters.emailAddress.value }],
               }
             : undefined,
+        remoteId: filters.remoteId?.type === 'equals' ? filters.remoteId.value : undefined,
       },
       orderBy: {
         id: 'asc',

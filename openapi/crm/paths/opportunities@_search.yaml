@@ -21,6 +21,8 @@ post:
               properties:
                 account_id:
                   $ref: ../components/schemas/filters.yaml#/filter
+                remote_id:
+                  $ref: ../components/schemas/filters.yaml#/filter
           required:
             - filters
   responses:

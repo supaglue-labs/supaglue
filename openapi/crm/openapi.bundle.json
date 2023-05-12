@@ -259,6 +259,9 @@
                     "properties": {
                       "website": {
                         "$ref": "#/components/schemas/filter"
+                      },
+                      "remote_id": {
+                        "$ref": "#/components/schemas/filter"
                       }
                     }
                   }
@@ -774,6 +777,9 @@
                     "type": "object",
                     "properties": {
                       "email_address": {
+                        "$ref": "#/components/schemas/filter"
+                      },
+                      "remote_id": {
                         "$ref": "#/components/schemas/filter"
                       }
                     }
@@ -1393,6 +1399,9 @@
                     "type": "object",
                     "properties": {
                       "email_address": {
+                        "$ref": "#/components/schemas/filter"
+                      },
+                      "remote_id": {
                         "$ref": "#/components/schemas/filter"
                       }
                     }
@@ -2022,6 +2031,9 @@
                     "type": "object",
                     "properties": {
                       "account_id": {
+                        "$ref": "#/components/schemas/filter"
+                      },
+                      "remote_id": {
                         "$ref": "#/components/schemas/filter"
                       }
                     }

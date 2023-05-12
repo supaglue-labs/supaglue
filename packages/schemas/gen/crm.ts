@@ -754,6 +754,7 @@ export interface operations {
         "application/json": {
           filters: {
             website?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"];
           };
         };
       };
@@ -859,6 +860,7 @@ export interface operations {
         "application/json": {
           filters: {
             email_address?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"];
           };
         };
       };
@@ -999,6 +1001,7 @@ export interface operations {
         "application/json": {
           filters: {
             email_address?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"];
           };
         };
       };
@@ -1145,6 +1148,7 @@ export interface operations {
         "application/json": {
           filters: {
             account_id?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"];
           };
         };
       };

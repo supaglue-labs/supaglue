@@ -20,7 +20,7 @@ import {
   UpdateAccountResponse,
 } from '@supaglue/schemas/crm';
 import { ListParams } from '@supaglue/types';
-import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
+import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
 const {
@@ -107,7 +107,7 @@ export default function init(app: Router): void {
       const { next, previous, results } = await accountService.search(
         req.customerConnection.id,
         toSearchInternalParams(req.query),
-        req.body.filters
+        camelcaseKeys(req.body.filters)
       );
 
       const snakeCaseKeysResults = results.map(toSnakecasedKeysAccount);

@@ -63,6 +63,7 @@ export type RemoteOpportunityUpdateParams = RemoteOpportunityCreateParams & {
 
 export type OpportunityFilters = {
   accountId?: Filter;
+  remoteId?: Filter;
 };
 
 export type RemoteOpportunityTypes = {
