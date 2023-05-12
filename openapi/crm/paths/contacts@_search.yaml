@@ -18,6 +18,7 @@ post:
           properties:
             filters:
               type: object
+              description: Filters are combined using a logical AND
               properties:
                 email_address:
                   $ref: ../components/schemas/filters.yaml#/filter
