@@ -15,6 +15,10 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = BaseConnect
         instanceUrl: string;
         loginUrl?: string;
       }
+    : T extends 'pipedrive'
+    ? {
+        instanceUrl: string;
+      }
     : object);
 
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;
