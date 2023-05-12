@@ -4,6 +4,7 @@ import {
   PhoneNumber,
   RemoteContact,
   RemoteContactCreateParams,
+  RemoteContactUpdateParams,
   RemoteMailbox,
   RemoteSequence,
   RemoteSequenceState,
@@ -11,6 +12,7 @@ import {
   RemoteUser,
 } from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
+import { removeUndefinedValues } from '../../../lib';
 
 export const fromOutreachUserToRemoteUser = (record: OutreachRecord): RemoteUser => {
   const { id, attributes } = record;
@@ -151,20 +153,51 @@ export const toOutreachProspectCreateParams = ({
   emailAddresses,
   phoneNumbers,
   customFields,
+  ownerId,
 }: RemoteContactCreateParams): Record<string, any> => {
+  const attributes = {
+    firstName,
+    lastName,
+    jobTitle,
+    ...toOutreachProspectAddressParams(address),
+    ...toOutreachProspectEmailParams(emailAddresses),
+    ...toOutreachProspectPhoneNumbers(phoneNumbers),
+    ...customFields,
+  };
+  removeUndefinedValues(attributes);
+  if (ownerId === undefined) {
+    return {
+      data: {
+        type: 'prospect',
+        attributes,
+      },
+    };
+  }
   return {
     data: {
       type: 'prospect',
-      attributes: {
-        firstName,
-        lastName,
-        jobTitle,
-        ...toOutreachProspectAddressParams(address),
-        ...toOutreachProspectEmailParams(emailAddresses),
-        ...toOutreachProspectPhoneNumbers(phoneNumbers),
-        ...customFields,
+      attributes,
+      relationships: {
+        owner:
+          ownerId === null
+            ? null
+            : {
+                data: {
+                  type: 'user',
+                  id: ownerId,
+                },
+              },
       },
-      // TODO: Handle associations
+    },
+  };
+};
+
+export const toOutreachProspectUpdateParams = (params: RemoteContactUpdateParams): Record<string, any> => {
+  const updateParams = toOutreachProspectCreateParams(params);
+  return {
+    data: {
+      ...updateParams.data,
+      id: parseInt(params.remoteId, 10),
     },
   };
 };
@@ -227,12 +260,18 @@ const toOutreachProspectAddressParams = (address?: Address | null) => {
 
 // TODO: Support email type + email object where the type is stored
 const toOutreachProspectEmailParams = (emailAddresses?: EmailAddress[]) => {
+  if (!emailAddresses) {
+    return;
+  }
   return {
     emails: emailAddresses?.map(({ emailAddress }) => emailAddress) ?? [],
   };
 };
 
 const toOutreachProspectPhoneNumbers = (phoneNumbers?: PhoneNumber[]) => {
+  if (!phoneNumbers) {
+    return;
+  }
   const homePhones: string[] = [];
   const workPhones: string[] = [];
   const otherPhones: string[] = [];
