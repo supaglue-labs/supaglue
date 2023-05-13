@@ -1,0 +1,56 @@
+get:
+  operationId: getWebhook
+  tags:
+    - Webhook
+  summary: Get webhook
+  description: >-
+    Get webhook details
+  security:
+    - ApiKeyAuth: []
+  responses:
+    '200':
+      description: Applications
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/webhook.yaml
+          examples:
+            Example:
+              value:
+                url: http://localhost:8080
+                notify_on_sync_success: true
+                notify_on_sync_error: true
+                notify_on_connection_success: true
+                notify_on_connection_error: true
+post:
+  operationId: createWebhook
+  summary: Create webhook
+  tags:
+    - Webhook
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/objects/webhook.yaml
+  security:
+    - ApiKeyAuth: []
+  responses:
+    '201':
+      description: Webhook created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/webhook.yaml
+delete:
+  operationId: deleteWebhook
+  summary: Delete webhook
+  tags:
+    - Webhook
+  parameters: []
+  security:
+    - ApiKeyAuth: []
+  responses:
+    '200':
+      description: Webhook deleted 
