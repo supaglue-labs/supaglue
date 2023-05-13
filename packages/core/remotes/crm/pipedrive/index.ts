@@ -32,18 +32,26 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return this.#headers;
   }
 
+  private getBasicAuthorizationToken(): string {
+    return Buffer.from(`${this.#credentials.clientId}:${this.#credentials.clientSecret}`).toString('base64');
+  }
+
   private async maybeRefreshAccessToken(): Promise<void> {
     if (
       !this.#credentials.expiresAt ||
       Date.parse(this.#credentials.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS
     ) {
       const response = await axios.post<{ access_token: string; expires_in: number }>(
-        `${authConfig.tokenHost}/${authConfig.tokenPath}`,
+        `${authConfig.tokenHost}${authConfig.tokenPath}`,
         {
-          client_id: this.#credentials.clientId,
-          client_secret: this.#credentials.clientSecret,
           grant_type: 'refresh_token',
           refresh_token: this.#credentials.refreshToken,
+        },
+        {
+          headers: {
+            Authorization: `Basic ${this.getBasicAuthorizationToken()}`,
+            'Content-type': 'application/x-www-form-urlencoded',
+          },
         }
       );
 
@@ -57,8 +65,8 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable> {
-    throw new Error('Not implemented');
+  public override async listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable> {
+    return Readable.from([]);
   }
 
   public override createObject<T extends CRMCommonModelType>(
@@ -86,6 +94,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 export function newClient(connection: ConnectionUnsafe<'pipedrive'>, integration: CRMIntegration): PipedriveClient {
   return new PipedriveClient({
     ...connection.credentials,
+    instanceUrl: connection.instanceUrl,
     clientId: integration.config.oauth.credentials.oauthClientId,
     clientSecret: integration.config.oauth.credentials.oauthClientSecret,
   });
