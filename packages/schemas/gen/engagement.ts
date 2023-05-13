@@ -556,7 +556,7 @@ export interface operations {
         /**
          * @example {
          *   "model": {
-         *     "id": "ed7ce0f0-8119-4b73-bf01-4e8e0296ef80",
+         *     "id": "ed7ce0f0.8.29-4b73-bf01-4e8e0296ef80",
          *     "address": {
          *       "city": "San Francisco",
          *       "country": "USA",
