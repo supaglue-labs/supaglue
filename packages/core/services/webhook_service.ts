@@ -1,8 +1,8 @@
 import type { PrismaClient } from '@supaglue/db';
 import { Application } from '@supaglue/types';
-import { Svix } from 'svix';
 
-const svix = new Svix(process.env.SVIX_API_TOKEN!, { serverUrl: process.env.SVIX_SERVER_URL });
+// TODO: bring back svix if necessary
+// const svix = new Svix(process.env.SVIX_API_TOKEN!, { serverUrl: process.env.SVIX_SERVER_URL });
 
 /**
  * WebhookService is a wrapper around Svix's API and is only used for CDC webhooks currently.
@@ -15,15 +15,19 @@ export class WebhookService {
   }
 
   async createApplication(applicationId: string, name: string) {
-    return await svix.application.create({ uid: applicationId, name });
+    // TODO: bring back svix if necessary
+    return;
+    // return await svix.application.create({ uid: applicationId, name });
   }
 
   async sendMessage(eventType: string, payload: any, application: Application, idempotencyKey?: string) {
-    return await svix.message.create(
-      application.id,
-      { eventType, payload, application: { name: application.name, uid: application.id } },
-      { idempotencyKey }
-    );
+    // TODO: bring back svix if necessary
+    return;
+    // return await svix.message.create(
+    //   application.id,
+    //   { eventType, payload, application: { name: application.name, uid: application.id } },
+    //   { idempotencyKey }
+    // );
   }
 
   async saveReplayId(connectionId: string, eventType: string, replayId: string) {

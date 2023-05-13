@@ -20,7 +20,6 @@ import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import Head from 'next/head';
 import { useState } from 'react';
-import { Svix } from 'svix';
 import { IS_CLOUD } from '../../api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
@@ -48,8 +47,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
     }
   }
 
-  const svix = new Svix(process.env.SVIX_API_TOKEN!, { serverUrl: process.env.SVIX_SERVER_URL });
-  const svixDashboardUrl = (await svix.authentication.appPortalAccess(applicationId, {})).url;
+  // TODO: bring back svix if necessary
+  // const svix = new Svix(process.env.SVIX_API_TOKEN!, { serverUrl: process.env.SVIX_SERVER_URL });
+  // const svixDashboardUrl = (await svix.authentication.appPortalAccess(applicationId, {})).url;
+  const svixDashboardUrl = 'https://supaglue.com';
 
   return {
     props: { session, signedIn: true, svixDashboardUrl },
