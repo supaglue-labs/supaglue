@@ -8,9 +8,6 @@ import {
   GetConnectionPathParams,
   GetConnectionRequest,
   GetConnectionResponse,
-  GetConnectionsPathParams,
-  GetConnectionsRequest,
-  GetConnectionsResponse,
 } from '@supaglue/schemas/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
@@ -21,17 +18,14 @@ const { connectionService, integrationService, connectionAndSyncService } = getD
 export default function init(app: Router): void {
   const connectionRouter = Router({ mergeParams: true });
 
-  connectionRouter.get(
-    '/',
-    async (
-      req: Request<GetConnectionsPathParams, GetConnectionsResponse, GetConnectionsRequest>,
-      res: Response<GetConnectionsResponse>
-    ) => {
-      const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
-      const connections = await connectionService.listSafe(req.supaglueApplication.id, customerId);
-      return res.status(200).send(connections.map(snakecaseKeys));
-    }
-  );
+  connectionRouter.get('/', async (req: Request, res: Response) => {
+    const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
+    const unsafe = req.query.unsafe === 'true';
+    const connections = unsafe
+      ? await connectionService.listUnsafe(req.supaglueApplication.id, customerId)
+      : await connectionService.listSafe(req.supaglueApplication.id, customerId);
+    return res.status(200).send(connections.map(snakecaseKeys));
+  });
 
   // TODO: clean this up
   connectionRouter.post('/', async (req: Request, res: Response) => {

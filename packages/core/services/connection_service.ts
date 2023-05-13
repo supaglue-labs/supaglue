@@ -3,6 +3,7 @@ import type {
   ConnectionCredentialsDecryptedAny,
   ConnectionSafeAny,
   ConnectionUnsafe,
+  ConnectionUnsafeAny,
   ProviderName,
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
@@ -74,6 +75,19 @@ export class ConnectionService {
       where: { integrationId: { in: integrationIds }, customerId, providerName },
     });
     return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
+  public async listUnsafe(
+    applicationId: string,
+    customerId?: string,
+    providerName?: string
+  ): Promise<ConnectionUnsafeAny[]> {
+    const integrations = await this.#integrationService.list(applicationId);
+    const integrationIds = integrations.map(({ id }) => id);
+    const connections = await this.#prisma.connection.findMany({
+      where: { integrationId: { in: integrationIds }, customerId, providerName },
+    });
+    return await Promise.all(connections.map(fromConnectionModelToConnectionUnsafe));
   }
 
   public async listAllUnsafe<T extends CRMProviderName>({
