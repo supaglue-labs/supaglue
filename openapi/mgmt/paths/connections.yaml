@@ -37,6 +37,28 @@ get:
                   category: crm
                   remote_id: 1234567
                   instance_url: https://app.hubspot.com/contacts/1234567
+post:
+  operationId: createConnection
+  summary: Create connection
+  tags:
+    - Connections
+  parameters: []
+  security:
+    - ApiKeyAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          additionalProperties: true
+  responses:
+    '200':
+      description: Connection created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/connection.yaml
 parameters:
   - name: customer_id
     in: path
