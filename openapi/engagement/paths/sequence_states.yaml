@@ -1,12 +1,12 @@
 get:
   operationId: getSequenceStates
   tags:
-    - SequenceStates
+    - Sequence States
   security:
     - ApiKeyAuth: []
-  summary: List mailboxes
+  summary: List sequence states
   description: >-
-    Get a list of mailboxes
+    Get a list of sequence states
   parameters:
     - $ref: ../../common/components/parameters/query/include_deleted_data.yaml
     - $ref: ../../common/components/parameters/query/include_raw_data.yaml
@@ -55,7 +55,7 @@ post:
   operationId: createSequenceState
   summary: Create sequence state
   tags:
-    - SequenceState
+    - Sequence States
   security:
     - ApiKeyAuth: []
   parameters: []
