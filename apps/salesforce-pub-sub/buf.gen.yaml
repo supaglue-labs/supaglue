@@ -4,5 +4,7 @@ managed:
 plugins:
   - plugin: buf.build/bufbuild/connect-es
     out: gen
+    opt: target=ts
   - plugin: buf.build/bufbuild/es
     out: gen
+    opt: target=ts
