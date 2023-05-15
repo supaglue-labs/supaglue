@@ -129,6 +129,7 @@ export class ConnectionAndSyncService {
             integrationId: integration.id,
             status,
             remoteId: params.remoteId,
+            instanceUrl: params.instanceUrl,
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         }),
