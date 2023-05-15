@@ -8,15 +8,57 @@ import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import axios from 'axios';
 import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
+import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
+import { fromPipedrivePersonToRemoteContact } from './mappers';
 
-type Credentials = {
+const PIPEDRIVE_RECORD_LIMIT = 500;
+
+const DEFAULT_LIST_PARAMS = {
+  limit: PIPEDRIVE_RECORD_LIMIT,
+  sort: 'id',
+};
+
+export type PipedriveRecord = Record<string, any>;
+
+type PipedrivePaginatedRecords = {
+  success: boolean;
+  data: PipedriveRecord[];
+  additional_data: {
+    pagination: {
+      start: number;
+      limit: number;
+      more_items_in_collection: boolean;
+      next_start: number;
+    };
+  };
+};
+
+export type Credentials = {
   accessToken: string;
   refreshToken: string;
   expiresAt: string | null; // ISO string
   instanceUrl: string;
   clientId: string;
   clientSecret: string;
+};
+
+const COMMON_MODEL_TO_PIPEDRIVE_MODEL_SINGULAR: Record<CRMCommonModelType, string> = {
+  account: 'organization',
+  contact: 'person',
+  lead: 'lead',
+  opportunity: 'deal',
+  user: 'user',
+  event: 'event',
+};
+
+const COMMON_MODEL_TO_PIPEDRIVE_MODEL_PLURAL: Record<CRMCommonModelType, string> = {
+  account: 'organizations',
+  contact: 'people',
+  lead: 'leads',
+  opportunity: 'deals',
+  user: 'users',
+  event: 'events',
 };
 
 class PipedriveClient extends AbstractCrmRemoteClient {
@@ -66,7 +108,45 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   public override async listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable> {
-    return Readable.from([]);
+    switch (commonModelType) {
+      case 'contact':
+        return await this.listContacts(updatedAfter);
+      default:
+        return Readable.from([]);
+    }
+  }
+
+  #getListRecordsFetcher(endpoint: string): (next_start?: string) => Promise<PipedrivePaginatedRecords> {
+    // Pipedrive does not support incremental fetch (i.e. filtering by datetime) so we will do full refresh every time
+    return async (next_start?: string) => {
+      await this.maybeRefreshAccessToken();
+      if (next_start) {
+        const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
+          params: {
+            ...DEFAULT_LIST_PARAMS,
+            start: parseInt(next_start),
+          },
+          headers: this.#headers,
+        });
+        return response.data;
+      }
+      const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
+        params: DEFAULT_LIST_PARAMS,
+        headers: this.#headers,
+      });
+      return response.data;
+    };
+  }
+
+  private async listContacts(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#credentials.instanceUrl}/api/v1/persons`);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedrivePersonToRemoteContact)),
+        getNextCursorFromPage: (response) => response.additional_data.pagination.next_start?.toString(),
+      },
+    ]);
   }
 
   public override createObject<T extends CRMCommonModelType>(
