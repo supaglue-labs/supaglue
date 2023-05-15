@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.8.2",
+    "version": "0.8.3",
     "title": "Supaglue Management API",
     "contact": {
       "name": "Supaglue",
@@ -545,6 +545,42 @@
                       }
                     ]
                   }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createConnection",
+        "summary": "Create connection",
+        "tags": [
+          "Connections"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection"
                 }
               }
             }

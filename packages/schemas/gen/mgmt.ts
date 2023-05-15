@@ -58,6 +58,8 @@ export interface paths {
      * @description Get a list of connections
      */
     get: operations["getConnections"];
+    /** Create connection */
+    post: operations["createConnection"];
     parameters: {
       path: {
         customer_id: string;
@@ -485,6 +487,24 @@ export interface operations {
       200: {
         content: {
           "application/json": (components["schemas"]["connection"])[];
+        };
+      };
+    };
+  };
+  createConnection: {
+    /** Create connection */
+    requestBody: {
+      content: {
+        "application/json": {
+          [key: string]: unknown | undefined;
+        };
+      };
+    };
+    responses: {
+      /** @description Connection created */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection"];
         };
       };
     };
