@@ -115,8 +115,12 @@ const { connectionService, integrationService, webhookService, applicationServic
           return;
         }
 
-        if (err.message.startsWith('[unauthenticated]') || err.message.startsWith('[permission_denied]')) {
-          logger.error({ err, connectionId, eventType }, 'unrecoverable error starting stream, skipping');
+        if (
+          err.message.startsWith('[unauthenticated]') ||
+          err.message.startsWith('[permission_denied]') ||
+          err.message === 'expired access/refresh token'
+        ) {
+          logger.warn({ err, connectionId, eventType }, 'unrecoverable error starting stream, skipping');
           return;
         }
 
