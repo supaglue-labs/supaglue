@@ -551,6 +551,42 @@
           }
         }
       },
+      "post": {
+        "operationId": "createConnection",
+        "summary": "Create connection",
+        "tags": [
+          "Connections"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection"
+                }
+              }
+            }
+          }
+        }
+      },
       "parameters": [
         {
           "name": "customer_id",
