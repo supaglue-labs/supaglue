@@ -29,6 +29,15 @@ services:
     working_dir: /app
     command: /bin/sh -c "./apps/sync-worker/scripts/start_dev.sh"
 
+  salesforce-pub-sub:
+    image: node:18
+    environment:
+      <<: *common-env
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: /bin/sh -c "./apps/salesforce-pub-sub/scripts/start_dev.sh"
+
   mgmt-ui:
     profiles:
       - donotstart

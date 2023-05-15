@@ -1,4 +1,4 @@
-import { InternalServerError } from '@supaglue/core/errors';
+import { InternalServerError } from '../errors';
 
 export const getCustomerIdPk = (applicationId: string, externalCustomerId: string): string => {
   return `${applicationId}:${externalCustomerId}`;

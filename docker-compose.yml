@@ -7,6 +7,7 @@ x-common-env:
   SUPAGLUE_POSTHOG_API_KEY: ${SUPAGLUE_POSTHOG_API_KEY:-phc_thv3N2dFQcJDh2vPz6FtGE9oKDiBSdYp5oKS1Cu9U8j}
   SUPAGLUE_API_ENCRYPTION_SECRET: ${SUPAGLUE_API_ENCRYPTION_SECRET:-some-per-customer-secret-salt}
   SVIX_API_TOKEN: ${SVIX_API_TOKEN:-testsk_sLr_YXpHsUKnVZFQSPH17YIXbBGn9Nl3.us}
+  SUPAGLUE_LOG_LEVEL: info
   SUPAGLUE_DISABLE_ANALYTICS:
   SUPAGLUE_DISABLE_ERROR_REPORTING:
   SUPAGLUE_DEPLOYMENT_ID:
@@ -91,6 +92,17 @@ services:
     volumes:
       - temporalitedata:/data
 
+  salesforce-pub-sub:
+    image: supaglue/salesforce-pub-sub:0.8.3
+    environment:
+      <<: *common-env
+    restart: on-failure
+    depends_on:
+      postgres:
+        condition: service_started
+      init:
+        condition: service_completed_successfully
+
   init:
     image: supaglue/api:0.8.3
     environment:
@@ -105,21 +117,6 @@ services:
     volumes:
       - .env:/app/.env
     command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js'
-
-  salesforce-pub-sub:
-    image: node:18 # TODO switch to built image
-    environment:
-      <<: *common-env
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: /bin/sh -c "./apps/salesforce-pub-sub/scripts/start_dev.sh"
-    restart: on-failure
-    depends_on:
-      postgres:
-        condition: service_started
-      init:
-        condition: service_completed_successfully
 
 volumes:
   pgdata:
