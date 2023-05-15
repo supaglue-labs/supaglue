@@ -1,0 +1,42 @@
+type: object
+properties:
+  id:
+    type: string
+    example: e19a7c83-6480-46cc-9ea7-a5b82b30d04b
+  remote_id:
+    type: string
+    example: 54312
+  email:
+    type: string
+    nullable: true
+    example: 
+  user_id:
+    nullable: true
+    type: string
+    example: 39fd1fe0-094b-4a61-b47f-3e3ac033203d
+  remote_created_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_updated_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_was_deleted:
+    type: boolean
+    example: false
+  last_modified_at:
+    type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z' 
+required:
+  - id
+  - remote_id
+  - email
+  - user_id
+  - remote_created_at	
+  - remote_updated_at	
+  - remote_was_deleted	
+  - last_modified_at	

@@ -1,0 +1,25 @@
+get:
+  operationId: getMailbox
+  summary: Get mailbox
+  tags:
+    - Mailboxes
+  security:
+    - ApiKeyAuth: []
+  parameters:
+    - $ref: ../../common/components/parameters/query/include_raw_data.yaml
+  responses:
+    200:
+      description: Mailbox
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/mailbox.yaml
+parameters:
+  - $ref: ../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
+  - name: mailbox_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

@@ -1,0 +1,17 @@
+type: object
+properties:
+  id:
+    type: string
+  fields:
+    type: object
+    properties:
+      contact_id:
+        type: string
+      mailbox_id:
+        type: string
+    required:
+      - contact_id
+      - mailbox_id
+required:
+  - id
+  - fields
