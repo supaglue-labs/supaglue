@@ -43,24 +43,6 @@ export type Credentials = {
   clientSecret: string;
 };
 
-const COMMON_MODEL_TO_PIPEDRIVE_MODEL_SINGULAR: Record<CRMCommonModelType, string> = {
-  account: 'organization',
-  contact: 'person',
-  lead: 'lead',
-  opportunity: 'deal',
-  user: 'user',
-  event: 'event',
-};
-
-const COMMON_MODEL_TO_PIPEDRIVE_MODEL_PLURAL: Record<CRMCommonModelType, string> = {
-  account: 'organizations',
-  contact: 'people',
-  lead: 'leads',
-  opportunity: 'deals',
-  user: 'users',
-  event: 'events',
-};
-
 class PipedriveClient extends AbstractCrmRemoteClient {
   readonly #credentials: Credentials;
   readonly #headers: Record<string, string>;
