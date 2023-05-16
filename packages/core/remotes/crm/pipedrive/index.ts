@@ -10,7 +10,13 @@ import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
-import { fromPipedrivePersonToRemoteContact } from './mappers';
+import {
+  fromPipedriveDealToRemoteOpportunity,
+  fromPipedriveLeadToRemoteLead,
+  fromPipedriveOrganizationToRemoteAccount,
+  fromPipedrivePersonToRemoteContact,
+  fromPipedriveUserToRemoteUser,
+} from './mappers';
 
 const PIPEDRIVE_RECORD_LIMIT = 500;
 
@@ -19,17 +25,19 @@ const DEFAULT_LIST_PARAMS = {
   sort: 'id',
 };
 
-export type PipedriveRecord = Record<string, any>;
+export type PipedriveRecord = { [key: string]: any };
+
+export type PipelineStageMapping = Record<string, { label: string; stageIdsToLabels: Record<string, string> }>;
 
 type PipedrivePaginatedRecords = {
   success: boolean;
   data: PipedriveRecord[];
   additional_data: {
-    pagination: {
+    pagination?: {
       start: number;
       limit: number;
       more_items_in_collection: boolean;
-      next_start: number;
+      next_start?: number;
     };
   };
 };
@@ -93,12 +101,23 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     switch (commonModelType) {
       case 'contact':
         return await this.listContacts(updatedAfter);
+      case 'lead':
+        return await this.listLeads(updatedAfter);
+      case 'opportunity':
+        return await this.listOpportunities(updatedAfter);
+      case 'account':
+        return await this.listAccounts(updatedAfter);
+      case 'user':
+        return await this.listUsers(updatedAfter);
       default:
         return Readable.from([]);
     }
   }
 
-  #getListRecordsFetcher(endpoint: string): (next_start?: string) => Promise<PipedrivePaginatedRecords> {
+  #getListRecordsFetcher(
+    endpoint: string,
+    updatedAfter?: Date
+  ): (next_start?: string) => Promise<PipedrivePaginatedRecords> {
     // Pipedrive does not support incremental fetch (i.e. filtering by datetime) so we will do full refresh every time
     return async (next_start?: string) => {
       await this.maybeRefreshAccessToken();
@@ -116,17 +135,111 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         params: DEFAULT_LIST_PARAMS,
         headers: this.#headers,
       });
-      return response.data;
+      return filterForUpdatedAfter(response.data, updatedAfter);
     };
   }
 
   private async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#credentials.instanceUrl}/api/v1/persons`);
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/persons`,
+      updatedAfter
+    );
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedrivePersonToRemoteContact)),
-        getNextCursorFromPage: (response) => response.additional_data.pagination.next_start?.toString(),
+        getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
+      },
+    ]);
+  }
+
+  private async listLeads(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/leads`,
+      updatedAfter
+    );
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedriveLeadToRemoteLead)),
+        getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
+      },
+    ]);
+  }
+
+  async #getPipelineStageMapping(): Promise<PipelineStageMapping> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get(`${this.#credentials.instanceUrl}/api/v1/stages`, {
+      headers: this.#headers,
+    });
+    const pipelineStageMapping: PipelineStageMapping = {};
+    response.data.data.forEach(
+      ({
+        id,
+        name,
+        pipeline_id,
+        pipeline_name,
+      }: {
+        id: number;
+        name: string;
+        pipeline_id: number;
+        pipeline_name: string;
+      }) => {
+        if (pipelineStageMapping[pipeline_id.toString()]) {
+          pipelineStageMapping[pipeline_id.toString()].stageIdsToLabels[id.toString()] = name;
+        } else {
+          pipelineStageMapping[pipeline_id.toString()] = {
+            label: pipeline_name,
+            stageIdsToLabels: { [id.toString()]: name },
+          };
+        }
+      }
+    );
+    return pipelineStageMapping;
+  }
+
+  private async listOpportunities(updatedAfter?: Date): Promise<Readable> {
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/deals`,
+      updatedAfter
+    );
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) =>
+          Readable.from(
+            response.data.map((record) => fromPipedriveDealToRemoteOpportunity(record, pipelineStageMapping))
+          ),
+        getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
+      },
+    ]);
+  }
+
+  private async listAccounts(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/organizations`,
+      updatedAfter
+    );
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedriveOrganizationToRemoteAccount)),
+        getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
+      },
+    ]);
+  }
+
+  private async listUsers(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/users`,
+      updatedAfter
+    );
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedriveUserToRemoteUser)),
+        getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
   }
@@ -168,3 +281,24 @@ export const authConfig: ConnectorAuthConfig = {
   authorizeHost: 'https://oauth.pipedrive.com',
   authorizePath: '/oauth/authorize',
 };
+
+function filterForUpdatedAfter<
+  R extends {
+    data: { updated_time?: string }[];
+  }
+>(response: R, updatedAfter?: Date): R {
+  return {
+    ...response,
+    data: response.data.filter((record) => {
+      if (!updatedAfter) {
+        return true;
+      }
+
+      if (!record.updated_time) {
+        return true;
+      }
+
+      return updatedAfter < new Date(record.updated_time);
+    }),
+  };
+}
