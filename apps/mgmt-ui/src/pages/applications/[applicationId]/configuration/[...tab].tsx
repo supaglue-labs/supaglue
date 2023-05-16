@@ -58,7 +58,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-export default function Home(props: { svixDashboardUrl: string }) {
+export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | null }) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { tab = [] } = router.query;
@@ -99,7 +99,7 @@ export default function Home(props: { svixDashboardUrl: string }) {
               <Tab label="Integrations" />
               <Tab label="Webhook" />
               <Tab label="API Key" />
-              <Tab label="CDC Webhooks" />
+              {svixDashboardUrl ? <Tab label="CDC Webhooks" /> : null}
             </Tabs>
           }
           title="Configuration"
@@ -115,9 +115,11 @@ export default function Home(props: { svixDashboardUrl: string }) {
           <TabPanel value={value} index={2} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
-          <TabPanel value={value} index={3} className="w-full">
-            <CDCWebhookTabPanel {...props} />
-          </TabPanel>
+          {svixDashboardUrl ? (
+            <TabPanel value={value} index={3} className="w-full">
+              <CDCWebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
+            </TabPanel>
+          ) : null}
         </Box>
       </Box>
     </>
