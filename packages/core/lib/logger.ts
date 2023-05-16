@@ -10,7 +10,7 @@ export { addLogContext };
 // add a type for this since pino-context doesn't have any
 const addLogContext: (key: string, value: unknown) => void = addContext;
 
-const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
+const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI) && process.env.SENTRY_DSN;
 
 const LOG_LEVEL = process.env.SUPAGLUE_LOG_LEVEL as Level;
 
@@ -23,11 +23,11 @@ if (process.env.SUPAGLUE_PRETTY_LOGS) {
 
 if (sentryEnabled) {
   const sentryStream = createWriteStream({
-    dsn: 'https://606fd8535f1c409ea96805e46f3add57@o4504573112745984.ingest.sentry.io/4504573114777600',
+    dsn: process.env.SENTRY_DSN,
     environment: process.env.SUPAGLUE_ENVIRONMENT,
     // Temporal logs all errors as warnings (with a stack trace), so we capture warnings to sentry as well.
     // TODO: Consider only doing this for sync-worker and not for api.
-    level: 'warning',
+    level: (process.env.SENTRY_LOG_LEVEL as any) ?? 'error',
     decorateScope: (data, scope) => {
       scope.setTag('applicationId', data.applicationId as string);
       scope.setTag('connectionId', data.connectionId as string);
