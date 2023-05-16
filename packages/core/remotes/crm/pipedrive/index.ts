@@ -54,7 +54,7 @@ export type PipelineStageMapping = Record<string, { label: string; stageIdsToLab
 
 type PipedrivePaginatedRecords = {
   success: boolean;
-  data: PipedriveRecord[];
+  data: PipedriveRecord[] | null;
   additional_data: {
     pagination?: {
       start: number;
@@ -170,7 +170,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedrivePersonToRemoteContact)),
+        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedrivePersonToRemoteContact) ?? []),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -184,7 +184,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedriveLeadToRemoteLead)),
+        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedriveLeadToRemoteLead) ?? []),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -232,7 +232,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) =>
           Readable.from(
-            response.data.map((record) => fromPipedriveDealToRemoteOpportunity(record, pipelineStageMapping))
+            response.data?.map((record) => fromPipedriveDealToRemoteOpportunity(record, pipelineStageMapping)) ?? []
           ),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
@@ -247,7 +247,8 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedriveOrganizationToRemoteAccount)),
+        createStreamFromPage: (response) =>
+          Readable.from(response.data?.map(fromPipedriveOrganizationToRemoteAccount) ?? []),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -261,7 +262,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromPipedriveUserToRemoteUser)),
+        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedriveUserToRemoteUser) ?? []),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -434,12 +435,15 @@ export const authConfig: ConnectorAuthConfig = {
 
 function filterForUpdatedAfter<
   R extends {
-    data: { updated_time?: string }[];
+    data: { updated_time?: string }[] | null;
   }
 >(response: R, updatedAfter?: Date): R {
+  if (!response.data?.length) {
+    return response;
+  }
   return {
     ...response,
-    data: response.data.filter((record) => {
+    data: response.data?.filter((record) => {
       if (!updatedAfter) {
         return true;
       }
