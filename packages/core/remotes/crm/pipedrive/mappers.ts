@@ -158,7 +158,9 @@ export const fromPipedriveOrganizationToAddresses = (organization: PipedriveReco
   }
   return [
     {
-      street1: `${organization.address_street_number ?? ''} ${organization.address_route ?? ''}`,
+      street1: organization.address_street_number
+        ? `${organization.address_street_number ?? ''} ${organization.address_route ?? ''}`
+        : organization.address_route ?? null,
       street2: organization.address_subpremise ?? null,
       city: organization.address_locality ?? null,
       state: organization.address_admin_area_level_1 ?? null,
@@ -190,10 +192,14 @@ export const toPipedrivePersonCreateParams = (params: RemoteContactCreateParams)
 export const toPipedrivePersonUpdateParams = toPipedrivePersonCreateParams;
 
 export const toPipedriveLeadCreateParams = (params: RemoteLeadCreateParams) => {
+  if (!params.convertedAccountId && !params.convertedContactId) {
+    throw new BadRequestError('Either convertedAccountId or convertedContactId must be provided');
+  }
   return {
     title: params.title,
     owner_id: params.ownerId ? parseInt(params.ownerId) : undefined,
-    source_name: params.leadSource,
+    person_id: params.convertedContactId ? parseInt(params.convertedContactId) : undefined,
+    organization_id: params.convertedAccountId ? parseInt(params.convertedAccountId) : undefined,
     ...params.customFields,
   };
 };

@@ -267,19 +267,19 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public override createObject<T extends CRMCommonModelType>(
+  public override async createObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     switch (commonModelType) {
       case 'contact':
-        return this.createContact(params as RemoteContactCreateParams);
+        return await this.createContact(params);
       case 'lead':
-        return this.createLead(params as RemoteLeadCreateParams);
+        return await this.createLead(params);
       case 'opportunity':
-        return this.createOpportunity(params as RemoteOpportunityCreateParams);
+        return await this.createOpportunity(params);
       case 'account':
-        return this.createAccount(params as RemoteAccountCreateParams);
+        return await this.createAccount(params);
       case 'user':
         throw new Error('User creation is not supported');
       default:
@@ -336,19 +336,19 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return fromPipedriveDealToRemoteOpportunity(response.data.data, pipelineStageMapping);
   }
 
-  public override updateObject<T extends CRMCommonModelType>(
+  public override async updateObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     switch (commonModelType) {
       case 'contact':
-        return this.updateContact(params as RemoteContactUpdateParams);
+        return await this.updateContact(params);
       case 'lead':
-        return this.updateLead(params as RemoteLeadUpdateParams);
+        return await this.updateLead(params);
       case 'opportunity':
-        return this.updateOpportunity(params as RemoteOpportunityUpdateParams);
+        return await this.updateOpportunity(params);
       case 'account':
-        return this.updateAccount(params as RemoteAccountUpdateParams);
+        return await this.updateAccount(params);
       case 'user':
         throw new Error('User update is not supported');
       default:
