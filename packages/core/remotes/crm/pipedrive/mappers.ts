@@ -1,13 +1,18 @@
 import {
   OpportunityStatus,
   RemoteAccount,
+  RemoteAccountCreateParams,
   RemoteContact,
+  RemoteContactCreateParams,
   RemoteLead,
+  RemoteLeadCreateParams,
   RemoteOpportunity,
+  RemoteOpportunityCreateParams,
   RemoteUser,
 } from '@supaglue/types/crm';
 import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import { PipedriveRecord, PipelineStageMapping } from '.';
+import { BadRequestError } from '../../../errors';
 
 export const fromPipedrivePersonToRemoteContact = (person: PipedriveRecord): RemoteContact => {
   return {
@@ -98,7 +103,7 @@ export const fromPipedriveOrganizationToRemoteAccount = (organization: Pipedrive
     industry: null,
     website: null,
     numberOfEmployees: organization.people_count ?? null,
-    addresses: [fromPipedriveOrganizationToAddress(organization)],
+    addresses: fromPipedriveOrganizationToAddresses(organization),
     phoneNumbers: [],
     lastActivityAt: null,
     lifecycleStage: null,
@@ -139,17 +144,132 @@ export const fromPipedrivePhonesToPhoneNumbers = (phoneNumbers: { label: string;
     .map((phoneNumber) => ({ phoneNumber: phoneNumber.value, phoneNumberType: phoneNumber.label } as PhoneNumber));
 };
 
-export const fromPipedriveOrganizationToAddress = (organization: PipedriveRecord): Address => {
+export const fromPipedriveOrganizationToAddresses = (organization: PipedriveRecord): Address[] => {
+  if (
+    !organization.address_street_number &&
+    !organization.address_route &&
+    !organization.address_subpremise &&
+    !organization.address_locality &&
+    !organization.address_admin_area_level_1 &&
+    !organization.address_postal_code &&
+    !organization.address_country
+  ) {
+    return [];
+  }
+  return [
+    {
+      street1: organization.address_street_number
+        ? `${organization.address_street_number ?? ''} ${organization.address_route ?? ''}`
+        : organization.address_route ?? null,
+      street2: organization.address_subpremise ?? null,
+      city: organization.address_locality ?? null,
+      state: organization.address_admin_area_level_1 ?? null,
+      postalCode: organization.address_postal_code ?? null,
+      country: organization.address_country ?? null,
+      addressType: 'primary',
+    },
+  ];
+};
+
+export const toPipedrivePersonCreateParams = (params: RemoteContactCreateParams) => {
   return {
-    street1: `${organization.address_street_number ?? ''} ${organization.address_route ?? ''}`,
-    street2: organization.address_subpremise ?? null,
-    city: organization.address_locality ?? null,
-    state: organization.address_admin_area_level_1 ?? null,
-    postalCode: organization.address_postal_code ?? null,
-    country: organization.address_country ?? null,
-    addressType: 'primary',
+    first_name: params.firstName,
+    last_name: params.lastName,
+    email: params.emailAddresses?.map(({ emailAddress, emailAddressType }) => ({
+      label: emailAddressType,
+      value: emailAddress,
+    })),
+    phone: params.phoneNumbers?.map(({ phoneNumber, phoneNumberType }) => ({
+      value: phoneNumber,
+      label: phoneNumberType,
+    })),
+    org_id: params.accountId ? parseInt(params.accountId) : undefined,
+    owner_id: params.ownerId ? parseInt(params.ownerId) : undefined,
+    ...params.customFields,
   };
 };
+
+export const toPipedrivePersonUpdateParams = toPipedrivePersonCreateParams;
+
+export const toPipedriveLeadCreateParams = (params: RemoteLeadCreateParams) => {
+  if (!params.convertedAccountId && !params.convertedContactId) {
+    throw new BadRequestError('Either convertedAccountId or convertedContactId must be provided');
+  }
+  return {
+    title: params.title,
+    owner_id: params.ownerId ? parseInt(params.ownerId) : undefined,
+    person_id: params.convertedContactId ? parseInt(params.convertedContactId) : undefined,
+    organization_id: params.convertedAccountId ? parseInt(params.convertedAccountId) : undefined,
+    ...params.customFields,
+  };
+};
+export const toPipedriveLeadUpdateParams = toPipedriveLeadCreateParams;
+
+export const toPipedriveOrganizationCreateParams = (params: RemoteAccountCreateParams) => {
+  return {
+    name: params.name,
+    owner_id: params.ownerId,
+    ...params.customFields,
+  };
+};
+export const toPipedriveOrganizationUpdateParams = toPipedriveOrganizationCreateParams;
+
+const getPipelineId = (
+  pipelineNameOrId: string | null | undefined,
+  pipelineStageMapping: PipelineStageMapping
+): string | null => {
+  if (!pipelineNameOrId) {
+    return null;
+  }
+  if (pipelineStageMapping[pipelineNameOrId]) {
+    return pipelineNameOrId;
+  }
+  const entry = Object.entries(pipelineStageMapping).find(([, { label }]) => label === pipelineNameOrId);
+  if (entry) {
+    return entry[0];
+  }
+  throw new BadRequestError(`Pipeline not found: ${pipelineNameOrId}`);
+};
+
+const getStageId = (
+  pipelineId: string | null,
+  stageNameOrId: string | undefined | null,
+  pipelineStageMapping: PipelineStageMapping
+): string | null => {
+  if (!pipelineId || !stageNameOrId) {
+    return null;
+  }
+  if (!pipelineStageMapping[pipelineId]) {
+    throw new BadRequestError(`Pipeline not found: ${pipelineId}`);
+  }
+  const stageMapping = pipelineStageMapping[pipelineId].stageIdsToLabels;
+  if (stageMapping[stageNameOrId]) {
+    return stageNameOrId;
+  }
+  const entry = Object.entries(stageMapping).find(([, label]) => label === stageNameOrId);
+  if (entry) {
+    return entry[0];
+  }
+  throw new BadRequestError(`Stage not found: ${stageNameOrId}`);
+};
+
+export const toPipedriveDealCreateParams = (
+  params: RemoteOpportunityCreateParams,
+  pipelineStageMapping: PipelineStageMapping
+) => {
+  const pipelineId = getPipelineId(params.pipeline, pipelineStageMapping);
+  const stageId = getStageId(pipelineId, params.stage, pipelineStageMapping);
+  return {
+    title: params.name,
+    value: params.amount?.toString(),
+    user_id: params.ownerId ? parseInt(params.ownerId) : undefined,
+    org_id: params.accountId ? parseInt(params.accountId) : undefined,
+    pipeline_id: pipelineId ? parseInt(pipelineId) : undefined,
+    stage_id: stageId ? parseInt(stageId) : undefined,
+    ...params.customFields,
+  };
+};
+export const toPipedriveDealUpdateParams = toPipedriveDealCreateParams;
 
 export const fromPipelineDealStatusToOpportunityStatus = (
   dealStatus: 'open' | 'won' | 'lost' | 'deleted' | null

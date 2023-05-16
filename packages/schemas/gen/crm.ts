@@ -423,6 +423,10 @@ export interface components {
       addresses?: components["schemas"]["addresses"];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
+      /** @example ad43955d-2b27-4ec3-b38a-0ca07a76d43b */
+      converted_contact_id?: string | null;
+      /** @example 2e1e6813-0459-47f5-ad4c-3d137c0e1fdd */
+      converted_account_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     opportunity: {

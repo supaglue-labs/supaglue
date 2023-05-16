@@ -51,6 +51,8 @@ type BaseLeadCreateParams = {
   emailAddresses?: EmailAddress[];
 
   ownerId?: string | null;
+  convertedContactId?: string | null;
+  convertedAccountId?: string | null;
 
   // TODO: Need extra permissions to create/update this derived field in SF
   // convertedDate?: Date | null;
