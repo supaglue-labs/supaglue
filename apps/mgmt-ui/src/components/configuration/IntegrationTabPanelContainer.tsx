@@ -38,14 +38,14 @@ export const integrationCardsInfo: IntegrationCardInfo[] = [
   },
   {
     icon: <Image alt="pipedrive" src={PipedriveIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Pipedrive',
+    name: 'Pipedrive (BETA)',
     providerName: 'pipedrive',
     category: 'crm',
     description: 'Configure your Pipedrive integration.',
   },
   {
     icon: <Image alt="outreach" src={OutreachIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Outreach',
+    name: 'Outreach (BETA)',
     providerName: 'outreach',
     category: 'engagement',
     description: 'Configure your Outreach integration.',
