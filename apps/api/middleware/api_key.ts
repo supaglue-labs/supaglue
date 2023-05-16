@@ -1,4 +1,5 @@
 import { UnauthorizedError } from '@supaglue/core/errors';
+import { addLogContext } from '@supaglue/core/lib/logger';
 import { NextFunction, Request, Response } from 'express';
 import { getDependencyContainer } from '../dependency_container';
 
@@ -12,7 +13,9 @@ export async function apiKeyHeaderMiddleware(req: Request, res: Response, next: 
   }
 
   req.supaglueApplication = await applicationService.getByApiKey(apiKey);
+  addLogContext('applicationId', req.supaglueApplication.id);
   req.orgId = req.supaglueApplication.orgId;
+  addLogContext('orgId', req.supaglueApplication.orgId);
 
   next();
 }
