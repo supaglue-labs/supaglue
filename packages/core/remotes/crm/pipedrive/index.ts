@@ -4,7 +4,22 @@ import {
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
-import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
+import {
+  CRMCommonModelType,
+  CRMCommonModelTypeMap,
+  RemoteAccount,
+  RemoteAccountCreateParams,
+  RemoteAccountUpdateParams,
+  RemoteContact,
+  RemoteContactCreateParams,
+  RemoteContactUpdateParams,
+  RemoteLead,
+  RemoteLeadCreateParams,
+  RemoteLeadUpdateParams,
+  RemoteOpportunity,
+  RemoteOpportunityCreateParams,
+  RemoteOpportunityUpdateParams,
+} from '@supaglue/types/crm';
 import axios from 'axios';
 import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
@@ -16,6 +31,14 @@ import {
   fromPipedriveOrganizationToRemoteAccount,
   fromPipedrivePersonToRemoteContact,
   fromPipedriveUserToRemoteUser,
+  toPipedriveDealCreateParams,
+  toPipedriveDealUpdateParams,
+  toPipedriveLeadCreateParams,
+  toPipedriveLeadUpdateParams,
+  toPipedriveOrganizationCreateParams,
+  toPipedriveOrganizationUpdateParams,
+  toPipedrivePersonCreateParams,
+  toPipedrivePersonUpdateParams,
 } from './mappers';
 
 const PIPEDRIVE_RECORD_LIMIT = 500;
@@ -248,14 +271,141 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
-    throw new Error('Not implemented');
+    switch (commonModelType) {
+      case 'contact':
+        return this.createContact(params as RemoteContactCreateParams);
+      case 'lead':
+        return this.createLead(params as RemoteLeadCreateParams);
+      case 'opportunity':
+        return this.createOpportunity(params as RemoteOpportunityCreateParams);
+      case 'account':
+        return this.createAccount(params as RemoteAccountCreateParams);
+      case 'user':
+        throw new Error('User creation is not supported');
+      default:
+        throw new Error(`Common model ${commonModelType} not supported`);
+    }
+  }
+
+  async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: PipedriveRecord }>(
+      `${this.#credentials.instanceUrl}/api/v1/persons`,
+      toPipedrivePersonCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromPipedrivePersonToRemoteContact(response.data.data);
+  }
+
+  async createLead(params: RemoteLeadCreateParams): Promise<RemoteLead> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: PipedriveRecord }>(
+      `${this.#credentials.instanceUrl}/api/v1/leads`,
+      toPipedriveLeadCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromPipedriveLeadToRemoteLead(response.data.data);
+  }
+
+  async createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: PipedriveRecord }>(
+      `${this.#credentials.instanceUrl}/api/v1/organizations`,
+      toPipedriveOrganizationCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromPipedriveOrganizationToRemoteAccount(response.data.data);
+  }
+
+  async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
+    await this.maybeRefreshAccessToken();
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
+    const response = await axios.post<{ data: PipedriveRecord }>(
+      `${this.#credentials.instanceUrl}/api/v1/deals`,
+      toPipedriveDealCreateParams(params, pipelineStageMapping),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromPipedriveDealToRemoteOpportunity(response.data.data, pipelineStageMapping);
   }
 
   public override updateObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
-    throw new Error('Not implemented');
+    switch (commonModelType) {
+      case 'contact':
+        return this.updateContact(params as RemoteContactUpdateParams);
+      case 'lead':
+        return this.updateLead(params as RemoteLeadUpdateParams);
+      case 'opportunity':
+        return this.updateOpportunity(params as RemoteOpportunityUpdateParams);
+      case 'account':
+        return this.updateAccount(params as RemoteAccountUpdateParams);
+      case 'user':
+        throw new Error('User update is not supported');
+      default:
+        throw new Error(`Common model ${commonModelType} not supported`);
+    }
+  }
+
+  async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+    await this.maybeRefreshAccessToken();
+    // Their API is a PUT, but the behavior is more akin to a PATCH.
+    const response = await axios.put<{ data: PipedriveRecord }>(
+      `${this.#credentials.instanceUrl}/api/v1/persons/${params.remoteId}`,
+      toPipedrivePersonUpdateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromPipedrivePersonToRemoteContact(response.data.data);
+  }
+
+  async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.patch<{ data: PipedriveRecord }>(
+      `${this.#credentials.instanceUrl}/api/v1/leads/${params.remoteId}`,
+      toPipedriveLeadUpdateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromPipedriveLeadToRemoteLead(response.data.data);
+  }
+
+  async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
+    await this.maybeRefreshAccessToken();
+    // Their API is a PUT, but the behavior is more akin to a PATCH.
+    const response = await axios.put<{ data: PipedriveRecord }>(
+      `${this.#credentials.instanceUrl}/api/v1/organizations/${params.remoteId}`,
+      toPipedriveOrganizationUpdateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromPipedriveOrganizationToRemoteAccount(response.data.data);
+  }
+
+  async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
+    await this.maybeRefreshAccessToken();
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
+    // Their API is a PUT, but the behavior is more akin to a PATCH.
+    const response = await axios.put<{ data: PipedriveRecord }>(
+      `${this.#credentials.instanceUrl}/api/v1/deals/${params.remoteId}`,
+      toPipedriveDealUpdateParams(params, pipelineStageMapping),
+      {
+        headers: this.#headers,
+      }
+    );
+    return fromPipedriveDealToRemoteOpportunity(response.data.data, pipelineStageMapping);
   }
 
   public override async sendPassthroughRequest(
