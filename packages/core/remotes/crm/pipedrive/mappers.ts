@@ -103,7 +103,7 @@ export const fromPipedriveOrganizationToRemoteAccount = (organization: Pipedrive
     industry: null,
     website: null,
     numberOfEmployees: organization.people_count ?? null,
-    addresses: [fromPipedriveOrganizationToAddress(organization)],
+    addresses: fromPipedriveOrganizationToAddresses(organization),
     phoneNumbers: [],
     lastActivityAt: null,
     lifecycleStage: null,
@@ -144,21 +144,35 @@ export const fromPipedrivePhonesToPhoneNumbers = (phoneNumbers: { label: string;
     .map((phoneNumber) => ({ phoneNumber: phoneNumber.value, phoneNumberType: phoneNumber.label } as PhoneNumber));
 };
 
-export const fromPipedriveOrganizationToAddress = (organization: PipedriveRecord): Address => {
-  return {
-    street1: `${organization.address_street_number ?? ''} ${organization.address_route ?? ''}`,
-    street2: organization.address_subpremise ?? null,
-    city: organization.address_locality ?? null,
-    state: organization.address_admin_area_level_1 ?? null,
-    postalCode: organization.address_postal_code ?? null,
-    country: organization.address_country ?? null,
-    addressType: 'primary',
-  };
+export const fromPipedriveOrganizationToAddresses = (organization: PipedriveRecord): Address[] => {
+  if (
+    !organization.address_street_number &&
+    !organization.address_route &&
+    !organization.address_subpremise &&
+    !organization.address_locality &&
+    !organization.address_admin_area_level_1 &&
+    !organization.address_postal_code &&
+    !organization.address_country
+  ) {
+    return [];
+  }
+  return [
+    {
+      street1: `${organization.address_street_number ?? ''} ${organization.address_route ?? ''}`,
+      street2: organization.address_subpremise ?? null,
+      city: organization.address_locality ?? null,
+      state: organization.address_admin_area_level_1 ?? null,
+      postalCode: organization.address_postal_code ?? null,
+      country: organization.address_country ?? null,
+      addressType: 'primary',
+    },
+  ];
 };
 
 export const toPipedrivePersonCreateParams = (params: RemoteContactCreateParams) => {
   return {
-    name: `${params.firstName} ${params.lastName}`,
+    first_name: params.firstName,
+    last_name: params.lastName,
     email: params.emailAddresses?.map(({ emailAddress, emailAddressType }) => ({
       label: emailAddressType,
       value: emailAddress,
