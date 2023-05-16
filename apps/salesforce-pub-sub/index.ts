@@ -106,25 +106,17 @@ const { connectionService, integrationService, webhookService, applicationServic
     const subscribe = async (eventType: string) => {
       const streamErrorHandler = async (err: any) => {
         // TODO probably should do something a bit more sophisticated here
-
-        if (err.message.startsWith('[not_found]')) {
-          logger.warn(
-            { err, connectionId, eventType },
-            "can't start stream for event type since it doesn't exist, skipping"
-          );
-          return;
-        }
-
         if (
+          err.message.startsWith('[not_found]') ||
           err.message.startsWith('[unauthenticated]') ||
           err.message.startsWith('[permission_denied]') ||
           err.message === 'expired access/refresh token'
         ) {
-          logger.warn({ err, connectionId, eventType }, 'unrecoverable error starting stream, skipping');
+          logger.error({ err, connectionId, eventType }, 'unrecoverable error starting stream, skipping');
           return;
         }
 
-        logger.error({ err, connectionId, eventType }, 'error in stream, restarting');
+        logger.warn({ err, connectionId, eventType }, 'error in stream, restarting');
         await processStream(eventType).catch(streamErrorHandler);
       };
 

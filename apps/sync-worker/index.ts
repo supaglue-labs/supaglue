@@ -17,14 +17,12 @@ import path from 'path';
 import { getDependencyContainer } from './dependency_container';
 import ActivityLogInterceptor from './interceptors/activity_log_interceptor';
 
-const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
+const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI) && process.env.SENTRY_DSN;
 const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
 
 if (sentryEnabled) {
   Sentry.init({
-    // this is the public DSN for the project in sentry, so it's safe and expected to be committed, per Sentry's CTO:
-    // https://github.com/getsentry/sentry-docs/pull/1723#issuecomment-781041906
-    dsn: 'https://168e6ed7afc74379ba0608da6173649c@o4504573112745984.ingest.sentry.io/4504844378505216',
+    dsn: process.env.SENTRY_DSN,
     environment: process.env.SUPAGLUE_ENVIRONMENT,
     integrations: [
       new RewriteFrames({
