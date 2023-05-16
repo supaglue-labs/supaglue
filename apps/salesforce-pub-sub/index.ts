@@ -16,6 +16,7 @@ const EVENT_TYPES_TO_SUBSCRIBE_TO = [
 
 const { connectionService, integrationService, webhookService, applicationService } = getCoreDependencyContainer();
 (async () => {
+  logger.info('Starting Salesforce CDC worker');
   const connections = await connectionService.listAllUnsafe({ providerName: 'salesforce' });
 
   for (const connection of connections) {
@@ -102,19 +103,31 @@ const { connectionService, integrationService, webhookService, applicationServic
       }
     };
 
-    const subscribe = (eventType: string) => {
-      const streamErrorHandler = (err: any) => {
+    const subscribe = async (eventType: string) => {
+      const streamErrorHandler = async (err: any) => {
         // TODO probably should do something a bit more sophisticated here
-        logger.error({ err, connectionId, eventType }, 'error in stream, restarting');
-        processStream(eventType).catch(streamErrorHandler);
+        if (
+          err.message.startsWith('[not_found]') ||
+          err.message.startsWith('[unauthenticated]') ||
+          err.message.startsWith('[permission_denied]') ||
+          err.message === 'expired access/refresh token'
+        ) {
+          logger.error({ err, connectionId, eventType }, 'unrecoverable error starting stream, skipping');
+          return;
+        }
+
+        logger.warn({ err, connectionId, eventType }, 'error in stream, restarting');
+        await processStream(eventType).catch(streamErrorHandler);
       };
 
-      processStream(eventType).catch(streamErrorHandler);
+      await processStream(eventType).catch(streamErrorHandler);
     };
 
-    EVENT_TYPES_TO_SUBSCRIBE_TO.forEach((eventType) => {
-      subscribe(eventType);
-    });
+    await Promise.all(
+      EVENT_TYPES_TO_SUBSCRIBE_TO.flatMap(async (eventType) => {
+        await subscribe(eventType);
+      })
+    );
   }
 })().catch((error) => {
   logger.error(error, 'error caught in main');
