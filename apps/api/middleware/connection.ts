@@ -12,17 +12,17 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
   if (!externalCustomerId || !providerName) {
     throw new UnauthorizedError('x-customer-id and x-provider-name headers must be set');
   }
+  addLogContext('externalCustomerId', externalCustomerId);
+  addLogContext('providerName', providerName);
 
   req.customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
+  addLogContext('customerId', req.customerId);
 
   req.customerConnection = await connectionService.getSafeByCustomerIdAndApplicationIdAndProviderName({
     customerId: req.customerId,
     applicationId: req.supaglueApplication.id,
     providerName,
   });
-
-  addLogContext('customerId', req.customerId);
-  addLogContext('providerName', providerName);
   addLogContext('connectionId', req.customerConnection?.id);
 
   next();

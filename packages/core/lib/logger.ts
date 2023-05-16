@@ -5,10 +5,9 @@ import pretty from 'pino-pretty';
 import { createWriteStream } from 'pino-sentry';
 // @ts-expect-error this package doesn't have types
 export { default as expressScopeMiddleware } from 'pino-context/integrations/express';
-export { addLogContext };
 
 // add a type for this since pino-context doesn't have any
-const addLogContext: (key: string, value: unknown) => void = addContext;
+export const addLogContext: (key: string, value: unknown) => void = addContext;
 
 const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI) && process.env.SENTRY_DSN;
 
@@ -25,8 +24,6 @@ if (sentryEnabled) {
   const sentryStream = createWriteStream({
     dsn: process.env.SENTRY_DSN,
     environment: process.env.SUPAGLUE_ENVIRONMENT,
-    // Temporal logs all errors as warnings (with a stack trace), so we capture warnings to sentry as well.
-    // TODO: Consider only doing this for sync-worker and not for api.
     level: (process.env.SENTRY_LOG_LEVEL as any) ?? 'error',
     decorateScope: (data, scope) => {
       scope.setTag('applicationId', data.applicationId as string);
