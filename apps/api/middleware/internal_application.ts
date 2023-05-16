@@ -12,9 +12,8 @@ export async function internalApplicationMiddleware(req: Request, res: Response,
     throw new BadRequestError('x-application-id must be set');
   }
 
-  req.supaglueApplication = await applicationService.getByIdAndOrgId(applicationId, req.orgId);
-
   addLogContext('applicationId', applicationId);
+  req.supaglueApplication = await applicationService.getByIdAndOrgId(applicationId, req.orgId);
 
   next();
 }
