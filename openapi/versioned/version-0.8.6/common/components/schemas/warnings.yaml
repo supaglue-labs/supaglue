@@ -1,0 +1,36 @@
+type: array
+items:
+  type: object
+  properties:
+    detail:
+      type: string
+      example: >-
+        An unrecognized field, age, was passed in with
+        request data.
+    problem_type:
+      type: string
+      example: UNRECOGNIZED_FIELD
+    source:
+      type: object
+      properties:
+        pointer:
+          type: string
+          example: Lorem ipsum
+    title:
+      type: string
+      example: Unrecognized Field
+example:
+  - detail: >-
+      An unrecognized field, age, was passed in with request
+      data.
+    problem_type: UNRECOGNIZED_FIELD
+    source:
+      pointer: Lorem ipsum
+    title: Unrecognized Field
+  - detail: >-
+      An unrecognized field, age, was passed in with request
+      data.
+    problem_type: UNRECOGNIZED_FIELD
+    source:
+      pointer: in
+    title: Unrecognized Field
