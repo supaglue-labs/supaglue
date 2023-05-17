@@ -468,17 +468,16 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   private async getCommonModelSchema(commonModelName: CRMCommonModelType): Promise<string[]> {
-    return propertiesToFetch[commonModelName];
-    // const response = await this.#fetch(`/services/data/v57.0/sobjects/${commonModelName}/describe`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // });
-    // const responseJson = await response.json();
-    // return responseJson.fields
-    //   .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
-    //   .map((field: { name: string; type: string }) => field.name);
+    const response = await this.#fetch(`/services/data/v57.0/sobjects/${commonModelName}/describe`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const responseJson = await response.json();
+    return responseJson.fields
+      .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
+      .map((field: { name: string; type: string }) => field.name);
   }
 
   private async listCommonModelRecords(
@@ -487,8 +486,9 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     updatedAfter?: Date
   ): Promise<Readable> {
     const availableProperties = await this.getCommonModelSchema(commonModelName);
+    const properties = intersection(availableProperties, propertiesToFetch[commonModelName]);
     const baseSoql = `
-    SELECT ${availableProperties.join(', ')}
+    SELECT ${properties.join(', ')}
     FROM ${capitalizeString(commonModelName)}
   `;
     const soql = updatedAfter
