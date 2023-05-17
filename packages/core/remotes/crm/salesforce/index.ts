@@ -196,6 +196,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
   readonly #instanceUrl: string;
   readonly #refreshToken: string;
+  readonly #syncAllFields: boolean;
   #accessToken: string;
 
   public constructor({
@@ -205,6 +206,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     clientId,
     clientSecret,
     loginUrl,
+    syncAllFields,
   }: {
     instanceUrl: string;
     refreshToken: string;
@@ -212,12 +214,14 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     clientId: string;
     clientSecret: string;
     loginUrl?: string;
+    syncAllFields?: boolean;
   }) {
     super(instanceUrl);
 
     this.#instanceUrl = instanceUrl;
     this.#refreshToken = refreshToken;
     this.#accessToken = accessToken;
+    this.#syncAllFields = !!syncAllFields;
 
     this.#client = new jsforce.Connection({
       oauth2: new jsforce.OAuth2({
@@ -484,14 +488,22 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       .map((field: { name: string; type: string }) => field.name);
   }
 
+  private async getPropertiesToFetch(commonModelName: CRMCommonModelType): Promise<string[]> {
+    const availableProperties = await this.getCommonModelSchema(commonModelName);
+    if (this.#syncAllFields) {
+      return availableProperties;
+    }
+    const properties = intersection(availableProperties, propertiesToFetch[commonModelName]);
+    return properties;
+  }
+
   private async listCommonModelRecords(
     commonModelName: CRMCommonModelType,
     mapper: (record: Record<string, any>) => any,
     updatedAfter?: Date,
     onPoll?: () => void
   ): Promise<Readable> {
-    const availableProperties = await this.getCommonModelSchema(commonModelName);
-    const properties = intersection(availableProperties, propertiesToFetch[commonModelName]);
+    const properties = await this.getPropertiesToFetch(commonModelName);
     const baseSoql = `
     SELECT ${properties.join(', ')}
     FROM ${capitalizeString(commonModelName)}
@@ -671,6 +683,7 @@ export function newClient(connection: ConnectionUnsafe<'salesforce'>, integratio
     clientId: integration.config.oauth.credentials.oauthClientId,
     clientSecret: integration.config.oauth.credentials.oauthClientSecret,
     loginUrl: connection.credentials.loginUrl,
+    syncAllFields: integration.config.sync.syncAllFields,
   });
 }
 
