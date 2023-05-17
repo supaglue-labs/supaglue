@@ -183,6 +183,9 @@ const server = app.listen(port, (): void => {
   }
 });
 
+server.keepAliveTimeout = 61 * 1000;
+server.headersTimeout = 62 * 1000; // should be 1 second more than keepAliveTimeout, according to most sources
+
 const metricsServer = metricsApp.listen(9090, (): void => {
   logger.info('Metrics server listening on port 9090');
 });
