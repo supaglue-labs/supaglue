@@ -33,7 +33,7 @@ import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { pipeline, Readable, Transform } from 'stream';
 import { TooManyRequestsError } from '../../../errors';
-import { ASYNC_RETRY_OPTIONS, logger } from '../../../lib';
+import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
@@ -699,18 +699,4 @@ function capitalizeString(str: string): string {
     return str;
   }
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function intersection(listA: string[], listB: string[]): string[] {
-  const setB: Set<string> = new Set(listB);
-
-  const result: string[] = [];
-
-  listA.forEach((value: string) => {
-    if (setB.has(value)) {
-      result.push(value);
-    }
-  });
-
-  return result;
 }

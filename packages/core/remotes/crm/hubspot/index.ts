@@ -40,7 +40,7 @@ import {
 import retry from 'async-retry';
 import { Readable } from 'stream';
 import { TooManyRequestsError } from '../../../errors';
-import { ASYNC_RETRY_OPTIONS, logger, REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
+import { ASYNC_RETRY_OPTIONS, intersection, logger, REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
@@ -61,58 +61,112 @@ const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
 const HUBSPOT_OBJECT_TYPES = ['company', 'contact', 'deal'] as const;
 
+const propertiesToFetch = {
+  company: [
+    'name',
+    'hubspot_owner_id',
+    'description',
+    'industry',
+    'website',
+    'numberofemployees',
+    'address',
+    'address2',
+    'city',
+    'state',
+    'country',
+    'zip',
+    'phone',
+    'notes_last_updated',
+    'lifecyclestage',
+    'createddate',
+    'hs_lastmodifieddate',
+  ],
+  contact: [
+    'address', // TODO: IP state/zip/country?
+    'address2',
+    'city',
+    'country',
+    'createdate',
+    'email',
+    'fax',
+    'firstname',
+    'hs_createdate', // TODO: Use this or createdate?
+    'hs_is_contact', // TODO: distinguish from "visitor"?
+    'hubspot_owner_id',
+    'lifecyclestage',
+    'lastmodifieddate', // hs_lastmodifieddate is missing
+    'lastname',
+    'mobilephone',
+    'phone',
+    'state',
+    'work_email',
+    'zip',
+  ],
+  deal: [
+    'dealname',
+    'description',
+    'dealstage',
+    'amount',
+    'hubspot_owner_id',
+    'notes_last_updated',
+    'closedate',
+    'pipeline',
+    'hs_is_closed_won',
+    'hs_is_closed',
+    'hs_lastmodifieddate',
+  ],
+};
+
 // TODO: We may need to fetch this from the hubspot schema
 const CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 1;
 const OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 5;
 
 export type PipelineStageMapping = Record<string, { label: string; stageIdsToLabels: Record<string, string> }>;
 
-type Credentials = {
+type HubspotClientConfig = {
   accessToken: string;
   refreshToken: string;
   expiresAt: string | null; // ISO string
   clientId: string;
   clientSecret: string;
+  syncAllFields?: boolean;
 };
 
 class HubSpotClient extends AbstractCrmRemoteClient {
   readonly #client: Client;
-  readonly #credentials: Credentials;
+  readonly #config: HubspotClientConfig;
 
-  public constructor(credentials: Credentials) {
+  public constructor(config: HubspotClientConfig) {
     super('https://api.hubapi.com');
-    const { accessToken } = credentials;
+    const { accessToken } = config;
     this.#client = new Client({
       accessToken,
     });
-    this.#credentials = credentials;
+    this.#config = config;
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
     return {
-      Authorization: `Bearer ${this.#credentials.accessToken}`,
+      Authorization: `Bearer ${this.#config.accessToken}`,
     };
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {
-    if (
-      !this.#credentials.expiresAt ||
-      Date.parse(this.#credentials.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS
-    ) {
+    if (!this.#config.expiresAt || Date.parse(this.#config.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS) {
       const token = await this.#client.oauth.tokensApi.createToken(
         'refresh_token',
         undefined,
         undefined,
-        this.#credentials.clientId,
-        this.#credentials.clientSecret,
-        this.#credentials.refreshToken
+        this.#config.clientId,
+        this.#config.clientSecret,
+        this.#config.refreshToken
       );
 
       const newAccessToken = token.accessToken;
       const newExpiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
 
-      this.#credentials.accessToken = newAccessToken;
-      this.#credentials.expiresAt = newExpiresAt;
+      this.#config.accessToken = newAccessToken;
+      this.#config.expiresAt = newExpiresAt;
 
       this.#client.setAccessToken(newAccessToken);
       this.emit('token_refreshed', newAccessToken, newExpiresAt);
@@ -193,8 +247,16 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
+  private async getPropertiesToFetch(objectType: (typeof HUBSPOT_OBJECT_TYPES)[number]) {
+    const availableProperties = await this.getCommonModelSchema(objectType);
+    if (this.#config.syncAllFields) {
+      return availableProperties;
+    }
+    return intersection(availableProperties, propertiesToFetch[objectType]);
+  }
+
   public async listAccounts(updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelSchema('company');
+    const properties = await this.getPropertiesToFetch('company');
     const normalPageFetcher = await this.#getListNormalAccountsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listAccountsFull(properties, /* archived */ true, after);
@@ -285,7 +347,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   private async getAccount(remoteId: string): Promise<RemoteAccount> {
-    const properties = await this.getCommonModelSchema('company');
+    const properties = await this.getPropertiesToFetch('company');
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(remoteId, properties);
     return fromHubSpotCompanyToRemoteAccount(company);
@@ -327,7 +389,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelSchema('deal');
+    const properties = await this.getPropertiesToFetch('deal');
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
@@ -453,7 +515,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     if (!pipelineStageMapping) {
       pipelineStageMapping = await this.#getPipelineStageMapping();
     }
-    const properties = await this.getCommonModelSchema('deal');
+    const properties = await this.getPropertiesToFetch('deal');
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
       remoteId,
@@ -493,7 +555,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelSchema('contact');
+    const properties = await this.getPropertiesToFetch('contact');
     const normalPageFetcher = await this.#getListNormalContactsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listContactsFull(properties, /* archived */ true, after);
@@ -608,7 +670,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   private async getContact(remoteId: string): Promise<RemoteContact> {
-    const properties = await this.getCommonModelSchema('contact');
+    const properties = await this.getPropertiesToFetch('contact');
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
       remoteId,
@@ -747,6 +809,7 @@ export function newClient(connection: ConnectionUnsafe<'hubspot'>, integration: 
     expiresAt: connection.credentials.expiresAt,
     clientId: integration.config.oauth.credentials.oauthClientId,
     clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+    syncAllFields: integration.config.sync.syncAllFields,
   });
 }
 
