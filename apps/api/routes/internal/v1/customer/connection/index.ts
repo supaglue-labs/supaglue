@@ -68,7 +68,7 @@ export default function init(app: Router): void {
           expiresAt,
         },
         remoteId,
-        instanceUrl: `https:app.hubspot.com/contacts/${remoteId}`,
+        instanceUrl: `https://app.hubspot.com/contacts/${remoteId}`,
       });
       return res.status(200).send(snakecaseKeys(connection));
     }
