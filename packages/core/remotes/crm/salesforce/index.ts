@@ -23,7 +23,6 @@ import {
 } from '@supaglue/types/crm';
 
 import {
-  CommonModel,
   ConnectionUnsafe,
   CRMIntegration,
   SendPassthroughRequestRequest,
@@ -56,6 +55,113 @@ import {
 const FETCH_TIMEOUT = 60 * 1000;
 
 const COMPOUND_TYPES = ['location', 'address'];
+
+const propertiesToFetch: Record<CRMCommonModelType, string[]> = {
+  account: [
+    'Id',
+    'OwnerId',
+    'Name',
+    'Description',
+    'Industry',
+    'Website',
+    'NumberOfEmployees',
+    // We may not need all of these fields in order to map to common model
+    'BillingCity',
+    'BillingCountry',
+    'BillingPostalCode',
+    'BillingState',
+    'BillingStreet',
+    // We may not need all of these fields in order to map to common model
+    'ShippingCity',
+    'ShippingCountry',
+    'ShippingPostalCode',
+    'ShippingState',
+    'ShippingStreet',
+    'Phone',
+    'Fax',
+    'LastActivityDate',
+    'CreatedDate',
+    'SystemModstamp',
+    'IsDeleted',
+  ],
+  contact: [
+    'Id',
+    'OwnerId',
+    'AccountId',
+    'FirstName',
+    'LastName',
+    'Email',
+    'Phone',
+    'Fax',
+    'MobilePhone',
+    'LastActivityDate',
+    // We may not need all of these fields in order to map to common model
+    'MailingCity',
+    'MailingCountry',
+    'MailingPostalCode',
+    'MailingState',
+    'MailingStreet',
+    // We may not need all of these fields in order to map to common model
+    'OtherCity',
+    'OtherCountry',
+    'OtherPostalCode',
+    'OtherState',
+    'OtherStreet',
+    'IsDeleted',
+    'CreatedDate',
+    'SystemModstamp',
+  ],
+  opportunity: [
+    'Id',
+    'OwnerId',
+    'Name',
+    'Description',
+    'LastActivityDate',
+    'Amount',
+    'IsClosed',
+    'IsDeleted',
+    'IsWon',
+    'StageName',
+    'CloseDate',
+    'CreatedDate',
+    'SystemModstamp',
+    'AccountId',
+  ],
+  lead: [
+    'Id',
+    'OwnerId',
+    'Title',
+    'FirstName',
+    'LastName',
+    'ConvertedDate',
+    'CreatedDate',
+    'SystemModstamp',
+    'ConvertedContactId',
+    'ConvertedAccountId',
+    'Company',
+    'City',
+    'State',
+    'Street',
+    'Country',
+    'PostalCode',
+    'Phone',
+    'Email',
+    'IsDeleted',
+  ],
+  user: ['Id', 'Name', 'Email', 'IsActive', 'CreatedDate', 'SystemModstamp'],
+  event: [
+    'Id',
+    'StartDateTime',
+    'EndDateTime',
+    'OwnerId',
+    'Subject',
+    'CreatedDate',
+    'SystemModstamp',
+    'WhoId',
+    'AccountId',
+    'WhatId',
+  ],
+};
 
 // this is incomplete; it only includes the fields that we need to use
 type SalesforceBulk2QueryJob = {
@@ -361,21 +467,22 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async getCommonModelSchema(commonModelName: CommonModel): Promise<string[]> {
-    const response = await this.#fetch(`/services/data/v57.0/sobjects/${commonModelName}/describe`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const responseJson = await response.json();
-    return responseJson.fields
-      .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
-      .map((field: { name: string; type: string }) => field.name);
+  private async getCommonModelSchema(commonModelName: CRMCommonModelType): Promise<string[]> {
+    return propertiesToFetch[commonModelName];
+    // const response = await this.#fetch(`/services/data/v57.0/sobjects/${commonModelName}/describe`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    // });
+    // const responseJson = await response.json();
+    // return responseJson.fields
+    //   .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
+    //   .map((field: { name: string; type: string }) => field.name);
   }
 
   private async listCommonModelRecords(
-    commonModelName: CommonModel,
+    commonModelName: CRMCommonModelType,
     mapper: (record: Record<string, any>) => any,
     updatedAfter?: Date
   ): Promise<Readable> {
