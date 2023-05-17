@@ -59,61 +59,7 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
-const propertiesToFetch = {
-  company: [
-    'name',
-    'hubspot_owner_id',
-    'description',
-    'industry',
-    'website',
-    'numberofemployees',
-    'address',
-    'address2',
-    'city',
-    'state',
-    'country',
-    'zip',
-    'phone',
-    'notes_last_updated',
-    'lifecyclestage',
-    'createddate',
-    'hs_lastmodifieddate',
-  ],
-  contact: [
-    'address', // TODO: IP state/zip/country?
-    'address2',
-    'city',
-    'country',
-    'createdate',
-    'email',
-    'fax',
-    'firstname',
-    'hs_createdate', // TODO: Use this or createdate?
-    'hs_is_contact', // TODO: distinguish from "visitor"?
-    'hubspot_owner_id',
-    'lifecyclestage',
-    'lastmodifieddate', // hs_lastmodifieddate is missing
-    'lastname',
-    'mobilephone',
-    'phone',
-    'state',
-    'work_email',
-    'zip',
-  ],
-  deal: [
-    'dealname',
-    'description',
-    'dealstage',
-    'amount',
-    'hubspot_owner_id',
-    'notes_last_updated',
-    'closedate',
-    'pipeline',
-    'hs_is_closed_won',
-    'hs_is_closed',
-    'hs_lastmodifieddate',
-  ],
-};
+const HUBSPOT_OBJECT_TYPES = ['company', 'contact', 'deal'] as const;
 
 // TODO: We may need to fetch this from the hubspot schema
 const CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID = 1;
@@ -239,10 +185,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
+  private async getCommonModelSchema(objectType: (typeof HUBSPOT_OBJECT_TYPES)[number]) {
+    return await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await this.#client.crm.properties.coreApi.getAll(objectType);
+      return response.results.map(({ name }) => name);
+    });
+  }
+
   public async listAccounts(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListNormalAccountsFetcher(updatedAfter);
+    const properties = await this.getCommonModelSchema('company');
+    const normalPageFetcher = await this.#getListNormalAccountsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
-      const response = await this.#listAccountsFull(/* archived */ true, after);
+      const response = await this.#listAccountsFull(properties, /* archived */ true, after);
       return filterForArchivedAfter(response, updatedAfter);
     };
 
@@ -261,31 +216,32 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #getListNormalAccountsFetcher(
+    properties: string[],
     updatedAfter?: Date
   ): Promise<(after?: string) => Promise<HubspotPaginatedCompanies>> {
     if (updatedAfter) {
       // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
       // If we get back more than 10k results, we need to fall back to the full fetch.
-      const response = await this.#listAccountsIncremental(updatedAfter, 0);
+      const response = await this.#listAccountsIncremental(properties, updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
         return async (after?: string) => {
-          const response = await this.#listAccountsFull(/* archived */ false, after);
+          const response = await this.#listAccountsFull(properties, /* archived */ false, after);
           return filterForUpdatedAfter(response, updatedAfter);
         };
       }
-      return this.#listAccountsIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
+      return this.#listAccountsIncremental.bind(this, properties, updatedAfter, HUBSPOT_RECORD_LIMIT);
     }
 
-    return this.#listAccountsFull.bind(this, /* archived */ false);
+    return this.#listAccountsFull.bind(this, properties, /* archived */ false);
   }
 
-  async #listAccountsFull(archived: boolean, after?: string): Promise<HubspotPaginatedCompanies> {
+  async #listAccountsFull(properties: string[], archived: boolean, after?: string): Promise<HubspotPaginatedCompanies> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const companies = await this.#client.crm.companies.basicApi.getPage(
         HUBSPOT_RECORD_LIMIT,
         after,
-        propertiesToFetch.company,
+        properties,
         undefined,
         undefined,
         archived
@@ -295,6 +251,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #listAccountsIncremental(
+    properties: string[],
     updatedAfter: Date,
     limit: number,
     after?: string
@@ -319,7 +276,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             direction: 'ASCENDING',
           } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
         ],
-        properties: propertiesToFetch.company,
+        properties,
         limit,
         after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
       });
@@ -328,8 +285,9 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   private async getAccount(remoteId: string): Promise<RemoteAccount> {
+    const properties = await this.getCommonModelSchema('company');
     await this.maybeRefreshAccessToken();
-    const company = await this.#client.crm.companies.basicApi.getById(remoteId, propertiesToFetch.company);
+    const company = await this.#client.crm.companies.basicApi.getById(remoteId, properties);
     return fromHubSpotCompanyToRemoteAccount(company);
   }
 
@@ -369,10 +327,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
+    const properties = await this.getCommonModelSchema('deal');
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(updatedAfter);
+    const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
-      const response = await this.#listOpportunitiesFull(/* archived */ true, after);
+      const response = await this.#listOpportunitiesFull(properties, /* archived */ true, after);
       return filterForArchivedAfter(response, updatedAfter);
     };
 
@@ -393,31 +352,36 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #getListNormalOpportunitiesFetcher(
+    properties: string[],
     updatedAfter?: Date
   ): Promise<(after?: string) => Promise<HubspotPaginatedDeals>> {
     if (updatedAfter) {
       // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
       // If we get back more than 10k results, we need to fall back to the full fetch.
-      const response = await this.#listOpportunitiesIncremental(updatedAfter, 0);
+      const response = await this.#listOpportunitiesIncremental(properties, updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
         return async (after?: string) => {
-          const response = await this.#listOpportunitiesFull(/* archived */ false, after);
+          const response = await this.#listOpportunitiesFull(properties, /* archived */ false, after);
           return filterForUpdatedAfter(response, updatedAfter);
         };
       }
-      return this.#listOpportunitiesIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
+      return this.#listOpportunitiesIncremental.bind(this, properties, updatedAfter, HUBSPOT_RECORD_LIMIT);
     }
 
-    return this.#listOpportunitiesFull.bind(this, /* archived */ false);
+    return this.#listOpportunitiesFull.bind(this, properties, /* archived */ false);
   }
 
-  async #listOpportunitiesFull(archived: boolean, after?: string): Promise<HubspotPaginatedDeals> {
+  async #listOpportunitiesFull(
+    properties: string[],
+    archived: boolean,
+    after?: string
+  ): Promise<HubspotPaginatedDeals> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const deals = await this.#client.crm.deals.basicApi.getPage(
         HUBSPOT_RECORD_LIMIT,
         after,
-        propertiesToFetch.deal,
+        properties,
         /* propertiesWithHistory */ undefined,
         /* associations */ ['company'],
         archived
@@ -427,6 +391,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #listOpportunitiesIncremental(
+    properties: string[],
     updatedAfter: Date,
     limit: number,
     after?: string
@@ -451,7 +416,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             direction: 'ASCENDING',
           } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
         ],
-        properties: propertiesToFetch.deal,
+        properties,
         limit,
         after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
       });
@@ -488,10 +453,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     if (!pipelineStageMapping) {
       pipelineStageMapping = await this.#getPipelineStageMapping();
     }
+    const properties = await this.getCommonModelSchema('deal');
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
       remoteId,
-      propertiesToFetch.deal,
+      properties,
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
     );
@@ -527,9 +493,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = await this.#getListNormalContactsFetcher(updatedAfter);
+    const properties = await this.getCommonModelSchema('contact');
+    const normalPageFetcher = await this.#getListNormalContactsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
-      const response = await this.#listContactsFull(/* archived */ true, after);
+      const response = await this.#listContactsFull(properties, /* archived */ true, after);
       return filterForArchivedAfter(response, updatedAfter);
     };
 
@@ -548,31 +515,32 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #getListNormalContactsFetcher(
+    properties: string[],
     updatedAfter?: Date
   ): Promise<(after?: string) => Promise<HubspotPaginatedContacts>> {
     if (updatedAfter) {
       // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
       // If we get back more than 10k results, we need to fall back to the full fetch.
-      const response = await this.#listContactsIncremental(updatedAfter, 0);
+      const response = await this.#listContactsIncremental(properties, updatedAfter, 0);
       if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
         return async (after?: string) => {
-          const response = await this.#listContactsFull(/* archived */ false, after);
+          const response = await this.#listContactsFull(properties, /* archived */ false, after);
           return filterForUpdatedAfter(response, updatedAfter);
         };
       }
-      return this.#listContactsIncremental.bind(this, updatedAfter, HUBSPOT_RECORD_LIMIT);
+      return this.#listContactsIncremental.bind(this, properties, updatedAfter, HUBSPOT_RECORD_LIMIT);
     }
 
-    return this.#listContactsFull.bind(this, /* archived */ false);
+    return this.#listContactsFull.bind(this, properties, /* archived */ false);
   }
 
-  async #listContactsFull(archived: boolean, after?: string): Promise<HubspotPaginatedContacts> {
+  async #listContactsFull(properties: string[], archived: boolean, after?: string): Promise<HubspotPaginatedContacts> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const contacts = await this.#client.crm.contacts.basicApi.getPage(
         HUBSPOT_RECORD_LIMIT,
         after,
-        propertiesToFetch.contact,
+        properties,
         /* propertiesWithHistory */ undefined,
         /* associations */ ['company'],
         archived
@@ -582,6 +550,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   async #listContactsIncremental(
+    properties: string[],
     updatedAfter: Date,
     limit: number,
     after?: string
@@ -608,7 +577,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             direction: 'ASCENDING',
           } as unknown as string, // hubspot sdk has wrong types
         ],
-        properties: propertiesToFetch.contact,
+        properties,
         limit,
         after: after as unknown as number, // hubspot sdk has wrong types
       });
@@ -639,10 +608,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   private async getContact(remoteId: string): Promise<RemoteContact> {
+    const properties = await this.getCommonModelSchema('contact');
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
       remoteId,
-      propertiesToFetch.contact,
+      properties,
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
     );
