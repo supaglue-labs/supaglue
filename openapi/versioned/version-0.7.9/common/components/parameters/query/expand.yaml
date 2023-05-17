@@ -1,8 +1,0 @@
-name: expand
-in: query
-schema:
-  type: string
-  example: owner
-description: >-
-  Which relations should be returned in expanded form. Multiple
-  relation names should be comma separated without spaces

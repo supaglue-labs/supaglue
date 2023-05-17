@@ -75,15 +75,11 @@ const config = {
                 spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
                 route: version === LATEST_VERSION ? '/references/api/crm' : `/${version}/references/api/crm`,
               },
-              version >= '0.8.1'
-                ? {
-                    spec: `../openapi/versioned/version-${version}/engagement/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION
-                        ? '/references/api/engagement'
-                        : `/${version}/references/api/engagement`,
-                  }
-                : null,
+              {
+                spec: `../openapi/versioned/version-${version}/engagement/openapi.bundle.json`,
+                route:
+                  version === LATEST_VERSION ? '/references/api/engagement' : `/${version}/references/api/engagement`,
+              },
               {
                 spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
                 route: version === LATEST_VERSION ? '/references/api/mgmt' : `/${version}/references/api/mgmt`,
@@ -300,11 +296,13 @@ const config = {
     () => ({
       name: 'webpack-watch-external-files',
       configureWebpack(config) {
+        if (config.mode === 'production') {
+          return {};
+        }
         /** @type any - needed so ts doesn't complain */
         const WatchExternalFilesPlugin = require('webpack-watch-external-files-plugin');
         return {
           plugins: [
-            ...config.plugins,
             new WatchExternalFilesPlugin({
               files: ['../openapi/mgmt/openapi.bundle.json', '../openapi/crm/openapi.bundle.json'],
             }),

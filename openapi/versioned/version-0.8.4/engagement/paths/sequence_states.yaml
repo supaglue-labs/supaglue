@@ -1,12 +1,12 @@
 get:
-  operationId: getContacts
+  operationId: getSequenceStates
   tags:
-    - Contacts
+    - Sequence States
   security:
     - ApiKeyAuth: []
-  summary: List contacts
+  summary: List sequence states
   description: >-
-    Get a list of contacts
+    Get a list of sequence states
   parameters:
     - $ref: ../../common/components/parameters/query/include_deleted_data.yaml
     - $ref: ../../common/components/parameters/query/include_raw_data.yaml
@@ -18,7 +18,7 @@ get:
     - $ref: ../../common/components/parameters/query/page_size.yaml
   responses:
     '200':
-      description: Contacts
+      description: Sequence States
       content:
         application/json:
           schema:
@@ -29,36 +29,33 @@ get:
                   results:
                     type: array
                     items:
-                      $ref: ../components/schemas/objects/contact.yaml
+                      $ref: ../components/schemas/objects/sequence_state.yaml
           examples:
             Example:
               value:
                 next: eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==
                 previous: eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9
                 results:
-                  - id: 4dec71a1-e789-4006-84fe-1a797202dddb
-                    address:
-                      city: San Francisco
-                      country: USA
-                      street_1: 525 Brannan St
-                      street_2: ~
-                      postalCode: '94107'
-                      state: CA
-                    email_addresses:
-                      - email_address: hello@supaglue.com
-                        email_address_type: workline2
-                    first_name: George
+                  - id: 6bf506a8-0a5a-419a-bd24-32b4a66d5db5
                     remote_id: 1234
-                    last_name: Xing
-                    phone_numbers:
-                      - phone_number: '+14151234567'
-                        phone_number_type: mobile
+                    state: active
+                    mailbox_id: 8308b381-7e78-44d2-a820-74af1c71c6c2
+                    contact_id: f3185edb-39d8-4bff-a560-3dbc8bfd8056
+                    sequence_id: 05660383-6bac-463d-b7d6-b8ebc4cb6e3b
                     remote_created_at: '2023-02-27T00:00:00Z'
+                    remote_updated_at: '2023-02-27T00:00:00Z'
+                  - id: e86309e9-25f5-4898-904b-7b4ee87a3181
+                    remote_id: 1235
+                    mailbox_id: a379e517-1314-48d5-8ad9-2afb793be11e
+                    contact_id: 41a71062-48ce-462a-8e53-af77e5df2ac3
+                    sequence_id: 989146f3-611c-4a55-ae1b-ad83c769b197
+                    remote_created_at: '2023-02-27T00:00:00Z'
+                    remote_updated_at: '2023-02-27T00:00:00Z'
 post:
-  operationId: createContact
-  summary: Create contact
+  operationId: createSequenceState
+  summary: Create sequence state
   tags:
-    - Contacts
+    - Sequence States
   security:
     - ApiKeyAuth: []
   parameters: []
@@ -70,32 +67,21 @@ post:
           type: object
           properties:
             model:
-              $ref: ../components/schemas/create_update_contact.yaml
+              $ref: ../components/schemas/create_sequence_state.yaml
           required:
             - model
         example:
           model:
-            id: ed7ce0f0-8119-4b73-bf01-4e8e0296ef80
-            address:
-              city: San Francisco
-              country: USA
-              street_1: 525 Brannan St
-              street_2: ~
-              postalCode: '94107'
-              state: CA
-            email_addresses:
-              - email_address: hello@supaglue.com
-                email_address_type: workline2
-            first_name: George
-            remote_id: 1234
-            last_name: Xing
-            phone_numbers:
-              - phone_number: '+14151234567'
-                phone_number_type: mobile
+            id: 355843a5-c536-4e82-b497-05160bfb7d78
+            state: active
+            mailbox_id: a7e860b5-cb8b-400b-812d-921fa526140c
+            contact_id: 6bdcebc2-f886-4de3-88ed-0b9eb420f7b1
+            sequence_id: 45e07817-fd59-4ec8-a727-066d2db27c9b
             remote_created_at: '2023-02-27T00:00:00Z'
+            remote_updated_at: '2023-02-27T00:00:00Z'
   responses:
     '201':
-      description: Contact created
+      description: Sequence state created
       content:
         application/json:
           schema:
@@ -106,7 +92,7 @@ post:
               logs:
                 $ref: ../../common/components/schemas/logs.yaml
               model:
-                $ref: ../components/schemas/objects/contact.yaml
+                $ref: ../components/schemas/objects/sequence_state.yaml
               warnings:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
