@@ -27,8 +27,7 @@ POSTHOG_API_KEY=$(op read op://engineering/dl4y3dryfib2huqpultgp7wlcq/credential
 ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
 
 # read version from package.json
-# VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
-VERSION="ryan-test"
+VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
 
 depot build --project 2bljgst1rr \
   --platform linux/amd64,linux/arm64 \
