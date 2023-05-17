@@ -180,6 +180,7 @@ export default function init(app: Router): void {
         const hubspotClient = new HubspotClient({ accessToken: tokenWrapper.token['access_token'] as string });
         const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(accessToken);
         remoteId = hubId.toString();
+        instanceUrl = `https://app.hubspot.com/contacts/${remoteId}`;
       }
 
       if (providerName === 'pipedrive') {
