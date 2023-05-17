@@ -307,7 +307,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     };
 
     const startTime = Date.now();
-    const timeout = 5 * 60 * 1000; // TODO: make configurable
+    const timeout = 12 * 60 * 1000; // TODO: make configurable
     const interval = 10000; // TODO: make configurable
 
     while (startTime + timeout > Date.now()) {
