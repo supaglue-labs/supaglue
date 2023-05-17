@@ -1228,6 +1228,11 @@
                 "type": "integer",
                 "minimum": 60000,
                 "example": 60000
+              },
+              "sync_all_fields": {
+                "type": "boolean",
+                "default": false,
+                "example": false
               }
             },
             "required": [

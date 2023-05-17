@@ -211,6 +211,11 @@ export interface components {
       sync: {
         /** @example 60000 */
         period_ms: number;
+        /**
+         * @default false 
+         * @example false
+         */
+        sync_all_fields?: boolean;
       };
     };
     /** @enum {string} */
