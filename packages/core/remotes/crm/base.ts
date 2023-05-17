@@ -6,7 +6,7 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface CrmRemoteClient extends RemoteClient {
   category(): IntegrationCategory;
-  listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable>;
+  listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date, onPoll?: () => void): Promise<Readable>;
   createObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
@@ -26,7 +26,11 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     return 'crm';
   }
 
-  abstract listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable>;
+  abstract listObjects(
+    commonModelType: CRMCommonModelType,
+    updatedAfter?: Date,
+    onPoll?: () => void
+  ): Promise<Readable>;
   abstract createObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']

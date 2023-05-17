@@ -118,7 +118,7 @@ export function createImportRecords(
     let readable: Readable;
     // TODO: Have better type-safety
     if (client.category() === 'crm') {
-      readable = await (client as CrmRemoteClient).listObjects(commonModel as CRMCommonModelType, updatedAfter);
+      readable = await (client as CrmRemoteClient).listObjects(commonModel as CRMCommonModelType, updatedAfter, onPoll);
     } else {
       readable = await (client as EngagementRemoteClient).listObjects(
         commonModel as EngagementCommonModelType,
@@ -175,5 +175,9 @@ function toHeartbeatingReadable(readable: Readable): Readable {
 }
 
 function onUpsertBatchCompletion(offset: number, numRecords: number) {
+  Context.current().heartbeat();
+}
+
+function onPoll() {
   Context.current().heartbeat();
 }

@@ -233,21 +233,22 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
   public override async listObjects(
     commonModelType: CRMCommonModelType,
-    updatedAfter?: Date | undefined
+    updatedAfter?: Date | undefined,
+    onPoll?: () => void
   ): Promise<Readable> {
     switch (commonModelType) {
       case 'account':
-        return this.listAccounts(updatedAfter);
+        return this.listAccounts(updatedAfter, onPoll);
       case 'contact':
-        return this.listContacts(updatedAfter);
+        return this.listContacts(updatedAfter, onPoll);
       case 'lead':
-        return this.listLeads(updatedAfter);
+        return this.listLeads(updatedAfter, onPoll);
       case 'opportunity':
-        return this.listOpportunities(updatedAfter);
+        return this.listOpportunities(updatedAfter, onPoll);
       case 'user':
-        return this.listUsers(updatedAfter);
+        return this.listUsers(updatedAfter, onPoll);
       case 'event':
-        return this.listEvents(updatedAfter);
+        return this.listEvents(updatedAfter, onPoll);
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -404,7 +405,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await response.json();
   }
 
-  async #pollBulk2QueryJob(jobId: string): Promise<void> {
+  async #pollBulk2QueryJob(jobId: string, onPoll?: () => void): Promise<void> {
     const poll = async (): Promise<SalesforceBulk2QueryJob> => {
       const response = await this.#fetch(`/services/data/v57.0/jobs/query/${jobId}`, {
         method: 'GET',
@@ -413,11 +414,14 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     };
 
     const startTime = Date.now();
-    const timeout = 12 * 60 * 1000; // TODO: make configurable
+    const timeout = 2 * 60 * 60 * 1000; // TODO: make configurable
     const interval = 10000; // TODO: make configurable
 
     while (startTime + timeout > Date.now()) {
       const pollResponse = await poll();
+      if (onPoll) {
+        onPoll();
+      }
       const { state } = pollResponse;
       switch (state) {
         case 'Open':
@@ -452,11 +456,11 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #getBulk2QueryJobResults(soql: string): Promise<Readable> {
+  async #getBulk2QueryJobResults(soql: string, onPoll?: () => void): Promise<Readable> {
     const response = await this.#submitBulk2QueryJob(soql);
     const { id } = response;
 
-    await this.#pollBulk2QueryJob(id);
+    await this.#pollBulk2QueryJob(id, onPoll);
 
     return await paginator([
       {
@@ -483,7 +487,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   private async listCommonModelRecords(
     commonModelName: CRMCommonModelType,
     mapper: (record: Record<string, any>) => any,
-    updatedAfter?: Date
+    updatedAfter?: Date,
+    onPoll?: () => void
   ): Promise<Readable> {
     const availableProperties = await this.getCommonModelSchema(commonModelName);
     const properties = intersection(availableProperties, propertiesToFetch[commonModelName]);
@@ -495,7 +500,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
       : baseSoql;
     return pipeline(
-      await this.#getBulk2QueryJobResults(soql),
+      await this.#getBulk2QueryJobResults(soql, onPoll),
       new Transform({
         objectMode: true,
         transform: (chunk, encoding, callback) => {
@@ -511,8 +516,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     );
   }
 
-  public async listAccounts(updatedAfter?: Date): Promise<Readable> {
-    return this.listCommonModelRecords('account', fromSalesforceAccountToRemoteAccount, updatedAfter);
+  public async listAccounts(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
+    return this.listCommonModelRecords('account', fromSalesforceAccountToRemoteAccount, updatedAfter, onPoll);
   }
 
   public async getAccount(remoteId: string): Promise<RemoteAccount> {
@@ -537,8 +542,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getAccount(response.id);
   }
 
-  public async listContacts(updatedAfter?: Date): Promise<Readable> {
-    return this.listCommonModelRecords('contact', fromSalesforceContactToRemoteContact, updatedAfter);
+  public async listContacts(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
+    return this.listCommonModelRecords('contact', fromSalesforceContactToRemoteContact, updatedAfter, onPoll);
   }
 
   public async getContact(remoteId: string): Promise<RemoteContact> {
@@ -562,8 +567,13 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getContact(response.id);
   }
 
-  public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
-    return this.listCommonModelRecords('opportunity', fromSalesforceOpportunityToRemoteOpportunity, updatedAfter);
+  public async listOpportunities(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
+    return this.listCommonModelRecords(
+      'opportunity',
+      fromSalesforceOpportunityToRemoteOpportunity,
+      updatedAfter,
+      onPoll
+    );
   }
 
   public async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
@@ -587,8 +597,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getOpportunity(response.id);
   }
 
-  public async listLeads(updatedAfter?: Date): Promise<Readable> {
-    return this.listCommonModelRecords('lead', fromSalesforceLeadToRemoteLead, updatedAfter);
+  public async listLeads(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
+    return this.listCommonModelRecords('lead', fromSalesforceLeadToRemoteLead, updatedAfter, onPoll);
   }
 
   public async getLead(remoteId: string): Promise<RemoteLead> {
@@ -612,11 +622,11 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getLead(response.id);
   }
 
-  public async listUsers(updatedAfter?: Date): Promise<Readable> {
-    return this.listCommonModelRecords('user', fromSalesforceUserToRemoteUser, updatedAfter);
+  public async listUsers(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
+    return this.listCommonModelRecords('user', fromSalesforceUserToRemoteUser, updatedAfter, onPoll);
   }
 
-  public async listEvents(updatedAfter?: Date): Promise<Readable> {
+  public async listEvents(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
     return Readable.from([]);
     // const baseSoql = `
     //   SELECT ${propertiesToFetch.event.join(', ')}
