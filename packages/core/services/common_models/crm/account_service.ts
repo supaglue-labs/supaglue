@@ -125,6 +125,25 @@ export class AccountService extends CommonModelBaseService {
       remoteId: foundAccountModel.remoteId,
     });
 
+    // This can happen for hubspot if 2 records got merged. In this case, we should update both.
+    if (foundAccountModel.remoteId !== remoteAccount.remoteId) {
+      await this.prisma.crmAccount.updateMany({
+        where: {
+          remoteId: {
+            in: [foundAccountModel.remoteId, remoteAccount.remoteId],
+          },
+          connectionId: foundAccountModel.connectionId,
+        },
+        data: {
+          ...remoteAccount,
+          remoteId: undefined,
+          lastModifiedAt: getLastModifiedAt(remoteAccount),
+          ownerId: updateParams.ownerId,
+        },
+      });
+      return await this.getById(updateParams.id, connectionId, {});
+    }
+
     const accountModel = await this.prisma.crmAccount.update({
       data: {
         ...remoteAccount,
