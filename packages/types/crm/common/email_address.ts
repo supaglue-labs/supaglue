@@ -1,4 +1,4 @@
-export type EmailAddress = {
-  emailAddress: string;
-  emailAddressType: 'primary' | 'work';
-};
+import { EmailAddress } from '../../base';
+import { SnakecasedKeys } from '../../snakecased_keys';
+
+export type SnakedcasedKeysEmailAddress = SnakecasedKeys<EmailAddress>;
