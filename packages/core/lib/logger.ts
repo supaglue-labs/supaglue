@@ -33,6 +33,9 @@ if (sentryEnabled) {
       scope.setTag('applicationId', data.applicationId as string);
       scope.setTag('connectionId', data.connectionId as string);
       scope.setTag('customerId', data.customerId as string);
+      scope.setTag('providerName', data.providerName as string);
+      scope.setTag('externalCustomerId', data.externalCustomerId as string);
+
       scope.setUser({ id: data.orgId as string });
     },
   });

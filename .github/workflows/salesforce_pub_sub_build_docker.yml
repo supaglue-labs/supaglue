@@ -11,7 +11,7 @@ on:
       - packages/types/**
       - packages/utils/**
     branches:
-      - '**'
+      - main
   pull_request:
     paths:
       - apps/salesforce-pub-sub/**
