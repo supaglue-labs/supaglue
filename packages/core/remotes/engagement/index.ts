@@ -34,7 +34,7 @@ export function getEngagementRemoteClient<T extends EngagementProviderName>(
             if (Promise.resolve(res) === res) {
               // if it's a promise
               return (res as Promise<unknown>).catch((err) => {
-                logger.error(
+                logger.warn(
                   {
                     err,
                     client: target.constructor.name,
@@ -47,7 +47,7 @@ export function getEngagementRemoteClient<T extends EngagementProviderName>(
               });
             }
           } catch (err: unknown) {
-            logger.error(
+            logger.warn(
               {
                 err,
                 client: target.constructor.name,

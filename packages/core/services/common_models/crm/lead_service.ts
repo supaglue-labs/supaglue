@@ -145,6 +145,25 @@ export class LeadService extends CommonModelBaseService {
       remoteId: foundLeadModel.remoteId,
     });
 
+    // This can happen for hubspot if 2 records got merged. In this case, we should update both.
+    if (foundLeadModel.remoteId !== remoteLead.remoteId) {
+      await this.prisma.crmLead.updateMany({
+        where: {
+          remoteId: {
+            in: [foundLeadModel.remoteId, remoteLead.remoteId],
+          },
+          connectionId: foundLeadModel.connectionId,
+        },
+        data: {
+          ...remoteLead,
+          remoteId: undefined,
+          lastModifiedAt: getLastModifiedAt(remoteLead),
+          ownerId: updateParams.ownerId,
+        },
+      });
+      return await this.getById(updateParams.id, connectionId, {});
+    }
+
     const leadModel = await this.prisma.crmLead.update({
       data: {
         ...remoteLead,
