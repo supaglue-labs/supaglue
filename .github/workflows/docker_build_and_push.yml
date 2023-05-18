@@ -101,7 +101,7 @@ jobs:
     name: Deploy to staging
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push'
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2

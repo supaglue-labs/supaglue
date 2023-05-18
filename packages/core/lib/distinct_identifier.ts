@@ -29,4 +29,4 @@ if (fs.existsSync(configPath)) {
 }
 
 // The distinctIdentifier "session" lives from the time a developer runs docker compose to the time that they delete `session.json` from their home directory on the filesystem. Locally, it persists across docker compose up/down/restart and updates.
-export const distinctId = distinctIdentifier && `session:${distinctIdentifier}`;
+export const distinctId = process.env.IS_CLOUD ? undefined : distinctIdentifier && `session:${distinctIdentifier}`;

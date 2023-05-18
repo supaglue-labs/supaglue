@@ -1,3 +1,4 @@
+import { configureScope } from '@sentry/node';
 import { BadRequestError } from '@supaglue/core/errors';
 import { addLogContext } from '@supaglue/core/lib/logger';
 import { NextFunction, Request, Response } from 'express';
@@ -13,6 +14,7 @@ export async function internalApplicationMiddleware(req: Request, res: Response,
   }
 
   addLogContext('applicationId', applicationId);
+  configureScope((scope) => scope.setTag('applicationId', applicationId));
   req.supaglueApplication = await applicationService.getByIdAndOrgId(applicationId, req.orgId);
 
   next();
