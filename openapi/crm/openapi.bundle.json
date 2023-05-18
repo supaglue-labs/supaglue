@@ -262,7 +262,7 @@
                         "$ref": "#/components/schemas/filter"
                       },
                       "remote_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/filter/oneOf/0"
                       }
                     }
                   }
@@ -779,10 +779,10 @@
                     "description": "Filters are combined using a logical AND",
                     "properties": {
                       "email_address": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/filter/oneOf/0"
                       },
                       "remote_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/filter/oneOf/0"
                       }
                     }
                   }
@@ -1402,10 +1402,10 @@
                     "description": "Filters are combined using a logical AND",
                     "properties": {
                       "email_address": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/filter/oneOf/0"
                       },
                       "remote_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/filter/oneOf/0"
                       }
                     }
                   }
@@ -2035,10 +2035,10 @@
                     "description": "Filters are combined using a logical AND",
                     "properties": {
                       "account_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/filter/oneOf/0"
                       },
                       "remote_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/filter/oneOf/0"
                       }
                     }
                   }
@@ -3733,6 +3733,25 @@
                 "type": "string",
                 "enum": [
                   "equals"
+                ]
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "contains"
                 ]
               },
               "value": {

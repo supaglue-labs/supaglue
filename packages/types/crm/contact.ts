@@ -1,5 +1,5 @@
 import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '.';
-import { Filter } from '../filter';
+import { EqualsFilter } from '../filter';
 import type { Account } from './account';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from './common';
 
@@ -57,8 +57,8 @@ export type RemoteContactUpdateParams = RemoteContactCreateParams & {
 };
 
 export type ContactFilters = {
-  emailAddress?: Filter;
-  remoteId?: Filter;
+  emailAddress?: EqualsFilter;
+  remoteId?: EqualsFilter;
 };
 
 export type RemoteContactTypes = {

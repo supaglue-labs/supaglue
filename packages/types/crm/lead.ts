@@ -7,7 +7,7 @@ import type {
   CustomFields,
   User,
 } from '.';
-import { Filter } from '../filter';
+import { EqualsFilter } from '../filter';
 import { Address, EmailAddress, PhoneNumber } from './common';
 
 type BaseLead = BaseCrmModel & {
@@ -72,8 +72,8 @@ export type RemoteLeadUpdateParams = RemoteLeadCreateParams & {
 };
 
 export type LeadFilters = {
-  emailAddress?: Filter;
-  remoteId?: Filter;
+  emailAddress?: EqualsFilter;
+  remoteId?: EqualsFilter;
 };
 
 export type RemoteLeadTypes = {

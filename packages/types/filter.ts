@@ -3,10 +3,9 @@ export type EqualsFilter = {
   value: string;
 };
 
-// export type ContainsFilter = {
-//   type: 'contains';
-//   value: string;
-// };
+export type ContainsFilter = {
+  type: 'contains';
+  value: string;
+};
 
-export type Filter = EqualsFilter;
-// export type Filter = EqualsFilter | ContainsFilter;
+export type Filter = EqualsFilter | ContainsFilter;

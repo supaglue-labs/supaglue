@@ -1,5 +1,5 @@
 import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
-import { Filter } from '../filter';
+import { EqualsFilter } from '../filter';
 import type { Account } from './account';
 import { User } from './user';
 
@@ -62,8 +62,8 @@ export type RemoteOpportunityUpdateParams = RemoteOpportunityCreateParams & {
 };
 
 export type OpportunityFilters = {
-  accountId?: Filter;
-  remoteId?: Filter;
+  accountId?: EqualsFilter;
+  remoteId?: EqualsFilter;
 };
 
 export type RemoteOpportunityTypes = {

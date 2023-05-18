@@ -11,20 +11,20 @@ equalsFilter:
   required:
     - type
     - value
-# containsFilter:
-#   type: object
-#   additionalProperties: false
-#   properties:
-#     type:
-#       type: string
-#       enum:
-#         - contains
-#     value:
-#       type: string
-#   required:
-#     - type
-#     - value
+containsFilter:
+  type: object
+  additionalProperties: false
+  properties:
+    type:
+      type: string
+      enum:
+        - contains
+    value:
+      type: string
+  required:
+    - type
+    - value
 filter:
   oneOf:
     - $ref: '#/equalsFilter'
-    # - $ref: '#/containsFilter'
+    - $ref: '#/containsFilter'

@@ -23,7 +23,7 @@ post:
                 website:
                   $ref: ../components/schemas/filters.yaml#/filter
                 remote_id:
-                  $ref: ../components/schemas/filters.yaml#/filter
+                  $ref: ../components/schemas/filters.yaml#/equalsFilter
           required:
             - filters
   responses:

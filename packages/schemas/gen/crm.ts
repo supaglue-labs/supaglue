@@ -4,6 +4,11 @@
  */
 
 
+/** Type helpers */
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
+
 export interface paths {
   "/accounts": {
     /**
@@ -672,11 +677,15 @@ export interface components {
     custom_fields: {
       [key: string]: unknown | undefined;
     };
-    filter: {
+    filter: OneOf<[{
       /** @enum {string} */
       type: "equals";
       value: string;
-    };
+    }, {
+      /** @enum {string} */
+      type: "contains";
+      value: string;
+    }]>;
     /** @enum {string|null} */
     lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
   };
@@ -759,7 +768,7 @@ export interface operations {
           /** @description Filters are combined using a logical AND */
           filters: {
             website?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["filter"]["oneOf"]["0"];
           };
         };
       };
@@ -865,8 +874,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            email_address?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            email_address?: components["schemas"]["filter"]["oneOf"]["0"];
+            remote_id?: components["schemas"]["filter"]["oneOf"]["0"];
           };
         };
       };
@@ -1007,8 +1016,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            email_address?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            email_address?: components["schemas"]["filter"]["oneOf"]["0"];
+            remote_id?: components["schemas"]["filter"]["oneOf"]["0"];
           };
         };
       };
@@ -1155,8 +1164,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            account_id?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            account_id?: components["schemas"]["filter"]["oneOf"]["0"];
+            remote_id?: components["schemas"]["filter"]["oneOf"]["0"];
           };
         };
       };
