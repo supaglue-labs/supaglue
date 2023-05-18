@@ -1,17 +1,12 @@
-import { getOrgId } from '@/utils/org';
+import { getApplicationIdScopedHeaders } from '@/utils/headers';
 import { GetIntegrationsResponse } from '@supaglue/schemas/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
+import { API_HOST } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<GetIntegrationsResponse | null>) {
   const result = await fetch(`${API_HOST}/internal/v1/integrations`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-application-id': req.headers['x-application-id'] as string,
-      'x-sg-internal-token': SG_INTERNAL_TOKEN,
-      'x-org-id': getOrgId(req),
-    },
+    headers: getApplicationIdScopedHeaders(req),
   });
 
   if (!result.ok) {

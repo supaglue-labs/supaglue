@@ -1,5 +1,7 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
 import CDCWebhookTabPanel from '@/components/configuration/CDCWebhookTabPanel';
+import DestinationTabPanelContainer from '@/components/configuration/destination/DestinationTabPanelContainer';
+import IntegrationTabPanelContainer from '@/components/configuration/integration/IntegrationTabPanelContainer';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
@@ -9,7 +11,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useState } from 'react';
-import IntegrationTabPanelContainer from '../../../../components/configuration/IntegrationTabPanelContainer';
 
 export { getServerSideProps };
 
@@ -21,6 +22,10 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
   {
     label: 'Integrations',
     value: 'integrations',
+  },
+  {
+    label: 'Destinations',
+    value: 'destinations',
   },
   {
     label: 'Webhook',
@@ -97,6 +102,7 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
           tabs={
             <Tabs value={value} textColor="inherit" onChange={handleChange}>
               <Tab label="Integrations" />
+              <Tab label="Destinations" />
               <Tab label="Webhook" />
               <Tab label="API Key" />
               {svixDashboardUrl ? <Tab label="CDC Webhooks" /> : null}
@@ -110,9 +116,12 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
             <IntegrationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={1} className="w-full">
-            <WebhookTabPanel />
+            <DestinationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={2} className="w-full">
+            <WebhookTabPanel />
+          </TabPanel>
+          <TabPanel value={value} index={3} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
           {svixDashboardUrl ? (

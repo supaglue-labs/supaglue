@@ -46,6 +46,7 @@ export type PostgresConfig = {
   host: string;
   port: number;
   database: string;
+  schema: string;
   user: string;
   // TODO(670): encrypt
   password: string;
@@ -54,5 +55,7 @@ export type PostgresConfig = {
 export type Destination = S3Destination | PostgresDestination;
 export type DestinationCreateParams = S3DestinationCreateParams | PostgresDestinationCreateParams;
 export type DestinationUpdateParams = S3DestinationUpdateParams | PostgresDestinationUpdateParams;
+
+export type DestinationConfig = S3Config | PostgresConfig;
 
 export type DestinationType = 's3' | 'postgres';
