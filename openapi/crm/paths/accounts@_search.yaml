@@ -21,9 +21,9 @@ post:
               description: Filters are combined using a logical AND
               properties:
                 website:
-                  $ref: ../components/schemas/filters.yaml#/filter
+                  $ref: ../components/schemas/filter.yaml
                 remote_id:
-                  $ref: ../components/schemas/filters.yaml#/equalsFilter
+                  $ref: ../components/schemas/equals_filter.yaml
           required:
             - filters
   responses:

@@ -4,11 +4,6 @@
  */
 
 
-/** Type helpers */
-type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
-type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
-type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
-
 export interface paths {
   "/accounts": {
     /**
@@ -677,15 +672,17 @@ export interface components {
     custom_fields: {
       [key: string]: unknown | undefined;
     };
-    filter: OneOf<[{
+    equals_filter: {
       /** @enum {string} */
       type: "equals";
       value: string;
-    }, {
+    };
+    contains_filter: {
       /** @enum {string} */
       type: "contains";
       value: string;
-    }]>;
+    };
+    filter: components["schemas"]["equals_filter"] | components["schemas"]["contains_filter"];
     /** @enum {string|null} */
     lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
   };
@@ -768,7 +765,7 @@ export interface operations {
           /** @description Filters are combined using a logical AND */
           filters: {
             website?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"]["oneOf"]["0"];
+            remote_id?: components["schemas"]["equals_filter"];
           };
         };
       };
@@ -874,8 +871,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            email_address?: components["schemas"]["filter"]["oneOf"]["0"];
-            remote_id?: components["schemas"]["filter"]["oneOf"]["0"];
+            email_address?: components["schemas"]["equals_filter"];
+            remote_id?: components["schemas"]["equals_filter"];
           };
         };
       };
@@ -1016,8 +1013,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            email_address?: components["schemas"]["filter"]["oneOf"]["0"];
-            remote_id?: components["schemas"]["filter"]["oneOf"]["0"];
+            email_address?: components["schemas"]["equals_filter"];
+            remote_id?: components["schemas"]["equals_filter"];
           };
         };
       };
@@ -1164,8 +1161,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            account_id?: components["schemas"]["filter"]["oneOf"]["0"];
-            remote_id?: components["schemas"]["filter"]["oneOf"]["0"];
+            account_id?: components["schemas"]["equals_filter"];
+            remote_id?: components["schemas"]["equals_filter"];
           };
         };
       };
