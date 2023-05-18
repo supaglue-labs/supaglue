@@ -25,6 +25,7 @@ import {
   UserService as EngagementUserService,
 } from './services/common_models/engagement';
 import { SequenceStateService } from './services/common_models/engagement/sequence_state_service';
+import { DestinationService } from './services/destination_service';
 import { WebhookService } from './services/webhook_service';
 
 export type CoreDependencyContainer = {
@@ -40,6 +41,7 @@ export type CoreDependencyContainer = {
   remoteService: RemoteService;
   syncHistoryService: SyncHistoryService;
   webhookService: WebhookService;
+  destinationService: DestinationService;
 
   // crm
   crm: {
@@ -97,6 +99,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const customerService = new CustomerService(prisma);
   const remoteService = new RemoteService(connectionService, integrationService);
   const webhookService = new WebhookService({ prisma });
+  const destinationService = new DestinationService(prisma);
 
   // crm
   const accountService = new AccountService(pgPool, prisma, remoteService);
@@ -125,6 +128,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     integrationService,
     remoteService,
     webhookService,
+    destinationService,
     syncHistoryService,
     // crm
     crm: {

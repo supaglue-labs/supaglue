@@ -19,9 +19,22 @@ model Application {
   orgId       String        @map("org_id")
   Customer    Customer[]
   Integration Integration[]
+  Destination Destination?
 
   @@unique([orgId, name])
   @@map("applications")
+}
+
+model Destination {
+  id            String      @id @default(uuid())
+  type          String
+  applicationId String      @unique @map("application_id")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  config        Json
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
+
+  @@map("destinations")
 }
 
 model Customer {
