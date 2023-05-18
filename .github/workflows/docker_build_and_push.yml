@@ -22,6 +22,9 @@ on:
       DOCKERHUB_TOKEN:
         description: Docker Hub token
         required: true
+      STAGING_KUBECONFIG:
+        description: Kubeconfig for staging cluster
+        required: true
       build-args:
         description: arguments to pass to docker build
         required: false
@@ -35,6 +38,10 @@ jobs:
     permissions:
       contents: read
       id-token: write
+
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+      labels: ${{ steps.meta.outputs.labels }}
 
     steps:
       - name: Checkout repository
@@ -93,3 +100,25 @@ jobs:
           build-args: |
             ${{ inputs.build-args }}
             ${{ secrets.build-args }}
+
+  deploy:
+    name: Deploy to staging
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::146006058524:role/pulumi-role
+          role-session-name: GitHub_Deploy
+          aws-region: us-west-2
+
+      - name: Set kubeconfig
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.STAGING_KUBECONFIG }}
+
+      - name: Deploy
+        run: kubectl kubectl rollout restart deployment -n supaglue supaglue-${{ inputs.workspace }} && kubectl rollout status deployment -n supaglue supaglue-${{ inputs.workspace }}
