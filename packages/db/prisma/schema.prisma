@@ -19,7 +19,7 @@ model Application {
   orgId       String        @map("org_id")
   Customer    Customer[]
   Integration Integration[]
-  Destination Destination[]
+  Destination Destination?
 
   @@unique([orgId, name])
   @@map("applications")
