@@ -6,9 +6,6 @@ import {
   RemoteContact,
   RemoteContactCreateParams,
   RemoteContactUpdateParams,
-  RemoteEvent,
-  RemoteEventCreateParams,
-  RemoteEventUpdateParams,
   RemoteLead,
   RemoteLeadCreateParams,
   RemoteLeadUpdateParams,
@@ -35,53 +32,6 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
     remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
     rawData: record,
-  };
-};
-
-export const fromSalesforceEventToRemoteEvent = (record: Record<string, any>): RemoteEvent => {
-  // In SFDC, WhoId can refer to either a contact or a lead
-  const remoteContactId = (record.WhoId ?? '').startsWith(CONTACT_ID_PREFIX) ? record.WhoId : null;
-  const remoteLeadId = (record.WhoId ?? '').startsWith(LEAD_ID_PREFIX) ? record.WhoId : null;
-  return {
-    remoteId: record.Id,
-    subject: record.Subject ?? null,
-    // TODO: Type is not turned on by default in SFDC instances. We should have a way to turn it on.
-    type: record.Type ?? null,
-    // content is not supported in salesforce events
-    content: null,
-    startTime: record.StartDateTime ? new Date(record.StartDateTime) : null,
-    endTime: record.EndDateTime ? new Date(record.EndDateTime) : null,
-    remoteOwnerId: record.OwnerId ?? null,
-    remoteAccountId: record.AccountId,
-    remoteContactId,
-    remoteLeadId,
-    remoteOpportunityId: null,
-    // These fields are not supported by Salesforce
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: false,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    rawData: record,
-  };
-};
-
-export const toSalesforceEventCreateParams = (params: RemoteEventCreateParams) => {
-  return {
-    Subject: params.subject,
-    OwnerId: params.ownerId,
-    AccountId: params.accountId,
-    WhoId: params.contactId || params.leadId,
-    StartDateTime: params.startTime,
-    EndDateTime: params.endTime,
-    ...params.customFields,
-  };
-};
-
-export const toSalesforceEventUpdateParams = (params: RemoteEventUpdateParams) => {
-  return {
-    Id: params.remoteId,
-    ...toSalesforceEventCreateParams(params),
   };
 };
 

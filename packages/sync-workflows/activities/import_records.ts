@@ -4,7 +4,6 @@ import { CommonModelBaseService, ConnectionService, RemoteService } from '@supag
 import {
   AccountService,
   ContactService,
-  EventService,
   LeadService,
   OpportunityService,
   UserService,
@@ -47,7 +46,6 @@ export function createImportRecords(
     opportunityService: OpportunityService;
     leadService: LeadService;
     userService: UserService;
-    eventService: EventService;
   },
   engagement: {
     contactService: EngagementContactService;
@@ -68,8 +66,6 @@ export function createImportRecords(
             return crm.accountService;
           case 'contact':
             return crm.contactService;
-          case 'event':
-            return crm.eventService;
           case 'lead':
             return crm.leadService;
           case 'opportunity':

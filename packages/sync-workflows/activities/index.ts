@@ -2,7 +2,6 @@ import type { ConnectionService, IntegrationService, RemoteService, SyncHistoryS
 import {
   AccountService,
   ContactService,
-  EventService,
   LeadService,
   OpportunityService,
   UserService,
@@ -46,7 +45,6 @@ export const createActivities = ({
     opportunityService: OpportunityService;
     leadService: LeadService;
     userService: UserService;
-    eventService: EventService;
   };
   engagement: {
     contactService: EngagementContactService;

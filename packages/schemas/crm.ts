@@ -177,38 +177,6 @@ export type GetUserRequest = never;
 export type GetUserResponse =
   operations['getUser']['responses'][keyof operations['getUser']['responses']]['content']['application/json'];
 
-export type GetEventsPathParams = never;
-// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
-// export type GetEventsQueryParams = Required<operations['getEvents']>['parameters']['query'];
-export type GetEventsQueryParams = any;
-export type GetEventsRequest = never;
-export type GetEventsResponse =
-  operations['getEvents']['responses'][keyof operations['getEvents']['responses']]['content']['application/json'];
-
-export type CreateEventPathParams = never;
-// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
-// export type CreateEventQueryParams = Required<operations['createEvent']>['parameters']['query'];
-export type CreateEventQueryParams = any;
-export type CreateEventRequest = operations['createEvent']['requestBody']['content']['application/json'];
-export type CreateEventResponse =
-  operations['createEvent']['responses'][keyof operations['createEvent']['responses']]['content']['application/json'];
-
-export type GetEventPathParams = paths[`/events/{event_id}`]['parameters']['path'];
-// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
-// export type GetEventQueryParams = Required<operations['getEvent']>['parameters']['query'];
-export type GetEventQueryParams = any;
-export type GetEventRequest = never;
-export type GetEventResponse =
-  operations['getEvent']['responses'][keyof operations['getEvent']['responses']]['content']['application/json'];
-
-export type UpdateEventPathParams = paths[`/events/{event_id}`]['parameters']['path'];
-// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
-// export type UpdateEventQueryParams = Required<operations['getEvent']>['parameters']['query'];
-export type UpdateEventQueryParams = any;
-export type UpdateEventRequest = operations['updateEvent']['requestBody']['content']['application/json'];
-export type UpdateEventResponse =
-  operations['updateEvent']['responses'][keyof operations['updateEvent']['responses']]['content']['application/json'];
-
 export type SendPassthroughRequestPathParams = any;
 // TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
 // export type SendPassthroughRequestQueryParams = Required<operations['getUser']>['parameters']['query'];
