@@ -77,6 +77,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             oauthScopes: oauthScopes.split(','),
           },
           sync: {
+            ...integration?.config?.sync,
             periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
           },
         },
