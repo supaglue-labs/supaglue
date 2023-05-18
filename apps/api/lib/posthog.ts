@@ -12,14 +12,14 @@ function getProviderNameFromRequest(req: Request) {
 }
 
 function onResFinished(req: Request, res: Response, err?: any) {
-  if (!distinctId || res.locals.analyticsLogged) {
+  if (res.locals.analyticsLogged) {
     return;
   }
 
   const error = err ?? res.locals.error;
 
   posthogClient.capture({
-    distinctId,
+    distinctId: distinctId ?? req.orgId,
     event: 'API Call',
     properties: {
       method: req.method,

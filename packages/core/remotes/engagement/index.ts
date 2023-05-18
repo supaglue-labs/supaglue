@@ -36,7 +36,7 @@ export function getEngagementRemoteClient<T extends EngagementProviderName>(
               return (res as Promise<unknown>).catch((err) => {
                 logger.error(
                   {
-                    error: err,
+                    err,
                     client: target.constructor.name,
                     method: p,
                     args: argArray,
@@ -49,7 +49,7 @@ export function getEngagementRemoteClient<T extends EngagementProviderName>(
           } catch (err: unknown) {
             logger.error(
               {
-                error: err,
+                err,
                 client: target.constructor.name,
                 method: p,
                 args: argArray,

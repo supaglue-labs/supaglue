@@ -1,3 +1,4 @@
+import { configureScope } from '@sentry/node';
 import { UnauthorizedError } from '@supaglue/core/errors';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { addLogContext } from '@supaglue/core/lib/logger';
@@ -14,9 +15,14 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
   }
   addLogContext('externalCustomerId', externalCustomerId);
   addLogContext('providerName', providerName);
+  configureScope((scope) => {
+    scope.setTag('externalCustomerId', externalCustomerId);
+    scope.setTag('providerName', providerName);
+  });
 
   req.customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
   addLogContext('customerId', req.customerId);
+  configureScope((scope) => scope.setTag('customerId', req.customerId));
 
   req.customerConnection = await connectionService.getSafeByCustomerIdAndApplicationIdAndProviderName({
     customerId: req.customerId,
@@ -24,6 +30,7 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
     providerName,
   });
   addLogContext('connectionId', req.customerConnection?.id);
+  configureScope((scope) => scope.setTag('connectionId', req.customerConnection?.id));
 
   next();
 }
