@@ -15,7 +15,7 @@ import {
 } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
-import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
+import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import {
@@ -119,23 +119,25 @@ class OutreachClient extends AbstractEngagementRemoteClient {
 
   #getListRecordsFetcher(endpoint: string, updatedAfter?: Date): (link?: string) => Promise<OutreachPaginatedRecords> {
     return async (link?: string) => {
-      await this.maybeRefreshAccessToken();
-      if (link) {
-        const response = await axios.get<OutreachPaginatedRecords>(link, {
+      return await retryWhenAxiosRateLimited(async () => {
+        await this.maybeRefreshAccessToken();
+        if (link) {
+          const response = await axios.get<OutreachPaginatedRecords>(link, {
+            headers: this.#headers,
+          });
+          return response.data;
+        }
+        const response = await axios.get<OutreachPaginatedRecords>(endpoint, {
+          params: updatedAfter
+            ? {
+                ...DEFAULT_LIST_PARAMS,
+                ...getUpdatedAfterPathParam(updatedAfter),
+              }
+            : DEFAULT_LIST_PARAMS,
           headers: this.#headers,
         });
         return response.data;
-      }
-      const response = await axios.get<OutreachPaginatedRecords>(endpoint, {
-        params: updatedAfter
-          ? {
-              ...DEFAULT_LIST_PARAMS,
-              ...getUpdatedAfterPathParam(updatedAfter),
-            }
-          : DEFAULT_LIST_PARAMS,
-        headers: this.#headers,
       });
-      return response.data;
     };
   }
 
