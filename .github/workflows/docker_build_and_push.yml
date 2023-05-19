@@ -29,15 +29,15 @@ on:
         description: arguments to pass to docker build
         required: false
 
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
 jobs:
   build:
     name: Build and Push to Docker Hub
     timeout-minutes: 15
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      id-token: write
 
     steps:
       - name: Checkout repository
@@ -102,11 +102,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
-
-    permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read # This is required for actions/checkout
-      actions: read # required to prevent multiple push jobs from running at the same time
 
     steps:
       - name: Configure AWS credentials
