@@ -28,6 +28,7 @@ export class DestinationService {
   public async createDestination(params: DestinationCreateParams): Promise<Destination> {
     const model = await this.#prisma.destination.create({
       data: {
+        name: params.name,
         applicationId: params.applicationId,
         type: params.type,
         config: params.config,

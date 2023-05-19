@@ -27,6 +27,7 @@ model Application {
 
 model Destination {
   id            String        @id @default(uuid())
+  name          String
   type          String
   applicationId String        @unique @map("application_id")
   application   Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
@@ -35,6 +36,7 @@ model Destination {
   updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
   integrations  Integration[]
 
+  @@unique([applicationId, name])
   @@map("destinations")
 }
 
