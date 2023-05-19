@@ -71,6 +71,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     if (integration) {
       const newIntegration: Integration = {
         ...integration,
+        destinationId: destinationId ?? null,
         config: {
           ...integration?.config,
           providerAppId: '', // TODO: add input field for this

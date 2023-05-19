@@ -21,6 +21,28 @@ export type DeleteCustomerRequest = never;
 export type DeleteCustomerResponse =
   operations['deleteCustomer']['responses'][keyof operations['deleteCustomer']['responses']]['content']['application/json'];
 
+export type GetDestinationsPathParams = never;
+export type GetDestinationsQueryParams = never;
+export type GetDestinationsRequest = never;
+export type GetDestinationsResponse =
+  operations['getDestinations']['responses'][keyof operations['getDestinations']['responses']]['content']['application/json'];
+
+export type CreateDestinationPathParams = never;
+export type CreateDestinationRequest = operations['createDestination']['requestBody']['content']['application/json'];
+export type CreateDestinationResponse =
+  operations['createDestination']['responses'][keyof operations['createDestination']['responses']]['content']['application/json'];
+
+export type GetDestinationPathParams = paths[`/destinations/{destination_id}`]['parameters']['path'];
+export type GetDestinationRequest = never;
+export type GetDestinationResponse =
+  operations['getDestination']['responses'][keyof operations['getDestination']['responses']]['content']['application/json'];
+
+export type UpdateDestinationPathParams = paths[`/destinations/{destination_id}`]['parameters']['path'];
+export type UpdateDestinationRequest =
+  operations['updateDestination']['requestBody'][keyof operations['updateDestination']['requestBody']]['application/json'];
+export type UpdateDestinationResponse =
+  operations['updateDestination']['responses'][keyof operations['updateDestination']['responses']]['content']['application/json'];
+
 export type GetIntegrationsPathParams = never;
 export type GetIntegrationsQueryParams = never;
 export type GetIntegrationsRequest = never;
