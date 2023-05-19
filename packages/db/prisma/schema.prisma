@@ -26,13 +26,14 @@ model Application {
 }
 
 model Destination {
-  id            String      @id @default(uuid())
+  id            String        @id @default(uuid())
   type          String
-  applicationId String      @unique @map("application_id")
-  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String        @unique @map("application_id")
+  application   Application   @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   config        Json
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
+  integrations  Integration[]
 
   @@map("destinations")
 }
@@ -56,6 +57,8 @@ model Integration {
   id            String       @id @default(uuid())
   applicationId String       @map("application_id")
   application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  destinationId String?      @map("destination_id")
+  destination   Destination? @relation(fields: [destinationId], references: [id])
   authType      String       @map("auth_type") // [oauth2]
   category      String
   providerName  String       @map("provider_name") // [salesforce, hubspot]
