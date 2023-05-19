@@ -1,11 +1,11 @@
 {
   "name": "salesforce-pub-sub",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "dependencies": {
-    "@bufbuild/connect": "^0.8.6",
-    "@bufbuild/connect-node": "^0.8.6",
+    "@bufbuild/connect": "^0.8.7",
+    "@bufbuild/connect-node": "^0.8.7",
     "@bufbuild/protobuf": "^1.2.0",
     "@supaglue/core": "workspace:*",
     "avsc": "^5.7.7",

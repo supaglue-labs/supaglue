@@ -1,6 +1,6 @@
 {
   "name": "supaglue",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "packageManager": "yarn@3.4.1",
   "private": true,
   "workspaces": [
