@@ -54,7 +54,7 @@ export async function createOrUpdateWebhook(applicationId: string, data: Webhook
 
 export async function deleteWebhook(applicationId: string): Promise<void> {
   await fetch(`/api/internal/webhook/delete`, {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
