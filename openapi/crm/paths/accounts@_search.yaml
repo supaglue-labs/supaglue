@@ -92,4 +92,4 @@ post:
                     website: https://supaglue.com/
 parameters:
   - $ref: ../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
