@@ -102,6 +102,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
+
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
+      actions: read # required to prevent multiple push jobs from running at the same time
+
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
