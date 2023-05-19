@@ -117,5 +117,7 @@ jobs:
           method: kubeconfig
           kubeconfig: ${{ secrets.STAGING_KUBECONFIG }}
 
+      - uses: azure/setup-kubectl@v3
+
       - name: Deploy
         run: kubectl kubectl rollout restart deployment -n supaglue supaglue-${{ inputs.workspace }} && kubectl rollout status deployment -n supaglue supaglue-${{ inputs.workspace }}
