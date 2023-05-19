@@ -107,7 +107,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::146006058524:role/pulumi-role
+          role-to-assume: arn:aws:iam::146006058524:role/deployer-role
           role-session-name: GitHub_Deploy
           aws-region: us-west-2
 
