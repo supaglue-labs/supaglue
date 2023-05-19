@@ -22,7 +22,7 @@ import {
 } from '@supaglue/types/crm';
 import axios from 'axios';
 import { Readable } from 'stream';
-import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
+import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
@@ -143,22 +143,24 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   ): (next_start?: string) => Promise<PipedrivePaginatedRecords> {
     // Pipedrive does not support incremental fetch (i.e. filtering by datetime) so we will do full refresh every time
     return async (next_start?: string) => {
-      await this.maybeRefreshAccessToken();
-      if (next_start) {
+      return await retryWhenAxiosRateLimited(async () => {
+        await this.maybeRefreshAccessToken();
+        if (next_start) {
+          const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
+            params: {
+              ...DEFAULT_LIST_PARAMS,
+              start: parseInt(next_start),
+            },
+            headers: this.#headers,
+          });
+          return response.data;
+        }
         const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
-          params: {
-            ...DEFAULT_LIST_PARAMS,
-            start: parseInt(next_start),
-          },
+          params: DEFAULT_LIST_PARAMS,
           headers: this.#headers,
         });
-        return response.data;
-      }
-      const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
-        params: DEFAULT_LIST_PARAMS,
-        headers: this.#headers,
+        return filterForUpdatedAfter(response.data, updatedAfter);
       });
-      return filterForUpdatedAfter(response.data, updatedAfter);
     };
   }
 
