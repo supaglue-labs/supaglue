@@ -44,7 +44,9 @@ const { connectionService, integrationService, webhookService, applicationServic
       let replayId: Uint8Array | undefined;
       let replayPreset = ReplayPreset.LATEST;
       // make sure we have the latest accessToken
-      const { access_token: accessToken } = await conn.oauth2.refreshToken(refreshToken);
+      // we also get the instanceurl here since the one on the connection is sometimes incorrect.
+      // TODO we should fix this in the connection service
+      const { access_token: accessToken, instance_url: instanceUrl } = await conn.oauth2.refreshToken(refreshToken);
       // expiresAt is not returned from the refresh token response
       await connectionService.updateConnectionWithNewAccessToken(connectionId, accessToken, /* expiresAt */ null);
 
