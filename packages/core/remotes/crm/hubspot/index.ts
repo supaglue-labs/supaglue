@@ -27,9 +27,6 @@ import {
   RemoteContact,
   RemoteContactCreateParams,
   RemoteContactUpdateParams,
-  RemoteEvent,
-  RemoteEventCreateParams,
-  RemoteEventUpdateParams,
   RemoteLead,
   RemoteLeadCreateParams,
   RemoteLeadUpdateParams,
@@ -188,8 +185,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         return this.listOpportunities(updatedAfter);
       case 'user':
         return this.listUsers();
-      case 'event':
-        return this.listEvents();
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -210,8 +205,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         return this.createOpportunity(params);
       case 'user':
         throw new Error('Cannot create users in HubSpot');
-      case 'event':
-        throw new Error('Cannot create events in HubSpot');
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -232,8 +225,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         return this.updateOpportunity(params);
       case 'user':
         throw new Error('Cannot update users in HubSpot');
-      case 'event':
-        throw new Error('Cannot update events in HubSpot');
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -723,22 +714,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
     throw new Error('Not supported');
-  }
-
-  public async listEvents(): Promise<Readable> {
-    return Readable.from([]);
-  }
-
-  public async getEvent(remoteId: string): Promise<RemoteEvent> {
-    throw new Error('Not implemented');
-  }
-
-  public async createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent> {
-    throw new Error('Not implemented');
-  }
-
-  public async updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent> {
-    throw new Error('Not implemented');
   }
 
   public async listUsers(updatedAfter?: Date): Promise<Readable> {

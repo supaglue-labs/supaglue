@@ -83,27 +83,6 @@ export interface paths {
     post: operations["searchLeads"];
     
   };
-  "/events": {
-    /**
-     * List events 
-     * @description Get a list of events
-     */
-    get: operations["getEvents"];
-    /** Create event */
-    post: operations["createEvent"];
-    
-  };
-  "/events/{event_id}": {
-    /** Get event */
-    get: operations["getEvent"];
-    /** Update event */
-    patch: operations["updateEvent"];
-    parameters: {
-      path: {
-        event_id: string;
-      };
-    };
-  };
   "/opportunities": {
     /**
      * List opportunities 
@@ -281,81 +260,6 @@ export interface components {
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
       lifecycle_stage?: components["schemas"]["lifecycle_stage"];
-      custom_fields?: components["schemas"]["custom_fields"];
-    };
-    event: {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
-      /** @example 1234 */
-      remote_id: string;
-      /** @example Meeting */
-      type: string | null;
-      /** @example Meeting */
-      subject: string | null;
-      /**
-       * Format: date-time 
-       * @example 2022-02-27T00:00:00Z
-       */
-      start_time: Date | null;
-      /**
-       * Format: date-time 
-       * @example 2022-02-27T00:00:00Z
-       */
-      end_time: Date | null;
-      content: string | null;
-      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      owner_id: string | null;
-      owner?: components["schemas"]["user"];
-      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      account_id: string | null;
-      account?: components["schemas"]["account"];
-      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      contact_id: string | null;
-      contact?: components["schemas"]["contact"];
-      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      lead_id: string | null;
-      lead?: components["schemas"]["lead"];
-      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      opportunity_id: string | null;
-      opportunity?: components["schemas"]["opportunity"];
-      /**
-       * Format: date-time 
-       * @example 2022-02-27T00:00:00Z
-       */
-      remote_created_at: Date | null;
-      /**
-       * Format: date-time 
-       * @example 2022-02-27T00:00:00Z
-       */
-      remote_updated_at: Date | null;
-      /** @example false */
-      remote_was_deleted: boolean;
-      /**
-       * Format: date-time 
-       * @example 2022-02-27T00:00:00Z
-       */
-      last_modified_at: Date;
-    };
-    create_update_event: {
-      /** @example Meeting */
-      type?: string | null;
-      /** @example Meeting */
-      subject?: string | null;
-      /** @example 2022-02-27T00:00:00Z */
-      start_time?: string | null;
-      /** @example 2022-02-27T00:00:00Z */
-      end_time?: string | null;
-      content?: string | null;
-      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
-      owner_id?: string | null;
-      /** @example 1393711e-b7ba-46ef-b9cd-49134cf2c630 */
-      account_id?: string | null;
-      /** @example 34288f14-7d3e-4275-8b14-3df6d116b1af */
-      contact_id?: string | null;
-      /** @example c1b1c601-6707-4d3a-8c1a-ec0127358019 */
-      lead_id?: string | null;
-      /** @example 2506e5f3-1805-405a-a13c-baa0ac524274 */
-      opportunity_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     lead: {
@@ -1025,79 +929,6 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["pagination"] & {
             results?: (components["schemas"]["lead"])[];
-          };
-        };
-      };
-    };
-  };
-  getEvents: {
-    /**
-     * List events 
-     * @description Get a list of events
-     */
-    responses: {
-      /** @description Events */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["event"])[];
-          };
-        };
-      };
-    };
-  };
-  createEvent: {
-    /** Create event */
-    requestBody: {
-      content: {
-        "application/json": {
-          model: components["schemas"]["create_update_event"];
-        };
-      };
-    };
-    responses: {
-      /** @description Event created */
-      201: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["event"];
-            warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getEvent: {
-    /** Get event */
-    responses: {
-      /** @description Event */
-      200: {
-        content: {
-          "application/json": components["schemas"]["event"];
-        };
-      };
-    };
-  };
-  updateEvent: {
-    /** Update event */
-    requestBody: {
-      content: {
-        "application/json": {
-          model: components["schemas"]["create_update_event"];
-        };
-      };
-    };
-    responses: {
-      /** @description Event updated */
-      200: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["event"];
-            warnings?: components["schemas"]["warnings"];
           };
         };
       };

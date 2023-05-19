@@ -24,10 +24,6 @@ export const getRemoteId = async (prisma: PrismaClient, id: string, commonModel:
       record = await prisma.crmUser.findUnique({ where: { id } });
       break;
     }
-    case 'event': {
-      record = await prisma.crmEvent.findUnique({ where: { id } });
-      break;
-    }
   }
   if (!record) {
     throw new Error(`Record ${id} not found for common model ${commonModel}`);

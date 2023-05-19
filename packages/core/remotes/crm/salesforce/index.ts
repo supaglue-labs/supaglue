@@ -11,9 +11,6 @@ import {
   RemoteContact,
   RemoteContactCreateParams,
   RemoteContactUpdateParams,
-  RemoteEvent,
-  RemoteEventCreateParams,
-  RemoteEventUpdateParams,
   RemoteLead,
   RemoteLeadCreateParams,
   RemoteLeadUpdateParams,
@@ -149,18 +146,6 @@ const propertiesToFetch: Record<CRMCommonModelType, string[]> = {
     'IsDeleted',
   ],
   user: ['Id', 'Name', 'Email', 'IsActive', 'CreatedDate', 'SystemModstamp'],
-  event: [
-    'Id',
-    'StartDateTime',
-    'EndDateTime',
-    'OwnerId',
-    'Subject',
-    'CreatedDate',
-    'SystemModstamp',
-    'WhoId',
-    'AccountId',
-    'WhatId',
-  ],
 };
 
 // this is incomplete; it only includes the fields that we need to use
@@ -251,8 +236,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
         return this.listOpportunities(updatedAfter, onPoll);
       case 'user':
         return this.listUsers(updatedAfter, onPoll);
-      case 'event':
-        return this.listEvents(updatedAfter, onPoll);
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -273,8 +256,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
         return this.createOpportunity(params);
       case 'user':
         throw new Error('Cannot create users in Salesforce');
-      case 'event':
-        throw new Error('Cannot create events in Salesforce');
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -295,8 +276,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
         return this.updateOpportunity(params);
       case 'user':
         throw new Error('Cannot update users in Salesforce');
-      case 'event':
-        throw new Error('Cannot update events in Salesforce');
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -636,42 +615,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
   public async listUsers(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
     return this.listCommonModelRecords('user', fromSalesforceUserToRemoteUser, updatedAfter, onPoll);
-  }
-
-  public async listEvents(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return Readable.from([]);
-    // const baseSoql = `
-    //   SELECT ${propertiesToFetch.event.join(', ')}
-    //   FROM Event
-    // `;
-    // const soql = updatedAfter
-    //   ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-    //   : baseSoql;
-    // return this.listCommonModelRecords(soql, fromSalesforceEventToRemoteEvent);
-  }
-
-  public async getEvent(remoteId: string): Promise<RemoteEvent> {
-    throw new Error('Not implemented');
-    // const event = await this.#client.retrieve('Event', remoteId);
-    // return fromSalesforceEventToRemoteEvent(event);
-  }
-
-  public async createEvent(params: RemoteEventCreateParams): Promise<RemoteEvent> {
-    throw new Error('Not implemented');
-    // const response = await this.#client.create('Event', toSalesforceEventCreateParams(params));
-    // if (!response.success) {
-    //   throw new Error('Failed to create Salesforce event');
-    // }
-    // return await this.getEvent(response.id);
-  }
-
-  public async updateEvent(params: RemoteEventUpdateParams): Promise<RemoteEvent> {
-    throw new Error('Not implemented');
-    // const response = await this.#client.update('Event', toSalesforceEventUpdateParams(params));
-    // if (!response.success) {
-    //   throw new Error('Failed to update Salesforce event');
-    // }
-    // return await this.getEvent(response.id);
   }
 }
 

@@ -41,10 +41,6 @@ paths:
     $ref: paths/leads@{lead_id}.yaml
   '/leads/_search':
     $ref: paths/leads@_search.yaml
-  '/events':
-    $ref: paths/events.yaml
-  '/events/{event_id}':
-    $ref: paths/events@{event_id}.yaml
   '/opportunities':
     $ref: paths/opportunities.yaml
   '/opportunities/_search':
@@ -83,10 +79,6 @@ components:
       $ref: ./components/schemas/objects/contact.yaml
     create_update_contact:
       $ref: ./components/schemas/create_update_contact.yaml
-    event:
-      $ref: ./components/schemas/objects/event.yaml
-    create_update_event:
-      $ref: ./components/schemas/create_update_event.yaml
     lead:
       $ref: ./components/schemas/objects/lead.yaml
     create_update_lead:

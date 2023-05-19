@@ -3,7 +3,6 @@ import { ConnectionService, IntegrationService, RemoteService, SyncHistoryServic
 import {
   AccountService,
   ContactService as CrmContactService,
-  EventService,
   LeadService,
   OpportunityService,
   UserService as CrmUserService,
@@ -34,7 +33,6 @@ type DependencyContainer = {
     accountService: AccountService;
     leadService: LeadService;
     userService: CrmUserService;
-    eventService: EventService;
     opportunityService: OpportunityService;
   };
   engagement: {

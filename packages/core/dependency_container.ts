@@ -13,7 +13,6 @@ import { ApplicationService } from './services/application_service';
 import {
   AccountService,
   ContactService as CrmContactService,
-  EventService,
   LeadService,
   OpportunityService,
   UserService as CrmUserService,
@@ -50,7 +49,6 @@ export type CoreDependencyContainer = {
     leadService: LeadService;
     opportunityService: OpportunityService;
     userService: CrmUserService;
-    eventService: EventService;
   };
 
   // engagement
@@ -108,7 +106,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const contactService = new CrmContactService(pgPool, prisma, remoteService);
   const syncHistoryService = new SyncHistoryService(prisma, connectionService);
   const userService = new CrmUserService(pgPool, prisma, remoteService);
-  const eventService = new EventService(pgPool, prisma, remoteService);
 
   // engagement
   const engagementContactService = new EngagementContactService(pgPool, prisma, remoteService);
@@ -137,7 +134,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
       leadService,
       opportunityService,
       userService,
-      eventService,
     },
     // engagement
     engagement: {
