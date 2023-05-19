@@ -1,7 +1,7 @@
 import { CrmContact } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/base';
-import { Contact, RemoteContact, SnakecasedKeysContact } from '@supaglue/types/crm';
+import { Contact, RemoteContact } from '@supaglue/types/crm';
+import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAccount } from './account';
 import { toSnakecasedKeysAddress } from './address';
@@ -9,7 +9,7 @@ import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 import { toSnakecasedKeysUser } from './user';
 
-export const toSnakecasedKeysContact = (contact: Contact): SnakecasedKeysContact => {
+export const toSnakecasedKeysContact = (contact: Contact) => {
   return {
     id: contact.id,
     owner_id: contact.ownerId,

@@ -1,5 +1,4 @@
-import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
-import type {
+import {
   OpportunityStatus,
   RemoteAccount,
   RemoteAccountCreateParams,
@@ -11,7 +10,8 @@ import type {
   RemoteOpportunityCreateParams,
   RemoteUser,
 } from '@supaglue/types/crm';
-import type { PipedriveRecord, PipelineStageMapping } from '.';
+import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
+import { PipedriveRecord, PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 
 export const fromPipedrivePersonToRemoteContact = (person: PipedriveRecord): RemoteContact => {

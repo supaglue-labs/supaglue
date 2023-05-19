@@ -1,5 +1,5 @@
 import { CommonModel, IntegrationCategory } from '@supaglue/types/common';
-import { CRMCommonModelType, CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
+import { CRMCommonModelType, CRM_COMMON_MODELS } from '@supaglue/types/crm';
 import {
   CRMNumRecordsSyncedMap,
   EngagementNumRecordsSyncedMap,
@@ -9,7 +9,7 @@ import {
 } from '@supaglue/types/sync';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
-import { EngagementCommonModelType, ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
+import { EngagementCommonModelType, ENGAGEMENT_COMMON_MODELS } from '@supaglue/types/engagement';
 import { ImportRecordsResult } from '../activities/import_records';
 import type { createActivities } from '../activities/index';
 
@@ -365,4 +365,4 @@ const getErrorMessageStack = (err: Error): { message: string; stack: string } =>
 };
 
 const getCommonModels = (category: IntegrationCategory) =>
-  category === 'crm' ? CRM_COMMON_MODEL_TYPES : ENGAGEMENT_COMMON_MODEL_TYPES;
+  category === 'crm' ? CRM_COMMON_MODELS : ENGAGEMENT_COMMON_MODELS;

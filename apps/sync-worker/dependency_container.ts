@@ -14,7 +14,6 @@ import {
   SequenceStateService,
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
-import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { PrismaClient } from '@supaglue/db';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';
@@ -43,7 +42,6 @@ type DependencyContainer = {
     mailboxService: MailboxService;
     sequenceStateService: SequenceStateService;
   };
-  destinationService: DestinationService;
 };
 
 // global
@@ -77,7 +75,6 @@ function createDependencyContainer(): DependencyContainer {
 
   const syncService = new SyncService(prisma, temporalClient, connectionService, integrationService);
   const applicationService = new ApplicationService(prisma);
-  const destinationService = new DestinationService(prisma);
 
   return {
     prisma,
@@ -90,7 +87,6 @@ function createDependencyContainer(): DependencyContainer {
     integrationService,
     crm,
     engagement,
-    destinationService,
   };
 }
 
