@@ -7,7 +7,6 @@ import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import { keysOfSnakecasedAccountWithTenant } from '../keys/account';
 import { keysOfSnakecasedContactWithTenant } from '../keys/contact';
-import { keysOfSnakecasedEventWithTenant } from '../keys/event';
 import { keysOfSnakecasedLeadWithTenant } from '../keys/lead';
 import { keysOfSnakecasedOpportunityWithTenant } from '../keys/opportunity';
 import { keysOfSnakecasedUserWithTenant } from '../keys/user';
@@ -15,7 +14,6 @@ import { logger } from '../lib';
 import {
   toSnakecasedKeysAccount,
   toSnakecasedKeysContact,
-  toSnakecasedKeysEvent,
   toSnakecasedKeysLead,
   toSnakecasedKeysOpportunity,
   toSnakecasedKeysUser,
@@ -168,7 +166,6 @@ const tableNamesByCommonModelType: Record<CRMCommonModelType, string> = {
   lead: 'crm_leads',
   opportunity: 'crm_opportunities',
   user: 'crm_users',
-  event: 'crm_events',
 };
 
 const columnsByCommonModelType: Record<CRMCommonModelType, string[]> = {
@@ -177,7 +174,6 @@ const columnsByCommonModelType: Record<CRMCommonModelType, string[]> = {
   lead: keysOfSnakecasedLeadWithTenant,
   opportunity: keysOfSnakecasedOpportunityWithTenant,
   user: keysOfSnakecasedUserWithTenant,
-  event: keysOfSnakecasedEventWithTenant,
 };
 
 const snakecasedKeysMapperByCommonModelType: Record<CRMCommonModelType, (obj: any) => any> = {
@@ -186,7 +182,6 @@ const snakecasedKeysMapperByCommonModelType: Record<CRMCommonModelType, (obj: an
   lead: toSnakecasedKeysLead,
   opportunity: toSnakecasedKeysOpportunity,
   user: toSnakecasedKeysUser,
-  event: toSnakecasedKeysEvent,
 };
 
 const schemaSetupSqlByCommonModelType: Record<CRMCommonModelType, (schema: string) => string> = {
@@ -306,29 +301,5 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
     "last_modified_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "crm_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
-);`,
-  event: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."crm_events" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "type" TEXT,
-  "subject" TEXT,
-  "content" TEXT,
-  "start_time" TIMESTAMP(3),
-  "end_time" TIMESTAMP(3),
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "account_id" TEXT,
-  "contact_id" TEXT,
-  "lead_id" TEXT,
-  "opportunity_id" TEXT,
-  "owner_id" TEXT,
-
-  CONSTRAINT "crm_events_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
 };
