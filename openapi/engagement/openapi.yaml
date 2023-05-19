@@ -113,4 +113,4 @@ components:
     x-customer-id:
       $ref: ../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:
-      $ref: ../common/components/parameters/header/x-provider-name.yaml
+      $ref: ./components/parameters/header/x-provider-name.yaml

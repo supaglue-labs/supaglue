@@ -16,7 +16,7 @@ get:
             $ref: ../components/schemas/objects/sequence_state.yaml
 parameters:
   - $ref: ../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
   - name: sequence_state_id
     in: path
     required: true

@@ -52,4 +52,4 @@ get:
                     remote_updated_at: '2022-01-09T00:00:00Z'
 parameters:
   - $ref: ../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
