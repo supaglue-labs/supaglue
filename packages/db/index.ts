@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export * from '@prisma/client';
-export { schemaPrefix };
 export default prisma;
 
 const databaseUrl = new URL(process.env.SUPAGLUE_DATABASE_URL!);
