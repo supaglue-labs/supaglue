@@ -517,8 +517,8 @@ export interface components {
      *     "country": "US",
      *     "postal_code": "94107",
      *     "state": "CA",
-     *     "street_1": "525 Brannan",
-     *     "street_2": null
+     *     "street1": "525 Brannan",
+     *     "street2": null
      *   }
      * ]
      */
@@ -534,9 +534,9 @@ export interface components {
         /** @example CA */
         state: string | null;
         /** @example 525 Brannan */
-        street_1: string | null;
+        street1: string | null;
         /** @example null */
-        street_2: string | null;
+        street2?: string | null;
       })[];
     /**
      * @example [

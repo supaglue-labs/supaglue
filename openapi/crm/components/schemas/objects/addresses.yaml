@@ -26,11 +26,11 @@ items:
       type: string
       nullable: true
       example: CA
-    street_1:
+    street1:
       type: string
       nullable: true
       example: 525 Brannan
-    street_2:
+    street2:
       type: string
       nullable: true
       example: ~
@@ -40,13 +40,12 @@ items:
     - country
     - postal_code
     - state
-    - street_1
-    - street_2
+    - street1
 example:
   - address_type: shipping
     city: San Francisco
     country: US
     postal_code: '94107'
     state: CA
-    street_1: 525 Brannan
-    street_2: ~
+    street1: 525 Brannan
+    street2: ~

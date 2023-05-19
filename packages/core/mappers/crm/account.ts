@@ -1,13 +1,13 @@
 import { CrmAccount } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/base';
-import { Account, RemoteAccount, SnakecasedKeysAccount } from '@supaglue/types/crm';
+import { Account, RemoteAccount } from '@supaglue/types/crm';
+import { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 import { toSnakecasedKeysUser } from './user';
 
-export const toSnakecasedKeysAccount = (account: Account): SnakecasedKeysAccount => {
+export const toSnakecasedKeysAccount = (account: Account) => {
   return {
     id: account.id,
     owner_id: account.ownerId,

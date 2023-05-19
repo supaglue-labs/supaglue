@@ -1,10 +1,9 @@
-import { Address } from '@supaglue/types/base';
-import { SnakecasedKeysAddress } from '@supaglue/types/crm/common/address';
+import { Address } from '@supaglue/types/crm/common';
 
-export const toSnakecasedKeysAddress = (address: Address): SnakecasedKeysAddress => {
+export const toSnakecasedKeysAddress = (address: Address) => {
   return {
-    street_1: address.street1,
-    street_2: address.street2,
+    street1: address.street1,
+    street2: address.street2,
     city: address.city,
     state: address.state,
     postal_code: address.postalCode,

@@ -1,7 +1,6 @@
-import { EmailAddress } from '@supaglue/types/base';
-import { SnakedcasedKeysEmailAddress } from '@supaglue/types/crm/common/email_address';
+import { EmailAddress } from '@supaglue/types/crm/common';
 
-export const toSnakecasedKeysEmailAddress = (emailAddress: EmailAddress): SnakedcasedKeysEmailAddress => {
+export const toSnakecasedKeysEmailAddress = (emailAddress: EmailAddress) => {
   return {
     email_address: emailAddress.emailAddress,
     email_address_type: emailAddress.emailAddressType,

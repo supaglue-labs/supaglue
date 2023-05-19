@@ -27,7 +27,7 @@ import type {
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
-import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
+import { CRM_COMMON_MODELS } from '@supaglue/types/crm';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
 import {
   Client,
@@ -498,7 +498,7 @@ export class ConnectionAndSyncService {
         throw new Error('Unexpectedly could not find connection for sync');
       }
       const { id: connectionId, applicationId, customerId, category, providerName } = connection;
-      return CRM_COMMON_MODEL_TYPES.map((commonModel) => ({
+      return CRM_COMMON_MODELS.map((commonModel) => ({
         modelName: commonModel,
         lastSyncStart,
         nextSyncStart,
