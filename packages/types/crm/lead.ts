@@ -7,8 +7,16 @@ import type {
   CustomFields,
   User,
 } from '.';
+import { Address, EmailAddress, PhoneNumber } from '../base';
 import { EqualsFilter } from '../filter';
-import { Address, EmailAddress, PhoneNumber } from './common';
+import { SnakecasedKeys } from '../snakecased_keys';
+
+export type SnakecasedKeysLead = SnakecasedKeys<Lead>;
+
+export type SnakecasedKeysLeadWithTenant = SnakecasedKeysLead & {
+  provider_name: string;
+  customer_id: string;
+};
 
 type BaseLead = BaseCrmModel & {
   leadSource: string | null;
