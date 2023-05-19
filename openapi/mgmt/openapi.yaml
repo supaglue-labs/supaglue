@@ -29,6 +29,10 @@ paths:
     $ref: paths/customers.yaml
   '/customers/{customer_id}':
     $ref: paths/customers@{customer_id}.yaml
+  '/destinations':
+    $ref: paths/destinations.yaml
+  '/destinations/{destination_id}':
+    $ref: paths/destinations@{destination_id}.yaml
   '/integrations':
     $ref: paths/integrations.yaml
   '/integrations/{integration_id}':
@@ -55,6 +59,12 @@ components:
       $ref: ./components/schemas/objects/customer.yaml
     integration:
       $ref: ./components/schemas/objects/integration.yaml
+    destination:
+      $ref: ./components/schemas/objects/destination.yaml
+    s3_config:
+      $ref: ./components/schemas/objects/s3_config.yaml
+    postgres_config:
+      $ref: ./components/schemas/objects/postgres_config.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
     category:
@@ -71,6 +81,8 @@ components:
       $ref: ./components/schemas/create_update_customer.yaml
     create_update_integration:
       $ref: ./components/schemas/create_update_integration.yaml
+    create_update_destination:
+      $ref: ./components/schemas/create_update_destination.yaml
     webhook:
       $ref: ./components/schemas/objects/webhook.yaml
     sync_info:
