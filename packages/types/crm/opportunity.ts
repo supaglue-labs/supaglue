@@ -1,10 +1,18 @@
 import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
 import { EqualsFilter } from '../filter';
+import { SnakecasedKeys } from '../snakecased_keys';
 import type { Account } from './account';
 import { User } from './user';
 
 export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
+
+export type SnakecasedKeysOpportunity = SnakecasedKeys<Opportunity>;
+
+export type SnakecasedKeysOpportunityWithTenant = SnakecasedKeysOpportunity & {
+  provider_name: string;
+  customer_id: string;
+};
 
 type BaseOpportunity = BaseCrmModel & {
   name: string | null;
