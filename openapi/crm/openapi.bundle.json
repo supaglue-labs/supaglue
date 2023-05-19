@@ -262,7 +262,7 @@
                         "$ref": "#/components/schemas/filter"
                       },
                       "remote_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/equals_filter"
                       }
                     }
                   }
@@ -779,10 +779,10 @@
                     "description": "Filters are combined using a logical AND",
                     "properties": {
                       "email_address": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/equals_filter"
                       },
                       "remote_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/equals_filter"
                       }
                     }
                   }
@@ -1402,10 +1402,10 @@
                     "description": "Filters are combined using a logical AND",
                     "properties": {
                       "email_address": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/equals_filter"
                       },
                       "remote_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/equals_filter"
                       }
                     }
                   }
@@ -2035,10 +2035,10 @@
                     "description": "Filters are combined using a logical AND",
                     "properties": {
                       "account_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/equals_filter"
                       },
                       "remote_id": {
-                        "$ref": "#/components/schemas/filter"
+                        "$ref": "#/components/schemas/equals_filter"
                       }
                     }
                   }
@@ -3723,26 +3723,51 @@
         "additionalProperties": true,
         "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
       },
+      "equals_filter": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "equals"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      },
+      "contains_filter": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "contains"
+            ]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      },
       "filter": {
         "oneOf": [
           {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "equals"
-                ]
-              },
-              "value": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "type",
-              "value"
-            ]
+            "$ref": "#/components/schemas/equals_filter"
+          },
+          {
+            "$ref": "#/components/schemas/contains_filter"
           }
         ]
       },

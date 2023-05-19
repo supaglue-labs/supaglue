@@ -6,6 +6,7 @@ import { v5 as uuidv5 } from 'uuid';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
+import { getWhereClauseForFilter } from '../../../lib/filter';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
@@ -37,7 +38,7 @@ export class AccountService extends CommonModelBaseService {
       ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
-        website: filters.website?.type === 'equals' ? filters.website.value : undefined,
+        website: getWhereClauseForFilter(filters.website),
         remoteId: filters.remoteId?.type === 'equals' ? filters.remoteId.value : undefined,
       },
       orderBy: {
