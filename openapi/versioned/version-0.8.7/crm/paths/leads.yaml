@@ -1,0 +1,137 @@
+get:
+  operationId: getLeads
+  tags:
+    - Leads
+  security:
+    - ApiKeyAuth: []
+  summary: List leads
+  description: >-
+    Get a list of leads
+  parameters:
+    - $ref: ../../common/components/parameters/query/include_deleted_data.yaml
+    - $ref: ../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../common/components/parameters/query/created_after.yaml
+    - $ref: ../../common/components/parameters/query/created_before.yaml
+    - $ref: ../../common/components/parameters/query/modified_after.yaml
+    - $ref: ../../common/components/parameters/query/modified_before.yaml
+    - $ref: ../../common/components/parameters/query/cursor.yaml
+    - $ref: ../../common/components/parameters/query/page_size.yaml
+  responses:
+    '200':
+      description: Leads
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../common/components/schemas/pagination.yaml
+              - type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/objects/lead.yaml
+          examples:
+            Example:
+              value:
+                next: eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==
+                previous: eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9
+                results:
+                  - addresses:
+                      - address_type: shipping
+                        city: San Francisco
+                        country: US
+                        postal_code: '94107'
+                        state: CA
+                        street1: 525 Brannan
+                        street2: ~
+                    company: Supaglue
+                    converted_account_id: 5733a8b6-472d-45fa-8f10-e0b00727cced
+                    converted_contact_id: 7f65f33c-e645-40f8-b87c-6148899caa8e
+                    converted_date: '2023-02-27T00:00:00Z'
+                    email_addresses:
+                      - email_address: hello@supaglue.com
+                        email_address_type: work
+                    first_name: George
+                    id: 62bd34b8-54fa-4628-ae75-5fd6be59e4b7
+                    remote_id: 1234
+                    last_name: Xing
+                    lead_source: API Blogger
+                    owner_id: 04363f99-e807-4f69-b233-3d31b92f9bb2
+                    phone_numbers:
+                      - phone_number: '+14151234567'
+                        phone_number_type: mobile
+                    remote_created_at: '2023-02-27T00:00:00Z'
+                    remote_updated_at: '2023-02-27T00:00:00Z'
+                    title: Co-Founder
+                  - addresses:
+                      - address_type: shipping
+                        city: San Francisco
+                        country: US
+                        postal_code: '94107'
+                        state: CA
+                        street1: 525 Brannan
+                        street2: ~
+                    company: Supaglue
+                    converted_account_id: c300123d-91e0-4519-b514-ff6d308eab47
+                    converted_contact_id: 762b1d20-374b-41c9-a006-f6ed188a3e54
+                    converted_date: '2022-03-10T00:00:00Z'
+                    email_addresses:
+                      - email_address: hello@supaglue.com
+                        email_address_type: work
+                    first_name: George
+                    id: 29b3e861-b1da-4f74-885a-e151c5759acf
+                    remote_id: 1235
+                    last_name: Xing
+                    lead_source: API Blogger
+                    owner_id: 71e01ac4-5f21-46e2-b021-46555ade976d
+                    phone_numbers:
+                      - phone_number: '+14151234567'
+                        phone_number_type: mobile
+                    remote_created_at: '2023-02-27T00:00:00Z'
+                    remote_updated_at: '2023-02-27T00:00:00Z'
+                    title: Co-Founder
+post:
+  operationId: createLead
+  summary: Create lead
+  tags:
+    - Leads
+  security:
+    - ApiKeyAuth: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            model:
+              $ref: ../components/schemas/create_update_lead.yaml
+          required:
+            - model
+        example:
+          model:
+            company: Supaglue
+            first_name: George
+            last_name: Xing
+            lead_source: API Blogger
+            title: Co-Founder
+  responses:
+    '201':
+      description: Lead created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../common/components/schemas/logs.yaml
+              model:
+                $ref: ../components/schemas/objects/lead.yaml
+              warnings:
+                $ref: ../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
