@@ -1,0 +1,52 @@
+type: object
+properties:
+  id:
+    type: string
+    example: fa4a2c4f-64a0-4b59-81a9-64388945294d
+  remote_id:
+    type: string
+    example: 54312
+  type:
+    type: string
+    nullable: true
+    example: call
+  display_name:
+    type: string
+    nullable: true
+    example: "Call on day 3"
+  order:
+    type: integer
+    nullable: true
+    example: 3
+  sequence_id:
+    nullable: true
+    type: string
+    example: b854e510-1c40-4ef6-ade4-8eb35f49d331
+  remote_created_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_updated_at:
+    type: string
+    nullable: true
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
+  remote_was_deleted:
+    type: boolean
+    example: false
+  last_modified_at:
+    type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z' 
+required:
+  - id
+  - remote_id
+  - type
+  - display_name
+  - order
+  - sequence_id
+  - remote_created_at	
+  - remote_updated_at	
+  - remote_was_deleted	
+  - last_modified_at	

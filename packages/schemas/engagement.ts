@@ -113,3 +113,19 @@ export type CreateSequenceStateRequest =
   operations['createSequenceState']['requestBody']['content']['application/json'];
 export type CreateSequenceStateResponse =
   operations['createSequenceState']['responses'][keyof operations['createSequenceState']['responses']]['content']['application/json'];
+
+export type GetSequenceStepsPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type GetSequenceStepsQueryParams = Required<operations['getSequenceSteps']>['parameters']['query'];
+export type GetSequenceStepsQueryParams = any;
+export type GetSequenceStepsRequest = never;
+export type GetSequenceStepsResponse =
+  operations['getSequenceSteps']['responses'][keyof operations['getSequenceSteps']['responses']]['content']['application/json'];
+
+export type GetSequenceStepPathParams = paths[`/sequence_steps/{sequence_step_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type GetSequenceStepQueryParams = Required<operations['getSequenceStep']>['parameters']['query'];
+export type GetSequenceStepQueryParams = any;
+export type GetSequenceStepRequest = never;
+export type GetSequenceStepResponse =
+  operations['getSequenceStep']['responses'][keyof operations['getSequenceStep']['responses']]['content']['application/json'];

@@ -1174,6 +1174,160 @@
           }
         }
       ]
+    },
+    "/sequence_steps": {
+      "get": {
+        "operationId": "getSequenceSteps",
+        "tags": [
+          "Sequence Steps"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List sequence steps",
+        "description": "Get a list of sequence steps",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_deleted_data"
+          },
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/created_after"
+          },
+          {
+            "$ref": "#/components/parameters/created_before"
+          },
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/modified_before"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sequence Steps",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/sequence_step"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "id": "6bf506a8-0a5a-419a-bd24-32b4a66d5db5",
+                          "remote_id": 1234,
+                          "type": "call",
+                          "order": 1,
+                          "display_name": "Call after 2 days",
+                          "sequence_id": "05660383-6bac-463d-b7d6-b8ebc4cb6e3b",
+                          "remote_created_at": "2023-02-27T00:00:00Z",
+                          "remote_updated_at": "2023-02-27T00:00:00Z"
+                        },
+                        {
+                          "id": "e86309e9-25f5-4898-904b-7b4ee87a3181",
+                          "remote_id": 1234,
+                          "type": "call",
+                          "order": 2,
+                          "display_name": "Call after 3 days",
+                          "sequence_id": "05660383-6bac-463d-b7d6-b8ebc4cb6e3b",
+                          "remote_created_at": "2023-02-27T00:00:00Z",
+                          "remote_updated_at": "2023-02-27T00:00:00Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/sequence_steps/{sequence_step_id}": {
+      "get": {
+        "operationId": "getSequenceStep",
+        "summary": "Get sequence step",
+        "tags": [
+          "sequence steps"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sequence Step",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sequence_step"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "sequence_step_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "ffb62704-addd-454e-bb86-ed0799703dc6"
+          }
+        }
+      ]
     }
   },
   "tags": [
@@ -1188,6 +1342,10 @@
     {
       "name": "Sequence States",
       "description": "The `Sequence State` Common Model is used to represent the state of a contact in a sequence."
+    },
+    {
+      "name": "Sequence Steps",
+      "description": "The `Sequence Step` Common Model is used to represent a single step in a sequence."
     },
     {
       "name": "Users",
@@ -1373,6 +1531,72 @@
             "$ref": "#/components/schemas/custom_fields"
           }
         }
+      },
+      "sequence_step": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "fa4a2c4f-64a0-4b59-81a9-64388945294d"
+          },
+          "remote_id": {
+            "type": "string",
+            "example": 54312
+          },
+          "type": {
+            "type": "string",
+            "nullable": true,
+            "example": "call"
+          },
+          "display_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Call on day 3"
+          },
+          "order": {
+            "type": "integer",
+            "nullable": true,
+            "example": 3
+          },
+          "sequence_id": {
+            "nullable": true,
+            "type": "string",
+            "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
+          },
+          "remote_created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "remote_was_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "remote_id",
+          "type",
+          "display_name",
+          "order",
+          "sequence_id",
+          "remote_created_at",
+          "remote_updated_at",
+          "remote_was_deleted",
+          "last_modified_at"
+        ]
       },
       "sequence_state": {
         "type": "object",

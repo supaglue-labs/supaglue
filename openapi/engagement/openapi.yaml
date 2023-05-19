@@ -45,6 +45,10 @@ paths:
     $ref: paths/sequence_states.yaml
   '/sequence_states/{sequence_state_id}':
     $ref: paths/sequence_states@{sequence_state_id}.yaml
+  '/sequence_steps':
+    $ref: paths/sequence_steps.yaml
+  '/sequence_steps/{sequence_step_id}':
+    $ref: paths/sequence_steps@{sequence_step_id}.yaml
 tags:
   - name: Contacts
     description: The `Contact` Common Model is used to represent a "contact" in Engagements.
@@ -52,6 +56,8 @@ tags:
     description: The `Sequence` Common Model is used to represent a "sequence" in Engagements.
   - name: Sequence States
     description: The `Sequence State` Common Model is used to represent the state of a contact in a sequence.
+  - name: Sequence Steps
+    description: The `Sequence Step` Common Model is used to represent a single step in a sequence.
   - name: Users
     description: The `User` Common Model is used to represent a "user" in Engagements.
   - name: Mailboxes
@@ -67,6 +73,8 @@ components:
       $ref: ./components/schemas/objects/contact.yaml
     create_contact:
       $ref: ./components/schemas/create_update_contact.yaml
+    sequence_step:
+      $ref: ./components/schemas/objects/sequence_step.yaml
     sequence_state:
       $ref: ./components/schemas/objects/sequence_state.yaml
     create_sequence_state:

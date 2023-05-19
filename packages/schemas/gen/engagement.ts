@@ -104,6 +104,23 @@ export interface paths {
       };
     };
   };
+  "/sequence_steps": {
+    /**
+     * List sequence steps 
+     * @description Get a list of sequence steps
+     */
+    get: operations["getSequenceSteps"];
+    
+  };
+  "/sequence_steps/{sequence_step_id}": {
+    /** Get sequence step */
+    get: operations["getSequenceStep"];
+    parameters: {
+      path: {
+        sequence_step_id: string;
+      };
+    };
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -176,6 +193,37 @@ export interface components {
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
+    };
+    sequence_step: {
+      /** @example fa4a2c4f-64a0-4b59-81a9-64388945294d */
+      id: string;
+      /** @example 54312 */
+      remote_id: string;
+      /** @example call */
+      type: string | null;
+      /** @example Call on day 3 */
+      display_name: string | null;
+      /** @example 3 */
+      order: number | null;
+      /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
+      sequence_id: string | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_created_at: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      remote_updated_at: Date | null;
+      /** @example false */
+      remote_was_deleted: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at: Date;
     };
     sequence_state: {
       /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
@@ -777,6 +825,33 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["sequence_state"];
+        };
+      };
+    };
+  };
+  getSequenceSteps: {
+    /**
+     * List sequence steps 
+     * @description Get a list of sequence steps
+     */
+    responses: {
+      /** @description Sequence Steps */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["sequence_step"])[];
+          };
+        };
+      };
+    };
+  };
+  getSequenceStep: {
+    /** Get sequence step */
+    responses: {
+      /** @description Sequence Step */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sequence_step"];
         };
       };
     };
