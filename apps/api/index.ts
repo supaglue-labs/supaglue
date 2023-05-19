@@ -3,7 +3,7 @@ import { createTerminus } from '@godaddy/terminus';
 import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import { HTTPError } from '@supaglue/core/errors';
-import { expressScopeMiddleware, logger } from '@supaglue/core/lib';
+import { expressScopeMiddleware, httpLogger, logger } from '@supaglue/core/lib';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import cors from 'cors';
@@ -30,15 +30,18 @@ if (sentryEnabled) {
     ],
     release: version,
     includeLocalVariables: true,
-    initialScope: {
-      user: {
-        id: distinctId,
-      },
+    beforeSend(event) {
+      if (event.request?.headers) {
+        delete event.request.headers['X-Api-Key'];
+      }
+
+      return event;
     },
   });
 }
 
 const app = express();
+app.set('trust proxy', true);
 const metricsApp = express();
 const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_PORT) : 8080;
 
@@ -74,7 +77,7 @@ app.use(posthogMiddleware);
 app.use(
   pinoHttp({
     // TODO: Fix once version drift between pino and pino-http is resolved
-    logger: logger as any,
+    logger: httpLogger as any,
     customLogLevel: function (req, res, err) {
       if (res.statusCode >= 400 && res.statusCode < 500) {
         return 'warn';

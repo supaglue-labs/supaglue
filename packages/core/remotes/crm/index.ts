@@ -46,9 +46,9 @@ export function getCrmRemoteClient<T extends CRMProviderName>(
             if (Promise.resolve(res) === res) {
               // if it's a promise
               return (res as Promise<unknown>).catch((err) => {
-                logger.error(
+                logger.warn(
                   {
-                    error: err,
+                    err,
                     client: target.constructor.name,
                     method: p,
                     args: argArray,
@@ -59,9 +59,9 @@ export function getCrmRemoteClient<T extends CRMProviderName>(
               });
             }
           } catch (err: unknown) {
-            logger.error(
+            logger.warn(
               {
-                error: err,
+                err,
                 client: target.constructor.name,
                 method: p,
                 args: argArray,

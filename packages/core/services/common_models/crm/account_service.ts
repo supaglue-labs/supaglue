@@ -6,6 +6,7 @@ import { v5 as uuidv5 } from 'uuid';
 import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
+import { getWhereClauseForFilter } from '../../../lib/filter';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
@@ -37,7 +38,7 @@ export class AccountService extends CommonModelBaseService {
       ...getPaginationParams(page_size, cursor),
       where: {
         connectionId,
-        website: filters.website?.type === 'equals' ? filters.website.value : undefined,
+        website: getWhereClauseForFilter(filters.website),
         remoteId: filters.remoteId?.type === 'equals' ? filters.remoteId.value : undefined,
       },
       orderBy: {
@@ -124,6 +125,25 @@ export class AccountService extends CommonModelBaseService {
       ...remoteUpdateParams,
       remoteId: foundAccountModel.remoteId,
     });
+
+    // This can happen for hubspot if 2 records got merged. In this case, we should update both.
+    if (foundAccountModel.remoteId !== remoteAccount.remoteId) {
+      await this.prisma.crmAccount.updateMany({
+        where: {
+          remoteId: {
+            in: [foundAccountModel.remoteId, remoteAccount.remoteId],
+          },
+          connectionId: foundAccountModel.connectionId,
+        },
+        data: {
+          ...remoteAccount,
+          remoteId: undefined,
+          lastModifiedAt: getLastModifiedAt(remoteAccount),
+          ownerId: updateParams.ownerId,
+        },
+      });
+      return await this.getById(updateParams.id, connectionId, {});
+    }
 
     const accountModel = await this.prisma.crmAccount.update({
       data: {

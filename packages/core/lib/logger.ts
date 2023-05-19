@@ -14,10 +14,14 @@ const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.
 const LOG_LEVEL = process.env.SUPAGLUE_LOG_LEVEL as Level;
 
 const streams: (pino.DestinationStream | pino.StreamEntry)[] = [];
+// we want a set of streams that don't include sentry for HTTP request logging
+const httpLoggerStreams: (pino.DestinationStream | pino.StreamEntry)[] = [];
 if (process.env.SUPAGLUE_PRETTY_LOGS) {
   streams.push(pretty({ translateTime: true, colorize: true }));
+  httpLoggerStreams.push(pretty({ translateTime: true, colorize: true }));
 } else {
   streams.push({ stream: process.stdout });
+  httpLoggerStreams.push({ stream: process.stdout });
 }
 
 if (sentryEnabled) {
@@ -29,7 +33,10 @@ if (sentryEnabled) {
       scope.setTag('applicationId', data.applicationId as string);
       scope.setTag('connectionId', data.connectionId as string);
       scope.setTag('customerId', data.customerId as string);
-      scope.setTag('orgId', data.orgId as string);
+      scope.setTag('providerName', data.providerName as string);
+      scope.setTag('externalCustomerId', data.externalCustomerId as string);
+
+      scope.setUser({ id: data.orgId as string });
     },
   });
   streams.push(sentryStream);
@@ -43,5 +50,15 @@ export const logger: Logger = wrapLogger(
       base: undefined, // don't log hostname and pid
     },
     pino.multistream(streams)
+  )
+);
+
+export const httpLogger: Logger = wrapLogger(
+  pino(
+    {
+      level: LOG_LEVEL,
+      base: undefined, // don't log hostname and pid
+    },
+    pino.multistream(httpLoggerStreams)
   )
 );

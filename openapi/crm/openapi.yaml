@@ -105,8 +105,12 @@ components:
       $ref: ../common/components/schemas/pagination.yaml
     custom_fields:
       $ref: ./components/schemas/objects/custom_fields.yaml
+    equals_filter:
+      $ref: ./components/schemas/equals_filter.yaml
+    contains_filter:
+      $ref: ./components/schemas/contains_filter.yaml
     filter:
-      $ref: ./components/schemas/filters.yaml#/filter
+      $ref: ./components/schemas/filter.yaml
     lifecycle_stage:
       $ref: ./components/schemas/objects/lifecycle_stage.yaml
   parameters:

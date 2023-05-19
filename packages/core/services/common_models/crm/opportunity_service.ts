@@ -141,6 +141,25 @@ export class OpportunityService extends CommonModelBaseService {
       remoteId: foundOpportunityModel.remoteId,
     });
 
+    // This can happen for hubspot if 2 records got merged. In this case, we should update both.
+    if (foundOpportunityModel.remoteId !== remoteOpportunity.remoteId) {
+      await this.prisma.crmOpportunity.updateMany({
+        where: {
+          remoteId: {
+            in: [foundOpportunityModel.remoteId, remoteOpportunity.remoteId],
+          },
+          connectionId: foundOpportunityModel.connectionId,
+        },
+        data: {
+          ...remoteOpportunity,
+          remoteId: undefined,
+          lastModifiedAt: getLastModifiedAt(remoteOpportunity),
+          ownerId: updateParams.ownerId,
+        },
+      });
+      return await this.getById(updateParams.id, connectionId, {});
+    }
+
     const opportunityModel = await this.prisma.crmOpportunity.update({
       data: {
         ...remoteOpportunity,

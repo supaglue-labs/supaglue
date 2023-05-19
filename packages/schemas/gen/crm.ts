@@ -576,11 +576,17 @@ export interface components {
     custom_fields: {
       [key: string]: unknown | undefined;
     };
-    filter: {
+    equals_filter: {
       /** @enum {string} */
       type: "equals";
       value: string;
     };
+    contains_filter: {
+      /** @enum {string} */
+      type: "contains";
+      value: string;
+    };
+    filter: components["schemas"]["equals_filter"] | components["schemas"]["contains_filter"];
     /** @enum {string|null} */
     lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
   };
@@ -663,7 +669,7 @@ export interface operations {
           /** @description Filters are combined using a logical AND */
           filters: {
             website?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            remote_id?: components["schemas"]["equals_filter"];
           };
         };
       };
@@ -769,8 +775,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            email_address?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            email_address?: components["schemas"]["equals_filter"];
+            remote_id?: components["schemas"]["equals_filter"];
           };
         };
       };
@@ -911,8 +917,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            email_address?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            email_address?: components["schemas"]["equals_filter"];
+            remote_id?: components["schemas"]["equals_filter"];
           };
         };
       };
@@ -986,8 +992,8 @@ export interface operations {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            account_id?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            account_id?: components["schemas"]["equals_filter"];
+            remote_id?: components["schemas"]["equals_filter"];
           };
         };
       };
