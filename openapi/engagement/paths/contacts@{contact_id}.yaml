@@ -73,7 +73,7 @@ patch:
                 $ref: ../../common/components/schemas/warnings.yaml
 parameters:
   - $ref: ../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
   - name: contact_id
     in: path
     required: true

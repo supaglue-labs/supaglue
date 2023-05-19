@@ -2030,7 +2030,7 @@
         "in": "header",
         "schema": {
           "type": "string",
-          "example": "salesforce"
+          "example": "outreach"
         },
         "description": "The provider name",
         "required": true

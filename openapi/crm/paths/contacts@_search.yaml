@@ -90,4 +90,4 @@ post:
                     remote_created_at: '2023-02-27T00:00:00Z'
 parameters:
   - $ref: ../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../common/components/parameters/header/x-provider-name.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
