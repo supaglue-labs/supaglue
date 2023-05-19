@@ -12,6 +12,7 @@ import { decryptFromString, encryptAsString } from '../lib/crypt';
 export const fromIntegrationModel = async ({
   id,
   applicationId,
+  destinationId,
   category,
   providerName,
   config,
@@ -24,6 +25,7 @@ export const fromIntegrationModel = async ({
   return {
     id,
     applicationId,
+    destinationId,
     category: category as IntegrationCategory,
     authType: 'oauth2',
     providerName: providerName as ProviderName,
@@ -47,6 +49,7 @@ const fromIntegrationConfigModel = async (config: Prisma.JsonValue): Promise<Int
 
 export const toIntegrationModel = async ({
   applicationId,
+  destinationId,
   category,
   authType,
   providerName,
@@ -56,6 +59,7 @@ export const toIntegrationModel = async ({
     applicationId,
     category,
     authType,
+    destinationId,
     providerName,
     config: config
       ? {

@@ -7,6 +7,9 @@ allOf:
           - oauth2
       config:
         $ref: ./objects/integration_config.yaml
+      destination_id:
+        type: string
+        nullable: true
     required:
       - auth_type
       - config
