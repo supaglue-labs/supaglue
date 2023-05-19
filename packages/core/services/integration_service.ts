@@ -66,7 +66,6 @@ export class IntegrationService {
   }
 
   public async update(id: string, integration: IntegrationUpdateParams): Promise<Integration> {
-    // TODO: we should only need to do this if the integration's sync config has changed
     const [updatedIntegration] = await this.#prisma.$transaction([
       this.#prisma.integration.update({
         where: { id },
