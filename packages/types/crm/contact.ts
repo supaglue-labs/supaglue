@@ -1,7 +1,15 @@
 import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '.';
+import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '../base';
 import { EqualsFilter } from '../filter';
+import { SnakecasedKeys } from '../snakecased_keys';
 import type { Account } from './account';
-import { Address, EmailAddress, LifecycleStage, PhoneNumber } from './common';
+
+export type SnakecasedKeysContact = SnakecasedKeys<Contact>;
+
+export type SnakecasedKeysContactWithTenant = SnakecasedKeysContact & {
+  provider_name: string;
+  customer_id: string;
+};
 
 export type BaseContact = BaseCrmModel & {
   firstName: string | null;

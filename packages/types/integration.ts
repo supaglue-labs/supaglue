@@ -2,19 +2,20 @@ import { CRMProviderName } from './crm';
 import { EngagementProviderName } from './engagement';
 import { SyncConfig } from './sync_config';
 
-export type CRMIntegration = {
+type BaseIntegration = {
   id: string;
   applicationId: string;
   authType: 'oauth2';
+  destinationId: string | null;
+};
+
+export type CRMIntegration = BaseIntegration & {
   category: 'crm';
   providerName: CRMProviderName;
   config: IntegrationConfigDecrypted;
 };
 
-export type EngagementIntegration = {
-  id: string;
-  applicationId: string;
-  authType: 'oauth2';
+export type EngagementIntegration = BaseIntegration & {
   category: 'engagement';
   providerName: EngagementProviderName;
   config: IntegrationConfigDecrypted;

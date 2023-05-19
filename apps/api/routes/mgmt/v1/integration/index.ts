@@ -45,6 +45,7 @@ export default function init(app: Router): void {
       const integration = await integrationService.create({
         applicationId: req.supaglueApplication.id,
         ...camelcaseKeys(req.body),
+        destinationId: req.body.destination_id ?? null,
       });
       return res.status(201).send(snakecaseKeys(integration));
     }
@@ -73,6 +74,7 @@ export default function init(app: Router): void {
       const integration = await integrationService.update(req.params.integration_id, {
         applicationId: req.supaglueApplication.id,
         ...camelcaseKeys(req.body),
+        destinationId: req.body.destination_id ?? null,
       });
       return res.status(200).send(snakecaseKeys(integration));
     }

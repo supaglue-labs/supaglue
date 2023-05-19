@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createRemoteIntegration, updateRemoteIntegration } from '@/client';
+import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import { useDestinations } from '@/hooks/useDestinations';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
@@ -29,12 +31,14 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
   const [friendlyIntegrationId, setFriendlyIntegrationId] = useState<string>('--');
+  const { destinations, isLoading: isLoadingDestinations } = useDestinations();
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [destinationId, setDestinationId] = useState<string | undefined>();
   const router = useRouter();
 
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
@@ -59,6 +63,8 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     setSyncPeriodSecs(
       integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : ONE_HOUR_SECONDS
     );
+
+    setDestinationId(integration?.destinationId ?? undefined);
   }, [integration?.id]);
 
   const createOrUpdateIntegration = async (): Promise<Integration> => {
@@ -86,6 +92,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
     }
     return await createRemoteIntegration(activeApplicationId, {
       applicationId: activeApplicationId,
+      destinationId: destinationId ?? null,
       authType: 'oauth2',
       // TODO: Support creating engagement integrations
       category: category as 'crm',
@@ -165,6 +172,18 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setOauthScopes(event.target.value);
             }}
+          />
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Destination</Typography>
+          <Select
+            name="Destination"
+            disabled={isLoadingDestinations}
+            onChange={setDestinationId}
+            value={destinationId ?? ''}
+            options={destinations?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
+            unselect
           />
         </Stack>
 

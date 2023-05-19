@@ -25,6 +25,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const [host, setHost] = useState<string>('');
   const [port, setPort] = useState<number>(5432);
   const [database, setDatabase] = useState<string>('');
+  const [name, setName] = useState<string>('');
   const [schema, setSchema] = useState<string>('');
   const [user, setUser] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -36,6 +37,9 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
     }
     if (!host) {
       setHost(destination.config.host);
+    }
+    if (!name) {
+      setName(destination.name);
     }
     if (!port) {
       setPort(destination.config.port);
@@ -72,6 +76,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
     return await createDestination({
       applicationId: activeApplicationId,
       type: 'postgres',
+      name,
       config: {
         host,
         port,
@@ -97,6 +102,19 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
               <Typography variant="subtitle1">{postgresDestinationCardInfo.name}</Typography>
             </Stack>
           </Stack>
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Destination Name</Typography>
+          <TextField
+            value={name}
+            size="small"
+            label="Name (must be unique)"
+            variant="outlined"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setName(event.target.value);
+            }}
+          />
         </Stack>
 
         <Stack className="gap-2">

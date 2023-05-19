@@ -1,5 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { Destination, DestinationCreateParams, DestinationUpdateParams } from '@supaglue/types';
+import { DestinationWriter } from '../destination_writers/base';
+import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { fromDestinationModel } from '../mappers/destination';
 
 export class DestinationService {
@@ -26,6 +28,7 @@ export class DestinationService {
   public async createDestination(params: DestinationCreateParams): Promise<Destination> {
     const model = await this.#prisma.destination.create({
       data: {
+        name: params.name,
         applicationId: params.applicationId,
         type: params.type,
         config: params.config,
@@ -44,5 +47,22 @@ export class DestinationService {
       },
     });
     return fromDestinationModel(model);
+  }
+
+  public async getWriterByApplicationId(applicationId: string): Promise<DestinationWriter> {
+    const destinations = await this.getDestinationsByApplicationId(applicationId);
+    if (destinations.length === 0) {
+      throw new Error('No destinations found');
+    }
+    if (destinations.length > 1) {
+      throw new Error('Multiple destinations found');
+    }
+    const destination = destinations[0];
+    switch (destination.type) {
+      case 's3':
+        throw new Error('S3 destination not implemented');
+      case 'postgres':
+        return new PostgresDestinationWriter(destination);
+    }
   }
 }
