@@ -101,7 +101,7 @@ jobs:
     name: Deploy to staging
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Configure AWS credentials
@@ -118,6 +118,9 @@ jobs:
           kubeconfig: ${{ secrets.STAGING_KUBECONFIG }}
 
       - uses: azure/setup-kubectl@v3
+        id: kubectl
+        with:
+          version: v1.25.10
 
       - name: Deploy
-        run: kubectl kubectl rollout restart deployment -n supaglue supaglue-${{ inputs.workspace }} && kubectl rollout status deployment -n supaglue supaglue-${{ inputs.workspace }}
+        run: ${{ steps.kubectl.outputs.kubectl-path }} rollout restart deployment -n supaglue supaglue-${{ inputs.workspace }} && ${{ steps.kubectl.outputs.kubectl-path }} rollout status deployment -n supaglue supaglue-${{ inputs.workspace }}
