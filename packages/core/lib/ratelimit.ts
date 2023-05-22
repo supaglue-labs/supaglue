@@ -20,7 +20,7 @@ export const retryWhenAxiosRateLimited = async <Args extends any[], Return>(
         throw new TooManyRequestsError(`Encountered provider rate limiting.`);
       }
 
-      logger.error(e, `Encountered provider error.`);
+      logger.warn(e, `Encountered provider error.`);
       bail(e);
       return null as Return;
     }
