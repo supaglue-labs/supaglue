@@ -20,29 +20,13 @@ type FetchRequestWithRequiredFields = PartialMessage<FetchRequest> & {
 
 export class PubSubClient {
   private grpcClient: PromiseClient<typeof PubSub>;
-  private accessToken: string;
-  private instanceUrl: string;
-  private tenantId: string;
   private schemas: LRUCache<string, string> = new LRUCache({
     max: 10000,
     ttl: 1000 * 60 * 60 * 24, // 1 day
   });
 
-  constructor({
-    grpcClient,
-    accessToken,
-    instanceUrl,
-    tenantId,
-  }: {
-    grpcClient: PromiseClient<typeof PubSub>;
-    accessToken: string;
-    instanceUrl: string;
-    tenantId: string;
-  }) {
+  constructor({ grpcClient }: { grpcClient: PromiseClient<typeof PubSub> }) {
     this.grpcClient = grpcClient;
-    this.accessToken = accessToken;
-    this.instanceUrl = instanceUrl;
-    this.tenantId = tenantId;
   }
 
   async *subscribe(fetchRequest: FetchRequestWithRequiredFields) {
@@ -59,7 +43,6 @@ export class PubSubClient {
     }
 
     const stream = this.grpcClient.subscribe(requestStream(), {
-      headers: this.getHeaders(),
       timeoutMs: SUBSCRIBE_TIMEOUT_MS,
     });
 
@@ -75,9 +58,7 @@ export class PubSubClient {
           const schemaRequest = {
             schemaId,
           };
-          const schemaResponse = await this.grpcClient.getSchema(schemaRequest, {
-            headers: this.getHeaders(),
-          });
+          const schemaResponse = await this.grpcClient.getSchema(schemaRequest);
           const { schemaJson } = schemaResponse;
           this.schemas.set(schemaId, schemaJson);
           schema = schemaJson;
@@ -93,14 +74,6 @@ export class PubSubClient {
         requestQueue.push(fetchRequest);
       }
     }
-  }
-
-  private getHeaders() {
-    return {
-      accesstoken: this.accessToken,
-      instanceurl: this.instanceUrl,
-      tenantid: this.tenantId,
-    };
   }
 }
 
@@ -120,13 +93,17 @@ export async function createClient({
     // TODO: support the european instance
     baseUrl: 'https://api.pubsub.salesforce.com:443',
     keepSessionAlive: true,
+    interceptors: [
+      (next) => async (req) => {
+        req.header.append('accesstoken', accessToken);
+        req.header.append('instanceurl', instanceUrl);
+        req.header.append('tenantid', tenantId);
+
+        return await next(req);
+      },
+    ],
   });
   const internalClient = createPromiseClient(PubSub, transport);
 
-  return new PubSubClient({
-    grpcClient: internalClient,
-    accessToken,
-    instanceUrl,
-    tenantId,
-  });
+  return new PubSubClient({ grpcClient: internalClient });
 }

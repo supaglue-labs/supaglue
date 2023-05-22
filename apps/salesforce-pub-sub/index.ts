@@ -23,7 +23,7 @@ const { connectionService, integrationService, webhookService, applicationServic
     const application = await applicationService.getById(connection.applicationId);
 
     const {
-      credentials: { instanceUrl, refreshToken, loginUrl },
+      credentials: { instanceUrl, refreshToken, loginUrl = 'https://login.salesforce.com' },
       id: connectionId,
     } = connection;
 
@@ -39,6 +39,27 @@ const { connectionService, integrationService, webhookService, applicationServic
       refreshToken,
       maxRequest: 10,
     });
+
+    const salesforceEdition = (await conn.query('select OrganizationType from Organization')).records[0]
+      ?.OrganizationType;
+
+    if (
+      salesforceEdition !== 'Developer Edition' &&
+      salesforceEdition !== 'Unlimited Edition' &&
+      salesforceEdition !== 'Enterprise Edition' &&
+      salesforceEdition !== 'Base Edition' // AKA Performance Edition
+    ) {
+      logger.warn(
+        {
+          salesforceEdition,
+          connectionId,
+          applicationId: connection.applicationId,
+          integrationId: connection.integrationId,
+        },
+        'Unsupported Salesforce edition, skipping'
+      );
+      continue;
+    }
 
     const processStream = async (eventType: string) => {
       let replayId: Uint8Array | undefined;
@@ -57,12 +78,23 @@ const { connectionService, integrationService, webhookService, applicationServic
         replayPreset = ReplayPreset.CUSTOM;
       }
 
-      const { organization_id: tenantId } = await conn.identity();
+      const { organization_id } = await conn.identity();
+      const tenantId = `core/${new URL(instanceUrl).hostname.split('.')[0]}/${organization_id}`;
       const client = await createClient({
         accessToken,
         instanceUrl,
         tenantId,
       });
+
+      logger.info(
+        {
+          connectionId,
+          applicationId: connection.applicationId,
+          integrationId: connection.integrationId,
+          eventType,
+        },
+        'starting stream'
+      );
 
       const stream = client.subscribe({
         topicName: `/data/${eventType}`,
@@ -82,7 +114,16 @@ const { connectionService, integrationService, webhookService, applicationServic
           changeType === 'GAP_UNDELETE' ||
           changeType === 'GAP_OVERFLOW'
         ) {
-          logger.info({ changeType, connectionId, eventType }, 'skipping gap event');
+          logger.info(
+            {
+              changeType,
+              connectionId,
+              applicationId: connection.applicationId,
+              integrationId: connection.integrationId,
+              eventType,
+            },
+            'skipping gap event'
+          );
           continue;
         }
         for (const recordId of recordIds) {
@@ -98,7 +139,16 @@ const { connectionService, integrationService, webhookService, applicationServic
 
           await webhookService.sendMessage(eventName, webhookPayload, application, `${transactionKey}-${recordId}`);
 
-          logger.debug({ webhookPayload, connectionId, eventType }, 'sent webhook');
+          logger.debug(
+            {
+              webhookPayload,
+              connectionId,
+              applicationId: connection.applicationId,
+              integrationId: connection.integrationId,
+              eventType,
+            },
+            'sent webhook'
+          );
         }
 
         await webhookService.saveReplayId(connectionId, eventType, Buffer.from(latestReplayId).toString('base64'));
@@ -114,22 +164,36 @@ const { connectionService, integrationService, webhookService, applicationServic
           err.message.startsWith('[permission_denied]') ||
           err.message === 'expired access/refresh token'
         ) {
-          logger.error({ err, connectionId, eventType }, 'unrecoverable error starting stream, skipping');
+          logger.error(
+            {
+              err,
+              connectionId,
+              applicationId: connection.applicationId,
+              integrationId: connection.integrationId,
+              eventType,
+            },
+            'unrecoverable error starting stream, skipping'
+          );
           return;
         }
 
-        logger.warn({ err, connectionId, eventType }, 'error in stream, restarting');
+        logger.warn(
+          {
+            err,
+            connectionId,
+            applicationId: connection.applicationId,
+            integrationId: connection.integrationId,
+            eventType,
+          },
+          'error in stream, restarting'
+        );
         await processStream(eventType).catch(streamErrorHandler);
       };
 
       await processStream(eventType).catch(streamErrorHandler);
     };
 
-    await Promise.all(
-      EVENT_TYPES_TO_SUBSCRIBE_TO.flatMap(async (eventType) => {
-        await subscribe(eventType);
-      })
-    );
+    EVENT_TYPES_TO_SUBSCRIBE_TO.forEach(async (eventType) => subscribe(eventType));
   }
 })().catch((error) => {
   logger.error(error, 'error caught in main');
