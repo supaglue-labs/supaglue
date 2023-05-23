@@ -1,7 +1,7 @@
 import { CrmLead } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
 import { Lead, RemoteLead, SnakecasedKeysLead } from '@supaglue/types/crm';
+import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysCrmAccount, toSnakecasedKeysCrmContact, toSnakecasedKeysCrmUser } from '.';
 import { toSnakecasedKeysAddress } from './address';

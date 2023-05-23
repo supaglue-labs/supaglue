@@ -1,7 +1,7 @@
 import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '.';
-import { Address, LifecycleStage, PhoneNumber } from '../base';
 import { EqualsFilter, Filter } from '../filter';
 import { SnakecasedKeys } from '../snakecased_keys';
+import { Address, LifecycleStage, PhoneNumber } from './common';
 
 export type SnakecasedKeysCrmAccount = SnakecasedKeys<Account>;
 

@@ -1,9 +1,9 @@
 import { EngagementSequenceState } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { RemoteSequenceState, SequenceState } from '@supaglue/types/engagement';
+import { RemoteSequenceState, SequenceState, SnakecasedKeysSequenceState } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 
-export const toSnakecasedKeysSequenceState = (sequenceState: SequenceState) => {
+export const toSnakecasedKeysSequenceState = (sequenceState: SequenceState): SnakecasedKeysSequenceState => {
   return {
     id: sequenceState.id,
     contact_id: sequenceState.contactId,

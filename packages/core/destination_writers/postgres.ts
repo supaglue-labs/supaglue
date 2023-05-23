@@ -1,5 +1,6 @@
 import type { CommonModel, ConnectionSafeAny, IntegrationCategory, PostgresDestination } from '@supaglue/types';
-import type { CRMCommonModelType } from '@supaglue/types/crm';
+import { CRMCommonModelType } from '@supaglue/types/crm';
+import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { stringify } from 'csv-stringify';
 import { Pool, PoolClient } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
@@ -26,6 +27,8 @@ import {
   toSnakecasedKeysOpportunity,
 } from '../mappers/crm';
 import {
+  toSnakecasedKeysEngagementContact,
+  toSnakecasedKeysEngagementUser,
   toSnakecasedKeysMailbox,
   toSnakecasedKeysSequence,
   toSnakecasedKeysSequenceState,
@@ -62,7 +65,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
 
     const { schema } = this.#destination.config;
-    const table = tableNamesByCommonModelType[category][commonModelType];
+    const table = getTableName(category, commonModelType);
     const qualifiedTable = `${schema}.${table}`;
     const tempTable = `temp_${table}`;
 
@@ -71,7 +74,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(schemaSetupSqlByCommonModelType[category][commonModelType](schema));
+      await client.query(getSchemaSetupSql(category, commonModelType)(schema));
 
       // Create a temporary table
       // TODO: on the first run, we should be able to directly write into the table and skip the temp table
@@ -81,7 +84,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_remote_id_idx ON ${tempTable} (provider_name, customer_id, remote_id)`
       );
 
-      const columns = columnsByCommonModelType[category][commonModelType];
+      const columns = getColumns(category, commonModelType);
       const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'remote_id');
 
       // Output
@@ -100,7 +103,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         quoted: true,
       });
 
-      const mapper = snakecasedKeysMapperByCommonModelType[commonModelType];
+      const mapper = getSnakecasedKeysMapper(category, commonModelType);
 
       // Keep track of stuff
       let tempTableRowCount = 0;
@@ -172,7 +175,17 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const tableNamesByCommonModelType: Record<IntegrationCategory, Record<string, string>> = {
+const getTableName = (category: IntegrationCategory, commonModelType: CommonModel) => {
+  if (category === 'crm') {
+    return tableNamesByCommonModelType.crm[commonModelType as CRMCommonModelType];
+  }
+  return tableNamesByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
+};
+
+const tableNamesByCommonModelType: {
+  crm: Record<CRMCommonModelType, string>;
+  engagement: Record<EngagementCommonModelType, string>;
+} = {
   crm: {
     account: 'crm_accounts',
     contact: 'crm_contacts',
@@ -185,11 +198,21 @@ const tableNamesByCommonModelType: Record<IntegrationCategory, Record<string, st
     sequence_state: 'engagement_sequence_states',
     user: 'engagement_users',
     sequence: 'engagement_sequences',
-    mailboxe: 'engagement_mailboxes',
+    mailbox: 'engagement_mailboxes',
   },
 };
 
-const columnsByCommonModelType = {
+const getColumns = (category: IntegrationCategory, commonModelType: CommonModel) => {
+  if (category === 'crm') {
+    return columnsByCommonModelType.crm[commonModelType as CRMCommonModelType];
+  }
+  return columnsByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
+};
+
+const columnsByCommonModelType: {
+  crm: Record<CRMCommonModelType, string[]>;
+  engagement: Record<EngagementCommonModelType, string[]>;
+} = {
   crm: {
     account: keysOfSnakecasedCrmAccountWithTenant,
     contact: keysOfSnakecasedCrmContactWithTenant,
@@ -198,15 +221,25 @@ const columnsByCommonModelType = {
     user: keysOfSnakecasedCrmUserWithTenant,
   },
   engagement: {
-    contacts: keysOfSnakecasedEngagementContactWithTenant,
-    sequence_states: keysOfSnakecasedSequenceStateWithTenant,
-    users: keysOfSnakecasedEngagementUserWithTenant,
-    sequences: keysOfSnakecasedSequenceWithTenant,
-    mailboxes: keysOfSnakecasedMailboxWithTenant,
+    contact: keysOfSnakecasedEngagementContactWithTenant,
+    sequence_state: keysOfSnakecasedSequenceStateWithTenant,
+    user: keysOfSnakecasedEngagementUserWithTenant,
+    sequence: keysOfSnakecasedSequenceWithTenant,
+    mailbox: keysOfSnakecasedMailboxWithTenant,
   },
 };
 
-const snakecasedKeysMapperByCommonModelType = {
+const getSnakecasedKeysMapper = (category: IntegrationCategory, commonModelType: CommonModel) => {
+  if (category === 'crm') {
+    return snakecasedKeysMapperByCommonModelType.crm[commonModelType as CRMCommonModelType];
+  }
+  return snakecasedKeysMapperByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
+};
+
+const snakecasedKeysMapperByCommonModelType: {
+  crm: Record<CRMCommonModelType, (obj: any) => any>;
+  engagement: Record<EngagementCommonModelType, (obj: any) => any>;
+} = {
   crm: {
     account: toSnakecasedKeysCrmAccount,
     contact: toSnakecasedKeysCrmContact,
@@ -223,8 +256,19 @@ const snakecasedKeysMapperByCommonModelType = {
   },
 };
 
-const schemaSetupSqlByCommonModelType: Record<CRMCommonModelType, (schema: string) => string> = {
-  account: (schema: string) => `-- CreateTable
+const getSchemaSetupSql = (category: IntegrationCategory, commonModelType: CommonModel) => {
+  if (category === 'crm') {
+    return schemaSetupSqlByCommonModelType.crm[commonModelType as CRMCommonModelType];
+  }
+  return schemaSetupSqlByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
+};
+
+const schemaSetupSqlByCommonModelType: {
+  crm: Record<CRMCommonModelType, (schema: string) => string>;
+  engagement: Record<EngagementCommonModelType, (schema: string) => string>;
+} = {
+  crm: {
+    account: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
@@ -249,7 +293,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
 
   CONSTRAINT "crm_accounts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
-  contact: (schema: string) => `-- CreateTable
+    contact: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
@@ -273,7 +317,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
 
   CONSTRAINT "crm_contacts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
-  lead: (schema: string) => `-- CreateTable
+    lead: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
@@ -300,7 +344,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
 
   CONSTRAINT "crm_leads_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
-  opportunity: (schema: string) => `-- CreateTable
+    opportunity: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
@@ -324,7 +368,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
 
   CONSTRAINT "crm_opportunities_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
-  user: (schema: string) => `-- CreateTable
+    user: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
     "provider_name" TEXT NOT NULL,
     "customer_id" TEXT NOT NULL,
@@ -341,4 +385,117 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
 
     CONSTRAINT "crm_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
+  },
+  engagement: {
+    contact: (schema: string) => `-- CreateTable
+    CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
+      "provider_name" TEXT NOT NULL,
+      "customer_id" TEXT NOT NULL,
+      "remote_id" TEXT NOT NULL,
+      "first_name" TEXT,
+      "last_name" TEXT,
+      "job_title" TEXT,
+      "address" JSONB,
+      "email_addresses" JSONB NOT NULL,
+      "phone_numbers" JSONB NOT NULL,
+      "open_count" INTEGER NOT NULL,
+      "click_count" INTEGER NOT NULL,
+      "reply_count" INTEGER NOT NULL,
+      "bounced_count" INTEGER NOT NULL,
+      "remote_data" JSONB,
+      "remote_created_at" TIMESTAMP(3),
+      "remote_updated_at" TIMESTAMP(3),
+      "remote_was_deleted" BOOLEAN NOT NULL,
+      "remote_deleted_at" TIMESTAMP(3),
+      "detected_or_remote_deleted_at" TIMESTAMP(3),
+      "last_modified_at" TIMESTAMP(3) NOT NULL,
+      "owner_id" TEXT,
+    
+      CONSTRAINT "engagement_contacts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+    );`,
+    mailbox: (schema: string) => `-- CreateTable
+    CREATE TABLE IF NOT EXISTS "engagement_mailboxes" (
+      "remote_id" TEXT NOT NULL,
+      "customer_id" TEXT NOT NULL,
+      "email" TEXT,
+      "remote_data" JSONB,
+      "remote_created_at" TIMESTAMP(3),
+      "remote_updated_at" TIMESTAMP(3),
+      "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+      "remote_deleted_at" TIMESTAMP(3),
+      "detected_or_remote_deleted_at" TIMESTAMP(3),
+      "last_modified_at" TIMESTAMP(3) NOT NULL,
+      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updated_at" TIMESTAMP(3) NOT NULL,
+      "user_id" TEXT,
+  
+      CONSTRAINT "engagement_mailboxes_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+    );`,
+    sequence: (schema: string) => `-- CreateTable
+    CREATE TABLE IF NOT EXISTS "engagement_sequences" (
+      "remote_id" TEXT NOT NULL,
+      "customer_id" TEXT NOT NULL,
+      "is_enabled" BOOLEAN NOT NULL,
+      "name" TEXT,
+      "tags" JSONB,
+      "num_steps" INTEGER NOT NULL,
+      "schedule_count" INTEGER NOT NULL,
+      "open_count" INTEGER NOT NULL,
+      "opt_out_count" INTEGER NOT NULL,
+      "reply_count" INTEGER NOT NULL,
+      "click_count" INTEGER NOT NULL,
+      "remote_data" JSONB,
+      "remote_created_at" TIMESTAMP(3),
+      "remote_updated_at" TIMESTAMP(3),
+      "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+      "remote_deleted_at" TIMESTAMP(3),
+      "detected_or_remote_deleted_at" TIMESTAMP(3),
+      "last_modified_at" TIMESTAMP(3) NOT NULL,
+      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updated_at" TIMESTAMP(3) NOT NULL,
+      "owner_id" TEXT,
+  
+      CONSTRAINT "engagement_sequences_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+    );`,
+    sequence_state: (schema: string) => `-- CreateTable
+    CREATE TABLE IF NOT EXISTS "engagement_sequence_states" (
+      "remote_id" TEXT NOT NULL,
+      "customer_id" TEXT NOT NULL,
+      "state" TEXT,
+      "remote_data" JSONB,
+      "remote_created_at" TIMESTAMP(3),
+      "remote_updated_at" TIMESTAMP(3),
+      "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+      "remote_deleted_at" TIMESTAMP(3),
+      "detected_or_remote_deleted_at" TIMESTAMP(3),
+      "last_modified_at" TIMESTAMP(3) NOT NULL,
+      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updated_at" TIMESTAMP(3) NOT NULL,
+      "mailbox_id" TEXT,
+      "sequence_id" TEXT,
+      "contact_id" TEXT,
+  
+      CONSTRAINT "engagement_sequence_states_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+    );`,
+    user: (schema: string) => `-- CreateTable
+    CREATE TABLE IF NOT EXISTS "engagement_users" (
+      "remote_id" TEXT NOT NULL,
+      "customer_id" TEXT NOT NULL,
+      "first_name" TEXT,
+      "last_name" TEXT,
+      "email" TEXT,
+      "is_active" BOOLEAN,
+      "raw_data" JSONB,
+      "remote_created_at" TIMESTAMP(3),
+      "remote_updated_at" TIMESTAMP(3),
+      "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+      "remote_deleted_at" TIMESTAMP(3),
+      "detected_or_remote_deleted_at" TIMESTAMP(3),
+      "last_modified_at" TIMESTAMP(3) NOT NULL,
+      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updated_at" TIMESTAMP(3) NOT NULL,
+
+      CONSTRAINT "engagement_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+    );`,
+  },
 };
