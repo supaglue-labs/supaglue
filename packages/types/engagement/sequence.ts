@@ -1,4 +1,12 @@
+import { SnakecasedKeys } from '../snakecased_keys';
 import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
+
+export type SnakecasedKeysSequence = SnakecasedKeys<Sequence>;
+
+export type SnakecasedKeysSequenceWithTenant = SnakecasedKeysSequence & {
+  provider_name: string;
+  customer_id: string;
+};
 
 export type BaseSequence = BaseEngagementModel & {
   isEnabled: boolean;

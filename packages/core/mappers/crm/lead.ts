@@ -1,9 +1,9 @@
 import { CrmLead } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
 import { Lead, RemoteLead, SnakecasedKeysLead } from '@supaglue/types/crm';
+import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
-import { toSnakecasedKeysAccount, toSnakecasedKeysContact, toSnakecasedKeysUser } from '.';
+import { toSnakecasedKeysCrmAccount, toSnakecasedKeysCrmContact, toSnakecasedKeysCrmUser } from '.';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
@@ -12,7 +12,7 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
   return {
     id: lead.id,
     owner_id: lead.ownerId,
-    owner: lead.owner ? toSnakecasedKeysUser(lead.owner) : undefined,
+    owner: lead.owner ? toSnakecasedKeysCrmUser(lead.owner) : undefined,
     last_modified_at: lead.lastModifiedAt,
     remote_id: lead.remoteId,
     lead_source: lead.leadSource,
@@ -28,9 +28,9 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
     remote_created_at: lead.remoteCreatedAt,
     remote_was_deleted: lead.remoteWasDeleted,
     converted_contact_id: lead.convertedContactId,
-    converted_contact: lead.convertedContact ? toSnakecasedKeysContact(lead.convertedContact) : undefined,
+    converted_contact: lead.convertedContact ? toSnakecasedKeysCrmContact(lead.convertedContact) : undefined,
     converted_account_id: lead.convertedAccountId,
-    converted_account: lead.convertedAccount ? toSnakecasedKeysAccount(lead.convertedAccount) : undefined,
+    converted_account: lead.convertedAccount ? toSnakecasedKeysCrmAccount(lead.convertedAccount) : undefined,
     raw_data: lead.rawData,
   };
 };

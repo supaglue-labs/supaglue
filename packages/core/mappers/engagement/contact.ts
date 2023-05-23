@@ -1,10 +1,17 @@
 import { EngagementContact } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Address, Contact, EmailAddress, PhoneNumber, RemoteContact } from '@supaglue/types/engagement';
+import {
+  Address,
+  Contact,
+  EmailAddress,
+  PhoneNumber,
+  RemoteContact,
+  SnakecasedKeysEngagementContact,
+} from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress, toSnakecasedKeysEmailAddress, toSnakecasedKeysPhoneNumber } from '.';
 
-export const toSnakecasedKeysContact = (contact: Contact) => {
+export const toSnakecasedKeysEngagementContact = (contact: Contact): SnakecasedKeysEngagementContact => {
   return {
     id: contact.id,
     owner_id: contact.ownerId,

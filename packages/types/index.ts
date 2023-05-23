@@ -1,5 +1,6 @@
-import { CRMProviderCategory, CRMProviderName } from './crm';
-import { EngagementProviderCategory, EngagementProviderName } from './engagement';
+import { IntegrationCategory } from './common';
+import { CRMCommonModelType, CRMProviderCategory, CRMProviderName } from './crm';
+import { EngagementCommonModelType, EngagementProviderCategory, EngagementProviderName } from './engagement';
 
 export * from './application';
 export * from './common';
@@ -21,3 +22,7 @@ export type ProviderName = CRMProviderName | EngagementProviderName;
 export type CategoryOfProviderName<T extends ProviderName> = T extends CRMProviderName
   ? CRMProviderCategory
   : EngagementProviderCategory;
+
+export type CommonModelForCategory<T extends IntegrationCategory> = T extends 'crm'
+  ? CRMCommonModelType
+  : EngagementCommonModelType;

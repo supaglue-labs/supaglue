@@ -1,4 +1,12 @@
+import { SnakecasedKeys } from '../snakecased_keys';
 import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
+
+export type SnakecasedKeysMailbox = SnakecasedKeys<Mailbox>;
+
+export type SnakecasedKeysMailboxWithTenant = SnakecasedKeysMailbox & {
+  provider_name: string;
+  customer_id: string;
+};
 
 export type BaseMailbox = BaseEngagementModel & {
   email: string | null;

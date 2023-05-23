@@ -7,9 +7,9 @@ import type {
   CustomFields,
   User,
 } from '.';
-import { Address, EmailAddress, PhoneNumber } from '../base';
 import { EqualsFilter } from '../filter';
 import { SnakecasedKeys } from '../snakecased_keys';
+import { Address, EmailAddress, PhoneNumber } from './common/base';
 
 export type SnakecasedKeysLead = SnakecasedKeys<Lead>;
 

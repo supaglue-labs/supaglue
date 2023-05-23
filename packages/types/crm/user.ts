@@ -1,9 +1,9 @@
 import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams } from '.';
 import { SnakecasedKeys } from '../snakecased_keys';
 
-export type SnakecasedKeysUser = SnakecasedKeys<User>;
+export type SnakecasedKeysCrmUser = SnakecasedKeys<User>;
 
-export type SnakecasedKeysUserWithTenant = SnakecasedKeysUser & {
+export type SnakecasedKeysCrmUserWithTenant = SnakecasedKeysCrmUser & {
   provider_name: string;
   customer_id: string;
 };

@@ -20,7 +20,6 @@ export const COMMON_MODEL_DB_TABLES = {
     leads: `${schemaPrefix}crm_leads`,
     opportunities: `${schemaPrefix}crm_opportunities`,
     users: `${schemaPrefix}crm_users`,
-    events: `${schemaPrefix}crm_events`,
   },
   engagement: {
     contacts: `${schemaPrefix}engagement_contacts`,

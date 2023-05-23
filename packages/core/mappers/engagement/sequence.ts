@@ -1,9 +1,9 @@
 import { EngagementSequence } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { RemoteSequence, Sequence } from '@supaglue/types/engagement';
+import { RemoteSequence, Sequence, SnakecasedKeysSequence } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 
-export const toSnakecasedKeysSequence = (sequence: Sequence) => {
+export const toSnakecasedKeysSequence = (sequence: Sequence): SnakecasedKeysSequence => {
   return {
     id: sequence.id,
     owner_id: sequence.ownerId,

@@ -1,4 +1,3 @@
-import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
 import type {
   OpportunityStatus,
   RemoteAccount,
@@ -11,6 +10,7 @@ import type {
   RemoteOpportunityCreateParams,
   RemoteUser,
 } from '@supaglue/types/crm';
+import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { PipedriveRecord, PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 

@@ -1,9 +1,9 @@
 import { EngagementMailbox } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Mailbox, RemoteMailbox } from '@supaglue/types/engagement';
+import { Mailbox, RemoteMailbox, SnakecasedKeysMailbox } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 
-export const toSnakecasedKeysMailbox = (mailbox: Mailbox) => {
+export const toSnakecasedKeysMailbox = (mailbox: Mailbox): SnakecasedKeysMailbox => {
   return {
     id: mailbox.id,
     user_id: mailbox.userId,
