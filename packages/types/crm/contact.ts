@@ -4,9 +4,9 @@ import { EqualsFilter } from '../filter';
 import { SnakecasedKeys } from '../snakecased_keys';
 import type { Account } from './account';
 
-export type SnakecasedKeysContact = SnakecasedKeys<Contact>;
+export type SnakecasedKeysCrmContact = SnakecasedKeys<Contact>;
 
-export type SnakecasedKeysContactWithTenant = SnakecasedKeysContact & {
+export type SnakecasedKeysCrmContactWithTenant = SnakecasedKeysCrmContact & {
   provider_name: string;
   customer_id: string;
 };

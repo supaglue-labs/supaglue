@@ -2,16 +2,16 @@ import { CrmOpportunity } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
 import { Opportunity, OpportunityStatus, RemoteOpportunity, SnakecasedKeysOpportunity } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
-import { toSnakecasedKeysAccount } from './account';
-import { toSnakecasedKeysUser } from './user';
+import { toSnakecasedKeysCrmAccount } from './account';
+import { toSnakecasedKeysCrmUser } from './user';
 
 export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): SnakecasedKeysOpportunity => {
   return {
     id: opportunity.id,
     owner_id: opportunity.ownerId,
-    owner: opportunity.owner ? toSnakecasedKeysUser(opportunity.owner) : undefined,
+    owner: opportunity.owner ? toSnakecasedKeysCrmUser(opportunity.owner) : undefined,
     account_id: opportunity.accountId,
-    account: opportunity.account ? toSnakecasedKeysAccount(opportunity.account) : undefined,
+    account: opportunity.account ? toSnakecasedKeysCrmAccount(opportunity.account) : undefined,
     last_modified_at: opportunity.lastModifiedAt,
     remote_id: opportunity.remoteId,
     name: opportunity.name,

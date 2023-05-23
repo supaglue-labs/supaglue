@@ -1,21 +1,21 @@
 import { CrmContact } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/base';
-import { Contact, RemoteContact, SnakecasedKeysContact } from '@supaglue/types/crm';
+import { Contact, RemoteContact, SnakecasedKeysCrmContact } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
-import { toSnakecasedKeysAccount } from './account';
+import { toSnakecasedKeysCrmAccount } from './account';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
-import { toSnakecasedKeysUser } from './user';
+import { toSnakecasedKeysCrmUser } from './user';
 
-export const toSnakecasedKeysContact = (contact: Contact): SnakecasedKeysContact => {
+export const toSnakecasedKeysCrmContact = (contact: Contact): SnakecasedKeysCrmContact => {
   return {
     id: contact.id,
     owner_id: contact.ownerId,
-    owner: contact.owner ? toSnakecasedKeysUser(contact.owner) : undefined,
+    owner: contact.owner ? toSnakecasedKeysCrmUser(contact.owner) : undefined,
     account_id: contact.accountId,
-    account: contact.account ? toSnakecasedKeysAccount(contact.account) : undefined,
+    account: contact.account ? toSnakecasedKeysCrmAccount(contact.account) : undefined,
     last_modified_at: contact.lastModifiedAt,
     remote_id: contact.remoteId,
     first_name: contact.firstName,

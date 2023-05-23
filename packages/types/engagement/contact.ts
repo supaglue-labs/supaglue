@@ -1,8 +1,16 @@
 import { CustomFields } from '.';
+import { SnakecasedKeys } from '../snakecased_keys';
 import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
 import { Address } from './common/address';
 import { EmailAddress } from './common/email_address';
 import { PhoneNumber } from './common/phone_number';
+
+export type SnakecasedKeysEngagementContact = SnakecasedKeys<Contact>;
+
+export type SnakecasedKeysEngagementContactWithTenant = SnakecasedKeysEngagementContact & {
+  provider_name: string;
+  customer_id: string;
+};
 
 export type BaseContact = BaseEngagementModel & {
   firstName: string | null;

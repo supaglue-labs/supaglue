@@ -3,9 +3,9 @@ import { Address, LifecycleStage, PhoneNumber } from '../base';
 import { EqualsFilter, Filter } from '../filter';
 import { SnakecasedKeys } from '../snakecased_keys';
 
-export type SnakecasedKeysAccount = SnakecasedKeys<Account>;
+export type SnakecasedKeysCrmAccount = SnakecasedKeys<Account>;
 
-export type SnakecasedKeysAccountWithTenant = SnakecasedKeysAccount & {
+export type SnakecasedKeysCrmAccountWithTenant = SnakecasedKeysCrmAccount & {
   provider_name: string;
   customer_id: string;
 };

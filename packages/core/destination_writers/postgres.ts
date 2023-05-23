@@ -1,23 +1,35 @@
-import type { ConnectionSafeAny, PostgresDestination } from '@supaglue/types';
+import type { CommonModel, ConnectionSafeAny, IntegrationCategory, PostgresDestination } from '@supaglue/types';
 import type { CRMCommonModelType } from '@supaglue/types/crm';
 import { stringify } from 'csv-stringify';
 import { Pool, PoolClient } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { keysOfSnakecasedAccountWithTenant } from '../keys/account';
-import { keysOfSnakecasedContactWithTenant } from '../keys/contact';
-import { keysOfSnakecasedLeadWithTenant } from '../keys/lead';
-import { keysOfSnakecasedOpportunityWithTenant } from '../keys/opportunity';
-import { keysOfSnakecasedUserWithTenant } from '../keys/user';
+import {
+  keysOfSnakecasedCrmAccountWithTenant,
+  keysOfSnakecasedCrmContactWithTenant,
+  keysOfSnakecasedCrmUserWithTenant,
+  keysOfSnakecasedLeadWithTenant,
+  keysOfSnakecasedOpportunityWithTenant,
+} from '../keys/crm';
+import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/contact';
+import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
+import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
+import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
+import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import {
-  toSnakecasedKeysAccount,
-  toSnakecasedKeysContact,
+  toSnakecasedKeysCrmAccount,
+  toSnakecasedKeysCrmContact,
+  toSnakecasedKeysCrmUser,
   toSnakecasedKeysLead,
   toSnakecasedKeysOpportunity,
-  toSnakecasedKeysUser,
 } from '../mappers/crm';
+import {
+  toSnakecasedKeysMailbox,
+  toSnakecasedKeysSequence,
+  toSnakecasedKeysSequenceState,
+} from '../mappers/engagement';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
 
 const destinationIdToPool: Record<string, Pool> = {};
@@ -42,15 +54,15 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   }
 
   public override async writeObjects(
-    { id: connectionId, providerName, customerId }: ConnectionSafeAny,
-    commonModelType: CRMCommonModelType,
+    { id: connectionId, providerName, customerId, category }: ConnectionSafeAny,
+    commonModelType: CommonModel,
     inputStream: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<WriteCommonModelsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
 
     const { schema } = this.#destination.config;
-    const table = tableNamesByCommonModelType[commonModelType];
+    const table = tableNamesByCommonModelType[category][commonModelType];
     const qualifiedTable = `${schema}.${table}`;
     const tempTable = `temp_${table}`;
 
@@ -59,7 +71,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(schemaSetupSqlByCommonModelType[commonModelType](schema));
+      await client.query(schemaSetupSqlByCommonModelType[category][commonModelType](schema));
 
       // Create a temporary table
       // TODO: on the first run, we should be able to directly write into the table and skip the temp table
@@ -69,7 +81,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_remote_id_idx ON ${tempTable} (provider_name, customer_id, remote_id)`
       );
 
-      const columns = columnsByCommonModelType[commonModelType];
+      const columns = columnsByCommonModelType[category][commonModelType];
       const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'remote_id');
 
       // Output
@@ -160,28 +172,55 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const tableNamesByCommonModelType: Record<CRMCommonModelType, string> = {
-  account: 'crm_accounts',
-  contact: 'crm_contacts',
-  lead: 'crm_leads',
-  opportunity: 'crm_opportunities',
-  user: 'crm_users',
+const tableNamesByCommonModelType: Record<IntegrationCategory, Record<string, string>> = {
+  crm: {
+    account: 'crm_accounts',
+    contact: 'crm_contacts',
+    lead: 'crm_leads',
+    opportunity: 'crm_opportunities',
+    user: 'crm_users',
+  },
+  engagement: {
+    contact: 'engagement_contacts',
+    sequence_state: 'engagement_sequence_states',
+    user: 'engagement_users',
+    sequence: 'engagement_sequences',
+    mailboxe: 'engagement_mailboxes',
+  },
 };
 
-const columnsByCommonModelType: Record<CRMCommonModelType, string[]> = {
-  account: keysOfSnakecasedAccountWithTenant,
-  contact: keysOfSnakecasedContactWithTenant,
-  lead: keysOfSnakecasedLeadWithTenant,
-  opportunity: keysOfSnakecasedOpportunityWithTenant,
-  user: keysOfSnakecasedUserWithTenant,
+const columnsByCommonModelType = {
+  crm: {
+    account: keysOfSnakecasedCrmAccountWithTenant,
+    contact: keysOfSnakecasedCrmContactWithTenant,
+    lead: keysOfSnakecasedLeadWithTenant,
+    opportunity: keysOfSnakecasedOpportunityWithTenant,
+    user: keysOfSnakecasedCrmUserWithTenant,
+  },
+  engagement: {
+    contacts: keysOfSnakecasedEngagementContactWithTenant,
+    sequence_states: keysOfSnakecasedSequenceStateWithTenant,
+    users: keysOfSnakecasedEngagementUserWithTenant,
+    sequences: keysOfSnakecasedSequenceWithTenant,
+    mailboxes: keysOfSnakecasedMailboxWithTenant,
+  },
 };
 
-const snakecasedKeysMapperByCommonModelType: Record<CRMCommonModelType, (obj: any) => any> = {
-  account: toSnakecasedKeysAccount,
-  contact: toSnakecasedKeysContact,
-  lead: toSnakecasedKeysLead,
-  opportunity: toSnakecasedKeysOpportunity,
-  user: toSnakecasedKeysUser,
+const snakecasedKeysMapperByCommonModelType = {
+  crm: {
+    account: toSnakecasedKeysCrmAccount,
+    contact: toSnakecasedKeysCrmContact,
+    lead: toSnakecasedKeysLead,
+    opportunity: toSnakecasedKeysOpportunity,
+    user: toSnakecasedKeysCrmUser,
+  },
+  engagement: {
+    contact: toSnakecasedKeysEngagementContact,
+    mailbox: toSnakecasedKeysMailbox,
+    sequence: toSnakecasedKeysSequence,
+    sequence_state: toSnakecasedKeysSequenceState,
+    user: toSnakecasedKeysEngagementUser,
+  },
 };
 
 const schemaSetupSqlByCommonModelType: Record<CRMCommonModelType, (schema: string) => string> = {
