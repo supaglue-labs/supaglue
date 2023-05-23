@@ -812,7 +812,7 @@ const retryWhenRateLimited = async <Args extends any[], Return>(
         throw new TooManyRequestsError(`Encountered Hubspot rate limiting.`);
       }
 
-      logger.error(e, `Encountered Hubspot error.`);
+      logger.warn(e, `Encountered Hubspot error.`);
       bail(e);
       return null as Return;
     }
