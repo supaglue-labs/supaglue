@@ -29,34 +29,42 @@ const { connectionService, integrationService, webhookService, applicationServic
 
     const integration = await integrationService.getById(connection.integrationId);
 
-    const conn = new jsforce.Connection({
-      oauth2: new jsforce.OAuth2({
-        loginUrl,
-        clientId: integration.config.oauth.credentials.oauthClientId,
-        clientSecret: integration.config.oauth.credentials.oauthClientSecret,
-      }),
-      instanceUrl,
-      refreshToken,
-      maxRequest: 10,
-    });
+    let conn: jsforce.Connection;
+    try {
+      conn = new jsforce.Connection({
+        oauth2: new jsforce.OAuth2({
+          loginUrl,
+          clientId: integration.config.oauth.credentials.oauthClientId,
+          clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+        }),
+        instanceUrl,
+        refreshToken,
+        maxRequest: 10,
+      });
 
-    const salesforceEdition = (await conn.query('select OrganizationType from Organization')).records[0]
-      ?.OrganizationType;
-
-    if (
-      salesforceEdition !== 'Developer Edition' &&
-      salesforceEdition !== 'Unlimited Edition' &&
-      salesforceEdition !== 'Enterprise Edition' &&
-      salesforceEdition !== 'Base Edition' // AKA Performance Edition
-    ) {
-      logger.warn(
-        {
-          salesforceEdition,
-          connectionId,
-          applicationId: connection.applicationId,
-          integrationId: connection.integrationId,
-        },
-        'Unsupported Salesforce edition, skipping'
+      const salesforceEdition = (await conn.query('select OrganizationType from Organization')).records[0]
+        ?.OrganizationType;
+      if (
+        salesforceEdition !== 'Developer Edition' &&
+        salesforceEdition !== 'Unlimited Edition' &&
+        salesforceEdition !== 'Enterprise Edition' &&
+        salesforceEdition !== 'Base Edition' // AKA Performance Edition
+      ) {
+        logger.warn(
+          {
+            salesforceEdition,
+            connectionId,
+            applicationId: connection.applicationId,
+            integrationId: connection.integrationId,
+          },
+          'Unsupported Salesforce edition, skipping'
+        );
+        continue;
+      }
+    } catch (err: any) {
+      logger.error(
+        { err, connectionId, applicationId: connection.applicationId, integrationId: connection.integrationId },
+        "couldn't connect to salesforce due to error, skipping"
       );
       continue;
     }
