@@ -3,6 +3,7 @@ description: ''
 ---
 
 import ThemedImage from '@theme/ThemedImage';
+import Tabs from '@theme/Tabs';
 
 # Embedded links
 
@@ -12,24 +13,40 @@ An embedded link is a HTTP link that initiates an authentication flow in your cu
 
 An embedded link takes the following form:
 
-`{PROTOCOL}{DOMAIN}`/oauth/connect?applicationId=`{APPLICATION_ID}`&customerId=`{CUSTOMER_ID}`&providerName=`{PROVIDER_NAME}`&returnUrl=`{RETURN_URL}`
+<Tabs>
 
-| Parameter          | Description                                                                              | Required |
-| ------------------ | ---------------------------------------------------------------------------------------- | -------- |
-| `{PROTOCOL}`       | `http://` if running locally or `https://` if hosted on the cloud                        | Yes      |
-| `{DOMAIN}`         | The domain at which the Supaglue backend is hosted (e.g. `localhost:8080`)               | Yes      |
-| `{APPLICATION_ID}` | The unique identifier for your Supaglue application                                      | Yes      |
-| `{CUSTOMER_ID}`    | The unique identifier for a customer in your application                                 | Yes      |
-| `{PROVIDER_NAME}`  | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                | Yes      |
-| `{RETURN_URL}`     | The URL to return to once the OAuth connection is complete, note: this can be uriEncoded | Yes      |
+<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
-To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](references/api/crm) to create new integrations for your customers to have available for them to connect to.
+```
+https://api.supaglue.com/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}&loginUrl={LOGIN_URL}
+```
+
+</TabItem>
+
+<TabItem value="localhost" label="Localhost">
+
+```
+http://localhost:8080/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}&loginUrl={LOGIN_URL}
+```
+
+</TabItem>
+
+</Tabs>
+
+| Parameter          | Description                                                                                                                                                                     | Required |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `{APPLICATION_ID}` | The unique identifier for your Supaglue application                                                                                                                             | Yes      |
+| `{CUSTOMER_ID}`    | The unique identifier for a customer in your application                                                                                                                        | Yes      |
+| `{PROVIDER_NAME}`  | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                                                                                                       | Yes      |
+| `{RETURN_URL}`     | The URL to return to once the OAuth connection is complete.<br/> <b>NOTE:</b> this should be uriEncoded                                                                         | Yes      |
+| `{LOGIN_URL}`      | The login URL for Salesforce.<br/> This is used for sandbox accounts and should be `https://test.salesforce.com` for that use case.<br/> <b>NOTE:</b> this should be uriEncoded | No       |
+
+To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](references/api/crm) or management UI to create new integrations for your customers to have available for them to connect to.
 
 Examples:
 
-- [http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot](http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot)
-
-- [http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api](http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api)
+- <http://api.supaglue.com/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot>
+- <https://api.supaglue.com/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api>
 
 export const IntegrationCard = ({ icon, provider, description, to }) => (
   <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
