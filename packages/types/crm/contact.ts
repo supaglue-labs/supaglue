@@ -1,11 +1,11 @@
-import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
-import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '../base';
-import { EqualsFilter } from '../filter';
-import { SnakecasedKeys } from '../snakecased_keys';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
+import type { EqualsFilter } from '../filter';
+import type { SnakecasedKeys } from '../snakecased_keys';
+import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from './common';
 
-export type SnakecasedKeysContact = SnakecasedKeys<Contact>;
-export type SnakecasedKeysSimpleContact = SnakecasedKeys<SimpleContact>;
-export type SnakecasedKeysSimpleContactWithTenant = SnakecasedKeysSimpleContact & {
+export type SnakecasedKeysCrmContact = SnakecasedKeys<Contact>;
+export type SnakecasedKeysCrmSimpleContact = SnakecasedKeys<SimpleContact>;
+export type SnakecasedKeysCrmSimpleContactWithTenant = SnakecasedKeysCrmSimpleContact & {
   provider_name: string;
   customer_id: string;
 };

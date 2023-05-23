@@ -1,14 +1,14 @@
-import { CrmLead } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
-import { Lead, RemoteLead, SnakecasedKeysLead, SnakecasedKeysSimpleLead } from '@supaglue/types/crm';
+import type { CrmLead } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type { Lead, RemoteLead, SnakecasedKeysCrmLead, SnakecasedKeysCrmSimpleLead } from '@supaglue/types/crm';
+import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
-import { getLastModifiedAt } from '../../services';
+import { getLastModifiedAt } from '../../services/common_models/base_service';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 
-export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
+export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysCrmLead => {
   return {
     id: lead.id,
     owner_id: lead.ownerId,
@@ -32,7 +32,7 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
   };
 };
 
-export const toSnakecasedKeysSimpleLead = (lead: RemoteLead): SnakecasedKeysSimpleLead => {
+export const toSnakecasedKeysCrmSimpleLead = (lead: RemoteLead): SnakecasedKeysCrmSimpleLead => {
   return {
     remote_owner_id: lead.remoteOwnerId,
     last_modified_at: getLastModifiedAt(lead),

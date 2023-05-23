@@ -1,12 +1,32 @@
 import { EngagementUser } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { RemoteUser, User } from '@supaglue/types/engagement';
+import {
+  RemoteUser,
+  SnakecasedKeysEngagementSimpleUser,
+  SnakecasedKeysEngagementUser,
+  User,
+} from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
+import { getLastModifiedAt } from '../../services';
 
-export const toSnakecasedKeysUser = (user: User) => {
+export const toSnakecasedKeysEngagementUser = (user: User): SnakecasedKeysEngagementUser => {
   return {
     id: user.id,
     last_modified_at: user.lastModifiedAt,
+    remote_id: user.remoteId,
+    first_name: user.firstName,
+    last_name: user.lastName,
+    email: user.email,
+    remote_created_at: user.remoteCreatedAt,
+    remote_updated_at: user.remoteUpdatedAt,
+    remote_was_deleted: user.remoteWasDeleted,
+    raw_data: user.rawData,
+  };
+};
+
+export const toSnakecasedKeysEngagementSimpleUser = (user: RemoteUser): SnakecasedKeysEngagementSimpleUser => {
+  return {
+    last_modified_at: getLastModifiedAt(user),
     remote_id: user.remoteId,
     first_name: user.firstName,
     last_name: user.lastName,

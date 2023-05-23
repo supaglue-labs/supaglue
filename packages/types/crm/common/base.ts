@@ -17,13 +17,3 @@ export type EmailAddress = {
   emailAddress: string;
   emailAddressType: 'primary' | 'work';
 };
-
-export type LifecycleStage =
-  | 'subscriber'
-  | 'lead'
-  | 'marketingqualifiedlead'
-  | 'salesqualifiedlead'
-  | 'opportunity'
-  | 'customer'
-  | 'evangelist'
-  | 'other';

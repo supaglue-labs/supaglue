@@ -1,5 +1,4 @@
-import type { ConnectionSafeAny } from '@supaglue/types';
-import type { CRMCommonModelType } from '@supaglue/types/crm';
+import type { CommonModel, ConnectionSafeAny } from '@supaglue/types';
 import type { Readable } from 'stream';
 
 export type WriteCommonModelsResult = {
@@ -10,7 +9,7 @@ export type WriteCommonModelsResult = {
 export interface DestinationWriter {
   writeObjects(
     connection: ConnectionSafeAny,
-    commonModelType: CRMCommonModelType,
+    commonModelType: CommonModel,
     stream: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<WriteCommonModelsResult>;
@@ -19,7 +18,7 @@ export interface DestinationWriter {
 export abstract class BaseDestinationWriter implements DestinationWriter {
   abstract writeObjects(
     connection: ConnectionSafeAny,
-    commonModelType: CRMCommonModelType,
+    commonModelType: CommonModel,
     stream: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
   ): Promise<WriteCommonModelsResult>;

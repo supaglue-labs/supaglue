@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { toGetInternalParams } from '@supaglue/core/mappers';
-import { toSnakecasedKeysUser } from '@supaglue/core/mappers/crm';
+import { toSnakecasedKeysCrmUser } from '@supaglue/core/mappers/crm';
 import { toListInternalParams } from '@supaglue/core/mappers/params';
 import {
   GetUserPathParams,
@@ -30,7 +30,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toListInternalParams(req.query)
       );
-      const snakeCaseKeysResults = results.map(toSnakecasedKeysUser);
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysCrmUser);
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
@@ -43,7 +43,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toGetInternalParams(req.query)
       );
-      return res.status(200).send(toSnakecasedKeysUser(user));
+      return res.status(200).send(toSnakecasedKeysCrmUser(user));
     }
   );
 

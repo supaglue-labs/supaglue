@@ -1,13 +1,18 @@
-import { CrmAccount } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/base';
-import { Account, RemoteAccount, SnakecasedKeysAccount, SnakecasedKeysSimpleAccount } from '@supaglue/types/crm';
+import type { CrmAccount } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type {
+  Account,
+  RemoteAccount,
+  SnakecasedKeysCrmAccount,
+  SnakecasedKeysCrmSimpleAccount,
+} from '@supaglue/types/crm';
+import type { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
 import { getLastModifiedAt } from '../../services';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 
-export const toSnakecasedKeysAccount = (account: Account): SnakecasedKeysAccount => {
+export const toSnakecasedKeysCrmAccount = (account: Account): SnakecasedKeysCrmAccount => {
   return {
     id: account.id,
     owner_id: account.ownerId,
@@ -29,7 +34,7 @@ export const toSnakecasedKeysAccount = (account: Account): SnakecasedKeysAccount
   };
 };
 
-export const toSnakecasedKeysSimpleAccount = (account: RemoteAccount): SnakecasedKeysSimpleAccount => {
+export const toSnakecasedKeysCrmSimpleAccount = (account: RemoteAccount): SnakecasedKeysCrmSimpleAccount => {
   return {
     remote_owner_id: account.remoteOwnerId,
     last_modified_at: getLastModifiedAt(account),

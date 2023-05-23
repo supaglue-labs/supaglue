@@ -1,10 +1,10 @@
-import { CrmUser } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { RemoteUser, SnakecasedKeysSimpleUser, SnakecasedKeysUser, User } from '@supaglue/types/crm';
+import type { CrmUser } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type { RemoteUser, SnakecasedKeysCrmSimpleUser, SnakecasedKeysCrmUser, User } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
 import { getLastModifiedAt } from '../../services';
 
-export const toSnakecasedKeysUser = (user: User): SnakecasedKeysUser => {
+export const toSnakecasedKeysCrmUser = (user: User): SnakecasedKeysCrmUser => {
   return {
     id: user.id,
     last_modified_at: user.lastModifiedAt,
@@ -19,7 +19,7 @@ export const toSnakecasedKeysUser = (user: User): SnakecasedKeysUser => {
   };
 };
 
-export const toSnakecasedKeysSimpleUser = (user: RemoteUser): SnakecasedKeysSimpleUser => {
+export const toSnakecasedKeysCrmSimpleUser = (user: RemoteUser): SnakecasedKeysCrmSimpleUser => {
   return {
     last_modified_at: getLastModifiedAt(user),
     remote_id: user.remoteId,

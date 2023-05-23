@@ -1,6 +1,6 @@
-import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
-import { EqualsFilter } from '../filter';
-import { SnakecasedKeys } from '../snakecased_keys';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
+import type { EqualsFilter } from '../filter';
+import type { SnakecasedKeys } from '../snakecased_keys';
 
 export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];

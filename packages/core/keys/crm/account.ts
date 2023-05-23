@@ -1,7 +1,7 @@
-import { SnakecasedKeysSimpleAccountWithTenant } from '@supaglue/types/crm';
-import { arrayOfAllKeys } from './util';
+import { SnakecasedKeysCrmSimpleAccountWithTenant } from '@supaglue/types/crm';
+import { arrayOfAllKeys } from '../util';
 
-export const keysOfSnakecasedSimpleAccountWithTenant = arrayOfAllKeys<SnakecasedKeysSimpleAccountWithTenant>()([
+export const keysOfSnakecasedCrmSimpleAccountWithTenant = arrayOfAllKeys<SnakecasedKeysCrmSimpleAccountWithTenant>()([
   'provider_name',
   'customer_id',
   'remote_id',

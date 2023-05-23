@@ -1,4 +1,3 @@
-import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
 import type {
   OpportunityStatus,
   RemoteAccount,
@@ -15,9 +14,7 @@ import type {
   RemoteOpportunityUpdateParams,
   RemoteUser,
 } from '@supaglue/types/crm';
-
-const CONTACT_ID_PREFIX = '003';
-const LEAD_ID_PREFIX = '00Q';
+import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 
 export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): RemoteUser => {
   return {

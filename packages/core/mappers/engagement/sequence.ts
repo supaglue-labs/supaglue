@@ -1,13 +1,40 @@
 import { EngagementSequence } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { RemoteSequence, Sequence } from '@supaglue/types/engagement';
+import {
+  RemoteSequence,
+  Sequence,
+  SnakecasedKeysSequence,
+  SnakecasedKeysSimpleSequence,
+} from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
+import { getLastModifiedAt } from '../../services';
 
-export const toSnakecasedKeysSequence = (sequence: Sequence) => {
+export const toSnakecasedKeysSequence = (sequence: Sequence): SnakecasedKeysSequence => {
   return {
     id: sequence.id,
     owner_id: sequence.ownerId,
     last_modified_at: sequence.lastModifiedAt,
+    remote_id: sequence.remoteId,
+    is_enabled: sequence.isEnabled,
+    name: sequence.name,
+    tags: sequence.tags,
+    num_steps: sequence.numSteps,
+    schedule_count: sequence.scheduleCount,
+    open_count: sequence.openCount,
+    opt_out_count: sequence.optOutCount,
+    reply_count: sequence.replyCount,
+    click_count: sequence.clickCount,
+    remote_created_at: sequence.remoteCreatedAt,
+    remote_updated_at: sequence.remoteUpdatedAt,
+    remote_was_deleted: sequence.remoteWasDeleted,
+    raw_data: sequence.rawData,
+  };
+};
+
+export const toSnakecasedKeysSimpleSequence = (sequence: RemoteSequence): SnakecasedKeysSimpleSequence => {
+  return {
+    remote_owner_id: sequence.remoteOwnerId,
+    last_modified_at: getLastModifiedAt(sequence),
     remote_id: sequence.remoteId,
     is_enabled: sequence.isEnabled,
     name: sequence.name,
