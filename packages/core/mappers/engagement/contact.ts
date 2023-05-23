@@ -7,15 +7,41 @@ import {
   PhoneNumber,
   RemoteContact,
   SnakecasedKeysEngagementContact,
+  SnakecasedKeysEngagementSimpleContact,
 } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress, toSnakecasedKeysEmailAddress, toSnakecasedKeysPhoneNumber } from '.';
+import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysEngagementContact = (contact: Contact): SnakecasedKeysEngagementContact => {
   return {
     id: contact.id,
     owner_id: contact.ownerId,
     last_modified_at: contact.lastModifiedAt,
+    remote_id: contact.remoteId,
+    first_name: contact.firstName,
+    last_name: contact.lastName,
+    job_title: contact.jobTitle,
+    address: contact.address ? toSnakecasedKeysAddress(contact.address) : null,
+    phone_numbers: contact.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    email_addresses: contact.emailAddresses.map(toSnakecasedKeysEmailAddress),
+    open_count: contact.openCount,
+    click_count: contact.clickCount,
+    reply_count: contact.openCount,
+    bounced_count: contact.bouncedCount,
+    remote_created_at: contact.remoteCreatedAt,
+    remote_updated_at: contact.remoteUpdatedAt,
+    remote_was_deleted: contact.remoteWasDeleted,
+    raw_data: contact.rawData,
+  };
+};
+
+export const toSnakecasedKeysEngagementSimpleContact = (
+  contact: RemoteContact
+): SnakecasedKeysEngagementSimpleContact => {
+  return {
+    remote_owner_id: contact.remoteOwnerId,
+    last_modified_at: getLastModifiedAt(contact),
     remote_id: contact.remoteId,
     first_name: contact.firstName,
     last_name: contact.lastName,

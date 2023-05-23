@@ -6,8 +6,8 @@ import { EmailAddress } from './common/email_address';
 import { PhoneNumber } from './common/phone_number';
 
 export type SnakecasedKeysEngagementContact = SnakecasedKeys<Contact>;
-
-export type SnakecasedKeysEngagementContactWithTenant = SnakecasedKeysEngagementContact & {
+export type SnakecasedKeysEngagementSimpleContact = SnakecasedKeys<SimpleContact>;
+export type SnakecasedKeysEngagementSimpleContactWithTenant = SnakecasedKeysEngagementSimpleContact & {
   provider_name: string;
   customer_id: string;
 };
@@ -25,11 +25,18 @@ export type BaseContact = BaseEngagementModel & {
   bouncedCount: number;
 };
 
+// TODO: Rename/consolidate when we move entirely to managed syncs
 export type Contact = BaseContact &
   BaseEngagementModelNonRemoteParams & {
     ownerId: string | null;
     rawData?: Record<string, any>;
   };
+
+export type SimpleContact = BaseContact & {
+  lastModifiedAt: Date;
+  remoteOwnerId: string | null;
+  rawData: Record<string, any>;
+};
 
 export type RemoteContact = BaseContact &
   BaseEngagementModelRemoteOnlyParams & {

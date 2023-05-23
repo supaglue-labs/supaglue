@@ -1,13 +1,27 @@
 import { EngagementMailbox } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Mailbox, RemoteMailbox, SnakecasedKeysMailbox } from '@supaglue/types/engagement';
+import { Mailbox, RemoteMailbox, SnakecasedKeysMailbox, SnakecasedKeysSimpleMailbox } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
+import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysMailbox = (mailbox: Mailbox): SnakecasedKeysMailbox => {
   return {
     id: mailbox.id,
     user_id: mailbox.userId,
     last_modified_at: mailbox.lastModifiedAt,
+    remote_id: mailbox.remoteId,
+    email: mailbox.email,
+    remote_created_at: mailbox.remoteCreatedAt,
+    remote_updated_at: mailbox.remoteUpdatedAt,
+    remote_was_deleted: mailbox.remoteWasDeleted,
+    raw_data: mailbox.rawData,
+  };
+};
+
+export const toSnakecasedKeysSimpleMailbox = (mailbox: RemoteMailbox): SnakecasedKeysSimpleMailbox => {
+  return {
+    remote_user_id: mailbox.remoteUserId,
+    last_modified_at: getLastModifiedAt(mailbox),
     remote_id: mailbox.remoteId,
     email: mailbox.email,
     remote_created_at: mailbox.remoteCreatedAt,

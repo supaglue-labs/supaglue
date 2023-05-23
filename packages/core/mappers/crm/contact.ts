@@ -1,22 +1,39 @@
 import { CrmContact } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Contact, RemoteContact, SnakecasedKeysCrmContact } from '@supaglue/types/crm';
+import { Contact, RemoteContact, SnakecasedKeysCrmContact, SnakecasedKeysCrmSimpleContact } from '@supaglue/types/crm';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
-import { toSnakecasedKeysCrmAccount } from './account';
+import { getLastModifiedAt } from '../../services/common_models/base_service';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
-import { toSnakecasedKeysCrmUser } from './user';
 
 export const toSnakecasedKeysCrmContact = (contact: Contact): SnakecasedKeysCrmContact => {
   return {
     id: contact.id,
     owner_id: contact.ownerId,
-    owner: contact.owner ? toSnakecasedKeysCrmUser(contact.owner) : undefined,
     account_id: contact.accountId,
-    account: contact.account ? toSnakecasedKeysCrmAccount(contact.account) : undefined,
     last_modified_at: contact.lastModifiedAt,
+    remote_id: contact.remoteId,
+    first_name: contact.firstName,
+    last_name: contact.lastName,
+    addresses: contact.addresses.map(toSnakecasedKeysAddress),
+    phone_numbers: contact.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    email_addresses: contact.emailAddresses.map(toSnakecasedKeysEmailAddress),
+    last_activity_at: contact.lastActivityAt,
+    lifecycle_stage: contact.lifecycleStage,
+    remote_created_at: contact.remoteCreatedAt,
+    remote_updated_at: contact.remoteUpdatedAt,
+    remote_was_deleted: contact.remoteWasDeleted,
+    raw_data: contact.rawData,
+  };
+};
+
+export const toSnakecasedKeysCrmSimpleContact = (contact: RemoteContact): SnakecasedKeysCrmSimpleContact => {
+  return {
+    remote_owner_id: contact.remoteOwnerId,
+    remote_account_id: contact.remoteAccountId,
+    last_modified_at: getLastModifiedAt(contact),
     remote_id: contact.remoteId,
     first_name: contact.firstName,
     last_name: contact.lastName,

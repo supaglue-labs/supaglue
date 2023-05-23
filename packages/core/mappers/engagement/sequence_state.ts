@@ -1,7 +1,13 @@
 import { EngagementSequenceState } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { RemoteSequenceState, SequenceState, SnakecasedKeysSequenceState } from '@supaglue/types/engagement';
+import {
+  RemoteSequenceState,
+  SequenceState,
+  SnakecasedKeysSequenceState,
+  SnakecasedKeysSimpleSequenceState,
+} from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
+import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysSequenceState = (sequenceState: SequenceState): SnakecasedKeysSequenceState => {
   return {
@@ -10,6 +16,23 @@ export const toSnakecasedKeysSequenceState = (sequenceState: SequenceState): Sna
     sequence_id: sequenceState.sequenceId,
     mailbox_id: sequenceState.mailboxId,
     last_modified_at: sequenceState.lastModifiedAt,
+    remote_id: sequenceState.remoteId,
+    state: sequenceState.state,
+    remote_created_at: sequenceState.remoteCreatedAt,
+    remote_updated_at: sequenceState.remoteUpdatedAt,
+    remote_was_deleted: sequenceState.remoteWasDeleted,
+    raw_data: sequenceState.rawData,
+  };
+};
+
+export const toSnakecasedKeysSimpleSequenceState = (
+  sequenceState: RemoteSequenceState
+): SnakecasedKeysSimpleSequenceState => {
+  return {
+    remote_contact_id: sequenceState.remoteContactId,
+    remote_sequence_id: sequenceState.remoteSequenceId,
+    remote_mailbox_id: sequenceState.remoteMailboxId,
+    last_modified_at: getLastModifiedAt(sequenceState),
     remote_id: sequenceState.remoteId,
     state: sequenceState.state,
     remote_created_at: sequenceState.remoteCreatedAt,

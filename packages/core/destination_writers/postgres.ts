@@ -7,11 +7,11 @@ import { from as copyFrom } from 'pg-copy-streams';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import {
-  keysOfSnakecasedCrmAccountWithTenant,
-  keysOfSnakecasedCrmContactWithTenant,
-  keysOfSnakecasedCrmUserWithTenant,
-  keysOfSnakecasedLeadWithTenant,
-  keysOfSnakecasedOpportunityWithTenant,
+  keysOfSnakecasedCrmSimpleAccountWithTenant,
+  keysOfSnakecasedCrmSimpleContactWithTenant,
+  keysOfSnakecasedCrmSimpleUserWithTenant,
+  keysOfSnakecasedSimpleLeadWithTenant,
+  keysOfSnakecasedSimpleOpportunityWithTenant,
 } from '../keys/crm';
 import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/contact';
 import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
@@ -20,18 +20,18 @@ import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequ
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import {
-  toSnakecasedKeysCrmAccount,
-  toSnakecasedKeysCrmContact,
-  toSnakecasedKeysCrmUser,
-  toSnakecasedKeysLead,
-  toSnakecasedKeysOpportunity,
+  toSnakecasedKeysCrmSimpleAccount,
+  toSnakecasedKeysCrmSimpleContact,
+  toSnakecasedKeysCrmSimpleLead,
+  toSnakecasedKeysCrmSimpleOpportunity,
+  toSnakecasedKeysCrmSimpleUser,
 } from '../mappers/crm';
 import {
-  toSnakecasedKeysEngagementContact,
-  toSnakecasedKeysEngagementUser,
-  toSnakecasedKeysMailbox,
-  toSnakecasedKeysSequence,
-  toSnakecasedKeysSequenceState,
+  toSnakecasedKeysEngagementSimpleContact,
+  toSnakecasedKeysEngagementSimpleUser,
+  toSnakecasedKeysSimpleMailbox,
+  toSnakecasedKeysSimpleSequence,
+  toSnakecasedKeysSimpleSequenceState,
 } from '../mappers/engagement';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
 
@@ -214,11 +214,11 @@ const columnsByCommonModelType: {
   engagement: Record<EngagementCommonModelType, string[]>;
 } = {
   crm: {
-    account: keysOfSnakecasedCrmAccountWithTenant,
-    contact: keysOfSnakecasedCrmContactWithTenant,
-    lead: keysOfSnakecasedLeadWithTenant,
-    opportunity: keysOfSnakecasedOpportunityWithTenant,
-    user: keysOfSnakecasedCrmUserWithTenant,
+    account: keysOfSnakecasedCrmSimpleAccountWithTenant,
+    contact: keysOfSnakecasedCrmSimpleContactWithTenant,
+    lead: keysOfSnakecasedSimpleLeadWithTenant,
+    opportunity: keysOfSnakecasedSimpleOpportunityWithTenant,
+    user: keysOfSnakecasedCrmSimpleUserWithTenant,
   },
   engagement: {
     contact: keysOfSnakecasedEngagementContactWithTenant,
@@ -241,18 +241,18 @@ const snakecasedKeysMapperByCommonModelType: {
   engagement: Record<EngagementCommonModelType, (obj: any) => any>;
 } = {
   crm: {
-    account: toSnakecasedKeysCrmAccount,
-    contact: toSnakecasedKeysCrmContact,
-    lead: toSnakecasedKeysLead,
-    opportunity: toSnakecasedKeysOpportunity,
-    user: toSnakecasedKeysCrmUser,
+    account: toSnakecasedKeysCrmSimpleAccount,
+    contact: toSnakecasedKeysCrmSimpleContact,
+    lead: toSnakecasedKeysCrmSimpleLead,
+    opportunity: toSnakecasedKeysCrmSimpleOpportunity,
+    user: toSnakecasedKeysCrmSimpleUser,
   },
   engagement: {
-    contact: toSnakecasedKeysEngagementContact,
-    mailbox: toSnakecasedKeysMailbox,
-    sequence: toSnakecasedKeysSequence,
-    sequence_state: toSnakecasedKeysSequenceState,
-    user: toSnakecasedKeysEngagementUser,
+    contact: toSnakecasedKeysEngagementSimpleContact,
+    mailbox: toSnakecasedKeysSimpleMailbox,
+    sequence: toSnakecasedKeysSimpleSequence,
+    sequence_state: toSnakecasedKeysSimpleSequenceState,
+    user: toSnakecasedKeysEngagementSimpleUser,
   },
 };
 
@@ -273,6 +273,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
   "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
   "name" TEXT,
   "description" TEXT,
   "industry" TEXT,
@@ -280,222 +284,195 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "number_of_employees" INTEGER,
   "addresses" JSONB,
   "phone_numbers" JSONB,
-  "lifecycle_stage" TEXT,
   "last_activity_at" TIMESTAMP(3),
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "owner_id" TEXT,
+  "lifecycle_stage" TEXT,
+  "remote_owner_id" TEXT,
+  "raw_data" JSONB,
 
-  CONSTRAINT "crm_accounts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
     contact: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
   "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
   "first_name" TEXT,
   "last_name" TEXT,
   "addresses" JSONB NOT NULL,
   "email_addresses" JSONB NOT NULL,
   "phone_numbers" JSONB NOT NULL,
-  "last_activity_at" TIMESTAMP(3),
   "lifecycle_stage" TEXT,
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "account_id" TEXT,
-  "owner_id" TEXT,
+  "remote_account_id" TEXT,
+  "remote_owner_id" TEXT,
+  "last_activity_at" TIMESTAMP(3),
+  "raw_data" JSONB,
 
-  CONSTRAINT "crm_contacts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
     lead: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
   "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
   "lead_source" TEXT,
   "title" TEXT,
   "company" TEXT,
   "first_name" TEXT,
   "last_name" TEXT,
   "addresses" JSONB,
-  "phone_numbers" JSONB,
   "email_addresses" JSONB,
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "phone_numbers" JSONB,
   "converted_date" TIMESTAMP(3),
-  "converted_account_id" TEXT,
-  "converted_contact_id" TEXT,
-  "owner_id" TEXT,
+  "converted_remote_contact_id" TEXT,
+  "converted_remote_account_id" TEXT,
+  "remote_owner_id" TEXT,
+  "raw_data" JSONB,
 
-  CONSTRAINT "crm_leads_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
     opportunity: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
   "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
   "name" TEXT,
   "description" TEXT,
   "amount" INTEGER,
   "stage" TEXT,
   "status" TEXT,
-  "last_activity_at" TIMESTAMP(3),
-  "pipeline" TEXT,
   "close_date" TIMESTAMP(3),
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "account_id" TEXT,
-  "owner_id" TEXT,
+  "pipeline" TEXT,
+  "remote_account_id" TEXT,
+  "remote_owner_id" TEXT,
+  "last_activity_at" TIMESTAMP(3),
+  "raw_data" JSONB,
 
-  CONSTRAINT "crm_opportunities_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
     user: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
-    "provider_name" TEXT NOT NULL,
-    "customer_id" TEXT NOT NULL,
-    "remote_id" TEXT NOT NULL,
-    "name" TEXT,
-    "email" TEXT,
-    "is_active" BOOLEAN,
-    "remote_created_at" TIMESTAMP(3),
-    "remote_updated_at" TIMESTAMP(3),
-    "remote_was_deleted" BOOLEAN NOT NULL,
-    "remote_deleted_at" TIMESTAMP(3),
-    "detected_or_remote_deleted_at" TIMESTAMP(3),
-    "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "provider_name" TEXT NOT NULL,
+  "customer_id" TEXT NOT NULL,
+  "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "name" TEXT,
+  "email" TEXT,
+  "is_active" BOOLEAN,
+  "raw_data" JSONB,
 
-    CONSTRAINT "crm_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
   },
   engagement: {
     contact: (schema: string) => `-- CreateTable
-    CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
-      "provider_name" TEXT NOT NULL,
-      "customer_id" TEXT NOT NULL,
-      "remote_id" TEXT NOT NULL,
-      "first_name" TEXT,
-      "last_name" TEXT,
-      "job_title" TEXT,
-      "address" JSONB,
-      "email_addresses" JSONB NOT NULL,
-      "phone_numbers" JSONB NOT NULL,
-      "open_count" INTEGER NOT NULL,
-      "click_count" INTEGER NOT NULL,
-      "reply_count" INTEGER NOT NULL,
-      "bounced_count" INTEGER NOT NULL,
-      "remote_data" JSONB,
-      "remote_created_at" TIMESTAMP(3),
-      "remote_updated_at" TIMESTAMP(3),
-      "remote_was_deleted" BOOLEAN NOT NULL,
-      "remote_deleted_at" TIMESTAMP(3),
-      "detected_or_remote_deleted_at" TIMESTAMP(3),
-      "last_modified_at" TIMESTAMP(3) NOT NULL,
-      "owner_id" TEXT,
-    
-      CONSTRAINT "engagement_contacts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
-    );`,
-    mailbox: (schema: string) => `-- CreateTable
-    CREATE TABLE IF NOT EXISTS "engagement_mailboxes" (
-      "remote_id" TEXT NOT NULL,
-      "customer_id" TEXT NOT NULL,
-      "email" TEXT,
-      "remote_data" JSONB,
-      "remote_created_at" TIMESTAMP(3),
-      "remote_updated_at" TIMESTAMP(3),
-      "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
-      "remote_deleted_at" TIMESTAMP(3),
-      "detected_or_remote_deleted_at" TIMESTAMP(3),
-      "last_modified_at" TIMESTAMP(3) NOT NULL,
-      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updated_at" TIMESTAMP(3) NOT NULL,
-      "user_id" TEXT,
-  
-      CONSTRAINT "engagement_mailboxes_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
-    );`,
-    sequence: (schema: string) => `-- CreateTable
-    CREATE TABLE IF NOT EXISTS "engagement_sequences" (
-      "remote_id" TEXT NOT NULL,
-      "customer_id" TEXT NOT NULL,
-      "is_enabled" BOOLEAN NOT NULL,
-      "name" TEXT,
-      "tags" JSONB,
-      "num_steps" INTEGER NOT NULL,
-      "schedule_count" INTEGER NOT NULL,
-      "open_count" INTEGER NOT NULL,
-      "opt_out_count" INTEGER NOT NULL,
-      "reply_count" INTEGER NOT NULL,
-      "click_count" INTEGER NOT NULL,
-      "remote_data" JSONB,
-      "remote_created_at" TIMESTAMP(3),
-      "remote_updated_at" TIMESTAMP(3),
-      "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
-      "remote_deleted_at" TIMESTAMP(3),
-      "detected_or_remote_deleted_at" TIMESTAMP(3),
-      "last_modified_at" TIMESTAMP(3) NOT NULL,
-      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updated_at" TIMESTAMP(3) NOT NULL,
-      "owner_id" TEXT,
-  
-      CONSTRAINT "engagement_sequences_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
-    );`,
-    sequence_state: (schema: string) => `-- CreateTable
-    CREATE TABLE IF NOT EXISTS "engagement_sequence_states" (
-      "remote_id" TEXT NOT NULL,
-      "customer_id" TEXT NOT NULL,
-      "state" TEXT,
-      "remote_data" JSONB,
-      "remote_created_at" TIMESTAMP(3),
-      "remote_updated_at" TIMESTAMP(3),
-      "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
-      "remote_deleted_at" TIMESTAMP(3),
-      "detected_or_remote_deleted_at" TIMESTAMP(3),
-      "last_modified_at" TIMESTAMP(3) NOT NULL,
-      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updated_at" TIMESTAMP(3) NOT NULL,
-      "mailbox_id" TEXT,
-      "sequence_id" TEXT,
-      "contact_id" TEXT,
-  
-      CONSTRAINT "engagement_sequence_states_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
-    );`,
-    user: (schema: string) => `-- CreateTable
-    CREATE TABLE IF NOT EXISTS "engagement_users" (
-      "remote_id" TEXT NOT NULL,
-      "customer_id" TEXT NOT NULL,
-      "first_name" TEXT,
-      "last_name" TEXT,
-      "email" TEXT,
-      "is_active" BOOLEAN,
-      "raw_data" JSONB,
-      "remote_created_at" TIMESTAMP(3),
-      "remote_updated_at" TIMESTAMP(3),
-      "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
-      "remote_deleted_at" TIMESTAMP(3),
-      "detected_or_remote_deleted_at" TIMESTAMP(3),
-      "last_modified_at" TIMESTAMP(3) NOT NULL,
-      "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      "updated_at" TIMESTAMP(3) NOT NULL,
+CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
+  "provider_name" TEXT NOT NULL,
+  "customer_id" TEXT NOT NULL,
+  "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "first_name" TEXT,
+  "last_name" TEXT,
+  "job_title" TEXT,
+  "address" JSONB,
+  "email_addresses" JSONB NOT NULL,
+  "phone_numbers" JSONB NOT NULL,
+  "remote_owner_id" TEXT,
+  "open_count" INTEGER NOT NULL,
+  "click_count" INTEGER NOT NULL,
+  "reply_count" INTEGER NOT NULL,
+  "bounced_count" INTEGER NOT NULL,
+  "raw_data" JSONB,
 
-      CONSTRAINT "engagement_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
-    );`,
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+);`,
+    mailbox: (schema: string) => `-- CreateTable
+CREATE TABLE IF NOT EXISTS "${schema}"."engagement_mailboxes" (
+  "provider_name" TEXT NOT NULL,
+  "customer_id" TEXT NOT NULL,
+  "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "email" TEXT,
+  "remote_user_id" TEXT,
+  "raw_data" JSONB,
+
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+);`,
+    sequence: (schema: string) => `-- CreateTable
+CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
+  "provider_name" TEXT NOT NULL,
+  "customer_id" TEXT NOT NULL,
+  "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "remote_owner_id" TEXT,
+  "name" TEXT,
+  "tags" JSONB,
+  "num_steps" INTEGER NOT NULL,
+  "schedule_count" INTEGER NOT NULL,
+  "click_count" INTEGER NOT NULL,
+  "reply_count" INTEGER NOT NULL,
+  "open_count" INTEGER NOT NULL,
+  "opt_out_count" INTEGER NOT NULL,
+  "is_enabled" BOOLEAN NOT NULL,
+  "raw_data" JSONB,
+
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+);`,
+    sequence_state: (schema: string) => `-- CreateTable
+CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequence_states" (
+  "provider_name" TEXT NOT NULL,
+  "customer_id" TEXT NOT NULL,
+  "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "remote_sequence_id" TEXT,
+  "remote_contact_id" TEXT,
+  "remote_mailbox_id" TEXT,
+  "state" TEXT,
+  "raw_data" JSONB,
+
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+);`,
+    user: (schema: string) => `-- CreateTable
+CREATE TABLE IF NOT EXISTS "${schema}"."engagement_users" (
+  "provider_name" TEXT NOT NULL,
+  "customer_id" TEXT NOT NULL,
+  "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "first_name" TEXT,
+  "last_name" TEXT,
+  "email" TEXT,
+  "raw_data" JSONB,
+
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+);`,
   },
 };

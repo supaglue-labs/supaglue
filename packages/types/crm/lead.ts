@@ -1,19 +1,11 @@
-import type {
-  Account,
-  BaseCrmModel,
-  BaseCrmModelNonRemoteParams,
-  BaseCrmModelRemoteOnlyParams,
-  Contact,
-  CustomFields,
-  User,
-} from '.';
-import { EqualsFilter } from '../filter';
-import { SnakecasedKeys } from '../snakecased_keys';
-import { Address, EmailAddress, PhoneNumber } from './common/base';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
+import type { EqualsFilter } from '../filter';
+import type { SnakecasedKeys } from '../snakecased_keys';
+import type { Address, EmailAddress, PhoneNumber } from './common/base';
 
-export type SnakecasedKeysLead = SnakecasedKeys<Lead>;
-
-export type SnakecasedKeysLeadWithTenant = SnakecasedKeysLead & {
+export type SnakecasedKeysCrmLead = SnakecasedKeys<Lead>;
+export type SnakecasedKeysCrmSimpleLead = SnakecasedKeys<SimpleLead>;
+export type SnakecasedKeysCrmSimpleLeadWithTenant = SnakecasedKeysCrmSimpleLead & {
   provider_name: string;
   customer_id: string;
 };
@@ -30,16 +22,22 @@ type BaseLead = BaseCrmModel & {
   convertedDate: Date | null;
 };
 
+// TODO: Rename/consolidate when we move entirely to managed syncs
 export type Lead = BaseLead &
   BaseCrmModelNonRemoteParams & {
     convertedContactId: string | null;
-    convertedContact?: Contact;
     convertedAccountId: string | null;
-    convertedAccount?: Account;
     ownerId: string | null;
-    owner?: User;
     rawData?: Record<string, any>;
   };
+
+export type SimpleLead = BaseLead & {
+  lastModifiedAt: Date;
+  convertedRemoteContactId: string | null;
+  convertedRemoteAccountId: string | null;
+  remoteOwnerId: string | null;
+  rawData: Record<string, any>;
+};
 
 export type RemoteLead = BaseLead &
   BaseCrmModelRemoteOnlyParams & {

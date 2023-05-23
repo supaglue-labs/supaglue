@@ -1,15 +1,13 @@
-import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
-import { EqualsFilter } from '../filter';
-import { SnakecasedKeys } from '../snakecased_keys';
-import type { Account } from './account';
-import { User } from './user';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
+import type { EqualsFilter } from '../filter';
+import type { SnakecasedKeys } from '../snakecased_keys';
 
 export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
 
 export type SnakecasedKeysOpportunity = SnakecasedKeys<Opportunity>;
-
-export type SnakecasedKeysOpportunityWithTenant = SnakecasedKeysOpportunity & {
+export type SnakecasedKeysSimpleOpportunity = SnakecasedKeys<SimpleOpportunity>;
+export type SnakecasedKeysSimpleOpportunityWithTenant = SnakecasedKeysSimpleOpportunity & {
   provider_name: string;
   customer_id: string;
 };
@@ -25,14 +23,20 @@ type BaseOpportunity = BaseCrmModel & {
   pipeline: string | null;
 };
 
+// TODO: Rename/consolidate when we move entirely to managed syncs
 export type Opportunity = BaseOpportunity &
   BaseCrmModelNonRemoteParams & {
     accountId: string | null;
-    account?: Account;
     ownerId: string | null;
-    owner?: User;
     rawData?: Record<string, any>;
   };
+
+export type SimpleOpportunity = BaseOpportunity & {
+  lastModifiedAt: Date;
+  remoteAccountId: string | null;
+  remoteOwnerId: string | null;
+  rawData: Record<string, any>;
+};
 
 export type RemoteOpportunity = BaseOpportunity &
   BaseCrmModelRemoteOnlyParams & {

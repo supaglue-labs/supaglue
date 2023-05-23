@@ -1,18 +1,43 @@
-import { CrmAccount } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { Account, RemoteAccount, SnakecasedKeysCrmAccount } from '@supaglue/types/crm';
-import { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
+import type { CrmAccount } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type {
+  Account,
+  RemoteAccount,
+  SnakecasedKeysCrmAccount,
+  SnakecasedKeysCrmSimpleAccount,
+} from '@supaglue/types/crm';
+import type { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
+import { getLastModifiedAt } from '../../services';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
-import { toSnakecasedKeysCrmUser } from './user';
 
 export const toSnakecasedKeysCrmAccount = (account: Account): SnakecasedKeysCrmAccount => {
   return {
     id: account.id,
     owner_id: account.ownerId,
-    owner: account.owner ? toSnakecasedKeysCrmUser(account.owner) : undefined,
     last_modified_at: account.lastModifiedAt,
+    remote_id: account.remoteId,
+    name: account.name,
+    description: account.description,
+    industry: account.industry,
+    website: account.website,
+    number_of_employees: account.numberOfEmployees,
+    addresses: account.addresses.map(toSnakecasedKeysAddress),
+    phone_numbers: account.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    last_activity_at: account.lastActivityAt,
+    lifecycle_stage: account.lifecycleStage,
+    remote_created_at: account.remoteCreatedAt,
+    remote_updated_at: account.remoteUpdatedAt,
+    remote_was_deleted: account.remoteWasDeleted,
+    raw_data: account.rawData,
+  };
+};
+
+export const toSnakecasedKeysCrmSimpleAccount = (account: RemoteAccount): SnakecasedKeysCrmSimpleAccount => {
+  return {
+    remote_owner_id: account.remoteOwnerId,
+    last_modified_at: getLastModifiedAt(account),
     remote_id: account.remoteId,
     name: account.name,
     description: account.description,

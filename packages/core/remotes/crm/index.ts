@@ -58,6 +58,7 @@ export function getCrmRemoteClient<T extends CRMProviderName>(
                 throw err;
               });
             }
+            return res;
           } catch (err: unknown) {
             logger.warn(
               {
