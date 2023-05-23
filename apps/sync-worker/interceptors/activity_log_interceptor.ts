@@ -1,3 +1,4 @@
+import { configureScope, getCurrentHub } from '@sentry/node';
 import { addLogContext } from '@supaglue/core/lib';
 import { Context } from '@temporalio/activity';
 import { defaultPayloadConverter } from '@temporalio/client';
@@ -20,6 +21,18 @@ export default class ActivityLogInterceptor implements ActivityInboundCallsInter
       }
     }
 
-    return await next(input);
+    getCurrentHub().pushScope();
+    configureScope((scope) => {
+      for (const [key, value] of Object.entries(input.headers)) {
+        if (key.startsWith('sg-')) {
+          const decodedValue = defaultPayloadConverter.fromPayload(value);
+          scope.setTag(key.substring(3), decodedValue as any);
+        }
+      }
+    });
+
+    const returnValue = await next(input);
+    getCurrentHub().popScope();
+    return returnValue;
   }
 }
