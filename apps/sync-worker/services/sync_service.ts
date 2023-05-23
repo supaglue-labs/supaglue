@@ -3,6 +3,11 @@ import { ConnectionService, IntegrationService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
+import {
+  getRunManagedSyncScheduleId,
+  getRunManagedSyncWorkflowId,
+  runManagedSync,
+} from '@supaglue/sync-workflows/workflows/run_managed_sync';
 import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
 import { ConnectionSafeAny, Sync, SyncState, SyncType } from '@supaglue/types';
 import {
@@ -237,6 +242,77 @@ export class SyncService {
       type: 'startWorkflow' as const,
       workflowType: runSync,
       workflowId: getRunSyncWorkflowId(syncId),
+      taskQueue: SYNC_TASK_QUEUE,
+      args: [
+        {
+          syncId,
+          connectionId: connection.id,
+          category: connection.category,
+          context: {
+            [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
+            [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
+            [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
+            [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
+            [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
+            [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
+          },
+        },
+      ],
+      searchAttributes: {
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+      },
+    };
+
+    try {
+      await this.#temporalClient.schedule.create({
+        scheduleId,
+        spec: {
+          intervals: [interval],
+        },
+        action,
+        state: {
+          triggerImmediately: true,
+        },
+      });
+    } catch (err: unknown) {
+      if (err instanceof ScheduleAlreadyRunning) {
+        const handle = this.#temporalClient.schedule.getHandle(scheduleId);
+        await handle.update((prev) => {
+          const newInterval = prev.spec.intervals?.[0]?.every === syncPeriodMs ? prev.spec.intervals[0] : interval;
+
+          return {
+            ...prev,
+            spec: {
+              intervals: [newInterval],
+            },
+            action,
+          };
+        });
+
+        return;
+      }
+
+      throw err;
+    }
+  }
+
+  async upsertTemporalManagedSync(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
+    const scheduleId = getRunManagedSyncScheduleId(syncId);
+    const interval: IntervalSpec = {
+      every: syncPeriodMs,
+      // so that not everybody is refreshing and hammering the DB at the same time
+      offset: Math.random() * syncPeriodMs,
+    };
+    const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
+      type: 'startWorkflow' as const,
+      workflowType: runManagedSync,
+      workflowId: getRunManagedSyncWorkflowId(syncId),
       taskQueue: SYNC_TASK_QUEUE,
       args: [
         {

@@ -5,18 +5,18 @@ import { Pool, PoolClient } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { keysOfSnakecasedAccountWithTenant } from '../keys/account';
-import { keysOfSnakecasedContactWithTenant } from '../keys/contact';
-import { keysOfSnakecasedLeadWithTenant } from '../keys/lead';
-import { keysOfSnakecasedOpportunityWithTenant } from '../keys/opportunity';
-import { keysOfSnakecasedUserWithTenant } from '../keys/user';
+import { keysOfSnakecasedSimpleAccountWithTenant } from '../keys/account';
+import { keysOfSnakecasedSimpleContactWithTenant } from '../keys/contact';
+import { keysOfSnakecasedSimpleLeadWithTenant } from '../keys/lead';
+import { keysOfSnakecasedSimpleOpportunityWithTenant } from '../keys/opportunity';
+import { keysOfSnakecasedSimpmleUserWithTenant } from '../keys/user';
 import { logger } from '../lib';
 import {
-  toSnakecasedKeysAccount,
-  toSnakecasedKeysContact,
-  toSnakecasedKeysLead,
-  toSnakecasedKeysOpportunity,
-  toSnakecasedKeysUser,
+  toSnakecasedKeysSimpleAccount,
+  toSnakecasedKeysSimpleContact,
+  toSnakecasedKeysSimpleLead,
+  toSnakecasedKeysSimpleOpportunity,
+  toSnakecasedKeysSimpleUser,
 } from '../mappers/crm';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
 
@@ -169,19 +169,19 @@ const tableNamesByCommonModelType: Record<CRMCommonModelType, string> = {
 };
 
 const columnsByCommonModelType: Record<CRMCommonModelType, string[]> = {
-  account: keysOfSnakecasedAccountWithTenant,
-  contact: keysOfSnakecasedContactWithTenant,
-  lead: keysOfSnakecasedLeadWithTenant,
-  opportunity: keysOfSnakecasedOpportunityWithTenant,
-  user: keysOfSnakecasedUserWithTenant,
+  account: keysOfSnakecasedSimpleAccountWithTenant,
+  contact: keysOfSnakecasedSimpleContactWithTenant,
+  lead: keysOfSnakecasedSimpleLeadWithTenant,
+  opportunity: keysOfSnakecasedSimpleOpportunityWithTenant,
+  user: keysOfSnakecasedSimpmleUserWithTenant,
 };
 
 const snakecasedKeysMapperByCommonModelType: Record<CRMCommonModelType, (obj: any) => any> = {
-  account: toSnakecasedKeysAccount,
-  contact: toSnakecasedKeysContact,
-  lead: toSnakecasedKeysLead,
-  opportunity: toSnakecasedKeysOpportunity,
-  user: toSnakecasedKeysUser,
+  account: toSnakecasedKeysSimpleAccount,
+  contact: toSnakecasedKeysSimpleContact,
+  lead: toSnakecasedKeysSimpleLead,
+  opportunity: toSnakecasedKeysSimpleOpportunity,
+  user: toSnakecasedKeysSimpleUser,
 };
 
 const schemaSetupSqlByCommonModelType: Record<CRMCommonModelType, (schema: string) => string> = {
@@ -190,6 +190,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
   "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
   "name" TEXT,
   "description" TEXT,
   "industry" TEXT,
@@ -197,109 +201,97 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "number_of_employees" INTEGER,
   "addresses" JSONB,
   "phone_numbers" JSONB,
-  "lifecycle_stage" TEXT,
   "last_activity_at" TIMESTAMP(3),
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "owner_id" TEXT,
+  "lifecycle_stage" TEXT,
+  "remote_owner_id" TEXT,
+  "raw_data" JSONB,
 
-  CONSTRAINT "crm_accounts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
   contact: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
   "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
   "first_name" TEXT,
   "last_name" TEXT,
   "addresses" JSONB NOT NULL,
   "email_addresses" JSONB NOT NULL,
   "phone_numbers" JSONB NOT NULL,
-  "last_activity_at" TIMESTAMP(3),
   "lifecycle_stage" TEXT,
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "account_id" TEXT,
-  "owner_id" TEXT,
+  "remote_account_id" TEXT,
+  "remote_owner_id" TEXT,
+  "last_activity_at" TIMESTAMP(3),
+  "raw_data" JSONB,
 
-  CONSTRAINT "crm_contacts_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
   lead: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
   "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
   "lead_source" TEXT,
   "title" TEXT,
   "company" TEXT,
   "first_name" TEXT,
   "last_name" TEXT,
   "addresses" JSONB,
-  "phone_numbers" JSONB,
   "email_addresses" JSONB,
-  "remote_data" JSONB,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "phone_numbers" JSONB,
   "converted_date" TIMESTAMP(3),
-  "converted_account_id" TEXT,
-  "converted_contact_id" TEXT,
-  "owner_id" TEXT,
+  "converted_remote_contact_id" TEXT,
+  "converted_remote_account_id" TEXT,
+  "remote_owner_id" TEXT,
+  "raw_data" JSONB,
 
-  CONSTRAINT "crm_leads_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
   opportunity: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
   "remote_id" TEXT NOT NULL,
+  "remote_created_at" TIMESTAMP(3),
+  "remote_updated_at" TIMESTAMP(3),
+  "remote_was_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
   "name" TEXT,
   "description" TEXT,
   "amount" INTEGER,
   "stage" TEXT,
   "status" TEXT,
-  "last_activity_at" TIMESTAMP(3),
-  "pipeline" TEXT,
   "close_date" TIMESTAMP(3),
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
-  "remote_deleted_at" TIMESTAMP(3),
-  "detected_or_remote_deleted_at" TIMESTAMP(3),
-  "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "account_id" TEXT,
-  "owner_id" TEXT,
+  "pipeline" TEXT,
+  "remote_account_id" TEXT,
+  "remote_owner_id" TEXT,
+  "last_activity_at" TIMESTAMP(3),
+  "raw_data" JSONB,
 
-  CONSTRAINT "crm_opportunities_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
   user: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
     "provider_name" TEXT NOT NULL,
     "customer_id" TEXT NOT NULL,
     "remote_id" TEXT NOT NULL,
-    "name" TEXT,
-    "email" TEXT,
-    "is_active" BOOLEAN,
     "remote_created_at" TIMESTAMP(3),
     "remote_updated_at" TIMESTAMP(3),
     "remote_was_deleted" BOOLEAN NOT NULL,
-    "remote_deleted_at" TIMESTAMP(3),
-    "detected_or_remote_deleted_at" TIMESTAMP(3),
     "last_modified_at" TIMESTAMP(3) NOT NULL,
+    "name" TEXT,
+    "email" TEXT,
+    "is_active" BOOLEAN,
+    "raw_data" JSONB,
 
-    CONSTRAINT "crm_users_pkey" PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+    PRIMARY KEY ("provider_name", "customer_id", "remote_id")
 );`,
 };

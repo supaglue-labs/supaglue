@@ -1,18 +1,42 @@
 import { CrmOpportunity } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Opportunity, OpportunityStatus, RemoteOpportunity, SnakecasedKeysOpportunity } from '@supaglue/types/crm';
+import {
+  Opportunity,
+  OpportunityStatus,
+  RemoteOpportunity,
+  SnakecasedKeysOpportunity,
+  SnakecasedKeysSimpleOpportunity,
+} from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
-import { toSnakecasedKeysAccount } from './account';
-import { toSnakecasedKeysUser } from './user';
+import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): SnakecasedKeysOpportunity => {
   return {
     id: opportunity.id,
     owner_id: opportunity.ownerId,
-    owner: opportunity.owner ? toSnakecasedKeysUser(opportunity.owner) : undefined,
     account_id: opportunity.accountId,
-    account: opportunity.account ? toSnakecasedKeysAccount(opportunity.account) : undefined,
     last_modified_at: opportunity.lastModifiedAt,
+    remote_id: opportunity.remoteId,
+    name: opportunity.name,
+    description: opportunity.description,
+    amount: opportunity.amount,
+    stage: opportunity.stage,
+    status: opportunity.status,
+    last_activity_at: opportunity.lastActivityAt,
+    close_date: opportunity.closeDate,
+    pipeline: opportunity.pipeline,
+    remote_created_at: opportunity.remoteCreatedAt,
+    remote_updated_at: opportunity.remoteUpdatedAt,
+    remote_was_deleted: opportunity.remoteWasDeleted,
+    raw_data: opportunity.rawData,
+  };
+};
+
+export const toSnakecasedKeysSimpleOpportunity = (opportunity: RemoteOpportunity): SnakecasedKeysSimpleOpportunity => {
+  return {
+    remote_owner_id: opportunity.remoteOwnerId,
+    remote_account_id: opportunity.remoteAccountId,
+    last_modified_at: getLastModifiedAt(opportunity),
     remote_id: opportunity.remoteId,
     name: opportunity.name,
     description: opportunity.description,

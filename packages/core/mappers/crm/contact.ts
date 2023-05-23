@@ -1,22 +1,39 @@
 import { CrmContact } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/base';
-import { Contact, RemoteContact, SnakecasedKeysContact } from '@supaglue/types/crm';
+import { Contact, RemoteContact, SnakecasedKeysContact, SnakecasedKeysSimpleContact } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
-import { toSnakecasedKeysAccount } from './account';
+import { getLastModifiedAt } from '../../services';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
-import { toSnakecasedKeysUser } from './user';
 
 export const toSnakecasedKeysContact = (contact: Contact): SnakecasedKeysContact => {
   return {
     id: contact.id,
     owner_id: contact.ownerId,
-    owner: contact.owner ? toSnakecasedKeysUser(contact.owner) : undefined,
     account_id: contact.accountId,
-    account: contact.account ? toSnakecasedKeysAccount(contact.account) : undefined,
     last_modified_at: contact.lastModifiedAt,
+    remote_id: contact.remoteId,
+    first_name: contact.firstName,
+    last_name: contact.lastName,
+    addresses: contact.addresses.map(toSnakecasedKeysAddress),
+    phone_numbers: contact.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    email_addresses: contact.emailAddresses.map(toSnakecasedKeysEmailAddress),
+    last_activity_at: contact.lastActivityAt,
+    lifecycle_stage: contact.lifecycleStage,
+    remote_created_at: contact.remoteCreatedAt,
+    remote_updated_at: contact.remoteUpdatedAt,
+    remote_was_deleted: contact.remoteWasDeleted,
+    raw_data: contact.rawData,
+  };
+};
+
+export const toSnakecasedKeysSimpleContact = (contact: RemoteContact): SnakecasedKeysSimpleContact => {
+  return {
+    remote_owner_id: contact.remoteOwnerId,
+    remote_account_id: contact.remoteAccountId,
+    last_modified_at: getLastModifiedAt(contact),
     remote_id: contact.remoteId,
     first_name: contact.firstName,
     last_name: contact.lastName,

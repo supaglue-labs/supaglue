@@ -2,8 +2,8 @@ import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams
 import { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysUser = SnakecasedKeys<User>;
-
-export type SnakecasedKeysUserWithTenant = SnakecasedKeysUser & {
+export type SnakecasedKeysSimpleUser = SnakecasedKeys<SimpleUser>;
+export type SnakecasedKeysSimpleUserWithTenant = SnakecasedKeysSimpleUser & {
   provider_name: string;
   customer_id: string;
 };
@@ -14,10 +14,16 @@ type BaseUser = BaseCrmModel & {
   isActive: boolean | null;
 };
 
+// TODO: Rename/consolidate when we move entirely to managed syncs
 export type User = BaseUser &
   BaseCrmModelNonRemoteParams & {
     rawData?: Record<string, any>;
   };
+
+export type SimpleUser = BaseUser & {
+  lastModifiedAt: Date;
+  rawData: Record<string, any>;
+};
 
 export type RemoteUser = BaseUser &
   BaseCrmModelRemoteOnlyParams & {

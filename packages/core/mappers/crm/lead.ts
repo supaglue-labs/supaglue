@@ -1,9 +1,9 @@
 import { CrmLead } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
 import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
-import { Lead, RemoteLead, SnakecasedKeysLead } from '@supaglue/types/crm';
+import { Lead, RemoteLead, SnakecasedKeysLead, SnakecasedKeysSimpleLead } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
-import { toSnakecasedKeysAccount, toSnakecasedKeysContact, toSnakecasedKeysUser } from '.';
+import { getLastModifiedAt } from '../../services';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
@@ -12,7 +12,6 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
   return {
     id: lead.id,
     owner_id: lead.ownerId,
-    owner: lead.owner ? toSnakecasedKeysUser(lead.owner) : undefined,
     last_modified_at: lead.lastModifiedAt,
     remote_id: lead.remoteId,
     lead_source: lead.leadSource,
@@ -28,9 +27,30 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysLead => {
     remote_created_at: lead.remoteCreatedAt,
     remote_was_deleted: lead.remoteWasDeleted,
     converted_contact_id: lead.convertedContactId,
-    converted_contact: lead.convertedContact ? toSnakecasedKeysContact(lead.convertedContact) : undefined,
     converted_account_id: lead.convertedAccountId,
-    converted_account: lead.convertedAccount ? toSnakecasedKeysAccount(lead.convertedAccount) : undefined,
+    raw_data: lead.rawData,
+  };
+};
+
+export const toSnakecasedKeysSimpleLead = (lead: RemoteLead): SnakecasedKeysSimpleLead => {
+  return {
+    remote_owner_id: lead.remoteOwnerId,
+    last_modified_at: getLastModifiedAt(lead),
+    remote_id: lead.remoteId,
+    lead_source: lead.leadSource,
+    title: lead.title,
+    company: lead.company,
+    first_name: lead.firstName,
+    last_name: lead.lastName,
+    addresses: lead.addresses.map(toSnakecasedKeysAddress),
+    email_addresses: lead.emailAddresses.map(toSnakecasedKeysEmailAddress),
+    phone_numbers: lead.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    converted_date: lead.convertedDate,
+    remote_updated_at: lead.remoteUpdatedAt,
+    remote_created_at: lead.remoteCreatedAt,
+    remote_was_deleted: lead.remoteWasDeleted,
+    converted_remote_contact_id: lead.convertedRemoteContactId,
+    converted_remote_account_id: lead.convertedRemoteAccountId,
     raw_data: lead.rawData,
   };
 };

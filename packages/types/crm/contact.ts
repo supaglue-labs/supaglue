@@ -1,12 +1,11 @@
-import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '.';
+import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '../base';
 import { EqualsFilter } from '../filter';
 import { SnakecasedKeys } from '../snakecased_keys';
-import type { Account } from './account';
 
 export type SnakecasedKeysContact = SnakecasedKeys<Contact>;
-
-export type SnakecasedKeysContactWithTenant = SnakecasedKeysContact & {
+export type SnakecasedKeysSimpleContact = SnakecasedKeys<SimpleContact>;
+export type SnakecasedKeysSimpleContactWithTenant = SnakecasedKeysSimpleContact & {
   provider_name: string;
   customer_id: string;
 };
@@ -21,15 +20,20 @@ export type BaseContact = BaseCrmModel & {
   lifecycleStage: LifecycleStage | null;
 };
 
+// TODO: Rename/consolidate when we move entirely to managed syncs
 export type Contact = BaseContact &
   BaseCrmModelNonRemoteParams & {
     ownerId: string | null;
-    owner?: User;
     accountId: string | null;
-    account?: Account;
-    // TODO: Support remote data and field mappings
     rawData?: Record<string, any>;
   };
+
+export type SimpleContact = BaseContact & {
+  lastModifiedAt: Date;
+  remoteOwnerId: string | null;
+  remoteAccountId: string | null;
+  rawData: Record<string, any>;
+};
 
 export type RemoteContact = BaseContact &
   BaseCrmModelRemoteOnlyParams & {
