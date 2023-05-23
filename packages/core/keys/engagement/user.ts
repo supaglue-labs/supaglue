@@ -1,4 +1,4 @@
-import { SnakecasedKeysEngagementUserWithTenant } from '@supaglue/types/Engagement';
+import { SnakecasedKeysEngagementUserWithTenant } from '@supaglue/types/engagement';
 import { arrayOfAllKeys } from '../util';
 
 export const keysOfSnakecasedEngagementUserWithTenant = arrayOfAllKeys<SnakecasedKeysEngagementUserWithTenant>()([
