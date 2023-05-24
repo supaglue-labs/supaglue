@@ -47,7 +47,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     { id: connectionId, providerName, customerId, category }: ConnectionSafeAny,
     commonModelType: CommonModel,
     inputStream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
+    heartbeat: () => void
   ): Promise<WriteCommonModelsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
 
@@ -147,7 +147,7 @@ SELECT DISTINCT ON (remote_id) * FROM (SELECT * FROM ${tempTable} ORDER BY remot
 ON CONFLICT (provider_name, customer_id, remote_id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
-        onUpsertBatchCompletion(offset, tempTableRowCount);
+        heartbeat();
       }
 
       childLogger.info('Copying from temp table to main table [COMPLETED]');

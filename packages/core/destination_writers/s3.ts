@@ -27,7 +27,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     connection: ConnectionSafeAny,
     commonModelType: CommonModel,
     inputStream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
+    heartbeat: () => void
   ): Promise<WriteCommonModelsResult> {
     const { providerName, customerId, category } = connection;
     let numRecords = 0;
@@ -56,6 +56,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
             if (data.length === CHUNK_SIZE) {
               await this.write(commonModelType, connection, data);
+              heartbeat();
               data = [];
             }
             callback();
@@ -69,6 +70,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     // Write any remaining data
     if (data.length) {
       await this.write(commonModelType, connection, data);
+      heartbeat();
     }
 
     return { numRecords, maxLastModifiedAt };

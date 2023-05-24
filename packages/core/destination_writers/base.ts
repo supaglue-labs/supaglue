@@ -11,7 +11,7 @@ export interface DestinationWriter {
     connection: ConnectionSafeAny,
     commonModelType: CommonModel,
     stream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
+    heartbeat: () => void
   ): Promise<WriteCommonModelsResult>;
 }
 
@@ -20,6 +20,6 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     connection: ConnectionSafeAny,
     commonModelType: CommonModel,
     stream: Readable,
-    onUpsertBatchCompletion: (offset: number, numRecords: number) => void
+    heartbeat: () => void
   ): Promise<WriteCommonModelsResult>;
 }

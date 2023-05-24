@@ -51,12 +51,16 @@ export function createSyncRecordsToDestination(
     let readable: Readable;
     // TODO: Have better type-safety
     if (client.category() === 'crm') {
-      readable = await (client as CrmRemoteClient).listObjects(commonModel as CRMCommonModelType, updatedAfter, onPoll);
+      readable = await (client as CrmRemoteClient).listObjects(
+        commonModel as CRMCommonModelType,
+        updatedAfter,
+        heartbeat
+      );
       await writer.writeObjects(
         connection,
         commonModel as CRMCommonModelType,
         toHeartbeatingReadable(readable),
-        onUpsertBatchCompletion
+        heartbeat
       );
     } else {
       // TODO: Actually sync these
@@ -103,10 +107,6 @@ function toHeartbeatingReadable(readable: Readable): Readable {
   );
 }
 
-function onUpsertBatchCompletion(offset: number, numRecords: number) {
-  Context.current().heartbeat();
-}
-
-function onPoll() {
+function heartbeat() {
   Context.current().heartbeat();
 }
