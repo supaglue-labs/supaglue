@@ -78,6 +78,14 @@ export default function init(app: Router): void {
     await prisma.$transaction([
       prisma.sync.updateMany({
         data: {
+          // TODO: we need to kill the old syncs first before we set this,
+          // since it could be overridden by the old running syncs
+          strategy: {
+            type: 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
           version,
         },
         where: {
