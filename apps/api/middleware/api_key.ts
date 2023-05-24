@@ -7,12 +7,16 @@ const { applicationService } = getDependencyContainer();
 
 export async function apiKeyHeaderMiddleware(req: Request, res: Response, next: NextFunction) {
   const apiKey = req.headers['x-api-key'] as string;
+  const apiKeyInAuthorization = req.headers['authorization'] as string;
 
-  if (!apiKey) {
-    throw new UnauthorizedError(`x-api-key header must be set`);
+  if (!apiKey && !apiKeyInAuthorization) {
+    throw new UnauthorizedError(`x-api-key or authorization header must be set`);
   }
 
-  req.supaglueApplication = await applicationService.getByApiKey(apiKey);
+  req.supaglueApplication = await applicationService.getByApiKey(
+    apiKey || apiKeyInAuthorization.replace('Bearer ', '')
+  );
+
   addLogContext('applicationId', req.supaglueApplication.id);
   req.orgId = req.supaglueApplication.orgId;
   addLogContext('orgId', req.supaglueApplication.orgId);

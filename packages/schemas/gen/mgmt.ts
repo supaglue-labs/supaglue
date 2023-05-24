@@ -130,18 +130,88 @@ export interface components {
       name: string;
       /** @example contact@mycompany.com */
       email: string;
-      connections?: (components["schemas"]["connection"])[];
+      connections?: ({
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /**
+           * @example available 
+           * @enum {string}
+           */
+          status: "available" | "added" | "authorized" | "callable";
+          /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+          application_id: string;
+          /** @example my-customer-1 */
+          customer_id: string;
+          /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+          integration_id: string;
+          /** @enum {string} */
+          provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+          /** @enum {string} */
+          category: "crm" | "engagement";
+          /**
+           * @deprecated 
+           * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+           * @example 123456
+           */
+          remote_id: string;
+          /**
+           * @description Instance URL for the connected customer. 
+           * @example https://app.hubspot.com/contacts/123456
+           */
+          instance_url: string;
+        })[];
     };
     integration: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       application_id: string;
-      category: components["schemas"]["category"];
+      /** @enum {string} */
+      category: "crm" | "engagement";
       /** @enum {string} */
       auth_type: "oauth2";
-      provider_name: components["schemas"]["provider_name"];
-      config?: components["schemas"]["integration_config"];
+      /** @enum {string} */
+      provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+      /**
+       * @example {
+       *   "provider_app_id": "my_app_id",
+       *   "oauth": {
+       *     "oauth_scopes": [
+       *       "crm.objects.contacts.read",
+       *       "crm.objects.companies.read",
+       *       "crm.objects.deals.read",
+       *       "crm.objects.owners.read",
+       *       "crm.objects.contacts.write",
+       *       "crm.objects.companies.write",
+       *       "crm.objects.deals.write"
+       *     ],
+       *     "credentials": {
+       *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+       *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+       *     }
+       *   },
+       *   "sync": {
+       *     "period_ms": 60000
+       *   }
+       * }
+       */
+      config?: {
+        /** @example my_app_id */
+        provider_app_id: string;
+        oauth: {
+          oauth_scopes: (string)[];
+          credentials: {
+            /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+            oauth_client_id: string;
+            /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+            oauth_client_secret: string;
+          };
+        };
+        sync: {
+          /** @example 60000 */
+          period_ms: number;
+        };
+      };
     };
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -157,8 +227,10 @@ export interface components {
       customer_id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       integration_id: string;
-      provider_name: components["schemas"]["provider_name"];
-      category: components["schemas"]["category"];
+      /** @enum {string} */
+      provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+      /** @enum {string} */
+      category: "crm" | "engagement";
       /**
        * @deprecated 
        * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
@@ -230,16 +302,57 @@ export interface components {
     create_update_integration: {
       /** @enum {string} */
       auth_type: "oauth2";
-      config: components["schemas"]["integration_config"];
-    } & OneOf<[{
+      /**
+       * @example {
+       *   "provider_app_id": "my_app_id",
+       *   "oauth": {
+       *     "oauth_scopes": [
+       *       "crm.objects.contacts.read",
+       *       "crm.objects.companies.read",
+       *       "crm.objects.deals.read",
+       *       "crm.objects.owners.read",
+       *       "crm.objects.contacts.write",
+       *       "crm.objects.companies.write",
+       *       "crm.objects.deals.write"
+       *     ],
+       *     "credentials": {
+       *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+       *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+       *     }
+       *   },
+       *   "sync": {
+       *     "period_ms": 60000
+       *   }
+       * }
+       */
+      config: {
+        /** @example my_app_id */
+        provider_app_id: string;
+        oauth: {
+          oauth_scopes: (string)[];
+          credentials: {
+            /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+            oauth_client_id: string;
+            /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+            oauth_client_secret: string;
+          };
+        };
+        sync: {
+          /** @example 60000 */
+          period_ms: number;
+        };
+      };
+    } & (OneOf<[{
       /** @enum {string} */
       category: "crm";
-      provider_name: components["schemas"]["provider_name_crm"];
+      /** @enum {string} */
+      provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     }, {
       /** @enum {string} */
       category: "engagement";
-      provider_name: components["schemas"]["provider_name_engagement"];
-    }]>;
+      /** @enum {string} */
+      provider_name: "outreach";
+    }]>);
     webhook: {
       url: string;
       notify_on_sync_success: boolean;
@@ -366,7 +479,46 @@ export interface operations {
       /** @description Customers */
       200: {
         content: {
-          "application/json": (components["schemas"]["customer"])[];
+          "application/json": ({
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              application_id: string;
+              /** @example your-customers-unique-application-id */
+              customer_id: string;
+              /** @example MyCompany Inc */
+              name: string;
+              /** @example contact@mycompany.com */
+              email: string;
+              connections?: ({
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /**
+                   * @example available 
+                   * @enum {string}
+                   */
+                  status: "available" | "added" | "authorized" | "callable";
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  application_id: string;
+                  /** @example my-customer-1 */
+                  customer_id: string;
+                  /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+                  integration_id: string;
+                  /** @enum {string} */
+                  provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+                  /** @enum {string} */
+                  category: "crm" | "engagement";
+                  /**
+                   * @deprecated 
+                   * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+                   * @example 123456
+                   */
+                  remote_id: string;
+                  /**
+                   * @description Instance URL for the connected customer. 
+                   * @example https://app.hubspot.com/contacts/123456
+                   */
+                  instance_url: string;
+                })[];
+            })[];
         };
       };
     };
@@ -375,14 +527,60 @@ export interface operations {
     /** Upsert customer */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_customer"];
+        "application/json": {
+          /** @example your-customers-unique-application-id */
+          customer_id: string;
+          /** @example MyCompany Inc */
+          name: string;
+          /** @example contact@mycompany.com */
+          email: string;
+        };
       };
     };
     responses: {
       /** @description Customer upserted */
       200: {
         content: {
-          "application/json": components["schemas"]["customer"];
+          "application/json": {
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            application_id: string;
+            /** @example your-customers-unique-application-id */
+            customer_id: string;
+            /** @example MyCompany Inc */
+            name: string;
+            /** @example contact@mycompany.com */
+            email: string;
+            connections?: ({
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /**
+                 * @example available 
+                 * @enum {string}
+                 */
+                status: "available" | "added" | "authorized" | "callable";
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                application_id: string;
+                /** @example my-customer-1 */
+                customer_id: string;
+                /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+                integration_id: string;
+                /** @enum {string} */
+                provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+                /** @enum {string} */
+                category: "crm" | "engagement";
+                /**
+                 * @deprecated 
+                 * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+                 * @example 123456
+                 */
+                remote_id: string;
+                /**
+                 * @description Instance URL for the connected customer. 
+                 * @example https://app.hubspot.com/contacts/123456
+                 */
+                instance_url: string;
+              })[];
+          };
         };
       };
     };
@@ -393,7 +591,46 @@ export interface operations {
       /** @description Customer */
       200: {
         content: {
-          "application/json": components["schemas"]["customer"];
+          "application/json": {
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            application_id: string;
+            /** @example your-customers-unique-application-id */
+            customer_id: string;
+            /** @example MyCompany Inc */
+            name: string;
+            /** @example contact@mycompany.com */
+            email: string;
+            connections?: ({
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /**
+                 * @example available 
+                 * @enum {string}
+                 */
+                status: "available" | "added" | "authorized" | "callable";
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                application_id: string;
+                /** @example my-customer-1 */
+                customer_id: string;
+                /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+                integration_id: string;
+                /** @enum {string} */
+                provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+                /** @enum {string} */
+                category: "crm" | "engagement";
+                /**
+                 * @deprecated 
+                 * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+                 * @example 123456
+                 */
+                remote_id: string;
+                /**
+                 * @description Instance URL for the connected customer. 
+                 * @example https://app.hubspot.com/contacts/123456
+                 */
+                instance_url: string;
+              })[];
+          };
         };
       };
     };
@@ -404,7 +641,46 @@ export interface operations {
       /** @description Customer */
       200: {
         content: {
-          "application/json": components["schemas"]["customer"];
+          "application/json": {
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            application_id: string;
+            /** @example your-customers-unique-application-id */
+            customer_id: string;
+            /** @example MyCompany Inc */
+            name: string;
+            /** @example contact@mycompany.com */
+            email: string;
+            connections?: ({
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /**
+                 * @example available 
+                 * @enum {string}
+                 */
+                status: "available" | "added" | "authorized" | "callable";
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                application_id: string;
+                /** @example my-customer-1 */
+                customer_id: string;
+                /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+                integration_id: string;
+                /** @enum {string} */
+                provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+                /** @enum {string} */
+                category: "crm" | "engagement";
+                /**
+                 * @deprecated 
+                 * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+                 * @example 123456
+                 */
+                remote_id: string;
+                /**
+                 * @description Instance URL for the connected customer. 
+                 * @example https://app.hubspot.com/contacts/123456
+                 */
+                instance_url: string;
+              })[];
+          };
         };
       };
     };
@@ -418,7 +694,58 @@ export interface operations {
       /** @description Integrations */
       200: {
         content: {
-          "application/json": (components["schemas"]["integration"])[];
+          "application/json": ({
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+              application_id: string;
+              /** @enum {string} */
+              category: "crm" | "engagement";
+              /** @enum {string} */
+              auth_type: "oauth2";
+              /** @enum {string} */
+              provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+              /**
+               * @example {
+               *   "provider_app_id": "my_app_id",
+               *   "oauth": {
+               *     "oauth_scopes": [
+               *       "crm.objects.contacts.read",
+               *       "crm.objects.companies.read",
+               *       "crm.objects.deals.read",
+               *       "crm.objects.owners.read",
+               *       "crm.objects.contacts.write",
+               *       "crm.objects.companies.write",
+               *       "crm.objects.deals.write"
+               *     ],
+               *     "credentials": {
+               *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+               *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+               *     }
+               *   },
+               *   "sync": {
+               *     "period_ms": 60000
+               *   }
+               * }
+               */
+              config?: {
+                /** @example my_app_id */
+                provider_app_id: string;
+                oauth: {
+                  oauth_scopes: (string)[];
+                  credentials: {
+                    /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+                    oauth_client_id: string;
+                    /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+                    oauth_client_secret: string;
+                  };
+                };
+                sync: {
+                  /** @example 60000 */
+                  period_ms: number;
+                };
+              };
+            })[];
         };
       };
     };
@@ -427,14 +754,118 @@ export interface operations {
     /** Create integration */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_integration"];
+        "application/json": {
+          /** @enum {string} */
+          auth_type: "oauth2";
+          /**
+           * @example {
+           *   "provider_app_id": "my_app_id",
+           *   "oauth": {
+           *     "oauth_scopes": [
+           *       "crm.objects.contacts.read",
+           *       "crm.objects.companies.read",
+           *       "crm.objects.deals.read",
+           *       "crm.objects.owners.read",
+           *       "crm.objects.contacts.write",
+           *       "crm.objects.companies.write",
+           *       "crm.objects.deals.write"
+           *     ],
+           *     "credentials": {
+           *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+           *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+           *     }
+           *   },
+           *   "sync": {
+           *     "period_ms": 60000
+           *   }
+           * }
+           */
+          config: {
+            /** @example my_app_id */
+            provider_app_id: string;
+            oauth: {
+              oauth_scopes: (string)[];
+              credentials: {
+                /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+                oauth_client_id: string;
+                /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+                oauth_client_secret: string;
+              };
+            };
+            sync: {
+              /** @example 60000 */
+              period_ms: number;
+            };
+          };
+        } & (OneOf<[{
+          /** @enum {string} */
+          category: "crm";
+          /** @enum {string} */
+          provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
+        }, {
+          /** @enum {string} */
+          category: "engagement";
+          /** @enum {string} */
+          provider_name: "outreach";
+        }]>);
       };
     };
     responses: {
       /** @description Integration created */
       201: {
         content: {
-          "application/json": components["schemas"]["integration"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+            application_id: string;
+            /** @enum {string} */
+            category: "crm" | "engagement";
+            /** @enum {string} */
+            auth_type: "oauth2";
+            /** @enum {string} */
+            provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+            /**
+             * @example {
+             *   "provider_app_id": "my_app_id",
+             *   "oauth": {
+             *     "oauth_scopes": [
+             *       "crm.objects.contacts.read",
+             *       "crm.objects.companies.read",
+             *       "crm.objects.deals.read",
+             *       "crm.objects.owners.read",
+             *       "crm.objects.contacts.write",
+             *       "crm.objects.companies.write",
+             *       "crm.objects.deals.write"
+             *     ],
+             *     "credentials": {
+             *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+             *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+             *     }
+             *   },
+             *   "sync": {
+             *     "period_ms": 60000
+             *   }
+             * }
+             */
+            config?: {
+              /** @example my_app_id */
+              provider_app_id: string;
+              oauth: {
+                oauth_scopes: (string)[];
+                credentials: {
+                  /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+                  oauth_client_id: string;
+                  /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+                  oauth_client_secret: string;
+                };
+              };
+              sync: {
+                /** @example 60000 */
+                period_ms: number;
+              };
+            };
+          };
         };
       };
     };
@@ -445,7 +876,58 @@ export interface operations {
       /** @description Integration */
       200: {
         content: {
-          "application/json": components["schemas"]["integration"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+            application_id: string;
+            /** @enum {string} */
+            category: "crm" | "engagement";
+            /** @enum {string} */
+            auth_type: "oauth2";
+            /** @enum {string} */
+            provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+            /**
+             * @example {
+             *   "provider_app_id": "my_app_id",
+             *   "oauth": {
+             *     "oauth_scopes": [
+             *       "crm.objects.contacts.read",
+             *       "crm.objects.companies.read",
+             *       "crm.objects.deals.read",
+             *       "crm.objects.owners.read",
+             *       "crm.objects.contacts.write",
+             *       "crm.objects.companies.write",
+             *       "crm.objects.deals.write"
+             *     ],
+             *     "credentials": {
+             *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+             *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+             *     }
+             *   },
+             *   "sync": {
+             *     "period_ms": 60000
+             *   }
+             * }
+             */
+            config?: {
+              /** @example my_app_id */
+              provider_app_id: string;
+              oauth: {
+                oauth_scopes: (string)[];
+                credentials: {
+                  /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+                  oauth_client_id: string;
+                  /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+                  oauth_client_secret: string;
+                };
+              };
+              sync: {
+                /** @example 60000 */
+                period_ms: number;
+              };
+            };
+          };
         };
       };
     };
@@ -454,14 +936,118 @@ export interface operations {
     /** Update integration */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_integration"];
+        "application/json": {
+          /** @enum {string} */
+          auth_type: "oauth2";
+          /**
+           * @example {
+           *   "provider_app_id": "my_app_id",
+           *   "oauth": {
+           *     "oauth_scopes": [
+           *       "crm.objects.contacts.read",
+           *       "crm.objects.companies.read",
+           *       "crm.objects.deals.read",
+           *       "crm.objects.owners.read",
+           *       "crm.objects.contacts.write",
+           *       "crm.objects.companies.write",
+           *       "crm.objects.deals.write"
+           *     ],
+           *     "credentials": {
+           *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+           *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+           *     }
+           *   },
+           *   "sync": {
+           *     "period_ms": 60000
+           *   }
+           * }
+           */
+          config: {
+            /** @example my_app_id */
+            provider_app_id: string;
+            oauth: {
+              oauth_scopes: (string)[];
+              credentials: {
+                /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+                oauth_client_id: string;
+                /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+                oauth_client_secret: string;
+              };
+            };
+            sync: {
+              /** @example 60000 */
+              period_ms: number;
+            };
+          };
+        } & (OneOf<[{
+          /** @enum {string} */
+          category: "crm";
+          /** @enum {string} */
+          provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
+        }, {
+          /** @enum {string} */
+          category: "engagement";
+          /** @enum {string} */
+          provider_name: "outreach";
+        }]>);
       };
     };
     responses: {
       /** @description Integration */
       200: {
         content: {
-          "application/json": components["schemas"]["integration"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+            application_id: string;
+            /** @enum {string} */
+            category: "crm" | "engagement";
+            /** @enum {string} */
+            auth_type: "oauth2";
+            /** @enum {string} */
+            provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+            /**
+             * @example {
+             *   "provider_app_id": "my_app_id",
+             *   "oauth": {
+             *     "oauth_scopes": [
+             *       "crm.objects.contacts.read",
+             *       "crm.objects.companies.read",
+             *       "crm.objects.deals.read",
+             *       "crm.objects.owners.read",
+             *       "crm.objects.contacts.write",
+             *       "crm.objects.companies.write",
+             *       "crm.objects.deals.write"
+             *     ],
+             *     "credentials": {
+             *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+             *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+             *     }
+             *   },
+             *   "sync": {
+             *     "period_ms": 60000
+             *   }
+             * }
+             */
+            config?: {
+              /** @example my_app_id */
+              provider_app_id: string;
+              oauth: {
+                oauth_scopes: (string)[];
+                credentials: {
+                  /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+                  oauth_client_id: string;
+                  /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+                  oauth_client_secret: string;
+                };
+              };
+              sync: {
+                /** @example 60000 */
+                period_ms: number;
+              };
+            };
+          };
         };
       };
     };
@@ -472,7 +1058,58 @@ export interface operations {
       /** @description Integration */
       200: {
         content: {
-          "application/json": components["schemas"]["integration"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+            application_id: string;
+            /** @enum {string} */
+            category: "crm" | "engagement";
+            /** @enum {string} */
+            auth_type: "oauth2";
+            /** @enum {string} */
+            provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+            /**
+             * @example {
+             *   "provider_app_id": "my_app_id",
+             *   "oauth": {
+             *     "oauth_scopes": [
+             *       "crm.objects.contacts.read",
+             *       "crm.objects.companies.read",
+             *       "crm.objects.deals.read",
+             *       "crm.objects.owners.read",
+             *       "crm.objects.contacts.write",
+             *       "crm.objects.companies.write",
+             *       "crm.objects.deals.write"
+             *     ],
+             *     "credentials": {
+             *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+             *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+             *     }
+             *   },
+             *   "sync": {
+             *     "period_ms": 60000
+             *   }
+             * }
+             */
+            config?: {
+              /** @example my_app_id */
+              provider_app_id: string;
+              oauth: {
+                oauth_scopes: (string)[];
+                credentials: {
+                  /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+                  oauth_client_id: string;
+                  /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+                  oauth_client_secret: string;
+                };
+              };
+              sync: {
+                /** @example 60000 */
+                period_ms: number;
+              };
+            };
+          };
         };
       };
     };
@@ -486,7 +1123,36 @@ export interface operations {
       /** @description Connections */
       200: {
         content: {
-          "application/json": (components["schemas"]["connection"])[];
+          "application/json": ({
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /**
+               * @example available 
+               * @enum {string}
+               */
+              status: "available" | "added" | "authorized" | "callable";
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              application_id: string;
+              /** @example my-customer-1 */
+              customer_id: string;
+              /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+              integration_id: string;
+              /** @enum {string} */
+              provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+              /** @enum {string} */
+              category: "crm" | "engagement";
+              /**
+               * @deprecated 
+               * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+               * @example 123456
+               */
+              remote_id: string;
+              /**
+               * @description Instance URL for the connected customer. 
+               * @example https://app.hubspot.com/contacts/123456
+               */
+              instance_url: string;
+            })[];
         };
       };
     };
@@ -504,7 +1170,36 @@ export interface operations {
       /** @description Connection created */
       200: {
         content: {
-          "application/json": components["schemas"]["connection"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /**
+             * @example available 
+             * @enum {string}
+             */
+            status: "available" | "added" | "authorized" | "callable";
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            application_id: string;
+            /** @example my-customer-1 */
+            customer_id: string;
+            /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+            integration_id: string;
+            /** @enum {string} */
+            provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+            /** @enum {string} */
+            category: "crm" | "engagement";
+            /**
+             * @deprecated 
+             * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+             * @example 123456
+             */
+            remote_id: string;
+            /**
+             * @description Instance URL for the connected customer. 
+             * @example https://app.hubspot.com/contacts/123456
+             */
+            instance_url: string;
+          };
         };
       };
     };
@@ -515,7 +1210,36 @@ export interface operations {
       /** @description Connection */
       200: {
         content: {
-          "application/json": components["schemas"]["connection"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /**
+             * @example available 
+             * @enum {string}
+             */
+            status: "available" | "added" | "authorized" | "callable";
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            application_id: string;
+            /** @example my-customer-1 */
+            customer_id: string;
+            /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+            integration_id: string;
+            /** @enum {string} */
+            provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
+            /** @enum {string} */
+            category: "crm" | "engagement";
+            /**
+             * @deprecated 
+             * @description For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL. 
+             * @example 123456
+             */
+            remote_id: string;
+            /**
+             * @description Instance URL for the connected customer. 
+             * @example https://app.hubspot.com/contacts/123456
+             */
+            instance_url: string;
+          };
         };
       };
     };
@@ -536,7 +1260,16 @@ export interface operations {
       /** @description Applications */
       200: {
         content: {
-          "application/json": components["schemas"]["webhook"];
+          "application/json": {
+            url: string;
+            notify_on_sync_success: boolean;
+            notify_on_sync_error: boolean;
+            notify_on_connection_success: boolean;
+            notify_on_connection_error: boolean;
+            headers?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -545,14 +1278,32 @@ export interface operations {
     /** Create webhook */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["webhook"];
+        "application/json": {
+          url: string;
+          notify_on_sync_success: boolean;
+          notify_on_sync_error: boolean;
+          notify_on_connection_success: boolean;
+          notify_on_connection_error: boolean;
+          headers?: {
+            [key: string]: unknown | undefined;
+          };
+        };
       };
     };
     responses: {
       /** @description Webhook created */
       201: {
         content: {
-          "application/json": components["schemas"]["webhook"];
+          "application/json": {
+            url: string;
+            notify_on_sync_success: boolean;
+            notify_on_sync_error: boolean;
+            notify_on_connection_success: boolean;
+            notify_on_connection_error: boolean;
+            headers?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -592,9 +1343,29 @@ export interface operations {
             next?: string | null;
             /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
             previous?: string | null;
-          }) & {
-            results?: (components["schemas"]["sync_history"])[];
-          };
+          }) & ({
+            results?: ({
+                /** @example Account */
+                model_name: string;
+                error_message: string | null;
+                /** @example 2023-02-22T19:55:17.559Z */
+                start_timestamp: string;
+                /** @example 2023-02-22T20:55:17.559Z */
+                end_timestamp: string | null;
+                /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
+                application_id: string;
+                /** @example my-customer-1 */
+                customer_id: string;
+                /** @example hubspot */
+                provider_name: string;
+                /** @enum {string} */
+                category: "crm";
+                /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+                connection_id: string;
+                /** @enum {string} */
+                status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
+              })[];
+          });
         };
       };
     };
@@ -616,7 +1387,26 @@ export interface operations {
       /** @description Sync Info List */
       200: {
         content: {
-          "application/json": (components["schemas"]["sync_info"])[];
+          "application/json": ({
+              /** @example Account */
+              model_name: string;
+              /** @example 2023-02-22T19:55:17.559Z */
+              last_sync_start: string | null;
+              /** @example 2023-02-22T20:55:17.559Z */
+              next_sync_start: string | null;
+              /** @enum {string|null} */
+              status: "SYNCING" | "DONE" | null;
+              /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
+              application_id: string;
+              /** @example my-customer-1 */
+              customer_id: string;
+              /** @example hubspot */
+              provider_name: string;
+              /** @enum {string} */
+              category: "crm" | "engagement";
+              /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+              connection_id: string;
+            })[];
         };
       };
     };
@@ -638,7 +1428,10 @@ export interface operations {
       /** @description Force a full sync */
       200: {
         content: {
-          "application/json": components["schemas"]["force_sync"];
+          "application/json": {
+            /** @example true */
+            success: boolean;
+          };
         };
       };
     };
@@ -647,7 +1440,47 @@ export interface operations {
     /** Webhook */
     requestBody?: {
       content: {
-        "application/json": components["schemas"]["webhook-payload"];
+        "application/json": OneOf<[{
+          /** @enum {unknown} */
+          type: "SYNC_SUCCESS" | "SYNC_ERROR";
+          payload: {
+            /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+            connection_id: string;
+            /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+            customer_id: string;
+            /**
+             * @example hubspot 
+             * @enum {string}
+             */
+            provider_name?: "hubspot" | "salesforce";
+            /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+            history_id: string;
+            /** @example 100 */
+            num_records_synced: number;
+            /**
+             * @example contact 
+             * @enum {string}
+             */
+            common_model: "opportunity" | "contact" | "account" | "lead" | "user";
+            error_message?: string;
+          };
+        }, {
+          /** @enum {unknown} */
+          type: "CONNECTION_SUCCESS" | "CONNECTION_ERROR";
+          payload: {
+            /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+            customer_id: string;
+            /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
+            integration_id: string;
+            /** @enum {string} */
+            category: "crm";
+            /**
+             * @example hubspot 
+             * @enum {string}
+             */
+            provider_name: "hubspot" | "salesforce";
+          };
+        }]>;
       };
     };
     responses: {

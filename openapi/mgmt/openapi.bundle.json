@@ -42,7 +42,107 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/customer"
+                    "type": "object",
+                    "properties": {
+                      "application_id": {
+                        "type": "string",
+                        "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "example": "your-customers-unique-application-id"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "MyCompany Inc"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "contact@mycompany.com"
+                      },
+                      "connections": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "available",
+                                "added",
+                                "authorized",
+                                "callable"
+                              ],
+                              "example": "available"
+                            },
+                            "application_id": {
+                              "type": "string",
+                              "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                            },
+                            "customer_id": {
+                              "type": "string",
+                              "example": "my-customer-1"
+                            },
+                            "integration_id": {
+                              "type": "string",
+                              "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                            },
+                            "provider_name": {
+                              "type": "string",
+                              "enum": [
+                                "hubspot",
+                                "salesforce",
+                                "pipedrive",
+                                "zendesk_sell",
+                                "ms_dynamics_365_sales",
+                                "zoho_crm",
+                                "capsule",
+                                "outreach"
+                              ]
+                            },
+                            "category": {
+                              "type": "string",
+                              "enum": [
+                                "crm",
+                                "engagement"
+                              ]
+                            },
+                            "remote_id": {
+                              "type": "string",
+                              "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+                              "example": 123456,
+                              "deprecated": true
+                            },
+                            "instance_url": {
+                              "type": "string",
+                              "description": "Instance URL for the connected customer.",
+                              "example": "https://app.hubspot.com/contacts/123456"
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "status",
+                            "application_id",
+                            "customer_id",
+                            "integration_id",
+                            "provider_name",
+                            "category",
+                            "remote_id",
+                            "instance_url"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "application_id",
+                      "name",
+                      "email",
+                      "customer_id"
+                    ]
                   }
                 },
                 "examples": {
@@ -85,7 +185,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_customer"
+                "type": "object",
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "example": "your-customers-unique-application-id"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "MyCompany Inc"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "contact@mycompany.com"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "customer_id"
+                ]
               }
             }
           }
@@ -96,7 +215,107 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/customer"
+                  "type": "object",
+                  "properties": {
+                    "application_id": {
+                      "type": "string",
+                      "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                    },
+                    "customer_id": {
+                      "type": "string",
+                      "example": "your-customers-unique-application-id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "MyCompany Inc"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "contact@mycompany.com"
+                    },
+                    "connections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "available",
+                              "added",
+                              "authorized",
+                              "callable"
+                            ],
+                            "example": "available"
+                          },
+                          "application_id": {
+                            "type": "string",
+                            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                          },
+                          "customer_id": {
+                            "type": "string",
+                            "example": "my-customer-1"
+                          },
+                          "integration_id": {
+                            "type": "string",
+                            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "hubspot",
+                              "salesforce",
+                              "pipedrive",
+                              "zendesk_sell",
+                              "ms_dynamics_365_sales",
+                              "zoho_crm",
+                              "capsule",
+                              "outreach"
+                            ]
+                          },
+                          "category": {
+                            "type": "string",
+                            "enum": [
+                              "crm",
+                              "engagement"
+                            ]
+                          },
+                          "remote_id": {
+                            "type": "string",
+                            "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+                            "example": 123456,
+                            "deprecated": true
+                          },
+                          "instance_url": {
+                            "type": "string",
+                            "description": "Instance URL for the connected customer.",
+                            "example": "https://app.hubspot.com/contacts/123456"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "application_id",
+                          "customer_id",
+                          "integration_id",
+                          "provider_name",
+                          "category",
+                          "remote_id",
+                          "instance_url"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "application_id",
+                    "name",
+                    "email",
+                    "customer_id"
+                  ]
                 }
               }
             }
@@ -122,7 +341,107 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/customer"
+                  "type": "object",
+                  "properties": {
+                    "application_id": {
+                      "type": "string",
+                      "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                    },
+                    "customer_id": {
+                      "type": "string",
+                      "example": "your-customers-unique-application-id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "MyCompany Inc"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "contact@mycompany.com"
+                    },
+                    "connections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "available",
+                              "added",
+                              "authorized",
+                              "callable"
+                            ],
+                            "example": "available"
+                          },
+                          "application_id": {
+                            "type": "string",
+                            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                          },
+                          "customer_id": {
+                            "type": "string",
+                            "example": "my-customer-1"
+                          },
+                          "integration_id": {
+                            "type": "string",
+                            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "hubspot",
+                              "salesforce",
+                              "pipedrive",
+                              "zendesk_sell",
+                              "ms_dynamics_365_sales",
+                              "zoho_crm",
+                              "capsule",
+                              "outreach"
+                            ]
+                          },
+                          "category": {
+                            "type": "string",
+                            "enum": [
+                              "crm",
+                              "engagement"
+                            ]
+                          },
+                          "remote_id": {
+                            "type": "string",
+                            "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+                            "example": 123456,
+                            "deprecated": true
+                          },
+                          "instance_url": {
+                            "type": "string",
+                            "description": "Instance URL for the connected customer.",
+                            "example": "https://app.hubspot.com/contacts/123456"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "application_id",
+                          "customer_id",
+                          "integration_id",
+                          "provider_name",
+                          "category",
+                          "remote_id",
+                          "instance_url"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "application_id",
+                    "name",
+                    "email",
+                    "customer_id"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -156,7 +475,107 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/customer"
+                  "type": "object",
+                  "properties": {
+                    "application_id": {
+                      "type": "string",
+                      "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                    },
+                    "customer_id": {
+                      "type": "string",
+                      "example": "your-customers-unique-application-id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "MyCompany Inc"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "contact@mycompany.com"
+                    },
+                    "connections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "available",
+                              "added",
+                              "authorized",
+                              "callable"
+                            ],
+                            "example": "available"
+                          },
+                          "application_id": {
+                            "type": "string",
+                            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                          },
+                          "customer_id": {
+                            "type": "string",
+                            "example": "my-customer-1"
+                          },
+                          "integration_id": {
+                            "type": "string",
+                            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "hubspot",
+                              "salesforce",
+                              "pipedrive",
+                              "zendesk_sell",
+                              "ms_dynamics_365_sales",
+                              "zoho_crm",
+                              "capsule",
+                              "outreach"
+                            ]
+                          },
+                          "category": {
+                            "type": "string",
+                            "enum": [
+                              "crm",
+                              "engagement"
+                            ]
+                          },
+                          "remote_id": {
+                            "type": "string",
+                            "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+                            "example": 123456,
+                            "deprecated": true
+                          },
+                          "instance_url": {
+                            "type": "string",
+                            "description": "Instance URL for the connected customer.",
+                            "example": "https://app.hubspot.com/contacts/123456"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "application_id",
+                          "customer_id",
+                          "integration_id",
+                          "provider_name",
+                          "category",
+                          "remote_id",
+                          "instance_url"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "application_id",
+                    "name",
+                    "email",
+                    "customer_id"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -206,7 +625,131 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/integration"
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                      },
+                      "application_id": {
+                        "type": "string",
+                        "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                      },
+                      "category": {
+                        "type": "string",
+                        "enum": [
+                          "crm",
+                          "engagement"
+                        ]
+                      },
+                      "auth_type": {
+                        "type": "string",
+                        "enum": [
+                          "oauth2"
+                        ]
+                      },
+                      "provider_name": {
+                        "type": "string",
+                        "enum": [
+                          "hubspot",
+                          "salesforce",
+                          "pipedrive",
+                          "zendesk_sell",
+                          "ms_dynamics_365_sales",
+                          "zoho_crm",
+                          "capsule",
+                          "outreach"
+                        ]
+                      },
+                      "config": {
+                        "type": "object",
+                        "properties": {
+                          "provider_app_id": {
+                            "type": "string",
+                            "example": "my_app_id"
+                          },
+                          "oauth": {
+                            "type": "object",
+                            "properties": {
+                              "oauth_scopes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "example": "crm.objects.contacts.read"
+                                }
+                              },
+                              "credentials": {
+                                "type": "object",
+                                "properties": {
+                                  "oauth_client_id": {
+                                    "type": "string",
+                                    "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                                  },
+                                  "oauth_client_secret": {
+                                    "type": "string",
+                                    "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                                  }
+                                },
+                                "required": [
+                                  "oauth_client_id",
+                                  "oauth_client_secret"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "oauth_scopes",
+                              "credentials"
+                            ]
+                          },
+                          "sync": {
+                            "type": "object",
+                            "properties": {
+                              "period_ms": {
+                                "type": "integer",
+                                "minimum": 60000,
+                                "example": 60000
+                              }
+                            },
+                            "required": [
+                              "period_ms"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "provider_app_id",
+                          "oauth",
+                          "sync"
+                        ],
+                        "example": {
+                          "provider_app_id": "my_app_id",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
+                          },
+                          "sync": {
+                            "period_ms": 60000
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "application_id",
+                      "category",
+                      "auth_type",
+                      "provider_name"
+                    ]
                   }
                 },
                 "examples": {
@@ -291,7 +834,156 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_integration"
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "auth_type": {
+                        "type": "string",
+                        "enum": [
+                          "oauth2"
+                        ]
+                      },
+                      "config": {
+                        "type": "object",
+                        "properties": {
+                          "provider_app_id": {
+                            "type": "string",
+                            "example": "my_app_id"
+                          },
+                          "oauth": {
+                            "type": "object",
+                            "properties": {
+                              "oauth_scopes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "example": "crm.objects.contacts.read"
+                                }
+                              },
+                              "credentials": {
+                                "type": "object",
+                                "properties": {
+                                  "oauth_client_id": {
+                                    "type": "string",
+                                    "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                                  },
+                                  "oauth_client_secret": {
+                                    "type": "string",
+                                    "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                                  }
+                                },
+                                "required": [
+                                  "oauth_client_id",
+                                  "oauth_client_secret"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "oauth_scopes",
+                              "credentials"
+                            ]
+                          },
+                          "sync": {
+                            "type": "object",
+                            "properties": {
+                              "period_ms": {
+                                "type": "integer",
+                                "minimum": 60000,
+                                "example": 60000
+                              }
+                            },
+                            "required": [
+                              "period_ms"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "provider_app_id",
+                          "oauth",
+                          "sync"
+                        ],
+                        "example": {
+                          "provider_app_id": "my_app_id",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
+                          },
+                          "sync": {
+                            "period_ms": 60000
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "auth_type",
+                      "config"
+                    ]
+                  },
+                  {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "category": {
+                            "type": "string",
+                            "enum": [
+                              "crm"
+                            ]
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "hubspot",
+                              "salesforce",
+                              "pipedrive",
+                              "zendesk_sell",
+                              "ms_dynamics_365_sales",
+                              "zoho_crm",
+                              "capsule"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "provider_name"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "category": {
+                            "type": "string",
+                            "enum": [
+                              "engagement"
+                            ]
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "outreach"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "provider_name"
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -302,7 +994,131 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/integration"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                    },
+                    "application_id": {
+                      "type": "string",
+                      "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "crm",
+                        "engagement"
+                      ]
+                    },
+                    "auth_type": {
+                      "type": "string",
+                      "enum": [
+                        "oauth2"
+                      ]
+                    },
+                    "provider_name": {
+                      "type": "string",
+                      "enum": [
+                        "hubspot",
+                        "salesforce",
+                        "pipedrive",
+                        "zendesk_sell",
+                        "ms_dynamics_365_sales",
+                        "zoho_crm",
+                        "capsule",
+                        "outreach"
+                      ]
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "provider_app_id": {
+                          "type": "string",
+                          "example": "my_app_id"
+                        },
+                        "oauth": {
+                          "type": "object",
+                          "properties": {
+                            "oauth_scopes": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "example": "crm.objects.contacts.read"
+                              }
+                            },
+                            "credentials": {
+                              "type": "object",
+                              "properties": {
+                                "oauth_client_id": {
+                                  "type": "string",
+                                  "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                                },
+                                "oauth_client_secret": {
+                                  "type": "string",
+                                  "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                                }
+                              },
+                              "required": [
+                                "oauth_client_id",
+                                "oauth_client_secret"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "oauth_scopes",
+                            "credentials"
+                          ]
+                        },
+                        "sync": {
+                          "type": "object",
+                          "properties": {
+                            "period_ms": {
+                              "type": "integer",
+                              "minimum": 60000,
+                              "example": 60000
+                            }
+                          },
+                          "required": [
+                            "period_ms"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "provider_app_id",
+                        "oauth",
+                        "sync"
+                      ],
+                      "example": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        },
+                        "sync": {
+                          "period_ms": 60000
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "application_id",
+                    "category",
+                    "auth_type",
+                    "provider_name"
+                  ]
                 }
               }
             }
@@ -328,7 +1144,131 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/integration"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                    },
+                    "application_id": {
+                      "type": "string",
+                      "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "crm",
+                        "engagement"
+                      ]
+                    },
+                    "auth_type": {
+                      "type": "string",
+                      "enum": [
+                        "oauth2"
+                      ]
+                    },
+                    "provider_name": {
+                      "type": "string",
+                      "enum": [
+                        "hubspot",
+                        "salesforce",
+                        "pipedrive",
+                        "zendesk_sell",
+                        "ms_dynamics_365_sales",
+                        "zoho_crm",
+                        "capsule",
+                        "outreach"
+                      ]
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "provider_app_id": {
+                          "type": "string",
+                          "example": "my_app_id"
+                        },
+                        "oauth": {
+                          "type": "object",
+                          "properties": {
+                            "oauth_scopes": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "example": "crm.objects.contacts.read"
+                              }
+                            },
+                            "credentials": {
+                              "type": "object",
+                              "properties": {
+                                "oauth_client_id": {
+                                  "type": "string",
+                                  "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                                },
+                                "oauth_client_secret": {
+                                  "type": "string",
+                                  "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                                }
+                              },
+                              "required": [
+                                "oauth_client_id",
+                                "oauth_client_secret"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "oauth_scopes",
+                            "credentials"
+                          ]
+                        },
+                        "sync": {
+                          "type": "object",
+                          "properties": {
+                            "period_ms": {
+                              "type": "integer",
+                              "minimum": 60000,
+                              "example": 60000
+                            }
+                          },
+                          "required": [
+                            "period_ms"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "provider_app_id",
+                        "oauth",
+                        "sync"
+                      ],
+                      "example": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        },
+                        "sync": {
+                          "period_ms": 60000
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "application_id",
+                    "category",
+                    "auth_type",
+                    "provider_name"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -378,7 +1318,156 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_integration"
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "auth_type": {
+                        "type": "string",
+                        "enum": [
+                          "oauth2"
+                        ]
+                      },
+                      "config": {
+                        "type": "object",
+                        "properties": {
+                          "provider_app_id": {
+                            "type": "string",
+                            "example": "my_app_id"
+                          },
+                          "oauth": {
+                            "type": "object",
+                            "properties": {
+                              "oauth_scopes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "example": "crm.objects.contacts.read"
+                                }
+                              },
+                              "credentials": {
+                                "type": "object",
+                                "properties": {
+                                  "oauth_client_id": {
+                                    "type": "string",
+                                    "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                                  },
+                                  "oauth_client_secret": {
+                                    "type": "string",
+                                    "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                                  }
+                                },
+                                "required": [
+                                  "oauth_client_id",
+                                  "oauth_client_secret"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "oauth_scopes",
+                              "credentials"
+                            ]
+                          },
+                          "sync": {
+                            "type": "object",
+                            "properties": {
+                              "period_ms": {
+                                "type": "integer",
+                                "minimum": 60000,
+                                "example": 60000
+                              }
+                            },
+                            "required": [
+                              "period_ms"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "provider_app_id",
+                          "oauth",
+                          "sync"
+                        ],
+                        "example": {
+                          "provider_app_id": "my_app_id",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
+                          },
+                          "sync": {
+                            "period_ms": 60000
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "auth_type",
+                      "config"
+                    ]
+                  },
+                  {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "category": {
+                            "type": "string",
+                            "enum": [
+                              "crm"
+                            ]
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "hubspot",
+                              "salesforce",
+                              "pipedrive",
+                              "zendesk_sell",
+                              "ms_dynamics_365_sales",
+                              "zoho_crm",
+                              "capsule"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "provider_name"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "category": {
+                            "type": "string",
+                            "enum": [
+                              "engagement"
+                            ]
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "outreach"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "provider_name"
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -389,7 +1478,131 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/integration"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                    },
+                    "application_id": {
+                      "type": "string",
+                      "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "crm",
+                        "engagement"
+                      ]
+                    },
+                    "auth_type": {
+                      "type": "string",
+                      "enum": [
+                        "oauth2"
+                      ]
+                    },
+                    "provider_name": {
+                      "type": "string",
+                      "enum": [
+                        "hubspot",
+                        "salesforce",
+                        "pipedrive",
+                        "zendesk_sell",
+                        "ms_dynamics_365_sales",
+                        "zoho_crm",
+                        "capsule",
+                        "outreach"
+                      ]
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "provider_app_id": {
+                          "type": "string",
+                          "example": "my_app_id"
+                        },
+                        "oauth": {
+                          "type": "object",
+                          "properties": {
+                            "oauth_scopes": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "example": "crm.objects.contacts.read"
+                              }
+                            },
+                            "credentials": {
+                              "type": "object",
+                              "properties": {
+                                "oauth_client_id": {
+                                  "type": "string",
+                                  "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                                },
+                                "oauth_client_secret": {
+                                  "type": "string",
+                                  "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                                }
+                              },
+                              "required": [
+                                "oauth_client_id",
+                                "oauth_client_secret"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "oauth_scopes",
+                            "credentials"
+                          ]
+                        },
+                        "sync": {
+                          "type": "object",
+                          "properties": {
+                            "period_ms": {
+                              "type": "integer",
+                              "minimum": 60000,
+                              "example": 60000
+                            }
+                          },
+                          "required": [
+                            "period_ms"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "provider_app_id",
+                        "oauth",
+                        "sync"
+                      ],
+                      "example": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        },
+                        "sync": {
+                          "period_ms": 60000
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "application_id",
+                    "category",
+                    "auth_type",
+                    "provider_name"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -444,7 +1657,131 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/integration"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                    },
+                    "application_id": {
+                      "type": "string",
+                      "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "crm",
+                        "engagement"
+                      ]
+                    },
+                    "auth_type": {
+                      "type": "string",
+                      "enum": [
+                        "oauth2"
+                      ]
+                    },
+                    "provider_name": {
+                      "type": "string",
+                      "enum": [
+                        "hubspot",
+                        "salesforce",
+                        "pipedrive",
+                        "zendesk_sell",
+                        "ms_dynamics_365_sales",
+                        "zoho_crm",
+                        "capsule",
+                        "outreach"
+                      ]
+                    },
+                    "config": {
+                      "type": "object",
+                      "properties": {
+                        "provider_app_id": {
+                          "type": "string",
+                          "example": "my_app_id"
+                        },
+                        "oauth": {
+                          "type": "object",
+                          "properties": {
+                            "oauth_scopes": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "example": "crm.objects.contacts.read"
+                              }
+                            },
+                            "credentials": {
+                              "type": "object",
+                              "properties": {
+                                "oauth_client_id": {
+                                  "type": "string",
+                                  "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                                },
+                                "oauth_client_secret": {
+                                  "type": "string",
+                                  "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                                }
+                              },
+                              "required": [
+                                "oauth_client_id",
+                                "oauth_client_secret"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "oauth_scopes",
+                            "credentials"
+                          ]
+                        },
+                        "sync": {
+                          "type": "object",
+                          "properties": {
+                            "period_ms": {
+                              "type": "integer",
+                              "minimum": 60000,
+                              "example": 60000
+                            }
+                          },
+                          "required": [
+                            "period_ms"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "provider_app_id",
+                        "oauth",
+                        "sync"
+                      ],
+                      "example": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        },
+                        "sync": {
+                          "period_ms": 60000
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "application_id",
+                    "category",
+                    "auth_type",
+                    "provider_name"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -515,7 +1852,77 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/connection"
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "available",
+                          "added",
+                          "authorized",
+                          "callable"
+                        ],
+                        "example": "available"
+                      },
+                      "application_id": {
+                        "type": "string",
+                        "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "example": "my-customer-1"
+                      },
+                      "integration_id": {
+                        "type": "string",
+                        "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                      },
+                      "provider_name": {
+                        "type": "string",
+                        "enum": [
+                          "hubspot",
+                          "salesforce",
+                          "pipedrive",
+                          "zendesk_sell",
+                          "ms_dynamics_365_sales",
+                          "zoho_crm",
+                          "capsule",
+                          "outreach"
+                        ]
+                      },
+                      "category": {
+                        "type": "string",
+                        "enum": [
+                          "crm",
+                          "engagement"
+                        ]
+                      },
+                      "remote_id": {
+                        "type": "string",
+                        "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+                        "example": 123456,
+                        "deprecated": true
+                      },
+                      "instance_url": {
+                        "type": "string",
+                        "description": "Instance URL for the connected customer.",
+                        "example": "https://app.hubspot.com/contacts/123456"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "status",
+                      "application_id",
+                      "customer_id",
+                      "integration_id",
+                      "provider_name",
+                      "category",
+                      "remote_id",
+                      "instance_url"
+                    ]
                   }
                 },
                 "examples": {
@@ -580,7 +1987,77 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/connection"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "available",
+                        "added",
+                        "authorized",
+                        "callable"
+                      ],
+                      "example": "available"
+                    },
+                    "application_id": {
+                      "type": "string",
+                      "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                    },
+                    "customer_id": {
+                      "type": "string",
+                      "example": "my-customer-1"
+                    },
+                    "integration_id": {
+                      "type": "string",
+                      "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                    },
+                    "provider_name": {
+                      "type": "string",
+                      "enum": [
+                        "hubspot",
+                        "salesforce",
+                        "pipedrive",
+                        "zendesk_sell",
+                        "ms_dynamics_365_sales",
+                        "zoho_crm",
+                        "capsule",
+                        "outreach"
+                      ]
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "crm",
+                        "engagement"
+                      ]
+                    },
+                    "remote_id": {
+                      "type": "string",
+                      "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+                      "example": 123456,
+                      "deprecated": true
+                    },
+                    "instance_url": {
+                      "type": "string",
+                      "description": "Instance URL for the connected customer.",
+                      "example": "https://app.hubspot.com/contacts/123456"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "application_id",
+                    "customer_id",
+                    "integration_id",
+                    "provider_name",
+                    "category",
+                    "remote_id",
+                    "instance_url"
+                  ]
                 }
               }
             }
@@ -617,7 +2094,77 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/connection"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "available",
+                        "added",
+                        "authorized",
+                        "callable"
+                      ],
+                      "example": "available"
+                    },
+                    "application_id": {
+                      "type": "string",
+                      "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                    },
+                    "customer_id": {
+                      "type": "string",
+                      "example": "my-customer-1"
+                    },
+                    "integration_id": {
+                      "type": "string",
+                      "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                    },
+                    "provider_name": {
+                      "type": "string",
+                      "enum": [
+                        "hubspot",
+                        "salesforce",
+                        "pipedrive",
+                        "zendesk_sell",
+                        "ms_dynamics_365_sales",
+                        "zoho_crm",
+                        "capsule",
+                        "outreach"
+                      ]
+                    },
+                    "category": {
+                      "type": "string",
+                      "enum": [
+                        "crm",
+                        "engagement"
+                      ]
+                    },
+                    "remote_id": {
+                      "type": "string",
+                      "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+                      "example": 123456,
+                      "deprecated": true
+                    },
+                    "instance_url": {
+                      "type": "string",
+                      "description": "Instance URL for the connected customer.",
+                      "example": "https://app.hubspot.com/contacts/123456"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "status",
+                    "application_id",
+                    "customer_id",
+                    "integration_id",
+                    "provider_name",
+                    "category",
+                    "remote_id",
+                    "instance_url"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -696,7 +2243,35 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/webhook"
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "notify_on_sync_success": {
+                      "type": "boolean"
+                    },
+                    "notify_on_sync_error": {
+                      "type": "boolean"
+                    },
+                    "notify_on_connection_success": {
+                      "type": "boolean"
+                    },
+                    "notify_on_connection_error": {
+                      "type": "boolean"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "notify_on_sync_success",
+                    "notify_on_sync_error",
+                    "notify_on_connection_success",
+                    "notify_on_connection_error"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -726,7 +2301,35 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/webhook"
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string"
+                  },
+                  "notify_on_sync_success": {
+                    "type": "boolean"
+                  },
+                  "notify_on_sync_error": {
+                    "type": "boolean"
+                  },
+                  "notify_on_connection_success": {
+                    "type": "boolean"
+                  },
+                  "notify_on_connection_error": {
+                    "type": "boolean"
+                  },
+                  "headers": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "url",
+                  "notify_on_sync_success",
+                  "notify_on_sync_error",
+                  "notify_on_connection_success",
+                  "notify_on_connection_error"
+                ]
               }
             }
           }
@@ -742,7 +2345,35 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/webhook"
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "notify_on_sync_success": {
+                      "type": "boolean"
+                    },
+                    "notify_on_sync_error": {
+                      "type": "boolean"
+                    },
+                    "notify_on_connection_success": {
+                      "type": "boolean"
+                    },
+                    "notify_on_connection_error": {
+                      "type": "boolean"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "notify_on_sync_success",
+                    "notify_on_sync_error",
+                    "notify_on_connection_success",
+                    "notify_on_connection_error"
+                  ]
                 }
               }
             }
@@ -856,7 +2487,68 @@
                         "results": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/sync_history"
+                            "type": "object",
+                            "properties": {
+                              "model_name": {
+                                "type": "string",
+                                "example": "Account"
+                              },
+                              "error_message": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "start_timestamp": {
+                                "type": "string",
+                                "example": "2023-02-22T19:55:17.559Z"
+                              },
+                              "end_timestamp": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "2023-02-22T20:55:17.559Z"
+                              },
+                              "application_id": {
+                                "type": "string",
+                                "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
+                              },
+                              "customer_id": {
+                                "type": "string",
+                                "example": "my-customer-1"
+                              },
+                              "provider_name": {
+                                "type": "string",
+                                "example": "hubspot"
+                              },
+                              "category": {
+                                "type": "string",
+                                "enum": [
+                                  "crm"
+                                ]
+                              },
+                              "connection_id": {
+                                "type": "string",
+                                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "SUCCESS",
+                                  "IN_PROGRESS",
+                                  "FAILURE"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "model_name",
+                              "start_timestamp",
+                              "end_timestamp",
+                              "application_id",
+                              "customer_id",
+                              "status",
+                              "error_message",
+                              "provider_name",
+                              "category",
+                              "connection_id"
+                            ]
                           }
                         }
                       }
@@ -942,7 +2634,65 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/sync_info"
+                    "type": "object",
+                    "properties": {
+                      "model_name": {
+                        "type": "string",
+                        "example": "Account"
+                      },
+                      "last_sync_start": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2023-02-22T19:55:17.559Z"
+                      },
+                      "next_sync_start": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "2023-02-22T20:55:17.559Z"
+                      },
+                      "status": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": [
+                          "SYNCING",
+                          "DONE"
+                        ]
+                      },
+                      "application_id": {
+                        "type": "string",
+                        "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "example": "my-customer-1"
+                      },
+                      "provider_name": {
+                        "type": "string",
+                        "example": "hubspot"
+                      },
+                      "category": {
+                        "type": "string",
+                        "enum": [
+                          "crm",
+                          "engagement"
+                        ]
+                      },
+                      "connection_id": {
+                        "type": "string",
+                        "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+                      }
+                    },
+                    "required": [
+                      "model_name",
+                      "last_sync_start",
+                      "next_sync_start",
+                      "status",
+                      "application_id",
+                      "customer_id",
+                      "provider_name",
+                      "category",
+                      "connection_id"
+                    ]
                   }
                 },
                 "examples": {
@@ -1020,7 +2770,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/force_sync"
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
                 },
                 "examples": {
                   "Example": {
@@ -1069,7 +2828,77 @@
           "connections": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/connection"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "available",
+                    "added",
+                    "authorized",
+                    "callable"
+                  ],
+                  "example": "available"
+                },
+                "application_id": {
+                  "type": "string",
+                  "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+                },
+                "customer_id": {
+                  "type": "string",
+                  "example": "my-customer-1"
+                },
+                "integration_id": {
+                  "type": "string",
+                  "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+                },
+                "provider_name": {
+                  "type": "string",
+                  "enum": [
+                    "hubspot",
+                    "salesforce",
+                    "pipedrive",
+                    "zendesk_sell",
+                    "ms_dynamics_365_sales",
+                    "zoho_crm",
+                    "capsule",
+                    "outreach"
+                  ]
+                },
+                "category": {
+                  "type": "string",
+                  "enum": [
+                    "crm",
+                    "engagement"
+                  ]
+                },
+                "remote_id": {
+                  "type": "string",
+                  "description": "For Hubspot, this is the account ID of the connected customer. For Salesforce, this is the instance URL.",
+                  "example": 123456,
+                  "deprecated": true
+                },
+                "instance_url": {
+                  "type": "string",
+                  "description": "Instance URL for the connected customer.",
+                  "example": "https://app.hubspot.com/contacts/123456"
+                }
+              },
+              "required": [
+                "id",
+                "status",
+                "application_id",
+                "customer_id",
+                "integration_id",
+                "provider_name",
+                "category",
+                "remote_id",
+                "instance_url"
+              ]
             }
           }
         },
@@ -1092,7 +2921,11 @@
             "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
           },
           "category": {
-            "$ref": "#/components/schemas/category"
+            "type": "string",
+            "enum": [
+              "crm",
+              "engagement"
+            ]
           },
           "auth_type": {
             "type": "string",
@@ -1101,10 +2934,98 @@
             ]
           },
           "provider_name": {
-            "$ref": "#/components/schemas/provider_name"
+            "type": "string",
+            "enum": [
+              "hubspot",
+              "salesforce",
+              "pipedrive",
+              "zendesk_sell",
+              "ms_dynamics_365_sales",
+              "zoho_crm",
+              "capsule",
+              "outreach"
+            ]
           },
           "config": {
-            "$ref": "#/components/schemas/integration_config"
+            "type": "object",
+            "properties": {
+              "provider_app_id": {
+                "type": "string",
+                "example": "my_app_id"
+              },
+              "oauth": {
+                "type": "object",
+                "properties": {
+                  "oauth_scopes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "crm.objects.contacts.read"
+                    }
+                  },
+                  "credentials": {
+                    "type": "object",
+                    "properties": {
+                      "oauth_client_id": {
+                        "type": "string",
+                        "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                      },
+                      "oauth_client_secret": {
+                        "type": "string",
+                        "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                      }
+                    },
+                    "required": [
+                      "oauth_client_id",
+                      "oauth_client_secret"
+                    ]
+                  }
+                },
+                "required": [
+                  "oauth_scopes",
+                  "credentials"
+                ]
+              },
+              "sync": {
+                "type": "object",
+                "properties": {
+                  "period_ms": {
+                    "type": "integer",
+                    "minimum": 60000,
+                    "example": 60000
+                  }
+                },
+                "required": [
+                  "period_ms"
+                ]
+              }
+            },
+            "required": [
+              "provider_app_id",
+              "oauth",
+              "sync"
+            ],
+            "example": {
+              "provider_app_id": "my_app_id",
+              "oauth": {
+                "oauth_scopes": [
+                  "crm.objects.contacts.read",
+                  "crm.objects.companies.read",
+                  "crm.objects.deals.read",
+                  "crm.objects.owners.read",
+                  "crm.objects.contacts.write",
+                  "crm.objects.companies.write",
+                  "crm.objects.deals.write"
+                ],
+                "credentials": {
+                  "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                  "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                }
+              },
+              "sync": {
+                "period_ms": 60000
+              }
+            }
           }
         },
         "required": [
@@ -1145,10 +3066,24 @@
             "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
           },
           "provider_name": {
-            "$ref": "#/components/schemas/provider_name"
+            "type": "string",
+            "enum": [
+              "hubspot",
+              "salesforce",
+              "pipedrive",
+              "zendesk_sell",
+              "ms_dynamics_365_sales",
+              "zoho_crm",
+              "capsule",
+              "outreach"
+            ]
           },
           "category": {
-            "$ref": "#/components/schemas/category"
+            "type": "string",
+            "enum": [
+              "crm",
+              "engagement"
+            ]
           },
           "remote_id": {
             "type": "string",
@@ -1327,7 +3262,85 @@
                 ]
               },
               "config": {
-                "$ref": "#/components/schemas/integration_config"
+                "type": "object",
+                "properties": {
+                  "provider_app_id": {
+                    "type": "string",
+                    "example": "my_app_id"
+                  },
+                  "oauth": {
+                    "type": "object",
+                    "properties": {
+                      "oauth_scopes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "example": "crm.objects.contacts.read"
+                        }
+                      },
+                      "credentials": {
+                        "type": "object",
+                        "properties": {
+                          "oauth_client_id": {
+                            "type": "string",
+                            "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                          },
+                          "oauth_client_secret": {
+                            "type": "string",
+                            "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        },
+                        "required": [
+                          "oauth_client_id",
+                          "oauth_client_secret"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "oauth_scopes",
+                      "credentials"
+                    ]
+                  },
+                  "sync": {
+                    "type": "object",
+                    "properties": {
+                      "period_ms": {
+                        "type": "integer",
+                        "minimum": 60000,
+                        "example": 60000
+                      }
+                    },
+                    "required": [
+                      "period_ms"
+                    ]
+                  }
+                },
+                "required": [
+                  "provider_app_id",
+                  "oauth",
+                  "sync"
+                ],
+                "example": {
+                  "provider_app_id": "my_app_id",
+                  "oauth": {
+                    "oauth_scopes": [
+                      "crm.objects.contacts.read",
+                      "crm.objects.companies.read",
+                      "crm.objects.deals.read",
+                      "crm.objects.owners.read",
+                      "crm.objects.contacts.write",
+                      "crm.objects.companies.write",
+                      "crm.objects.deals.write"
+                    ],
+                    "credentials": {
+                      "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                      "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                    }
+                  },
+                  "sync": {
+                    "period_ms": 60000
+                  }
+                }
               }
             },
             "required": [
@@ -1347,7 +3360,16 @@
                     ]
                   },
                   "provider_name": {
-                    "$ref": "#/components/schemas/provider_name_crm"
+                    "type": "string",
+                    "enum": [
+                      "hubspot",
+                      "salesforce",
+                      "pipedrive",
+                      "zendesk_sell",
+                      "ms_dynamics_365_sales",
+                      "zoho_crm",
+                      "capsule"
+                    ]
                   }
                 },
                 "required": [
@@ -1365,7 +3387,10 @@
                     ]
                   },
                   "provider_name": {
-                    "$ref": "#/components/schemas/provider_name_engagement"
+                    "type": "string",
+                    "enum": [
+                      "outreach"
+                    ]
                   }
                 },
                 "required": [
@@ -1716,7 +3741,123 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/webhook-payload"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "title": "Sync Finished Event",
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "SYNC_SUCCESS",
+                          "SYNC_ERROR"
+                        ]
+                      },
+                      "payload": {
+                        "type": "object",
+                        "properties": {
+                          "connection_id": {
+                            "type": "string",
+                            "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                          },
+                          "customer_id": {
+                            "type": "string",
+                            "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "hubspot",
+                              "salesforce"
+                            ],
+                            "example": "hubspot"
+                          },
+                          "history_id": {
+                            "type": "string",
+                            "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                          },
+                          "num_records_synced": {
+                            "type": "integer",
+                            "example": 100
+                          },
+                          "common_model": {
+                            "type": "string",
+                            "enum": [
+                              "opportunity",
+                              "contact",
+                              "account",
+                              "lead",
+                              "user"
+                            ],
+                            "example": "contact"
+                          },
+                          "error_message": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "connection_id",
+                          "customer_id",
+                          "history_id",
+                          "num_records_synced",
+                          "common_model"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "payload"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Connection Created Event",
+                    "properties": {
+                      "type": {
+                        "enum": [
+                          "CONNECTION_SUCCESS",
+                          "CONNECTION_ERROR"
+                        ]
+                      },
+                      "payload": {
+                        "type": "object",
+                        "properties": {
+                          "customer_id": {
+                            "type": "string",
+                            "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                          },
+                          "integration_id": {
+                            "type": "string",
+                            "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
+                          },
+                          "category": {
+                            "type": "string",
+                            "enum": [
+                              "crm"
+                            ]
+                          },
+                          "provider_name": {
+                            "type": "string",
+                            "enum": [
+                              "hubspot",
+                              "salesforce"
+                            ],
+                            "example": "hubspot"
+                          }
+                        },
+                        "required": [
+                          "customer_id",
+                          "integration_id",
+                          "category",
+                          "provider_name"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "payload"
+                    ]
+                  }
+                ]
               }
             }
           }

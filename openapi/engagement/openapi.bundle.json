@@ -16,12 +16,12 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8080/engagement/v1",
+      "url": "https://supaglue-tom.ngrok.io",
       "description": "Local Supaglue API"
     }
   ],
   "paths": {
-    "/passthrough": {
+    "/engagement/v1/passthrough": {
       "post": {
         "operationId": "sendPassthroughRequest",
         "tags": [
@@ -156,61 +156,139 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         }
       ]
     },
-    "/contacts": {
+    "/engagement/v1/contacts": {
       "get": {
-        "operationId": "getContacts",
+        "operationId": "getEngagementContacts",
         "tags": [
-          "Contacts"
+          "Engagement Contacts"
         ],
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
-        "summary": "List contacts",
-        "description": "Get a list of contacts",
+        "summary": "List engagement contacts",
+        "description": "Get a list of engagement contacts",
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_deleted_data"
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
           },
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           },
           {
-            "$ref": "#/components/parameters/created_after"
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
           },
           {
-            "$ref": "#/components/parameters/created_before"
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_after"
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_before"
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
           },
           {
-            "$ref": "#/components/parameters/cursor"
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
           },
           {
-            "$ref": "#/components/parameters/page_size"
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
           }
         ],
         "responses": {
           "200": {
-            "description": "Contacts",
+            "description": "Engagement Contacts",
             "content": {
               "application/json": {
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/pagination"
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+                        }
+                      }
                     },
                     {
                       "type": "object",
@@ -218,7 +296,210 @@
                         "results": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/contact"
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+                              },
+                              "remote_id": {
+                                "type": "string",
+                                "example": 54312
+                              },
+                              "owner_id": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+                              },
+                              "first_name": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "George"
+                              },
+                              "last_name": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "Xing"
+                              },
+                              "job_title": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "CEO"
+                              },
+                              "address": {
+                                "type": "object",
+                                "nullable": true,
+                                "properties": {
+                                  "city": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "San Francisco"
+                                  },
+                                  "country": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "USA"
+                                  },
+                                  "postal_code": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "94107"
+                                  },
+                                  "state": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "CA"
+                                  },
+                                  "street_1": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "525 Brannan"
+                                  },
+                                  "street_2": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                  }
+                                },
+                                "required": [
+                                  "city",
+                                  "country",
+                                  "postal_code",
+                                  "state",
+                                  "street_1",
+                                  "street_2"
+                                ],
+                                "example": [
+                                  {
+                                    "city": "San Francisco",
+                                    "country": "US",
+                                    "postal_code": "94107",
+                                    "state": "CA",
+                                    "street_1": "525 Brannan",
+                                    "street_2": null
+                                  }
+                                ]
+                              },
+                              "email_addresses": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "email_address": {
+                                      "type": "string",
+                                      "example": "hello@supaglue.com"
+                                    },
+                                    "email_address_type": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "enum": [
+                                        "personal",
+                                        "work"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "email_address",
+                                    "email_address_type"
+                                  ]
+                                },
+                                "example": [
+                                  {
+                                    "email_address": "hello@supaglue.com",
+                                    "email_address_type": "work"
+                                  }
+                                ]
+                              },
+                              "phone_numbers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "phone_number": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "example": "+14151234567"
+                                    },
+                                    "phone_number_type": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "enum": [
+                                        "work",
+                                        "home",
+                                        "mobile",
+                                        "other"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "phone_number",
+                                    "phone_number_type"
+                                  ]
+                                },
+                                "example": [
+                                  {
+                                    "phone_number": "+14151234567",
+                                    "phone_number_type": "work"
+                                  }
+                                ]
+                              },
+                              "open_count": {
+                                "type": "number"
+                              },
+                              "click_count": {
+                                "type": "number"
+                              },
+                              "reply_count": {
+                                "type": "number"
+                              },
+                              "bounced_count": {
+                                "type": "number"
+                              },
+                              "remote_created_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_updated_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_was_deleted": {
+                                "type": "boolean",
+                                "example": false
+                              },
+                              "last_modified_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "raw_data": {
+                                "type": "object",
+                                "additionalProperties": true
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "remote_id",
+                              "owner_id",
+                              "first_name",
+                              "last_name",
+                              "job_title",
+                              "address",
+                              "email_addresses",
+                              "phone_numbers",
+                              "open_count",
+                              "click_count",
+                              "reply_count",
+                              "bounced_count",
+                              "remote_created_at",
+                              "remote_updated_at",
+                              "remote_was_deleted",
+                              "last_modified_at"
+                            ]
                           }
                         }
                       }
@@ -268,10 +549,10 @@
         }
       },
       "post": {
-        "operationId": "createContact",
-        "summary": "Create contact",
+        "operationId": "createEngagementContact",
+        "summary": "Create engagement contact",
         "tags": [
-          "Contacts"
+          "Engagement Contacts"
         ],
         "security": [
           {
@@ -287,7 +568,113 @@
                 "type": "object",
                 "properties": {
                   "model": {
-                    "$ref": "#/components/schemas/create_contact"
+                    "type": "object",
+                    "properties": {
+                      "first_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "George"
+                      },
+                      "last_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "Xing"
+                      },
+                      "job_title": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "CEO"
+                      },
+                      "address": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "city": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "San Francisco"
+                          },
+                          "country": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "USA"
+                          },
+                          "postal_code": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "94107"
+                          },
+                          "state": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "CA"
+                          },
+                          "street_1": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "525 Brannan"
+                          },
+                          "street_2": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          }
+                        },
+                        "required": [
+                          "city",
+                          "country",
+                          "postal_code",
+                          "state",
+                          "street_1",
+                          "street_2"
+                        ],
+                        "example": [
+                          {
+                            "city": "San Francisco",
+                            "country": "US",
+                            "postal_code": "94107",
+                            "state": "CA",
+                            "street_1": "525 Brannan",
+                            "street_2": null
+                          }
+                        ]
+                      },
+                      "email_addresses": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "email_address": {
+                              "type": "string",
+                              "example": "hello@supaglue.com"
+                            },
+                            "email_address_type": {
+                              "type": "string",
+                              "nullable": true,
+                              "enum": [
+                                "personal",
+                                "work"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "email_address",
+                            "email_address_type"
+                          ]
+                        },
+                        "example": [
+                          {
+                            "email_address": "hello@supaglue.com",
+                            "email_address_type": "work"
+                          }
+                        ]
+                      },
+                      "custom_fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
+                      }
+                    }
                   }
                 },
                 "required": [
@@ -328,23 +715,364 @@
         },
         "responses": {
           "201": {
-            "description": "Contact created",
+            "description": "Engagement contact created",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "errors": {
-                      "$ref": "#/components/schemas/errors"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "name is a required field on model."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "MISSING_REQUIRED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "irure consectetur"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Missing Required Field"
+                          }
+                        },
+                        "example": [
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "irure consectetur"
+                            },
+                            "title": "Missing Required Field"
+                          },
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "et"
+                            },
+                            "title": "Missing Required Field"
+                          }
+                        ]
+                      }
                     },
                     "logs": {
-                      "$ref": "#/components/schemas/logs"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "dashboard_view": {
+                            "type": "string",
+                            "example": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_id": {
+                            "type": "string",
+                            "example": "99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_summary": {
+                            "type": "object",
+                            "properties": {
+                              "method": {
+                                "type": "string",
+                                "example": "POST"
+                              },
+                              "status_code": {
+                                "type": "number",
+                                "example": 200
+                              },
+                              "url": {
+                                "type": "string",
+                                "example": "https://harvest.greenhouse.io/v1/candidates/"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        },
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        }
+                      ]
                     },
                     "model": {
-                      "$ref": "#/components/schemas/contact"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+                        },
+                        "remote_id": {
+                          "type": "string",
+                          "example": 54312
+                        },
+                        "owner_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "George"
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "Xing"
+                        },
+                        "job_title": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "CEO"
+                        },
+                        "address": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "city": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "San Francisco"
+                            },
+                            "country": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "USA"
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "94107"
+                            },
+                            "state": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "CA"
+                            },
+                            "street_1": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "525 Brannan"
+                            },
+                            "street_2": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": null
+                            }
+                          },
+                          "required": [
+                            "city",
+                            "country",
+                            "postal_code",
+                            "state",
+                            "street_1",
+                            "street_2"
+                          ],
+                          "example": [
+                            {
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ]
+                        },
+                        "email_addresses": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "email_address": {
+                                "type": "string",
+                                "example": "hello@supaglue.com"
+                              },
+                              "email_address_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": [
+                                  "personal",
+                                  "work"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "email_address",
+                              "email_address_type"
+                            ]
+                          },
+                          "example": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "work"
+                            }
+                          ]
+                        },
+                        "phone_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "phone_number": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "+14151234567"
+                              },
+                              "phone_number_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": [
+                                  "work",
+                                  "home",
+                                  "mobile",
+                                  "other"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "phone_number",
+                              "phone_number_type"
+                            ]
+                          },
+                          "example": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "work"
+                            }
+                          ]
+                        },
+                        "open_count": {
+                          "type": "number"
+                        },
+                        "click_count": {
+                          "type": "number"
+                        },
+                        "reply_count": {
+                          "type": "number"
+                        },
+                        "bounced_count": {
+                          "type": "number"
+                        },
+                        "remote_created_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_updated_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_was_deleted": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "last_modified_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "raw_data": {
+                          "type": "object",
+                          "additionalProperties": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "remote_id",
+                        "owner_id",
+                        "first_name",
+                        "last_name",
+                        "job_title",
+                        "address",
+                        "email_addresses",
+                        "phone_numbers",
+                        "open_count",
+                        "click_count",
+                        "reply_count",
+                        "bounced_count",
+                        "remote_created_at",
+                        "remote_updated_at",
+                        "remote_was_deleted",
+                        "last_modified_at"
+                      ]
                     },
                     "warnings": {
-                      "$ref": "#/components/schemas/warnings"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "An unrecognized field, age, was passed in with request data."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "UNRECOGNIZED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "Lorem ipsum"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Unrecognized Field"
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "Lorem ipsum"
+                          },
+                          "title": "Unrecognized Field"
+                        },
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "in"
+                          },
+                          "title": "Unrecognized Field"
+                        }
+                      ]
                     }
                   }
                 }
@@ -355,19 +1083,33 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         }
       ]
     },
-    "/contacts/{contact_id}": {
+    "/engagement/v1/contacts/{contact_id}": {
       "get": {
-        "operationId": "getContact",
-        "summary": "Get contact",
+        "operationId": "getEngagementContact",
+        "summary": "Get engagement contact",
         "tags": [
-          "Contacts"
+          "Engagement Contacts"
         ],
         "security": [
           {
@@ -376,16 +1118,225 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           }
         ],
         "responses": {
           "200": {
-            "description": "Contact",
+            "description": "Engagement Contact",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/contact"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+                    },
+                    "remote_id": {
+                      "type": "string",
+                      "example": 54312
+                    },
+                    "owner_id": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+                    },
+                    "first_name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "George"
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Xing"
+                    },
+                    "job_title": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "CEO"
+                    },
+                    "address": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "city": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "San Francisco"
+                        },
+                        "country": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "USA"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "94107"
+                        },
+                        "state": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "CA"
+                        },
+                        "street_1": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "525 Brannan"
+                        },
+                        "street_2": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        }
+                      },
+                      "required": [
+                        "city",
+                        "country",
+                        "postal_code",
+                        "state",
+                        "street_1",
+                        "street_2"
+                      ],
+                      "example": [
+                        {
+                          "city": "San Francisco",
+                          "country": "US",
+                          "postal_code": "94107",
+                          "state": "CA",
+                          "street_1": "525 Brannan",
+                          "street_2": null
+                        }
+                      ]
+                    },
+                    "email_addresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email_address": {
+                            "type": "string",
+                            "example": "hello@supaglue.com"
+                          },
+                          "email_address_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "personal",
+                              "work"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "email_address",
+                          "email_address_type"
+                        ]
+                      },
+                      "example": [
+                        {
+                          "email_address": "hello@supaglue.com",
+                          "email_address_type": "work"
+                        }
+                      ]
+                    },
+                    "phone_numbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "phone_number": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "+14151234567"
+                          },
+                          "phone_number_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "work",
+                              "home",
+                              "mobile",
+                              "other"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "phone_number",
+                          "phone_number_type"
+                        ]
+                      },
+                      "example": [
+                        {
+                          "phone_number": "+14151234567",
+                          "phone_number_type": "work"
+                        }
+                      ]
+                    },
+                    "open_count": {
+                      "type": "number"
+                    },
+                    "click_count": {
+                      "type": "number"
+                    },
+                    "reply_count": {
+                      "type": "number"
+                    },
+                    "bounced_count": {
+                      "type": "number"
+                    },
+                    "remote_created_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_updated_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_was_deleted": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "last_modified_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "raw_data": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "remote_id",
+                    "owner_id",
+                    "first_name",
+                    "last_name",
+                    "job_title",
+                    "address",
+                    "email_addresses",
+                    "phone_numbers",
+                    "open_count",
+                    "click_count",
+                    "reply_count",
+                    "bounced_count",
+                    "remote_created_at",
+                    "remote_updated_at",
+                    "remote_was_deleted",
+                    "last_modified_at"
+                  ]
                 }
               }
             }
@@ -393,10 +1344,10 @@
         }
       },
       "patch": {
-        "operationId": "updateContact",
-        "summary": "Update contact",
+        "operationId": "updateEngagementContact",
+        "summary": "Update engagement contact",
         "tags": [
-          "Contacts"
+          "Engagement Contacts"
         ],
         "security": [
           {
@@ -412,7 +1363,113 @@
                 "type": "object",
                 "properties": {
                   "model": {
-                    "$ref": "#/components/schemas/create_contact"
+                    "type": "object",
+                    "properties": {
+                      "first_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "George"
+                      },
+                      "last_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "Xing"
+                      },
+                      "job_title": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "CEO"
+                      },
+                      "address": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "city": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "San Francisco"
+                          },
+                          "country": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "USA"
+                          },
+                          "postal_code": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "94107"
+                          },
+                          "state": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "CA"
+                          },
+                          "street_1": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "525 Brannan"
+                          },
+                          "street_2": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          }
+                        },
+                        "required": [
+                          "city",
+                          "country",
+                          "postal_code",
+                          "state",
+                          "street_1",
+                          "street_2"
+                        ],
+                        "example": [
+                          {
+                            "city": "San Francisco",
+                            "country": "US",
+                            "postal_code": "94107",
+                            "state": "CA",
+                            "street_1": "525 Brannan",
+                            "street_2": null
+                          }
+                        ]
+                      },
+                      "email_addresses": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "email_address": {
+                              "type": "string",
+                              "example": "hello@supaglue.com"
+                            },
+                            "email_address_type": {
+                              "type": "string",
+                              "nullable": true,
+                              "enum": [
+                                "personal",
+                                "work"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "email_address",
+                            "email_address_type"
+                          ]
+                        },
+                        "example": [
+                          {
+                            "email_address": "hello@supaglue.com",
+                            "email_address_type": "work"
+                          }
+                        ]
+                      },
+                      "custom_fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
+                      }
+                    }
                   }
                 },
                 "required": [
@@ -457,23 +1514,364 @@
         },
         "responses": {
           "200": {
-            "description": "Contact updated",
+            "description": "Engagement Contact updated",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "errors": {
-                      "$ref": "#/components/schemas/errors"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "name is a required field on model."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "MISSING_REQUIRED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "irure consectetur"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Missing Required Field"
+                          }
+                        },
+                        "example": [
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "irure consectetur"
+                            },
+                            "title": "Missing Required Field"
+                          },
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "et"
+                            },
+                            "title": "Missing Required Field"
+                          }
+                        ]
+                      }
                     },
                     "logs": {
-                      "$ref": "#/components/schemas/logs"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "dashboard_view": {
+                            "type": "string",
+                            "example": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_id": {
+                            "type": "string",
+                            "example": "99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_summary": {
+                            "type": "object",
+                            "properties": {
+                              "method": {
+                                "type": "string",
+                                "example": "POST"
+                              },
+                              "status_code": {
+                                "type": "number",
+                                "example": 200
+                              },
+                              "url": {
+                                "type": "string",
+                                "example": "https://harvest.greenhouse.io/v1/candidates/"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        },
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        }
+                      ]
                     },
                     "model": {
-                      "$ref": "#/components/schemas/contact"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+                        },
+                        "remote_id": {
+                          "type": "string",
+                          "example": 54312
+                        },
+                        "owner_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "George"
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "Xing"
+                        },
+                        "job_title": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "CEO"
+                        },
+                        "address": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "city": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "San Francisco"
+                            },
+                            "country": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "USA"
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "94107"
+                            },
+                            "state": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "CA"
+                            },
+                            "street_1": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "525 Brannan"
+                            },
+                            "street_2": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": null
+                            }
+                          },
+                          "required": [
+                            "city",
+                            "country",
+                            "postal_code",
+                            "state",
+                            "street_1",
+                            "street_2"
+                          ],
+                          "example": [
+                            {
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ]
+                        },
+                        "email_addresses": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "email_address": {
+                                "type": "string",
+                                "example": "hello@supaglue.com"
+                              },
+                              "email_address_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": [
+                                  "personal",
+                                  "work"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "email_address",
+                              "email_address_type"
+                            ]
+                          },
+                          "example": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "work"
+                            }
+                          ]
+                        },
+                        "phone_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "phone_number": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "+14151234567"
+                              },
+                              "phone_number_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": [
+                                  "work",
+                                  "home",
+                                  "mobile",
+                                  "other"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "phone_number",
+                              "phone_number_type"
+                            ]
+                          },
+                          "example": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "work"
+                            }
+                          ]
+                        },
+                        "open_count": {
+                          "type": "number"
+                        },
+                        "click_count": {
+                          "type": "number"
+                        },
+                        "reply_count": {
+                          "type": "number"
+                        },
+                        "bounced_count": {
+                          "type": "number"
+                        },
+                        "remote_created_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_updated_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_was_deleted": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "last_modified_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "raw_data": {
+                          "type": "object",
+                          "additionalProperties": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "remote_id",
+                        "owner_id",
+                        "first_name",
+                        "last_name",
+                        "job_title",
+                        "address",
+                        "email_addresses",
+                        "phone_numbers",
+                        "open_count",
+                        "click_count",
+                        "reply_count",
+                        "bounced_count",
+                        "remote_created_at",
+                        "remote_updated_at",
+                        "remote_was_deleted",
+                        "last_modified_at"
+                      ]
                     },
                     "warnings": {
-                      "$ref": "#/components/schemas/warnings"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "An unrecognized field, age, was passed in with request data."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "UNRECOGNIZED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "Lorem ipsum"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Unrecognized Field"
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "Lorem ipsum"
+                          },
+                          "title": "Unrecognized Field"
+                        },
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "in"
+                          },
+                          "title": "Unrecognized Field"
+                        }
+                      ]
                     }
                   }
                 }
@@ -484,10 +1882,24 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         },
         {
           "name": "contact_id",
@@ -500,7 +1912,7 @@
         }
       ]
     },
-    "/users": {
+    "/engagement/v1/users": {
       "get": {
         "operationId": "getUsers",
         "tags": [
@@ -515,28 +1927,80 @@
         "description": "Get a list of users",
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_deleted_data"
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
           },
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           },
           {
-            "$ref": "#/components/parameters/created_after"
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
           },
           {
-            "$ref": "#/components/parameters/created_before"
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_after"
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_before"
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
           },
           {
-            "$ref": "#/components/parameters/cursor"
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
           },
           {
-            "$ref": "#/components/parameters/page_size"
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
           }
         ],
         "responses": {
@@ -547,7 +2011,19 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/pagination"
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+                        }
+                      }
                     },
                     {
                       "type": "object",
@@ -555,7 +2031,64 @@
                         "results": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/user"
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                              },
+                              "remote_id": {
+                                "type": "string",
+                                "example": 54312
+                              },
+                              "first_name": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "George"
+                              },
+                              "last_name": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "Xing"
+                              },
+                              "email": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "george@supaglue.com"
+                              },
+                              "remote_created_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_updated_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_was_deleted": {
+                                "type": "boolean",
+                                "example": false
+                              },
+                              "last_modified_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "remote_id",
+                              "first_name",
+                              "last_name",
+                              "email",
+                              "remote_created_at",
+                              "remote_updated_at",
+                              "remote_was_deleted",
+                              "last_modified_at"
+                            ]
                           }
                         }
                       }
@@ -597,14 +2130,28 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         }
       ]
     },
-    "/users/{user_id}": {
+    "/engagement/v1/users/{user_id}": {
       "get": {
         "operationId": "getUser",
         "summary": "Get user",
@@ -618,7 +2165,13 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           }
         ],
         "responses": {
@@ -627,7 +2180,64 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/user"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+                    },
+                    "remote_id": {
+                      "type": "string",
+                      "example": 54312
+                    },
+                    "first_name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "George"
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Xing"
+                    },
+                    "email": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "george@supaglue.com"
+                    },
+                    "remote_created_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_updated_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_was_deleted": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "last_modified_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "remote_id",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "remote_created_at",
+                    "remote_updated_at",
+                    "remote_was_deleted",
+                    "last_modified_at"
+                  ]
                 }
               }
             }
@@ -636,10 +2246,24 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         },
         {
           "name": "user_id",
@@ -652,7 +2276,7 @@
         }
       ]
     },
-    "/mailboxes": {
+    "/engagement/v1/mailboxes": {
       "get": {
         "operationId": "getMailboxes",
         "tags": [
@@ -667,28 +2291,80 @@
         "description": "Get a list of mailboxes",
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_deleted_data"
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
           },
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           },
           {
-            "$ref": "#/components/parameters/created_after"
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
           },
           {
-            "$ref": "#/components/parameters/created_before"
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_after"
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_before"
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
           },
           {
-            "$ref": "#/components/parameters/cursor"
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
           },
           {
-            "$ref": "#/components/parameters/page_size"
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
           }
         ],
         "responses": {
@@ -699,7 +2375,19 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/pagination"
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+                        }
+                      }
                     },
                     {
                       "type": "object",
@@ -707,7 +2395,58 @@
                         "results": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/mailbox"
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "e19a7c83-6480-46cc-9ea7-a5b82b30d04b"
+                              },
+                              "remote_id": {
+                                "type": "string",
+                                "example": 54312
+                              },
+                              "email": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": null
+                              },
+                              "user_id": {
+                                "nullable": true,
+                                "type": "string",
+                                "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+                              },
+                              "remote_created_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_updated_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_was_deleted": {
+                                "type": "boolean",
+                                "example": false
+                              },
+                              "last_modified_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "remote_id",
+                              "email",
+                              "user_id",
+                              "remote_created_at",
+                              "remote_updated_at",
+                              "remote_was_deleted",
+                              "last_modified_at"
+                            ]
                           }
                         }
                       }
@@ -747,14 +2486,28 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         }
       ]
     },
-    "/mailboxes/{mailbox_id}": {
+    "/engagement/v1/mailboxes/{mailbox_id}": {
       "get": {
         "operationId": "getMailbox",
         "summary": "Get mailbox",
@@ -768,7 +2521,13 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           }
         ],
         "responses": {
@@ -777,7 +2536,58 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/mailbox"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e19a7c83-6480-46cc-9ea7-a5b82b30d04b"
+                    },
+                    "remote_id": {
+                      "type": "string",
+                      "example": 54312
+                    },
+                    "email": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": null
+                    },
+                    "user_id": {
+                      "nullable": true,
+                      "type": "string",
+                      "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+                    },
+                    "remote_created_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_updated_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_was_deleted": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "last_modified_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "remote_id",
+                    "email",
+                    "user_id",
+                    "remote_created_at",
+                    "remote_updated_at",
+                    "remote_was_deleted",
+                    "last_modified_at"
+                  ]
                 }
               }
             }
@@ -786,10 +2596,24 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         },
         {
           "name": "mailbox_id",
@@ -802,7 +2626,7 @@
         }
       ]
     },
-    "/sequences": {
+    "/engagement/v1/sequences": {
       "get": {
         "operationId": "getSequences",
         "summary": "List sequences",
@@ -817,28 +2641,80 @@
         "description": "Get a list of sequences ",
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_deleted_data"
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
           },
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           },
           {
-            "$ref": "#/components/parameters/created_after"
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
           },
           {
-            "$ref": "#/components/parameters/created_before"
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_after"
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_before"
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
           },
           {
-            "$ref": "#/components/parameters/cursor"
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
           },
           {
-            "$ref": "#/components/parameters/page_size"
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
           }
         ],
         "responses": {
@@ -849,7 +2725,19 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/pagination"
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+                        }
+                      }
                     },
                     {
                       "type": "object",
@@ -857,7 +2745,87 @@
                         "results": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/sequence"
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "88588bae-3785-4223-81b7-0649012fdeda"
+                              },
+                              "owner_id": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "95fe0d29-e8cc-48ac-9afd-e02d8037a597"
+                              },
+                              "remote_id": {
+                                "type": "string",
+                                "example": 54312
+                              },
+                              "is_enabled": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "tags": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "num_steps": {
+                                "type": "number"
+                              },
+                              "schedule_count": {
+                                "type": "number"
+                              },
+                              "open_count": {
+                                "type": "number"
+                              },
+                              "opt_out_count": {
+                                "type": "number"
+                              },
+                              "reply_count": {
+                                "type": "number"
+                              },
+                              "click_count": {
+                                "type": "number"
+                              },
+                              "remote_created_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_updated_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "last_modified_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "remote_id",
+                              "is_enabled",
+                              "name",
+                              "tags",
+                              "num_steps",
+                              "schedule_count",
+                              "open_count",
+                              "opt_out_count",
+                              "reply_count",
+                              "click_count",
+                              "remote_created_at",
+                              "remote_updated_at",
+                              "last_modified_at"
+                            ]
                           }
                         }
                       }
@@ -899,14 +2867,28 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         }
       ]
     },
-    "/sequences/{sequence_id}": {
+    "/engagement/v1/sequences/{sequence_id}": {
       "get": {
         "operationId": "getSequence",
         "summary": "Get sequence",
@@ -920,7 +2902,13 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           }
         ],
         "responses": {
@@ -929,7 +2917,87 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/sequence"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "88588bae-3785-4223-81b7-0649012fdeda"
+                    },
+                    "owner_id": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "95fe0d29-e8cc-48ac-9afd-e02d8037a597"
+                    },
+                    "remote_id": {
+                      "type": "string",
+                      "example": 54312
+                    },
+                    "is_enabled": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "name": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "num_steps": {
+                      "type": "number"
+                    },
+                    "schedule_count": {
+                      "type": "number"
+                    },
+                    "open_count": {
+                      "type": "number"
+                    },
+                    "opt_out_count": {
+                      "type": "number"
+                    },
+                    "reply_count": {
+                      "type": "number"
+                    },
+                    "click_count": {
+                      "type": "number"
+                    },
+                    "remote_created_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_updated_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "last_modified_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "remote_id",
+                    "is_enabled",
+                    "name",
+                    "tags",
+                    "num_steps",
+                    "schedule_count",
+                    "open_count",
+                    "opt_out_count",
+                    "reply_count",
+                    "click_count",
+                    "remote_created_at",
+                    "remote_updated_at",
+                    "last_modified_at"
+                  ]
                 }
               }
             }
@@ -938,10 +3006,24 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         },
         {
           "name": "sequence_id",
@@ -954,7 +3036,7 @@
         }
       ]
     },
-    "/sequence_states": {
+    "/engagement/v1/sequence_states": {
       "get": {
         "operationId": "getSequenceStates",
         "tags": [
@@ -969,28 +3051,80 @@
         "description": "Get a list of sequence states",
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_deleted_data"
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
           },
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           },
           {
-            "$ref": "#/components/parameters/created_after"
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
           },
           {
-            "$ref": "#/components/parameters/created_before"
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_after"
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
           },
           {
-            "$ref": "#/components/parameters/modified_before"
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
           },
           {
-            "$ref": "#/components/parameters/cursor"
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
           },
           {
-            "$ref": "#/components/parameters/page_size"
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
           }
         ],
         "responses": {
@@ -1001,7 +3135,19 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/pagination"
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+                        }
+                      }
                     },
                     {
                       "type": "object",
@@ -1009,7 +3155,70 @@
                         "results": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/sequence_state"
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "e19a7c83-6480-46cc-9ea7-a5b82b30d04b"
+                              },
+                              "remote_id": {
+                                "type": "string",
+                                "example": 54312
+                              },
+                              "state": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "active"
+                              },
+                              "contact_id": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "c590dc63-8e43-48a4-8154-1fbb00ac936b"
+                              },
+                              "mailbox_id": {
+                                "nullable": true,
+                                "type": "string",
+                                "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+                              },
+                              "sequence_id": {
+                                "nullable": true,
+                                "type": "string",
+                                "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
+                              },
+                              "remote_created_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_updated_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_was_deleted": {
+                                "type": "boolean",
+                                "example": false
+                              },
+                              "last_modified_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "remote_id",
+                              "state",
+                              "mailbox_id",
+                              "contact_id",
+                              "sequence_id",
+                              "remote_created_at",
+                              "remote_updated_at",
+                              "remote_was_deleted",
+                              "last_modified_at"
+                            ]
                           }
                         }
                       }
@@ -1070,7 +3279,26 @@
                 "type": "object",
                 "properties": {
                   "model": {
-                    "$ref": "#/components/schemas/create_sequence_state"
+                    "type": "object",
+                    "properties": {
+                      "contact_id": {
+                        "type": "string",
+                        "example": "c590dc63-8e43-48a4-8154-1fbb00ac936b"
+                      },
+                      "mailbox_id": {
+                        "type": "string",
+                        "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+                      },
+                      "sequence_id": {
+                        "type": "string",
+                        "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
+                      }
+                    },
+                    "required": [
+                      "contact_id",
+                      "mailbox_id",
+                      "sequence_id"
+                    ]
                   }
                 },
                 "required": [
@@ -1100,16 +3328,217 @@
                   "type": "object",
                   "properties": {
                     "errors": {
-                      "$ref": "#/components/schemas/errors"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "name is a required field on model."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "MISSING_REQUIRED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "irure consectetur"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Missing Required Field"
+                          }
+                        },
+                        "example": [
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "irure consectetur"
+                            },
+                            "title": "Missing Required Field"
+                          },
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "et"
+                            },
+                            "title": "Missing Required Field"
+                          }
+                        ]
+                      }
                     },
                     "logs": {
-                      "$ref": "#/components/schemas/logs"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "dashboard_view": {
+                            "type": "string",
+                            "example": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_id": {
+                            "type": "string",
+                            "example": "99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_summary": {
+                            "type": "object",
+                            "properties": {
+                              "method": {
+                                "type": "string",
+                                "example": "POST"
+                              },
+                              "status_code": {
+                                "type": "number",
+                                "example": 200
+                              },
+                              "url": {
+                                "type": "string",
+                                "example": "https://harvest.greenhouse.io/v1/candidates/"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        },
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        }
+                      ]
                     },
                     "model": {
-                      "$ref": "#/components/schemas/sequence_state"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "e19a7c83-6480-46cc-9ea7-a5b82b30d04b"
+                        },
+                        "remote_id": {
+                          "type": "string",
+                          "example": 54312
+                        },
+                        "state": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "active"
+                        },
+                        "contact_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "c590dc63-8e43-48a4-8154-1fbb00ac936b"
+                        },
+                        "mailbox_id": {
+                          "nullable": true,
+                          "type": "string",
+                          "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+                        },
+                        "sequence_id": {
+                          "nullable": true,
+                          "type": "string",
+                          "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
+                        },
+                        "remote_created_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_updated_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_was_deleted": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "last_modified_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "remote_id",
+                        "state",
+                        "mailbox_id",
+                        "contact_id",
+                        "sequence_id",
+                        "remote_created_at",
+                        "remote_updated_at",
+                        "remote_was_deleted",
+                        "last_modified_at"
+                      ]
                     },
                     "warnings": {
-                      "$ref": "#/components/schemas/warnings"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "An unrecognized field, age, was passed in with request data."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "UNRECOGNIZED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "Lorem ipsum"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Unrecognized Field"
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "Lorem ipsum"
+                          },
+                          "title": "Unrecognized Field"
+                        },
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "in"
+                          },
+                          "title": "Unrecognized Field"
+                        }
+                      ]
                     }
                   }
                 }
@@ -1120,14 +3549,28 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         }
       ]
     },
-    "/sequence_states/{sequence_state_id}": {
+    "/engagement/v1/sequence_states/{sequence_state_id}": {
       "get": {
         "operationId": "getSequenceState",
         "summary": "Get sequence state",
@@ -1141,7 +3584,13 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/include_raw_data"
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
           }
         ],
         "responses": {
@@ -1150,7 +3599,70 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/sequence_state"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "e19a7c83-6480-46cc-9ea7-a5b82b30d04b"
+                    },
+                    "remote_id": {
+                      "type": "string",
+                      "example": 54312
+                    },
+                    "state": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "active"
+                    },
+                    "contact_id": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "c590dc63-8e43-48a4-8154-1fbb00ac936b"
+                    },
+                    "mailbox_id": {
+                      "nullable": true,
+                      "type": "string",
+                      "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+                    },
+                    "sequence_id": {
+                      "nullable": true,
+                      "type": "string",
+                      "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
+                    },
+                    "remote_created_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_updated_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_was_deleted": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "last_modified_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "remote_id",
+                    "state",
+                    "mailbox_id",
+                    "contact_id",
+                    "sequence_id",
+                    "remote_created_at",
+                    "remote_updated_at",
+                    "remote_was_deleted",
+                    "last_modified_at"
+                  ]
                 }
               }
             }
@@ -1159,10 +3671,24 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/x-customer-id"
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         },
         {
           "name": "sequence_state_id",
@@ -1178,28 +3704,28 @@
   },
   "tags": [
     {
-      "name": "Contacts",
+      "name": "Engagement Contacts",
       "description": "The `Contact` Common Model is used to represent a \"contact\" in Engagements."
     },
     {
-      "name": "Sequences",
+      "name": "Engagement Sequences",
       "description": "The `Sequence` Common Model is used to represent a \"sequence\" in Engagements."
     },
     {
-      "name": "Sequence States",
-      "description": "The `Sequence State` Common Model is used to represent the state of a contact in a sequence."
+      "name": "Engagement Sequence States",
+      "description": "The `Sequence State` Common Model is used to represent the state of a contact in a sequence in Engagements."
     },
     {
-      "name": "Users",
+      "name": "Engagement Users",
       "description": "The `User` Common Model is used to represent a \"user\" in Engagements."
     },
     {
-      "name": "Mailboxes",
-      "description": "The `Mailbox` Common Model is used to represent email mailbox, used within the application for sending and syncing emails"
+      "name": "Engagement Mailboxes",
+      "description": "The `Mailbox` Common Model is used to represent email mailbox, used within the application for sending and syncing emails in Engagements."
     },
     {
-      "name": "Passthrough",
-      "description": "Passthrough operations to underlying providers."
+      "name": "Engagement Passthrough",
+      "description": "Passthrough operations to underlying Engagement providers."
     }
   ],
   "components": {
@@ -1244,10 +3770,88 @@
             "example": "CEO"
           },
           "address": {
-            "$ref": "#/components/schemas/address"
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "city": {
+                "type": "string",
+                "nullable": true,
+                "example": "San Francisco"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "example": "USA"
+              },
+              "postal_code": {
+                "type": "string",
+                "nullable": true,
+                "example": "94107"
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "example": "CA"
+              },
+              "street_1": {
+                "type": "string",
+                "nullable": true,
+                "example": "525 Brannan"
+              },
+              "street_2": {
+                "type": "string",
+                "nullable": true,
+                "example": null
+              }
+            },
+            "required": [
+              "city",
+              "country",
+              "postal_code",
+              "state",
+              "street_1",
+              "street_2"
+            ],
+            "example": [
+              {
+                "city": "San Francisco",
+                "country": "US",
+                "postal_code": "94107",
+                "state": "CA",
+                "street_1": "525 Brannan",
+                "street_2": null
+              }
+            ]
           },
           "email_addresses": {
-            "$ref": "#/components/schemas/email_addresses"
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email_address": {
+                  "type": "string",
+                  "example": "hello@supaglue.com"
+                },
+                "email_address_type": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": [
+                    "personal",
+                    "work"
+                  ]
+                }
+              },
+              "required": [
+                "email_address",
+                "email_address_type"
+              ]
+            },
+            "example": [
+              {
+                "email_address": "hello@supaglue.com",
+                "email_address_type": "work"
+              }
+            ]
           },
           "phone_numbers": {
             "type": "array",
@@ -1359,18 +3963,93 @@
             "example": "CEO"
           },
           "address": {
-            "$ref": "#/components/schemas/address"
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "city": {
+                "type": "string",
+                "nullable": true,
+                "example": "San Francisco"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "example": "USA"
+              },
+              "postal_code": {
+                "type": "string",
+                "nullable": true,
+                "example": "94107"
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "example": "CA"
+              },
+              "street_1": {
+                "type": "string",
+                "nullable": true,
+                "example": "525 Brannan"
+              },
+              "street_2": {
+                "type": "string",
+                "nullable": true,
+                "example": null
+              }
+            },
+            "required": [
+              "city",
+              "country",
+              "postal_code",
+              "state",
+              "street_1",
+              "street_2"
+            ],
+            "example": [
+              {
+                "city": "San Francisco",
+                "country": "US",
+                "postal_code": "94107",
+                "state": "CA",
+                "street_1": "525 Brannan",
+                "street_2": null
+              }
+            ]
           },
           "email_addresses": {
-            "$ref": "#/components/schemas/email_addresses"
-          },
-          "owner_id": {
-            "type": "string",
-            "nullable": true,
-            "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "email_address": {
+                  "type": "string",
+                  "example": "hello@supaglue.com"
+                },
+                "email_address_type": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": [
+                    "personal",
+                    "work"
+                  ]
+                }
+              },
+              "required": [
+                "email_address",
+                "email_address_type"
+              ]
+            },
+            "example": [
+              {
+                "email_address": "hello@supaglue.com",
+                "email_address_type": "work"
+              }
+            ]
           },
           "custom_fields": {
-            "$ref": "#/components/schemas/custom_fields"
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
           }
         }
       },

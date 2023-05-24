@@ -1,8 +1,8 @@
 get:
-  operationId: getContact
-  summary: Get contact
+  operationId: getCrmContact
+  summary: Get CRM contact
   tags:
-    - Contacts
+    - CRM Contacts
   security:
     - ApiKeyAuth: []
   parameters:
@@ -15,10 +15,10 @@ get:
           schema:
             $ref: ../components/schemas/objects/contact.yaml
 patch:
-  operationId: updateContact
-  summary: Update contact
+  operationId: updateCrmContact
+  summary: Update CRM contact
   tags:
-    - Contacts
+    - CRM Contacts
   security:
     - ApiKeyAuth: []
   parameters: []
@@ -42,7 +42,7 @@ patch:
                 account_id: 0ce05511-adbc-4144-a049-6631c7ea3b04
   responses:
     200:
-      description: Contact updated
+      description: Contact CRM updated
       content:
         application/json:
           schema:

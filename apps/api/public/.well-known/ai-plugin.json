@@ -1,0 +1,22 @@
+{
+    "schema_version": "v1",
+    "name_for_human": "Unified CRM API",
+    "name_for_model": "unified_crm_api",
+    "description_for_human": "Plugin for managing reads, searches, and writes to your CRM.",
+    "description_for_model": "Plugin for managing reads, searches, and writes to your CRM.",
+    "auth": {
+      "type": "service_http",
+      "authorization_type": "bearer",
+      "verification_tokens": {
+        "openai": "d718451aaf2b44b9982c37d0baec4677"
+      }
+    },
+    "api": {
+      "type": "openapi",
+      "url": "https://supaglue-tom.ngrok.io/crm.openapi.bundle.json",
+      "is_user_authenticated": false
+    },
+    "logo_url": "https://app.supaglue.io/favicon.ico",
+    "contact_email": "support@supaglue.com",
+    "legal_info_url": "https://docs.supaglue.com/security_legal/terms"
+  }

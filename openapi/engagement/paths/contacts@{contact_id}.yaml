@@ -1,24 +1,24 @@
 get:
-  operationId: getContact
-  summary: Get contact
+  operationId: getEngagementContact
+  summary: Get engagement contact
   tags:
-    - Contacts
+    - Engagement Contacts
   security:
     - ApiKeyAuth: []
   parameters:
     - $ref: ../../common/components/parameters/query/include_raw_data.yaml
   responses:
     200:
-      description: Contact
+      description: Engagement Contact
       content:
         application/json:
           schema:
             $ref: ../components/schemas/objects/contact.yaml
 patch:
-  operationId: updateContact
-  summary: Update contact
+  operationId: updateEngagementContact
+  summary: Update engagement contact
   tags:
-    - Contacts
+    - Engagement Contacts
   security:
     - ApiKeyAuth: []
   parameters: []
@@ -57,7 +57,7 @@ patch:
                 remote_created_at: '2023-02-27T00:00:00Z'
   responses:
     200:
-      description: Contact updated
+      description: Engagement Contact updated
       content:
         application/json:
           schema:

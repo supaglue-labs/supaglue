@@ -21,6 +21,1741 @@
     }
   ],
   "paths": {
+    "/engagement/v1/contacts": {
+      "get": {
+        "operationId": "getEngagementContacts",
+        "tags": [
+          "Engagement Contacts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List engagement contacts",
+        "description": "Get a list of engagement contacts",
+        "parameters": [
+          {
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
+          },
+          {
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
+          },
+          {
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
+          },
+          {
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Engagement Contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+                              },
+                              "remote_id": {
+                                "type": "string",
+                                "example": 54312
+                              },
+                              "owner_id": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+                              },
+                              "first_name": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "George"
+                              },
+                              "last_name": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "Xing"
+                              },
+                              "job_title": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "CEO"
+                              },
+                              "address": {
+                                "type": "object",
+                                "nullable": true,
+                                "properties": {
+                                  "city": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "San Francisco"
+                                  },
+                                  "country": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "USA"
+                                  },
+                                  "postal_code": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "94107"
+                                  },
+                                  "state": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "CA"
+                                  },
+                                  "street_1": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": "525 Brannan"
+                                  },
+                                  "street_2": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "example": null
+                                  }
+                                },
+                                "required": [
+                                  "city",
+                                  "country",
+                                  "postal_code",
+                                  "state",
+                                  "street_1",
+                                  "street_2"
+                                ],
+                                "example": [
+                                  {
+                                    "city": "San Francisco",
+                                    "country": "US",
+                                    "postal_code": "94107",
+                                    "state": "CA",
+                                    "street_1": "525 Brannan",
+                                    "street_2": null
+                                  }
+                                ]
+                              },
+                              "email_addresses": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "email_address": {
+                                      "type": "string",
+                                      "example": "hello@supaglue.com"
+                                    },
+                                    "email_address_type": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "enum": [
+                                        "personal",
+                                        "work"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "email_address",
+                                    "email_address_type"
+                                  ]
+                                },
+                                "example": [
+                                  {
+                                    "email_address": "hello@supaglue.com",
+                                    "email_address_type": "work"
+                                  }
+                                ]
+                              },
+                              "phone_numbers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "phone_number": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "example": "+14151234567"
+                                    },
+                                    "phone_number_type": {
+                                      "type": "string",
+                                      "nullable": true,
+                                      "enum": [
+                                        "work",
+                                        "home",
+                                        "mobile",
+                                        "other"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "phone_number",
+                                    "phone_number_type"
+                                  ]
+                                },
+                                "example": [
+                                  {
+                                    "phone_number": "+14151234567",
+                                    "phone_number_type": "work"
+                                  }
+                                ]
+                              },
+                              "open_count": {
+                                "type": "number"
+                              },
+                              "click_count": {
+                                "type": "number"
+                              },
+                              "reply_count": {
+                                "type": "number"
+                              },
+                              "bounced_count": {
+                                "type": "number"
+                              },
+                              "remote_created_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_updated_at": {
+                                "type": "string",
+                                "nullable": true,
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "remote_was_deleted": {
+                                "type": "boolean",
+                                "example": false
+                              },
+                              "last_modified_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2022-02-27T00:00:00Z"
+                              },
+                              "raw_data": {
+                                "type": "object",
+                                "additionalProperties": true
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "remote_id",
+                              "owner_id",
+                              "first_name",
+                              "last_name",
+                              "job_title",
+                              "address",
+                              "email_addresses",
+                              "phone_numbers",
+                              "open_count",
+                              "click_count",
+                              "reply_count",
+                              "bounced_count",
+                              "remote_created_at",
+                              "remote_updated_at",
+                              "remote_was_deleted",
+                              "last_modified_at"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
+                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
+                      "results": [
+                        {
+                          "id": "4dec71a1-e789-4006-84fe-1a797202dddb",
+                          "address": {
+                            "city": "San Francisco",
+                            "country": "USA",
+                            "street_1": "525 Brannan St",
+                            "street_2": null,
+                            "postalCode": "94107",
+                            "state": "CA"
+                          },
+                          "email_addresses": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "workline2"
+                            }
+                          ],
+                          "first_name": "George",
+                          "remote_id": 1234,
+                          "last_name": "Xing",
+                          "phone_numbers": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "mobile"
+                            }
+                          ],
+                          "remote_created_at": "2023-02-27T00:00:00Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createEngagementContact",
+        "summary": "Create engagement contact",
+        "tags": [
+          "Engagement Contacts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "type": "object",
+                    "properties": {
+                      "first_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "George"
+                      },
+                      "last_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "Xing"
+                      },
+                      "job_title": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "CEO"
+                      },
+                      "address": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "city": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "San Francisco"
+                          },
+                          "country": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "USA"
+                          },
+                          "postal_code": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "94107"
+                          },
+                          "state": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "CA"
+                          },
+                          "street_1": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "525 Brannan"
+                          },
+                          "street_2": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          }
+                        },
+                        "required": [
+                          "city",
+                          "country",
+                          "postal_code",
+                          "state",
+                          "street_1",
+                          "street_2"
+                        ],
+                        "example": [
+                          {
+                            "city": "San Francisco",
+                            "country": "US",
+                            "postal_code": "94107",
+                            "state": "CA",
+                            "street_1": "525 Brannan",
+                            "street_2": null
+                          }
+                        ]
+                      },
+                      "email_addresses": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "email_address": {
+                              "type": "string",
+                              "example": "hello@supaglue.com"
+                            },
+                            "email_address_type": {
+                              "type": "string",
+                              "nullable": true,
+                              "enum": [
+                                "personal",
+                                "work"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "email_address",
+                            "email_address_type"
+                          ]
+                        },
+                        "example": [
+                          {
+                            "email_address": "hello@supaglue.com",
+                            "email_address_type": "work"
+                          }
+                        ]
+                      },
+                      "custom_fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "example": {
+                "model": {
+                  "id": "ed7ce0f0.8.39-4b73-bf01-4e8e0296ef80",
+                  "address": {
+                    "city": "San Francisco",
+                    "country": "USA",
+                    "street_1": "525 Brannan St",
+                    "street_2": null,
+                    "postalCode": "94107",
+                    "state": "CA"
+                  },
+                  "email_addresses": [
+                    {
+                      "email_address": "hello@supaglue.com",
+                      "email_address_type": "workline2"
+                    }
+                  ],
+                  "first_name": "George",
+                  "remote_id": 1234,
+                  "last_name": "Xing",
+                  "phone_numbers": [
+                    {
+                      "phone_number": "+14151234567",
+                      "phone_number_type": "mobile"
+                    }
+                  ],
+                  "remote_created_at": "2023-02-27T00:00:00Z"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Engagement contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "name is a required field on model."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "MISSING_REQUIRED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "irure consectetur"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Missing Required Field"
+                          }
+                        },
+                        "example": [
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "irure consectetur"
+                            },
+                            "title": "Missing Required Field"
+                          },
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "et"
+                            },
+                            "title": "Missing Required Field"
+                          }
+                        ]
+                      }
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "dashboard_view": {
+                            "type": "string",
+                            "example": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_id": {
+                            "type": "string",
+                            "example": "99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_summary": {
+                            "type": "object",
+                            "properties": {
+                              "method": {
+                                "type": "string",
+                                "example": "POST"
+                              },
+                              "status_code": {
+                                "type": "number",
+                                "example": 200
+                              },
+                              "url": {
+                                "type": "string",
+                                "example": "https://harvest.greenhouse.io/v1/candidates/"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        },
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        }
+                      ]
+                    },
+                    "model": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+                        },
+                        "remote_id": {
+                          "type": "string",
+                          "example": 54312
+                        },
+                        "owner_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "George"
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "Xing"
+                        },
+                        "job_title": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "CEO"
+                        },
+                        "address": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "city": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "San Francisco"
+                            },
+                            "country": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "USA"
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "94107"
+                            },
+                            "state": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "CA"
+                            },
+                            "street_1": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "525 Brannan"
+                            },
+                            "street_2": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": null
+                            }
+                          },
+                          "required": [
+                            "city",
+                            "country",
+                            "postal_code",
+                            "state",
+                            "street_1",
+                            "street_2"
+                          ],
+                          "example": [
+                            {
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ]
+                        },
+                        "email_addresses": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "email_address": {
+                                "type": "string",
+                                "example": "hello@supaglue.com"
+                              },
+                              "email_address_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": [
+                                  "personal",
+                                  "work"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "email_address",
+                              "email_address_type"
+                            ]
+                          },
+                          "example": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "work"
+                            }
+                          ]
+                        },
+                        "phone_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "phone_number": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "+14151234567"
+                              },
+                              "phone_number_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": [
+                                  "work",
+                                  "home",
+                                  "mobile",
+                                  "other"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "phone_number",
+                              "phone_number_type"
+                            ]
+                          },
+                          "example": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "work"
+                            }
+                          ]
+                        },
+                        "open_count": {
+                          "type": "number"
+                        },
+                        "click_count": {
+                          "type": "number"
+                        },
+                        "reply_count": {
+                          "type": "number"
+                        },
+                        "bounced_count": {
+                          "type": "number"
+                        },
+                        "remote_created_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_updated_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_was_deleted": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "last_modified_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "raw_data": {
+                          "type": "object",
+                          "additionalProperties": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "remote_id",
+                        "owner_id",
+                        "first_name",
+                        "last_name",
+                        "job_title",
+                        "address",
+                        "email_addresses",
+                        "phone_numbers",
+                        "open_count",
+                        "click_count",
+                        "reply_count",
+                        "bounced_count",
+                        "remote_created_at",
+                        "remote_updated_at",
+                        "remote_was_deleted",
+                        "last_modified_at"
+                      ]
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "An unrecognized field, age, was passed in with request data."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "UNRECOGNIZED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "Lorem ipsum"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Unrecognized Field"
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "Lorem ipsum"
+                          },
+                          "title": "Unrecognized Field"
+                        },
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "in"
+                          },
+                          "title": "Unrecognized Field"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
+        },
+        {
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
+        }
+      ]
+    },
+    "/engagement/v1/contacts/{contact_id}": {
+      "get": {
+        "operationId": "getEngagementContact",
+        "summary": "Get engagement contact",
+        "tags": [
+          "Engagement Contacts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "include_raw_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include raw data fetched from the 3rd party provider."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Engagement Contact",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+                    },
+                    "remote_id": {
+                      "type": "string",
+                      "example": 54312
+                    },
+                    "owner_id": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+                    },
+                    "first_name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "George"
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Xing"
+                    },
+                    "job_title": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "CEO"
+                    },
+                    "address": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "city": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "San Francisco"
+                        },
+                        "country": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "USA"
+                        },
+                        "postal_code": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "94107"
+                        },
+                        "state": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "CA"
+                        },
+                        "street_1": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "525 Brannan"
+                        },
+                        "street_2": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        }
+                      },
+                      "required": [
+                        "city",
+                        "country",
+                        "postal_code",
+                        "state",
+                        "street_1",
+                        "street_2"
+                      ],
+                      "example": [
+                        {
+                          "city": "San Francisco",
+                          "country": "US",
+                          "postal_code": "94107",
+                          "state": "CA",
+                          "street_1": "525 Brannan",
+                          "street_2": null
+                        }
+                      ]
+                    },
+                    "email_addresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email_address": {
+                            "type": "string",
+                            "example": "hello@supaglue.com"
+                          },
+                          "email_address_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "personal",
+                              "work"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "email_address",
+                          "email_address_type"
+                        ]
+                      },
+                      "example": [
+                        {
+                          "email_address": "hello@supaglue.com",
+                          "email_address_type": "work"
+                        }
+                      ]
+                    },
+                    "phone_numbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "phone_number": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "+14151234567"
+                          },
+                          "phone_number_type": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": [
+                              "work",
+                              "home",
+                              "mobile",
+                              "other"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "phone_number",
+                          "phone_number_type"
+                        ]
+                      },
+                      "example": [
+                        {
+                          "phone_number": "+14151234567",
+                          "phone_number_type": "work"
+                        }
+                      ]
+                    },
+                    "open_count": {
+                      "type": "number"
+                    },
+                    "click_count": {
+                      "type": "number"
+                    },
+                    "reply_count": {
+                      "type": "number"
+                    },
+                    "bounced_count": {
+                      "type": "number"
+                    },
+                    "remote_created_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_updated_at": {
+                      "type": "string",
+                      "nullable": true,
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "remote_was_deleted": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "last_modified_at": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2022-02-27T00:00:00Z"
+                    },
+                    "raw_data": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "remote_id",
+                    "owner_id",
+                    "first_name",
+                    "last_name",
+                    "job_title",
+                    "address",
+                    "email_addresses",
+                    "phone_numbers",
+                    "open_count",
+                    "click_count",
+                    "reply_count",
+                    "bounced_count",
+                    "remote_created_at",
+                    "remote_updated_at",
+                    "remote_was_deleted",
+                    "last_modified_at"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateEngagementContact",
+        "summary": "Update engagement contact",
+        "tags": [
+          "Engagement Contacts"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "type": "object",
+                    "properties": {
+                      "first_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "George"
+                      },
+                      "last_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "Xing"
+                      },
+                      "job_title": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "CEO"
+                      },
+                      "address": {
+                        "type": "object",
+                        "nullable": true,
+                        "properties": {
+                          "city": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "San Francisco"
+                          },
+                          "country": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "USA"
+                          },
+                          "postal_code": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "94107"
+                          },
+                          "state": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "CA"
+                          },
+                          "street_1": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "525 Brannan"
+                          },
+                          "street_2": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          }
+                        },
+                        "required": [
+                          "city",
+                          "country",
+                          "postal_code",
+                          "state",
+                          "street_1",
+                          "street_2"
+                        ],
+                        "example": [
+                          {
+                            "city": "San Francisco",
+                            "country": "US",
+                            "postal_code": "94107",
+                            "state": "CA",
+                            "street_1": "525 Brannan",
+                            "street_2": null
+                          }
+                        ]
+                      },
+                      "email_addresses": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "email_address": {
+                              "type": "string",
+                              "example": "hello@supaglue.com"
+                            },
+                            "email_address_type": {
+                              "type": "string",
+                              "nullable": true,
+                              "enum": [
+                                "personal",
+                                "work"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "email_address",
+                            "email_address_type"
+                          ]
+                        },
+                        "example": [
+                          {
+                            "email_address": "hello@supaglue.com",
+                            "email_address_type": "work"
+                          }
+                        ]
+                      },
+                      "custom_fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "model": {
+                      "id": "6c018f45-f584-4ba8-b1a8-658bb29d300e",
+                      "address": {
+                        "city": "San Francisco",
+                        "country": "USA",
+                        "street_1": "525 Brannan St",
+                        "street_2": null,
+                        "postalCode": "94107",
+                        "state": "CA"
+                      },
+                      "email_addresses": [
+                        {
+                          "email_address": "hello@supaglue.com",
+                          "email_address_type": "workline2"
+                        }
+                      ],
+                      "first_name": "George",
+                      "remote_id": 1234,
+                      "last_name": "Xing",
+                      "phone_numbers": [
+                        {
+                          "phone_number": "+14151234567",
+                          "phone_number_type": "mobile"
+                        }
+                      ],
+                      "remote_created_at": "2023-02-27T00:00:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Engagement Contact updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "name is a required field on model."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "MISSING_REQUIRED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "irure consectetur"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Missing Required Field"
+                          }
+                        },
+                        "example": [
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "irure consectetur"
+                            },
+                            "title": "Missing Required Field"
+                          },
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "et"
+                            },
+                            "title": "Missing Required Field"
+                          }
+                        ]
+                      }
+                    },
+                    "logs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "dashboard_view": {
+                            "type": "string",
+                            "example": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_id": {
+                            "type": "string",
+                            "example": "99433219-8017-4acd-bb3c-ceb23d663832"
+                          },
+                          "log_summary": {
+                            "type": "object",
+                            "properties": {
+                              "method": {
+                                "type": "string",
+                                "example": "POST"
+                              },
+                              "status_code": {
+                                "type": "number",
+                                "example": 200
+                              },
+                              "url": {
+                                "type": "string",
+                                "example": "https://harvest.greenhouse.io/v1/candidates/"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        },
+                        {
+                          "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+                          "log_summary": {
+                            "method": "POST",
+                            "status_code": 200,
+                            "url": "https://harvest.greenhouse.io/v1/candidates/"
+                          }
+                        }
+                      ]
+                    },
+                    "model": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
+                        },
+                        "remote_id": {
+                          "type": "string",
+                          "example": 54312
+                        },
+                        "owner_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+                        },
+                        "first_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "George"
+                        },
+                        "last_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "Xing"
+                        },
+                        "job_title": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "CEO"
+                        },
+                        "address": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "city": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "San Francisco"
+                            },
+                            "country": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "USA"
+                            },
+                            "postal_code": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "94107"
+                            },
+                            "state": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "CA"
+                            },
+                            "street_1": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": "525 Brannan"
+                            },
+                            "street_2": {
+                              "type": "string",
+                              "nullable": true,
+                              "example": null
+                            }
+                          },
+                          "required": [
+                            "city",
+                            "country",
+                            "postal_code",
+                            "state",
+                            "street_1",
+                            "street_2"
+                          ],
+                          "example": [
+                            {
+                              "city": "San Francisco",
+                              "country": "US",
+                              "postal_code": "94107",
+                              "state": "CA",
+                              "street_1": "525 Brannan",
+                              "street_2": null
+                            }
+                          ]
+                        },
+                        "email_addresses": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "email_address": {
+                                "type": "string",
+                                "example": "hello@supaglue.com"
+                              },
+                              "email_address_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": [
+                                  "personal",
+                                  "work"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "email_address",
+                              "email_address_type"
+                            ]
+                          },
+                          "example": [
+                            {
+                              "email_address": "hello@supaglue.com",
+                              "email_address_type": "work"
+                            }
+                          ]
+                        },
+                        "phone_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "phone_number": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "+14151234567"
+                              },
+                              "phone_number_type": {
+                                "type": "string",
+                                "nullable": true,
+                                "enum": [
+                                  "work",
+                                  "home",
+                                  "mobile",
+                                  "other"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "phone_number",
+                              "phone_number_type"
+                            ]
+                          },
+                          "example": [
+                            {
+                              "phone_number": "+14151234567",
+                              "phone_number_type": "work"
+                            }
+                          ]
+                        },
+                        "open_count": {
+                          "type": "number"
+                        },
+                        "click_count": {
+                          "type": "number"
+                        },
+                        "reply_count": {
+                          "type": "number"
+                        },
+                        "bounced_count": {
+                          "type": "number"
+                        },
+                        "remote_created_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_updated_at": {
+                          "type": "string",
+                          "nullable": true,
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "remote_was_deleted": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "last_modified_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2022-02-27T00:00:00Z"
+                        },
+                        "raw_data": {
+                          "type": "object",
+                          "additionalProperties": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "remote_id",
+                        "owner_id",
+                        "first_name",
+                        "last_name",
+                        "job_title",
+                        "address",
+                        "email_addresses",
+                        "phone_numbers",
+                        "open_count",
+                        "click_count",
+                        "reply_count",
+                        "bounced_count",
+                        "remote_created_at",
+                        "remote_updated_at",
+                        "remote_was_deleted",
+                        "last_modified_at"
+                      ]
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "An unrecognized field, age, was passed in with request data."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "UNRECOGNIZED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "Lorem ipsum"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Unrecognized Field"
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "Lorem ipsum"
+                          },
+                          "title": "Unrecognized Field"
+                        },
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "in"
+                          },
+                          "title": "Unrecognized Field"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "x-customer-id",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "description": "The customer ID that uniquely identifies the customer in your application",
+          "required": true
+        },
+        {
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
+        },
+        {
+          "name": "contact_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/crm/v1/accounts": {
       "get": {
         "operationId": "getAccounts",

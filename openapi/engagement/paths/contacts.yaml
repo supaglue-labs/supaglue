@@ -1,12 +1,12 @@
 get:
-  operationId: getContacts
+  operationId: getEngagementContacts
   tags:
-    - Contacts
+    - Engagement Contacts
   security:
     - ApiKeyAuth: []
-  summary: List contacts
+  summary: List engagement contacts
   description: >-
-    Get a list of contacts
+    Get a list of engagement contacts
   parameters:
     - $ref: ../../common/components/parameters/query/include_deleted_data.yaml
     - $ref: ../../common/components/parameters/query/include_raw_data.yaml
@@ -18,7 +18,7 @@ get:
     - $ref: ../../common/components/parameters/query/page_size.yaml
   responses:
     '200':
-      description: Contacts
+      description: Engagement Contacts
       content:
         application/json:
           schema:
@@ -55,10 +55,10 @@ get:
                         phone_number_type: mobile
                     remote_created_at: '2023-02-27T00:00:00Z'
 post:
-  operationId: createContact
-  summary: Create contact
+  operationId: createEngagementContact
+  summary: Create engagement contact
   tags:
-    - Contacts
+    - Engagement Contacts
   security:
     - ApiKeyAuth: []
   parameters: []
@@ -95,7 +95,7 @@ post:
             remote_created_at: '2023-02-27T00:00:00Z'
   responses:
     '201':
-      description: Contact created
+      description: Engagement contact created
       content:
         application/json:
           schema:

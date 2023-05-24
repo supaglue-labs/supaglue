@@ -1,6 +1,7 @@
 type: array
 items:
   type: object
+  description: a list of emails associatd with this crm contact
   properties:
     email_address:
       type: string

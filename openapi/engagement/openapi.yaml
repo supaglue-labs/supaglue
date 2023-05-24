@@ -20,44 +20,44 @@ externalDocs:
   description: Try out our API in Postman!
   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
 servers:
-  - url: 'http://localhost:8080/engagement/v1'
+  - url: 'https://supaglue-tom.ngrok.io'
     description: Local Supaglue API
 paths:
-  '/passthrough':
+  '/engagement/v1/passthrough':
     $ref: paths/passthrough.yaml
-  '/contacts':
+  '/engagement/v1/contacts':
     $ref: paths/contacts.yaml
-  '/contacts/{contact_id}':
+  '/engagement/v1/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
-  '/users':
+  '/engagement/v1/users':
     $ref: paths/users.yaml
-  '/users/{user_id}':
+  '/engagement/v1/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
-  '/mailboxes':
+  '/engagement/v1/mailboxes':
     $ref: paths/mailboxes.yaml
-  '/mailboxes/{mailbox_id}':
+  '/engagement/v1/mailboxes/{mailbox_id}':
     $ref: paths/mailboxes@{mailbox_id}.yaml
-  '/sequences':
+  '/engagement/v1/sequences':
     $ref: paths/sequences.yaml
-  '/sequences/{sequence_id}':
+  '/engagement/v1/sequences/{sequence_id}':
     $ref: paths/sequences@{sequence_id}.yaml
-  '/sequence_states':
+  '/engagement/v1/sequence_states':
     $ref: paths/sequence_states.yaml
-  '/sequence_states/{sequence_state_id}':
+  '/engagement/v1/sequence_states/{sequence_state_id}':
     $ref: paths/sequence_states@{sequence_state_id}.yaml
 tags:
-  - name: Contacts
+  - name: Engagement Contacts
     description: The `Contact` Common Model is used to represent a "contact" in Engagements.
-  - name: Sequences
+  - name: Engagement Sequences
     description: The `Sequence` Common Model is used to represent a "sequence" in Engagements.
-  - name: Sequence States
-    description: The `Sequence State` Common Model is used to represent the state of a contact in a sequence.
-  - name: Users
+  - name: Engagement Sequence States
+    description: The `Sequence State` Common Model is used to represent the state of a contact in a sequence in Engagements.
+  - name: Engagement Users
     description: The `User` Common Model is used to represent a "user" in Engagements.
-  - name: Mailboxes
-    description: The `Mailbox` Common Model is used to represent email mailbox, used within the application for sending and syncing emails
-  - name: Passthrough
-    description: Passthrough operations to underlying providers.
+  - name: Engagement Mailboxes
+    description: The `Mailbox` Common Model is used to represent email mailbox, used within the application for sending and syncing emails in Engagements.
+  - name: Engagement Passthrough
+    description: Passthrough operations to underlying Engagement providers.
 components:
   securitySchemes:
     ApiKeyAuth:

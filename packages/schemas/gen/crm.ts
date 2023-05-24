@@ -5,7 +5,7 @@
 
 
 export interface paths {
-  "/accounts": {
+  "/crm/v1/accounts": {
     /**
      * List accounts 
      * @description Get a list of accounts
@@ -13,51 +13,91 @@ export interface paths {
     get: operations["getAccounts"];
     /** Create account */
     post: operations["createAccount"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/accounts/_search": {
+  "/crm/v1/accounts/_search": {
     /** Search accounts */
     post: operations["searchAccounts"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/accounts/{account_id}": {
+  "/crm/v1/accounts/{account_id}": {
     /** Get account */
     get: operations["getAccount"];
     /** Update account */
     patch: operations["updateAccount"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         account_id: string;
       };
     };
   };
-  "/contacts": {
+  "/crm/v1/contacts": {
     /**
-     * List contacts 
-     * @description Get a list of contacts
+     * List CRM contacts 
+     * @description Get a list of CRM contacts
      */
-    get: operations["getContacts"];
-    /** Create contact */
-    post: operations["createContact"];
-    
+    get: operations["getCrmContacts"];
+    /** Create CRM contact */
+    post: operations["createCrmContact"];
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/contacts/_search": {
+  "/crm/v1/contacts/_search": {
     /** Search contacts */
     post: operations["searchContacts"];
-    
-  };
-  "/contacts/{contact_id}": {
-    /** Get contact */
-    get: operations["getContact"];
-    /** Update contact */
-    patch: operations["updateContact"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
+  };
+  "/crm/v1/contacts/{contact_id}": {
+    /** Get CRM contact */
+    get: operations["getCrmContact"];
+    /** Update CRM contact */
+    patch: operations["updateCrmContact"];
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         contact_id: string;
       };
     };
   };
-  "/leads": {
+  "/crm/v1/leads": {
     /**
      * List leads 
      * @description Get a list of leads
@@ -65,25 +105,45 @@ export interface paths {
     get: operations["getLeads"];
     /** Create lead */
     post: operations["createLead"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/leads/{lead_id}": {
+  "/crm/v1/leads/{lead_id}": {
     /** Get lead */
     get: operations["getLead"];
     /** Update lead */
     patch: operations["updateLead"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         lead_id: string;
       };
     };
   };
-  "/leads/_search": {
+  "/crm/v1/leads/_search": {
     /** Search leads */
     post: operations["searchLeads"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/events": {
+  "/crm/v1/events": {
     /**
      * List events 
      * @description Get a list of events
@@ -91,20 +151,33 @@ export interface paths {
     get: operations["getEvents"];
     /** Create event */
     post: operations["createEvent"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/events/{event_id}": {
+  "/crm/v1/events/{event_id}": {
     /** Get event */
     get: operations["getEvent"];
     /** Update event */
     patch: operations["updateEvent"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         event_id: string;
       };
     };
   };
-  "/opportunities": {
+  "/crm/v1/opportunities": {
     /**
      * List opportunities 
      * @description Get a list of opportunities
@@ -112,36 +185,69 @@ export interface paths {
     get: operations["getOpportunities"];
     /** Create opportunity */
     post: operations["createOpportunity"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/opportunities/_search": {
+  "/crm/v1/opportunities/_search": {
     /** Search Opportunities */
     post: operations["searchOpportunities"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/opportunities/{opportunity_id}": {
+  "/crm/v1/opportunities/{opportunity_id}": {
     /** Get opportunity */
     get: operations["getOpportunity"];
     /** Update opportunity */
     patch: operations["updateOpportunity"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         opportunity_id: string;
       };
     };
   };
-  "/users": {
+  "/crm/v1/users": {
     /**
      * List users 
      * @description Get a list of users
      */
     get: operations["getUsers"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/users/{user_id}": {
+  "/crm/v1/users/{user_id}": {
     /** Get user */
     get: operations["getUser"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         user_id: string;
       };
@@ -153,7 +259,14 @@ export interface paths {
      * @description Send request directly to a provider
      */
     post: operations["sendPassthroughRequest"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
 }
 
@@ -162,7 +275,35 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     account: {
-      addresses: components["schemas"]["addresses"];
+      /**
+       * @example [
+       *   {
+       *     "address_type": "shipping",
+       *     "city": "San Francisco",
+       *     "country": "US",
+       *     "postal_code": "94107",
+       *     "state": "CA",
+       *     "street1": "525 Brannan",
+       *     "street2": null
+       *   }
+       * ]
+       */
+      addresses: ({
+          /** @enum {string} */
+          address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+          /** @example San Francisco */
+          city: string | null;
+          /** @example USA */
+          country: string | null;
+          /** @example 94107 */
+          postal_code: string | null;
+          /** @example CA */
+          state: string | null;
+          /** @example 525 Brannan */
+          street1: string | null;
+          /** @example null */
+          street2?: string | null;
+        })[];
       /** @example Integration API */
       description: string | null;
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -182,9 +323,50 @@ export interface components {
       number_of_employees: number | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       owner_id: string | null;
-      owner?: components["schemas"]["user"];
-      phone_numbers: components["schemas"]["phone_numbers"];
-      lifecycle_stage: components["schemas"]["lifecycle_stage"];
+      owner?: {
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /** @example George Xing */
+        name: string | null;
+        /** @example george@supaglue.com */
+        email: string | null;
+        is_active: boolean | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
+      /**
+       * @example [
+       *   {
+       *     "phone_number": "+14151234567",
+       *     "phone_number_type": "primary"
+       *   }
+       * ]
+       */
+      phone_numbers: ({
+          /** @example +14151234567 */
+          phone_number: string | null;
+          /** @enum {string} */
+          phone_number_type: "primary" | "mobile" | "fax";
+        })[];
+      /** @enum {string|null} */
+      lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
       /** @example https://supaglue.com/ */
       website: string | null;
       /**
@@ -216,22 +398,247 @@ export interface components {
       number_of_employees?: number | null;
       /** @example https://supaglue.com/ */
       website?: string | null;
-      addresses?: components["schemas"]["addresses"];
-      phone_numbers?: components["schemas"]["phone_numbers"];
+      /**
+       * @example [
+       *   {
+       *     "address_type": "shipping",
+       *     "city": "San Francisco",
+       *     "country": "US",
+       *     "postal_code": "94107",
+       *     "state": "CA",
+       *     "street1": "525 Brannan",
+       *     "street2": null
+       *   }
+       * ]
+       */
+      addresses?: ({
+          /** @enum {string} */
+          address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+          /** @example San Francisco */
+          city: string | null;
+          /** @example USA */
+          country: string | null;
+          /** @example 94107 */
+          postal_code: string | null;
+          /** @example CA */
+          state: string | null;
+          /** @example 525 Brannan */
+          street1: string | null;
+          /** @example null */
+          street2?: string | null;
+        })[];
+      /**
+       * @example [
+       *   {
+       *     "phone_number": "+14151234567",
+       *     "phone_number_type": "primary"
+       *   }
+       * ]
+       */
+      phone_numbers?: ({
+          /** @example +14151234567 */
+          phone_number: string | null;
+          /** @enum {string} */
+          phone_number_type: "primary" | "mobile" | "fax";
+        })[];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
-      lifecycle_stage?: components["schemas"]["lifecycle_stage"];
-      custom_fields?: components["schemas"]["custom_fields"];
+      /** @enum {string|null} */
+      lifecycle_stage?: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+      /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+      custom_fields?: {
+        [key: string]: unknown | undefined;
+      };
     };
     contact: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
       account_id: string | null;
-      account?: components["schemas"]["account"];
+      account?: {
+        /**
+         * @example [
+         *   {
+         *     "address_type": "shipping",
+         *     "city": "San Francisco",
+         *     "country": "US",
+         *     "postal_code": "94107",
+         *     "state": "CA",
+         *     "street1": "525 Brannan",
+         *     "street2": null
+         *   }
+         * ]
+         */
+        addresses: ({
+            /** @enum {string} */
+            address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+            /** @example San Francisco */
+            city: string | null;
+            /** @example USA */
+            country: string | null;
+            /** @example 94107 */
+            postal_code: string | null;
+            /** @example CA */
+            state: string | null;
+            /** @example 525 Brannan */
+            street1: string | null;
+            /** @example null */
+            street2?: string | null;
+          })[];
+        /** @example Integration API */
+        description: string | null;
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 1234 */
+        remote_id: string;
+        /** @example API's */
+        industry: string | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_activity_at: Date | null;
+        /** @example Sample Customer */
+        name: string | null;
+        /** @example 276000 */
+        number_of_employees: number | null;
+        /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+        owner_id: string | null;
+        owner?: {
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /** @example George Xing */
+          name: string | null;
+          /** @example george@supaglue.com */
+          email: string | null;
+          is_active: boolean | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /**
+         * @example [
+         *   {
+         *     "phone_number": "+14151234567",
+         *     "phone_number_type": "primary"
+         *   }
+         * ]
+         */
+        phone_numbers: ({
+            /** @example +14151234567 */
+            phone_number: string | null;
+            /** @enum {string} */
+            phone_number_type: "primary" | "mobile" | "fax";
+          })[];
+        /** @enum {string|null} */
+        lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+        /** @example https://supaglue.com/ */
+        website: string | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
       /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
       owner_id: string | null;
-      owner?: components["schemas"]["user"];
-      addresses: components["schemas"]["addresses"];
-      email_addresses: components["schemas"]["email_addresses"];
+      owner?: {
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /** @example George Xing */
+        name: string | null;
+        /** @example george@supaglue.com */
+        email: string | null;
+        is_active: boolean | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
+      /**
+       * @example [
+       *   {
+       *     "address_type": "shipping",
+       *     "city": "San Francisco",
+       *     "country": "US",
+       *     "postal_code": "94107",
+       *     "state": "CA",
+       *     "street1": "525 Brannan",
+       *     "street2": null
+       *   }
+       * ]
+       */
+      addresses: ({
+          /** @enum {string} */
+          address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+          /** @example San Francisco */
+          city: string | null;
+          /** @example USA */
+          country: string | null;
+          /** @example 94107 */
+          postal_code: string | null;
+          /** @example CA */
+          state: string | null;
+          /** @example 525 Brannan */
+          street1: string | null;
+          /** @example null */
+          street2?: string | null;
+        })[];
+      /**
+       * @example [
+       *   {
+       *     "email_address": "hello@supaglue.com",
+       *     "email_address_type": "work"
+       *   }
+       * ]
+       */
+      email_addresses: ({
+          /** @example hello@supaglue.com */
+          email_address: string;
+          /** @enum {string} */
+          email_address_type: "primary" | "work";
+        })[];
       /** @example George */
       first_name: string | null;
       /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
@@ -245,8 +652,22 @@ export interface components {
       last_activity_at: Date | null;
       /** @example Xing */
       last_name: string | null;
-      phone_numbers: components["schemas"]["phone_numbers"];
-      lifecycle_stage: components["schemas"]["lifecycle_stage"];
+      /**
+       * @example [
+       *   {
+       *     "phone_number": "+14151234567",
+       *     "phone_number_type": "primary"
+       *   }
+       * ]
+       */
+      phone_numbers: ({
+          /** @example +14151234567 */
+          phone_number: string | null;
+          /** @enum {string} */
+          phone_number_type: "primary" | "mobile" | "fax";
+        })[];
+      /** @enum {string|null} */
+      lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -269,19 +690,86 @@ export interface components {
       };
     };
     create_update_contact: {
-      /** @example George */
+      /**
+       * @description the first name of the crm contact 
+       * @example George
+       */
       first_name?: string | null;
-      /** @example Xing */
+      /**
+       * @description the last name of the crm contact 
+       * @example Xing
+       */
       last_name?: string | null;
-      /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
+      /**
+       * @description the crm account associated with this crm contact 
+       * @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+       */
       account_id?: string | null;
-      addresses?: components["schemas"]["addresses"];
-      email_addresses?: components["schemas"]["email_addresses"];
-      phone_numbers?: components["schemas"]["phone_numbers"];
+      /**
+       * @example [
+       *   {
+       *     "address_type": "shipping",
+       *     "city": "San Francisco",
+       *     "country": "US",
+       *     "postal_code": "94107",
+       *     "state": "CA",
+       *     "street1": "525 Brannan",
+       *     "street2": null
+       *   }
+       * ]
+       */
+      addresses?: ({
+          /** @enum {string} */
+          address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+          /** @example San Francisco */
+          city: string | null;
+          /** @example USA */
+          country: string | null;
+          /** @example 94107 */
+          postal_code: string | null;
+          /** @example CA */
+          state: string | null;
+          /** @example 525 Brannan */
+          street1: string | null;
+          /** @example null */
+          street2?: string | null;
+        })[];
+      /**
+       * @example [
+       *   {
+       *     "email_address": "hello@supaglue.com",
+       *     "email_address_type": "work"
+       *   }
+       * ]
+       */
+      email_addresses?: ({
+          /** @example hello@supaglue.com */
+          email_address: string;
+          /** @enum {string} */
+          email_address_type: "primary" | "work";
+        })[];
+      /**
+       * @example [
+       *   {
+       *     "phone_number": "+14151234567",
+       *     "phone_number_type": "primary"
+       *   }
+       * ]
+       */
+      phone_numbers?: ({
+          /** @example +14151234567 */
+          phone_number: string | null;
+          /** @enum {string} */
+          phone_number_type: "primary" | "mobile" | "fax";
+        })[];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
-      lifecycle_stage?: components["schemas"]["lifecycle_stage"];
-      custom_fields?: components["schemas"]["custom_fields"];
+      /** @enum {string|null} */
+      lifecycle_stage?: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+      /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+      custom_fields?: {
+        [key: string]: unknown | undefined;
+      };
     };
     event: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -305,19 +793,1064 @@ export interface components {
       content: string | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       owner_id: string | null;
-      owner?: components["schemas"]["user"];
+      owner?: {
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /** @example George Xing */
+        name: string | null;
+        /** @example george@supaglue.com */
+        email: string | null;
+        is_active: boolean | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       account_id: string | null;
-      account?: components["schemas"]["account"];
+      account?: {
+        /**
+         * @example [
+         *   {
+         *     "address_type": "shipping",
+         *     "city": "San Francisco",
+         *     "country": "US",
+         *     "postal_code": "94107",
+         *     "state": "CA",
+         *     "street1": "525 Brannan",
+         *     "street2": null
+         *   }
+         * ]
+         */
+        addresses: ({
+            /** @enum {string} */
+            address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+            /** @example San Francisco */
+            city: string | null;
+            /** @example USA */
+            country: string | null;
+            /** @example 94107 */
+            postal_code: string | null;
+            /** @example CA */
+            state: string | null;
+            /** @example 525 Brannan */
+            street1: string | null;
+            /** @example null */
+            street2?: string | null;
+          })[];
+        /** @example Integration API */
+        description: string | null;
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 1234 */
+        remote_id: string;
+        /** @example API's */
+        industry: string | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_activity_at: Date | null;
+        /** @example Sample Customer */
+        name: string | null;
+        /** @example 276000 */
+        number_of_employees: number | null;
+        /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+        owner_id: string | null;
+        owner?: {
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /** @example George Xing */
+          name: string | null;
+          /** @example george@supaglue.com */
+          email: string | null;
+          is_active: boolean | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /**
+         * @example [
+         *   {
+         *     "phone_number": "+14151234567",
+         *     "phone_number_type": "primary"
+         *   }
+         * ]
+         */
+        phone_numbers: ({
+            /** @example +14151234567 */
+            phone_number: string | null;
+            /** @enum {string} */
+            phone_number_type: "primary" | "mobile" | "fax";
+          })[];
+        /** @enum {string|null} */
+        lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+        /** @example https://supaglue.com/ */
+        website: string | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       contact_id: string | null;
-      contact?: components["schemas"]["contact"];
+      contact?: {
+        /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+        account_id: string | null;
+        account?: {
+          /**
+           * @example [
+           *   {
+           *     "address_type": "shipping",
+           *     "city": "San Francisco",
+           *     "country": "US",
+           *     "postal_code": "94107",
+           *     "state": "CA",
+           *     "street1": "525 Brannan",
+           *     "street2": null
+           *   }
+           * ]
+           */
+          addresses: ({
+              /** @enum {string} */
+              address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+              /** @example San Francisco */
+              city: string | null;
+              /** @example USA */
+              country: string | null;
+              /** @example 94107 */
+              postal_code: string | null;
+              /** @example CA */
+              state: string | null;
+              /** @example 525 Brannan */
+              street1: string | null;
+              /** @example null */
+              street2?: string | null;
+            })[];
+          /** @example Integration API */
+          description: string | null;
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 1234 */
+          remote_id: string;
+          /** @example API's */
+          industry: string | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_activity_at: Date | null;
+          /** @example Sample Customer */
+          name: string | null;
+          /** @example 276000 */
+          number_of_employees: number | null;
+          /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+          owner_id: string | null;
+          owner?: {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example George Xing */
+            name: string | null;
+            /** @example george@supaglue.com */
+            email: string | null;
+            is_active: boolean | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
+          /**
+           * @example [
+           *   {
+           *     "phone_number": "+14151234567",
+           *     "phone_number_type": "primary"
+           *   }
+           * ]
+           */
+          phone_numbers: ({
+              /** @example +14151234567 */
+              phone_number: string | null;
+              /** @enum {string} */
+              phone_number_type: "primary" | "mobile" | "fax";
+            })[];
+          /** @enum {string|null} */
+          lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+          /** @example https://supaglue.com/ */
+          website: string | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+        owner_id: string | null;
+        owner?: {
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /** @example George Xing */
+          name: string | null;
+          /** @example george@supaglue.com */
+          email: string | null;
+          is_active: boolean | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /**
+         * @example [
+         *   {
+         *     "address_type": "shipping",
+         *     "city": "San Francisco",
+         *     "country": "US",
+         *     "postal_code": "94107",
+         *     "state": "CA",
+         *     "street1": "525 Brannan",
+         *     "street2": null
+         *   }
+         * ]
+         */
+        addresses: ({
+            /** @enum {string} */
+            address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+            /** @example San Francisco */
+            city: string | null;
+            /** @example USA */
+            country: string | null;
+            /** @example 94107 */
+            postal_code: string | null;
+            /** @example CA */
+            state: string | null;
+            /** @example 525 Brannan */
+            street1: string | null;
+            /** @example null */
+            street2?: string | null;
+          })[];
+        /**
+         * @example [
+         *   {
+         *     "email_address": "hello@supaglue.com",
+         *     "email_address_type": "work"
+         *   }
+         * ]
+         */
+        email_addresses: ({
+            /** @example hello@supaglue.com */
+            email_address: string;
+            /** @enum {string} */
+            email_address_type: "primary" | "work";
+          })[];
+        /** @example George */
+        first_name: string | null;
+        /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_activity_at: Date | null;
+        /** @example Xing */
+        last_name: string | null;
+        /**
+         * @example [
+         *   {
+         *     "phone_number": "+14151234567",
+         *     "phone_number_type": "primary"
+         *   }
+         * ]
+         */
+        phone_numbers: ({
+            /** @example +14151234567 */
+            phone_number: string | null;
+            /** @enum {string} */
+            phone_number_type: "primary" | "mobile" | "fax";
+          })[];
+        /** @enum {string|null} */
+        lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+        raw_data?: {
+          [key: string]: unknown | undefined;
+        };
+      };
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       lead_id: string | null;
-      lead?: components["schemas"]["lead"];
+      lead?: {
+        /**
+         * @example [
+         *   {
+         *     "address_type": "shipping",
+         *     "city": "San Francisco",
+         *     "country": "US",
+         *     "postal_code": "94107",
+         *     "state": "CA",
+         *     "street1": "525 Brannan",
+         *     "street2": null
+         *   }
+         * ]
+         */
+        addresses: ({
+            /** @enum {string} */
+            address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+            /** @example San Francisco */
+            city: string | null;
+            /** @example USA */
+            country: string | null;
+            /** @example 94107 */
+            postal_code: string | null;
+            /** @example CA */
+            state: string | null;
+            /** @example 525 Brannan */
+            street1: string | null;
+            /** @example null */
+            street2?: string | null;
+          })[];
+        /** @example Supaglue */
+        company: string | null;
+        /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+        converted_account_id: string | null;
+        converted_account?: {
+          /**
+           * @example [
+           *   {
+           *     "address_type": "shipping",
+           *     "city": "San Francisco",
+           *     "country": "US",
+           *     "postal_code": "94107",
+           *     "state": "CA",
+           *     "street1": "525 Brannan",
+           *     "street2": null
+           *   }
+           * ]
+           */
+          addresses: ({
+              /** @enum {string} */
+              address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+              /** @example San Francisco */
+              city: string | null;
+              /** @example USA */
+              country: string | null;
+              /** @example 94107 */
+              postal_code: string | null;
+              /** @example CA */
+              state: string | null;
+              /** @example 525 Brannan */
+              street1: string | null;
+              /** @example null */
+              street2?: string | null;
+            })[];
+          /** @example Integration API */
+          description: string | null;
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 1234 */
+          remote_id: string;
+          /** @example API's */
+          industry: string | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_activity_at: Date | null;
+          /** @example Sample Customer */
+          name: string | null;
+          /** @example 276000 */
+          number_of_employees: number | null;
+          /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+          owner_id: string | null;
+          owner?: {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example George Xing */
+            name: string | null;
+            /** @example george@supaglue.com */
+            email: string | null;
+            is_active: boolean | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
+          /**
+           * @example [
+           *   {
+           *     "phone_number": "+14151234567",
+           *     "phone_number_type": "primary"
+           *   }
+           * ]
+           */
+          phone_numbers: ({
+              /** @example +14151234567 */
+              phone_number: string | null;
+              /** @enum {string} */
+              phone_number_type: "primary" | "mobile" | "fax";
+            })[];
+          /** @enum {string|null} */
+          lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+          /** @example https://supaglue.com/ */
+          website: string | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+        converted_contact_id: string | null;
+        converted_contact?: {
+          /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+          account_id: string | null;
+          account?: {
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /** @example Integration API */
+            description: string | null;
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 1234 */
+            remote_id: string;
+            /** @example API's */
+            industry: string | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_activity_at: Date | null;
+            /** @example Sample Customer */
+            name: string | null;
+            /** @example 276000 */
+            number_of_employees: number | null;
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            owner_id: string | null;
+            owner?: {
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example George Xing */
+              name: string | null;
+              /** @example george@supaglue.com */
+              email: string | null;
+              is_active: boolean | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "primary"
+             *   }
+             * ]
+             */
+            phone_numbers: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string} */
+                phone_number_type: "primary" | "mobile" | "fax";
+              })[];
+            /** @enum {string|null} */
+            lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+            /** @example https://supaglue.com/ */
+            website: string | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
+          /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+          owner_id: string | null;
+          owner?: {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example George Xing */
+            name: string | null;
+            /** @example george@supaglue.com */
+            email: string | null;
+            is_active: boolean | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
+          /**
+           * @example [
+           *   {
+           *     "address_type": "shipping",
+           *     "city": "San Francisco",
+           *     "country": "US",
+           *     "postal_code": "94107",
+           *     "state": "CA",
+           *     "street1": "525 Brannan",
+           *     "street2": null
+           *   }
+           * ]
+           */
+          addresses: ({
+              /** @enum {string} */
+              address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+              /** @example San Francisco */
+              city: string | null;
+              /** @example USA */
+              country: string | null;
+              /** @example 94107 */
+              postal_code: string | null;
+              /** @example CA */
+              state: string | null;
+              /** @example 525 Brannan */
+              street1: string | null;
+              /** @example null */
+              street2?: string | null;
+            })[];
+          /**
+           * @example [
+           *   {
+           *     "email_address": "hello@supaglue.com",
+           *     "email_address_type": "work"
+           *   }
+           * ]
+           */
+          email_addresses: ({
+              /** @example hello@supaglue.com */
+              email_address: string;
+              /** @enum {string} */
+              email_address_type: "primary" | "work";
+            })[];
+          /** @example George */
+          first_name: string | null;
+          /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_activity_at: Date | null;
+          /** @example Xing */
+          last_name: string | null;
+          /**
+           * @example [
+           *   {
+           *     "phone_number": "+14151234567",
+           *     "phone_number_type": "primary"
+           *   }
+           * ]
+           */
+          phone_numbers: ({
+              /** @example +14151234567 */
+              phone_number: string | null;
+              /** @enum {string} */
+              phone_number_type: "primary" | "mobile" | "fax";
+            })[];
+          /** @enum {string|null} */
+          lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+          raw_data?: {
+            [key: string]: unknown | undefined;
+          };
+        };
+        /**
+         * Format: date-time 
+         * @example 2023-02-27T00:00:00Z
+         */
+        converted_date: Date | null;
+        /**
+         * @example [
+         *   {
+         *     "email_address": "hello@supaglue.com",
+         *     "email_address_type": "work"
+         *   }
+         * ]
+         */
+        email_addresses?: ({
+            /** @example hello@supaglue.com */
+            email_address: string;
+            /** @enum {string} */
+            email_address_type: "primary" | "work";
+          })[];
+        /** @example George */
+        first_name?: string | null;
+        /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /** @example Xing */
+        last_name: string | null;
+        /** @example API Blogger */
+        lead_source: string | null;
+        /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+        owner_id: string | null;
+        owner?: {
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /** @example George Xing */
+          name: string | null;
+          /** @example george@supaglue.com */
+          email: string | null;
+          is_active: boolean | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /**
+         * @example [
+         *   {
+         *     "phone_number": "+14151234567",
+         *     "phone_number_type": "primary"
+         *   }
+         * ]
+         */
+        phone_numbers: ({
+            /** @example +14151234567 */
+            phone_number: string | null;
+            /** @enum {string} */
+            phone_number_type: "primary" | "mobile" | "fax";
+          })[];
+        /** @example Co-Founder */
+        title: string | null;
+        /**
+         * Format: date-time 
+         * @example 2023-02-10T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2023-02-10T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       opportunity_id: string | null;
-      opportunity?: components["schemas"]["opportunity"];
+      opportunity?: {
+        /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+        account_id: string | null;
+        account?: {
+          /**
+           * @example [
+           *   {
+           *     "address_type": "shipping",
+           *     "city": "San Francisco",
+           *     "country": "US",
+           *     "postal_code": "94107",
+           *     "state": "CA",
+           *     "street1": "525 Brannan",
+           *     "street2": null
+           *   }
+           * ]
+           */
+          addresses: ({
+              /** @enum {string} */
+              address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+              /** @example San Francisco */
+              city: string | null;
+              /** @example USA */
+              country: string | null;
+              /** @example 94107 */
+              postal_code: string | null;
+              /** @example CA */
+              state: string | null;
+              /** @example 525 Brannan */
+              street1: string | null;
+              /** @example null */
+              street2?: string | null;
+            })[];
+          /** @example Integration API */
+          description: string | null;
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 1234 */
+          remote_id: string;
+          /** @example API's */
+          industry: string | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_activity_at: Date | null;
+          /** @example Sample Customer */
+          name: string | null;
+          /** @example 276000 */
+          number_of_employees: number | null;
+          /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+          owner_id: string | null;
+          owner?: {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example George Xing */
+            name: string | null;
+            /** @example george@supaglue.com */
+            email: string | null;
+            is_active: boolean | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
+          /**
+           * @example [
+           *   {
+           *     "phone_number": "+14151234567",
+           *     "phone_number_type": "primary"
+           *   }
+           * ]
+           */
+          phone_numbers: ({
+              /** @example +14151234567 */
+              phone_number: string | null;
+              /** @enum {string} */
+              phone_number_type: "primary" | "mobile" | "fax";
+            })[];
+          /** @enum {string|null} */
+          lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+          /** @example https://supaglue.com/ */
+          website: string | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /** @example 100000 */
+        amount: number | null;
+        /**
+         * Format: date-time 
+         * @example 2023-02-27T00:00:00Z
+         */
+        close_date?: Date | null;
+        /** @example Wants to use open source unified API for third-party integrations */
+        description: string | null;
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /**
+         * Format: date-time 
+         * @example 2023-02-27T00:00:00Z
+         */
+        last_activity_at: Date | null;
+        /** @example Needs third-party integrations */
+        name: string | null;
+        /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+        owner_id: string | null;
+        owner?: {
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /** @example George Xing */
+          name: string | null;
+          /** @example george@supaglue.com */
+          email: string | null;
+          is_active: boolean | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        pipeline: string | null;
+        /** @example Closed Won */
+        stage: string | null;
+        /** @example OPEN */
+        status: string | null;
+        /**
+         * Format: date-time 
+         * @example 2023-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2023-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -356,24 +1889,418 @@ export interface components {
       lead_id?: string | null;
       /** @example 2506e5f3-1805-405a-a13c-baa0ac524274 */
       opportunity_id?: string | null;
-      custom_fields?: components["schemas"]["custom_fields"];
+      /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+      custom_fields?: {
+        [key: string]: unknown | undefined;
+      };
     };
     lead: {
-      addresses: components["schemas"]["addresses"];
+      /**
+       * @example [
+       *   {
+       *     "address_type": "shipping",
+       *     "city": "San Francisco",
+       *     "country": "US",
+       *     "postal_code": "94107",
+       *     "state": "CA",
+       *     "street1": "525 Brannan",
+       *     "street2": null
+       *   }
+       * ]
+       */
+      addresses: ({
+          /** @enum {string} */
+          address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+          /** @example San Francisco */
+          city: string | null;
+          /** @example USA */
+          country: string | null;
+          /** @example 94107 */
+          postal_code: string | null;
+          /** @example CA */
+          state: string | null;
+          /** @example 525 Brannan */
+          street1: string | null;
+          /** @example null */
+          street2?: string | null;
+        })[];
       /** @example Supaglue */
       company: string | null;
       /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
       converted_account_id: string | null;
-      converted_account?: components["schemas"]["account"];
+      converted_account?: {
+        /**
+         * @example [
+         *   {
+         *     "address_type": "shipping",
+         *     "city": "San Francisco",
+         *     "country": "US",
+         *     "postal_code": "94107",
+         *     "state": "CA",
+         *     "street1": "525 Brannan",
+         *     "street2": null
+         *   }
+         * ]
+         */
+        addresses: ({
+            /** @enum {string} */
+            address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+            /** @example San Francisco */
+            city: string | null;
+            /** @example USA */
+            country: string | null;
+            /** @example 94107 */
+            postal_code: string | null;
+            /** @example CA */
+            state: string | null;
+            /** @example 525 Brannan */
+            street1: string | null;
+            /** @example null */
+            street2?: string | null;
+          })[];
+        /** @example Integration API */
+        description: string | null;
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 1234 */
+        remote_id: string;
+        /** @example API's */
+        industry: string | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_activity_at: Date | null;
+        /** @example Sample Customer */
+        name: string | null;
+        /** @example 276000 */
+        number_of_employees: number | null;
+        /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+        owner_id: string | null;
+        owner?: {
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /** @example George Xing */
+          name: string | null;
+          /** @example george@supaglue.com */
+          email: string | null;
+          is_active: boolean | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /**
+         * @example [
+         *   {
+         *     "phone_number": "+14151234567",
+         *     "phone_number_type": "primary"
+         *   }
+         * ]
+         */
+        phone_numbers: ({
+            /** @example +14151234567 */
+            phone_number: string | null;
+            /** @enum {string} */
+            phone_number_type: "primary" | "mobile" | "fax";
+          })[];
+        /** @enum {string|null} */
+        lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+        /** @example https://supaglue.com/ */
+        website: string | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
       /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
       converted_contact_id: string | null;
-      converted_contact?: components["schemas"]["contact"];
+      converted_contact?: {
+        /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+        account_id: string | null;
+        account?: {
+          /**
+           * @example [
+           *   {
+           *     "address_type": "shipping",
+           *     "city": "San Francisco",
+           *     "country": "US",
+           *     "postal_code": "94107",
+           *     "state": "CA",
+           *     "street1": "525 Brannan",
+           *     "street2": null
+           *   }
+           * ]
+           */
+          addresses: ({
+              /** @enum {string} */
+              address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+              /** @example San Francisco */
+              city: string | null;
+              /** @example USA */
+              country: string | null;
+              /** @example 94107 */
+              postal_code: string | null;
+              /** @example CA */
+              state: string | null;
+              /** @example 525 Brannan */
+              street1: string | null;
+              /** @example null */
+              street2?: string | null;
+            })[];
+          /** @example Integration API */
+          description: string | null;
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 1234 */
+          remote_id: string;
+          /** @example API's */
+          industry: string | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_activity_at: Date | null;
+          /** @example Sample Customer */
+          name: string | null;
+          /** @example 276000 */
+          number_of_employees: number | null;
+          /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+          owner_id: string | null;
+          owner?: {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example George Xing */
+            name: string | null;
+            /** @example george@supaglue.com */
+            email: string | null;
+            is_active: boolean | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
+          /**
+           * @example [
+           *   {
+           *     "phone_number": "+14151234567",
+           *     "phone_number_type": "primary"
+           *   }
+           * ]
+           */
+          phone_numbers: ({
+              /** @example +14151234567 */
+              phone_number: string | null;
+              /** @enum {string} */
+              phone_number_type: "primary" | "mobile" | "fax";
+            })[];
+          /** @enum {string|null} */
+          lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+          /** @example https://supaglue.com/ */
+          website: string | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+        owner_id: string | null;
+        owner?: {
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /** @example George Xing */
+          name: string | null;
+          /** @example george@supaglue.com */
+          email: string | null;
+          is_active: boolean | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /**
+         * @example [
+         *   {
+         *     "address_type": "shipping",
+         *     "city": "San Francisco",
+         *     "country": "US",
+         *     "postal_code": "94107",
+         *     "state": "CA",
+         *     "street1": "525 Brannan",
+         *     "street2": null
+         *   }
+         * ]
+         */
+        addresses: ({
+            /** @enum {string} */
+            address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+            /** @example San Francisco */
+            city: string | null;
+            /** @example USA */
+            country: string | null;
+            /** @example 94107 */
+            postal_code: string | null;
+            /** @example CA */
+            state: string | null;
+            /** @example 525 Brannan */
+            street1: string | null;
+            /** @example null */
+            street2?: string | null;
+          })[];
+        /**
+         * @example [
+         *   {
+         *     "email_address": "hello@supaglue.com",
+         *     "email_address_type": "work"
+         *   }
+         * ]
+         */
+        email_addresses: ({
+            /** @example hello@supaglue.com */
+            email_address: string;
+            /** @enum {string} */
+            email_address_type: "primary" | "work";
+          })[];
+        /** @example George */
+        first_name: string | null;
+        /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_activity_at: Date | null;
+        /** @example Xing */
+        last_name: string | null;
+        /**
+         * @example [
+         *   {
+         *     "phone_number": "+14151234567",
+         *     "phone_number_type": "primary"
+         *   }
+         * ]
+         */
+        phone_numbers: ({
+            /** @example +14151234567 */
+            phone_number: string | null;
+            /** @enum {string} */
+            phone_number_type: "primary" | "mobile" | "fax";
+          })[];
+        /** @enum {string|null} */
+        lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+        raw_data?: {
+          [key: string]: unknown | undefined;
+        };
+      };
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
       converted_date: Date | null;
-      email_addresses?: components["schemas"]["email_addresses"];
+      /**
+       * @example [
+       *   {
+       *     "email_address": "hello@supaglue.com",
+       *     "email_address_type": "work"
+       *   }
+       * ]
+       */
+      email_addresses?: ({
+          /** @example hello@supaglue.com */
+          email_address: string;
+          /** @enum {string} */
+          email_address_type: "primary" | "work";
+        })[];
       /** @example George */
       first_name?: string | null;
       /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
@@ -386,8 +2313,48 @@ export interface components {
       lead_source: string | null;
       /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
       owner_id: string | null;
-      owner?: components["schemas"]["user"];
-      phone_numbers: components["schemas"]["phone_numbers"];
+      owner?: {
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /** @example George Xing */
+        name: string | null;
+        /** @example george@supaglue.com */
+        email: string | null;
+        is_active: boolean | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
+      /**
+       * @example [
+       *   {
+       *     "phone_number": "+14151234567",
+       *     "phone_number_type": "primary"
+       *   }
+       * ]
+       */
+      phone_numbers: ({
+          /** @example +14151234567 */
+          phone_number: string | null;
+          /** @enum {string} */
+          phone_number_type: "primary" | "mobile" | "fax";
+        })[];
       /** @example Co-Founder */
       title: string | null;
       /**
@@ -419,16 +2386,172 @@ export interface components {
       lead_source?: string | null;
       /** @example Co-Founder */
       title?: string;
-      email_addresses?: components["schemas"]["email_addresses"];
-      addresses?: components["schemas"]["addresses"];
+      /**
+       * @example [
+       *   {
+       *     "email_address": "hello@supaglue.com",
+       *     "email_address_type": "work"
+       *   }
+       * ]
+       */
+      email_addresses?: ({
+          /** @example hello@supaglue.com */
+          email_address: string;
+          /** @enum {string} */
+          email_address_type: "primary" | "work";
+        })[];
+      /**
+       * @example [
+       *   {
+       *     "address_type": "shipping",
+       *     "city": "San Francisco",
+       *     "country": "US",
+       *     "postal_code": "94107",
+       *     "state": "CA",
+       *     "street1": "525 Brannan",
+       *     "street2": null
+       *   }
+       * ]
+       */
+      addresses?: ({
+          /** @enum {string} */
+          address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+          /** @example San Francisco */
+          city: string | null;
+          /** @example USA */
+          country: string | null;
+          /** @example 94107 */
+          postal_code: string | null;
+          /** @example CA */
+          state: string | null;
+          /** @example 525 Brannan */
+          street1: string | null;
+          /** @example null */
+          street2?: string | null;
+        })[];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
-      custom_fields?: components["schemas"]["custom_fields"];
+      /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+      custom_fields?: {
+        [key: string]: unknown | undefined;
+      };
     };
     opportunity: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
       account_id: string | null;
-      account?: components["schemas"]["account"];
+      account?: {
+        /**
+         * @example [
+         *   {
+         *     "address_type": "shipping",
+         *     "city": "San Francisco",
+         *     "country": "US",
+         *     "postal_code": "94107",
+         *     "state": "CA",
+         *     "street1": "525 Brannan",
+         *     "street2": null
+         *   }
+         * ]
+         */
+        addresses: ({
+            /** @enum {string} */
+            address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+            /** @example San Francisco */
+            city: string | null;
+            /** @example USA */
+            country: string | null;
+            /** @example 94107 */
+            postal_code: string | null;
+            /** @example CA */
+            state: string | null;
+            /** @example 525 Brannan */
+            street1: string | null;
+            /** @example null */
+            street2?: string | null;
+          })[];
+        /** @example Integration API */
+        description: string | null;
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 1234 */
+        remote_id: string;
+        /** @example API's */
+        industry: string | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_activity_at: Date | null;
+        /** @example Sample Customer */
+        name: string | null;
+        /** @example 276000 */
+        number_of_employees: number | null;
+        /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+        owner_id: string | null;
+        owner?: {
+          /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+          id: string;
+          /** @example 54312 */
+          remote_id: string;
+          /** @example George Xing */
+          name: string | null;
+          /** @example george@supaglue.com */
+          email: string | null;
+          is_active: boolean | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_created_at: Date | null;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          remote_updated_at: Date | null;
+          /** @example false */
+          remote_was_deleted: boolean;
+          /**
+           * Format: date-time 
+           * @example 2022-02-27T00:00:00Z
+           */
+          last_modified_at: Date;
+        };
+        /**
+         * @example [
+         *   {
+         *     "phone_number": "+14151234567",
+         *     "phone_number_type": "primary"
+         *   }
+         * ]
+         */
+        phone_numbers: ({
+            /** @example +14151234567 */
+            phone_number: string | null;
+            /** @enum {string} */
+            phone_number_type: "primary" | "mobile" | "fax";
+          })[];
+        /** @enum {string|null} */
+        lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+        /** @example https://supaglue.com/ */
+        website: string | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
       /** @example 100000 */
       amount: number | null;
       /**
@@ -451,7 +2574,34 @@ export interface components {
       name: string | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       owner_id: string | null;
-      owner?: components["schemas"]["user"];
+      owner?: {
+        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+        id: string;
+        /** @example 54312 */
+        remote_id: string;
+        /** @example George Xing */
+        name: string | null;
+        /** @example george@supaglue.com */
+        email: string | null;
+        is_active: boolean | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_created_at: Date | null;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        remote_updated_at: Date | null;
+        /** @example false */
+        remote_was_deleted: boolean;
+        /**
+         * Format: date-time 
+         * @example 2022-02-27T00:00:00Z
+         */
+        last_modified_at: Date;
+      };
       pipeline: string | null;
       /** @example Closed Won */
       stage: string | null;
@@ -519,7 +2669,10 @@ export interface components {
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
       pipeline?: string | null;
-      custom_fields?: components["schemas"]["custom_fields"];
+      /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+      custom_fields?: {
+        [key: string]: unknown | undefined;
+      };
     };
     /**
      * @example [
@@ -713,13 +2866,150 @@ export interface operations {
      * List accounts 
      * @description Get a list of accounts
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Accounts */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["account"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
@@ -729,7 +3019,69 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_account"];
+          model: {
+            /** @example Integration API */
+            description?: string | null;
+            /** @example API's */
+            industry?: string | null;
+            /** @example Sample Customer */
+            name?: string | null;
+            /** @example 276000 */
+            number_of_employees?: number | null;
+            /** @example https://supaglue.com/ */
+            website?: string | null;
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses?: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "primary"
+             *   }
+             * ]
+             */
+            phone_numbers?: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string} */
+                phone_number_type: "primary" | "mobile" | "fax";
+              })[];
+            /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+            owner_id?: string | null;
+            /** @enum {string|null} */
+            lifecycle_stage?: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -738,10 +3090,199 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["account"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Integration API */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 1234 */
+              remote_id: string;
+              /** @example API's */
+              industry: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Sample Customer */
+              name: string | null;
+              /** @example 276000 */
+              number_of_employees: number | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /** @example https://supaglue.com/ */
+              website: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -749,13 +3290,31 @@ export interface operations {
   };
   searchAccounts: {
     /** Search accounts */
+    parameters?: {
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        cursor?: string;
+        page_size?: string;
+        include_raw_data?: boolean;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            website?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            website?: {
+              /** @enum {string} */
+              type: "equals";
+              value: string;
+            };
+            remote_id?: {
+              /** @enum {string} */
+              type: "equals";
+              value: string;
+            };
           };
         };
       };
@@ -764,20 +3323,255 @@ export interface operations {
       /** @description Accounts */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["account"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
   };
   getAccount: {
     /** Get account */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description Account */
       200: {
         content: {
-          "application/json": components["schemas"]["account"];
+          "application/json": {
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /** @example Integration API */
+            description: string | null;
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 1234 */
+            remote_id: string;
+            /** @example API's */
+            industry: string | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_activity_at: Date | null;
+            /** @example Sample Customer */
+            name: string | null;
+            /** @example 276000 */
+            number_of_employees: number | null;
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            owner_id: string | null;
+            owner?: {
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example George Xing */
+              name: string | null;
+              /** @example george@supaglue.com */
+              email: string | null;
+              is_active: boolean | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "primary"
+             *   }
+             * ]
+             */
+            phone_numbers: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string} */
+                phone_number_type: "primary" | "mobile" | "fax";
+              })[];
+            /** @enum {string|null} */
+            lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+            /** @example https://supaglue.com/ */
+            website: string | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };
@@ -787,7 +3581,69 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_account"];
+          model: {
+            /** @example Integration API */
+            description?: string | null;
+            /** @example API's */
+            industry?: string | null;
+            /** @example Sample Customer */
+            name?: string | null;
+            /** @example 276000 */
+            number_of_employees?: number | null;
+            /** @example https://supaglue.com/ */
+            website?: string | null;
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses?: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "primary"
+             *   }
+             * ]
+             */
+            phone_numbers?: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string} */
+                phone_number_type: "primary" | "mobile" | "fax";
+              })[];
+            /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+            owner_id?: string | null;
+            /** @enum {string|null} */
+            lifecycle_stage?: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -796,33 +3652,485 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["account"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Integration API */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 1234 */
+              remote_id: string;
+              /** @example API's */
+              industry: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Sample Customer */
+              name: string | null;
+              /** @example 276000 */
+              number_of_employees: number | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /** @example https://supaglue.com/ */
+              website: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
     };
   };
-  getContacts: {
+  getCrmContacts: {
     /**
-     * List contacts 
-     * @description Get a list of contacts
+     * List CRM contacts 
+     * @description Get a list of CRM contacts
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
-      /** @description Contacts */
+      /** @description CRM Contacts */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["contact"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Xing */
+                last_name: string | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+                raw_data?: {
+                  [key: string]: unknown | undefined;
+                };
+              })[];
+          });
         };
       };
     };
   };
-  createContact: {
-    /** Create contact */
+  createCrmContact: {
+    /** Create CRM contact */
     requestBody: {
       content: {
         /**
@@ -836,19 +4144,415 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_update_contact"];
+          model: {
+            /**
+             * @description the first name of the crm contact 
+             * @example George
+             */
+            first_name?: string | null;
+            /**
+             * @description the last name of the crm contact 
+             * @example Xing
+             */
+            last_name?: string | null;
+            /**
+             * @description the crm account associated with this crm contact 
+             * @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+             */
+            account_id?: string | null;
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses?: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses?: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string} */
+                email_address_type: "primary" | "work";
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "primary"
+             *   }
+             * ]
+             */
+            phone_numbers?: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string} */
+                phone_number_type: "primary" | "mobile" | "fax";
+              })[];
+            /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+            owner_id?: string | null;
+            /** @enum {string|null} */
+            lifecycle_stage?: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
     responses: {
-      /** @description Contact created */
+      /** @description CRM Contact created */
       201: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string} */
+                  email_address_type: "primary" | "work";
+                })[];
+              /** @example George */
+              first_name: string | null;
+              /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Xing */
+              last_name: string | null;
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+              raw_data?: {
+                [key: string]: unknown | undefined;
+              };
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -856,13 +4560,31 @@ export interface operations {
   };
   searchContacts: {
     /** Search contacts */
+    parameters?: {
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        cursor?: string;
+        page_size?: string;
+        include_raw_data?: boolean;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            email_address?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            email_address?: {
+              /** @enum {string} */
+              type: "equals";
+              value: string;
+            };
+            remote_id?: {
+              /** @enum {string} */
+              type: "equals";
+              value: string;
+            };
           };
         };
       };
@@ -871,42 +4593,925 @@ export interface operations {
       /** @description Contacts */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["contact"])[];
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Xing */
+                last_name: string | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+                raw_data?: {
+                  [key: string]: unknown | undefined;
+                };
+              })[];
+          });
+        };
+      };
+    };
+  };
+  getCrmContact: {
+    /** Get CRM contact */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
+    responses: {
+      /** @description Contact */
+      200: {
+        content: {
+          "application/json": {
+            /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+            account_id: string | null;
+            account?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Integration API */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 1234 */
+              remote_id: string;
+              /** @example API's */
+              industry: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Sample Customer */
+              name: string | null;
+              /** @example 276000 */
+              number_of_employees: number | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /** @example https://supaglue.com/ */
+              website: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+            owner_id: string | null;
+            owner?: {
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example George Xing */
+              name: string | null;
+              /** @example george@supaglue.com */
+              email: string | null;
+              is_active: boolean | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string} */
+                email_address_type: "primary" | "work";
+              })[];
+            /** @example George */
+            first_name: string | null;
+            /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_activity_at: Date | null;
+            /** @example Xing */
+            last_name: string | null;
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "primary"
+             *   }
+             * ]
+             */
+            phone_numbers: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string} */
+                phone_number_type: "primary" | "mobile" | "fax";
+              })[];
+            /** @enum {string|null} */
+            lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+            raw_data?: {
+              [key: string]: unknown | undefined;
+            };
           };
         };
       };
     };
   };
-  getContact: {
-    /** Get contact */
-    responses: {
-      /** @description Contact */
-      200: {
-        content: {
-          "application/json": components["schemas"]["contact"];
-        };
-      };
-    };
-  };
-  updateContact: {
-    /** Update contact */
+  updateCrmContact: {
+    /** Update CRM contact */
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_contact"];
+          model: {
+            /**
+             * @description the first name of the crm contact 
+             * @example George
+             */
+            first_name?: string | null;
+            /**
+             * @description the last name of the crm contact 
+             * @example Xing
+             */
+            last_name?: string | null;
+            /**
+             * @description the crm account associated with this crm contact 
+             * @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+             */
+            account_id?: string | null;
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses?: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses?: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string} */
+                email_address_type: "primary" | "work";
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "primary"
+             *   }
+             * ]
+             */
+            phone_numbers?: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string} */
+                phone_number_type: "primary" | "mobile" | "fax";
+              })[];
+            /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+            owner_id?: string | null;
+            /** @enum {string|null} */
+            lifecycle_stage?: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
     responses: {
-      /** @description Contact updated */
+      /** @description Contact CRM updated */
       200: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string} */
+                  email_address_type: "primary" | "work";
+                })[];
+              /** @example George */
+              first_name: string | null;
+              /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Xing */
+              last_name: string | null;
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+              raw_data?: {
+                [key: string]: unknown | undefined;
+              };
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -917,13 +5522,518 @@ export interface operations {
      * List leads 
      * @description Get a list of leads
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Leads */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["lead"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Supaglue */
+                company: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                converted_account_id: string | null;
+                converted_account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+                converted_contact_id: string | null;
+                converted_contact?: {
+                  /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                  account_id: string | null;
+                  account?: {
+                    /**
+                     * @example [
+                     *   {
+                     *     "address_type": "shipping",
+                     *     "city": "San Francisco",
+                     *     "country": "US",
+                     *     "postal_code": "94107",
+                     *     "state": "CA",
+                     *     "street1": "525 Brannan",
+                     *     "street2": null
+                     *   }
+                     * ]
+                     */
+                    addresses: ({
+                        /** @enum {string} */
+                        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                        /** @example San Francisco */
+                        city: string | null;
+                        /** @example USA */
+                        country: string | null;
+                        /** @example 94107 */
+                        postal_code: string | null;
+                        /** @example CA */
+                        state: string | null;
+                        /** @example 525 Brannan */
+                        street1: string | null;
+                        /** @example null */
+                        street2?: string | null;
+                      })[];
+                    /** @example Integration API */
+                    description: string | null;
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 1234 */
+                    remote_id: string;
+                    /** @example API's */
+                    industry: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_activity_at: Date | null;
+                    /** @example Sample Customer */
+                    name: string | null;
+                    /** @example 276000 */
+                    number_of_employees: number | null;
+                    /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                    owner_id: string | null;
+                    owner?: {
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 54312 */
+                      remote_id: string;
+                      /** @example George Xing */
+                      name: string | null;
+                      /** @example george@supaglue.com */
+                      email: string | null;
+                      is_active: boolean | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /**
+                     * @example [
+                     *   {
+                     *     "phone_number": "+14151234567",
+                     *     "phone_number_type": "primary"
+                     *   }
+                     * ]
+                     */
+                    phone_numbers: ({
+                        /** @example +14151234567 */
+                        phone_number: string | null;
+                        /** @enum {string} */
+                        phone_number_type: "primary" | "mobile" | "fax";
+                      })[];
+                    /** @enum {string|null} */
+                    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                    /** @example https://supaglue.com/ */
+                    website: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /**
+                   * @example [
+                   *   {
+                   *     "email_address": "hello@supaglue.com",
+                   *     "email_address_type": "work"
+                   *   }
+                   * ]
+                   */
+                  email_addresses: ({
+                      /** @example hello@supaglue.com */
+                      email_address: string;
+                      /** @enum {string} */
+                      email_address_type: "primary" | "work";
+                    })[];
+                  /** @example George */
+                  first_name: string | null;
+                  /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Xing */
+                  last_name: string | null;
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                  raw_data?: {
+                    [key: string]: unknown | undefined;
+                  };
+                };
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                converted_date: Date | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses?: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name?: string | null;
+                /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example Xing */
+                last_name: string | null;
+                /** @example API Blogger */
+                lead_source: string | null;
+                /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @example Co-Founder */
+                title: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-10T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-10T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
@@ -944,7 +6054,67 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_update_lead"];
+          model: {
+            /** @example Supaglue */
+            company?: string | null;
+            /** @example George */
+            first_name?: string | null;
+            /** @example Xing */
+            last_name?: string | null;
+            /** @example API Blogger */
+            lead_source?: string | null;
+            /** @example Co-Founder */
+            title?: string;
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses?: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string} */
+                email_address_type: "primary" | "work";
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses?: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+            owner_id?: string | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -953,10 +6123,567 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["lead"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Supaglue */
+              company: string | null;
+              /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+              converted_account_id: string | null;
+              converted_account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+              converted_contact_id: string | null;
+              converted_contact?: {
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Xing */
+                last_name: string | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+                raw_data?: {
+                  [key: string]: unknown | undefined;
+                };
+              };
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              converted_date: Date | null;
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses?: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string} */
+                  email_address_type: "primary" | "work";
+                })[];
+              /** @example George */
+              first_name?: string | null;
+              /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example Xing */
+              last_name: string | null;
+              /** @example API Blogger */
+              lead_source: string | null;
+              /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @example Co-Founder */
+              title: string | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-10T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-10T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -964,11 +6691,497 @@ export interface operations {
   };
   getLead: {
     /** Get lead */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description Lead */
       200: {
         content: {
-          "application/json": components["schemas"]["lead"];
+          "application/json": {
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /** @example Supaglue */
+            company: string | null;
+            /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+            converted_account_id: string | null;
+            converted_account?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Integration API */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 1234 */
+              remote_id: string;
+              /** @example API's */
+              industry: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Sample Customer */
+              name: string | null;
+              /** @example 276000 */
+              number_of_employees: number | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /** @example https://supaglue.com/ */
+              website: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+            converted_contact_id: string | null;
+            converted_contact?: {
+              /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string} */
+                  email_address_type: "primary" | "work";
+                })[];
+              /** @example George */
+              first_name: string | null;
+              /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Xing */
+              last_name: string | null;
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+              raw_data?: {
+                [key: string]: unknown | undefined;
+              };
+            };
+            /**
+             * Format: date-time 
+             * @example 2023-02-27T00:00:00Z
+             */
+            converted_date: Date | null;
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses?: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string} */
+                email_address_type: "primary" | "work";
+              })[];
+            /** @example George */
+            first_name?: string | null;
+            /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example Xing */
+            last_name: string | null;
+            /** @example API Blogger */
+            lead_source: string | null;
+            /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+            owner_id: string | null;
+            owner?: {
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example George Xing */
+              name: string | null;
+              /** @example george@supaglue.com */
+              email: string | null;
+              is_active: boolean | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "primary"
+             *   }
+             * ]
+             */
+            phone_numbers: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string} */
+                phone_number_type: "primary" | "mobile" | "fax";
+              })[];
+            /** @example Co-Founder */
+            title: string | null;
+            /**
+             * Format: date-time 
+             * @example 2023-02-10T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2023-02-10T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };
@@ -978,7 +7191,67 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_lead"];
+          model: {
+            /** @example Supaglue */
+            company?: string | null;
+            /** @example George */
+            first_name?: string | null;
+            /** @example Xing */
+            last_name?: string | null;
+            /** @example API Blogger */
+            lead_source?: string | null;
+            /** @example Co-Founder */
+            title?: string;
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses?: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string} */
+                email_address_type: "primary" | "work";
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "address_type": "shipping",
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street1": "525 Brannan",
+             *     "street2": null
+             *   }
+             * ]
+             */
+            addresses?: ({
+                /** @enum {string} */
+                address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street1: string | null;
+                /** @example null */
+                street2?: string | null;
+              })[];
+            /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+            owner_id?: string | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -987,10 +7260,567 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["lead"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Supaglue */
+              company: string | null;
+              /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+              converted_account_id: string | null;
+              converted_account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+              converted_contact_id: string | null;
+              converted_contact?: {
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Xing */
+                last_name: string | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+                raw_data?: {
+                  [key: string]: unknown | undefined;
+                };
+              };
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              converted_date: Date | null;
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses?: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string} */
+                  email_address_type: "primary" | "work";
+                })[];
+              /** @example George */
+              first_name?: string | null;
+              /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example Xing */
+              last_name: string | null;
+              /** @example API Blogger */
+              lead_source: string | null;
+              /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @example Co-Founder */
+              title: string | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-10T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-10T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -998,13 +7828,31 @@ export interface operations {
   };
   searchLeads: {
     /** Search leads */
+    parameters?: {
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        cursor?: string;
+        page_size?: string;
+        include_raw_data?: boolean;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            email_address?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            email_address?: {
+              /** @enum {string} */
+              type: "equals";
+              value: string;
+            };
+            remote_id?: {
+              /** @enum {string} */
+              type: "equals";
+              value: string;
+            };
           };
         };
       };
@@ -1013,9 +7861,494 @@ export interface operations {
       /** @description Leads */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["lead"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Supaglue */
+                company: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                converted_account_id: string | null;
+                converted_account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+                converted_contact_id: string | null;
+                converted_contact?: {
+                  /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                  account_id: string | null;
+                  account?: {
+                    /**
+                     * @example [
+                     *   {
+                     *     "address_type": "shipping",
+                     *     "city": "San Francisco",
+                     *     "country": "US",
+                     *     "postal_code": "94107",
+                     *     "state": "CA",
+                     *     "street1": "525 Brannan",
+                     *     "street2": null
+                     *   }
+                     * ]
+                     */
+                    addresses: ({
+                        /** @enum {string} */
+                        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                        /** @example San Francisco */
+                        city: string | null;
+                        /** @example USA */
+                        country: string | null;
+                        /** @example 94107 */
+                        postal_code: string | null;
+                        /** @example CA */
+                        state: string | null;
+                        /** @example 525 Brannan */
+                        street1: string | null;
+                        /** @example null */
+                        street2?: string | null;
+                      })[];
+                    /** @example Integration API */
+                    description: string | null;
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 1234 */
+                    remote_id: string;
+                    /** @example API's */
+                    industry: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_activity_at: Date | null;
+                    /** @example Sample Customer */
+                    name: string | null;
+                    /** @example 276000 */
+                    number_of_employees: number | null;
+                    /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                    owner_id: string | null;
+                    owner?: {
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 54312 */
+                      remote_id: string;
+                      /** @example George Xing */
+                      name: string | null;
+                      /** @example george@supaglue.com */
+                      email: string | null;
+                      is_active: boolean | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /**
+                     * @example [
+                     *   {
+                     *     "phone_number": "+14151234567",
+                     *     "phone_number_type": "primary"
+                     *   }
+                     * ]
+                     */
+                    phone_numbers: ({
+                        /** @example +14151234567 */
+                        phone_number: string | null;
+                        /** @enum {string} */
+                        phone_number_type: "primary" | "mobile" | "fax";
+                      })[];
+                    /** @enum {string|null} */
+                    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                    /** @example https://supaglue.com/ */
+                    website: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /**
+                   * @example [
+                   *   {
+                   *     "email_address": "hello@supaglue.com",
+                   *     "email_address_type": "work"
+                   *   }
+                   * ]
+                   */
+                  email_addresses: ({
+                      /** @example hello@supaglue.com */
+                      email_address: string;
+                      /** @enum {string} */
+                      email_address_type: "primary" | "work";
+                    })[];
+                  /** @example George */
+                  first_name: string | null;
+                  /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Xing */
+                  last_name: string | null;
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                  raw_data?: {
+                    [key: string]: unknown | undefined;
+                  };
+                };
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                converted_date: Date | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses?: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name?: string | null;
+                /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example Xing */
+                last_name: string | null;
+                /** @example API Blogger */
+                lead_source: string | null;
+                /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @example Co-Founder */
+                title: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-10T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-10T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
@@ -1025,13 +8358,1135 @@ export interface operations {
      * List events 
      * @description Get a list of events
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Events */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["event"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example Meeting */
+                type: string | null;
+                /** @example Meeting */
+                subject: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                start_time: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                end_time: Date | null;
+                content: string | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                contact_id: string | null;
+                contact?: {
+                  /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                  account_id: string | null;
+                  account?: {
+                    /**
+                     * @example [
+                     *   {
+                     *     "address_type": "shipping",
+                     *     "city": "San Francisco",
+                     *     "country": "US",
+                     *     "postal_code": "94107",
+                     *     "state": "CA",
+                     *     "street1": "525 Brannan",
+                     *     "street2": null
+                     *   }
+                     * ]
+                     */
+                    addresses: ({
+                        /** @enum {string} */
+                        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                        /** @example San Francisco */
+                        city: string | null;
+                        /** @example USA */
+                        country: string | null;
+                        /** @example 94107 */
+                        postal_code: string | null;
+                        /** @example CA */
+                        state: string | null;
+                        /** @example 525 Brannan */
+                        street1: string | null;
+                        /** @example null */
+                        street2?: string | null;
+                      })[];
+                    /** @example Integration API */
+                    description: string | null;
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 1234 */
+                    remote_id: string;
+                    /** @example API's */
+                    industry: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_activity_at: Date | null;
+                    /** @example Sample Customer */
+                    name: string | null;
+                    /** @example 276000 */
+                    number_of_employees: number | null;
+                    /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                    owner_id: string | null;
+                    owner?: {
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 54312 */
+                      remote_id: string;
+                      /** @example George Xing */
+                      name: string | null;
+                      /** @example george@supaglue.com */
+                      email: string | null;
+                      is_active: boolean | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /**
+                     * @example [
+                     *   {
+                     *     "phone_number": "+14151234567",
+                     *     "phone_number_type": "primary"
+                     *   }
+                     * ]
+                     */
+                    phone_numbers: ({
+                        /** @example +14151234567 */
+                        phone_number: string | null;
+                        /** @enum {string} */
+                        phone_number_type: "primary" | "mobile" | "fax";
+                      })[];
+                    /** @enum {string|null} */
+                    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                    /** @example https://supaglue.com/ */
+                    website: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /**
+                   * @example [
+                   *   {
+                   *     "email_address": "hello@supaglue.com",
+                   *     "email_address_type": "work"
+                   *   }
+                   * ]
+                   */
+                  email_addresses: ({
+                      /** @example hello@supaglue.com */
+                      email_address: string;
+                      /** @enum {string} */
+                      email_address_type: "primary" | "work";
+                    })[];
+                  /** @example George */
+                  first_name: string | null;
+                  /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Xing */
+                  last_name: string | null;
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                  raw_data?: {
+                    [key: string]: unknown | undefined;
+                  };
+                };
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                lead_id: string | null;
+                lead?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Supaglue */
+                  company: string | null;
+                  /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                  converted_account_id: string | null;
+                  converted_account?: {
+                    /**
+                     * @example [
+                     *   {
+                     *     "address_type": "shipping",
+                     *     "city": "San Francisco",
+                     *     "country": "US",
+                     *     "postal_code": "94107",
+                     *     "state": "CA",
+                     *     "street1": "525 Brannan",
+                     *     "street2": null
+                     *   }
+                     * ]
+                     */
+                    addresses: ({
+                        /** @enum {string} */
+                        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                        /** @example San Francisco */
+                        city: string | null;
+                        /** @example USA */
+                        country: string | null;
+                        /** @example 94107 */
+                        postal_code: string | null;
+                        /** @example CA */
+                        state: string | null;
+                        /** @example 525 Brannan */
+                        street1: string | null;
+                        /** @example null */
+                        street2?: string | null;
+                      })[];
+                    /** @example Integration API */
+                    description: string | null;
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 1234 */
+                    remote_id: string;
+                    /** @example API's */
+                    industry: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_activity_at: Date | null;
+                    /** @example Sample Customer */
+                    name: string | null;
+                    /** @example 276000 */
+                    number_of_employees: number | null;
+                    /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                    owner_id: string | null;
+                    owner?: {
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 54312 */
+                      remote_id: string;
+                      /** @example George Xing */
+                      name: string | null;
+                      /** @example george@supaglue.com */
+                      email: string | null;
+                      is_active: boolean | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /**
+                     * @example [
+                     *   {
+                     *     "phone_number": "+14151234567",
+                     *     "phone_number_type": "primary"
+                     *   }
+                     * ]
+                     */
+                    phone_numbers: ({
+                        /** @example +14151234567 */
+                        phone_number: string | null;
+                        /** @enum {string} */
+                        phone_number_type: "primary" | "mobile" | "fax";
+                      })[];
+                    /** @enum {string|null} */
+                    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                    /** @example https://supaglue.com/ */
+                    website: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+                  converted_contact_id: string | null;
+                  converted_contact?: {
+                    /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                    account_id: string | null;
+                    account?: {
+                      /**
+                       * @example [
+                       *   {
+                       *     "address_type": "shipping",
+                       *     "city": "San Francisco",
+                       *     "country": "US",
+                       *     "postal_code": "94107",
+                       *     "state": "CA",
+                       *     "street1": "525 Brannan",
+                       *     "street2": null
+                       *   }
+                       * ]
+                       */
+                      addresses: ({
+                          /** @enum {string} */
+                          address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                          /** @example San Francisco */
+                          city: string | null;
+                          /** @example USA */
+                          country: string | null;
+                          /** @example 94107 */
+                          postal_code: string | null;
+                          /** @example CA */
+                          state: string | null;
+                          /** @example 525 Brannan */
+                          street1: string | null;
+                          /** @example null */
+                          street2?: string | null;
+                        })[];
+                      /** @example Integration API */
+                      description: string | null;
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 1234 */
+                      remote_id: string;
+                      /** @example API's */
+                      industry: string | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_activity_at: Date | null;
+                      /** @example Sample Customer */
+                      name: string | null;
+                      /** @example 276000 */
+                      number_of_employees: number | null;
+                      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                      owner_id: string | null;
+                      owner?: {
+                        /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                        id: string;
+                        /** @example 54312 */
+                        remote_id: string;
+                        /** @example George Xing */
+                        name: string | null;
+                        /** @example george@supaglue.com */
+                        email: string | null;
+                        is_active: boolean | null;
+                        /**
+                         * Format: date-time 
+                         * @example 2022-02-27T00:00:00Z
+                         */
+                        remote_created_at: Date | null;
+                        /**
+                         * Format: date-time 
+                         * @example 2022-02-27T00:00:00Z
+                         */
+                        remote_updated_at: Date | null;
+                        /** @example false */
+                        remote_was_deleted: boolean;
+                        /**
+                         * Format: date-time 
+                         * @example 2022-02-27T00:00:00Z
+                         */
+                        last_modified_at: Date;
+                      };
+                      /**
+                       * @example [
+                       *   {
+                       *     "phone_number": "+14151234567",
+                       *     "phone_number_type": "primary"
+                       *   }
+                       * ]
+                       */
+                      phone_numbers: ({
+                          /** @example +14151234567 */
+                          phone_number: string | null;
+                          /** @enum {string} */
+                          phone_number_type: "primary" | "mobile" | "fax";
+                        })[];
+                      /** @enum {string|null} */
+                      lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                      /** @example https://supaglue.com/ */
+                      website: string | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                    owner_id: string | null;
+                    owner?: {
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 54312 */
+                      remote_id: string;
+                      /** @example George Xing */
+                      name: string | null;
+                      /** @example george@supaglue.com */
+                      email: string | null;
+                      is_active: boolean | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /**
+                     * @example [
+                     *   {
+                     *     "address_type": "shipping",
+                     *     "city": "San Francisco",
+                     *     "country": "US",
+                     *     "postal_code": "94107",
+                     *     "state": "CA",
+                     *     "street1": "525 Brannan",
+                     *     "street2": null
+                     *   }
+                     * ]
+                     */
+                    addresses: ({
+                        /** @enum {string} */
+                        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                        /** @example San Francisco */
+                        city: string | null;
+                        /** @example USA */
+                        country: string | null;
+                        /** @example 94107 */
+                        postal_code: string | null;
+                        /** @example CA */
+                        state: string | null;
+                        /** @example 525 Brannan */
+                        street1: string | null;
+                        /** @example null */
+                        street2?: string | null;
+                      })[];
+                    /**
+                     * @example [
+                     *   {
+                     *     "email_address": "hello@supaglue.com",
+                     *     "email_address_type": "work"
+                     *   }
+                     * ]
+                     */
+                    email_addresses: ({
+                        /** @example hello@supaglue.com */
+                        email_address: string;
+                        /** @enum {string} */
+                        email_address_type: "primary" | "work";
+                      })[];
+                    /** @example George */
+                    first_name: string | null;
+                    /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_activity_at: Date | null;
+                    /** @example Xing */
+                    last_name: string | null;
+                    /**
+                     * @example [
+                     *   {
+                     *     "phone_number": "+14151234567",
+                     *     "phone_number_type": "primary"
+                     *   }
+                     * ]
+                     */
+                    phone_numbers: ({
+                        /** @example +14151234567 */
+                        phone_number: string | null;
+                        /** @enum {string} */
+                        phone_number_type: "primary" | "mobile" | "fax";
+                      })[];
+                    /** @enum {string|null} */
+                    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                    raw_data?: {
+                      [key: string]: unknown | undefined;
+                    };
+                  };
+                  /**
+                   * Format: date-time 
+                   * @example 2023-02-27T00:00:00Z
+                   */
+                  converted_date: Date | null;
+                  /**
+                   * @example [
+                   *   {
+                   *     "email_address": "hello@supaglue.com",
+                   *     "email_address_type": "work"
+                   *   }
+                   * ]
+                   */
+                  email_addresses?: ({
+                      /** @example hello@supaglue.com */
+                      email_address: string;
+                      /** @enum {string} */
+                      email_address_type: "primary" | "work";
+                    })[];
+                  /** @example George */
+                  first_name?: string | null;
+                  /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example Xing */
+                  last_name: string | null;
+                  /** @example API Blogger */
+                  lead_source: string | null;
+                  /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @example Co-Founder */
+                  title: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2023-02-10T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2023-02-10T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                opportunity_id: string | null;
+                opportunity?: {
+                  /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                  account_id: string | null;
+                  account?: {
+                    /**
+                     * @example [
+                     *   {
+                     *     "address_type": "shipping",
+                     *     "city": "San Francisco",
+                     *     "country": "US",
+                     *     "postal_code": "94107",
+                     *     "state": "CA",
+                     *     "street1": "525 Brannan",
+                     *     "street2": null
+                     *   }
+                     * ]
+                     */
+                    addresses: ({
+                        /** @enum {string} */
+                        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                        /** @example San Francisco */
+                        city: string | null;
+                        /** @example USA */
+                        country: string | null;
+                        /** @example 94107 */
+                        postal_code: string | null;
+                        /** @example CA */
+                        state: string | null;
+                        /** @example 525 Brannan */
+                        street1: string | null;
+                        /** @example null */
+                        street2?: string | null;
+                      })[];
+                    /** @example Integration API */
+                    description: string | null;
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 1234 */
+                    remote_id: string;
+                    /** @example API's */
+                    industry: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_activity_at: Date | null;
+                    /** @example Sample Customer */
+                    name: string | null;
+                    /** @example 276000 */
+                    number_of_employees: number | null;
+                    /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                    owner_id: string | null;
+                    owner?: {
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 54312 */
+                      remote_id: string;
+                      /** @example George Xing */
+                      name: string | null;
+                      /** @example george@supaglue.com */
+                      email: string | null;
+                      is_active: boolean | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /**
+                     * @example [
+                     *   {
+                     *     "phone_number": "+14151234567",
+                     *     "phone_number_type": "primary"
+                     *   }
+                     * ]
+                     */
+                    phone_numbers: ({
+                        /** @example +14151234567 */
+                        phone_number: string | null;
+                        /** @enum {string} */
+                        phone_number_type: "primary" | "mobile" | "fax";
+                      })[];
+                    /** @enum {string|null} */
+                    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                    /** @example https://supaglue.com/ */
+                    website: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /** @example 100000 */
+                  amount: number | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2023-02-27T00:00:00Z
+                   */
+                  close_date?: Date | null;
+                  /** @example Wants to use open source unified API for third-party integrations */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /**
+                   * Format: date-time 
+                   * @example 2023-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Needs third-party integrations */
+                  name: string | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  pipeline: string | null;
+                  /** @example Closed Won */
+                  stage: string | null;
+                  /** @example OPEN */
+                  status: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2023-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2023-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
@@ -1041,7 +9496,31 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_event"];
+          model: {
+            /** @example Meeting */
+            type?: string | null;
+            /** @example Meeting */
+            subject?: string | null;
+            /** @example 2022-02-27T00:00:00Z */
+            start_time?: string | null;
+            /** @example 2022-02-27T00:00:00Z */
+            end_time?: string | null;
+            content?: string | null;
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            owner_id?: string | null;
+            /** @example 1393711e-b7ba-46ef-b9cd-49134cf2c630 */
+            account_id?: string | null;
+            /** @example 34288f14-7d3e-4275-8b14-3df6d116b1af */
+            contact_id?: string | null;
+            /** @example c1b1c601-6707-4d3a-8c1a-ec0127358019 */
+            lead_id?: string | null;
+            /** @example 2506e5f3-1805-405a-a13c-baa0ac524274 */
+            opportunity_id?: string | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -1050,10 +9529,1184 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["event"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 1234 */
+              remote_id: string;
+              /** @example Meeting */
+              type: string | null;
+              /** @example Meeting */
+              subject: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              start_time: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              end_time: Date | null;
+              content: string | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              contact_id: string | null;
+              contact?: {
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Xing */
+                last_name: string | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+                raw_data?: {
+                  [key: string]: unknown | undefined;
+                };
+              };
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              lead_id: string | null;
+              lead?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Supaglue */
+                company: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                converted_account_id: string | null;
+                converted_account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+                converted_contact_id: string | null;
+                converted_contact?: {
+                  /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                  account_id: string | null;
+                  account?: {
+                    /**
+                     * @example [
+                     *   {
+                     *     "address_type": "shipping",
+                     *     "city": "San Francisco",
+                     *     "country": "US",
+                     *     "postal_code": "94107",
+                     *     "state": "CA",
+                     *     "street1": "525 Brannan",
+                     *     "street2": null
+                     *   }
+                     * ]
+                     */
+                    addresses: ({
+                        /** @enum {string} */
+                        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                        /** @example San Francisco */
+                        city: string | null;
+                        /** @example USA */
+                        country: string | null;
+                        /** @example 94107 */
+                        postal_code: string | null;
+                        /** @example CA */
+                        state: string | null;
+                        /** @example 525 Brannan */
+                        street1: string | null;
+                        /** @example null */
+                        street2?: string | null;
+                      })[];
+                    /** @example Integration API */
+                    description: string | null;
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 1234 */
+                    remote_id: string;
+                    /** @example API's */
+                    industry: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_activity_at: Date | null;
+                    /** @example Sample Customer */
+                    name: string | null;
+                    /** @example 276000 */
+                    number_of_employees: number | null;
+                    /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                    owner_id: string | null;
+                    owner?: {
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 54312 */
+                      remote_id: string;
+                      /** @example George Xing */
+                      name: string | null;
+                      /** @example george@supaglue.com */
+                      email: string | null;
+                      is_active: boolean | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /**
+                     * @example [
+                     *   {
+                     *     "phone_number": "+14151234567",
+                     *     "phone_number_type": "primary"
+                     *   }
+                     * ]
+                     */
+                    phone_numbers: ({
+                        /** @example +14151234567 */
+                        phone_number: string | null;
+                        /** @enum {string} */
+                        phone_number_type: "primary" | "mobile" | "fax";
+                      })[];
+                    /** @enum {string|null} */
+                    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                    /** @example https://supaglue.com/ */
+                    website: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /**
+                   * @example [
+                   *   {
+                   *     "email_address": "hello@supaglue.com",
+                   *     "email_address_type": "work"
+                   *   }
+                   * ]
+                   */
+                  email_addresses: ({
+                      /** @example hello@supaglue.com */
+                      email_address: string;
+                      /** @enum {string} */
+                      email_address_type: "primary" | "work";
+                    })[];
+                  /** @example George */
+                  first_name: string | null;
+                  /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Xing */
+                  last_name: string | null;
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                  raw_data?: {
+                    [key: string]: unknown | undefined;
+                  };
+                };
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                converted_date: Date | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses?: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name?: string | null;
+                /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example Xing */
+                last_name: string | null;
+                /** @example API Blogger */
+                lead_source: string | null;
+                /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @example Co-Founder */
+                title: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-10T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-10T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              opportunity_id: string | null;
+              opportunity?: {
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 100000 */
+                amount: number | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                close_date?: Date | null;
+                /** @example Wants to use open source unified API for third-party integrations */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Needs third-party integrations */
+                name: string | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                pipeline: string | null;
+                /** @example Closed Won */
+                stage: string | null;
+                /** @example OPEN */
+                status: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -1061,11 +10714,1114 @@ export interface operations {
   };
   getEvent: {
     /** Get event */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description Event */
       200: {
         content: {
-          "application/json": components["schemas"]["event"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 1234 */
+            remote_id: string;
+            /** @example Meeting */
+            type: string | null;
+            /** @example Meeting */
+            subject: string | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            start_time: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            end_time: Date | null;
+            content: string | null;
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            owner_id: string | null;
+            owner?: {
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example George Xing */
+              name: string | null;
+              /** @example george@supaglue.com */
+              email: string | null;
+              is_active: boolean | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            account_id: string | null;
+            account?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Integration API */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 1234 */
+              remote_id: string;
+              /** @example API's */
+              industry: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Sample Customer */
+              name: string | null;
+              /** @example 276000 */
+              number_of_employees: number | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /** @example https://supaglue.com/ */
+              website: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            contact_id: string | null;
+            contact?: {
+              /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string} */
+                  email_address_type: "primary" | "work";
+                })[];
+              /** @example George */
+              first_name: string | null;
+              /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Xing */
+              last_name: string | null;
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+              raw_data?: {
+                [key: string]: unknown | undefined;
+              };
+            };
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            lead_id: string | null;
+            lead?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Supaglue */
+              company: string | null;
+              /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+              converted_account_id: string | null;
+              converted_account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+              converted_contact_id: string | null;
+              converted_contact?: {
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Xing */
+                last_name: string | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+                raw_data?: {
+                  [key: string]: unknown | undefined;
+                };
+              };
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              converted_date: Date | null;
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses?: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string} */
+                  email_address_type: "primary" | "work";
+                })[];
+              /** @example George */
+              first_name?: string | null;
+              /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example Xing */
+              last_name: string | null;
+              /** @example API Blogger */
+              lead_source: string | null;
+              /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @example Co-Founder */
+              title: string | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-10T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-10T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            opportunity_id: string | null;
+            opportunity?: {
+              /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 100000 */
+              amount: number | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              close_date?: Date | null;
+              /** @example Wants to use open source unified API for third-party integrations */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Needs third-party integrations */
+              name: string | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              pipeline: string | null;
+              /** @example Closed Won */
+              stage: string | null;
+              /** @example OPEN */
+              status: string | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };
@@ -1075,7 +11831,31 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_event"];
+          model: {
+            /** @example Meeting */
+            type?: string | null;
+            /** @example Meeting */
+            subject?: string | null;
+            /** @example 2022-02-27T00:00:00Z */
+            start_time?: string | null;
+            /** @example 2022-02-27T00:00:00Z */
+            end_time?: string | null;
+            content?: string | null;
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            owner_id?: string | null;
+            /** @example 1393711e-b7ba-46ef-b9cd-49134cf2c630 */
+            account_id?: string | null;
+            /** @example 34288f14-7d3e-4275-8b14-3df6d116b1af */
+            contact_id?: string | null;
+            /** @example c1b1c601-6707-4d3a-8c1a-ec0127358019 */
+            lead_id?: string | null;
+            /** @example 2506e5f3-1805-405a-a13c-baa0ac524274 */
+            opportunity_id?: string | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -1084,10 +11864,1184 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["event"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 1234 */
+              remote_id: string;
+              /** @example Meeting */
+              type: string | null;
+              /** @example Meeting */
+              subject: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              start_time: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              end_time: Date | null;
+              content: string | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              contact_id: string | null;
+              contact?: {
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Xing */
+                last_name: string | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+                raw_data?: {
+                  [key: string]: unknown | undefined;
+                };
+              };
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              lead_id: string | null;
+              lead?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Supaglue */
+                company: string | null;
+                /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                converted_account_id: string | null;
+                converted_account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 8c8de778-a219-4d6c-848c-1d57b52149f6 */
+                converted_contact_id: string | null;
+                converted_contact?: {
+                  /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                  account_id: string | null;
+                  account?: {
+                    /**
+                     * @example [
+                     *   {
+                     *     "address_type": "shipping",
+                     *     "city": "San Francisco",
+                     *     "country": "US",
+                     *     "postal_code": "94107",
+                     *     "state": "CA",
+                     *     "street1": "525 Brannan",
+                     *     "street2": null
+                     *   }
+                     * ]
+                     */
+                    addresses: ({
+                        /** @enum {string} */
+                        address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                        /** @example San Francisco */
+                        city: string | null;
+                        /** @example USA */
+                        country: string | null;
+                        /** @example 94107 */
+                        postal_code: string | null;
+                        /** @example CA */
+                        state: string | null;
+                        /** @example 525 Brannan */
+                        street1: string | null;
+                        /** @example null */
+                        street2?: string | null;
+                      })[];
+                    /** @example Integration API */
+                    description: string | null;
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 1234 */
+                    remote_id: string;
+                    /** @example API's */
+                    industry: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_activity_at: Date | null;
+                    /** @example Sample Customer */
+                    name: string | null;
+                    /** @example 276000 */
+                    number_of_employees: number | null;
+                    /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                    owner_id: string | null;
+                    owner?: {
+                      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                      id: string;
+                      /** @example 54312 */
+                      remote_id: string;
+                      /** @example George Xing */
+                      name: string | null;
+                      /** @example george@supaglue.com */
+                      email: string | null;
+                      is_active: boolean | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_created_at: Date | null;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      remote_updated_at: Date | null;
+                      /** @example false */
+                      remote_was_deleted: boolean;
+                      /**
+                       * Format: date-time 
+                       * @example 2022-02-27T00:00:00Z
+                       */
+                      last_modified_at: Date;
+                    };
+                    /**
+                     * @example [
+                     *   {
+                     *     "phone_number": "+14151234567",
+                     *     "phone_number_type": "primary"
+                     *   }
+                     * ]
+                     */
+                    phone_numbers: ({
+                        /** @example +14151234567 */
+                        phone_number: string | null;
+                        /** @enum {string} */
+                        phone_number_type: "primary" | "mobile" | "fax";
+                      })[];
+                    /** @enum {string|null} */
+                    lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                    /** @example https://supaglue.com/ */
+                    website: string | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /**
+                   * @example [
+                   *   {
+                   *     "email_address": "hello@supaglue.com",
+                   *     "email_address_type": "work"
+                   *   }
+                   * ]
+                   */
+                  email_addresses: ({
+                      /** @example hello@supaglue.com */
+                      email_address: string;
+                      /** @enum {string} */
+                      email_address_type: "primary" | "work";
+                    })[];
+                  /** @example George */
+                  first_name: string | null;
+                  /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Xing */
+                  last_name: string | null;
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                  raw_data?: {
+                    [key: string]: unknown | undefined;
+                  };
+                };
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                converted_date: Date | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses?: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string} */
+                    email_address_type: "primary" | "work";
+                  })[];
+                /** @example George */
+                first_name?: string | null;
+                /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example Xing */
+                last_name: string | null;
+                /** @example API Blogger */
+                lead_source: string | null;
+                /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @example Co-Founder */
+                title: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-10T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-10T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              opportunity_id: string | null;
+              opportunity?: {
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 100000 */
+                amount: number | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                close_date?: Date | null;
+                /** @example Wants to use open source unified API for third-party integrations */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Needs third-party integrations */
+                name: string | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                pipeline: string | null;
+                /** @example Closed Won */
+                stage: string | null;
+                /** @example OPEN */
+                status: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -1098,13 +13052,226 @@ export interface operations {
      * List opportunities 
      * @description Get a list of opportunities
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Opportunities */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["opportunity"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 100000 */
+                amount: number | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                close_date?: Date | null;
+                /** @example Wants to use open source unified API for third-party integrations */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Needs third-party integrations */
+                name: string | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                pipeline: string | null;
+                /** @example Closed Won */
+                stage: string | null;
+                /** @example OPEN */
+                status: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
@@ -1126,7 +13293,27 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_update_opportunity"];
+          model: {
+            /** @example 100000 */
+            amount?: number | null;
+            /** @example 2022-02-10T00:00:00Z */
+            close_date?: string | null;
+            /** @example Wants to use open source unified API for third-party integrations */
+            description?: string | null;
+            /** @example Needs Integrations */
+            name?: string | null;
+            /** @example Closed Won */
+            stage?: string;
+            /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
+            account_id?: string | null;
+            /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+            owner_id?: string | null;
+            pipeline?: string | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -1135,10 +13322,275 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["opportunity"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 100000 */
+              amount: number | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              close_date?: Date | null;
+              /** @example Wants to use open source unified API for third-party integrations */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Needs third-party integrations */
+              name: string | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              pipeline: string | null;
+              /** @example Closed Won */
+              stage: string | null;
+              /** @example OPEN */
+              status: string | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -1146,13 +13598,31 @@ export interface operations {
   };
   searchOpportunities: {
     /** Search Opportunities */
+    parameters?: {
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        cursor?: string;
+        page_size?: string;
+        include_raw_data?: boolean;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
           /** @description Filters are combined using a logical AND */
           filters: {
-            account_id?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["filter"];
+            account_id?: {
+              /** @enum {string} */
+              type: "equals";
+              value: string;
+            };
+            remote_id?: {
+              /** @enum {string} */
+              type: "equals";
+              value: string;
+            };
           };
         };
       };
@@ -1161,20 +13631,407 @@ export interface operations {
       /** @description Opportunities */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["opportunity"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+                account_id: string | null;
+                account?: {
+                  /**
+                   * @example [
+                   *   {
+                   *     "address_type": "shipping",
+                   *     "city": "San Francisco",
+                   *     "country": "US",
+                   *     "postal_code": "94107",
+                   *     "state": "CA",
+                   *     "street1": "525 Brannan",
+                   *     "street2": null
+                   *   }
+                   * ]
+                   */
+                  addresses: ({
+                      /** @enum {string} */
+                      address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                      /** @example San Francisco */
+                      city: string | null;
+                      /** @example USA */
+                      country: string | null;
+                      /** @example 94107 */
+                      postal_code: string | null;
+                      /** @example CA */
+                      state: string | null;
+                      /** @example 525 Brannan */
+                      street1: string | null;
+                      /** @example null */
+                      street2?: string | null;
+                    })[];
+                  /** @example Integration API */
+                  description: string | null;
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 1234 */
+                  remote_id: string;
+                  /** @example API's */
+                  industry: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_activity_at: Date | null;
+                  /** @example Sample Customer */
+                  name: string | null;
+                  /** @example 276000 */
+                  number_of_employees: number | null;
+                  /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                  owner_id: string | null;
+                  owner?: {
+                    /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                    id: string;
+                    /** @example 54312 */
+                    remote_id: string;
+                    /** @example George Xing */
+                    name: string | null;
+                    /** @example george@supaglue.com */
+                    email: string | null;
+                    is_active: boolean | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_created_at: Date | null;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    remote_updated_at: Date | null;
+                    /** @example false */
+                    remote_was_deleted: boolean;
+                    /**
+                     * Format: date-time 
+                     * @example 2022-02-27T00:00:00Z
+                     */
+                    last_modified_at: Date;
+                  };
+                  /**
+                   * @example [
+                   *   {
+                   *     "phone_number": "+14151234567",
+                   *     "phone_number_type": "primary"
+                   *   }
+                   * ]
+                   */
+                  phone_numbers: ({
+                      /** @example +14151234567 */
+                      phone_number: string | null;
+                      /** @enum {string} */
+                      phone_number_type: "primary" | "mobile" | "fax";
+                    })[];
+                  /** @enum {string|null} */
+                  lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                  /** @example https://supaglue.com/ */
+                  website: string | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /** @example 100000 */
+                amount: number | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                close_date?: Date | null;
+                /** @example Wants to use open source unified API for third-party integrations */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Needs third-party integrations */
+                name: string | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                pipeline: string | null;
+                /** @example Closed Won */
+                stage: string | null;
+                /** @example OPEN */
+                status: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2023-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
   };
   getOpportunity: {
     /** Get opportunity */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description Opportunity */
       200: {
         content: {
-          "application/json": components["schemas"]["opportunity"];
+          "application/json": {
+            /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+            account_id: string | null;
+            account?: {
+              /**
+               * @example [
+               *   {
+               *     "address_type": "shipping",
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street1": "525 Brannan",
+               *     "street2": null
+               *   }
+               * ]
+               */
+              addresses: ({
+                  /** @enum {string} */
+                  address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street1: string | null;
+                  /** @example null */
+                  street2?: string | null;
+                })[];
+              /** @example Integration API */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 1234 */
+              remote_id: string;
+              /** @example API's */
+              industry: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Sample Customer */
+              name: string | null;
+              /** @example 276000 */
+              number_of_employees: number | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "primary"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string} */
+                  phone_number_type: "primary" | "mobile" | "fax";
+                })[];
+              /** @enum {string|null} */
+              lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+              /** @example https://supaglue.com/ */
+              website: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /** @example 100000 */
+            amount: number | null;
+            /**
+             * Format: date-time 
+             * @example 2023-02-27T00:00:00Z
+             */
+            close_date?: Date | null;
+            /** @example Wants to use open source unified API for third-party integrations */
+            description: string | null;
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /**
+             * Format: date-time 
+             * @example 2023-02-27T00:00:00Z
+             */
+            last_activity_at: Date | null;
+            /** @example Needs third-party integrations */
+            name: string | null;
+            /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+            owner_id: string | null;
+            owner?: {
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example George Xing */
+              name: string | null;
+              /** @example george@supaglue.com */
+              email: string | null;
+              is_active: boolean | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            pipeline: string | null;
+            /** @example Closed Won */
+            stage: string | null;
+            /** @example OPEN */
+            status: string | null;
+            /**
+             * Format: date-time 
+             * @example 2023-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2023-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };
@@ -1184,7 +14041,27 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_opportunity"];
+          model: {
+            /** @example 100000 */
+            amount?: number | null;
+            /** @example 2022-02-10T00:00:00Z */
+            close_date?: string | null;
+            /** @example Wants to use open source unified API for third-party integrations */
+            description?: string | null;
+            /** @example Needs Integrations */
+            name?: string | null;
+            /** @example Closed Won */
+            stage?: string;
+            /** @example 64571bff-48ea-4469-9fa0-ee1a0bab38bd */
+            account_id?: string | null;
+            /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+            owner_id?: string | null;
+            pipeline?: string | null;
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
@@ -1193,10 +14070,275 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["opportunity"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
+              account_id: string | null;
+              account?: {
+                /**
+                 * @example [
+                 *   {
+                 *     "address_type": "shipping",
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street1": "525 Brannan",
+                 *     "street2": null
+                 *   }
+                 * ]
+                 */
+                addresses: ({
+                    /** @enum {string} */
+                    address_type: "primary" | "mailing" | "other" | "billing" | "shipping";
+                    /** @example San Francisco */
+                    city: string | null;
+                    /** @example USA */
+                    country: string | null;
+                    /** @example 94107 */
+                    postal_code: string | null;
+                    /** @example CA */
+                    state: string | null;
+                    /** @example 525 Brannan */
+                    street1: string | null;
+                    /** @example null */
+                    street2?: string | null;
+                  })[];
+                /** @example Integration API */
+                description: string | null;
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 1234 */
+                remote_id: string;
+                /** @example API's */
+                industry: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_activity_at: Date | null;
+                /** @example Sample Customer */
+                name: string | null;
+                /** @example 276000 */
+                number_of_employees: number | null;
+                /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+                owner_id: string | null;
+                owner?: {
+                  /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                  id: string;
+                  /** @example 54312 */
+                  remote_id: string;
+                  /** @example George Xing */
+                  name: string | null;
+                  /** @example george@supaglue.com */
+                  email: string | null;
+                  is_active: boolean | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_created_at: Date | null;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  remote_updated_at: Date | null;
+                  /** @example false */
+                  remote_was_deleted: boolean;
+                  /**
+                   * Format: date-time 
+                   * @example 2022-02-27T00:00:00Z
+                   */
+                  last_modified_at: Date;
+                };
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "primary"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string} */
+                    phone_number_type: "primary" | "mobile" | "fax";
+                  })[];
+                /** @enum {string|null} */
+                lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+                /** @example https://supaglue.com/ */
+                website: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              /** @example 100000 */
+              amount: number | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              close_date?: Date | null;
+              /** @example Wants to use open source unified API for third-party integrations */
+              description: string | null;
+              /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              last_activity_at: Date | null;
+              /** @example Needs third-party integrations */
+              name: string | null;
+              /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+              owner_id: string | null;
+              owner?: {
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              };
+              pipeline: string | null;
+              /** @example Closed Won */
+              stage: string | null;
+              /** @example OPEN */
+              status: string | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2023-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -1207,24 +14349,109 @@ export interface operations {
      * List users 
      * @description Get a list of users
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Users */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["user"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George Xing */
+                name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                is_active: boolean | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
   };
   getUser: {
     /** Get user */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description User */
       200: {
         content: {
-          "application/json": components["schemas"]["user"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example George Xing */
+            name: string | null;
+            /** @example george@supaglue.com */
+            email: string | null;
+            is_active: boolean | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };

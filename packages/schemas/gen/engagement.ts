@@ -5,87 +5,146 @@
 
 
 export interface paths {
-  "/passthrough": {
+  "/engagement/v1/passthrough": {
     /**
      * Send passthrough request 
      * @description Send request directly to a provider
      */
     post: operations["sendPassthroughRequest"];
-    
-  };
-  "/contacts": {
-    /**
-     * List contacts 
-     * @description Get a list of contacts
-     */
-    get: operations["getContacts"];
-    /** Create contact */
-    post: operations["createContact"];
-    
-  };
-  "/contacts/{contact_id}": {
-    /** Get contact */
-    get: operations["getContact"];
-    /** Update contact */
-    patch: operations["updateContact"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
+  };
+  "/engagement/v1/contacts": {
+    /**
+     * List engagement contacts 
+     * @description Get a list of engagement contacts
+     */
+    get: operations["getEngagementContacts"];
+    /** Create engagement contact */
+    post: operations["createEngagementContact"];
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
+  };
+  "/engagement/v1/contacts/{contact_id}": {
+    /** Get engagement contact */
+    get: operations["getEngagementContact"];
+    /** Update engagement contact */
+    patch: operations["updateEngagementContact"];
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         contact_id: string;
       };
     };
   };
-  "/users": {
+  "/engagement/v1/users": {
     /**
      * List users 
      * @description Get a list of users
      */
     get: operations["getUsers"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/users/{user_id}": {
+  "/engagement/v1/users/{user_id}": {
     /** Get user */
     get: operations["getUser"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         user_id: string;
       };
     };
   };
-  "/mailboxes": {
+  "/engagement/v1/mailboxes": {
     /**
      * List mailboxes 
      * @description Get a list of mailboxes
      */
     get: operations["getMailboxes"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/mailboxes/{mailbox_id}": {
+  "/engagement/v1/mailboxes/{mailbox_id}": {
     /** Get mailbox */
     get: operations["getMailbox"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         mailbox_id: string;
       };
     };
   };
-  "/sequences": {
+  "/engagement/v1/sequences": {
     /**
      * List sequences 
      * @description Get a list of sequences
      */
     get: operations["getSequences"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/sequences/{sequence_id}": {
+  "/engagement/v1/sequences/{sequence_id}": {
     /** Get sequence */
     get: operations["getSequence"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         sequence_id: string;
       };
     };
   };
-  "/sequence_states": {
+  "/engagement/v1/sequence_states": {
     /**
      * List sequence states 
      * @description Get a list of sequence states
@@ -93,12 +152,25 @@ export interface paths {
     get: operations["getSequenceStates"];
     /** Create sequence state */
     post: operations["createSequenceState"];
-    
+    parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
+    };
   };
-  "/sequence_states/{sequence_state_id}": {
+  "/engagement/v1/sequence_states/{sequence_state_id}": {
     /** Get sequence state */
     get: operations["getSequenceState"];
     parameters: {
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+      header: {
+        "x-customer-id": string;
+        "x-provider-name": string;
+      };
       path: {
         sequence_state_id: string;
       };
@@ -123,8 +195,46 @@ export interface components {
       last_name: string | null;
       /** @example CEO */
       job_title: string | null;
-      address: components["schemas"]["address"];
-      email_addresses: components["schemas"]["email_addresses"];
+      /**
+       * @example [
+       *   {
+       *     "city": "San Francisco",
+       *     "country": "US",
+       *     "postal_code": "94107",
+       *     "state": "CA",
+       *     "street_1": "525 Brannan",
+       *     "street_2": null
+       *   }
+       * ]
+       */
+      address: ({
+        /** @example San Francisco */
+        city: string | null;
+        /** @example USA */
+        country: string | null;
+        /** @example 94107 */
+        postal_code: string | null;
+        /** @example CA */
+        state: string | null;
+        /** @example 525 Brannan */
+        street_1: string | null;
+        /** @example null */
+        street_2: string | null;
+      }) | null;
+      /**
+       * @example [
+       *   {
+       *     "email_address": "hello@supaglue.com",
+       *     "email_address_type": "work"
+       *   }
+       * ]
+       */
+      email_addresses: ({
+          /** @example hello@supaglue.com */
+          email_address: string;
+          /** @enum {string|null} */
+          email_address_type: "personal" | "work" | null;
+        })[];
       /**
        * @example [
        *   {
@@ -171,11 +281,50 @@ export interface components {
       last_name?: string | null;
       /** @example CEO */
       job_title?: string | null;
-      address?: components["schemas"]["address"];
-      email_addresses?: components["schemas"]["email_addresses"];
-      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
-      owner_id?: string | null;
-      custom_fields?: components["schemas"]["custom_fields"];
+      /**
+       * @example [
+       *   {
+       *     "city": "San Francisco",
+       *     "country": "US",
+       *     "postal_code": "94107",
+       *     "state": "CA",
+       *     "street_1": "525 Brannan",
+       *     "street_2": null
+       *   }
+       * ]
+       */
+      address?: ({
+        /** @example San Francisco */
+        city: string | null;
+        /** @example USA */
+        country: string | null;
+        /** @example 94107 */
+        postal_code: string | null;
+        /** @example CA */
+        state: string | null;
+        /** @example 525 Brannan */
+        street_1: string | null;
+        /** @example null */
+        street_2: string | null;
+      }) | null;
+      /**
+       * @example [
+       *   {
+       *     "email_address": "hello@supaglue.com",
+       *     "email_address_type": "work"
+       *   }
+       * ]
+       */
+      email_addresses?: ({
+          /** @example hello@supaglue.com */
+          email_address: string;
+          /** @enum {string|null} */
+          email_address_type: "personal" | "work" | null;
+        })[];
+      /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+      custom_fields?: {
+        [key: string]: unknown | undefined;
+      };
     };
     sequence_state: {
       /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
@@ -533,24 +682,140 @@ export interface operations {
       };
     };
   };
-  getContacts: {
+  getEngagementContacts: {
     /**
-     * List contacts 
-     * @description Get a list of contacts
+     * List engagement contacts 
+     * @description Get a list of engagement contacts
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
-      /** @description Contacts */
+      /** @description Engagement Contacts */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["contact"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example 4cee77aa-50ae-4369-be1e-03f15a55ef10 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+                owner_id: string | null;
+                /** @example George */
+                first_name: string | null;
+                /** @example Xing */
+                last_name: string | null;
+                /** @example CEO */
+                job_title: string | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "city": "San Francisco",
+                 *     "country": "US",
+                 *     "postal_code": "94107",
+                 *     "state": "CA",
+                 *     "street_1": "525 Brannan",
+                 *     "street_2": null
+                 *   }
+                 * ]
+                 */
+                address: ({
+                  /** @example San Francisco */
+                  city: string | null;
+                  /** @example USA */
+                  country: string | null;
+                  /** @example 94107 */
+                  postal_code: string | null;
+                  /** @example CA */
+                  state: string | null;
+                  /** @example 525 Brannan */
+                  street_1: string | null;
+                  /** @example null */
+                  street_2: string | null;
+                }) | null;
+                /**
+                 * @example [
+                 *   {
+                 *     "email_address": "hello@supaglue.com",
+                 *     "email_address_type": "work"
+                 *   }
+                 * ]
+                 */
+                email_addresses: ({
+                    /** @example hello@supaglue.com */
+                    email_address: string;
+                    /** @enum {string|null} */
+                    email_address_type: "personal" | "work" | null;
+                  })[];
+                /**
+                 * @example [
+                 *   {
+                 *     "phone_number": "+14151234567",
+                 *     "phone_number_type": "work"
+                 *   }
+                 * ]
+                 */
+                phone_numbers: ({
+                    /** @example +14151234567 */
+                    phone_number: string | null;
+                    /** @enum {string|null} */
+                    phone_number_type: "work" | "home" | "mobile" | "other" | null;
+                  })[];
+                open_count: number;
+                click_count: number;
+                reply_count: number;
+                bounced_count: number;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+                raw_data?: {
+                  [key: string]: unknown | undefined;
+                };
+              })[];
+          });
         };
       };
     };
   };
-  createContact: {
-    /** Create contact */
+  createEngagementContact: {
+    /** Create engagement contact */
     requestBody: {
       content: {
         /**
@@ -585,53 +850,588 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_contact"];
+          model: {
+            /** @example George */
+            first_name?: string | null;
+            /** @example Xing */
+            last_name?: string | null;
+            /** @example CEO */
+            job_title?: string | null;
+            /**
+             * @example [
+             *   {
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street_1": "525 Brannan",
+             *     "street_2": null
+             *   }
+             * ]
+             */
+            address?: ({
+              /** @example San Francisco */
+              city: string | null;
+              /** @example USA */
+              country: string | null;
+              /** @example 94107 */
+              postal_code: string | null;
+              /** @example CA */
+              state: string | null;
+              /** @example 525 Brannan */
+              street_1: string | null;
+              /** @example null */
+              street_2: string | null;
+            }) | null;
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses?: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string|null} */
+                email_address_type: "personal" | "work" | null;
+              })[];
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
     responses: {
-      /** @description Contact created */
+      /** @description Engagement contact created */
       201: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example 4cee77aa-50ae-4369-be1e-03f15a55ef10 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+              owner_id: string | null;
+              /** @example George */
+              first_name: string | null;
+              /** @example Xing */
+              last_name: string | null;
+              /** @example CEO */
+              job_title: string | null;
+              /**
+               * @example [
+               *   {
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street_1": "525 Brannan",
+               *     "street_2": null
+               *   }
+               * ]
+               */
+              address: ({
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street_1: string | null;
+                /** @example null */
+                street_2: string | null;
+              }) | null;
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string|null} */
+                  email_address_type: "personal" | "work" | null;
+                })[];
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "work"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string|null} */
+                  phone_number_type: "work" | "home" | "mobile" | "other" | null;
+                })[];
+              open_count: number;
+              click_count: number;
+              reply_count: number;
+              bounced_count: number;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+              raw_data?: {
+                [key: string]: unknown | undefined;
+              };
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
     };
   };
-  getContact: {
-    /** Get contact */
+  getEngagementContact: {
+    /** Get engagement contact */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
-      /** @description Contact */
+      /** @description Engagement Contact */
       200: {
         content: {
-          "application/json": components["schemas"]["contact"];
+          "application/json": {
+            /** @example 4cee77aa-50ae-4369-be1e-03f15a55ef10 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+            owner_id: string | null;
+            /** @example George */
+            first_name: string | null;
+            /** @example Xing */
+            last_name: string | null;
+            /** @example CEO */
+            job_title: string | null;
+            /**
+             * @example [
+             *   {
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street_1": "525 Brannan",
+             *     "street_2": null
+             *   }
+             * ]
+             */
+            address: ({
+              /** @example San Francisco */
+              city: string | null;
+              /** @example USA */
+              country: string | null;
+              /** @example 94107 */
+              postal_code: string | null;
+              /** @example CA */
+              state: string | null;
+              /** @example 525 Brannan */
+              street_1: string | null;
+              /** @example null */
+              street_2: string | null;
+            }) | null;
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string|null} */
+                email_address_type: "personal" | "work" | null;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "phone_number": "+14151234567",
+             *     "phone_number_type": "work"
+             *   }
+             * ]
+             */
+            phone_numbers: ({
+                /** @example +14151234567 */
+                phone_number: string | null;
+                /** @enum {string|null} */
+                phone_number_type: "work" | "home" | "mobile" | "other" | null;
+              })[];
+            open_count: number;
+            click_count: number;
+            reply_count: number;
+            bounced_count: number;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+            raw_data?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
   };
-  updateContact: {
-    /** Update contact */
+  updateEngagementContact: {
+    /** Update engagement contact */
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_contact"];
+          model: {
+            /** @example George */
+            first_name?: string | null;
+            /** @example Xing */
+            last_name?: string | null;
+            /** @example CEO */
+            job_title?: string | null;
+            /**
+             * @example [
+             *   {
+             *     "city": "San Francisco",
+             *     "country": "US",
+             *     "postal_code": "94107",
+             *     "state": "CA",
+             *     "street_1": "525 Brannan",
+             *     "street_2": null
+             *   }
+             * ]
+             */
+            address?: ({
+              /** @example San Francisco */
+              city: string | null;
+              /** @example USA */
+              country: string | null;
+              /** @example 94107 */
+              postal_code: string | null;
+              /** @example CA */
+              state: string | null;
+              /** @example 525 Brannan */
+              street_1: string | null;
+              /** @example null */
+              street_2: string | null;
+            }) | null;
+            /**
+             * @example [
+             *   {
+             *     "email_address": "hello@supaglue.com",
+             *     "email_address_type": "work"
+             *   }
+             * ]
+             */
+            email_addresses?: ({
+                /** @example hello@supaglue.com */
+                email_address: string;
+                /** @enum {string|null} */
+                email_address_type: "personal" | "work" | null;
+              })[];
+            /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+            custom_fields?: {
+              [key: string]: unknown | undefined;
+            };
+          };
         };
       };
     };
     responses: {
-      /** @description Contact updated */
+      /** @description Engagement Contact updated */
       200: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example 4cee77aa-50ae-4369-be1e-03f15a55ef10 */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+              owner_id: string | null;
+              /** @example George */
+              first_name: string | null;
+              /** @example Xing */
+              last_name: string | null;
+              /** @example CEO */
+              job_title: string | null;
+              /**
+               * @example [
+               *   {
+               *     "city": "San Francisco",
+               *     "country": "US",
+               *     "postal_code": "94107",
+               *     "state": "CA",
+               *     "street_1": "525 Brannan",
+               *     "street_2": null
+               *   }
+               * ]
+               */
+              address: ({
+                /** @example San Francisco */
+                city: string | null;
+                /** @example USA */
+                country: string | null;
+                /** @example 94107 */
+                postal_code: string | null;
+                /** @example CA */
+                state: string | null;
+                /** @example 525 Brannan */
+                street_1: string | null;
+                /** @example null */
+                street_2: string | null;
+              }) | null;
+              /**
+               * @example [
+               *   {
+               *     "email_address": "hello@supaglue.com",
+               *     "email_address_type": "work"
+               *   }
+               * ]
+               */
+              email_addresses: ({
+                  /** @example hello@supaglue.com */
+                  email_address: string;
+                  /** @enum {string|null} */
+                  email_address_type: "personal" | "work" | null;
+                })[];
+              /**
+               * @example [
+               *   {
+               *     "phone_number": "+14151234567",
+               *     "phone_number_type": "work"
+               *   }
+               * ]
+               */
+              phone_numbers: ({
+                  /** @example +14151234567 */
+                  phone_number: string | null;
+                  /** @enum {string|null} */
+                  phone_number_type: "work" | "home" | "mobile" | "other" | null;
+                })[];
+              open_count: number;
+              click_count: number;
+              reply_count: number;
+              bounced_count: number;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+              raw_data?: {
+                [key: string]: unknown | undefined;
+              };
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -642,24 +1442,111 @@ export interface operations {
      * List users 
      * @description Get a list of users
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Users */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["user"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example George */
+                first_name: string | null;
+                /** @example Xing */
+                last_name: string | null;
+                /** @example george@supaglue.com */
+                email: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
   };
   getUser: {
     /** Get user */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description User */
       200: {
         content: {
-          "application/json": components["schemas"]["user"];
+          "application/json": {
+            /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example George */
+            first_name: string | null;
+            /** @example Xing */
+            last_name: string | null;
+            /** @example george@supaglue.com */
+            email: string | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };
@@ -669,24 +1556,107 @@ export interface operations {
      * List mailboxes 
      * @description Get a list of mailboxes
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Mailboxes */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["mailbox"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example null */
+                email: string | null;
+                /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+                user_id: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
   };
   getMailbox: {
     /** Get mailbox */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description Mailbox */
       200: {
         content: {
-          "application/json": components["schemas"]["mailbox"];
+          "application/json": {
+            /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example null */
+            email: string | null;
+            /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+            user_id: string | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };
@@ -696,24 +1666,119 @@ export interface operations {
      * List sequences 
      * @description Get a list of sequences
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Sequences */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["sequence"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example 88588bae-3785-4223-81b7-0649012fdeda */
+                id: string;
+                /** @example 95fe0d29-e8cc-48ac-9afd-e02d8037a597 */
+                owner_id?: string | null;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example true */
+                is_enabled: boolean;
+                name: string | null;
+                tags: (string)[];
+                num_steps: number;
+                schedule_count: number;
+                open_count: number;
+                opt_out_count: number;
+                reply_count: number;
+                click_count: number;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
   };
   getSequence: {
     /** Get sequence */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description Sequence */
       200: {
         content: {
-          "application/json": components["schemas"]["sequence"];
+          "application/json": {
+            /** @example 88588bae-3785-4223-81b7-0649012fdeda */
+            id: string;
+            /** @example 95fe0d29-e8cc-48ac-9afd-e02d8037a597 */
+            owner_id?: string | null;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example true */
+            is_enabled: boolean;
+            name: string | null;
+            tags: (string)[];
+            num_steps: number;
+            schedule_count: number;
+            open_count: number;
+            opt_out_count: number;
+            reply_count: number;
+            click_count: number;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };
@@ -723,13 +1788,68 @@ export interface operations {
      * List sequence states 
      * @description Get a list of sequence states
      */
+    parameters?: {
+        /** @description Whether to include data that was deleted in providers. */
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+        /** @description If provided, will only return objects created after this datetime */
+        /** @description If provided, will only return objects created before this datetime */
+        /** @description If provided, will only return objects modified after this datetime */
+        /** @description If provided, will only return objects modified before this datetime */
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+      query?: {
+        include_deleted_data?: boolean;
+        include_raw_data?: boolean;
+        created_after?: Date;
+        created_before?: Date;
+        modified_after?: Date;
+        modified_before?: Date;
+        cursor?: string;
+        page_size?: string;
+      };
+    };
     responses: {
       /** @description Sequence States */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["sequence_state"])[];
-          };
+          "application/json": ({
+            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+            next?: string | null;
+            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+            previous?: string | null;
+          }) & ({
+            results?: ({
+                /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
+                id: string;
+                /** @example 54312 */
+                remote_id: string;
+                /** @example active */
+                state: string | null;
+                /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
+                contact_id: string | null;
+                /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+                mailbox_id: string | null;
+                /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
+                sequence_id: string | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_created_at: Date | null;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                remote_updated_at: Date | null;
+                /** @example false */
+                remote_was_deleted: boolean;
+                /**
+                 * Format: date-time 
+                 * @example 2022-02-27T00:00:00Z
+                 */
+                last_modified_at: Date;
+              })[];
+          });
         };
       };
     };
@@ -752,7 +1872,14 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_sequence_state"];
+          model: {
+            /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
+            contact_id: string;
+            /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+            mailbox_id: string;
+            /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
+            sequence_id: string;
+          };
         };
       };
     };
@@ -761,10 +1888,117 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["sequence_state"];
-            warnings?: components["schemas"]["warnings"];
+            errors?: ({
+                /** @example name is a required field on model. */
+                detail?: string;
+                /** @example MISSING_REQUIRED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example irure consectetur */
+                  pointer?: string;
+                };
+                /** @example Missing Required Field */
+                title?: string;
+              })[];
+            /**
+             * @example [
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   },
+             *   {
+             *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
+             *     "log_summary": {
+             *       "method": "POST",
+             *       "status_code": 200,
+             *       "url": "https://harvest.greenhouse.io/v1/candidates/"
+             *     }
+             *   }
+             * ]
+             */
+            logs?: ({
+                /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
+                dashboard_view?: string;
+                /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
+                log_id?: string;
+                log_summary?: {
+                  /** @example POST */
+                  method?: string;
+                  /** @example 200 */
+                  status_code?: number;
+                  /** @example https://harvest.greenhouse.io/v1/candidates/ */
+                  url?: string;
+                };
+              })[];
+            model?: {
+              /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
+              id: string;
+              /** @example 54312 */
+              remote_id: string;
+              /** @example active */
+              state: string | null;
+              /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
+              contact_id: string | null;
+              /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+              mailbox_id: string | null;
+              /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
+              sequence_id: string | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_created_at: Date | null;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              remote_updated_at: Date | null;
+              /** @example false */
+              remote_was_deleted: boolean;
+              /**
+               * Format: date-time 
+               * @example 2022-02-27T00:00:00Z
+               */
+              last_modified_at: Date;
+            };
+            /**
+             * @example [
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "Lorem ipsum"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   },
+             *   {
+             *     "detail": "An unrecognized field, age, was passed in with request data.",
+             *     "problem_type": "UNRECOGNIZED_FIELD",
+             *     "source": {
+             *       "pointer": "in"
+             *     },
+             *     "title": "Unrecognized Field"
+             *   }
+             * ]
+             */
+            warnings?: ({
+                /** @example An unrecognized field, age, was passed in with request data. */
+                detail?: string;
+                /** @example UNRECOGNIZED_FIELD */
+                problem_type?: string;
+                source?: {
+                  /** @example Lorem ipsum */
+                  pointer?: string;
+                };
+                /** @example Unrecognized Field */
+                title?: string;
+              })[];
           };
         };
       };
@@ -772,11 +2006,47 @@ export interface operations {
   };
   getSequenceState: {
     /** Get sequence state */
+    parameters?: {
+        /** @description Whether to include raw data fetched from the 3rd party provider. */
+      query?: {
+        include_raw_data?: boolean;
+      };
+    };
     responses: {
       /** @description Sequence State */
       200: {
         content: {
-          "application/json": components["schemas"]["sequence_state"];
+          "application/json": {
+            /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
+            id: string;
+            /** @example 54312 */
+            remote_id: string;
+            /** @example active */
+            state: string | null;
+            /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
+            contact_id: string | null;
+            /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
+            mailbox_id: string | null;
+            /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
+            sequence_id: string | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_created_at: Date | null;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            remote_updated_at: Date | null;
+            /** @example false */
+            remote_was_deleted: boolean;
+            /**
+             * Format: date-time 
+             * @example 2022-02-27T00:00:00Z
+             */
+            last_modified_at: Date;
+          };
         };
       };
     };

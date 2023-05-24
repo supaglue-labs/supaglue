@@ -16,10 +16,6 @@ properties:
     $ref: ./objects/address.yaml
   email_addresses:
     $ref: ./objects/email_addresses.yaml
-  owner_id:
-    type: string
-    nullable: true
-    example: 9f3e97fd-4d5d-4efc-959d-bbebfac079f5
   custom_fields:
     $ref: ./objects/custom_fields.yaml
 # TODO: required fields?

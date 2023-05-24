@@ -4,14 +4,17 @@ properties:
     type: string
     nullable: true
     example: George
+    description: the first name of the crm contact
   last_name:
     type: string
     nullable: true
     example: Xing
+    description: the last name of the crm contact
   account_id:
     type: string
     nullable: true
     example: 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+    description: the crm account associated with this crm contact
   addresses:
     $ref: ./objects/addresses.yaml
   email_addresses:

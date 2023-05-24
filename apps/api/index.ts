@@ -42,6 +42,8 @@ const app = express();
 const metricsApp = express();
 const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_PORT) : 8080;
 
+app.use(express.static('public', { dotfiles: 'allow' }));
+
 app.use(
   promBundle({
     includeMethod: true,
@@ -62,12 +64,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //cors
-app.use(
-  cors({
-    origin: process.env.SUPAGLUE_CORS_ORIGIN,
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use(posthogMiddleware);
 

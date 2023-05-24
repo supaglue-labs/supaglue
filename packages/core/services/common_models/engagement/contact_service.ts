@@ -63,6 +63,7 @@ export class ContactService extends CommonModelBaseService {
     const remoteCreateParams = { ...createParams };
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
     const remoteContact = await remoteClient.createObject('contact', remoteCreateParams);
+    console.log('xxx', remoteContact, createParams);
     const contactModel = await this.prisma.engagementContact.create({
       data: {
         id: uuidv5(remoteContact.remoteId, connectionId),

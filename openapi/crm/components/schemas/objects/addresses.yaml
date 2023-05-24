@@ -1,6 +1,7 @@
 type: array
 items:
   type: object
+  description: the physical address associated with this crm contact
   properties:
     address_type:
       type: string

@@ -13,8 +13,8 @@ void (async () => {
     console.error((err as Error).message);
     process.exit(1);
   }
-  const api = await SwaggerParser.bundle(openapiPath);
-
+  const api = await SwaggerParser.dereference(openapiPath, { dereference: { circular: false } });
+  console.log('xxx', api);
   // output the bundled spec to the specified path
   fs.writeFileSync(outputPath, JSON.stringify(api, null, 2));
 })();
