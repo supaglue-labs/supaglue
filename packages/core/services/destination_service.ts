@@ -62,7 +62,7 @@ export class DestinationService {
     const destination = destinations[0];
     switch (destination.type) {
       case 's3':
-        throw new S3DestinationWriter(destination);
+        return new S3DestinationWriter(destination);
       case 'postgres':
         return new PostgresDestinationWriter(destination);
     }
