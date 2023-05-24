@@ -26,14 +26,14 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 1. Under "Redirect URLs", paste Supaglue's redirect URL:
 
     <Tabs>
-    <TabItem value="supaglue-cloud" label="Supaglue Cloud">
+    <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
     ```
     https://api.supaglue.io/oauth/callback
     ```
 
     </TabItem>
-    <TabItem value="localhost" label="Localhost" default>
+    <TabItem value="localhost" label="Localhost">
 
     ```
     http://localhost:8080/oauth/callback
