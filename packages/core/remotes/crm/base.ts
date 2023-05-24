@@ -26,6 +26,10 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     return 'crm';
   }
 
+  public handleErr(err: unknown): unknown {
+    return err;
+  }
+
   abstract listObjects(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
