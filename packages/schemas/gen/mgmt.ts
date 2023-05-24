@@ -130,6 +130,20 @@ export interface paths {
      */
     post: operations["createForceSync"];
   };
+  "/sync-migration/_get_connections": {
+    /**
+     * List Connections for sync migration 
+     * @description List Connections for sync migration
+     */
+    get: operations["syncMigrationGetConnections"];
+  };
+  "/sync-migration/_migrate_connection": {
+    /**
+     * Migrate Connection for sync migration 
+     * @description Migrate Connection for sync migration
+     */
+    post: operations["syncMigrationMigrateConnection"];
+  };
 }
 
 export interface webhooks {
@@ -774,6 +788,42 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["force_sync"];
+        };
+      };
+    };
+  };
+  syncMigrationGetConnections: {
+    /**
+     * List Connections for sync migration 
+     * @description List Connections for sync migration
+     */
+    responses: {
+      /** @description List Connections for sync migration */
+      200: {
+        content: {
+          "application/json": Record<string, never>;
+        };
+      };
+    };
+  };
+  syncMigrationMigrateConnection: {
+    /**
+     * Migrate Connection for sync migration 
+     * @description Migrate Connection for sync migration
+     */
+    requestBody: {
+      content: {
+        "application/json": {
+          connection_id: string;
+          version: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Migrate Connection for sync migration */
+      200: {
+        content: {
+          "application/json": Record<string, never>;
         };
       };
     };
