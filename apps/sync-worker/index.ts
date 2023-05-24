@@ -113,6 +113,14 @@ async function run() {
     }),
   });
 
+  const handle = () => {
+    worker.shutdown();
+    process.exit(0);
+  };
+
+  process.on('SIGINT', handle);
+  process.on('SIGTERM', handle);
+
   await worker.run();
 }
 
