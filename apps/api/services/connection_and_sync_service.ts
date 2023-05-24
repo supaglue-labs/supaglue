@@ -13,12 +13,7 @@ import {
   PROCESS_SYNC_CHANGES_SCHEDULE_ID,
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
-import {
-  getRunSyncScheduleId,
-  getRunSyncWorkflowId,
-  runSync,
-  RUN_SYNC_PREFIX,
-} from '@supaglue/sync-workflows/workflows/run_sync';
+import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
 import type { ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
@@ -29,13 +24,7 @@ import type {
 } from '@supaglue/types/connection';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
-import {
-  Client,
-  IntervalSpec,
-  ScheduleAlreadyRunning,
-  ScheduleOptionsAction,
-  WorkflowNotFoundError,
-} from '@temporalio/client';
+import { Client, IntervalSpec, ScheduleAlreadyRunning, ScheduleOptionsAction } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
@@ -225,16 +214,17 @@ export class ConnectionAndSyncService {
     await handle.trigger();
   }
 
-  public async createProcessSyncChangesTemporalScheduleIfNotExist(): Promise<void> {
+  public async upsertProcessSyncChangesTemporalSchedule(): Promise<void> {
+    const intervals = [
+      {
+        every: 10 * 1000, // 10 seconds
+      },
+    ];
     try {
       await this.#temporalClient.schedule.create({
         scheduleId: PROCESS_SYNC_CHANGES_SCHEDULE_ID,
         spec: {
-          intervals: [
-            {
-              every: 60 * 1000, // 1 minute
-            },
-          ],
+          intervals,
         },
         action: {
           type: 'startWorkflow',
@@ -246,8 +236,15 @@ export class ConnectionAndSyncService {
       });
     } catch (err: unknown) {
       if (err instanceof ScheduleAlreadyRunning) {
-        // swallow
-        // TODO: Allow updating the schedule
+        const handle = this.#temporalClient.schedule.getHandle(PROCESS_SYNC_CHANGES_SCHEDULE_ID);
+        await handle.update((prev) => {
+          return {
+            ...prev,
+            spec: {
+              intervals,
+            },
+          };
+        });
         return;
       }
 
@@ -260,92 +257,94 @@ export class ConnectionAndSyncService {
     workflowIdsTerminated: string[];
     scheduleIdsCreated: string[];
   }> {
-    // Find all the syncs in our DB
-    // TODO: paginate
-    const syncs = await this.#prisma.sync.findMany({
-      select: {
-        id: true,
-        connectionId: true,
-      },
-    });
-    const expectedSyncIds = syncs.map((sync) => sync.id);
-    const expectedScheduleIds = expectedSyncIds.map(getRunSyncScheduleId);
-    const expectedWorkflowIdPrefixes = expectedSyncIds.map(getRunSyncWorkflowId);
+    throw new Error('Not functioning during v1 to v2 migration');
 
-    // List out all the schedules in Temporal
-    const scheduleIdsDeleted: string[] = [];
-    for await (const schedule of this.#temporalClient.schedule.list()) {
-      // If the corresponding sync is not in our DB, delete it
-      // TODO: for some reason `schedule.action` is undefined for `runSync` schedules, but not in tctl
-      if (schedule.scheduleId.startsWith(RUN_SYNC_PREFIX) && !expectedScheduleIds.includes(schedule.scheduleId)) {
-        const handle = this.#temporalClient.schedule.getHandle(schedule.scheduleId);
-        await handle.delete();
-        scheduleIdsDeleted.push(schedule.scheduleId);
-      }
-    }
+    // // Find all the syncs in our DB
+    // // TODO: paginate
+    // const syncs = await this.#prisma.sync.findMany({
+    //   select: {
+    //     id: true,
+    //     connectionId: true,
+    //   },
+    // });
+    // const expectedSyncIds = syncs.map((sync) => sync.id);
+    // const expectedScheduleIds = expectedSyncIds.map(getRunSyncScheduleId);
+    // const expectedWorkflowIdPrefixes = expectedSyncIds.map(getRunSyncWorkflowId);
 
-    // List out all the workflows in Temporal
-    const workflowIdsTerminated: string[] = [];
-    for await (const workflow of this.#temporalClient.workflow.list()) {
-      if (workflow.status.name !== 'RUNNING') {
-        continue;
-      }
-      // If the corresponding sync is not in our DB, delete it
-      if (
-        workflow.workflowId.startsWith(RUN_SYNC_PREFIX) &&
-        !expectedWorkflowIdPrefixes.some((prefix) => workflow.workflowId.startsWith(prefix))
-      ) {
-        const handle = this.#temporalClient.workflow.getHandle(workflow.workflowId);
-        try {
-          await handle.terminate('could not find corresponding sync in DB');
-          workflowIdsTerminated.push(workflow.workflowId);
-        } catch (err) {
-          if (err instanceof WorkflowNotFoundError) {
-            // swallow
-          }
-        }
-      }
-    }
+    // // List out all the schedules in Temporal
+    // const scheduleIdsDeleted: string[] = [];
+    // for await (const schedule of this.#temporalClient.schedule.list()) {
+    //   // If the corresponding sync is not in our DB, delete it
+    //   // TODO: for some reason `schedule.action` is undefined for `runSync` schedules, but not in tctl
+    //   if (schedule.scheduleId.startsWith(RUN_SYNC_PREFIX) && !expectedScheduleIds.includes(schedule.scheduleId)) {
+    //     const handle = this.#temporalClient.schedule.getHandle(schedule.scheduleId);
+    //     await handle.delete();
+    //     scheduleIdsDeleted.push(schedule.scheduleId);
+    //   }
+    // }
 
-    // Upsert schedules in case
-    const connectionIds = syncs.map((sync) => sync.connectionId);
-    const connections = await this.#connectionService.getSafeByIds(connectionIds);
+    // // List out all the workflows in Temporal
+    // const workflowIdsTerminated: string[] = [];
+    // for await (const workflow of this.#temporalClient.workflow.list()) {
+    //   if (workflow.status.name !== 'RUNNING') {
+    //     continue;
+    //   }
+    //   // If the corresponding sync is not in our DB, delete it
+    //   if (
+    //     workflow.workflowId.startsWith(RUN_SYNC_PREFIX) &&
+    //     !expectedWorkflowIdPrefixes.some((prefix) => workflow.workflowId.startsWith(prefix))
+    //   ) {
+    //     const handle = this.#temporalClient.workflow.getHandle(workflow.workflowId);
+    //     try {
+    //       await handle.terminate('could not find corresponding sync in DB');
+    //       workflowIdsTerminated.push(workflow.workflowId);
+    //     } catch (err) {
+    //       if (err instanceof WorkflowNotFoundError) {
+    //         // swallow
+    //       }
+    //     }
+    //   }
+    // }
 
-    // Get the integrations
-    const integrationIds = connections.map((connection) => connection.integrationId);
-    const integrations = await this.#integrationService.getByIds(integrationIds);
+    // // Upsert schedules in case
+    // const connectionIds = syncs.map((sync) => sync.connectionId);
+    // const connections = await this.#connectionService.getSafeByIds(connectionIds);
 
-    // Upsert schedules for all the syncs (currently ignores updating periodMs)
-    const scheduleIdsCreated: string[] = [];
-    for (const syncId of expectedSyncIds) {
-      const sync = syncs.find((sync) => sync.id === syncId);
-      if (!sync) {
-        throw new Error('Unexpected error: sync not found');
-      }
-      const connection = connections.find((connection) => connection.id === sync.connectionId);
-      if (!connection) {
-        throw new Error('Unexpected error: connection not found');
-      }
-      const integration = integrations.find((integration) => integration.id === connection.integrationId);
-      if (!integration) {
-        throw new Error('Unexpected error: integration not found');
-      }
-      const justCreated = await this.#createTemporalSyncIfNotExist(
-        syncId,
-        connection,
-        integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
-      );
+    // // Get the integrations
+    // const integrationIds = connections.map((connection) => connection.integrationId);
+    // const integrations = await this.#integrationService.getByIds(integrationIds);
 
-      if (justCreated) {
-        scheduleIdsCreated.push(getRunSyncScheduleId(syncId));
-      }
-    }
+    // // Upsert schedules for all the syncs (currently ignores updating periodMs)
+    // const scheduleIdsCreated: string[] = [];
+    // for (const syncId of expectedSyncIds) {
+    //   const sync = syncs.find((sync) => sync.id === syncId);
+    //   if (!sync) {
+    //     throw new Error('Unexpected error: sync not found');
+    //   }
+    //   const connection = connections.find((connection) => connection.id === sync.connectionId);
+    //   if (!connection) {
+    //     throw new Error('Unexpected error: connection not found');
+    //   }
+    //   const integration = integrations.find((integration) => integration.id === connection.integrationId);
+    //   if (!integration) {
+    //     throw new Error('Unexpected error: integration not found');
+    //   }
+    //   const justCreated = await this.#createTemporalSyncIfNotExist(
+    //     syncId,
+    //     connection,
+    //     integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
+    //   );
 
-    return {
-      scheduleIdsDeleted,
-      workflowIdsTerminated,
-      scheduleIdsCreated,
-    };
+    //   if (justCreated) {
+    //     scheduleIdsCreated.push(getRunSyncScheduleId(syncId));
+    //   }
+    // }
+
+    // return {
+    //   scheduleIdsDeleted,
+    //   workflowIdsTerminated,
+    //   scheduleIdsCreated,
+    // };
   }
 
   async #createTemporalSyncIfNotExist(
