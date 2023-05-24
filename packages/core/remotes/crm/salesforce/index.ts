@@ -29,7 +29,14 @@ import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { pipeline, Readable, Transform } from 'stream';
-import { TooManyRequestsError } from '../../../errors';
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+  NotModifiedError,
+  TooManyRequestsError,
+  UnauthorizedError,
+} from '../../../errors';
 import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -615,6 +622,40 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
   public async listUsers(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
     return this.listCommonModelRecords('user', fromSalesforceUserToRemoteUser, updatedAfter, onPoll);
+  }
+
+  public handleErr(err: unknown): unknown {
+    const error = err as any;
+    // codes from:
+    // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
+    switch (error.errorCode) {
+      case 'REQUIRED_FIELD_MISSING':
+      case 'STRING_TOO_LONG':
+      case 'INVALID_CROSS_REFERENCE_KEY':
+      case 'DUPLICATE_VALUE':
+      case 'INVALID_FIELD':
+      case 'INVALID_OPERATION':
+      case 'INVALID_TYPE':
+      case 'MISSING_ARGUMENT':
+      case 'MALFORMED_ID':
+      case 'ERROR_HTTP_400':
+        return new BadRequestError(error.message);
+      case 'INVALID_ID_FIELD':
+      case 'INVALID_LOCATOR':
+      case 'ERROR_HTTP_404':
+        return new NotFoundError(error.message);
+      case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
+      case 'INSUFFICIENT_ACCESS':
+      case 'ERROR_HTTP_403':
+        return new ForbiddenError(error.message);
+      case 'ERROR_HTTP_401':
+        return new UnauthorizedError(error.message);
+      case 'NOT_MODIFIED':
+      case 'ERROR_HTTP_304':
+        return new NotModifiedError(error.message);
+      default:
+        return error;
+    }
   }
 }
 

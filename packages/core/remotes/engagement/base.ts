@@ -30,6 +30,10 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     return 'engagement';
   }
 
+  public handleErr(err: unknown): unknown {
+    return err;
+  }
+
   abstract listObjects(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
   abstract createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
