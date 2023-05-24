@@ -94,7 +94,7 @@ export class ConnectionAndSyncService {
     return fromConnectionModelToConnectionUnsafe<ProviderName>(connection);
   }
 
-  public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
+  public async create(version: 'v1' | 'v2', params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
     const integration = await this.#integrationService.getByProviderNameAndApplicationId(
       params.providerName,
       params.applicationId
@@ -132,6 +132,7 @@ export class ConnectionAndSyncService {
             state: {
               phase: 'created',
             },
+            version,
           },
         }),
         this.#prisma.syncChange.create({
