@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectsCommand, paginateListObjectsV2, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { CommonModel, ConnectionSafeAny, IntegrationCategory, ProviderName, S3Destination } from '@supaglue/types';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
@@ -29,6 +29,12 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteCommonModelsResult> {
+    await this.dropExistingRecordsIfNecessary(
+      connection.category,
+      commonModelType,
+      connection.customerId,
+      connection.providerName
+    );
     const { providerName, customerId, category } = connection;
     let numRecords = 0;
     let maxLastModifiedAt: Date | null = null;
@@ -107,6 +113,38 @@ export class S3DestinationWriter extends BaseDestinationWriter {
         Body: ndjson,
       });
 
+      await this.#client.send(command);
+    }
+  }
+
+  async dropExistingRecordsIfNecessary(
+    category: IntegrationCategory,
+    commonModelType: CommonModel,
+    customerId: string,
+    providerName: ProviderName
+  ) {
+    const paginator = paginateListObjectsV2(
+      {
+        client: this.#client,
+        pageSize: 1000,
+      },
+      {
+        Bucket: this.#destination.config.bucket,
+        Prefix: this.getKeyPrefix(category, commonModelType, customerId, providerName),
+      }
+    );
+
+    for await (const page of paginator) {
+      const keys = page.Contents?.flatMap((content) => content.Key ?? []) ?? [];
+      if (!keys.length) {
+        continue;
+      }
+      const command = new DeleteObjectsCommand({
+        Bucket: this.#destination.config.bucket,
+        Delete: {
+          Objects: keys.map((key) => ({ Key: key })),
+        },
+      });
       await this.#client.send(command);
     }
   }

@@ -73,7 +73,7 @@ export function createSyncRecordsToDestination(
         connection,
         commonModel as EngagementCommonModelType,
         toHeartbeatingReadable(readable),
-        onUpsertBatchCompletion
+        heartbeat
       );
     }
 
