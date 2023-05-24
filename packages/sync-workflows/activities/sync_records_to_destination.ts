@@ -1,8 +1,10 @@
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
+import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
 import { ConnectionService, RemoteService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { CommonModel } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
+import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
@@ -59,8 +61,16 @@ export function createSyncRecordsToDestination(
         onUpsertBatchCompletion
       );
     } else {
-      // TODO: Actually sync these
-      readable = Readable.from([]);
+      readable = await (client as EngagementRemoteClient).listObjects(
+        commonModel as EngagementCommonModelType,
+        updatedAfter
+      );
+      await writer.writeObjects(
+        connection,
+        commonModel as EngagementCommonModelType,
+        toHeartbeatingReadable(readable),
+        onUpsertBatchCompletion
+      );
     }
 
     logEvent({
