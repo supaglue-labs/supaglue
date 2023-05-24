@@ -7,6 +7,7 @@ import forceSync from './force_sync';
 import integration from './integration';
 import syncHistory from './sync_history';
 import syncInfo from './sync_info';
+import syncMigration from './sync_migration';
 import webhook from './webhook';
 
 export default function init(app: Router): void {
@@ -22,6 +23,9 @@ export default function init(app: Router): void {
   syncInfo(v1Router);
   syncHistory(v1Router);
   forceSync(v1Router);
+
+  // TODO: Remove when we're done with migrating connections
+  syncMigration(v1Router);
 
   app.use('/v1', v1Router);
 }
