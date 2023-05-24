@@ -36,7 +36,14 @@ import {
 } from '@supaglue/types/crm';
 import retry from 'async-retry';
 import { Readable } from 'stream';
-import { TooManyRequestsError } from '../../../errors';
+import {
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  NotFoundError,
+  TooManyRequestsError,
+  UnauthorizedError,
+} from '../../../errors';
 import { ASYNC_RETRY_OPTIONS, intersection, logger, REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -774,6 +781,27 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   ): Promise<SendPassthroughRequestResponse> {
     await this.maybeRefreshAccessToken();
     return await super.sendPassthroughRequest(request);
+  }
+
+  public handleErr(err: unknown): unknown {
+    const error = err as any;
+
+    switch (error.code) {
+      case 400:
+        return new BadRequestError(error.message);
+      case 401:
+        return new UnauthorizedError(error.message);
+      case 403:
+        return new ForbiddenError(error.message);
+      case 404:
+        return new NotFoundError(error.message);
+      case 409:
+        return new ConflictError(error.message);
+      case 429:
+        return new TooManyRequestsError(error.message);
+      default:
+        return error;
+    }
   }
 }
 

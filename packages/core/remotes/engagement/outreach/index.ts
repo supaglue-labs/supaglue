@@ -13,8 +13,16 @@ import {
   RemoteSequenceState,
   RemoteSequenceStateCreateParams,
 } from '@supaglue/types/engagement';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
+import {
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  NotFoundError,
+  TooManyRequestsError,
+  UnauthorizedError,
+} from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
@@ -268,6 +276,29 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   ): Promise<SendPassthroughRequestResponse> {
     await this.maybeRefreshAccessToken();
     return await super.sendPassthroughRequest(request);
+  }
+
+  public handleErr(err: unknown): unknown {
+    if (!(err instanceof AxiosError)) {
+      return err;
+    }
+
+    switch (err.response?.status) {
+      case 400:
+        return new BadRequestError(err.message);
+      case 401:
+        return new UnauthorizedError(err.message);
+      case 403:
+        return new ForbiddenError(err.message);
+      case 404:
+        return new NotFoundError(err.message);
+      case 409:
+        return new ConflictError(err.message);
+      case 429:
+        return new TooManyRequestsError(err.message);
+      default:
+        return err;
+    }
   }
 }
 

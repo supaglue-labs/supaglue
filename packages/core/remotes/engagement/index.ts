@@ -1,6 +1,5 @@
 import { ConnectionUnsafe, Integration } from '@supaglue/types';
 import { EngagementProviderName } from '@supaglue/types/engagement';
-import { logger } from '../../lib/logger';
 import { EngagementConnectorConfig, EngagementRemoteClient } from './base';
 import * as outreach from './outreach';
 
@@ -34,29 +33,11 @@ export function getEngagementRemoteClient<T extends EngagementProviderName>(
             if (Promise.resolve(res) === res) {
               // if it's a promise
               return (res as Promise<unknown>).catch((err) => {
-                logger.warn(
-                  {
-                    err,
-                    client: target.constructor.name,
-                    method: p,
-                    args: argArray,
-                  },
-                  'remote client error'
-                );
-                throw err;
+                throw target.handleErr(err);
               });
             }
           } catch (err: unknown) {
-            logger.warn(
-              {
-                err,
-                client: target.constructor.name,
-                method: p,
-                args: argArray,
-              },
-              'remote client error'
-            );
-            throw err;
+            throw target.handleErr(err);
           }
         },
       });
