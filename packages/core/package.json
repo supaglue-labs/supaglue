@@ -6,6 +6,7 @@
   "types": "index.ts",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.338.0",
     "@hubspot/api-client": "8.8.1",
     "@sentry/integrations": "^7.43.0",
     "@sentry/node": "^7.43.0",

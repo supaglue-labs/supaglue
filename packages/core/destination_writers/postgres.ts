@@ -19,21 +19,8 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
-import {
-  toSnakecasedKeysCrmSimpleAccount,
-  toSnakecasedKeysCrmSimpleContact,
-  toSnakecasedKeysCrmSimpleLead,
-  toSnakecasedKeysCrmSimpleOpportunity,
-  toSnakecasedKeysCrmSimpleUser,
-} from '../mappers/crm';
-import {
-  toSnakecasedKeysEngagementSimpleContact,
-  toSnakecasedKeysEngagementSimpleUser,
-  toSnakecasedKeysSimpleMailbox,
-  toSnakecasedKeysSimpleSequence,
-  toSnakecasedKeysSimpleSequenceState,
-} from '../mappers/engagement';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
+import { getSnakecasedKeysMapper } from './util';
 
 const destinationIdToPool: Record<string, Pool> = {};
 
@@ -226,33 +213,6 @@ const columnsByCommonModelType: {
     user: keysOfSnakecasedEngagementUserWithTenant,
     sequence: keysOfSnakecasedSequenceWithTenant,
     mailbox: keysOfSnakecasedMailboxWithTenant,
-  },
-};
-
-const getSnakecasedKeysMapper = (category: IntegrationCategory, commonModelType: CommonModel) => {
-  if (category === 'crm') {
-    return snakecasedKeysMapperByCommonModelType.crm[commonModelType as CRMCommonModelType];
-  }
-  return snakecasedKeysMapperByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
-};
-
-const snakecasedKeysMapperByCommonModelType: {
-  crm: Record<CRMCommonModelType, (obj: any) => any>;
-  engagement: Record<EngagementCommonModelType, (obj: any) => any>;
-} = {
-  crm: {
-    account: toSnakecasedKeysCrmSimpleAccount,
-    contact: toSnakecasedKeysCrmSimpleContact,
-    lead: toSnakecasedKeysCrmSimpleLead,
-    opportunity: toSnakecasedKeysCrmSimpleOpportunity,
-    user: toSnakecasedKeysCrmSimpleUser,
-  },
-  engagement: {
-    contact: toSnakecasedKeysEngagementSimpleContact,
-    mailbox: toSnakecasedKeysSimpleMailbox,
-    sequence: toSnakecasedKeysSimpleSequence,
-    sequence_state: toSnakecasedKeysSimpleSequenceState,
-    user: toSnakecasedKeysEngagementSimpleUser,
   },
 };
 
