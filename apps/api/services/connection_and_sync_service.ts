@@ -5,6 +5,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import type { ApplicationService, IntegrationService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
+import { DestinationService } from '@supaglue/core/services/destination_service';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
@@ -27,12 +28,11 @@ import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info'
 import { Client, IntervalSpec, ScheduleAlreadyRunning, ScheduleOptionsAction } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
-const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-
 export class ConnectionAndSyncService {
   #prisma: PrismaClient;
   #temporalClient: Client;
   #integrationService: IntegrationService;
+  #destinationService: DestinationService;
   #applicationService: ApplicationService;
   #connectionService: ConnectionService;
 
@@ -41,13 +41,15 @@ export class ConnectionAndSyncService {
     temporalClient: Client,
     integrationService: IntegrationService,
     applicationService: ApplicationService,
-    connectionService: ConnectionService
+    connectionService: ConnectionService,
+    destinationService: DestinationService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#integrationService = integrationService;
     this.#applicationService = applicationService;
     this.#connectionService = connectionService;
+    this.#destinationService = destinationService;
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
@@ -99,6 +101,13 @@ export class ConnectionAndSyncService {
       params.providerName,
       params.applicationId
     );
+    let strategyType = 'full then incremental';
+    if (version === 'v2' && integration.destinationId) {
+      const destination = await this.#destinationService.getDestinationById(integration.destinationId);
+      if (destination.type === 's3') {
+        strategyType = 'full only';
+      }
+    }
     const application = await this.#applicationService.getById(integration.applicationId);
     let errored = false;
 
@@ -127,7 +136,7 @@ export class ConnectionAndSyncService {
             id: syncId,
             connectionId,
             strategy: {
-              type: 'full then incremental',
+              type: strategyType,
             },
             state: {
               phase: 'created',
