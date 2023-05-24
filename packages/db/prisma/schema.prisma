@@ -445,6 +445,7 @@ model Sync {
   connection      Connection    @relation(fields: [connectionId], references: [id])
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
+  version         String        @default("v1")
   syncHistoryList SyncHistory[]
 
   @@map("syncs")
