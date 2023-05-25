@@ -5,6 +5,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import type { ApplicationService, IntegrationService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
+import { DestinationService } from '@supaglue/core/services/destination_service';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
@@ -13,6 +14,7 @@ import {
   PROCESS_SYNC_CHANGES_SCHEDULE_ID,
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
+import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
 import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
 import type { ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
 import type {
@@ -24,15 +26,21 @@ import type {
 } from '@supaglue/types/connection';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
-import { Client, IntervalSpec, ScheduleAlreadyRunning, ScheduleOptionsAction } from '@temporalio/client';
+import {
+  Client,
+  IntervalSpec,
+  ScheduleAlreadyRunning,
+  ScheduleNotFoundError,
+  ScheduleOptionsAction,
+  WorkflowNotFoundError,
+} from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
-
-const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 
 export class ConnectionAndSyncService {
   #prisma: PrismaClient;
   #temporalClient: Client;
   #integrationService: IntegrationService;
+  #destinationService: DestinationService;
   #applicationService: ApplicationService;
   #connectionService: ConnectionService;
 
@@ -41,13 +49,15 @@ export class ConnectionAndSyncService {
     temporalClient: Client,
     integrationService: IntegrationService,
     applicationService: ApplicationService,
-    connectionService: ConnectionService
+    connectionService: ConnectionService,
+    destinationService: DestinationService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#integrationService = integrationService;
     this.#applicationService = applicationService;
     this.#connectionService = connectionService;
+    this.#destinationService = destinationService;
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
@@ -99,6 +109,13 @@ export class ConnectionAndSyncService {
       params.providerName,
       params.applicationId
     );
+    let strategyType = 'full then incremental';
+    if (version === 'v2' && integration.destinationId) {
+      const destination = await this.#destinationService.getDestinationById(integration.destinationId);
+      if (destination.type === 's3') {
+        strategyType = 'full only';
+      }
+    }
     const application = await this.#applicationService.getById(integration.applicationId);
     let errored = false;
 
@@ -127,7 +144,7 @@ export class ConnectionAndSyncService {
             id: syncId,
             connectionId,
             strategy: {
-              type: 'full then incremental',
+              type: strategyType,
             },
             state: {
               phase: 'created',
@@ -250,6 +267,86 @@ export class ConnectionAndSyncService {
       }
 
       throw err;
+    }
+  }
+
+  // TODO: Remove when we're done migrating
+  async deleteTemporalSyncsV1(syncIds: string[]): Promise<void> {
+    // TODO: When we stop using temporalite locally, we should just use
+    // advanced visibility to search by custom attributes and find the workflows to kill.
+    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
+    // in Postgres and without an external ES cluster.
+    //
+    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
+    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
+
+    // Get the sync schedule handles
+    const syncScheduleHandles = syncIds.map((syncId) =>
+      this.#temporalClient.schedule.getHandle(getRunSyncScheduleId(syncId))
+    );
+
+    try {
+      // Pause the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
+
+      // Kill the associated workflows
+      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
+      const workflowIds = scheduleDescriptions.flatMap((description) =>
+        description.info.runningActions.map((action) => action.workflow.workflowId)
+      );
+      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
+      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
+
+      // Kill the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
+    } catch (err: unknown) {
+      if (err instanceof ScheduleNotFoundError) {
+        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
+      } else if (err instanceof WorkflowNotFoundError) {
+        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  // TODO: Remove when we're done migrating
+  async deleteTemporalSyncsV2(syncIds: string[]): Promise<void> {
+    // TODO: When we stop using temporalite locally, we should just use
+    // advanced visibility to search by custom attributes and find the workflows to kill.
+    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
+    // in Postgres and without an external ES cluster.
+    //
+    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
+    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
+
+    // Get the sync schedule handles
+    const syncScheduleHandles = syncIds.map((syncId) =>
+      this.#temporalClient.schedule.getHandle(getRunManagedSyncScheduleId(syncId))
+    );
+
+    try {
+      // Pause the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
+
+      // Kill the associated workflows
+      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
+      const workflowIds = scheduleDescriptions.flatMap((description) =>
+        description.info.runningActions.map((action) => action.workflow.workflowId)
+      );
+      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
+      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
+
+      // Kill the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
+    } catch (err: unknown) {
+      if (err instanceof ScheduleNotFoundError) {
+        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
+      } else if (err instanceof WorkflowNotFoundError) {
+        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
+      } else {
+        throw err;
+      }
     }
   }
 
