@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { fromDestinationModel } from '@supaglue/core/mappers/destination';
 import { Router } from 'express';
 
 const { prisma } = getDependencyContainer();
@@ -44,6 +45,25 @@ export default function init(app: Router) {
       });
     }
 
+    let strategyType = 'full then incremental';
+    if (version === 'v2') {
+      const { destination } = await prisma.integration.findFirstOrThrow({
+        where: {
+          connections: {
+            some: {
+              id: connection_id,
+            },
+          },
+        },
+        select: {
+          destination: true,
+        },
+      });
+      if (destination && fromDestinationModel(destination).type === 's3') {
+        strategyType = 'full only';
+      }
+    }
+
     const existingSync = await prisma.sync.findFirstOrThrow({
       where: {
         connection: {
@@ -64,7 +84,7 @@ export default function init(app: Router) {
           // TODO: we need to kill the old syncs first before we set this,
           // since it could be overridden by the old running syncs
           strategy: {
-            type: 'full then incremental',
+            type: strategyType,
           },
           state: {
             phase: 'created',
