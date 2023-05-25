@@ -16,7 +16,7 @@ import {
   UpdateContactQueryParams,
   UpdateContactRequest,
   UpdateContactResponse,
-} from '@supaglue/schemas/engagement';
+} from '@supaglue/schemas/v1/engagement';
 import { ListParams } from '@supaglue/types';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
