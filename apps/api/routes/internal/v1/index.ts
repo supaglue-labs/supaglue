@@ -55,7 +55,7 @@ export default function init(app: Router): void {
 
   // TODO: Need to reset sync state too
   v1ApplicationRouter.post('/_migrate_connections', async (req, res) => {
-    const { version } = req.body; // v1 or v2
+    const { version, strategy } = req.body; // v1 or v2
     if (version !== 'v1' && version !== 'v2') {
       throw new Error(`Invalid version: ${version}`);
     }
@@ -93,7 +93,7 @@ export default function init(app: Router): void {
           // TODO: we need to kill the old syncs first before we set this,
           // since it could be overridden by the old running syncs
           strategy: {
-            type: 'full then incremental',
+            type: strategy,
           },
           state: {
             phase: 'created',
