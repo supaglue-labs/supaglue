@@ -1,9 +1,9 @@
 import { SnakecasedKeys } from '../snakecased_keys';
-import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
+import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelV2 } from './base';
 
 export type SnakecasedKeysSequenceState = SnakecasedKeys<SequenceState>;
-export type SnakecasedKeysSimpleSequenceState = SnakecasedKeys<SimpleSequenceState>;
-export type SnakecasedKeysSimpleSequenceStateWithTenant = SnakecasedKeysSimpleSequenceState & {
+export type SnakecasedKeysSequenceStateV2 = SnakecasedKeys<SequenceStateV2>;
+export type SnakecasedKeysSequenceStateV2WithTenant = SnakecasedKeysSequenceStateV2 & {
   provider_name: string;
   customer_id: string;
 };
@@ -21,21 +21,14 @@ export type SequenceState = BaseSequenceState &
     rawData?: Record<string, any>;
   };
 
-export type SimpleSequenceState = BaseSequenceState & {
-  lastModifiedAt: Date;
-  remoteContactId: string | null;
-  remoteSequenceId: string | null;
-  remoteMailboxId: string | null;
-  rawData: Record<string, any>;
+export type RemoteSequenceState = BaseEngagementModelV2 & {
+  state: string | null;
+  contactId: string | null;
+  sequenceId: string | null;
+  mailboxId: string | null;
 };
 
-export type RemoteSequenceState = BaseSequenceState &
-  BaseEngagementModelRemoteOnlyParams & {
-    remoteContactId: string | null;
-    remoteSequenceId: string | null;
-    remoteMailboxId: string | null;
-    rawData: Record<string, any>;
-  };
+export type SequenceStateV2 = RemoteSequenceState;
 
 export type SequenceStateCreateParams = {
   contactId: string;

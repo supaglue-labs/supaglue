@@ -1,11 +1,11 @@
-import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelV2, CustomFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { Address, EmailAddress, PhoneNumber } from './common/base';
 
 export type SnakecasedKeysCrmLead = SnakecasedKeys<Lead>;
-export type SnakecasedKeysCrmSimpleLead = SnakecasedKeys<SimpleLead>;
-export type SnakecasedKeysCrmSimpleLeadWithTenant = SnakecasedKeysCrmSimpleLead & {
+export type SnakecasedKeysCrmLeadV2 = SnakecasedKeys<LeadV2>;
+export type SnakecasedKeysCrmLeadV2WithTenant = SnakecasedKeysCrmLeadV2 & {
   provider_name: string;
   customer_id: string;
 };
@@ -31,21 +31,22 @@ export type Lead = BaseLead &
     rawData?: Record<string, any>;
   };
 
-export type SimpleLead = BaseLead & {
-  lastModifiedAt: Date;
-  convertedRemoteContactId: string | null;
-  convertedRemoteAccountId: string | null;
-  remoteOwnerId: string | null;
-  rawData: Record<string, any>;
+export type RemoteLead = BaseCrmModelV2 & {
+  leadSource: string | null;
+  title: string | null;
+  company: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  addresses: Address[];
+  emailAddresses: EmailAddress[];
+  phoneNumbers: PhoneNumber[];
+  convertedDate: Date | null;
+  convertedContactId: string | null;
+  convertedAccountId: string | null;
+  ownerId: string | null;
 };
 
-export type RemoteLead = BaseLead &
-  BaseCrmModelRemoteOnlyParams & {
-    convertedRemoteContactId: string | null;
-    convertedRemoteAccountId: string | null;
-    remoteOwnerId: string | null;
-    rawData: Record<string, any>;
-  };
+export type LeadV2 = RemoteLead;
 
 type BaseLeadCreateParams = {
   firstName?: string | null;

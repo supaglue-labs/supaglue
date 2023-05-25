@@ -15,7 +15,7 @@ import {
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
-import { removeUndefinedValues } from '../../../lib';
+import { maxDate, removeUndefinedValues } from '../../../lib';
 
 export const fromHubSpotCompanyToRemoteAccount = ({
   id,
@@ -55,10 +55,10 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     : [];
 
   return {
-    remoteId: id,
+    id,
     name: properties.name ?? null,
     description: properties.description ?? null,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    ownerId: properties.hubspot_owner_id ?? null,
     industry: properties.industry ?? null,
     website: properties.website ?? null,
     numberOfEmployees: properties.numberofemployees ? parseInt(properties.numberofemployees) : null,
@@ -67,11 +67,10 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     // Figure out where this comes from
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: !!archived,
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
     rawData: properties,
   };
 };
@@ -99,9 +98,9 @@ export const fromHubSpotContactToRemoteContact = ({
         }
       : null,
   ].filter(Boolean) as EmailAddress[];
-  let remoteAccountId = null;
+  let accountId = null;
   if (associations?.companies?.results?.length) {
-    remoteAccountId = associations.companies.results[0].id ?? null;
+    accountId = associations.companies.results[0].id ?? null;
   }
 
   const phoneNumbers = [
@@ -141,9 +140,9 @@ export const fromHubSpotContactToRemoteContact = ({
       : [];
 
   return {
-    remoteId: id,
-    remoteAccountId,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    id,
+    accountId,
+    ownerId: properties.hubspot_owner_id ?? null,
     firstName: properties.firstname ?? null,
     lastName: properties.lastname ?? null,
     addresses,
@@ -151,11 +150,10 @@ export const fromHubSpotContactToRemoteContact = ({
     emailAddresses,
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: !!archived,
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
     rawData: properties,
   };
 };
@@ -170,9 +168,9 @@ export const fromHubSpotDealToRemoteOpportunity = (
   } else if (properties.hs_is_closed === 'true') {
     status = 'LOST';
   }
-  let remoteAccountId = null;
+  let accountId = null;
   if (associations?.companies?.results?.length) {
-    remoteAccountId = associations.companies.results[0].id ?? null;
+    accountId = associations.companies.results[0].id ?? null;
   }
 
   let pipeline = properties.pipeline ?? null;
@@ -187,22 +185,21 @@ export const fromHubSpotDealToRemoteOpportunity = (
   }
 
   return {
-    remoteId: id,
+    id,
     name: properties.dealname ?? null,
     description: properties.description ?? null,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    ownerId: properties.hubspot_owner_id ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     status,
     pipeline,
-    remoteAccountId,
+    accountId,
     amount: properties.amount ? parseInt(properties.amount) : null,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: !!archived,
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
     rawData: properties,
   };
 };
@@ -219,15 +216,14 @@ export const fromHubspotOwnerToRemoteUser = ({
   teams,
 }: HubspotOwner): RemoteUser => {
   return {
-    remoteId: id,
+    id,
     name: getFullName(firstName, lastName),
     email: email ?? null,
     isActive: !archived,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: archived ? new Date() : null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: !!archived,
+    lastModifiedAt: updatedAt, // TODO: How do we find out when the user was deleted?
     rawData: {
       // List of fields comes from `HubspotOwner`, which is a class, not an object
       id,

@@ -5,6 +5,15 @@ export type BaseEngagementModel = {
   remoteWasDeleted: boolean;
 };
 
+export type BaseEngagementModelV2 = {
+  id: string;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+  isDeleted: boolean;
+  lastModifiedAt: Date;
+  rawData: Record<string, any>;
+};
+
 export type BaseEngagementModelNonRemoteParams = {
   id: string;
   lastModifiedAt: Date;

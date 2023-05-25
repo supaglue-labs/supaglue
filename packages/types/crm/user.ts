@@ -1,9 +1,9 @@
-import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams } from '.';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelV2 } from '.';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysCrmUser = SnakecasedKeys<User>;
-export type SnakecasedKeysCrmSimpleUser = SnakecasedKeys<SimpleUser>;
-export type SnakecasedKeysCrmSimpleUserWithTenant = SnakecasedKeysCrmSimpleUser & {
+export type SnakecasedKeysCrmUserV2 = SnakecasedKeys<UserV2>;
+export type SnakecasedKeysCrmUserV2WithTenant = SnakecasedKeysCrmUserV2 & {
   provider_name: string;
   customer_id: string;
 };
@@ -20,15 +20,13 @@ export type User = BaseUser &
     rawData?: Record<string, any>;
   };
 
-export type SimpleUser = BaseUser & {
-  lastModifiedAt: Date;
-  rawData: Record<string, any>;
+export type RemoteUser = BaseCrmModelV2 & {
+  name: string | null;
+  email: string | null;
+  isActive: boolean | null;
 };
 
-export type RemoteUser = BaseUser &
-  BaseCrmModelRemoteOnlyParams & {
-    rawData: Record<string, any>;
-  };
+export type UserV2 = RemoteUser;
 
 export type RemoteUserTypes = {
   object: RemoteUser;

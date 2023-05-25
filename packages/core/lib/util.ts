@@ -15,3 +15,11 @@ export const intersection = (listA: string[], listB: string[]): string[] => {
 
   return result;
 };
+
+export const maxDate = (...dates: (Date | undefined | null)[]): Date => {
+  const filteredDates = dates.filter((date) => date !== undefined && date !== null) as Date[];
+  if (filteredDates.length === 0) {
+    return new Date(0);
+  }
+  return new Date(Math.max(...filteredDates.map((date) => date.getTime() ?? 0)));
+};

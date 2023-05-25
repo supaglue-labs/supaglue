@@ -18,16 +18,15 @@ import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/com
 
 export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): RemoteUser => {
   return {
-    remoteId: record.Id,
+    id: record.Id,
     name: record.Name,
     email: record.Email,
     isActive: record.IsActive,
     // These fields are not supported by Salesforce
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
@@ -85,10 +84,10 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
   const phoneNumbers = [phoneNumber, faxPhoneNumber].filter((phoneNumber): phoneNumber is PhoneNumber => !!phoneNumber);
 
   return {
-    remoteId: record.Id,
+    id: record.Id,
     name: record.Name,
     description: record.Description ?? null,
-    remoteOwnerId: record.OwnerId ?? null,
+    ownerId: record.OwnerId ?? null,
     industry: record.Industry ?? null,
     website: record.Website ?? null,
     numberOfEmployees: record.NumberOfEmployees ? parseInt(record.NumberOfEmployees) : null,
@@ -98,11 +97,10 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     lifecycleStage: null,
     // Figure out where this comes from
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
@@ -183,9 +181,9 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
   }
 
   return {
-    remoteId: record.Id,
-    remoteAccountId: record.AccountId ?? null,
-    remoteOwnerId: record.OwnerId ?? null,
+    id: record.Id,
+    accountId: record.AccountId ?? null,
+    ownerId: record.OwnerId ?? null,
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
     addresses,
@@ -194,11 +192,10 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     // lifecycle stage is not supported in salesforce
     lifecycleStage: null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
@@ -227,17 +224,17 @@ export const fromSalesforceLeadToRemoteLead = (
   record: Record<string, any>
 ): RemoteLead => {
   return {
-    remoteId: record.Id,
+    id: record.Id,
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
-    remoteOwnerId: record.OwnerId ?? null,
+    ownerId: record.OwnerId ?? null,
     title: record.Title ?? null,
     company: record.Company ?? null,
     convertedDate: record.ConvertedDate ? new Date(record.ConvertedDate) : null,
     leadSource: record.LeadSource ?? null,
     // TODO: support associated fields
-    convertedRemoteAccountId: record.ConvertedAccountId ?? null,
-    convertedRemoteContactId: record.ConvertedContactId ?? null,
+    convertedAccountId: record.ConvertedAccountId ?? null,
+    convertedContactId: record.ConvertedContactId ?? null,
     addresses: [
       {
         street1: record.Street ?? null,
@@ -258,11 +255,10 @@ export const fromSalesforceLeadToRemoteLead = (
           },
         ]
       : [],
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
@@ -298,23 +294,22 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     status = 'LOST';
   }
   return {
-    remoteId: record.Id,
+    id: record.Id,
     name: record.Name,
     description: record.Description ?? null,
-    remoteOwnerId: record.OwnerId ?? null,
+    ownerId: record.OwnerId ?? null,
     status,
     stage: record.StageName,
     closeDate: record.CloseDate ? new Date(record.CloseDate) : null,
-    remoteAccountId: record.AccountId ?? null,
+    accountId: record.AccountId ?? null,
     // pipeline is not supported in salesforce
     pipeline: null,
     amount: record.Amount ? parseInt(record.Amount) : null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };

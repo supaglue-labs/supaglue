@@ -1,8 +1,7 @@
 import { EngagementMailbox } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
-import { Mailbox, RemoteMailbox, SnakecasedKeysMailbox, SnakecasedKeysSimpleMailbox } from '@supaglue/types/engagement';
+import { Mailbox, RemoteMailbox, SnakecasedKeysMailbox, SnakecasedKeysMailboxV2 } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
-import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysMailbox = (mailbox: Mailbox): SnakecasedKeysMailbox => {
   return {
@@ -18,15 +17,15 @@ export const toSnakecasedKeysMailbox = (mailbox: Mailbox): SnakecasedKeysMailbox
   };
 };
 
-export const toSnakecasedKeysSimpleMailbox = (mailbox: RemoteMailbox): SnakecasedKeysSimpleMailbox => {
+export const toSnakecasedKeysMailboxV2 = (mailbox: RemoteMailbox): SnakecasedKeysMailboxV2 => {
   return {
-    remote_user_id: mailbox.remoteUserId,
-    last_modified_at: getLastModifiedAt(mailbox),
-    remote_id: mailbox.remoteId,
+    user_id: mailbox.userId,
+    last_modified_at: mailbox.lastModifiedAt,
+    id: mailbox.id,
     email: mailbox.email,
-    remote_created_at: mailbox.remoteCreatedAt,
-    remote_updated_at: mailbox.remoteUpdatedAt,
-    remote_was_deleted: mailbox.remoteWasDeleted,
+    created_at: mailbox.createdAt,
+    updated_at: mailbox.updatedAt,
+    is_deleted: mailbox.isDeleted,
     raw_data: mailbox.rawData,
   };
 };
@@ -64,30 +63,18 @@ export const fromRemoteMailboxToDbMailboxParams = (
   customerId: string,
   remoteMailbox: RemoteMailbox
 ) => {
-  const lastModifiedAt =
-    remoteMailbox.remoteUpdatedAt || remoteMailbox.detectedOrRemoteDeletedAt
-      ? new Date(
-          Math.max(
-            remoteMailbox.remoteUpdatedAt?.getTime() || 0,
-            remoteMailbox.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        )
-      : undefined;
-
   return {
-    id: uuidv5(remoteMailbox.remoteId, connectionId),
-    remote_id: remoteMailbox.remoteId,
+    id: uuidv5(remoteMailbox.id, connectionId),
+    remote_id: remoteMailbox.id,
     customer_id: customerId,
     connection_id: connectionId,
     email: remoteMailbox.email,
-    remote_created_at: remoteMailbox.remoteCreatedAt?.toISOString(),
-    remote_updated_at: remoteMailbox.remoteUpdatedAt?.toISOString(),
-    remote_was_deleted: remoteMailbox.remoteWasDeleted,
-    remote_deleted_at: remoteMailbox.remoteDeletedAt?.toISOString(),
-    detected_or_remote_deleted_at: remoteMailbox.detectedOrRemoteDeletedAt?.toISOString(),
-    last_modified_at: lastModifiedAt?.toISOString(),
-    _remote_user_id: remoteMailbox.remoteUserId,
-    user_id: remoteMailbox.remoteUserId ? uuidv5(remoteMailbox.remoteUserId, connectionId) : null,
+    remote_created_at: remoteMailbox.createdAt?.toISOString(),
+    remote_updated_at: remoteMailbox.updatedAt?.toISOString(),
+    remote_was_deleted: remoteMailbox.isDeleted,
+    last_modified_at: remoteMailbox.lastModifiedAt?.toISOString(),
+    _remote_user_id: remoteMailbox.userId,
+    user_id: remoteMailbox.userId ? uuidv5(remoteMailbox.userId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteMailbox.rawData,
   };

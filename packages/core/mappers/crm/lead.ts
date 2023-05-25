@@ -1,9 +1,8 @@
 import type { CrmLead } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
-import type { Lead, RemoteLead, SnakecasedKeysCrmLead, SnakecasedKeysCrmSimpleLead } from '@supaglue/types/crm';
+import type { Lead, RemoteLead, SnakecasedKeysCrmLead, SnakecasedKeysCrmLeadV2 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
-import { getLastModifiedAt } from '../../services/common_models/base_service';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
@@ -32,11 +31,11 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysCrmLead => {
   };
 };
 
-export const toSnakecasedKeysCrmSimpleLead = (lead: RemoteLead): SnakecasedKeysCrmSimpleLead => {
+export const toSnakecasedKeysCrmLeadV2 = (lead: RemoteLead): SnakecasedKeysCrmLeadV2 => {
   return {
-    remote_owner_id: lead.remoteOwnerId,
-    last_modified_at: getLastModifiedAt(lead),
-    remote_id: lead.remoteId,
+    owner_id: lead.ownerId,
+    last_modified_at: lead.lastModifiedAt,
+    id: lead.id,
     lead_source: lead.leadSource,
     title: lead.title,
     company: lead.company,
@@ -46,11 +45,11 @@ export const toSnakecasedKeysCrmSimpleLead = (lead: RemoteLead): SnakecasedKeysC
     email_addresses: lead.emailAddresses.map(toSnakecasedKeysEmailAddress),
     phone_numbers: lead.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
     converted_date: lead.convertedDate,
-    remote_updated_at: lead.remoteUpdatedAt,
-    remote_created_at: lead.remoteCreatedAt,
-    remote_was_deleted: lead.remoteWasDeleted,
-    converted_remote_contact_id: lead.convertedRemoteContactId,
-    converted_remote_account_id: lead.convertedRemoteAccountId,
+    updated_at: lead.updatedAt,
+    created_at: lead.createdAt,
+    is_deleted: lead.isDeleted,
+    converted_contact_id: lead.convertedContactId,
+    converted_account_id: lead.convertedAccountId,
     raw_data: lead.rawData,
   };
 };
@@ -104,16 +103,9 @@ export const fromLeadModel = (
 
 // TODO: Use prisma generator to generate return type
 export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: string, remoteLead: RemoteLead) => {
-  const lastModifiedAt =
-    remoteLead.remoteUpdatedAt || remoteLead.detectedOrRemoteDeletedAt
-      ? new Date(
-          Math.max(remoteLead.remoteUpdatedAt?.getTime() || 0, remoteLead.detectedOrRemoteDeletedAt?.getTime() || 0)
-        )
-      : undefined;
-
   return {
-    id: uuidv5(remoteLead.remoteId, connectionId),
-    remote_id: remoteLead.remoteId,
+    id: uuidv5(remoteLead.id, connectionId),
+    remote_id: remoteLead.id,
     customer_id: customerId,
     connection_id: connectionId,
     lead_source: remoteLead.leadSource,
@@ -124,23 +116,17 @@ export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: s
     addresses: remoteLead.addresses,
     phone_numbers: remoteLead.phoneNumbers,
     email_addresses: remoteLead.emailAddresses,
-    remote_created_at: remoteLead.remoteCreatedAt?.toISOString(),
-    remote_updated_at: remoteLead.remoteUpdatedAt?.toISOString(),
-    remote_was_deleted: remoteLead.remoteWasDeleted,
-    remote_deleted_at: remoteLead.remoteDeletedAt?.toISOString(),
-    detected_or_remote_deleted_at: remoteLead.detectedOrRemoteDeletedAt?.toISOString(),
-    last_modified_at: lastModifiedAt?.toISOString(),
+    remote_created_at: remoteLead.createdAt?.toISOString(),
+    remote_updated_at: remoteLead.updatedAt?.toISOString(),
+    remote_was_deleted: remoteLead.isDeleted,
+    last_modified_at: remoteLead.lastModifiedAt?.toISOString(),
     converted_date: remoteLead.convertedDate?.toISOString(),
-    _converted_remote_account_id: remoteLead.convertedRemoteAccountId,
-    converted_account_id: remoteLead.convertedRemoteAccountId
-      ? uuidv5(remoteLead.convertedRemoteAccountId, connectionId)
-      : null,
-    _converted_remote_contact_id: remoteLead.convertedRemoteContactId,
-    converted_contact_id: remoteLead.convertedRemoteContactId
-      ? uuidv5(remoteLead.convertedRemoteContactId, connectionId)
-      : null,
-    _remote_owner_id: remoteLead.remoteOwnerId,
-    owner_id: remoteLead.remoteOwnerId ? uuidv5(remoteLead.remoteOwnerId, connectionId) : null,
+    _converted_remote_account_id: remoteLead.convertedAccountId,
+    converted_account_id: remoteLead.convertedAccountId ? uuidv5(remoteLead.convertedAccountId, connectionId) : null,
+    _converted_remote_contact_id: remoteLead.convertedContactId,
+    converted_contact_id: remoteLead.convertedContactId ? uuidv5(remoteLead.convertedContactId, connectionId) : null,
+    _remote_owner_id: remoteLead.ownerId,
+    owner_id: remoteLead.ownerId ? uuidv5(remoteLead.ownerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteLead.rawData,
   };

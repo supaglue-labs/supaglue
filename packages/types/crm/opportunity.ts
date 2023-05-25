@@ -1,4 +1,4 @@
-import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelV2, CustomFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
@@ -6,8 +6,8 @@ export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
 
 export type SnakecasedKeysOpportunity = SnakecasedKeys<Opportunity>;
-export type SnakecasedKeysSimpleOpportunity = SnakecasedKeys<SimpleOpportunity>;
-export type SnakecasedKeysSimpleOpportunityWithTenant = SnakecasedKeysSimpleOpportunity & {
+export type SnakecasedKeysOpportunityV2 = SnakecasedKeys<OpportunityV2>;
+export type SnakecasedKeysOpportunityV2WithTenant = SnakecasedKeysOpportunityV2 & {
   provider_name: string;
   customer_id: string;
 };
@@ -31,19 +31,20 @@ export type Opportunity = BaseOpportunity &
     rawData?: Record<string, any>;
   };
 
-export type SimpleOpportunity = BaseOpportunity & {
-  lastModifiedAt: Date;
-  remoteAccountId: string | null;
-  remoteOwnerId: string | null;
-  rawData: Record<string, any>;
+export type RemoteOpportunity = BaseCrmModelV2 & {
+  name: string | null;
+  description: string | null;
+  amount: number | null;
+  stage: string | null;
+  status: OpportunityStatus | null;
+  lastActivityAt: Date | null;
+  closeDate: Date | null;
+  pipeline: string | null;
+  accountId: string | null;
+  ownerId: string | null;
 };
 
-export type RemoteOpportunity = BaseOpportunity &
-  BaseCrmModelRemoteOnlyParams & {
-    remoteAccountId: string | null;
-    remoteOwnerId: string | null;
-    rawData: Record<string, any>;
-  };
+export type OpportunityV2 = RemoteOpportunity;
 
 type BaseOpportunityCreateParams = {
   amount?: number | null;

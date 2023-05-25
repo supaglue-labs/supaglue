@@ -1,14 +1,14 @@
-import { SnakecasedKeysEngagementSimpleContactWithTenant } from '@supaglue/types/engagement';
+import { SnakecasedKeysEngagementContactV2WithTenant } from '@supaglue/types/engagement';
 import { arrayOfAllKeys } from '../util';
 
-export const keysOfSnakecasedEngagementContactWithTenant =
-  arrayOfAllKeys<SnakecasedKeysEngagementSimpleContactWithTenant>()([
+export const keysOfSnakecasedEngagementContactV2WithTenant =
+  arrayOfAllKeys<SnakecasedKeysEngagementContactV2WithTenant>()([
     'provider_name',
     'customer_id',
-    'remote_id',
-    'remote_created_at',
-    'remote_updated_at',
-    'remote_was_deleted',
+    'id',
+    'created_at',
+    'updated_at',
+    'is_deleted',
     'last_modified_at',
     'first_name',
     'last_name',
@@ -16,7 +16,7 @@ export const keysOfSnakecasedEngagementContactWithTenant =
     'address',
     'email_addresses',
     'phone_numbers',
-    'remote_owner_id',
+    'owner_id',
     'open_count',
     'click_count',
     'reply_count',

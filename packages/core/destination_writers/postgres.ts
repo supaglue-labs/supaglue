@@ -7,17 +7,17 @@ import { from as copyFrom } from 'pg-copy-streams';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import {
-  keysOfSnakecasedCrmSimpleAccountWithTenant,
-  keysOfSnakecasedCrmSimpleContactWithTenant,
-  keysOfSnakecasedCrmSimpleUserWithTenant,
-  keysOfSnakecasedSimpleLeadWithTenant,
-  keysOfSnakecasedSimpleOpportunityWithTenant,
+  keysOfSnakecasedCrmAccountV2WithTenant,
+  keysOfSnakecasedCrmContactV2WithTenant,
+  keysOfSnakecasedCrmUserV2WithTenant,
+  keysOfSnakecasedLeadV2WithTenant,
+  keysOfSnakecasedOpportunityV2WithTenant,
 } from '../keys/crm';
-import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/contact';
-import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
-import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
-import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
-import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
+import { keysOfSnakecasedEngagementContactV2WithTenant } from '../keys/engagement/contact';
+import { keysOfSnakecasedMailboxV2WithTenant } from '../keys/engagement/mailbox';
+import { keysOfSnakecasedSequenceV2WithTenant } from '../keys/engagement/sequence';
+import { keysOfSnakecasedSequenceStateV2WithTenant } from '../keys/engagement/sequence_state';
+import { keysOfSnakecasedEngagementUserV2WithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
@@ -68,11 +68,11 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${qualifiedTable})`);
       await client.query(
-        `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_remote_id_idx ON ${tempTable} (provider_name, customer_id, remote_id)`
+        `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_id_idx ON ${tempTable} (provider_name, customer_id, id)`
       );
 
       const columns = getColumns(category, commonModelType);
-      const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'remote_id');
+      const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'id');
 
       // Output
       const stream = client.query(
@@ -137,14 +137,14 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       const batchSize = 10000;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
         childLogger.info({ offset }, 'Copying from temp table to main table [IN PROGRESS]');
-        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same remote_id
+        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
         // For example, hubspot will return the same record twice when querying for `archived: true` if
         // the record was archived, restored, and archived again.
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable}
-SELECT DISTINCT ON (remote_id) * FROM (SELECT * FROM ${tempTable} ORDER BY remote_id OFFSET ${offset} limit ${batchSize}) AS batch
-ON CONFLICT (provider_name, customer_id, remote_id)
+SELECT DISTINCT ON (id) * FROM (SELECT * FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
+ON CONFLICT (provider_name, customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
         heartbeat();
@@ -201,18 +201,18 @@ const columnsByCommonModelType: {
   engagement: Record<EngagementCommonModelType, string[]>;
 } = {
   crm: {
-    account: keysOfSnakecasedCrmSimpleAccountWithTenant,
-    contact: keysOfSnakecasedCrmSimpleContactWithTenant,
-    lead: keysOfSnakecasedSimpleLeadWithTenant,
-    opportunity: keysOfSnakecasedSimpleOpportunityWithTenant,
-    user: keysOfSnakecasedCrmSimpleUserWithTenant,
+    account: keysOfSnakecasedCrmAccountV2WithTenant,
+    contact: keysOfSnakecasedCrmContactV2WithTenant,
+    lead: keysOfSnakecasedLeadV2WithTenant,
+    opportunity: keysOfSnakecasedOpportunityV2WithTenant,
+    user: keysOfSnakecasedCrmUserV2WithTenant,
   },
   engagement: {
-    contact: keysOfSnakecasedEngagementContactWithTenant,
-    sequence_state: keysOfSnakecasedSequenceStateWithTenant,
-    user: keysOfSnakecasedEngagementUserWithTenant,
-    sequence: keysOfSnakecasedSequenceWithTenant,
-    mailbox: keysOfSnakecasedMailboxWithTenant,
+    contact: keysOfSnakecasedEngagementContactV2WithTenant,
+    sequence_state: keysOfSnakecasedSequenceStateV2WithTenant,
+    user: keysOfSnakecasedEngagementUserV2WithTenant,
+    sequence: keysOfSnakecasedSequenceV2WithTenant,
+    mailbox: keysOfSnakecasedMailboxV2WithTenant,
   },
 };
 
@@ -232,10 +232,10 @@ const schemaSetupSqlByCommonModelType: {
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "name" TEXT,
   "description" TEXT,
@@ -246,19 +246,19 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "phone_numbers" JSONB,
   "last_activity_at" TIMESTAMP(3),
   "lifecycle_stage" TEXT,
-  "remote_owner_id" TEXT,
+  "owner_id" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
     contact: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "first_name" TEXT,
   "last_name" TEXT,
@@ -266,21 +266,21 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "email_addresses" JSONB NOT NULL,
   "phone_numbers" JSONB NOT NULL,
   "lifecycle_stage" TEXT,
-  "remote_account_id" TEXT,
-  "remote_owner_id" TEXT,
+  "account_id" TEXT,
+  "owner_id" TEXT,
   "last_activity_at" TIMESTAMP(3),
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
     lead: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "lead_source" TEXT,
   "title" TEXT,
@@ -293,19 +293,19 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "converted_date" TIMESTAMP(3),
   "converted_remote_contact_id" TEXT,
   "converted_remote_account_id" TEXT,
-  "remote_owner_id" TEXT,
+  "owner_id" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
     opportunity: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "name" TEXT,
   "description" TEXT,
@@ -314,28 +314,28 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "status" TEXT,
   "close_date" TIMESTAMP(3),
   "pipeline" TEXT,
-  "remote_account_id" TEXT,
-  "remote_owner_id" TEXT,
+  "account_id" TEXT,
+  "owner_id" TEXT,
   "last_activity_at" TIMESTAMP(3),
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
     user: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "name" TEXT,
   "email" TEXT,
   "is_active" BOOLEAN,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
   },
   engagement: {
@@ -343,10 +343,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "first_name" TEXT,
   "last_name" TEXT,
@@ -354,40 +354,40 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
   "address" JSONB,
   "email_addresses" JSONB NOT NULL,
   "phone_numbers" JSONB NOT NULL,
-  "remote_owner_id" TEXT,
+  "owner_id" TEXT,
   "open_count" INTEGER NOT NULL,
   "click_count" INTEGER NOT NULL,
   "reply_count" INTEGER NOT NULL,
   "bounced_count" INTEGER NOT NULL,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
     mailbox: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_mailboxes" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL DEFAULT false,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "email" TEXT,
-  "remote_user_id" TEXT,
+  "user_id" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
     sequence: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL DEFAULT false,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "remote_owner_id" TEXT,
+  "owner_id" TEXT,
   "name" TEXT,
   "tags" JSONB,
   "num_steps" INTEGER NOT NULL,
@@ -399,40 +399,40 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
   "is_enabled" BOOLEAN NOT NULL,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
     sequence_state: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequence_states" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL DEFAULT false,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
-  "remote_sequence_id" TEXT,
-  "remote_contact_id" TEXT,
-  "remote_mailbox_id" TEXT,
+  "sequence_id" TEXT,
+  "contact_id" TEXT,
+  "mailbox_id" TEXT,
   "state" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
     user: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_users" (
   "provider_name" TEXT NOT NULL,
   "customer_id" TEXT NOT NULL,
-  "remote_id" TEXT NOT NULL,
-  "remote_created_at" TIMESTAMP(3),
-  "remote_updated_at" TIMESTAMP(3),
-  "remote_was_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL DEFAULT false,
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "first_name" TEXT,
   "last_name" TEXT,
   "email" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "remote_id")
+  PRIMARY KEY ("provider_name", "customer_id", "id")
 );`,
   },
 };

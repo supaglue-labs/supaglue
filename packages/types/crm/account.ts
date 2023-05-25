@@ -1,11 +1,11 @@
-import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
+import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelV2, CustomFields } from '.';
 import type { EqualsFilter, Filter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { Address, LifecycleStage, PhoneNumber } from './common';
 
 export type SnakecasedKeysCrmAccount = SnakecasedKeys<Account>;
-export type SnakecasedKeysCrmSimpleAccount = SnakecasedKeys<SimpleAccount>;
-export type SnakecasedKeysCrmSimpleAccountWithTenant = SnakecasedKeysCrmSimpleAccount & {
+export type SnakecasedKeysCrmAccountV2 = SnakecasedKeys<AccountV2>;
+export type SnakecasedKeysCrmAccountV2WithTenant = SnakecasedKeysCrmAccountV2 & {
   provider_name: string;
   customer_id: string;
 };
@@ -29,17 +29,20 @@ export type Account = BaseAccount &
     rawData?: Record<string, any>;
   };
 
-export type SimpleAccount = BaseAccount & {
-  lastModifiedAt: Date;
-  remoteOwnerId: string | null;
-  rawData: Record<string, any>;
+export type RemoteAccount = BaseCrmModelV2 & {
+  name: string | null;
+  description: string | null;
+  industry: string | null;
+  website: string | null;
+  numberOfEmployees: number | null;
+  addresses: Address[];
+  phoneNumbers: PhoneNumber[];
+  lastActivityAt: Date | null;
+  lifecycleStage: LifecycleStage | null;
+  ownerId: string | null;
 };
 
-export type RemoteAccount = BaseAccount &
-  BaseCrmModelRemoteOnlyParams & {
-    remoteOwnerId: string | null;
-    rawData: Record<string, any>;
-  };
+export type AccountV2 = RemoteAccount;
 
 type BaseAccountCreateParams = {
   // TODO: Associations

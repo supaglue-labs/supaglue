@@ -1,9 +1,9 @@
-import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from '.';
+import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelV2 } from '.';
 import { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysEngagementUser = SnakecasedKeys<User>;
-export type SnakecasedKeysEngagementSimpleUser = SnakecasedKeys<SimpleUser>;
-export type SnakecasedKeysEngagementSimpleUserWithTenant = SnakecasedKeysEngagementSimpleUser & {
+export type SnakecasedKeysEngagementUserV2 = SnakecasedKeys<UserV2>;
+export type SnakecasedKeysEngagementUserV2WithTenant = SnakecasedKeysEngagementUserV2 & {
   provider_name: string;
   customer_id: string;
 };
@@ -20,15 +20,14 @@ export type User = BaseUser &
     rawData?: Record<string, any>;
   };
 
-export type SimpleUser = BaseUser & {
-  lastModifiedAt: Date;
+export type RemoteUser = BaseEngagementModelV2 & {
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
   rawData: Record<string, any>;
 };
 
-export type RemoteUser = BaseUser &
-  BaseEngagementModelRemoteOnlyParams & {
-    rawData: Record<string, any>;
-  };
+export type UserV2 = RemoteUser;
 
 export type RemoteUserTypes = {
   object: RemoteUser;

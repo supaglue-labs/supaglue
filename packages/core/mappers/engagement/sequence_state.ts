@@ -4,10 +4,9 @@ import {
   RemoteSequenceState,
   SequenceState,
   SnakecasedKeysSequenceState,
-  SnakecasedKeysSimpleSequenceState,
+  SnakecasedKeysSequenceStateV2,
 } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
-import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysSequenceState = (sequenceState: SequenceState): SnakecasedKeysSequenceState => {
   return {
@@ -25,19 +24,17 @@ export const toSnakecasedKeysSequenceState = (sequenceState: SequenceState): Sna
   };
 };
 
-export const toSnakecasedKeysSimpleSequenceState = (
-  sequenceState: RemoteSequenceState
-): SnakecasedKeysSimpleSequenceState => {
+export const toSnakecasedKeysSequenceStateV2 = (sequenceState: RemoteSequenceState): SnakecasedKeysSequenceStateV2 => {
   return {
-    remote_contact_id: sequenceState.remoteContactId,
-    remote_sequence_id: sequenceState.remoteSequenceId,
-    remote_mailbox_id: sequenceState.remoteMailboxId,
-    last_modified_at: getLastModifiedAt(sequenceState),
-    remote_id: sequenceState.remoteId,
+    contact_id: sequenceState.contactId,
+    sequence_id: sequenceState.sequenceId,
+    mailbox_id: sequenceState.mailboxId,
+    last_modified_at: sequenceState.lastModifiedAt,
+    id: sequenceState.id,
     state: sequenceState.state,
-    remote_created_at: sequenceState.remoteCreatedAt,
-    remote_updated_at: sequenceState.remoteUpdatedAt,
-    remote_was_deleted: sequenceState.remoteWasDeleted,
+    created_at: sequenceState.createdAt,
+    updated_at: sequenceState.updatedAt,
+    is_deleted: sequenceState.isDeleted,
     raw_data: sequenceState.rawData,
   };
 };
@@ -79,36 +76,22 @@ export const fromRemoteSequenceStateToDbSequenceStateParams = (
   customerId: string,
   remoteSequenceState: RemoteSequenceState
 ) => {
-  const lastModifiedAt =
-    remoteSequenceState.remoteUpdatedAt || remoteSequenceState.detectedOrRemoteDeletedAt
-      ? new Date(
-          Math.max(
-            remoteSequenceState.remoteUpdatedAt?.getTime() || 0,
-            remoteSequenceState.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        )
-      : undefined;
-
   return {
-    id: uuidv5(remoteSequenceState.remoteId, connectionId),
-    remote_id: remoteSequenceState.remoteId,
+    id: uuidv5(remoteSequenceState.id, connectionId),
+    remote_id: remoteSequenceState.id,
     customer_id: customerId,
     connection_id: connectionId,
     state: remoteSequenceState.state,
-    remote_created_at: remoteSequenceState.remoteCreatedAt?.toISOString(),
-    remote_updated_at: remoteSequenceState.remoteUpdatedAt?.toISOString(),
-    remote_was_deleted: remoteSequenceState.remoteWasDeleted,
-    remote_deleted_at: remoteSequenceState.remoteDeletedAt?.toISOString(),
-    detected_or_remote_deleted_at: remoteSequenceState.detectedOrRemoteDeletedAt?.toISOString(),
-    last_modified_at: lastModifiedAt?.toISOString(),
-    _remote_contact_id: remoteSequenceState.remoteContactId,
-    contact_id: remoteSequenceState.remoteContactId ? uuidv5(remoteSequenceState.remoteContactId, connectionId) : null,
-    _remote_sequence_id: remoteSequenceState.remoteSequenceId,
-    sequence_id: remoteSequenceState.remoteSequenceId
-      ? uuidv5(remoteSequenceState.remoteSequenceId, connectionId)
-      : null,
-    _remote_mailbox_id: remoteSequenceState.remoteMailboxId,
-    mailbox_id: remoteSequenceState.remoteMailboxId ? uuidv5(remoteSequenceState.remoteMailboxId, connectionId) : null,
+    remote_created_at: remoteSequenceState.createdAt?.toISOString(),
+    remote_updated_at: remoteSequenceState.updatedAt?.toISOString(),
+    remote_was_deleted: remoteSequenceState.isDeleted,
+    last_modified_at: remoteSequenceState.lastModifiedAt?.toISOString(),
+    _remote_contact_id: remoteSequenceState.contactId,
+    contact_id: remoteSequenceState.contactId ? uuidv5(remoteSequenceState.contactId, connectionId) : null,
+    _remote_sequence_id: remoteSequenceState.sequenceId,
+    sequence_id: remoteSequenceState.sequenceId ? uuidv5(remoteSequenceState.sequenceId, connectionId) : null,
+    _remote_mailbox_id: remoteSequenceState.mailboxId,
+    mailbox_id: remoteSequenceState.mailboxId ? uuidv5(remoteSequenceState.mailboxId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteSequenceState.rawData,
   };
