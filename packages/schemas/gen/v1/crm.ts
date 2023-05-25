@@ -6,18 +6,8 @@
 
 export interface paths {
   "/accounts": {
-    /**
-     * List accounts 
-     * @description Get a list of accounts
-     */
-    get: operations["getAccounts"];
     /** Create account */
     post: operations["createAccount"];
-    
-  };
-  "/accounts/_search": {
-    /** Search accounts */
-    post: operations["searchAccounts"];
     
   };
   "/accounts/{account_id}": {
@@ -32,18 +22,8 @@ export interface paths {
     };
   };
   "/contacts": {
-    /**
-     * List contacts 
-     * @description Get a list of contacts
-     */
-    get: operations["getContacts"];
     /** Create contact */
     post: operations["createContact"];
-    
-  };
-  "/contacts/_search": {
-    /** Search contacts */
-    post: operations["searchContacts"];
     
   };
   "/contacts/{contact_id}": {
@@ -58,11 +38,6 @@ export interface paths {
     };
   };
   "/leads": {
-    /**
-     * List leads 
-     * @description Get a list of leads
-     */
-    get: operations["getLeads"];
     /** Create lead */
     post: operations["createLead"];
     
@@ -78,24 +53,9 @@ export interface paths {
       };
     };
   };
-  "/leads/_search": {
-    /** Search leads */
-    post: operations["searchLeads"];
-    
-  };
   "/opportunities": {
-    /**
-     * List opportunities 
-     * @description Get a list of opportunities
-     */
-    get: operations["getOpportunities"];
     /** Create opportunity */
     post: operations["createOpportunity"];
-    
-  };
-  "/opportunities/_search": {
-    /** Search Opportunities */
-    post: operations["searchOpportunities"];
     
   };
   "/opportunities/{opportunity_id}": {
@@ -108,14 +68,6 @@ export interface paths {
         opportunity_id: string;
       };
     };
-  };
-  "/users": {
-    /**
-     * List users 
-     * @description Get a list of users
-     */
-    get: operations["getUsers"];
-    
   };
   "/users/{user_id}": {
     /** Get user */
@@ -144,10 +96,8 @@ export interface components {
       addresses: components["schemas"]["addresses"];
       /** @example Integration API */
       description: string | null;
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example 1234 */
-      remote_id: string;
+      id: string;
       /** @example API's */
       industry: string | null;
       /**
@@ -170,14 +120,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -213,10 +163,8 @@ export interface components {
       email_addresses: components["schemas"]["email_addresses"];
       /** @example George */
       first_name: string | null;
-      /** @example 88cc44ca-7a34-4e8b-b0da-51c3aae34daf */
-      id: string;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -230,14 +178,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -280,10 +228,8 @@ export interface components {
       email_addresses?: components["schemas"]["email_addresses"];
       /** @example George */
       first_name?: string | null;
-      /** @example e774484c-4ff2-421f-adfa-12f66ed75b91 */
-      id: string;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example Xing */
       last_name: string | null;
       /** @example API Blogger */
@@ -298,14 +244,14 @@ export interface components {
        * Format: date-time 
        * @example 2023-02-10T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2023-02-10T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -346,10 +292,8 @@ export interface components {
       close_date?: Date | null;
       /** @example Wants to use open source unified API for third-party integrations */
       description: string | null;
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
@@ -369,14 +313,14 @@ export interface components {
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2023-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -384,10 +328,8 @@ export interface components {
       last_modified_at: Date;
     };
     user: {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example George Xing */
       name: string | null;
       /** @example george@supaglue.com */
@@ -397,14 +339,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -622,22 +564,6 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  getAccounts: {
-    /**
-     * List accounts 
-     * @description Get a list of accounts
-     */
-    responses: {
-      /** @description Accounts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["account"])[];
-          };
-        };
-      };
-    };
-  };
   createAccount: {
     /** Create account */
     requestBody: {
@@ -656,30 +582,6 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["account"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  searchAccounts: {
-    /** Search accounts */
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @description Filters are combined using a logical AND */
-          filters: {
-            website?: components["schemas"]["filter"];
-            remote_id?: components["schemas"]["equals_filter"];
-          };
-        };
-      };
-    };
-    responses: {
-      /** @description Accounts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["account"])[];
           };
         };
       };
@@ -719,22 +621,6 @@ export interface operations {
       };
     };
   };
-  getContacts: {
-    /**
-     * List contacts 
-     * @description Get a list of contacts
-     */
-    responses: {
-      /** @description Contacts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["contact"])[];
-          };
-        };
-      };
-    };
-  };
   createContact: {
     /** Create contact */
     requestBody: {
@@ -763,30 +649,6 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["contact"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  searchContacts: {
-    /** Search contacts */
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @description Filters are combined using a logical AND */
-          filters: {
-            email_address?: components["schemas"]["equals_filter"];
-            remote_id?: components["schemas"]["equals_filter"];
-          };
-        };
-      };
-    };
-    responses: {
-      /** @description Contacts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["contact"])[];
           };
         };
       };
@@ -821,22 +683,6 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["contact"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getLeads: {
-    /**
-     * List leads 
-     * @description Get a list of leads
-     */
-    responses: {
-      /** @description Leads */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["lead"])[];
           };
         };
       };
@@ -910,46 +756,6 @@ export interface operations {
       };
     };
   };
-  searchLeads: {
-    /** Search leads */
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @description Filters are combined using a logical AND */
-          filters: {
-            email_address?: components["schemas"]["equals_filter"];
-            remote_id?: components["schemas"]["equals_filter"];
-          };
-        };
-      };
-    };
-    responses: {
-      /** @description Leads */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["lead"])[];
-          };
-        };
-      };
-    };
-  };
-  getOpportunities: {
-    /**
-     * List opportunities 
-     * @description Get a list of opportunities
-     */
-    responses: {
-      /** @description Opportunities */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["opportunity"])[];
-          };
-        };
-      };
-    };
-  };
   createOpportunity: {
     /** Create opportunity */
     requestBody: {
@@ -985,30 +791,6 @@ export interface operations {
       };
     };
   };
-  searchOpportunities: {
-    /** Search Opportunities */
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @description Filters are combined using a logical AND */
-          filters: {
-            account_id?: components["schemas"]["equals_filter"];
-            remote_id?: components["schemas"]["equals_filter"];
-          };
-        };
-      };
-    };
-    responses: {
-      /** @description Opportunities */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["opportunity"])[];
-          };
-        };
-      };
-    };
-  };
   getOpportunity: {
     /** Get opportunity */
     responses: {
@@ -1038,22 +820,6 @@ export interface operations {
             logs?: components["schemas"]["logs"];
             model?: components["schemas"]["opportunity"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getUsers: {
-    /**
-     * List users 
-     * @description Get a list of users
-     */
-    responses: {
-      /** @description Users */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["user"])[];
           };
         };
       };

@@ -39,7 +39,7 @@ echo "Versioning docs..."
 yarn workspace docs docusaurus docs:version "$VERSION" > /dev/null
 yarn workspace docs version "$VERSION" > /dev/null
 
-mkdir "openapi/versioned/version-${VERSION}" && cp -r openapi/common openapi/v1/crm openapi/v1/mgmt openapi/v1/engagement "openapi/versioned/version-${VERSION}/"
+mkdir "openapi/versioned/version-${VERSION}" && cp -r openapi/common openapi/v1 openapi/v2 "openapi/versioned/version-${VERSION}/"
 
 echo "Deleting old docs..."
 OLD_DOCS_VERSIONS=$(jq -r '.[]' docs/versions.json | tail -n +3)
