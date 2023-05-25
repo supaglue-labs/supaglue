@@ -3,6 +3,7 @@ import { CRMCommonModelType, CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm'
 import {
   CRMNumRecordsSyncedMap,
   EngagementNumRecordsSyncedMap,
+  FullOnlySync,
   FullThenIncrementalSync,
   NumRecordsSyncedMap,
   ReverseThenForwardSync,
@@ -72,6 +73,9 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       case 'full then incremental':
         numRecordsSyncedMap = await doFullThenIncrementalSync({ sync, category });
         break;
+      case 'full only':
+        numRecordsSyncedMap = await doFullOnlySync({ sync, category });
+        break;
       case 'reverse then forward':
         numRecordsSyncedMap = await doReverseThenForwardSync({ sync, category });
         break;
@@ -123,6 +127,67 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       });
     })
   );
+}
+
+async function doFullOnlySync({
+  sync,
+  category,
+}: {
+  sync: FullOnlySync;
+  category: IntegrationCategory;
+}): Promise<NumRecordsSyncedMap> {
+  async function doFullStage(): Promise<NumRecordsSyncedMap> {
+    await updateSyncState({
+      syncId: sync.id,
+      state: {
+        phase: 'full',
+        status: 'in progress',
+      },
+    });
+
+    const importRecordsResultList = Object.fromEntries(
+      await Promise.all(
+        getCommonModels(category).map(async (commonModel) => {
+          const entry: [CommonModel, ImportRecordsResult] = [
+            commonModel,
+            await syncRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
+          ];
+          return entry;
+        })
+      )
+    ) as Record<CommonModel, ImportRecordsResult>;
+
+    await updateSyncState({
+      syncId: sync.id,
+      state: {
+        phase: 'full',
+        status: 'in progress',
+      },
+    });
+
+    await updateSyncState({
+      syncId: sync.id,
+      state: {
+        phase: 'full',
+        status: 'done',
+      },
+    });
+
+    return Object.fromEntries(
+      getCommonModels(category).map((commonModel) => [
+        commonModel,
+        importRecordsResultList[commonModel].numRecordsSynced,
+      ])
+    ) as Record<CommonModel, number>;
+  }
+
+  // Short circuit normal state transitions if we're forcing a sync which will reset the state
+  if (sync.forceSyncFlag) {
+    const results = await doFullStage();
+    await setForceSyncFlag({ syncId: sync.id }, false);
+    return results;
+  }
+  return await doFullStage();
 }
 
 async function doFullThenIncrementalSync({
