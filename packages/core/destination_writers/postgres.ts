@@ -291,8 +291,8 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "email_addresses" JSONB,
   "phone_numbers" JSONB,
   "converted_date" TIMESTAMP(3),
-  "converted_remote_contact_id" TEXT,
-  "converted_remote_account_id" TEXT,
+  "converted_contact_id" TEXT,
+  "converted_account_id" TEXT,
   "owner_id" TEXT,
   "raw_data" JSONB,
 
