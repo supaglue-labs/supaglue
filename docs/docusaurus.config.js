@@ -87,15 +87,15 @@ const config = {
             ].filter((obj) => !!obj)
           ),
           {
-            spec: '../openapi/crm/openapi.bundle.json',
+            spec: '../openapi/v1/crm/openapi.bundle.json',
             route: '/next/references/api/crm',
           },
           {
-            spec: '../openapi/engagement/openapi.bundle.json',
+            spec: '../openapi/v1/engagement/openapi.bundle.json',
             route: '/next/references/api/engagement',
           },
           {
-            spec: '../openapi/mgmt/openapi.bundle.json',
+            spec: '../openapi/v1/mgmt/openapi.bundle.json',
             route: '/next/references/api/mgmt',
           },
         ],
@@ -304,7 +304,11 @@ const config = {
         return {
           plugins: [
             new WatchExternalFilesPlugin({
-              files: ['../openapi/mgmt/openapi.bundle.json', '../openapi/crm/openapi.bundle.json'],
+              files: [
+                '../openapi/v1/mgmt/openapi.bundle.json',
+                '../openapi/v1/crm/openapi.bundle.json',
+                '../openapi/v1/engagement/openapi.bundle.json',
+              ],
             }),
           ],
         };

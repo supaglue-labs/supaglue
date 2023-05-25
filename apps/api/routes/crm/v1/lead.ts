@@ -18,7 +18,7 @@ import {
   UpdateLeadPathParams,
   UpdateLeadRequest,
   UpdateLeadResponse,
-} from '@supaglue/schemas/crm';
+} from '@supaglue/schemas/v1/crm';
 import { ListParams } from '@supaglue/types/common';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
