@@ -16,14 +16,14 @@ info:
     ### Base API URL
 
     ```
-    http://localhost:8080/mgmt/v2
+    https://api.supaglue.io/mgmt/v2
     ```
 externalDocs:
   description: Try out our API in Postman!
   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
 servers:
-  - url: 'http://localhost:8080/mgmt/v2'
-    description: Local Supaglue API
+  - url: 'https://api.supaglue.io/mgmt/v2'
+    description: Supaglue API
 paths:
   '/customers':
     $ref: paths/customers.yaml

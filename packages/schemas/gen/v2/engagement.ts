@@ -111,10 +111,8 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     contact: {
-      /** @example 4cee77aa-50ae-4369-be1e-03f15a55ef10 */
-      id: string;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
       owner_id: string | null;
       /** @example George */
@@ -147,14 +145,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -178,10 +176,8 @@ export interface components {
       custom_fields?: components["schemas"]["custom_fields"];
     };
     sequence_state: {
-      /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
-      id: string;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example active */
       state: string | null;
       /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
@@ -194,14 +190,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -217,10 +213,8 @@ export interface components {
       sequence_id: string;
     };
     mailbox: {
-      /** @example e19a7c83-6480-46cc-9ea7-a5b82b30d04b */
-      id: string;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example null */
       email: string | null;
       /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
@@ -229,14 +223,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -244,10 +238,8 @@ export interface components {
       last_modified_at: Date;
     };
     user: {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example George */
       first_name: string | null;
       /** @example Xing */
@@ -258,14 +250,14 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /** @example false */
-      remote_was_deleted: boolean;
+      is_deleted: boolean;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
@@ -273,12 +265,10 @@ export interface components {
       last_modified_at: Date;
     };
     sequence: {
-      /** @example 88588bae-3785-4223-81b7-0649012fdeda */
-      id: string;
       /** @example 95fe0d29-e8cc-48ac-9afd-e02d8037a597 */
       owner_id?: string | null;
       /** @example 54312 */
-      remote_id: string;
+      id: string;
       /** @example true */
       is_enabled: boolean;
       name: string | null;
@@ -293,24 +283,17 @@ export interface components {
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_created_at: Date | null;
+      created_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
-      remote_updated_at: Date | null;
+      updated_at: Date | null;
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
-    };
-    start_sequence: {
-      id: string;
-      fields: {
-        contact_id: string;
-        mailbox_id: string;
-      };
     };
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
@@ -556,7 +539,7 @@ export interface operations {
         /**
          * @example {
          *   "model": {
-         *     "id": "ed7ce0f0-8119-4b73-bf01-4e8e0296ef80",
+         *     "id": 1234,
          *     "address": {
          *       "city": "San Francisco",
          *       "country": "USA",
@@ -572,7 +555,6 @@ export interface operations {
          *       }
          *     ],
          *     "first_name": "George",
-         *     "remote_id": 1234,
          *     "last_name": "Xing",
          *     "phone_numbers": [
          *       {
@@ -580,7 +562,7 @@ export interface operations {
          *         "phone_number_type": "mobile"
          *       }
          *     ],
-         *     "remote_created_at": "2023-02-27T00:00:00Z"
+         *     "created_at": "2023-02-27T00:00:00Z"
          *   }
          * }
          */
@@ -746,8 +728,8 @@ export interface operations {
          *     "mailbox_id": "a7e860b5-cb8b-400b-812d-921fa526140c",
          *     "contact_id": "6bdcebc2-f886-4de3-88ed-0b9eb420f7b1",
          *     "sequence_id": "45e07817-fd59-4ec8-a727-066d2db27c9b",
-         *     "remote_created_at": "2023-02-27T00:00:00Z",
-         *     "remote_updated_at": "2023-02-27T00:00:00Z"
+         *     "created_at": "2023-02-27T00:00:00Z",
+         *     "updated_at": "2023-02-27T00:00:00Z"
          *   }
          * }
          */

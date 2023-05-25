@@ -17,7 +17,7 @@ get:
           examples:
             Example:
               value:
-                url: http://localhost:8080
+                url: https://api.supaglue.io
                 notify_on_sync_success: true
                 notify_on_sync_error: true
                 notify_on_connection_success: true
