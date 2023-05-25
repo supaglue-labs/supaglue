@@ -66,6 +66,7 @@ export class IntegrationService {
   }
 
   public async update(id: string, integration: IntegrationUpdateParams): Promise<Integration> {
+    // TODO(SUP1-328): Remove once we support updating destinations
     if (integration.destinationId) {
       const { destinationId } = await this.getById(id);
       if (destinationId && destinationId !== integration.destinationId) {
