@@ -13,7 +13,7 @@ import syncHistory from './sync_history';
 import syncInfo from './sync_info';
 import webhook from './webhook';
 
-const { prisma } = getDependencyContainer();
+const { prisma, connectionAndSyncService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   // application routes should not require application header
@@ -72,8 +72,20 @@ export default function init(app: Router): void {
       },
       select: {
         id: true,
+        version: true,
       },
     });
+
+    for (const sync of syncs) {
+      // Kill existing schedules before migrating syncs
+      // Otherwise, when we set the strategy down below
+      // the old syncs can override it
+      if (sync.version === 'v1') {
+        await connectionAndSyncService.deleteTemporalSyncsV1([sync.id]);
+      } else if (sync.version === 'v2') {
+        await connectionAndSyncService.deleteTemporalSyncsV2([sync.id]);
+      }
+    }
 
     await prisma.$transaction([
       prisma.sync.updateMany({

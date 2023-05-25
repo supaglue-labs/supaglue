@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Router } from 'express';
 
-const { prisma } = getDependencyContainer();
+const { prisma, connectionAndSyncService } = getDependencyContainer();
 
 export default function init(app: Router) {
   const router = Router();
@@ -52,8 +52,18 @@ export default function init(app: Router) {
       },
       select: {
         id: true,
+        version: true,
       },
     });
+
+    // Kill existing schedules before migrating syncs
+    // Otherwise, when we set the strategy down below
+    // the old syncs can override it
+    if (existingSync.version === 'v1') {
+      await connectionAndSyncService.deleteTemporalSyncsV1([existingSync.id]);
+    } else if (existingSync.version === 'v2') {
+      await connectionAndSyncService.deleteTemporalSyncsV2([existingSync.id]);
+    }
 
     await prisma.$transaction([
       prisma.sync.update({
