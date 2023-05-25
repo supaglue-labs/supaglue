@@ -1,4 +1,4 @@
-import type { CrmLead } from '@supaglue/db';
+import type { CrmLead, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
 import type { Lead, RemoteLead, SnakecasedKeysCrmLead, SnakecasedKeysCrmLeadV2 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
@@ -98,6 +98,39 @@ export const fromLeadModel = (
     remoteWasDeleted,
     lastModifiedAt,
     rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
+  };
+};
+
+export const fromRemoteLeadToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteLead: RemoteLead
+): Prisma.CrmLeadCreateInput => {
+  return {
+    id: uuidv5(remoteLead.id, connectionId),
+    remoteId: remoteLead.id,
+    customerId,
+    connectionId,
+    leadSource: remoteLead.leadSource,
+    title: remoteLead.title,
+    company: remoteLead.company,
+    firstName: remoteLead.firstName,
+    lastName: remoteLead.lastName,
+    addresses: remoteLead.addresses,
+    phoneNumbers: remoteLead.phoneNumbers,
+    emailAddresses: remoteLead.emailAddresses,
+    remoteCreatedAt: remoteLead.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteLead.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteLead.isDeleted,
+    lastModifiedAt: remoteLead.lastModifiedAt?.toISOString(),
+    convertedDate: remoteLead.convertedDate?.toISOString(),
+    convertedRemoteAccountId: remoteLead.convertedAccountId,
+    convertedAccountId: remoteLead.convertedAccountId ? uuidv5(remoteLead.convertedAccountId, connectionId) : null,
+    convertedRemoteContactId: remoteLead.convertedContactId,
+    convertedContactId: remoteLead.convertedContactId ? uuidv5(remoteLead.convertedContactId, connectionId) : null,
+    remoteOwnerId: remoteLead.ownerId,
+    ownerId: remoteLead.ownerId ? uuidv5(remoteLead.ownerId, connectionId) : null,
+    rawData: remoteLead.rawData,
   };
 };
 

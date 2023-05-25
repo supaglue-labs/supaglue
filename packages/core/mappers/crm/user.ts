@@ -1,4 +1,4 @@
-import type { CrmUser } from '@supaglue/db';
+import type { CrmUser, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
 import type { RemoteUser, SnakecasedKeysCrmUser, SnakecasedKeysCrmUserV2, User } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
@@ -58,6 +58,27 @@ export const fromUserModel = (
     remoteWasDeleted,
     lastModifiedAt,
     rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
+  };
+};
+
+export const fromRemoteUserToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteUser: RemoteUser
+): Prisma.CrmUserCreateInput => {
+  return {
+    id: uuidv5(remoteUser.id, connectionId),
+    remoteId: remoteUser.id,
+    customerId,
+    connectionId,
+    name: remoteUser.name,
+    email: remoteUser.email,
+    isActive: remoteUser.isActive,
+    remoteCreatedAt: remoteUser.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteUser.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteUser.isDeleted,
+    lastModifiedAt: remoteUser.lastModifiedAt?.toISOString(),
+    rawData: remoteUser.rawData,
   };
 };
 

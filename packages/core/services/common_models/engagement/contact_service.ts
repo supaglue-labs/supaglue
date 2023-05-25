@@ -1,6 +1,5 @@
-import { COMMON_MODEL_DB_TABLES, Prisma } from '@supaglue/db';
-import { v5 as uuidv5 } from 'uuid';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 
 import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
 import { Contact, ContactCreateParams, ContactUpdateParams } from '@supaglue/types/engagement';
@@ -8,7 +7,6 @@ import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
 import { fromContactModel, fromRemoteContactToDbContactParams } from '../../../mappers/engagement';
-import { EngagementRemoteClient } from '../../../remotes/engagement/base';
 
 export class ContactService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -58,55 +56,59 @@ export class ContactService extends CommonModelBaseService {
   }
 
   public async create(customerId: string, connectionId: string, createParams: ContactCreateParams): Promise<Contact> {
-    // TODO: We may want to have better guarantees that we update the record in both our DB
-    // and the external integration.
-    const remoteCreateParams = { ...createParams };
-    const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
-    const remoteContact = await remoteClient.createObject('contact', remoteCreateParams);
-    const contactModel = await this.prisma.engagementContact.create({
-      data: {
-        id: uuidv5(remoteContact.remoteId, connectionId),
-        customerId,
-        connectionId,
-        ...remoteContact,
-        lastModifiedAt: getLastModifiedAt(remoteContact),
-        address: remoteContact.address as Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput,
-      },
-    });
-    return fromContactModel(contactModel);
+    throw new Error('Currently disabled');
+
+    // // TODO: We may want to have better guarantees that we update the record in both our DB
+    // // and the external integration.
+    // const remoteCreateParams = { ...createParams };
+    // const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
+    // const remoteContact = await remoteClient.createObject('contact', remoteCreateParams);
+    // const contactModel = await this.prisma.engagementContact.create({
+    //   data: {
+    //     id: uuidv5(remoteContact.remoteId, connectionId),
+    //     customerId,
+    //     connectionId,
+    //     ...remoteContact,
+    //     lastModifiedAt: getLastModifiedAt(remoteContact),
+    //     address: remoteContact.address as Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput,
+    //   },
+    // });
+    // return fromContactModel(contactModel);
   }
 
   public async update(customerId: string, connectionId: string, updateParams: ContactUpdateParams): Promise<Contact> {
-    // TODO: We may want to have better guarantees that we update the record in both our DB
-    // and the external integration.
-    const foundContactModel = await this.prisma.engagementContact.findUniqueOrThrow({
-      where: {
-        id: updateParams.id,
-      },
-    });
+    throw new Error('Currently disabled');
 
-    if (foundContactModel.customerId !== customerId) {
-      throw new Error('Contact customerId does not match');
-    }
+    // // TODO: We may want to have better guarantees that we update the record in both our DB
+    // // and the external integration.
+    // const foundContactModel = await this.prisma.engagementContact.findUniqueOrThrow({
+    //   where: {
+    //     id: updateParams.id,
+    //   },
+    // });
 
-    const remoteUpdateParams = { ...updateParams };
-    const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
-    const remoteContact = await remoteClient.updateObject('contact', {
-      ...remoteUpdateParams,
-      remoteId: foundContactModel.remoteId,
-    });
+    // if (foundContactModel.customerId !== customerId) {
+    //   throw new Error('Contact customerId does not match');
+    // }
 
-    const contactModel = await this.prisma.engagementContact.update({
-      data: {
-        ...remoteContact,
-        lastModifiedAt: getLastModifiedAt(remoteContact),
-        address: remoteContact.address as Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput,
-      },
-      where: {
-        id: updateParams.id,
-      },
-    });
-    return fromContactModel(contactModel);
+    // const remoteUpdateParams = { ...updateParams };
+    // const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
+    // const remoteContact = await remoteClient.updateObject('contact', {
+    //   ...remoteUpdateParams,
+    //   remoteId: foundContactModel.remoteId,
+    // });
+
+    // const contactModel = await this.prisma.engagementContact.update({
+    //   data: {
+    //     ...remoteContact,
+    //     lastModifiedAt: getLastModifiedAt(remoteContact),
+    //     address: remoteContact.address as Prisma.InputJsonValue | Prisma.NullableJsonNullValueInput,
+    //   },
+    //   where: {
+    //     id: updateParams.id,
+    //   },
+    // });
+    // return fromContactModel(contactModel);
   }
 
   public async upsertRemoteRecords(

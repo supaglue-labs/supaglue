@@ -1,4 +1,4 @@
-import type { CrmOpportunity } from '@supaglue/db';
+import type { CrmOpportunity, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
 import type {
   Opportunity,
@@ -92,6 +92,36 @@ export const fromOpportunityModel = (
     remoteWasDeleted,
     lastModifiedAt,
     rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
+  };
+};
+
+export const fromRemoteOpportunityToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteOpportunity: RemoteOpportunity
+): Prisma.CrmOpportunityCreateInput => {
+  return {
+    id: uuidv5(remoteOpportunity.id, connectionId),
+    remoteId: remoteOpportunity.id,
+    customerId,
+    connectionId,
+    name: remoteOpportunity.name,
+    description: remoteOpportunity.description,
+    amount: remoteOpportunity.amount,
+    stage: remoteOpportunity.stage,
+    status: remoteOpportunity.status,
+    pipeline: remoteOpportunity.pipeline,
+    lastActivityAt: remoteOpportunity.lastActivityAt?.toISOString(),
+    closeDate: remoteOpportunity.closeDate?.toISOString(),
+    remoteCreatedAt: remoteOpportunity.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteOpportunity.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteOpportunity.isDeleted,
+    lastModifiedAt: remoteOpportunity.lastModifiedAt?.toISOString(),
+    remoteAccountId: remoteOpportunity.accountId,
+    accountId: remoteOpportunity.accountId ? uuidv5(remoteOpportunity.accountId, connectionId) : null,
+    remoteOwnerId: remoteOpportunity.ownerId,
+    ownerId: remoteOpportunity.ownerId ? uuidv5(remoteOpportunity.ownerId, connectionId) : null,
+    rawData: remoteOpportunity.rawData,
   };
 };
 

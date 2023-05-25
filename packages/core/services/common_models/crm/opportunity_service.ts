@@ -2,11 +2,14 @@ import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInternalParams } from '@supaglue/types';
 import { Opportunity, OpportunityCreateParams, OpportunityFilters, OpportunityUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
-import { v5 as uuidv5 } from 'uuid';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
-import { fromOpportunityModel, fromRemoteOpportunityToDbOpportunityParams } from '../../../mappers/crm';
+import {
+  fromOpportunityModel,
+  fromRemoteOpportunityToDbOpportunityParams,
+  fromRemoteOpportunityToModel,
+} from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class OpportunityService extends CommonModelBaseService {
@@ -97,15 +100,7 @@ export class OpportunityService extends CommonModelBaseService {
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteOpportunity = await remoteClient.createObject('opportunity', remoteCreateParams);
     const opportunityModel = await this.prisma.crmOpportunity.create({
-      data: {
-        id: uuidv5(remoteOpportunity.remoteId, connectionId),
-        customerId,
-        connectionId,
-        lastModifiedAt: getLastModifiedAt(remoteOpportunity),
-        ...remoteOpportunity,
-        accountId: createParams.accountId,
-        ownerId: createParams.ownerId,
-      },
+      data: fromRemoteOpportunityToModel(connectionId, customerId, remoteOpportunity),
     });
     return fromOpportunityModel(opportunityModel);
   }
@@ -142,18 +137,17 @@ export class OpportunityService extends CommonModelBaseService {
     });
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.
-    if (foundOpportunityModel.remoteId !== remoteOpportunity.remoteId) {
+    if (foundOpportunityModel.remoteId !== remoteOpportunity.id) {
       await this.prisma.crmOpportunity.updateMany({
         where: {
           remoteId: {
-            in: [foundOpportunityModel.remoteId, remoteOpportunity.remoteId],
+            in: [foundOpportunityModel.remoteId, remoteOpportunity.id],
           },
           connectionId: foundOpportunityModel.connectionId,
         },
         data: {
-          ...remoteOpportunity,
+          ...fromRemoteOpportunityToModel(connectionId, customerId, remoteOpportunity),
           remoteId: undefined,
-          lastModifiedAt: getLastModifiedAt(remoteOpportunity),
           ownerId: updateParams.ownerId,
         },
       });
@@ -162,8 +156,7 @@ export class OpportunityService extends CommonModelBaseService {
 
     const opportunityModel = await this.prisma.crmOpportunity.update({
       data: {
-        ...remoteOpportunity,
-        lastModifiedAt: getLastModifiedAt(remoteOpportunity),
+        ...fromRemoteOpportunityToModel(connectionId, customerId, remoteOpportunity),
         accountId: updateParams.accountId,
         ownerId: updateParams.ownerId,
       },

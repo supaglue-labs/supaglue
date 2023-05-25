@@ -1,4 +1,4 @@
-import type { CrmAccount } from '@supaglue/db';
+import type { CrmAccount, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
 import type { Account, RemoteAccount, SnakecasedKeysCrmAccount, SnakecasedKeysCrmAccountV2 } from '@supaglue/types/crm';
 import type { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
@@ -89,6 +89,35 @@ export const fromAccountModel = (
     remoteWasDeleted,
     lastModifiedAt,
     rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
+  };
+};
+
+export const fromRemoteAccountToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteAccount: RemoteAccount
+): Prisma.CrmAccountCreateInput => {
+  return {
+    id: uuidv5(remoteAccount.id, connectionId),
+    name: remoteAccount.name,
+    description: remoteAccount.description,
+    industry: remoteAccount.industry,
+    website: remoteAccount.website,
+    numberOfEmployees: remoteAccount.numberOfEmployees,
+    addresses: remoteAccount.addresses,
+    phoneNumbers: remoteAccount.phoneNumbers,
+    lastActivityAt: remoteAccount.lastActivityAt?.toISOString(),
+    lifecycleStage: remoteAccount.lifecycleStage,
+    remoteId: remoteAccount.id,
+    remoteCreatedAt: remoteAccount.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteAccount.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteAccount.isDeleted,
+    lastModifiedAt: remoteAccount.lastModifiedAt?.toISOString(),
+    customerId,
+    connectionId,
+    remoteOwnerId: remoteAccount.ownerId,
+    ownerId: remoteAccount.ownerId ? uuidv5(remoteAccount.ownerId, connectionId) : null,
+    rawData: remoteAccount.rawData,
   };
 };
 

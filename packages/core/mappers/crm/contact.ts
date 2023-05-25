@@ -1,4 +1,4 @@
-import { CrmContact } from '@supaglue/db';
+import { CrmContact, Prisma } from '@supaglue/db';
 import { GetInternalParams } from '@supaglue/types';
 import { Contact, RemoteContact, SnakecasedKeysCrmContact, SnakecasedKeysCrmContactV2 } from '@supaglue/types/crm';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
@@ -86,6 +86,35 @@ export const fromContactModel = (
     remoteWasDeleted,
     lastModifiedAt,
     rawData: getParams?.include_raw_data && typeof rawData === 'object' ? (rawData as Record<string, any>) : undefined,
+  };
+};
+
+export const fromRemoteContactToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteContact: RemoteContact
+): Prisma.CrmContactCreateInput => {
+  return {
+    id: uuidv5(remoteContact.id, connectionId),
+    remoteId: remoteContact.id,
+    customerId,
+    connectionId,
+    firstName: remoteContact.firstName,
+    lastName: remoteContact.lastName,
+    addresses: remoteContact.addresses,
+    emailAddresses: remoteContact.emailAddresses,
+    phoneNumbers: remoteContact.phoneNumbers,
+    lifecycleStage: remoteContact.lifecycleStage,
+    lastActivityAt: remoteContact.lastActivityAt?.toISOString(),
+    remoteCreatedAt: remoteContact.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteContact.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteContact.isDeleted,
+    lastModifiedAt: remoteContact.lastModifiedAt?.toISOString(),
+    remoteAccountId: remoteContact.accountId,
+    accountId: remoteContact.accountId ? uuidv5(remoteContact.accountId, connectionId) : null,
+    remoteOwnerId: remoteContact.ownerId,
+    ownerId: remoteContact.ownerId ? uuidv5(remoteContact.ownerId, connectionId) : null,
+    rawData: remoteContact.rawData,
   };
 };
 
