@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { Integration, IntegrationCreateParams, IntegrationUpdateParams } from '@supaglue/types';
-import { NotFoundError } from '../errors';
+import { BadRequestError, NotFoundError } from '../errors';
 import { fromIntegrationModel, toIntegrationModel } from '../mappers';
 
 export class IntegrationService {
@@ -66,6 +66,13 @@ export class IntegrationService {
   }
 
   public async update(id: string, integration: IntegrationUpdateParams): Promise<Integration> {
+    // TODO(SUP1-328): Remove once we support updating destinations
+    if (integration.destinationId) {
+      const { destinationId } = await this.getById(id);
+      if (destinationId && destinationId !== integration.destinationId) {
+        throw new BadRequestError('Destination cannot be changed');
+      }
+    }
     const [updatedIntegration] = await this.#prisma.$transaction([
       this.#prisma.integration.update({
         where: { id },
