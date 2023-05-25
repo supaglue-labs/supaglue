@@ -2,6 +2,7 @@ import type { PrismaClient } from '@supaglue/db';
 import type { Destination, DestinationCreateParams, DestinationUpdateParams } from '@supaglue/types';
 import { DestinationWriter } from '../destination_writers/base';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
+import { S3DestinationWriter } from '../destination_writers/s3';
 import { fromDestinationModel } from '../mappers/destination';
 
 export class DestinationService {
@@ -61,7 +62,7 @@ export class DestinationService {
     const destination = destinations[0];
     switch (destination.type) {
       case 's3':
-        throw new Error('S3 destination not implemented');
+        return new S3DestinationWriter(destination);
       case 'postgres':
         return new PostgresDestinationWriter(destination);
     }

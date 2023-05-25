@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createDestination, updateDestination } from '@/client';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
@@ -17,6 +18,7 @@ export type PostgresDestinationDetailsPanelProps = {
 
 export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresDestinationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
+  const { addNotification } = useNotification();
 
   const { destinations: existingDestinations = [], mutate } = useDestinations();
 
@@ -208,6 +210,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
               variant="contained"
               onClick={async () => {
                 const newDestination = await createOrUpdateDestination();
+                addNotification({ message: 'Successfully updated destination', severity: 'success' });
                 const latestDestinations = [
                   ...existingDestinations.filter(({ id }) => id !== newDestination.id),
                   newDestination,
@@ -217,7 +220,6 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
                   revalidate: false,
                   populateCache: false,
                 });
-                router.push(`/applications/${activeApplicationId}/configuration/destinations/${newDestination.type}`);
               }}
             >
               Save

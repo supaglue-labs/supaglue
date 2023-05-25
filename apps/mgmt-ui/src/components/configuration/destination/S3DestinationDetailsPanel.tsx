@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createDestination, updateDestination } from '@/client';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
@@ -17,6 +18,7 @@ export type S3DestinationDetailsPanelProps = {
 
 export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDetailsPanelProps) {
   const activeApplicationId = useActiveApplicationId();
+  const { addNotification } = useNotification();
 
   const { destinations: existingDestinations = [], mutate } = useDestinations();
 
@@ -54,7 +56,8 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
     if (destination) {
       return await updateDestination({
         ...destination,
-        type: 's3', // TODO: allow postgres
+        name,
+        type: 's3',
         config: {
           region,
           bucket,
@@ -168,8 +171,16 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
               variant="contained"
               onClick={async () => {
                 const newDestination = await createOrUpdateDestination();
-                mutate([...existingDestinations, newDestination], false);
-                router.push(`/applications/${activeApplicationId}/configuration/destinations/${newDestination.type}`);
+                addNotification({ message: 'Successfully updated destination', severity: 'success' });
+                const latestDestinations = [
+                  ...existingDestinations.filter(({ id }) => id !== newDestination.id),
+                  newDestination,
+                ];
+                mutate(latestDestinations, {
+                  optimisticData: latestDestinations,
+                  revalidate: false,
+                  populateCache: false,
+                });
               }}
             >
               Save
