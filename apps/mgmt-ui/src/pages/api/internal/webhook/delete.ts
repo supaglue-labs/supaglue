@@ -1,5 +1,5 @@
 import { getApplicationIdScopedHeaders } from '@/utils/headers';
-import { DeleteWebhookResponse } from '@supaglue/schemas/mgmt';
+import { DeleteWebhookResponse } from '@supaglue/schemas/v1/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 

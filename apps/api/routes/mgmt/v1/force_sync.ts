@@ -4,7 +4,7 @@ import {
   CreateForceSyncQueryParams,
   CreateForceSyncRequest,
   CreateForceSyncResponse,
-} from '@supaglue/schemas/mgmt';
+} from '@supaglue/schemas/v1/mgmt';
 import { Request, Response, Router } from 'express';
 
 const { connectionAndSyncService } = getDependencyContainer();

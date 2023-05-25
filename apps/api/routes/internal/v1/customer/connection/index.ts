@@ -7,7 +7,7 @@ import {
   GetConnectionPathParams,
   GetConnectionRequest,
   GetConnectionResponse,
-} from '@supaglue/schemas/mgmt';
+} from '@supaglue/schemas/v1/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 

@@ -1,0 +1,77 @@
+post:
+  operationId: searchOpportunities
+  summary: Search Opportunities
+  tags:
+    - Opportunities
+  parameters:
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+  security:
+    - ApiKeyAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            filters:
+              type: object
+              description: Filters are combined using a logical AND
+              properties:
+                account_id:
+                  $ref: ../components/schemas/equals_filter.yaml
+                remote_id:
+                  $ref: ../components/schemas/equals_filter.yaml
+          required:
+            - filters
+  responses:
+    '200':
+      description: Opportunities
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../common/components/schemas/pagination.yaml
+              - type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/objects/opportunity.yaml
+          examples:
+            Example:
+              value:
+                next: eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==
+                previous: eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9
+                results:
+                  - account:
+                      id: 82de27cb-6f8c-4278-b783-82d1d916eddc
+                    amount: 100000
+                    close_date: '2023-02-27T00:00:00Z'
+                    description: Wants to use open source unified API for third-party integrations
+                    id: 37704671-1955-47b3-b7a8-6ca814fa5005
+                    remote_id: 1234
+                    last_activity_at: '2023-02-27T00:00:00Z'
+                    name: Needs third-party integrations
+                    owner_id: 475789f9-0df9-4a09-959e-c9f5eb7a541c
+                    remote_created_at: '2023-02-27T00:00:00Z'
+                    remote_updated_at: '2023-02-27T00:00:00Z'
+                    stage: Closed Won
+                  - account:
+                      id: 82de27cb-6f8c-4278-b783-82d1d916eddc
+                    amount: 100000
+                    close_date: '2023-02-27T00:00:00Z'
+                    description: Wants to use open source unified API for third-party integrations
+                    id: 1e68260b-f250-427b-88f1-26ccc34c62d6
+                    remote_id: 1235
+                    last_activity_at: '2023-02-27T00:00:00Z'
+                    name: Needs third-party integrations
+                    owner_id: 64761ae1-8c42-461c-8778-9671f9d39997
+                    remote_created_at: '2023-02-27T00:00:00Z'
+                    remote_updated_at: '2023-02-27T00:00:00Z'
+                    stage: Closed Lost
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml

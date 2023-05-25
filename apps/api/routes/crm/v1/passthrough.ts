@@ -3,7 +3,7 @@ import {
   SendPassthroughRequestPathParams,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
-} from '@supaglue/schemas/crm';
+} from '@supaglue/schemas/v1/crm';
 import { Request, Response, Router } from 'express';
 
 const { passthroughService } = getDependencyContainer();

@@ -8,7 +8,7 @@ import {
   GetMailboxPathParams,
   GetMailboxRequest,
   GetMailboxResponse,
-} from '@supaglue/schemas/engagement';
+} from '@supaglue/schemas/v1/engagement';
 import { ListParams } from '@supaglue/types/common';
 import { Request, Response, Router } from 'express';
 
