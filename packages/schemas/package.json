@@ -2,7 +2,7 @@
   "name": "@supaglue/schemas",
   "version": "0.8.8",
   "scripts": {
-    "generate": "tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v1/crm/openapi.bundle.json gen/v1/crm.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v1/mgmt/openapi.bundle.json gen/v1/mgmt.ts  && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v1/engagement/openapi.bundle.json gen/v1/engagement.ts"
+    "generate": "tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v1/crm/openapi.bundle.json gen/v1/crm.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v1/mgmt/openapi.bundle.json gen/v1/mgmt.ts  && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v1/engagement/openapi.bundle.json gen/v1/engagement.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/crm/openapi.bundle.json gen/v2/crm.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/mgmt/openapi.bundle.json gen/v2/mgmt.ts  && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/engagement/openapi.bundle.json gen/v2/engagement.ts"
   },
   "devDependencies": {
     "openapi-typescript": "^6.1.0",

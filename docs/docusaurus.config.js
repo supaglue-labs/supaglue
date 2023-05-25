@@ -88,15 +88,27 @@ const config = {
           ),
           {
             spec: '../openapi/v1/crm/openapi.bundle.json',
-            route: '/next/references/api/crm',
+            route: '/next/references/api/v1/crm',
           },
           {
             spec: '../openapi/v1/engagement/openapi.bundle.json',
-            route: '/next/references/api/engagement',
+            route: '/next/references/api/v1/engagement',
           },
           {
             spec: '../openapi/v1/mgmt/openapi.bundle.json',
-            route: '/next/references/api/mgmt',
+            route: '/next/references/api/v1/mgmt',
+          },
+          {
+            spec: '../openapi/v2/crm/openapi.bundle.json',
+            route: '/next/references/api/v2/crm',
+          },
+          {
+            spec: '../openapi/v2/engagement/openapi.bundle.json',
+            route: '/next/references/api/v2/engagement',
+          },
+          {
+            spec: '../openapi/v2/mgmt/openapi.bundle.json',
+            route: '/next/references/api/v2/mgmt',
           },
         ],
         // Theme Options for modifying how redoc renders them
