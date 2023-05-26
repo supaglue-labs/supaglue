@@ -19,20 +19,20 @@ import {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import {
+  AccountCreateParams,
+  AccountUpdateParams,
+  AccountV2,
+  ContactCreateParams,
+  ContactUpdateParams,
+  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteAccountUpdateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteLeadUpdateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteOpportunityUpdateParams,
+  LeadCreateParams,
+  LeadUpdateParams,
+  LeadV2,
+  OpportunityCreateParams,
+  OpportunityUpdateParams,
+  OpportunityV2,
 } from '@supaglue/types/crm';
 import retry from 'async-retry';
 import { Readable } from 'stream';
@@ -48,10 +48,10 @@ import { ASYNC_RETRY_OPTIONS, intersection, logger, REFRESH_TOKEN_THRESHOLD_MS }
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromHubSpotCompanyToRemoteAccount,
+  fromHubSpotCompanyToAccountV2,
   fromHubSpotContactToRemoteContact,
-  fromHubSpotDealToRemoteOpportunity,
-  fromHubspotOwnerToRemoteUser,
+  fromHubSpotDealToOpportunityV2,
+  fromHubspotOwnerToUserV2,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
   toHubspotContactCreateParams,
@@ -264,12 +264,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToRemoteAccount)),
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToAccountV2)),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToRemoteAccount)),
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToAccountV2)),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -344,14 +344,14 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getAccount(remoteId: string): Promise<RemoteAccount> {
+  private async getAccount(remoteId: string): Promise<AccountV2> {
     const properties = await this.getPropertiesToFetch('company');
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(remoteId, properties);
-    return fromHubSpotCompanyToRemoteAccount(company);
+    return fromHubSpotCompanyToAccountV2(company);
   }
 
-  public async createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount> {
+  public async createAccount(params: AccountCreateParams): Promise<AccountV2> {
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.create({
       properties: toHubspotAccountCreateParams(params),
@@ -359,9 +359,9 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await this.getAccount(company.id);
   }
 
-  public async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
+  public async updateAccount(params: AccountUpdateParams): Promise<AccountV2> {
     await this.maybeRefreshAccessToken();
-    const company = await this.#client.crm.companies.basicApi.update(params.remoteId, {
+    const company = await this.#client.crm.companies.basicApi.update(params.id, {
       properties: toHubspotAccountUpdateParams(params),
     });
     return await this.getAccount(company.id);
@@ -399,13 +399,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) =>
-          Readable.from(response.results.map((deal) => fromHubSpotDealToRemoteOpportunity(deal, pipelineStageMapping))),
+          Readable.from(response.results.map((deal) => fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping))),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
         createStreamFromPage: (response) =>
-          Readable.from(response.results.map((deal) => fromHubSpotDealToRemoteOpportunity(deal, pipelineStageMapping))),
+          Readable.from(response.results.map((deal) => fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping))),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -506,10 +506,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getOpportunity(
-    remoteId: string,
-    pipelineStageMapping?: PipelineStageMapping
-  ): Promise<RemoteOpportunity> {
+  private async getOpportunity(remoteId: string, pipelineStageMapping?: PipelineStageMapping): Promise<OpportunityV2> {
     if (!pipelineStageMapping) {
       pipelineStageMapping = await this.#getPipelineStageMapping();
     }
@@ -521,10 +518,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
     );
-    return fromHubSpotDealToRemoteOpportunity(deal, pipelineStageMapping);
+    return fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping);
   }
 
-  public async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
+  public async createOpportunity(params: OpportunityCreateParams): Promise<OpportunityV2> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.create({
@@ -538,10 +535,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await this.getOpportunity(deal.id, pipelineStageMapping);
   }
 
-  public async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
+  public async updateOpportunity(params: OpportunityUpdateParams): Promise<OpportunityV2> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     await this.maybeRefreshAccessToken();
-    const deal = await this.#client.crm.deals.basicApi.update(params.remoteId, {
+    const deal = await this.#client.crm.deals.basicApi.update(params.id, {
       properties: toHubspotOpportunityUpdateParams(params, pipelineStageMapping),
     });
     if (params.accountId && parseInt(params.accountId)) {
@@ -667,7 +664,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getContact(remoteId: string): Promise<RemoteContact> {
+  private async getContact(remoteId: string): Promise<ContactV2> {
     const properties = await this.getPropertiesToFetch('contact');
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
@@ -679,7 +676,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return fromHubSpotContactToRemoteContact(contact);
   }
 
-  public async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+  public async createContact(params: ContactCreateParams): Promise<ContactV2> {
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.create({
       properties: toHubspotContactCreateParams(params),
@@ -695,9 +692,9 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await this.getContact(contact.id);
   }
 
-  public async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+  public async updateContact(params: ContactUpdateParams): Promise<ContactV2> {
     await this.maybeRefreshAccessToken();
-    const contact = await this.#client.crm.contacts.basicApi.update(params.remoteId, {
+    const contact = await this.#client.crm.contacts.basicApi.update(params.id, {
       properties: toHubspotContactUpdateParams(params),
     });
     if (params.accountId && parseInt(params.accountId)) {
@@ -715,11 +712,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return Readable.from([]);
   }
 
-  public async createLead(params: RemoteLeadCreateParams): Promise<RemoteLead> {
+  public async createLead(params: LeadCreateParams): Promise<LeadV2> {
     throw new Error('Not supported');
   }
 
-  public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
+  public async updateLead(params: LeadUpdateParams): Promise<LeadV2> {
     throw new Error('Not supported');
   }
 
@@ -736,12 +733,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToRemoteUser)),
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToUserV2)),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToRemoteUser)),
+        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToUserV2)),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);

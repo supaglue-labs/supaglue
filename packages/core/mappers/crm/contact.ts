@@ -1,7 +1,7 @@
-import { CrmContact, Prisma } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { Contact, RemoteContact, SnakecasedKeysCrmContact, SnakecasedKeysCrmContactV2 } from '@supaglue/types/crm';
-import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
+import type { CrmContact, Prisma } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type { Contact, ContactV2, SnakecasedKeysCrmContact, SnakecasedKeysCrmContactV2 } from '@supaglue/types/crm';
+import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
@@ -28,7 +28,7 @@ export const toSnakecasedKeysCrmContact = (contact: Contact): SnakecasedKeysCrmC
   };
 };
 
-export const toSnakecasedKeysCrmContactV2 = (contact: RemoteContact): SnakecasedKeysCrmContactV2 => {
+export const toSnakecasedKeysCrmContactV2 = (contact: ContactV2): SnakecasedKeysCrmContactV2 => {
   return {
     owner_id: contact.ownerId,
     account_id: contact.accountId,
@@ -92,7 +92,7 @@ export const fromContactModel = (
 export const fromRemoteContactToModel = (
   connectionId: string,
   customerId: string,
-  remoteContact: RemoteContact
+  remoteContact: ContactV2
 ): Prisma.CrmContactCreateInput => {
   return {
     id: uuidv5(remoteContact.id, connectionId),
@@ -122,7 +122,7 @@ export const fromRemoteContactToModel = (
 export const fromRemoteContactToDbContactParams = (
   connectionId: string,
   customerId: string,
-  remoteContact: RemoteContact
+  remoteContact: ContactV2
 ) => {
   return {
     id: uuidv5(remoteContact.id, connectionId),

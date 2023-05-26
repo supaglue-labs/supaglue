@@ -1,21 +1,21 @@
 import type {
+  AccountCreateParams,
+  AccountV2,
+  ContactCreateParams,
+  ContactV2,
+  LeadCreateParams,
+  LeadV2,
+  OpportunityCreateParams,
   OpportunityStatus,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteUser,
+  OpportunityV2,
+  UserV2,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { PipedriveRecord, PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate } from '../../../lib';
 
-export const fromPipedrivePersonToRemoteContact = (person: PipedriveRecord): RemoteContact => {
+export const fromPipedrivePersonToContactV2 = (person: PipedriveRecord): ContactV2 => {
   return {
     id: person.id.toString(),
     firstName: person.first_name ?? null,
@@ -38,7 +38,7 @@ export const fromPipedrivePersonToRemoteContact = (person: PipedriveRecord): Rem
   };
 };
 
-export const fromPipedriveLeadToRemoteLead = (lead: PipedriveRecord): RemoteLead => {
+export const fromPipedriveLeadToLeadV2 = (lead: PipedriveRecord): LeadV2 => {
   return {
     id: lead.id.toString(),
     leadSource: lead.source_name ?? null,
@@ -62,10 +62,10 @@ export const fromPipedriveLeadToRemoteLead = (lead: PipedriveRecord): RemoteLead
   };
 };
 
-export const fromPipedriveDealToRemoteOpportunity = (
+export const fromPipedriveDealToOpportunityV2 = (
   deal: PipedriveRecord,
   pipelineStageMapping: PipelineStageMapping
-): RemoteOpportunity => {
+): OpportunityV2 => {
   let pipeline = deal.pipeline_id?.toString() ?? null;
   let stage = deal.stage_id?.toString() ?? null;
 
@@ -99,7 +99,7 @@ export const fromPipedriveDealToRemoteOpportunity = (
   };
 };
 
-export const fromPipedriveOrganizationToRemoteAccount = (organization: PipedriveRecord): RemoteAccount => {
+export const fromPipedriveOrganizationToAccountV2 = (organization: PipedriveRecord): AccountV2 => {
   return {
     id: organization.id.toString(),
     name: organization.name ?? null,
@@ -123,7 +123,7 @@ export const fromPipedriveOrganizationToRemoteAccount = (organization: Pipedrive
   };
 };
 
-export const fromPipedriveUserToRemoteUser = (user: PipedriveRecord): RemoteUser => {
+export const fromPipedriveUserToUserV2 = (user: PipedriveRecord): UserV2 => {
   return {
     id: user.id.toString(),
     name: user.name ?? null,
@@ -176,7 +176,7 @@ export const fromPipedriveOrganizationToAddresses = (organization: PipedriveReco
   ];
 };
 
-export const toPipedrivePersonCreateParams = (params: RemoteContactCreateParams) => {
+export const toPipedrivePersonCreateParams = (params: ContactCreateParams) => {
   return {
     first_name: params.firstName,
     last_name: params.lastName,
@@ -196,7 +196,7 @@ export const toPipedrivePersonCreateParams = (params: RemoteContactCreateParams)
 
 export const toPipedrivePersonUpdateParams = toPipedrivePersonCreateParams;
 
-export const toPipedriveLeadCreateParams = (params: RemoteLeadCreateParams) => {
+export const toPipedriveLeadCreateParams = (params: LeadCreateParams) => {
   if (!params.convertedAccountId && !params.convertedContactId) {
     throw new BadRequestError('Either convertedAccountId or convertedContactId must be provided');
   }
@@ -210,7 +210,7 @@ export const toPipedriveLeadCreateParams = (params: RemoteLeadCreateParams) => {
 };
 export const toPipedriveLeadUpdateParams = toPipedriveLeadCreateParams;
 
-export const toPipedriveOrganizationCreateParams = (params: RemoteAccountCreateParams) => {
+export const toPipedriveOrganizationCreateParams = (params: AccountCreateParams) => {
   return {
     name: params.name,
     owner_id: params.ownerId,
@@ -259,7 +259,7 @@ const getStageId = (
 };
 
 export const toPipedriveDealCreateParams = (
-  params: RemoteOpportunityCreateParams,
+  params: OpportunityCreateParams,
   pipelineStageMapping: PipelineStageMapping
 ) => {
   const pipelineId = getPipelineId(params.pipeline, pipelineStageMapping);

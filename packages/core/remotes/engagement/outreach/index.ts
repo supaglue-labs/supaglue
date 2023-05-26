@@ -5,13 +5,13 @@ import {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import {
+  ContactCreateParams,
+  ContactUpdateParams,
+  ContactV2,
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteSequenceState,
-  RemoteSequenceStateCreateParams,
+  SequenceStateCreateParams,
+  SequenceStateV2,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
@@ -27,11 +27,11 @@ import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromOutreachMailboxToRemoteMailbox,
-  fromOutreachProspectToRemoteContact,
-  fromOutreachSequenceStateToRemoteSequenceState,
-  fromOutreachSequenceToRemoteSequence,
-  fromOutreachUserToRemoteUser,
+  fromOutreachMailboxToMailboxV2,
+  fromOutreachProspectToContactV2,
+  fromOutreachSequenceStateToSequenceStateV2,
+  fromOutreachSequenceToSequenceV2,
+  fromOutreachUserToUserV2,
   toOutreachProspectCreateParams,
   toOutreachProspectUpdateParams,
   toOutreachSequenceStateCreateParams,
@@ -154,7 +154,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachProspectToRemoteContact)),
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachProspectToContactV2)),
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -165,7 +165,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachUserToRemoteUser)),
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachUserToUserV2)),
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -176,7 +176,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachSequenceToRemoteSequence)),
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachSequenceToSequenceV2)),
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -187,7 +187,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachMailboxToRemoteMailbox)),
+        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachMailboxToMailboxV2)),
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -199,7 +199,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) =>
-          Readable.from(response.data.map(fromOutreachSequenceStateToRemoteSequenceState)),
+          Readable.from(response.data.map(fromOutreachSequenceStateToSequenceStateV2)),
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -211,9 +211,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
     switch (commonModelType) {
       case 'sequence_state':
-        return await this.createSequenceState(params as RemoteSequenceStateCreateParams);
+        return await this.createSequenceState(params as SequenceStateCreateParams);
       case 'contact':
-        return await this.createContact(params as RemoteContactCreateParams);
+        return await this.createContact(params as ContactCreateParams);
       case 'sequence':
       case 'mailbox':
       case 'user':
@@ -223,7 +223,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+  async createContact(params: ContactCreateParams): Promise<ContactV2> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/prospects`,
@@ -232,10 +232,10 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromOutreachProspectToRemoteContact(response.data.data);
+    return fromOutreachProspectToContactV2(response.data.data);
   }
 
-  async createSequenceState(params: RemoteSequenceStateCreateParams): Promise<RemoteSequenceState> {
+  async createSequenceState(params: SequenceStateCreateParams): Promise<SequenceStateV2> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/sequenceStates`,
@@ -244,7 +244,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromOutreachSequenceStateToRemoteSequenceState(response.data.data);
+    return fromOutreachSequenceStateToSequenceStateV2(response.data.data);
   }
 
   public override async updateObject<T extends EngagementCommonModelType>(
@@ -253,22 +253,22 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
     switch (commonModelType) {
       case 'contact':
-        return await this.updateContact(params as RemoteContactUpdateParams);
+        return await this.updateContact(params as ContactUpdateParams);
       default:
         throw new Error(`Update not supported for common model ${commonModelType}`);
     }
   }
 
-  async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+  async updateContact(params: ContactUpdateParams): Promise<ContactV2> {
     await this.maybeRefreshAccessToken();
     const response = await axios.patch<{ data: OutreachRecord }>(
-      `${this.#baseURL}/api/v2/prospects/${params.remoteId}`,
+      `${this.#baseURL}/api/v2/prospects/${params.id}`,
       toOutreachProspectUpdateParams(params),
       {
         headers: this.#headers,
       }
     );
-    return fromOutreachProspectToRemoteContact(response.data.data);
+    return fromOutreachProspectToContactV2(response.data.data);
   }
 
   public override async sendPassthroughRequest(

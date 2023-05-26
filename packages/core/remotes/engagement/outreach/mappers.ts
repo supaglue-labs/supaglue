@@ -1,20 +1,20 @@
 import {
   Address,
+  ContactCreateParams,
+  ContactUpdateParams,
+  ContactV2,
   EmailAddress,
+  MailboxV2,
   PhoneNumber,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteMailbox,
-  RemoteSequence,
-  RemoteSequenceState,
-  RemoteSequenceStateCreateParams,
-  RemoteUser,
+  SequenceStateCreateParams,
+  SequenceStateV2,
+  SequenceV2,
+  UserV2,
 } from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
 import { removeUndefinedValues } from '../../../lib';
 
-export const fromOutreachUserToRemoteUser = (record: OutreachRecord): RemoteUser => {
+export const fromOutreachUserToUserV2 = (record: OutreachRecord): UserV2 => {
   const { id, attributes } = record;
   return {
     id: id.toString(),
@@ -29,7 +29,7 @@ export const fromOutreachUserToRemoteUser = (record: OutreachRecord): RemoteUser
   };
 };
 
-export const fromOutreachSequenceToRemoteSequence = (record: OutreachRecord): RemoteSequence => {
+export const fromOutreachSequenceToSequenceV2 = (record: OutreachRecord): SequenceV2 => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),
@@ -51,7 +51,7 @@ export const fromOutreachSequenceToRemoteSequence = (record: OutreachRecord): Re
   };
 };
 
-export const fromOutreachMailboxToRemoteMailbox = (record: OutreachRecord): RemoteMailbox => {
+export const fromOutreachMailboxToMailboxV2 = (record: OutreachRecord): MailboxV2 => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),
@@ -65,7 +65,7 @@ export const fromOutreachMailboxToRemoteMailbox = (record: OutreachRecord): Remo
   };
 };
 
-export const fromOutreachSequenceStateToRemoteSequenceState = (record: OutreachRecord): RemoteSequenceState => {
+export const fromOutreachSequenceStateToSequenceStateV2 = (record: OutreachRecord): SequenceStateV2 => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),
@@ -81,7 +81,7 @@ export const fromOutreachSequenceStateToRemoteSequenceState = (record: OutreachR
   };
 };
 
-export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): RemoteContact => {
+export const fromOutreachProspectToContactV2 = (record: OutreachRecord): ContactV2 => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),
@@ -149,7 +149,7 @@ export const toOutreachProspectCreateParams = ({
   phoneNumbers,
   customFields,
   ownerId,
-}: RemoteContactCreateParams): Record<string, any> => {
+}: ContactCreateParams): Record<string, any> => {
   const attributes = {
     firstName,
     lastName,
@@ -187,21 +187,21 @@ export const toOutreachProspectCreateParams = ({
   };
 };
 
-export const toOutreachProspectUpdateParams = (params: RemoteContactUpdateParams): Record<string, any> => {
+export const toOutreachProspectUpdateParams = (params: ContactUpdateParams): Record<string, any> => {
   const updateParams = toOutreachProspectCreateParams(params);
   return {
     data: {
       ...updateParams.data,
-      id: parseInt(params.remoteId, 10),
+      id: parseInt(params.id, 10),
     },
   };
 };
 
 export const toOutreachSequenceStateCreateParams = ({
-  remoteMailboxId,
-  remoteSequenceId,
-  remoteContactId,
-}: RemoteSequenceStateCreateParams): Record<string, any> => {
+  mailboxId,
+  sequenceId,
+  contactId,
+}: SequenceStateCreateParams): Record<string, any> => {
   return {
     data: {
       type: 'sequenceState',
@@ -209,19 +209,19 @@ export const toOutreachSequenceStateCreateParams = ({
         prospect: {
           data: {
             type: 'prospect',
-            id: parseInt(remoteContactId, 10),
+            id: parseInt(contactId, 10),
           },
         },
         sequence: {
           data: {
             type: 'sequence',
-            id: parseInt(remoteSequenceId, 10),
+            id: parseInt(sequenceId, 10),
           },
         },
         mailbox: {
           data: {
             type: 'mailbox',
-            id: parseInt(remoteMailboxId, 10),
+            id: parseInt(mailboxId, 10),
           },
         },
       },

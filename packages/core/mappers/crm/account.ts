@@ -1,6 +1,6 @@
 import type { CrmAccount, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
-import type { Account, RemoteAccount, SnakecasedKeysCrmAccount, SnakecasedKeysCrmAccountV2 } from '@supaglue/types/crm';
+import type { Account, AccountV2, SnakecasedKeysCrmAccount, SnakecasedKeysCrmAccountV2 } from '@supaglue/types/crm';
 import type { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress } from './address';
@@ -28,7 +28,7 @@ export const toSnakecasedKeysCrmAccount = (account: Account): SnakecasedKeysCrmA
   };
 };
 
-export const toSnakecasedKeysCrmAccountV2 = (account: RemoteAccount): SnakecasedKeysCrmAccountV2 => {
+export const toSnakecasedKeysCrmAccountV2 = (account: AccountV2): SnakecasedKeysCrmAccountV2 => {
   return {
     owner_id: account.ownerId,
     last_modified_at: account.lastModifiedAt,
@@ -95,7 +95,7 @@ export const fromAccountModel = (
 export const fromRemoteAccountToModel = (
   connectionId: string,
   customerId: string,
-  remoteAccount: RemoteAccount
+  remoteAccount: AccountV2
 ): Prisma.CrmAccountCreateInput => {
   return {
     id: uuidv5(remoteAccount.id, connectionId),
@@ -125,7 +125,7 @@ export const fromRemoteAccountToModel = (
 export const fromRemoteAccountToDbAccountParams = (
   connectionId: string,
   customerId: string,
-  remoteAccount: RemoteAccount
+  remoteAccount: AccountV2
 ) => {
   return {
     id: uuidv5(remoteAccount.id, connectionId),

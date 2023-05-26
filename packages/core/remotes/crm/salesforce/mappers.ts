@@ -1,22 +1,22 @@
 import type {
+  AccountCreateParams,
+  AccountUpdateParams,
+  AccountV2,
+  ContactCreateParams,
+  ContactUpdateParams,
+  ContactV2,
+  LeadCreateParams,
+  LeadUpdateParams,
+  LeadV2,
+  OpportunityCreateParams,
   OpportunityStatus,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteAccountUpdateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteLeadUpdateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteOpportunityUpdateParams,
-  RemoteUser,
+  OpportunityUpdateParams,
+  OpportunityV2,
+  UserV2,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 
-export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): RemoteUser => {
+export const fromSalesforceUserToUserV2 = (record: Record<string, any>): UserV2 => {
   return {
     id: record.Id,
     name: record.Name,
@@ -31,7 +31,7 @@ export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): Rem
   };
 };
 
-export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>): RemoteAccount => {
+export const fromSalesforceAccountToAccountV2 = (record: Record<string, any>): AccountV2 => {
   const billingAddress: Address | null =
     record.BillingCity ||
     record.BillingCountry ||
@@ -105,7 +105,7 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
   };
 };
 
-export const toSalesforceAccountCreateParams = (params: RemoteAccountCreateParams) => {
+export const toSalesforceAccountCreateParams = (params: AccountCreateParams) => {
   return {
     Name: params.name,
     Description: params.description,
@@ -118,14 +118,14 @@ export const toSalesforceAccountCreateParams = (params: RemoteAccountCreateParam
   };
 };
 
-export const toSalesforceAccountUpdateParams = (params: RemoteAccountUpdateParams) => {
+export const toSalesforceAccountUpdateParams = (params: AccountUpdateParams) => {
   return {
-    Id: params.remoteId,
+    Id: params.id,
     ...toSalesforceAccountCreateParams(params),
   };
 };
 
-export const fromSalesforceContactToRemoteContact = (record: Record<string, any>): RemoteContact => {
+export const fromSalesforceContactToContactV2 = (record: Record<string, any>): ContactV2 => {
   const mailingAddress: Address | null =
     record.MailingCity ||
     record.MailingCountry ||
@@ -200,7 +200,7 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
   };
 };
 
-export const toSalesforceContactCreateParams = (params: RemoteContactCreateParams) => {
+export const toSalesforceContactCreateParams = (params: ContactCreateParams) => {
   return {
     FirstName: params.firstName,
     LastName: params.lastName,
@@ -212,17 +212,17 @@ export const toSalesforceContactCreateParams = (params: RemoteContactCreateParam
   };
 };
 
-export const toSalesforceContactUpdateParams = (params: RemoteContactUpdateParams) => {
+export const toSalesforceContactUpdateParams = (params: ContactUpdateParams) => {
   return {
-    Id: params.remoteId,
+    Id: params.id,
     ...toSalesforceContactCreateParams(params),
   };
 };
 
-export const fromSalesforceLeadToRemoteLead = (
+export const fromSalesforceLeadToLeadV2 = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   record: Record<string, any>
-): RemoteLead => {
+): LeadV2 => {
   return {
     id: record.Id,
     firstName: record.FirstName ?? null,
@@ -263,7 +263,7 @@ export const fromSalesforceLeadToRemoteLead = (
   };
 };
 
-export const toSalesforceLeadCreateParams = (params: RemoteLeadCreateParams) => {
+export const toSalesforceLeadCreateParams = (params: LeadCreateParams) => {
   return {
     FirstName: params.firstName,
     LastName: params.lastName,
@@ -276,17 +276,17 @@ export const toSalesforceLeadCreateParams = (params: RemoteLeadCreateParams) => 
   };
 };
 
-export const toSalesforceLeadUpdateParams = (params: RemoteLeadUpdateParams) => {
+export const toSalesforceLeadUpdateParams = (params: LeadUpdateParams) => {
   return {
-    Id: params.remoteId,
+    Id: params.id,
     ...toSalesforceLeadCreateParams(params),
   };
 };
 
-export const fromSalesforceOpportunityToRemoteOpportunity = (
+export const fromSalesforceOpportunityToOpportunityV2 = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   record: Record<string, any>
-): RemoteOpportunity => {
+): OpportunityV2 => {
   let status: OpportunityStatus = 'OPEN';
   if (record.IsWon === 'true') {
     status = 'WON';
@@ -314,7 +314,7 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
   };
 };
 
-export const toSalesforceOpportunityCreateParams = (params: RemoteOpportunityCreateParams) => {
+export const toSalesforceOpportunityCreateParams = (params: OpportunityCreateParams) => {
   return {
     Amount: params.amount,
     CloseDate: params.closeDate,
@@ -326,9 +326,9 @@ export const toSalesforceOpportunityCreateParams = (params: RemoteOpportunityCre
   };
 };
 
-export const toSalesforceOpportunityUpdateParams = (params: RemoteOpportunityUpdateParams) => {
+export const toSalesforceOpportunityUpdateParams = (params: OpportunityUpdateParams) => {
   return {
-    Id: params.remoteId,
+    Id: params.id,
     ...toSalesforceOpportunityCreateParams(params),
   };
 };

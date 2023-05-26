@@ -1,8 +1,16 @@
+export type SnakecasedCrmTenantFields = {
+  provider_name: string;
+  customer_id: string;
+};
+
 export type BaseCrmModel = {
+  id: string;
   remoteId: string;
   remoteCreatedAt: Date | null;
   remoteUpdatedAt: Date | null;
   remoteWasDeleted: boolean;
+  lastModifiedAt: Date;
+  rawData?: Record<string, any>;
 };
 
 export type BaseCrmModelV2 = {
@@ -12,14 +20,4 @@ export type BaseCrmModelV2 = {
   isDeleted: boolean;
   lastModifiedAt: Date;
   rawData: Record<string, any>;
-};
-
-export type BaseCrmModelNonRemoteParams = {
-  id: string;
-  lastModifiedAt: Date;
-};
-
-export type BaseCrmModelRemoteOnlyParams = {
-  deletedAt: Date | null;
-  detectedOrDeletedAt: Date | null;
 };

@@ -2,7 +2,7 @@ import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 
 import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
-import { RemoteSequenceStateCreateParams, SequenceState, SequenceStateCreateParams } from '@supaglue/types/engagement';
+import { SequenceState, SequenceStateCreateParams } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
@@ -55,7 +55,7 @@ export class SequenceStateService extends CommonModelBaseService {
     };
   }
 
-  async getRemoteCreateParams(createParams: SequenceStateCreateParams): Promise<RemoteSequenceStateCreateParams> {
+  async getRemoteCreateParams(createParams: SequenceStateCreateParams): Promise<SequenceStateCreateParams> {
     const mailbox = await this.prisma.engagementMailbox.findUnique({
       where: { id: createParams.mailboxId },
     });
@@ -75,9 +75,9 @@ export class SequenceStateService extends CommonModelBaseService {
       throw new NotFoundError(`Can't find sequence with id: ${createParams.sequenceId}`);
     }
     return {
-      remoteMailboxId: mailbox.remoteId,
-      remoteContactId: contact.remoteId,
-      remoteSequenceId: sequence.remoteId,
+      mailboxId: mailbox.remoteId,
+      contactId: contact.remoteId,
+      sequenceId: sequence.remoteId,
     };
   }
 

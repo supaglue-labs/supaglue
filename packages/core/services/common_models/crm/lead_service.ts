@@ -134,7 +134,7 @@ export class LeadService extends CommonModelBaseService {
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteLead = await remoteClient.updateObject('lead', {
       ...remoteUpdateParams,
-      remoteId: foundLeadModel.remoteId,
+      id: foundLeadModel.remoteId,
     });
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.

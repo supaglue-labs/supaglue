@@ -1,6 +1,6 @@
 import type { CrmLead, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
-import type { Lead, RemoteLead, SnakecasedKeysCrmLead, SnakecasedKeysCrmLeadV2 } from '@supaglue/types/crm';
+import type { Lead, LeadV2, SnakecasedKeysCrmLead, SnakecasedKeysCrmLeadV2 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress } from './address';
@@ -31,7 +31,7 @@ export const toSnakecasedKeysLead = (lead: Lead): SnakecasedKeysCrmLead => {
   };
 };
 
-export const toSnakecasedKeysCrmLeadV2 = (lead: RemoteLead): SnakecasedKeysCrmLeadV2 => {
+export const toSnakecasedKeysCrmLeadV2 = (lead: LeadV2): SnakecasedKeysCrmLeadV2 => {
   return {
     owner_id: lead.ownerId,
     last_modified_at: lead.lastModifiedAt,
@@ -104,7 +104,7 @@ export const fromLeadModel = (
 export const fromRemoteLeadToModel = (
   connectionId: string,
   customerId: string,
-  remoteLead: RemoteLead
+  remoteLead: LeadV2
 ): Prisma.CrmLeadCreateInput => {
   return {
     id: uuidv5(remoteLead.id, connectionId),
@@ -135,7 +135,7 @@ export const fromRemoteLeadToModel = (
 };
 
 // TODO: Use prisma generator to generate return type
-export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: string, remoteLead: RemoteLead) => {
+export const fromRemoteLeadToDbLeadParams = (connectionId: string, customerId: string, remoteLead: LeadV2) => {
   return {
     id: uuidv5(remoteLead.id, connectionId),
     remote_id: remoteLead.id,

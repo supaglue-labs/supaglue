@@ -133,7 +133,7 @@ export class OpportunityService extends CommonModelBaseService {
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteOpportunity = await remoteClient.updateObject('opportunity', {
       ...remoteUpdateParams,
-      remoteId: foundOpportunityModel.remoteId,
+      id: foundOpportunityModel.remoteId,
     });
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.

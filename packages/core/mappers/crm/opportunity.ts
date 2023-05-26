@@ -3,7 +3,7 @@ import type { GetInternalParams } from '@supaglue/types';
 import type {
   Opportunity,
   OpportunityStatus,
-  RemoteOpportunity,
+  OpportunityV2,
   SnakecasedKeysOpportunity,
   SnakecasedKeysOpportunityV2,
 } from '@supaglue/types/crm';
@@ -31,7 +31,7 @@ export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): Snakecase
   };
 };
 
-export const toSnakecasedKeysCrmOpportunityV2 = (opportunity: RemoteOpportunity): SnakecasedKeysOpportunityV2 => {
+export const toSnakecasedKeysCrmOpportunityV2 = (opportunity: OpportunityV2): SnakecasedKeysOpportunityV2 => {
   return {
     owner_id: opportunity.ownerId,
     account_id: opportunity.accountId,
@@ -98,7 +98,7 @@ export const fromOpportunityModel = (
 export const fromRemoteOpportunityToModel = (
   connectionId: string,
   customerId: string,
-  remoteOpportunity: RemoteOpportunity
+  remoteOpportunity: OpportunityV2
 ): Prisma.CrmOpportunityCreateInput => {
   return {
     id: uuidv5(remoteOpportunity.id, connectionId),
@@ -129,7 +129,7 @@ export const fromRemoteOpportunityToModel = (
 export const fromRemoteOpportunityToDbOpportunityParams = (
   connectionId: string,
   customerId: string,
-  remoteOpportunity: RemoteOpportunity
+  remoteOpportunity: OpportunityV2
 ) => {
   return {
     id: uuidv5(remoteOpportunity.id, connectionId),

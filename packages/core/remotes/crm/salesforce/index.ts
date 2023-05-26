@@ -4,19 +4,19 @@
 
 import {
   AccountCreateParams,
+  AccountUpdateParams,
+  AccountV2,
+  ContactCreateParams,
+  ContactUpdateParams,
+  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  RemoteAccount,
-  RemoteAccountUpdateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteLeadUpdateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteOpportunityUpdateParams,
+  LeadCreateParams,
+  LeadUpdateParams,
+  LeadV2,
+  OpportunityCreateParams,
+  OpportunityUpdateParams,
+  OpportunityV2,
 } from '@supaglue/types/crm';
 
 import {
@@ -41,11 +41,11 @@ import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromSalesforceAccountToRemoteAccount,
-  fromSalesforceContactToRemoteContact,
-  fromSalesforceLeadToRemoteLead,
-  fromSalesforceOpportunityToRemoteOpportunity,
-  fromSalesforceUserToRemoteUser,
+  fromSalesforceAccountToAccountV2,
+  fromSalesforceContactToContactV2,
+  fromSalesforceLeadToLeadV2,
+  fromSalesforceOpportunityToOpportunityV2,
+  fromSalesforceUserToUserV2,
   toSalesforceAccountCreateParams,
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
@@ -515,15 +515,15 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listAccounts(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('account', fromSalesforceAccountToRemoteAccount, updatedAfter, onPoll);
+    return this.listCommonModelRecords('account', fromSalesforceAccountToAccountV2, updatedAfter, onPoll);
   }
 
-  public async getAccount(remoteId: string): Promise<RemoteAccount> {
+  public async getAccount(remoteId: string): Promise<AccountV2> {
     const account = await this.#client.retrieve('Account', remoteId);
-    return fromSalesforceAccountToRemoteAccount(account);
+    return fromSalesforceAccountToAccountV2(account);
   }
 
-  public async createAccount(params: AccountCreateParams): Promise<RemoteAccount> {
+  public async createAccount(params: AccountCreateParams): Promise<AccountV2> {
     const response = await this.#client.create('Account', toSalesforceAccountCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce account');
@@ -532,7 +532,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getAccount(response.id);
   }
 
-  public async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
+  public async updateAccount(params: AccountUpdateParams): Promise<AccountV2> {
     const response = await this.#client.update('Account', toSalesforceAccountUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce account');
@@ -541,15 +541,15 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listContacts(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('contact', fromSalesforceContactToRemoteContact, updatedAfter, onPoll);
+    return this.listCommonModelRecords('contact', fromSalesforceContactToContactV2, updatedAfter, onPoll);
   }
 
-  public async getContact(remoteId: string): Promise<RemoteContact> {
+  public async getContact(remoteId: string): Promise<ContactV2> {
     const contact = await this.#client.retrieve('Contact', remoteId);
-    return fromSalesforceContactToRemoteContact(contact);
+    return fromSalesforceContactToContactV2(contact);
   }
 
-  public async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+  public async createContact(params: ContactCreateParams): Promise<ContactV2> {
     const response = await this.#client.create('Contact', toSalesforceContactCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce contact');
@@ -557,7 +557,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getContact(response.id);
   }
 
-  public async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+  public async updateContact(params: ContactUpdateParams): Promise<ContactV2> {
     const response = await this.#client.update('Contact', toSalesforceContactUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce contact');
@@ -566,20 +566,15 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listOpportunities(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords(
-      'opportunity',
-      fromSalesforceOpportunityToRemoteOpportunity,
-      updatedAfter,
-      onPoll
-    );
+    return this.listCommonModelRecords('opportunity', fromSalesforceOpportunityToOpportunityV2, updatedAfter, onPoll);
   }
 
-  public async getOpportunity(remoteId: string): Promise<RemoteOpportunity> {
+  public async getOpportunity(remoteId: string): Promise<OpportunityV2> {
     const contact = await this.#client.retrieve('Opportunity', remoteId);
-    return fromSalesforceOpportunityToRemoteOpportunity(contact);
+    return fromSalesforceOpportunityToOpportunityV2(contact);
   }
 
-  public async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
+  public async createOpportunity(params: OpportunityCreateParams): Promise<OpportunityV2> {
     const response = await this.#client.create('Opportunity', toSalesforceOpportunityCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce opportunity');
@@ -587,7 +582,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getOpportunity(response.id);
   }
 
-  public async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
+  public async updateOpportunity(params: OpportunityUpdateParams): Promise<OpportunityV2> {
     const response = await this.#client.update('Opportunity', toSalesforceOpportunityUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce opportunity');
@@ -596,15 +591,15 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listLeads(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('lead', fromSalesforceLeadToRemoteLead, updatedAfter, onPoll);
+    return this.listCommonModelRecords('lead', fromSalesforceLeadToLeadV2, updatedAfter, onPoll);
   }
 
-  public async getLead(remoteId: string): Promise<RemoteLead> {
+  public async getLead(remoteId: string): Promise<LeadV2> {
     const contact = await this.#client.retrieve('Lead', remoteId);
-    return fromSalesforceLeadToRemoteLead(contact);
+    return fromSalesforceLeadToLeadV2(contact);
   }
 
-  public async createLead(params: RemoteLeadCreateParams): Promise<RemoteLead> {
+  public async createLead(params: LeadCreateParams): Promise<LeadV2> {
     const response = await this.#client.create('Lead', toSalesforceLeadCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce lead');
@@ -612,7 +607,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await this.getLead(response.id);
   }
 
-  public async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
+  public async updateLead(params: LeadUpdateParams): Promise<LeadV2> {
     const response = await this.#client.update('Lead', toSalesforceLeadUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce lead');
@@ -621,7 +616,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public async listUsers(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('user', fromSalesforceUserToRemoteUser, updatedAfter, onPoll);
+    return this.listCommonModelRecords('user', fromSalesforceUserToUserV2, updatedAfter, onPoll);
   }
 
   public handleErr(err: unknown): unknown {

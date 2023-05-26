@@ -1,6 +1,6 @@
 import type { CrmUser, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
-import type { RemoteUser, SnakecasedKeysCrmUser, SnakecasedKeysCrmUserV2, User } from '@supaglue/types/crm';
+import type { SnakecasedKeysCrmUser, SnakecasedKeysCrmUserV2, User, UserV2 } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
 
 export const toSnakecasedKeysCrmUser = (user: User): SnakecasedKeysCrmUser => {
@@ -18,7 +18,7 @@ export const toSnakecasedKeysCrmUser = (user: User): SnakecasedKeysCrmUser => {
   };
 };
 
-export const toSnakecasedKeysCrmSimpleUser = (user: RemoteUser): SnakecasedKeysCrmUserV2 => {
+export const toSnakecasedKeysCrmSimpleUser = (user: UserV2): SnakecasedKeysCrmUserV2 => {
   return {
     last_modified_at: user.lastModifiedAt,
     id: user.id,
@@ -64,7 +64,7 @@ export const fromUserModel = (
 export const fromRemoteUserToModel = (
   connectionId: string,
   customerId: string,
-  remoteUser: RemoteUser
+  remoteUser: UserV2
 ): Prisma.CrmUserCreateInput => {
   return {
     id: uuidv5(remoteUser.id, connectionId),
@@ -83,7 +83,7 @@ export const fromRemoteUserToModel = (
 };
 
 // TODO: Use prisma generator to generate return type
-export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: string, remoteUser: RemoteUser) => {
+export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: string, remoteUser: UserV2) => {
   return {
     id: uuidv5(remoteUser.id, connectionId),
     remote_id: remoteUser.id,

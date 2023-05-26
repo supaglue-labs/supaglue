@@ -1,10 +1,10 @@
-import { EngagementUser } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import {
-  RemoteUser,
+import type { EngagementUser } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type {
   SnakecasedKeysEngagementUser,
   SnakecasedKeysEngagementUserV2,
   User,
+  UserV2,
 } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 
@@ -23,7 +23,7 @@ export const toSnakecasedKeysEngagementUser = (user: User): SnakecasedKeysEngage
   };
 };
 
-export const toSnakecasedKeysEngagementUserV2 = (user: RemoteUser): SnakecasedKeysEngagementUserV2 => {
+export const toSnakecasedKeysEngagementUserV2 = (user: UserV2): SnakecasedKeysEngagementUserV2 => {
   return {
     last_modified_at: user.lastModifiedAt,
     id: user.id,
@@ -67,7 +67,7 @@ export const fromUserModel = (
 };
 
 // TODO: Use prisma generator to generate return type
-export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: string, remoteUser: RemoteUser) => {
+export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: string, remoteUser: UserV2) => {
   return {
     id: uuidv5(remoteUser.id, connectionId),
     remote_id: remoteUser.id,

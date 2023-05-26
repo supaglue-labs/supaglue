@@ -1,6 +1,6 @@
-import { EngagementMailbox } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { Mailbox, RemoteMailbox, SnakecasedKeysMailbox, SnakecasedKeysMailboxV2 } from '@supaglue/types/engagement';
+import type { EngagementMailbox } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type { Mailbox, MailboxV2, SnakecasedKeysMailbox, SnakecasedKeysMailboxV2 } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 
 export const toSnakecasedKeysMailbox = (mailbox: Mailbox): SnakecasedKeysMailbox => {
@@ -17,7 +17,7 @@ export const toSnakecasedKeysMailbox = (mailbox: Mailbox): SnakecasedKeysMailbox
   };
 };
 
-export const toSnakecasedKeysMailboxV2 = (mailbox: RemoteMailbox): SnakecasedKeysMailboxV2 => {
+export const toSnakecasedKeysMailboxV2 = (mailbox: MailboxV2): SnakecasedKeysMailboxV2 => {
   return {
     user_id: mailbox.userId,
     last_modified_at: mailbox.lastModifiedAt,
@@ -61,7 +61,7 @@ export const fromMailboxModel = (
 export const fromRemoteMailboxToDbMailboxParams = (
   connectionId: string,
   customerId: string,
-  remoteMailbox: RemoteMailbox
+  remoteMailbox: MailboxV2
 ) => {
   return {
     id: uuidv5(remoteMailbox.id, connectionId),

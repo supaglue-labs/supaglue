@@ -1,6 +1,11 @@
-import { EngagementSequence } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { RemoteSequence, Sequence, SnakecasedKeysSequence, SnakecasedKeysSequenceV2 } from '@supaglue/types/engagement';
+import type { EngagementSequence } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type {
+  Sequence,
+  SequenceV2,
+  SnakecasedKeysSequence,
+  SnakecasedKeysSequenceV2,
+} from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 
 export const toSnakecasedKeysSequence = (sequence: Sequence): SnakecasedKeysSequence => {
@@ -25,7 +30,7 @@ export const toSnakecasedKeysSequence = (sequence: Sequence): SnakecasedKeysSequ
   };
 };
 
-export const toSnakecasedKeysSequenceV2 = (sequence: RemoteSequence): SnakecasedKeysSequenceV2 => {
+export const toSnakecasedKeysSequenceV2 = (sequence: SequenceV2): SnakecasedKeysSequenceV2 => {
   return {
     owner_id: sequence.ownerId,
     last_modified_at: sequence.lastModifiedAt,
@@ -97,7 +102,7 @@ export const fromSequenceModel = (
 export const fromRemoteSequenceToDbSequenceParams = (
   connectionId: string,
   customerId: string,
-  remoteSequence: RemoteSequence
+  remoteSequence: SequenceV2
 ) => {
   return {
     id: uuidv5(remoteSequence.id, connectionId),

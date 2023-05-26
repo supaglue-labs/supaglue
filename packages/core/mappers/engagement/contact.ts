@@ -1,11 +1,11 @@
-import { EngagementContact } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import {
+import type { EngagementContact } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type {
   Address,
   Contact,
+  ContactV2,
   EmailAddress,
   PhoneNumber,
-  RemoteContact,
   SnakecasedKeysEngagementContact,
   SnakecasedKeysEngagementContactV2,
 } from '@supaglue/types/engagement';
@@ -35,7 +35,7 @@ export const toSnakecasedKeysEngagementContact = (contact: Contact): SnakecasedK
   };
 };
 
-export const toSnakecasedKeysEngagementContactV2 = (contact: RemoteContact): SnakecasedKeysEngagementContactV2 => {
+export const toSnakecasedKeysEngagementContactV2 = (contact: ContactV2): SnakecasedKeysEngagementContactV2 => {
   return {
     owner_id: contact.ownerId,
     last_modified_at: contact.lastModifiedAt,
@@ -106,7 +106,7 @@ export const fromContactModel = (
 export const fromRemoteContactToDbContactParams = (
   connectionId: string,
   customerId: string,
-  remoteContact: RemoteContact
+  remoteContact: ContactV2
 ) => {
   return {
     id: uuidv5(remoteContact.id, connectionId),

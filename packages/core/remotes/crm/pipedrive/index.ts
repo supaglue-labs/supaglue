@@ -5,20 +5,20 @@ import {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import {
+  AccountCreateParams,
+  AccountUpdateParams,
+  AccountV2,
+  ContactCreateParams,
+  ContactUpdateParams,
+  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteAccountUpdateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteLeadUpdateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteOpportunityUpdateParams,
+  LeadCreateParams,
+  LeadUpdateParams,
+  LeadV2,
+  OpportunityCreateParams,
+  OpportunityUpdateParams,
+  OpportunityV2,
 } from '@supaglue/types/crm';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -26,11 +26,11 @@ import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromPipedriveDealToRemoteOpportunity,
-  fromPipedriveLeadToRemoteLead,
-  fromPipedriveOrganizationToRemoteAccount,
-  fromPipedrivePersonToRemoteContact,
-  fromPipedriveUserToRemoteUser,
+  fromPipedriveDealToOpportunityV2,
+  fromPipedriveLeadToLeadV2,
+  fromPipedriveOrganizationToAccountV2,
+  fromPipedrivePersonToContactV2,
+  fromPipedriveUserToUserV2,
   toPipedriveDealCreateParams,
   toPipedriveDealUpdateParams,
   toPipedriveLeadCreateParams,
@@ -172,7 +172,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedrivePersonToRemoteContact) ?? []),
+        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedrivePersonToContactV2) ?? []),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -186,7 +186,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedriveLeadToRemoteLead) ?? []),
+        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedriveLeadToLeadV2) ?? []),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -234,7 +234,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) =>
           Readable.from(
-            response.data?.map((record) => fromPipedriveDealToRemoteOpportunity(record, pipelineStageMapping)) ?? []
+            response.data?.map((record) => fromPipedriveDealToOpportunityV2(record, pipelineStageMapping)) ?? []
           ),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
@@ -250,7 +250,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) =>
-          Readable.from(response.data?.map(fromPipedriveOrganizationToRemoteAccount) ?? []),
+          Readable.from(response.data?.map(fromPipedriveOrganizationToAccountV2) ?? []),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -264,7 +264,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedriveUserToRemoteUser) ?? []),
+        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedriveUserToUserV2) ?? []),
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -290,7 +290,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  async createContact(params: RemoteContactCreateParams): Promise<RemoteContact> {
+  async createContact(params: ContactCreateParams): Promise<ContactV2> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/persons`,
@@ -299,10 +299,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedrivePersonToRemoteContact(response.data.data);
+    return fromPipedrivePersonToContactV2(response.data.data);
   }
 
-  async createLead(params: RemoteLeadCreateParams): Promise<RemoteLead> {
+  async createLead(params: LeadCreateParams): Promise<LeadV2> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/leads`,
@@ -311,10 +311,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveLeadToRemoteLead(response.data.data);
+    return fromPipedriveLeadToLeadV2(response.data.data);
   }
 
-  async createAccount(params: RemoteAccountCreateParams): Promise<RemoteAccount> {
+  async createAccount(params: AccountCreateParams): Promise<AccountV2> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/organizations`,
@@ -323,10 +323,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveOrganizationToRemoteAccount(response.data.data);
+    return fromPipedriveOrganizationToAccountV2(response.data.data);
   }
 
-  async createOpportunity(params: RemoteOpportunityCreateParams): Promise<RemoteOpportunity> {
+  async createOpportunity(params: OpportunityCreateParams): Promise<OpportunityV2> {
     await this.maybeRefreshAccessToken();
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const response = await axios.post<{ data: PipedriveRecord }>(
@@ -336,7 +336,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveDealToRemoteOpportunity(response.data.data, pipelineStageMapping);
+    return fromPipedriveDealToOpportunityV2(response.data.data, pipelineStageMapping);
   }
 
   public override async updateObject<T extends CRMCommonModelType>(
@@ -359,56 +359,56 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  async updateContact(params: RemoteContactUpdateParams): Promise<RemoteContact> {
+  async updateContact(params: ContactUpdateParams): Promise<ContactV2> {
     await this.maybeRefreshAccessToken();
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
-      `${this.#credentials.instanceUrl}/api/v1/persons/${params.remoteId}`,
+      `${this.#credentials.instanceUrl}/api/v1/persons/${params.id}`,
       toPipedrivePersonUpdateParams(params),
       {
         headers: this.#headers,
       }
     );
-    return fromPipedrivePersonToRemoteContact(response.data.data);
+    return fromPipedrivePersonToContactV2(response.data.data);
   }
 
-  async updateLead(params: RemoteLeadUpdateParams): Promise<RemoteLead> {
+  async updateLead(params: LeadUpdateParams): Promise<LeadV2> {
     await this.maybeRefreshAccessToken();
     const response = await axios.patch<{ data: PipedriveRecord }>(
-      `${this.#credentials.instanceUrl}/api/v1/leads/${params.remoteId}`,
+      `${this.#credentials.instanceUrl}/api/v1/leads/${params.id}`,
       toPipedriveLeadUpdateParams(params),
       {
         headers: this.#headers,
       }
     );
-    return fromPipedriveLeadToRemoteLead(response.data.data);
+    return fromPipedriveLeadToLeadV2(response.data.data);
   }
 
-  async updateAccount(params: RemoteAccountUpdateParams): Promise<RemoteAccount> {
+  async updateAccount(params: AccountUpdateParams): Promise<AccountV2> {
     await this.maybeRefreshAccessToken();
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
-      `${this.#credentials.instanceUrl}/api/v1/organizations/${params.remoteId}`,
+      `${this.#credentials.instanceUrl}/api/v1/organizations/${params.id}`,
       toPipedriveOrganizationUpdateParams(params),
       {
         headers: this.#headers,
       }
     );
-    return fromPipedriveOrganizationToRemoteAccount(response.data.data);
+    return fromPipedriveOrganizationToAccountV2(response.data.data);
   }
 
-  async updateOpportunity(params: RemoteOpportunityUpdateParams): Promise<RemoteOpportunity> {
+  async updateOpportunity(params: OpportunityUpdateParams): Promise<OpportunityV2> {
     await this.maybeRefreshAccessToken();
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
-      `${this.#credentials.instanceUrl}/api/v1/deals/${params.remoteId}`,
+      `${this.#credentials.instanceUrl}/api/v1/deals/${params.id}`,
       toPipedriveDealUpdateParams(params, pipelineStageMapping),
       {
         headers: this.#headers,
       }
     );
-    return fromPipedriveDealToRemoteOpportunity(response.data.data, pipelineStageMapping);
+    return fromPipedriveDealToOpportunityV2(response.data.data, pipelineStageMapping);
   }
 
   public override async sendPassthroughRequest(

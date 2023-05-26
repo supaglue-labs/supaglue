@@ -1,8 +1,16 @@
+export type SnakecasedEngagementTenantFields = {
+  provider_name: string;
+  customer_id: string;
+};
+
 export type BaseEngagementModel = {
+  id: string;
   remoteId: string;
   remoteCreatedAt: Date | null;
   remoteUpdatedAt: Date | null;
   remoteWasDeleted: boolean;
+  lastModifiedAt: Date;
+  rawData?: Record<string, any>;
 };
 
 export type BaseEngagementModelV2 = {
@@ -12,11 +20,6 @@ export type BaseEngagementModelV2 = {
   isDeleted: boolean;
   lastModifiedAt: Date;
   rawData: Record<string, any>;
-};
-
-export type BaseEngagementModelNonRemoteParams = {
-  id: string;
-  lastModifiedAt: Date;
 };
 
 export type BaseEngagementModelRemoteOnlyParams = {
