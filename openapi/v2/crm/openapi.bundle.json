@@ -8,7 +8,7 @@
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "# Introduction\n\nWelcome to the Supaglue unified CRM API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.\n\n### Base API URL\n\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
+    "description": "# Introduction\n\nWelcome to the Supaglue unified CRM API documentation. You can use this API to read and write data from and to third-party providers.\n\n### Base API URL\n\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
   },
   "externalDocs": {
     "description": "Try out our API in Postman!",

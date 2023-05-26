@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.7.6
+  version: 0.8.8
   title: Supaglue Engagement API
   contact:
     name: Supaglue
@@ -9,7 +9,7 @@ info:
   description: |
     # Introduction
 
-    Welcome to the Supaglue unified Engagement API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.
+    Welcome to the Supaglue unified Engagement API documentation. You can use this API to read and write data from and to third-party providers.
 
     ### Base API URL
 
