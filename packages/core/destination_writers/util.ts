@@ -6,7 +6,7 @@ import {
   toSnakecasedKeysCrmContactV2,
   toSnakecasedKeysCrmLeadV2,
   toSnakecasedKeysCrmOpportunityV2,
-  toSnakecasedKeysCrmSimpleUser,
+  toSnakecasedKeysCrmUserV2,
 } from '../mappers/crm';
 import {
   toSnakecasedKeysEngagementContactV2,
@@ -32,7 +32,7 @@ const snakecasedKeysMapperByCommonModelType: {
     contact: toSnakecasedKeysCrmContactV2,
     lead: toSnakecasedKeysCrmLeadV2,
     opportunity: toSnakecasedKeysCrmOpportunityV2,
-    user: toSnakecasedKeysCrmSimpleUser,
+    user: toSnakecasedKeysCrmUserV2,
   },
   engagement: {
     contact: toSnakecasedKeysEngagementContactV2,

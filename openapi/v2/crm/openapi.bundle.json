@@ -8,7 +8,7 @@
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "# Introduction\n\nWelcome to the Supaglue unified CRM API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.\n\n### Base API URL\n\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
+    "description": "# Introduction\n\nWelcome to the Supaglue unified CRM API documentation. You can use this API to read and write data from and to third-party providers.\n\n### Base API URL\n\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
   },
   "externalDocs": {
     "description": "Try out our API in Postman!",
@@ -67,7 +67,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/account"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -204,9 +204,6 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/account"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -289,7 +286,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -395,9 +392,6 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/contact"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -481,7 +475,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/lead"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -589,9 +583,6 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/lead"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -676,7 +667,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/opportunity"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -789,9 +780,6 @@
                     },
                     "logs": {
                       "$ref": "#/components/schemas/logs"
-                    },
-                    "model": {
-                      "$ref": "#/components/schemas/opportunity"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -1837,6 +1825,17 @@
             },
             "title": "Unrecognized Field"
           }
+        ]
+      },
+      "created_model": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "addresses": {

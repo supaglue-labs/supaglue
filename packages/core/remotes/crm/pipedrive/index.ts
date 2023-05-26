@@ -7,18 +7,14 @@ import {
 import {
   AccountCreateParams,
   AccountUpdateParams,
-  AccountV2,
   ContactCreateParams,
   ContactUpdateParams,
-  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
   LeadCreateParams,
   LeadUpdateParams,
-  LeadV2,
   OpportunityCreateParams,
   OpportunityUpdateParams,
-  OpportunityV2,
 } from '@supaglue/types/crm';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -270,10 +266,17 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
+  public override async getObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    id: string
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    throw new Error('Not yet implemented');
+  }
+
   public override async createObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+  ): Promise<string> {
     switch (commonModelType) {
       case 'contact':
         return await this.createContact(params);
@@ -290,7 +293,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  async createContact(params: ContactCreateParams): Promise<ContactV2> {
+  async createContact(params: ContactCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/persons`,
@@ -299,10 +302,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedrivePersonToContactV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
-  async createLead(params: LeadCreateParams): Promise<LeadV2> {
+  async createLead(params: LeadCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/leads`,
@@ -311,10 +314,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveLeadToLeadV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
-  async createAccount(params: AccountCreateParams): Promise<AccountV2> {
+  async createAccount(params: AccountCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/organizations`,
@@ -323,10 +326,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveOrganizationToAccountV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
-  async createOpportunity(params: OpportunityCreateParams): Promise<OpportunityV2> {
+  async createOpportunity(params: OpportunityCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const response = await axios.post<{ data: PipedriveRecord }>(
@@ -336,13 +339,13 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveDealToOpportunityV2(response.data.data, pipelineStageMapping);
+    return response.data.data.id.toString();
   }
 
   public override async updateObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+  ): Promise<string> {
     switch (commonModelType) {
       case 'contact':
         return await this.updateContact(params);
@@ -359,7 +362,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  async updateContact(params: ContactUpdateParams): Promise<ContactV2> {
+  async updateContact(params: ContactUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
@@ -369,10 +372,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedrivePersonToContactV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
-  async updateLead(params: LeadUpdateParams): Promise<LeadV2> {
+  async updateLead(params: LeadUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const response = await axios.patch<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/leads/${params.id}`,
@@ -381,10 +384,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveLeadToLeadV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
-  async updateAccount(params: AccountUpdateParams): Promise<AccountV2> {
+  async updateAccount(params: AccountUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
@@ -394,10 +397,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveOrganizationToAccountV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
-  async updateOpportunity(params: OpportunityUpdateParams): Promise<OpportunityV2> {
+  async updateOpportunity(params: OpportunityUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     // Their API is a PUT, but the behavior is more akin to a PATCH.
@@ -408,7 +411,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromPipedriveDealToOpportunityV2(response.data.data, pipelineStageMapping);
+    return response.data.data.id.toString();
   }
 
   public override async sendPassthroughRequest(

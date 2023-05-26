@@ -36,7 +36,7 @@ post:
               logs:
                 $ref: ../../../common/components/schemas/logs.yaml
               model:
-                $ref: ../components/schemas/objects/contact.yaml
+                $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 parameters:

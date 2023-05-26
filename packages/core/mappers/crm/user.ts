@@ -18,7 +18,7 @@ export const toSnakecasedKeysCrmUser = (user: User): SnakecasedKeysCrmUser => {
   };
 };
 
-export const toSnakecasedKeysCrmSimpleUser = (user: UserV2): SnakecasedKeysCrmUserV2 => {
+export const toSnakecasedKeysCrmUserV2 = (user: UserV2): SnakecasedKeysCrmUserV2 => {
   return {
     last_modified_at: user.lastModifiedAt,
     id: user.id,

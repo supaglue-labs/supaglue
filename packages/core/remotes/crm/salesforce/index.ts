@@ -17,6 +17,7 @@ import {
   OpportunityCreateParams,
   OpportunityUpdateParams,
   OpportunityV2,
+  UserV2,
 } from '@supaglue/types/crm';
 
 import {
@@ -248,10 +249,30 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     }
   }
 
+  public override async getObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    id: string
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    switch (commonModelType) {
+      case 'account':
+        return this.getAccount(id);
+      case 'contact':
+        return this.getContact(id);
+      case 'lead':
+        return this.getLead(id);
+      case 'opportunity':
+        return this.getOpportunity(id);
+      case 'user':
+        return this.getUser(id);
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
+  }
+
   public override async createObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+  ): Promise<string> {
     switch (commonModelType) {
       case 'account':
         return this.createAccount(params);
@@ -271,7 +292,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   public override async updateObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+  ): Promise<string> {
     switch (commonModelType) {
       case 'account':
         return this.updateAccount(params);
@@ -518,105 +539,109 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return this.listCommonModelRecords('account', fromSalesforceAccountToAccountV2, updatedAfter, onPoll);
   }
 
-  public async getAccount(remoteId: string): Promise<AccountV2> {
-    const account = await this.#client.retrieve('Account', remoteId);
+  public async getAccount(id: string): Promise<AccountV2> {
+    const account = await this.#client.retrieve('Account', id);
     return fromSalesforceAccountToAccountV2(account);
   }
 
-  public async createAccount(params: AccountCreateParams): Promise<AccountV2> {
+  public async createAccount(params: AccountCreateParams): Promise<string> {
     const response = await this.#client.create('Account', toSalesforceAccountCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce account');
     }
-
-    return await this.getAccount(response.id);
+    return response.id;
   }
 
-  public async updateAccount(params: AccountUpdateParams): Promise<AccountV2> {
+  public async updateAccount(params: AccountUpdateParams): Promise<string> {
     const response = await this.#client.update('Account', toSalesforceAccountUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce account');
     }
-    return await this.getAccount(response.id);
+    return response.id;
   }
 
   public async listContacts(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
     return this.listCommonModelRecords('contact', fromSalesforceContactToContactV2, updatedAfter, onPoll);
   }
 
-  public async getContact(remoteId: string): Promise<ContactV2> {
-    const contact = await this.#client.retrieve('Contact', remoteId);
+  public async getContact(id: string): Promise<ContactV2> {
+    const contact = await this.#client.retrieve('Contact', id);
     return fromSalesforceContactToContactV2(contact);
   }
 
-  public async createContact(params: ContactCreateParams): Promise<ContactV2> {
+  public async createContact(params: ContactCreateParams): Promise<string> {
     const response = await this.#client.create('Contact', toSalesforceContactCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce contact');
     }
-    return await this.getContact(response.id);
+    return response.id;
   }
 
-  public async updateContact(params: ContactUpdateParams): Promise<ContactV2> {
+  public async updateContact(params: ContactUpdateParams): Promise<string> {
     const response = await this.#client.update('Contact', toSalesforceContactUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce contact');
     }
-    return await this.getContact(response.id);
+    return response.id;
   }
 
   public async listOpportunities(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
     return this.listCommonModelRecords('opportunity', fromSalesforceOpportunityToOpportunityV2, updatedAfter, onPoll);
   }
 
-  public async getOpportunity(remoteId: string): Promise<OpportunityV2> {
-    const contact = await this.#client.retrieve('Opportunity', remoteId);
+  public async getOpportunity(id: string): Promise<OpportunityV2> {
+    const contact = await this.#client.retrieve('Opportunity', id);
     return fromSalesforceOpportunityToOpportunityV2(contact);
   }
 
-  public async createOpportunity(params: OpportunityCreateParams): Promise<OpportunityV2> {
+  public async createOpportunity(params: OpportunityCreateParams): Promise<string> {
     const response = await this.#client.create('Opportunity', toSalesforceOpportunityCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce opportunity');
     }
-    return await this.getOpportunity(response.id);
+    return response.id;
   }
 
-  public async updateOpportunity(params: OpportunityUpdateParams): Promise<OpportunityV2> {
+  public async updateOpportunity(params: OpportunityUpdateParams): Promise<string> {
     const response = await this.#client.update('Opportunity', toSalesforceOpportunityUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce opportunity');
     }
-    return await this.getOpportunity(response.id);
+    return response.id;
   }
 
   public async listLeads(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
     return this.listCommonModelRecords('lead', fromSalesforceLeadToLeadV2, updatedAfter, onPoll);
   }
 
-  public async getLead(remoteId: string): Promise<LeadV2> {
-    const contact = await this.#client.retrieve('Lead', remoteId);
+  public async getLead(id: string): Promise<LeadV2> {
+    const contact = await this.#client.retrieve('Lead', id);
     return fromSalesforceLeadToLeadV2(contact);
   }
 
-  public async createLead(params: LeadCreateParams): Promise<LeadV2> {
+  public async createLead(params: LeadCreateParams): Promise<string> {
     const response = await this.#client.create('Lead', toSalesforceLeadCreateParams(params));
     if (!response.success) {
       throw new Error('Failed to create Salesforce lead');
     }
-    return await this.getLead(response.id);
+    return response.id;
   }
 
-  public async updateLead(params: LeadUpdateParams): Promise<LeadV2> {
+  public async updateLead(params: LeadUpdateParams): Promise<string> {
     const response = await this.#client.update('Lead', toSalesforceLeadUpdateParams(params));
     if (!response.success) {
       throw new Error('Failed to update Salesforce lead');
     }
-    return await this.getLead(response.id);
+    return response.id;
   }
 
   public async listUsers(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
     return this.listCommonModelRecords('user', fromSalesforceUserToUserV2, updatedAfter, onPoll);
+  }
+
+  public async getUser(id: string): Promise<UserV2> {
+    const user = await this.#client.retrieve('User', id);
+    return fromSalesforceUserToUserV2(user);
   }
 
   public handleErr(err: unknown): unknown {
