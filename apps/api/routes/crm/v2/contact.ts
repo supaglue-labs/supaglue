@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toSnakecasedKeysCrmContactV2 } from '@supaglue/core/mappers/crm';
 import {
   CreateContactPathParams,
   CreateContactRequest,
@@ -26,7 +27,12 @@ export default function init(app: Router): void {
       req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, GetContactQueryParams>,
       res: Response<GetContactResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { id: connectionId } = req.customerConnection;
+      const contact = await crmCommonModelService.get('contact', connectionId, req.params.contact_id);
+      const snakecasedKeysContact = toSnakecasedKeysCrmContactV2(contact);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { raw_data, ...rest } = snakecasedKeysContact;
+      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysContact : rest);
     }
   );
 

@@ -9,6 +9,15 @@ export class CrmCommonModelService {
     this.#remoteService = remoteService;
   }
 
+  public async get<T extends CRMCommonModelType>(
+    type: T,
+    connectionId: string,
+    id: string
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
+    return await remoteClient.getObject(type, id);
+  }
+
   public async create<T extends CRMCommonModelType>(
     type: T,
     connectionId: string,

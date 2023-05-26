@@ -1,9 +1,11 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toSnakecasedKeysCrmLeadV2 } from '@supaglue/core/mappers/crm';
 import {
   CreateLeadPathParams,
   CreateLeadRequest,
   CreateLeadResponse,
   GetLeadPathParams,
+  GetLeadQueryParams,
   GetLeadRequest,
   GetLeadResponse,
   UpdateLeadPathParams,
@@ -20,8 +22,16 @@ export default function init(app: Router): void {
 
   router.get(
     '/:lead_id',
-    async (req: Request<GetLeadPathParams, GetLeadResponse, GetLeadRequest>, res: Response<GetLeadResponse>) => {
-      throw new Error('Not implemented');
+    async (
+      req: Request<GetLeadPathParams, GetLeadResponse, GetLeadRequest, GetLeadQueryParams>,
+      res: Response<GetLeadResponse>
+    ) => {
+      const { id: connectionId } = req.customerConnection;
+      const lead = await crmCommonModelService.get('lead', connectionId, req.params.lead_id);
+      const snakecasedKeysLead = toSnakecasedKeysCrmLeadV2(lead);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { raw_data, ...rest } = snakecasedKeysLead;
+      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysLead : rest);
     }
   );
 

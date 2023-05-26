@@ -9,6 +9,16 @@ export class EngagementCommonModelService {
     this.#remoteService = remoteService;
   }
 
+  public async get<T extends EngagementCommonModelType>(
+    type: T,
+    connectionId: string,
+    id: string
+  ): Promise<EngagementCommonModelTypeMap<T>['object']> {
+    throw new Error('Unimplemented');
+    // const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
+    // return await remoteClient.getObject(type, id);
+  }
+
   public async create<T extends EngagementCommonModelType>(
     type: T,
     connectionId: string,

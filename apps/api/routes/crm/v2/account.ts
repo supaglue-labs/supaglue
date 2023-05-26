@@ -1,9 +1,11 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toSnakecasedKeysCrmAccountV2 } from '@supaglue/core/mappers/crm';
 import {
   CreateAccountPathParams,
   CreateAccountRequest,
   CreateAccountResponse,
   GetAccountPathParams,
+  GetAccountQueryParams,
   GetAccountRequest,
   GetAccountResponse,
   UpdateAccountPathParams,
@@ -21,10 +23,15 @@ export default function init(app: Router): void {
   router.get(
     '/:account_id',
     async (
-      req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest>,
+      req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest, GetAccountQueryParams>,
       res: Response<GetAccountResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { id: connectionId } = req.customerConnection;
+      const account = await crmCommonModelService.get('account', connectionId, req.params.account_id);
+      const snakecasedKeysAccount = toSnakecasedKeysCrmAccountV2(account);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { raw_data, ...rest } = snakecasedKeysAccount;
+      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysAccount : rest);
     }
   );
 
