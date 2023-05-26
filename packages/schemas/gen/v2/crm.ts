@@ -451,6 +451,9 @@ export interface components {
         /** @example Unrecognized Field */
         title?: string;
       })[];
+    created_model: {
+      id: string;
+    };
     /**
      * @example [
      *   {
@@ -580,7 +583,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["account"];
+            model?: components["schemas"]["created_model"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -614,7 +617,6 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["account"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -647,7 +649,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
+            model?: components["schemas"]["created_model"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -681,7 +683,6 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -715,7 +716,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["lead"];
+            model?: components["schemas"]["created_model"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -749,7 +750,6 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["lead"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -784,7 +784,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["opportunity"];
+            model?: components["schemas"]["created_model"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -818,7 +818,6 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["opportunity"];
             warnings?: components["schemas"]["warnings"];
           };
         };

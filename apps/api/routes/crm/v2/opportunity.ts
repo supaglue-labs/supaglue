@@ -36,11 +36,11 @@ export default function init(app: Router): void {
       res: Response<CreateOpportunityResponse>
     ) => {
       const { id: connectionId } = req.customerConnection;
-      await crmCommonModelService.create('opportunity', connectionId, {
+      const id = await crmCommonModelService.create('opportunity', connectionId, {
         ...camelcaseKeysSansCustomFields(req.body.model),
         closeDate: stringOrNullOrUndefinedToDate(req.body.model.close_date),
       });
-      return res.status(200).send({});
+      return res.status(200).send({ model: { id } });
     }
   );
 

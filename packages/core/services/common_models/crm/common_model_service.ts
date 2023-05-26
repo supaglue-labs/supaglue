@@ -13,9 +13,9 @@ export class CrmCommonModelService {
     type: T,
     connectionId: string,
     params: CRMCommonModelTypeMap<T>['createParams']
-  ): Promise<void> {
+  ): Promise<string> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    await remoteClient.createObject(type, params);
+    return await remoteClient.createObject(type, params);
   }
 
   public async update<T extends CRMCommonModelType>(

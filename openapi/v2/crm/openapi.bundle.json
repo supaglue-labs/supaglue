@@ -67,7 +67,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/account"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -204,9 +204,6 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/account"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -289,7 +286,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -395,9 +392,6 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/contact"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -481,7 +475,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/lead"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -589,9 +583,6 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/lead"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -676,7 +667,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/opportunity"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -789,9 +780,6 @@
                     },
                     "logs": {
                       "$ref": "#/components/schemas/logs"
-                    },
-                    "model": {
-                      "$ref": "#/components/schemas/opportunity"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -1837,6 +1825,17 @@
             },
             "title": "Unrecognized Field"
           }
+        ]
+      },
+      "created_model": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "addresses": {

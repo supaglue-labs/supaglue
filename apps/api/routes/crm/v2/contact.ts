@@ -37,8 +37,12 @@ export default function init(app: Router): void {
       res: Response<CreateContactResponse>
     ) => {
       const { id: connectionId } = req.customerConnection;
-      await crmCommonModelService.create('contact', connectionId, camelcaseKeysSansCustomFields(req.body.model));
-      return res.status(200).send({});
+      const id = await crmCommonModelService.create(
+        'contact',
+        connectionId,
+        camelcaseKeysSansCustomFields(req.body.model)
+      );
+      return res.status(200).send({ model: { id } });
     }
   );
 
