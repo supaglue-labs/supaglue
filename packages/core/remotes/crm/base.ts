@@ -7,14 +7,15 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 export interface CrmRemoteClient extends RemoteClient {
   category(): IntegrationCategory;
   listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date, onPoll?: () => void): Promise<Readable>;
+  getObject<T extends CRMCommonModelType>(commonModelType: T, id: string): Promise<CRMCommonModelTypeMap<T>['object']>;
   createObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']>;
+  ): Promise<string>;
   updateObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']>;
+  ): Promise<string>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
@@ -35,14 +36,18 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     updatedAfter?: Date,
     onPoll?: () => void
   ): Promise<Readable>;
+  abstract getObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    id: string
+  ): Promise<CRMCommonModelTypeMap<T>['object']>;
   abstract createObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']>;
+  ): Promise<string>;
   abstract updateObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']>;
+  ): Promise<string>;
 }
 export abstract class CrmRemoteClientEventEmitter extends EventEmitter {}
 

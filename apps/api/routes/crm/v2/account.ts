@@ -10,11 +10,10 @@ import {
   UpdateAccountRequest,
   UpdateAccountResponse,
 } from '@supaglue/schemas/v2/crm';
+import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const {
-  crm: { accountService },
-} = getDependencyContainer();
+const { crmCommonModelService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -35,7 +34,9 @@ export default function init(app: Router): void {
       req: Request<CreateAccountPathParams, CreateAccountResponse, CreateAccountRequest>,
       res: Response<CreateAccountResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { id: connectionId } = req.customerConnection;
+      await crmCommonModelService.create('account', connectionId, camelcaseKeysSansCustomFields(req.body.model));
+      return res.status(200).send({});
     }
   );
 
@@ -45,7 +46,12 @@ export default function init(app: Router): void {
       req: Request<UpdateAccountPathParams, UpdateAccountResponse, UpdateAccountRequest>,
       res: Response<UpdateAccountResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { id: connectionId } = req.customerConnection;
+      await crmCommonModelService.update('account', connectionId, {
+        id: req.params.account_id,
+        ...camelcaseKeysSansCustomFields(req.body.model),
+      });
+      return res.status(200).send({});
     }
   );
 

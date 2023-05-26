@@ -1,3 +1,4 @@
+import { getDependencyContainer } from '@/dependency_container';
 import {
   CreateLeadPathParams,
   CreateLeadRequest,
@@ -9,7 +10,10 @@ import {
   UpdateLeadRequest,
   UpdateLeadResponse,
 } from '@supaglue/schemas/v2/crm';
+import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
+
+const { crmCommonModelService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -27,7 +31,9 @@ export default function init(app: Router): void {
       req: Request<CreateLeadPathParams, CreateLeadResponse, CreateLeadRequest>,
       res: Response<CreateLeadResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { id: connectionId } = req.customerConnection;
+      await crmCommonModelService.create('lead', connectionId, camelcaseKeysSansCustomFields(req.body.model));
+      return res.status(200).send({});
     }
   );
 
@@ -37,7 +43,12 @@ export default function init(app: Router): void {
       req: Request<UpdateLeadPathParams, UpdateLeadResponse, UpdateLeadRequest>,
       res: Response<UpdateLeadResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { id: connectionId } = req.customerConnection;
+      await crmCommonModelService.update('lead', connectionId, {
+        id: req.params.lead_id,
+        ...camelcaseKeysSansCustomFields(req.body.model),
+      });
+      return res.status(200).send({});
     }
   );
 
