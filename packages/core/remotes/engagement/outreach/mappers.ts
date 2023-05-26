@@ -1,39 +1,38 @@
 import {
   Address,
+  ContactCreateParams,
+  ContactUpdateParams,
+  ContactV2,
   EmailAddress,
+  MailboxV2,
   PhoneNumber,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteMailbox,
-  RemoteSequence,
-  RemoteSequenceState,
-  RemoteSequenceStateCreateParams,
-  RemoteUser,
+  SequenceStateCreateParams,
+  SequenceStateV2,
+  SequenceV2,
+  UserV2,
 } from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
 import { removeUndefinedValues } from '../../../lib';
 
-export const fromOutreachUserToRemoteUser = (record: OutreachRecord): RemoteUser => {
+export const fromOutreachUserToUserV2 = (record: OutreachRecord): UserV2 => {
   const { id, attributes } = record;
   return {
-    remoteId: id.toString(),
+    id: id.toString(),
     firstName: (attributes.firstName as string) ?? null,
     lastName: (attributes.lastName as string) ?? null,
     email: (attributes.email as string) ?? null,
-    remoteCreatedAt: new Date(attributes.createdAt as string),
-    remoteUpdatedAt: new Date(attributes.updatedAt as string),
-    remoteWasDeleted: false,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    createdAt: new Date(attributes.createdAt as string),
+    updatedAt: new Date(attributes.updatedAt as string),
+    isDeleted: false,
+    lastModifiedAt: new Date(attributes.updatedAt as string),
     rawData: record,
   };
 };
 
-export const fromOutreachSequenceToRemoteSequence = (record: OutreachRecord): RemoteSequence => {
+export const fromOutreachSequenceToSequenceV2 = (record: OutreachRecord): SequenceV2 => {
   const { id, attributes, relationships } = record;
   return {
-    remoteId: id.toString(),
+    id: id.toString(),
     name: (attributes.name as string) ?? null,
     isEnabled: attributes.enabled as boolean,
     numSteps: attributes.sequenceStepCount as number,
@@ -43,52 +42,49 @@ export const fromOutreachSequenceToRemoteSequence = (record: OutreachRecord): Re
     optOutCount: (attributes.optOutCount as number) ?? 0,
     clickCount: (attributes.clickCount as number) ?? 0,
     replyCount: (attributes.replyCount as number) ?? 0,
-    remoteCreatedAt: new Date(attributes.createdAt as string),
-    remoteUpdatedAt: new Date(attributes.updatedAt as string),
-    remoteWasDeleted: false,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
-    remoteOwnerId: relationships.owner?.data?.id?.toString() ?? null,
+    createdAt: new Date(attributes.createdAt as string),
+    updatedAt: new Date(attributes.updatedAt as string),
+    isDeleted: false,
+    lastModifiedAt: new Date(attributes.updatedAt as string),
+    ownerId: relationships.owner?.data?.id?.toString() ?? null,
     rawData: record,
   };
 };
 
-export const fromOutreachMailboxToRemoteMailbox = (record: OutreachRecord): RemoteMailbox => {
+export const fromOutreachMailboxToMailboxV2 = (record: OutreachRecord): MailboxV2 => {
   const { id, attributes, relationships } = record;
   return {
-    remoteId: id.toString(),
+    id: id.toString(),
     email: (attributes.email as string) ?? null,
-    remoteCreatedAt: new Date(attributes.createdAt as string),
-    remoteUpdatedAt: new Date(attributes.updatedAt as string),
-    remoteWasDeleted: false,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
-    remoteUserId: relationships.user?.data?.id?.toString() ?? null,
+    createdAt: new Date(attributes.createdAt as string),
+    updatedAt: new Date(attributes.updatedAt as string),
+    isDeleted: false,
+    lastModifiedAt: new Date(attributes.updatedAt as string),
+    userId: relationships.user?.data?.id?.toString() ?? null,
     rawData: record,
   };
 };
 
-export const fromOutreachSequenceStateToRemoteSequenceState = (record: OutreachRecord): RemoteSequenceState => {
+export const fromOutreachSequenceStateToSequenceStateV2 = (record: OutreachRecord): SequenceStateV2 => {
   const { id, attributes, relationships } = record;
   return {
-    remoteId: id.toString(),
+    id: id.toString(),
     state: attributes.state as string,
-    remoteSequenceId: relationships.sequence?.data?.id?.toString() ?? null,
-    remoteMailboxId: relationships.mailbox?.data?.id?.toString() ?? null,
-    remoteContactId: relationships.prospect?.data?.id?.toString() ?? null,
-    remoteCreatedAt: new Date(attributes.createdAt as string),
-    remoteUpdatedAt: new Date(attributes.updatedAt as string),
-    remoteWasDeleted: false,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    sequenceId: relationships.sequence?.data?.id?.toString() ?? null,
+    mailboxId: relationships.mailbox?.data?.id?.toString() ?? null,
+    contactId: relationships.prospect?.data?.id?.toString() ?? null,
+    createdAt: new Date(attributes.createdAt as string),
+    updatedAt: new Date(attributes.updatedAt as string),
+    isDeleted: false,
+    lastModifiedAt: new Date(attributes.updatedAt as string),
     rawData: record,
   };
 };
 
-export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): RemoteContact => {
+export const fromOutreachProspectToContactV2 = (record: OutreachRecord): ContactV2 => {
   const { id, attributes, relationships } = record;
   return {
-    remoteId: id.toString(),
+    id: id.toString(),
     firstName: (attributes.firstName as string) ?? null,
     lastName: (attributes.lastName as string) ?? null,
     jobTitle: (attributes.jobTitle as string) ?? null,
@@ -111,12 +107,11 @@ export const fromOutreachProspectToRemoteContact = (record: OutreachRecord): Rem
     clickCount: (attributes.clickCount as number) ?? 0,
     replyCount: (attributes.replyCount as number) ?? 0,
     bouncedCount: (attributes.bouncedCount as number) ?? 0,
-    remoteCreatedAt: new Date(attributes.createdAt as string),
-    remoteUpdatedAt: new Date(attributes.updatedAt as string),
-    remoteWasDeleted: false,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
-    remoteOwnerId: relationships.owner?.data?.id?.toString() ?? null,
+    createdAt: new Date(attributes.createdAt as string),
+    updatedAt: new Date(attributes.updatedAt as string),
+    isDeleted: false,
+    lastModifiedAt: new Date(attributes.updatedAt as string),
+    ownerId: relationships.owner?.data?.id?.toString() ?? null,
     rawData: record,
   };
 };
@@ -154,7 +149,7 @@ export const toOutreachProspectCreateParams = ({
   phoneNumbers,
   customFields,
   ownerId,
-}: RemoteContactCreateParams): Record<string, any> => {
+}: ContactCreateParams): Record<string, any> => {
   const attributes = {
     firstName,
     lastName,
@@ -192,21 +187,21 @@ export const toOutreachProspectCreateParams = ({
   };
 };
 
-export const toOutreachProspectUpdateParams = (params: RemoteContactUpdateParams): Record<string, any> => {
+export const toOutreachProspectUpdateParams = (params: ContactUpdateParams): Record<string, any> => {
   const updateParams = toOutreachProspectCreateParams(params);
   return {
     data: {
       ...updateParams.data,
-      id: parseInt(params.remoteId, 10),
+      id: parseInt(params.id, 10),
     },
   };
 };
 
 export const toOutreachSequenceStateCreateParams = ({
-  remoteMailboxId,
-  remoteSequenceId,
-  remoteContactId,
-}: RemoteSequenceStateCreateParams): Record<string, any> => {
+  mailboxId,
+  sequenceId,
+  contactId,
+}: SequenceStateCreateParams): Record<string, any> => {
   return {
     data: {
       type: 'sequenceState',
@@ -214,19 +209,19 @@ export const toOutreachSequenceStateCreateParams = ({
         prospect: {
           data: {
             type: 'prospect',
-            id: parseInt(remoteContactId, 10),
+            id: parseInt(contactId, 10),
           },
         },
         sequence: {
           data: {
             type: 'sequence',
-            id: parseInt(remoteSequenceId, 10),
+            id: parseInt(sequenceId, 10),
           },
         },
         mailbox: {
           data: {
             type: 'mailbox',
-            id: parseInt(remoteMailboxId, 10),
+            id: parseInt(mailboxId, 10),
           },
         },
       },

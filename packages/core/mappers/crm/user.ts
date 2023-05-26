@@ -1,8 +1,7 @@
-import type { CrmUser } from '@supaglue/db';
+import type { CrmUser, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
-import type { RemoteUser, SnakecasedKeysCrmSimpleUser, SnakecasedKeysCrmUser, User } from '@supaglue/types/crm';
+import type { SnakecasedKeysCrmUser, SnakecasedKeysCrmUserV2, User, UserV2 } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
-import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysCrmUser = (user: User): SnakecasedKeysCrmUser => {
   return {
@@ -19,16 +18,16 @@ export const toSnakecasedKeysCrmUser = (user: User): SnakecasedKeysCrmUser => {
   };
 };
 
-export const toSnakecasedKeysCrmSimpleUser = (user: RemoteUser): SnakecasedKeysCrmSimpleUser => {
+export const toSnakecasedKeysCrmSimpleUser = (user: UserV2): SnakecasedKeysCrmUserV2 => {
   return {
-    last_modified_at: getLastModifiedAt(user),
-    remote_id: user.remoteId,
+    last_modified_at: user.lastModifiedAt,
+    id: user.id,
     name: user.name,
     email: user.email,
     is_active: user.isActive,
-    remote_created_at: user.remoteCreatedAt,
-    remote_updated_at: user.remoteUpdatedAt,
-    remote_was_deleted: user.remoteWasDeleted,
+    created_at: user.createdAt,
+    updated_at: user.updatedAt,
+    is_deleted: user.isDeleted,
     raw_data: user.rawData,
   };
 };
@@ -62,29 +61,41 @@ export const fromUserModel = (
   };
 };
 
-// TODO: Use prisma generator to generate return type
-export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: string, remoteUser: RemoteUser) => {
-  const lastModifiedAt =
-    remoteUser.remoteUpdatedAt || remoteUser.detectedOrRemoteDeletedAt
-      ? new Date(
-          Math.max(remoteUser.remoteUpdatedAt?.getTime() || 0, remoteUser.detectedOrRemoteDeletedAt?.getTime() || 0)
-        )
-      : undefined;
-
+export const fromRemoteUserToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteUser: UserV2
+): Prisma.CrmUserCreateInput => {
   return {
-    id: uuidv5(remoteUser.remoteId, connectionId),
-    remote_id: remoteUser.remoteId,
+    id: uuidv5(remoteUser.id, connectionId),
+    remoteId: remoteUser.id,
+    customerId,
+    connectionId,
+    name: remoteUser.name,
+    email: remoteUser.email,
+    isActive: remoteUser.isActive,
+    remoteCreatedAt: remoteUser.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteUser.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteUser.isDeleted,
+    lastModifiedAt: remoteUser.lastModifiedAt?.toISOString(),
+    rawData: remoteUser.rawData,
+  };
+};
+
+// TODO: Use prisma generator to generate return type
+export const fromRemoteUserToDbUserParams = (connectionId: string, customerId: string, remoteUser: UserV2) => {
+  return {
+    id: uuidv5(remoteUser.id, connectionId),
+    remote_id: remoteUser.id,
     customer_id: customerId,
     connection_id: connectionId,
     name: remoteUser.name,
     email: remoteUser.email,
     is_active: remoteUser.isActive,
-    remote_created_at: remoteUser.remoteCreatedAt?.toISOString(),
-    remote_updated_at: remoteUser.remoteUpdatedAt?.toISOString(),
-    remote_was_deleted: remoteUser.remoteWasDeleted,
-    remote_deleted_at: remoteUser.remoteDeletedAt?.toISOString(),
-    detected_or_remote_deleted_at: remoteUser.detectedOrRemoteDeletedAt?.toISOString(),
-    last_modified_at: lastModifiedAt?.toISOString(),
+    remote_created_at: remoteUser.createdAt?.toISOString(),
+    remote_updated_at: remoteUser.updatedAt?.toISOString(),
+    remote_was_deleted: remoteUser.isDeleted,
+    last_modified_at: remoteUser.lastModifiedAt?.toISOString(),
     updated_at: new Date().toISOString(),
     raw_data: remoteUser.rawData,
   };

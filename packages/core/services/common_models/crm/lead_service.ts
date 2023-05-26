@@ -2,11 +2,10 @@ import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInternalParams } from '@supaglue/types';
 import { Lead, LeadCreateParams, LeadFilters, LeadUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
-import { v5 as uuidv5 } from 'uuid';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
-import { fromLeadModel, fromRemoteLeadToDbLeadParams } from '../../../mappers/crm';
+import { fromLeadModel, fromRemoteLeadToDbLeadParams, fromRemoteLeadToModel } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class LeadService extends CommonModelBaseService {
@@ -109,14 +108,7 @@ export class LeadService extends CommonModelBaseService {
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteLead = await remoteClient.createObject('lead', remoteCreateParams);
     const leadModel = await this.prisma.crmLead.create({
-      data: {
-        id: uuidv5(remoteLead.remoteId, connectionId),
-        customerId,
-        connectionId,
-        lastModifiedAt: getLastModifiedAt(remoteLead),
-        ...remoteLead,
-        ownerId: createParams.ownerId,
-      },
+      data: fromRemoteLeadToModel(connectionId, customerId, remoteLead),
     });
     return fromLeadModel(leadModel);
   }
@@ -136,28 +128,27 @@ export class LeadService extends CommonModelBaseService {
 
     const remoteUpdateParams = { ...updateParams };
     if (updateParams.ownerId) {
-      remoteUpdateParams.ownerId = await await getRemoteId(this.prisma, updateParams.ownerId, 'user');
+      remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
 
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteLead = await remoteClient.updateObject('lead', {
       ...remoteUpdateParams,
-      remoteId: foundLeadModel.remoteId,
+      id: foundLeadModel.remoteId,
     });
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.
-    if (foundLeadModel.remoteId !== remoteLead.remoteId) {
+    if (foundLeadModel.remoteId !== remoteLead.id) {
       await this.prisma.crmLead.updateMany({
         where: {
           remoteId: {
-            in: [foundLeadModel.remoteId, remoteLead.remoteId],
+            in: [foundLeadModel.remoteId, remoteLead.id],
           },
           connectionId: foundLeadModel.connectionId,
         },
         data: {
-          ...remoteLead,
+          ...fromRemoteLeadToModel(connectionId, customerId, remoteLead),
           remoteId: undefined,
-          lastModifiedAt: getLastModifiedAt(remoteLead),
           ownerId: updateParams.ownerId,
         },
       });
@@ -166,8 +157,7 @@ export class LeadService extends CommonModelBaseService {
 
     const leadModel = await this.prisma.crmLead.update({
       data: {
-        ...remoteLead,
-        lastModifiedAt: getLastModifiedAt(remoteLead),
+        ...fromRemoteLeadToModel(connectionId, customerId, remoteLead),
         ownerId: updateParams.ownerId,
       },
       where: {

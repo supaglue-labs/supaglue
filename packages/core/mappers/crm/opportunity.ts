@@ -1,14 +1,13 @@
-import type { CrmOpportunity } from '@supaglue/db';
+import type { CrmOpportunity, Prisma } from '@supaglue/db';
 import type { GetInternalParams } from '@supaglue/types';
 import type {
   Opportunity,
   OpportunityStatus,
-  RemoteOpportunity,
+  OpportunityV2,
   SnakecasedKeysOpportunity,
-  SnakecasedKeysSimpleOpportunity as SnakecasedKeysCrmSimpleOpportunity,
+  SnakecasedKeysOpportunityV2,
 } from '@supaglue/types/crm';
 import { v5 as uuidv5 } from 'uuid';
-import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): SnakecasedKeysOpportunity => {
   return {
@@ -32,14 +31,12 @@ export const toSnakecasedKeysOpportunity = (opportunity: Opportunity): Snakecase
   };
 };
 
-export const toSnakecasedKeysCrmSimpleOpportunity = (
-  opportunity: RemoteOpportunity
-): SnakecasedKeysCrmSimpleOpportunity => {
+export const toSnakecasedKeysCrmOpportunityV2 = (opportunity: OpportunityV2): SnakecasedKeysOpportunityV2 => {
   return {
-    remote_owner_id: opportunity.remoteOwnerId,
-    remote_account_id: opportunity.remoteAccountId,
-    last_modified_at: getLastModifiedAt(opportunity),
-    remote_id: opportunity.remoteId,
+    owner_id: opportunity.ownerId,
+    account_id: opportunity.accountId,
+    last_modified_at: opportunity.lastModifiedAt,
+    id: opportunity.id,
     name: opportunity.name,
     description: opportunity.description,
     amount: opportunity.amount,
@@ -48,9 +45,9 @@ export const toSnakecasedKeysCrmSimpleOpportunity = (
     last_activity_at: opportunity.lastActivityAt,
     close_date: opportunity.closeDate,
     pipeline: opportunity.pipeline,
-    remote_created_at: opportunity.remoteCreatedAt,
-    remote_updated_at: opportunity.remoteUpdatedAt,
-    remote_was_deleted: opportunity.remoteWasDeleted,
+    created_at: opportunity.createdAt,
+    updated_at: opportunity.updatedAt,
+    is_deleted: opportunity.isDeleted,
     raw_data: opportunity.rawData,
   };
 };
@@ -98,25 +95,45 @@ export const fromOpportunityModel = (
   };
 };
 
+export const fromRemoteOpportunityToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteOpportunity: OpportunityV2
+): Prisma.CrmOpportunityCreateInput => {
+  return {
+    id: uuidv5(remoteOpportunity.id, connectionId),
+    remoteId: remoteOpportunity.id,
+    customerId,
+    connectionId,
+    name: remoteOpportunity.name,
+    description: remoteOpportunity.description,
+    amount: remoteOpportunity.amount,
+    stage: remoteOpportunity.stage,
+    status: remoteOpportunity.status,
+    pipeline: remoteOpportunity.pipeline,
+    lastActivityAt: remoteOpportunity.lastActivityAt?.toISOString(),
+    closeDate: remoteOpportunity.closeDate?.toISOString(),
+    remoteCreatedAt: remoteOpportunity.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteOpportunity.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteOpportunity.isDeleted,
+    lastModifiedAt: remoteOpportunity.lastModifiedAt?.toISOString(),
+    remoteAccountId: remoteOpportunity.accountId,
+    accountId: remoteOpportunity.accountId ? uuidv5(remoteOpportunity.accountId, connectionId) : null,
+    remoteOwnerId: remoteOpportunity.ownerId,
+    ownerId: remoteOpportunity.ownerId ? uuidv5(remoteOpportunity.ownerId, connectionId) : null,
+    rawData: remoteOpportunity.rawData,
+  };
+};
+
 // TODO: Use prisma generator to generate return type
 export const fromRemoteOpportunityToDbOpportunityParams = (
   connectionId: string,
   customerId: string,
-  remoteOpportunity: RemoteOpportunity
+  remoteOpportunity: OpportunityV2
 ) => {
-  const lastModifiedAt =
-    remoteOpportunity.remoteUpdatedAt || remoteOpportunity.detectedOrRemoteDeletedAt
-      ? new Date(
-          Math.max(
-            remoteOpportunity.remoteUpdatedAt?.getTime() || 0,
-            remoteOpportunity.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        )
-      : undefined;
-
   return {
-    id: uuidv5(remoteOpportunity.remoteId, connectionId),
-    remote_id: remoteOpportunity.remoteId,
+    id: uuidv5(remoteOpportunity.id, connectionId),
+    remote_id: remoteOpportunity.id,
     customer_id: customerId,
     connection_id: connectionId,
     name: remoteOpportunity.name,
@@ -127,16 +144,14 @@ export const fromRemoteOpportunityToDbOpportunityParams = (
     pipeline: remoteOpportunity.pipeline,
     last_activity_at: remoteOpportunity.lastActivityAt?.toISOString(),
     close_date: remoteOpportunity.closeDate?.toISOString(),
-    remote_created_at: remoteOpportunity.remoteCreatedAt?.toISOString(),
-    remote_updated_at: remoteOpportunity.remoteUpdatedAt?.toISOString(),
-    remote_was_deleted: remoteOpportunity.remoteWasDeleted,
-    remote_deleted_at: remoteOpportunity.remoteDeletedAt?.toISOString(),
-    detected_or_remote_deleted_at: remoteOpportunity.detectedOrRemoteDeletedAt?.toISOString(),
-    last_modified_at: lastModifiedAt?.toISOString(),
-    _remote_account_id: remoteOpportunity.remoteAccountId,
-    account_id: remoteOpportunity.remoteAccountId ? uuidv5(remoteOpportunity.remoteAccountId, connectionId) : null,
-    _remote_owner_id: remoteOpportunity.remoteOwnerId,
-    owner_id: remoteOpportunity.remoteOwnerId ? uuidv5(remoteOpportunity.remoteOwnerId, connectionId) : null,
+    remote_created_at: remoteOpportunity.createdAt?.toISOString(),
+    remote_updated_at: remoteOpportunity.updatedAt?.toISOString(),
+    remote_was_deleted: remoteOpportunity.isDeleted,
+    last_modified_at: remoteOpportunity.lastModifiedAt?.toISOString(),
+    _remote_account_id: remoteOpportunity.accountId,
+    account_id: remoteOpportunity.accountId ? uuidv5(remoteOpportunity.accountId, connectionId) : null,
+    _remote_owner_id: remoteOpportunity.ownerId,
+    owner_id: remoteOpportunity.ownerId ? uuidv5(remoteOpportunity.ownerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteOpportunity.rawData,
   };

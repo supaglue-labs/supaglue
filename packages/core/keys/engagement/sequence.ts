@@ -1,15 +1,15 @@
-import { SnakecasedKeysSimpleSequenceWithTenant } from '@supaglue/types/engagement';
+import { SnakecasedKeysSequenceV2WithTenant } from '@supaglue/types/engagement';
 import { arrayOfAllKeys } from '../util';
 
-export const keysOfSnakecasedSequenceWithTenant = arrayOfAllKeys<SnakecasedKeysSimpleSequenceWithTenant>()([
+export const keysOfSnakecasedSequenceV2WithTenant = arrayOfAllKeys<SnakecasedKeysSequenceV2WithTenant>()([
   'provider_name',
   'customer_id',
-  'remote_id',
-  'remote_created_at',
-  'remote_updated_at',
-  'remote_was_deleted',
+  'id',
+  'created_at',
+  'updated_at',
+  'is_deleted',
   'last_modified_at',
-  'remote_owner_id',
+  'owner_id',
   'name',
   'tags',
   'num_steps',

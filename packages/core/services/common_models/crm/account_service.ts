@@ -2,12 +2,11 @@ import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInternalParams } from '@supaglue/types';
 import { Account, AccountCreateParams, AccountFilters, AccountUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
-import { v5 as uuidv5 } from 'uuid';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
 import { getWhereClauseForFilter } from '../../../lib/filter';
-import { fromAccountModel, fromRemoteAccountToDbAccountParams } from '../../../mappers/crm';
+import { fromAccountModel, fromRemoteAccountToDbAccountParams, fromRemoteAccountToModel } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class AccountService extends CommonModelBaseService {
@@ -91,14 +90,7 @@ export class AccountService extends CommonModelBaseService {
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteAccount = await remoteClient.createObject('account', remoteCreateParams);
     const accountModel = await this.prisma.crmAccount.create({
-      data: {
-        id: uuidv5(remoteAccount.remoteId, connectionId),
-        customerId,
-        connectionId,
-        lastModifiedAt: getLastModifiedAt(remoteAccount),
-        ...remoteAccount,
-        ownerId: createParams.ownerId,
-      },
+      data: fromRemoteAccountToModel(connectionId, customerId, remoteAccount),
     });
     return fromAccountModel(accountModel);
   }
@@ -123,22 +115,21 @@ export class AccountService extends CommonModelBaseService {
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     const remoteAccount = await remoteClient.updateObject('account', {
       ...remoteUpdateParams,
-      remoteId: foundAccountModel.remoteId,
+      id: foundAccountModel.remoteId,
     });
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.
-    if (foundAccountModel.remoteId !== remoteAccount.remoteId) {
+    if (foundAccountModel.remoteId !== remoteAccount.id) {
       await this.prisma.crmAccount.updateMany({
         where: {
           remoteId: {
-            in: [foundAccountModel.remoteId, remoteAccount.remoteId],
+            in: [foundAccountModel.remoteId, remoteAccount.id],
           },
           connectionId: foundAccountModel.connectionId,
         },
         data: {
-          ...remoteAccount,
+          ...fromRemoteAccountToModel(connectionId, customerId, remoteAccount),
           remoteId: undefined,
-          lastModifiedAt: getLastModifiedAt(remoteAccount),
           ownerId: updateParams.ownerId,
         },
       });
@@ -147,8 +138,7 @@ export class AccountService extends CommonModelBaseService {
 
     const accountModel = await this.prisma.crmAccount.update({
       data: {
-        ...remoteAccount,
-        lastModifiedAt: getLastModifiedAt(remoteAccount),
+        ...fromRemoteAccountToModel(connectionId, customerId, remoteAccount),
         ownerId: updateParams.ownerId,
       },
       where: {

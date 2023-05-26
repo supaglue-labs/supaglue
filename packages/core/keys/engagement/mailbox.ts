@@ -1,15 +1,15 @@
-import { SnakecasedKeysSimpleMailboxWithTenant } from '@supaglue/types/engagement';
+import { SnakecasedKeysMailboxV2WithTenant } from '@supaglue/types/engagement';
 import { arrayOfAllKeys } from '../util';
 
-export const keysOfSnakecasedMailboxWithTenant = arrayOfAllKeys<SnakecasedKeysSimpleMailboxWithTenant>()([
+export const keysOfSnakecasedMailboxV2WithTenant = arrayOfAllKeys<SnakecasedKeysMailboxV2WithTenant>()([
   'provider_name',
   'customer_id',
-  'remote_id',
-  'remote_created_at',
-  'remote_updated_at',
-  'remote_was_deleted',
+  'id',
+  'created_at',
+  'updated_at',
+  'is_deleted',
   'last_modified_at',
   'email',
-  'remote_user_id',
+  'user_id',
   'raw_data',
 ]);

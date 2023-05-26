@@ -1,37 +1,23 @@
-import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams } from '.';
+import type { BaseCrmModel, BaseCrmModelV2, SnakecasedCrmTenantFields } from '.';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysCrmUser = SnakecasedKeys<User>;
-export type SnakecasedKeysCrmSimpleUser = SnakecasedKeys<SimpleUser>;
-export type SnakecasedKeysCrmSimpleUserWithTenant = SnakecasedKeysCrmSimpleUser & {
-  provider_name: string;
-  customer_id: string;
-};
+export type SnakecasedKeysCrmUserV2 = SnakecasedKeys<UserV2>;
+export type SnakecasedKeysCrmUserV2WithTenant = SnakecasedKeysCrmUserV2 & SnakecasedCrmTenantFields;
 
-type BaseUser = BaseCrmModel & {
+type CoreUser = {
   name: string | null;
   email: string | null;
   isActive: boolean | null;
 };
 
 // TODO: Rename/consolidate when we move entirely to managed syncs
-export type User = BaseUser &
-  BaseCrmModelNonRemoteParams & {
-    rawData?: Record<string, any>;
-  };
+export type User = BaseCrmModel & CoreUser;
 
-export type SimpleUser = BaseUser & {
-  lastModifiedAt: Date;
-  rawData: Record<string, any>;
-};
-
-export type RemoteUser = BaseUser &
-  BaseCrmModelRemoteOnlyParams & {
-    rawData: Record<string, any>;
-  };
+export type UserV2 = BaseCrmModelV2 & CoreUser;
 
 export type RemoteUserTypes = {
-  object: RemoteUser;
+  object: UserV2;
   createParams: never;
   updateParams: never;
 };

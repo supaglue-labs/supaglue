@@ -1,55 +1,30 @@
 import { SnakecasedKeys } from '../snakecased_keys';
-import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
+import { BaseEngagementModel, BaseEngagementModelV2, SnakecasedEngagementTenantFields } from './base';
 
 export type SnakecasedKeysSequenceState = SnakecasedKeys<SequenceState>;
-export type SnakecasedKeysSimpleSequenceState = SnakecasedKeys<SimpleSequenceState>;
-export type SnakecasedKeysSimpleSequenceStateWithTenant = SnakecasedKeysSimpleSequenceState & {
-  provider_name: string;
-  customer_id: string;
-};
+export type SnakecasedKeysSequenceStateV2 = SnakecasedKeys<SequenceStateV2>;
+export type SnakecasedKeysSequenceStateV2WithTenant = SnakecasedKeysSequenceStateV2 & SnakecasedEngagementTenantFields;
 
-export type BaseSequenceState = BaseEngagementModel & {
+type CoreSequenceState = {
   state: string | null;
+  contactId: string | null;
+  sequenceId: string | null;
+  mailboxId: string | null;
 };
 
 // TODO: Rename/consolidate when we move entirely to managed syncs
-export type SequenceState = BaseSequenceState &
-  BaseEngagementModelNonRemoteParams & {
-    contactId: string | null;
-    sequenceId: string | null;
-    mailboxId: string | null;
-    rawData?: Record<string, any>;
-  };
+export type SequenceState = BaseEngagementModel & CoreSequenceState;
 
-export type SimpleSequenceState = BaseSequenceState & {
-  lastModifiedAt: Date;
-  remoteContactId: string | null;
-  remoteSequenceId: string | null;
-  remoteMailboxId: string | null;
-  rawData: Record<string, any>;
-};
-
-export type RemoteSequenceState = BaseSequenceState &
-  BaseEngagementModelRemoteOnlyParams & {
-    remoteContactId: string | null;
-    remoteSequenceId: string | null;
-    remoteMailboxId: string | null;
-    rawData: Record<string, any>;
-  };
+export type SequenceStateV2 = BaseEngagementModelV2 & CoreSequenceState;
 
 export type SequenceStateCreateParams = {
   contactId: string;
   sequenceId: string;
   mailboxId: string;
 };
-export type RemoteSequenceStateCreateParams = {
-  remoteContactId: string;
-  remoteSequenceId: string;
-  remoteMailboxId: string;
-};
 
 export type RemoteSequenceStateTypes = {
-  object: RemoteSequenceState;
-  createParams: RemoteSequenceStateCreateParams;
+  object: SequenceStateV2;
+  createParams: SequenceStateCreateParams;
   updateParams: never;
 };

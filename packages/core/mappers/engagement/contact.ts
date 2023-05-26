@@ -1,17 +1,16 @@
-import { EngagementContact } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import {
+import type { EngagementContact } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type {
   Address,
   Contact,
+  ContactV2,
   EmailAddress,
   PhoneNumber,
-  RemoteContact,
   SnakecasedKeysEngagementContact,
-  SnakecasedKeysEngagementSimpleContact,
+  SnakecasedKeysEngagementContactV2,
 } from '@supaglue/types/engagement';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress, toSnakecasedKeysEmailAddress, toSnakecasedKeysPhoneNumber } from '.';
-import { getLastModifiedAt } from '../../services';
 
 export const toSnakecasedKeysEngagementContact = (contact: Contact): SnakecasedKeysEngagementContact => {
   return {
@@ -36,13 +35,11 @@ export const toSnakecasedKeysEngagementContact = (contact: Contact): SnakecasedK
   };
 };
 
-export const toSnakecasedKeysEngagementSimpleContact = (
-  contact: RemoteContact
-): SnakecasedKeysEngagementSimpleContact => {
+export const toSnakecasedKeysEngagementContactV2 = (contact: ContactV2): SnakecasedKeysEngagementContactV2 => {
   return {
-    remote_owner_id: contact.remoteOwnerId,
-    last_modified_at: getLastModifiedAt(contact),
-    remote_id: contact.remoteId,
+    owner_id: contact.ownerId,
+    last_modified_at: contact.lastModifiedAt,
+    id: contact.id,
     first_name: contact.firstName,
     last_name: contact.lastName,
     job_title: contact.jobTitle,
@@ -53,9 +50,9 @@ export const toSnakecasedKeysEngagementSimpleContact = (
     click_count: contact.clickCount,
     reply_count: contact.openCount,
     bounced_count: contact.bouncedCount,
-    remote_created_at: contact.remoteCreatedAt,
-    remote_updated_at: contact.remoteUpdatedAt,
-    remote_was_deleted: contact.remoteWasDeleted,
+    created_at: contact.createdAt,
+    updated_at: contact.updatedAt,
+    is_deleted: contact.isDeleted,
     raw_data: contact.rawData,
   };
 };
@@ -109,21 +106,11 @@ export const fromContactModel = (
 export const fromRemoteContactToDbContactParams = (
   connectionId: string,
   customerId: string,
-  remoteContact: RemoteContact
+  remoteContact: ContactV2
 ) => {
-  const lastModifiedAt =
-    remoteContact.remoteUpdatedAt || remoteContact.detectedOrRemoteDeletedAt
-      ? new Date(
-          Math.max(
-            remoteContact.remoteUpdatedAt?.getTime() || 0,
-            remoteContact.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        )
-      : undefined;
-
   return {
-    id: uuidv5(remoteContact.remoteId, connectionId),
-    remote_id: remoteContact.remoteId,
+    id: uuidv5(remoteContact.id, connectionId),
+    remote_id: remoteContact.id,
     customer_id: customerId,
     connection_id: connectionId,
     first_name: remoteContact.firstName,
@@ -136,14 +123,12 @@ export const fromRemoteContactToDbContactParams = (
     click_count: remoteContact.clickCount,
     reply_count: remoteContact.replyCount,
     bounced_count: remoteContact.bouncedCount,
-    remote_created_at: remoteContact.remoteCreatedAt?.toISOString(),
-    remote_updated_at: remoteContact.remoteUpdatedAt?.toISOString(),
-    remote_was_deleted: remoteContact.remoteWasDeleted,
-    remote_deleted_at: remoteContact.remoteDeletedAt?.toISOString(),
-    detected_or_remote_deleted_at: remoteContact.detectedOrRemoteDeletedAt?.toISOString(),
-    last_modified_at: lastModifiedAt?.toISOString(),
-    _remote_owner_id: remoteContact.remoteOwnerId,
-    owner_id: remoteContact.remoteOwnerId ? uuidv5(remoteContact.remoteOwnerId, connectionId) : null,
+    remote_created_at: remoteContact.createdAt?.toISOString(),
+    remote_updated_at: remoteContact.updatedAt?.toISOString(),
+    remote_was_deleted: remoteContact.isDeleted,
+    last_modified_at: remoteContact.lastModifiedAt?.toISOString(),
+    _remote_owner_id: remoteContact.ownerId,
+    owner_id: remoteContact.ownerId ? uuidv5(remoteContact.ownerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteContact.rawData,
   };

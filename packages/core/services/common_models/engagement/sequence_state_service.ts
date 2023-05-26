@@ -1,14 +1,12 @@
 import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
-import { v5 as uuidv5 } from 'uuid';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 
 import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
-import { RemoteSequenceStateCreateParams, SequenceState, SequenceStateCreateParams } from '@supaglue/types/engagement';
+import { SequenceState, SequenceStateCreateParams } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
 import { fromRemoteSequenceStateToDbSequenceStateParams, fromSequenceStateModel } from '../../../mappers/engagement';
-import { EngagementRemoteClient } from '../../../remotes/engagement/base';
 
 export class SequenceStateService extends CommonModelBaseService {
   public constructor(...args: ConstructorParameters<typeof CommonModelBaseService>) {
@@ -57,7 +55,7 @@ export class SequenceStateService extends CommonModelBaseService {
     };
   }
 
-  async getRemoteCreateParams(createParams: SequenceStateCreateParams): Promise<RemoteSequenceStateCreateParams> {
+  async getRemoteCreateParams(createParams: SequenceStateCreateParams): Promise<SequenceStateCreateParams> {
     const mailbox = await this.prisma.engagementMailbox.findUnique({
       where: { id: createParams.mailboxId },
     });
@@ -77,9 +75,9 @@ export class SequenceStateService extends CommonModelBaseService {
       throw new NotFoundError(`Can't find sequence with id: ${createParams.sequenceId}`);
     }
     return {
-      remoteMailboxId: mailbox.remoteId,
-      remoteContactId: contact.remoteId,
-      remoteSequenceId: sequence.remoteId,
+      mailboxId: mailbox.remoteId,
+      contactId: contact.remoteId,
+      sequenceId: sequence.remoteId,
     };
   }
 
@@ -88,21 +86,23 @@ export class SequenceStateService extends CommonModelBaseService {
     connectionId: string,
     createParams: SequenceStateCreateParams
   ): Promise<SequenceState> {
-    // TODO: We may want to have better guarantees that we update the record in both our DB
-    // and the external integration.
-    const remoteCreateParams = await this.getRemoteCreateParams(createParams);
-    const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
-    const remoteSequenceState = await remoteClient.createObject('sequence_state', remoteCreateParams);
-    const contactModel = await this.prisma.engagementSequenceState.create({
-      data: {
-        id: uuidv5(remoteSequenceState.remoteId, connectionId),
-        customerId,
-        connectionId,
-        ...remoteSequenceState,
-        lastModifiedAt: getLastModifiedAt(remoteSequenceState),
-      },
-    });
-    return fromSequenceStateModel(contactModel);
+    throw new Error('Currently disabled');
+
+    // // TODO: We may want to have better guarantees that we update the record in both our DB
+    // // and the external integration.
+    // const remoteCreateParams = await this.getRemoteCreateParams(createParams);
+    // const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
+    // const remoteSequenceState = await remoteClient.createObject('sequence_state', remoteCreateParams);
+    // const contactModel = await this.prisma.engagementSequenceState.create({
+    //   data: {
+    //     id: uuidv5(remoteSequenceState.remoteId, connectionId),
+    //     customerId,
+    //     connectionId,
+    //     ...remoteSequenceState,
+    //     lastModifiedAt: getLastModifiedAt(remoteSequenceState),
+    //   },
+    // });
+    // return fromSequenceStateModel(contactModel);
   }
 
   public async upsertRemoteRecords(
