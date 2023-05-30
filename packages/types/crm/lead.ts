@@ -1,24 +1,13 @@
-import type {
-  Account,
-  BaseCrmModel,
-  BaseCrmModelNonRemoteParams,
-  BaseCrmModelRemoteOnlyParams,
-  Contact,
-  CustomFields,
-  User,
-} from '.';
-import { Address, EmailAddress, PhoneNumber } from '../base';
-import { EqualsFilter } from '../filter';
-import { SnakecasedKeys } from '../snakecased_keys';
+import type { BaseCrmModel, BaseCrmModelV2, CustomFields, SnakecasedCrmTenantFields } from '.';
+import type { EqualsFilter } from '../filter';
+import type { SnakecasedKeys } from '../snakecased_keys';
+import type { Address, EmailAddress, PhoneNumber } from './common/base';
 
-export type SnakecasedKeysLead = SnakecasedKeys<Lead>;
+export type SnakecasedKeysCrmLead = SnakecasedKeys<Lead>;
+export type SnakecasedKeysCrmLeadV2 = SnakecasedKeys<LeadV2>;
+export type SnakecasedKeysCrmLeadV2WithTenant = SnakecasedKeysCrmLeadV2 & SnakecasedCrmTenantFields;
 
-export type SnakecasedKeysLeadWithTenant = SnakecasedKeysLead & {
-  provider_name: string;
-  customer_id: string;
-};
-
-type BaseLead = BaseCrmModel & {
+type CoreLead = {
   leadSource: string | null;
   title: string | null;
   company: string | null;
@@ -28,55 +17,22 @@ type BaseLead = BaseCrmModel & {
   emailAddresses: EmailAddress[];
   phoneNumbers: PhoneNumber[];
   convertedDate: Date | null;
+  convertedContactId: string | null;
+  convertedAccountId: string | null;
+  ownerId: string | null;
 };
 
-export type Lead = BaseLead &
-  BaseCrmModelNonRemoteParams & {
-    convertedContactId: string | null;
-    convertedContact?: Contact;
-    convertedAccountId: string | null;
-    convertedAccount?: Account;
-    ownerId: string | null;
-    owner?: User;
-    rawData?: Record<string, any>;
-  };
+// TODO: Rename/consolidate when we move entirely to managed syncs
+export type Lead = BaseCrmModel & CoreLead;
 
-export type RemoteLead = BaseLead &
-  BaseCrmModelRemoteOnlyParams & {
-    convertedRemoteContactId: string | null;
-    convertedRemoteAccountId: string | null;
-    remoteOwnerId: string | null;
-    rawData: Record<string, any>;
-  };
+export type LeadV2 = BaseCrmModelV2 & CoreLead;
 
-type BaseLeadCreateParams = {
-  firstName?: string | null;
-  lastName?: string | null;
-  title?: string | null;
-  leadSource?: string | null;
-  company?: string | null;
-  addresses?: Address[];
-  emailAddresses?: EmailAddress[];
-
-  ownerId?: string | null;
-  convertedContactId?: string | null;
-  convertedAccountId?: string | null;
-
-  // TODO: Need extra permissions to create/update this derived field in SF
-  // convertedDate?: Date | null;
-
+export type LeadCreateParams = Partial<CoreLead> & {
   customFields?: CustomFields;
 };
 
-export type LeadCreateParams = BaseLeadCreateParams;
-export type RemoteLeadCreateParams = BaseLeadCreateParams;
-
 export type LeadUpdateParams = LeadCreateParams & {
   id: string;
-};
-
-export type RemoteLeadUpdateParams = RemoteLeadCreateParams & {
-  remoteId: string;
 };
 
 export type LeadFilters = {
@@ -85,7 +41,7 @@ export type LeadFilters = {
 };
 
 export type RemoteLeadTypes = {
-  object: RemoteLead;
-  createParams: RemoteLeadCreateParams;
-  updateParams: RemoteLeadUpdateParams;
+  object: LeadV2;
+  createParams: LeadCreateParams;
+  updateParams: LeadUpdateParams;
 };

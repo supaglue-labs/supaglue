@@ -125,7 +125,7 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
             <ApiKeyTabPanel />
           </TabPanel>
           {svixDashboardUrl ? (
-            <TabPanel value={value} index={3} className="w-full">
+            <TabPanel value={value} index={4} className="w-full">
               <CDCWebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
             </TabPanel>
           ) : null}

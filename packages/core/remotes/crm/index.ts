@@ -1,6 +1,5 @@
 import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
 import { CRMProviderName } from '@supaglue/types/crm';
-import { logger } from '../../lib/logger';
 import { CrmConnectorConfig, CrmRemoteClient } from './base';
 import * as capsule from './capsule';
 import * as hubspot from './hubspot';
@@ -46,29 +45,12 @@ export function getCrmRemoteClient<T extends CRMProviderName>(
             if (Promise.resolve(res) === res) {
               // if it's a promise
               return (res as Promise<unknown>).catch((err) => {
-                logger.warn(
-                  {
-                    err,
-                    client: target.constructor.name,
-                    method: p,
-                    args: argArray,
-                  },
-                  'remote client error'
-                );
-                throw err;
+                throw target.handleErr(err);
               });
             }
+            return res;
           } catch (err: unknown) {
-            logger.warn(
-              {
-                err,
-                client: target.constructor.name,
-                method: p,
-                args: argArray,
-              },
-              'remote client error'
-            );
-            throw err;
+            throw target.handleErr(err);
           }
         },
       });

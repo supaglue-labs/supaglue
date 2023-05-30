@@ -2,6 +2,7 @@ import type { PrismaClient } from '@supaglue/db';
 import type { Destination, DestinationCreateParams, DestinationUpdateParams } from '@supaglue/types';
 import { DestinationWriter } from '../destination_writers/base';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
+import { S3DestinationWriter } from '../destination_writers/s3';
 import { fromDestinationModel } from '../mappers/destination';
 
 export class DestinationService {
@@ -16,6 +17,16 @@ export class DestinationService {
       where: { applicationId },
     });
     return models.map(fromDestinationModel);
+  }
+
+  public async getDestinationByIntegrationId(integrationId: string): Promise<Destination | null> {
+    const model = await this.#prisma.destination.findFirst({
+      where: { integrations: { some: { id: integrationId } } },
+    });
+    if (!model) {
+      return null;
+    }
+    return fromDestinationModel(model);
   }
 
   public async getDestinationById(id: string): Promise<Destination> {
@@ -50,18 +61,14 @@ export class DestinationService {
     return fromDestinationModel(model);
   }
 
-  public async getWriterByApplicationId(applicationId: string): Promise<DestinationWriter> {
-    const destinations = await this.getDestinationsByApplicationId(applicationId);
-    if (destinations.length === 0) {
-      throw new Error('No destinations found');
+  public async getWriterByIntegrationId(integrationId: string): Promise<DestinationWriter | null> {
+    const destination = await this.getDestinationByIntegrationId(integrationId);
+    if (!destination) {
+      return null;
     }
-    if (destinations.length > 1) {
-      throw new Error('Multiple destinations found');
-    }
-    const destination = destinations[0];
     switch (destination.type) {
       case 's3':
-        throw new Error('S3 destination not implemented');
+        return new S3DestinationWriter(destination);
       case 'postgres':
         return new PostgresDestinationWriter(destination);
     }

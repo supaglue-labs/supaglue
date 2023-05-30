@@ -1,4 +1,4 @@
-import { CommonModel } from './common';
+import { CommonModelType } from './common';
 import { ConnectionCreateParamsAny } from './connection';
 
 export type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -23,7 +23,7 @@ export type SyncWebhookPayload = {
   providerName: string;
   historyId: string;
   numRecordsSynced: number;
-  commonModel: CommonModel;
+  commonModel: CommonModelType;
   errorMessage?: string;
 };
 

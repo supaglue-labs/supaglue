@@ -47,9 +47,33 @@ export class UnauthorizedError extends HTTPError {
   }
 }
 
+export class ForbiddenError extends HTTPError {
+  code = 403;
+  problemType = 'FORBIDDEN_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
+export class ConflictError extends HTTPError {
+  code = 409;
+  problemType = 'CONFLICT_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
 export class TooManyRequestsError extends HTTPError {
   code = 429;
   problemType = 'TOO_MANY_REQUESTS_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
+export class NotModifiedError extends HTTPError {
+  code = 304;
+  problemType = 'NOT_MODIFIED';
   constructor(message: string, cause?: Error) {
     super(message, cause);
   }

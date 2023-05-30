@@ -17,17 +17,24 @@ class ZendeskSellClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
+  public override getObject<T extends CRMCommonModelType>(
+    commonModelType: T,
+    id: string
+  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+    throw new Error('Not implemented');
+  }
+
   public override createObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+  ): Promise<string> {
     throw new Error('Not implemented');
   }
 
   public override updateObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+  ): Promise<string> {
     throw new Error('Not implemented');
   }
 }

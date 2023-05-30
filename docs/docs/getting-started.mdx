@@ -25,7 +25,7 @@ This guide will show you how to integrate Supaglue with your application in abou
 
 <Tabs>
 
-<TabItem value="supaglue-cloud" label="Supaglue Cloud">
+<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
 Sign up for [Supaglue Cloud](https://form.typeform.com/to/jv9ucMZR) early access.
 
@@ -33,12 +33,12 @@ After creating your account, you will be directed to the management portal.
 
 </TabItem>
 
-<TabItem value="localhost" label="Localhost" default>
+<TabItem value="localhost" label="Localhost">
 
 Clone the Github repo and run the Supaglue stack locally using docker compose:
 
 ```shell
-git clone -b v0.8.7 https://github.com/supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.8.8 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 docker compose up
 ```
 
@@ -203,7 +203,7 @@ Upon successful connection, CRM common model records will start syncing to your 
 Once syncs have completed, you can start making API calls to Supaglue to read and write against the customer's CRM objects.
 
 <Tabs>
-<TabItem value="supaglue-cloud" label="Supaglue Cloud">
+<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
 The following API call lists all customer account records:
 
@@ -216,7 +216,7 @@ curl https://api.supaglue.io/crm/v1/accounts \
 
 </TabItem>
 
-<TabItem value="localhost" label="Localhost" default>
+<TabItem value="localhost" label="Localhost">
 
 The following API call lists all customer account records:
 

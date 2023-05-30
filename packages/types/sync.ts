@@ -12,6 +12,11 @@ export type FullThenIncrementalSync = BaseSync & {
   state: FullThenIncrementalSyncState;
 };
 
+export type FullOnlySync = BaseSync & {
+  type: 'full only';
+  state: FullOnlySyncState;
+};
+
 /**
  * This sync type will:
  * 1. Sync records in reverse chronological order, starting with the most recent record.
@@ -46,12 +51,23 @@ export type ReverseThenForwardSync = BaseSync & {
   state: ReverseThenForwardSyncState;
 };
 
-export type SyncType = 'full then incremental' | 'reverse then forward';
-export type Sync = FullThenIncrementalSync | ReverseThenForwardSync;
+export type SyncType = 'full then incremental' | 'full only' | 'reverse then forward';
+export type Sync = FullThenIncrementalSync | ReverseThenForwardSync | FullOnlySync;
 
 export type CRMNumRecordsSyncedMap = Record<CRMCommonModelType, number>;
 export type EngagementNumRecordsSyncedMap = Record<EngagementCommonModelType, number>;
 export type NumRecordsSyncedMap = CRMNumRecordsSyncedMap | EngagementNumRecordsSyncedMap;
+
+export type FullOnlySyncStateCreatedPhase = {
+  phase: 'created';
+};
+
+export type FullOnlySyncStateLivePhase = {
+  phase: 'full';
+  status: 'in progress' | 'done';
+};
+
+export type FullOnlySyncState = FullOnlySyncStateCreatedPhase | FullOnlySyncStateLivePhase;
 
 export type FullThenIncrementalSyncStateCreatedPhase = {
   phase: 'created';
@@ -83,7 +99,7 @@ export type ReverseThenForwardSyncState =
   | ReverseThenForwardSyncStateReversePhase
   | ReverseThenForwardSyncStateForwardPhase;
 
-export type SyncState = FullThenIncrementalSyncState | ReverseThenForwardSyncState;
+export type SyncState = FullThenIncrementalSyncState | ReverseThenForwardSyncState | FullOnlySyncState;
 
 // The triplet of customer-provided identifiers to uniquely identify a sync. @todo: use this elsewhere.
 export type SyncIdentifier = {

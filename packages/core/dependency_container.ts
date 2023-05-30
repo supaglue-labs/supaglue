@@ -17,12 +17,14 @@ import {
   OpportunityService,
   UserService as CrmUserService,
 } from './services/common_models/crm';
+import { CrmCommonModelService } from './services/common_models/crm/common_model_service';
 import {
   ContactService as EngagementContactService,
   MailboxService,
   SequenceService,
   UserService as EngagementUserService,
 } from './services/common_models/engagement';
+import { EngagementCommonModelService } from './services/common_models/engagement/common_model_service';
 import { SequenceStateService } from './services/common_models/engagement/sequence_state_service';
 import { DestinationService } from './services/destination_service';
 import { WebhookService } from './services/webhook_service';
@@ -41,6 +43,9 @@ export type CoreDependencyContainer = {
   syncHistoryService: SyncHistoryService;
   webhookService: WebhookService;
   destinationService: DestinationService;
+
+  crmCommonModelService: CrmCommonModelService;
+  engagementCommonModelService: EngagementCommonModelService;
 
   // crm
   crm: {
@@ -99,6 +104,9 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const webhookService = new WebhookService({ prisma });
   const destinationService = new DestinationService(prisma);
 
+  const crmCommonModelService = new CrmCommonModelService(remoteService, destinationService);
+  const engagementCommonModelService = new EngagementCommonModelService(remoteService);
+
   // crm
   const accountService = new AccountService(pgPool, prisma, remoteService);
   const leadService = new LeadService(pgPool, prisma, remoteService);
@@ -127,6 +135,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     webhookService,
     destinationService,
     syncHistoryService,
+    crmCommonModelService,
+    engagementCommonModelService,
     // crm
     crm: {
       contactService,

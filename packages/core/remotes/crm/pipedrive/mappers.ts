@@ -1,22 +1,23 @@
-import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
 import type {
+  AccountCreateParams,
+  AccountV2,
+  ContactCreateParams,
+  ContactV2,
+  LeadCreateParams,
+  LeadV2,
+  OpportunityCreateParams,
   OpportunityStatus,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteUser,
+  OpportunityV2,
+  UserV2,
 } from '@supaglue/types/crm';
+import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { PipedriveRecord, PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
+import { maxDate } from '../../../lib';
 
-export const fromPipedrivePersonToRemoteContact = (person: PipedriveRecord): RemoteContact => {
+export const fromPipedrivePersonToContactV2 = (person: PipedriveRecord): ContactV2 => {
   return {
-    remoteId: person.id.toString(),
+    id: person.id.toString(),
     firstName: person.first_name ?? null,
     lastName: person.last_name ?? null,
     addresses: [], // Pipedrive contacts do not have addresses
@@ -24,20 +25,22 @@ export const fromPipedrivePersonToRemoteContact = (person: PipedriveRecord): Rem
     phoneNumbers: fromPipedrivePhonesToPhoneNumbers(person.phone),
     lifecycleStage: null,
     lastActivityAt: person.last_activity_date ? new Date(person.last_activity_date) : null,
-    remoteOwnerId: person.owner_id?.id?.toString() ?? null,
-    remoteAccountId: person.org_id?.value?.toString() ?? null,
-    remoteCreatedAt: person.add_time ? new Date(person.add_time) : null,
-    remoteUpdatedAt: person.update_time ? new Date(person.update_time) : null,
-    remoteWasDeleted: !!person.delete_time,
-    remoteDeletedAt: person.delete_time ? new Date(person.delete_time) : null,
-    detectedOrRemoteDeletedAt: person.delete_time ? new Date(person.delete_time) : null,
+    ownerId: person.owner_id?.id?.toString() ?? null,
+    accountId: person.org_id?.value?.toString() ?? null,
+    createdAt: person.add_time ? new Date(person.add_time) : null,
+    updatedAt: person.update_time ? new Date(person.update_time) : null,
+    isDeleted: !!person.delete_time,
+    lastModifiedAt: maxDate(
+      person.delete_time ? new Date(person.delete_time) : null,
+      person.update_time ? new Date(person.update_time) : null
+    ),
     rawData: person,
   };
 };
 
-export const fromPipedriveLeadToRemoteLead = (lead: PipedriveRecord): RemoteLead => {
+export const fromPipedriveLeadToLeadV2 = (lead: PipedriveRecord): LeadV2 => {
   return {
-    remoteId: lead.id.toString(),
+    id: lead.id.toString(),
     leadSource: lead.source_name ?? null,
     title: lead.title ?? null,
     company: null,
@@ -47,23 +50,22 @@ export const fromPipedriveLeadToRemoteLead = (lead: PipedriveRecord): RemoteLead
     addresses: [],
     emailAddresses: [],
     phoneNumbers: [],
-    remoteOwnerId: lead.owner_id?.toString() ?? null,
-    convertedRemoteAccountId: lead.organization_id?.toString() ?? null,
-    convertedRemoteContactId: lead.person_id?.toString() ?? null,
+    ownerId: lead.owner_id?.toString() ?? null,
+    convertedAccountId: lead.organization_id?.toString() ?? null,
+    convertedContactId: lead.person_id?.toString() ?? null,
     convertedDate: null,
-    remoteCreatedAt: lead.add_time ? new Date(lead.add_time) : null,
-    remoteUpdatedAt: lead.update_time ? new Date(lead.update_time) : null,
-    remoteWasDeleted: lead.is_archived ?? false,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    createdAt: lead.add_time ? new Date(lead.add_time) : null,
+    updatedAt: lead.update_time ? new Date(lead.update_time) : null,
+    isDeleted: lead.is_archived ?? false,
+    lastModifiedAt: maxDate(lead.update_time ? new Date(lead.update_time) : null), // TODO: how to know when deleted?
     rawData: lead,
   };
 };
 
-export const fromPipedriveDealToRemoteOpportunity = (
+export const fromPipedriveDealToOpportunityV2 = (
   deal: PipedriveRecord,
   pipelineStageMapping: PipelineStageMapping
-): RemoteOpportunity => {
+): OpportunityV2 => {
   let pipeline = deal.pipeline_id?.toString() ?? null;
   let stage = deal.stage_id?.toString() ?? null;
 
@@ -75,7 +77,7 @@ export const fromPipedriveDealToRemoteOpportunity = (
     }
   }
   return {
-    remoteId: deal.id.toString(),
+    id: deal.id.toString(),
     name: deal.title ?? null,
     description: null,
     amount: deal.value ?? null,
@@ -84,20 +86,22 @@ export const fromPipedriveDealToRemoteOpportunity = (
     lastActivityAt: deal.last_activity_date ? new Date(deal.last_activity_date) : null,
     closeDate: deal.close_time ? new Date(deal.close_time) : null,
     pipeline,
-    remoteOwnerId: deal.user_id?.id?.toString() ?? null,
-    remoteAccountId: deal.org_id?.value?.toString() ?? null,
-    remoteCreatedAt: deal.add_time ? new Date(deal.add_time) : null,
-    remoteUpdatedAt: deal.update_time ? new Date(deal.update_time) : null,
-    remoteWasDeleted: deal.deleted ?? false,
-    remoteDeletedAt: deal.delete_time ? new Date(deal.delete_time) : null,
-    detectedOrRemoteDeletedAt: deal.delete_time ? new Date(deal.delete_time) : null,
+    ownerId: deal.user_id?.id?.toString() ?? null,
+    accountId: deal.org_id?.value?.toString() ?? null,
+    createdAt: deal.add_time ? new Date(deal.add_time) : null,
+    updatedAt: deal.update_time ? new Date(deal.update_time) : null,
+    isDeleted: deal.deleted ?? false,
+    lastModifiedAt: maxDate(
+      deal.update_time ? new Date(deal.update_time) : null,
+      deal.delete_time ? new Date(deal.delete_time) : null
+    ),
     rawData: deal,
   };
 };
 
-export const fromPipedriveOrganizationToRemoteAccount = (organization: PipedriveRecord): RemoteAccount => {
+export const fromPipedriveOrganizationToAccountV2 = (organization: PipedriveRecord): AccountV2 => {
   return {
-    remoteId: organization.id.toString(),
+    id: organization.id.toString(),
     name: organization.name ?? null,
     description: null,
     industry: null,
@@ -107,27 +111,28 @@ export const fromPipedriveOrganizationToRemoteAccount = (organization: Pipedrive
     phoneNumbers: [],
     lastActivityAt: null,
     lifecycleStage: null,
-    remoteOwnerId: organization.owner_id?.id?.toString() ?? null,
-    remoteCreatedAt: organization.add_time ? new Date(organization.add_time) : null,
-    remoteUpdatedAt: organization.update_time ? new Date(organization.update_time) : null,
-    remoteWasDeleted: !!organization.delete_time,
-    remoteDeletedAt: organization.delete_time ? new Date(organization.delete_time) : null,
-    detectedOrRemoteDeletedAt: organization.delete_time ? new Date(organization.delete_time) : null,
+    ownerId: organization.owner_id?.id?.toString() ?? null,
+    createdAt: organization.add_time ? new Date(organization.add_time) : null,
+    updatedAt: organization.update_time ? new Date(organization.update_time) : null,
+    isDeleted: !!organization.delete_time,
+    lastModifiedAt: maxDate(
+      organization.update_time ? new Date(organization.update_time) : null,
+      organization.delete_time ? new Date(organization.delete_time) : null
+    ),
     rawData: organization,
   };
 };
 
-export const fromPipedriveUserToRemoteUser = (user: PipedriveRecord): RemoteUser => {
+export const fromPipedriveUserToUserV2 = (user: PipedriveRecord): UserV2 => {
   return {
-    remoteId: user.id.toString(),
+    id: user.id.toString(),
     name: user.name ?? null,
     email: user.email ?? null,
     isActive: user.active_flag ?? false,
-    remoteCreatedAt: user.created ? new Date(user.created) : null,
-    remoteUpdatedAt: user.modified ? new Date(user.modified) : null,
-    remoteWasDeleted: false,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: null,
+    createdAt: user.created ? new Date(user.created) : null,
+    updatedAt: user.modified ? new Date(user.modified) : null,
+    isDeleted: false,
+    lastModifiedAt: maxDate(user.modified ? new Date(user.modified) : null), // TODO: how to know when deleted?
     rawData: user,
   };
 };
@@ -171,7 +176,7 @@ export const fromPipedriveOrganizationToAddresses = (organization: PipedriveReco
   ];
 };
 
-export const toPipedrivePersonCreateParams = (params: RemoteContactCreateParams) => {
+export const toPipedrivePersonCreateParams = (params: ContactCreateParams) => {
   return {
     first_name: params.firstName,
     last_name: params.lastName,
@@ -191,7 +196,7 @@ export const toPipedrivePersonCreateParams = (params: RemoteContactCreateParams)
 
 export const toPipedrivePersonUpdateParams = toPipedrivePersonCreateParams;
 
-export const toPipedriveLeadCreateParams = (params: RemoteLeadCreateParams) => {
+export const toPipedriveLeadCreateParams = (params: LeadCreateParams) => {
   if (!params.convertedAccountId && !params.convertedContactId) {
     throw new BadRequestError('Either convertedAccountId or convertedContactId must be provided');
   }
@@ -205,7 +210,7 @@ export const toPipedriveLeadCreateParams = (params: RemoteLeadCreateParams) => {
 };
 export const toPipedriveLeadUpdateParams = toPipedriveLeadCreateParams;
 
-export const toPipedriveOrganizationCreateParams = (params: RemoteAccountCreateParams) => {
+export const toPipedriveOrganizationCreateParams = (params: AccountCreateParams) => {
   return {
     name: params.name,
     owner_id: params.ownerId,
@@ -254,7 +259,7 @@ const getStageId = (
 };
 
 export const toPipedriveDealCreateParams = (
-  params: RemoteOpportunityCreateParams,
+  params: OpportunityCreateParams,
   pipelineStageMapping: PipelineStageMapping
 ) => {
   const pipelineId = getPipelineId(params.pipeline, pipelineStageMapping);

@@ -180,7 +180,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
           <Typography variant="subtitle1">Destination</Typography>
           <Select
             name="Destination"
-            disabled={isLoadingDestinations}
+            disabled={isLoadingDestinations || !!integration?.destinationId}
             onChange={setDestinationId}
             value={destinationId ?? ''}
             options={destinations?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}

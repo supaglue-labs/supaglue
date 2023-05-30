@@ -1,6 +1,6 @@
 {
   "name": "supaglue",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "packageManager": "yarn@3.4.1",
   "private": true,
   "workspaces": [
@@ -16,7 +16,7 @@
     "lint": "turbo run lint",
     "generate": "turbo run generate",
     "generate:clients": "turbo run generate:clients",
-    "bundle-openapi": "tsx scripts/validate_and_bundle_openapi.ts openapi/crm/openapi.yaml openapi/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/engagement/openapi.yaml openapi/engagement/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/mgmt/openapi.yaml openapi/mgmt/openapi.bundle.json"
+    "bundle-openapi": "tsx scripts/validate_and_bundle_openapi.ts openapi/v1/crm/openapi.yaml openapi/v1/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v1/engagement/openapi.yaml openapi/v1/engagement/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v1/mgmt/openapi.yaml openapi/v1/mgmt/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v2/crm/openapi.yaml openapi/v2/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v2/engagement/openapi.yaml openapi/v2/engagement/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v2/mgmt/openapi.yaml openapi/v2/mgmt/openapi.bundle.json"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit",
@@ -44,7 +44,7 @@
     "prettier-plugin-prisma": "^4.12.0",
     "tsc-files": "^1.1.3",
     "tsx": "^3.12.3",
-    "turbo": "^1.9.6",
+    "turbo": "^1.9.8",
     "typescript": "^4.9.5"
   },
   "engines": {

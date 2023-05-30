@@ -1,6 +1,11 @@
-import { BaseEngagementModel, BaseEngagementModelNonRemoteParams, BaseEngagementModelRemoteOnlyParams } from './base';
+import { SnakecasedKeys } from '../snakecased_keys';
+import { BaseEngagementModel, BaseEngagementModelV2, SnakecasedEngagementTenantFields } from './base';
 
-export type BaseSequence = BaseEngagementModel & {
+export type SnakecasedKeysSequence = SnakecasedKeys<Sequence>;
+export type SnakecasedKeysSequenceV2 = SnakecasedKeys<SequenceV2>;
+export type SnakecasedKeysSequenceV2WithTenant = SnakecasedKeysSequenceV2 & SnakecasedEngagementTenantFields;
+
+type CoreSequence = {
   isEnabled: boolean;
   name: string | null;
   tags: string[];
@@ -10,19 +15,13 @@ export type BaseSequence = BaseEngagementModel & {
   optOutCount: number;
   replyCount: number;
   clickCount: number;
+  ownerId: string | null;
 };
 
-export type Sequence = BaseSequence &
-  BaseEngagementModelNonRemoteParams & {
-    ownerId: string | null;
-    rawData?: Record<string, any>;
-  };
+// TODO: Rename/consolidate when we move entirely to managed syncs
+export type Sequence = BaseEngagementModel & CoreSequence;
 
-export type RemoteSequence = BaseSequence &
-  BaseEngagementModelRemoteOnlyParams & {
-    remoteOwnerId: string | null;
-    rawData: Record<string, any>;
-  };
+export type SequenceV2 = BaseEngagementModelV2 & CoreSequence;
 
 export type RemoteSequenceTypes = {
   object: Sequence;

@@ -2,29 +2,29 @@ import { SimplePublicObjectWithAssociations as HubSpotCompany } from '@hubspot/a
 import { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
-import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/base';
 import {
+  AccountCreateParams,
+  AccountV2,
+  ContactCreateParams,
+  ContactV2,
+  OpportunityCreateParams,
   OpportunityStatus,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteUser,
+  OpportunityV2,
+  UserV2,
 } from '@supaglue/types/crm';
+import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
-import { removeUndefinedValues } from '../../../lib';
+import { maxDate, removeUndefinedValues } from '../../../lib';
 
-export const fromHubSpotCompanyToRemoteAccount = ({
+export const fromHubSpotCompanyToAccountV2 = ({
   id,
   properties,
   createdAt,
   updatedAt,
   archived,
   archivedAt,
-}: HubSpotCompany): RemoteAccount => {
+}: HubSpotCompany): AccountV2 => {
   const addresses: Address[] =
     properties.address ||
     properties.address2 ||
@@ -55,10 +55,10 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     : [];
 
   return {
-    remoteId: id,
+    id,
     name: properties.name ?? null,
     description: properties.description ?? null,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    ownerId: properties.hubspot_owner_id ?? null,
     industry: properties.industry ?? null,
     website: properties.website ?? null,
     numberOfEmployees: properties.numberofemployees ? parseInt(properties.numberofemployees) : null,
@@ -67,11 +67,10 @@ export const fromHubSpotCompanyToRemoteAccount = ({
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     // Figure out where this comes from
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: !!archived,
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
     rawData: properties,
   };
 };
@@ -84,7 +83,7 @@ export const fromHubSpotContactToRemoteContact = ({
   associations,
   archived,
   archivedAt,
-}: HubSpotContact): RemoteContact => {
+}: HubSpotContact): ContactV2 => {
   const emailAddresses = [
     properties.email
       ? {
@@ -99,9 +98,9 @@ export const fromHubSpotContactToRemoteContact = ({
         }
       : null,
   ].filter(Boolean) as EmailAddress[];
-  let remoteAccountId = null;
+  let accountId = null;
   if (associations?.companies?.results?.length) {
-    remoteAccountId = associations.companies.results[0].id ?? null;
+    accountId = associations.companies.results[0].id ?? null;
   }
 
   const phoneNumbers = [
@@ -141,9 +140,9 @@ export const fromHubSpotContactToRemoteContact = ({
       : [];
 
   return {
-    remoteId: id,
-    remoteAccountId,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    id,
+    accountId,
+    ownerId: properties.hubspot_owner_id ?? null,
     firstName: properties.firstname ?? null,
     lastName: properties.lastname ?? null,
     addresses,
@@ -151,28 +150,27 @@ export const fromHubSpotContactToRemoteContact = ({
     emailAddresses,
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: !!archived,
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
     rawData: properties,
   };
 };
 
-export const fromHubSpotDealToRemoteOpportunity = (
+export const fromHubSpotDealToOpportunityV2 = (
   { id, properties, createdAt, updatedAt, associations, archived, archivedAt }: HubSpotDeal,
   pipelineStageMapping: PipelineStageMapping
-): RemoteOpportunity => {
+): OpportunityV2 => {
   let status: OpportunityStatus = 'OPEN';
   if (properties.hs_is_closed_won) {
     status = 'WON';
   } else if (properties.hs_is_closed === 'true') {
     status = 'LOST';
   }
-  let remoteAccountId = null;
+  let accountId = null;
   if (associations?.companies?.results?.length) {
-    remoteAccountId = associations.companies.results[0].id ?? null;
+    accountId = associations.companies.results[0].id ?? null;
   }
 
   let pipeline = properties.pipeline ?? null;
@@ -187,27 +185,26 @@ export const fromHubSpotDealToRemoteOpportunity = (
   }
 
   return {
-    remoteId: id,
+    id,
     name: properties.dealname ?? null,
     description: properties.description ?? null,
-    remoteOwnerId: properties.hubspot_owner_id ?? null,
+    ownerId: properties.hubspot_owner_id ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
     status,
     pipeline,
-    remoteAccountId,
+    accountId,
     amount: properties.amount ? parseInt(properties.amount) : null,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: archivedAt ?? null,
-    detectedOrRemoteDeletedAt: archivedAt ?? null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: !!archived,
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
     rawData: properties,
   };
 };
 
-export const fromHubspotOwnerToRemoteUser = ({
+export const fromHubspotOwnerToUserV2 = ({
   id,
   firstName,
   lastName,
@@ -217,17 +214,16 @@ export const fromHubspotOwnerToRemoteUser = ({
   archived,
   userId,
   teams,
-}: HubspotOwner): RemoteUser => {
+}: HubspotOwner): UserV2 => {
   return {
-    remoteId: id,
+    id,
     name: getFullName(firstName, lastName),
     email: email ?? null,
     isActive: !archived,
-    remoteCreatedAt: createdAt,
-    remoteUpdatedAt: updatedAt,
-    remoteWasDeleted: !!archived,
-    remoteDeletedAt: null,
-    detectedOrRemoteDeletedAt: archived ? new Date() : null,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isDeleted: !!archived,
+    lastModifiedAt: updatedAt, // TODO: How do we find out when the user was deleted?
     rawData: {
       // List of fields comes from `HubspotOwner`, which is a class, not an object
       id,
@@ -256,7 +252,7 @@ const getFullName = (firstName?: string, lastName?: string): string | null => {
   return null;
 };
 
-export const toHubspotAccountCreateParams = (params: RemoteAccountCreateParams): Record<string, string> => {
+export const toHubspotAccountCreateParams = (params: AccountCreateParams): Record<string, string> => {
   const phoneParams = toHubspotPhoneCreateParams(params.phoneNumbers);
   const out = {
     name: nullToEmptyString(params.name),
@@ -316,7 +312,7 @@ const getStageId = (
 };
 
 export const toHubspotOpportunityCreateParams = (
-  params: RemoteOpportunityCreateParams,
+  params: OpportunityCreateParams,
   pipelineStageMapping: PipelineStageMapping
 ): Record<string, string> => {
   const pipelineId = getPipelineId(params.pipeline, pipelineStageMapping);
@@ -336,7 +332,7 @@ export const toHubspotOpportunityCreateParams = (
 };
 export const toHubspotOpportunityUpdateParams = toHubspotOpportunityCreateParams;
 
-export const toHubspotContactCreateParams = (params: RemoteContactCreateParams): Record<string, string> => {
+export const toHubspotContactCreateParams = (params: ContactCreateParams): Record<string, string> => {
   const out = {
     firstname: nullToEmptyString(params.firstName),
     lastname: nullToEmptyString(params.lastName),

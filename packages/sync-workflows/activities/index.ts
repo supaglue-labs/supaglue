@@ -13,6 +13,7 @@ import {
   SequenceStateService,
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
+import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetSync } from './get_sync';
@@ -21,6 +22,7 @@ import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
 import { createSetForceSyncFlag } from './set_force_sync_flag';
+import { createSyncRecordsToDestination } from './sync_records_to_destination';
 import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
@@ -30,6 +32,7 @@ export const createActivities = ({
   syncHistoryService,
   integrationService,
   applicationService,
+  destinationService,
   crm,
   engagement,
 }: {
@@ -39,6 +42,7 @@ export const createActivities = ({
   syncHistoryService: SyncHistoryService;
   integrationService: IntegrationService;
   applicationService: ApplicationService;
+  destinationService: DestinationService;
   crm: {
     contactService: ContactService;
     accountService: AccountService;
@@ -60,6 +64,7 @@ export const createActivities = ({
     setForceSyncFlag: createSetForceSyncFlag(syncService),
     updateSyncState: createUpdateSyncState(syncService),
     importRecords: createImportRecords(connectionService, remoteService, crm, engagement),
+    syncRecordsToDestination: createSyncRecordsToDestination(connectionService, remoteService, destinationService),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
     logSyncFinish: createLogSyncFinish({ syncHistoryService }),
     maybeSendSyncFinishWebhook: createMaybeSendSyncFinishWebhook({

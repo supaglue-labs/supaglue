@@ -1,17 +1,15 @@
-import { CrmAccount } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/base';
-import { Account, RemoteAccount, SnakecasedKeysAccount } from '@supaglue/types/crm';
+import type { CrmAccount, Prisma } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type { Account, AccountV2, SnakecasedKeysCrmAccount, SnakecasedKeysCrmAccountV2 } from '@supaglue/types/crm';
+import type { Address, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
-import { toSnakecasedKeysUser } from './user';
 
-export const toSnakecasedKeysAccount = (account: Account): SnakecasedKeysAccount => {
+export const toSnakecasedKeysCrmAccount = (account: Account): SnakecasedKeysCrmAccount => {
   return {
     id: account.id,
     owner_id: account.ownerId,
-    owner: account.owner ? toSnakecasedKeysUser(account.owner) : undefined,
     last_modified_at: account.lastModifiedAt,
     remote_id: account.remoteId,
     name: account.name,
@@ -26,6 +24,27 @@ export const toSnakecasedKeysAccount = (account: Account): SnakecasedKeysAccount
     remote_created_at: account.remoteCreatedAt,
     remote_updated_at: account.remoteUpdatedAt,
     remote_was_deleted: account.remoteWasDeleted,
+    raw_data: account.rawData,
+  };
+};
+
+export const toSnakecasedKeysCrmAccountV2 = (account: AccountV2): SnakecasedKeysCrmAccountV2 => {
+  return {
+    owner_id: account.ownerId,
+    last_modified_at: account.lastModifiedAt,
+    id: account.id,
+    name: account.name,
+    description: account.description,
+    industry: account.industry,
+    website: account.website,
+    number_of_employees: account.numberOfEmployees,
+    addresses: account.addresses.map(toSnakecasedKeysAddress),
+    phone_numbers: account.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    last_activity_at: account.lastActivityAt,
+    lifecycle_stage: account.lifecycleStage,
+    created_at: account.createdAt,
+    updated_at: account.updatedAt,
+    is_deleted: account.isDeleted,
     raw_data: account.rawData,
   };
 };
@@ -73,24 +92,43 @@ export const fromAccountModel = (
   };
 };
 
+export const fromRemoteAccountToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteAccount: AccountV2
+): Prisma.CrmAccountCreateInput => {
+  return {
+    id: uuidv5(remoteAccount.id, connectionId),
+    name: remoteAccount.name,
+    description: remoteAccount.description,
+    industry: remoteAccount.industry,
+    website: remoteAccount.website,
+    numberOfEmployees: remoteAccount.numberOfEmployees,
+    addresses: remoteAccount.addresses,
+    phoneNumbers: remoteAccount.phoneNumbers,
+    lastActivityAt: remoteAccount.lastActivityAt?.toISOString(),
+    lifecycleStage: remoteAccount.lifecycleStage,
+    remoteId: remoteAccount.id,
+    remoteCreatedAt: remoteAccount.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteAccount.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteAccount.isDeleted,
+    lastModifiedAt: remoteAccount.lastModifiedAt?.toISOString(),
+    customerId,
+    connectionId,
+    remoteOwnerId: remoteAccount.ownerId,
+    ownerId: remoteAccount.ownerId ? uuidv5(remoteAccount.ownerId, connectionId) : null,
+    rawData: remoteAccount.rawData,
+  };
+};
+
 // TODO: Use prisma generator to generate return type
 export const fromRemoteAccountToDbAccountParams = (
   connectionId: string,
   customerId: string,
-  remoteAccount: RemoteAccount
+  remoteAccount: AccountV2
 ) => {
-  const lastModifiedAt =
-    remoteAccount.remoteUpdatedAt || remoteAccount.detectedOrRemoteDeletedAt
-      ? new Date(
-          Math.max(
-            remoteAccount.remoteUpdatedAt?.getTime() || 0,
-            remoteAccount.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        )
-      : undefined;
-
   return {
-    id: uuidv5(remoteAccount.remoteId, connectionId),
+    id: uuidv5(remoteAccount.id, connectionId),
     name: remoteAccount.name,
     description: remoteAccount.description,
     industry: remoteAccount.industry,
@@ -100,17 +138,15 @@ export const fromRemoteAccountToDbAccountParams = (
     phone_numbers: remoteAccount.phoneNumbers,
     last_activity_at: remoteAccount.lastActivityAt?.toISOString(),
     lifecycle_stage: remoteAccount.lifecycleStage,
-    remote_id: remoteAccount.remoteId,
-    remote_created_at: remoteAccount.remoteCreatedAt?.toISOString(),
-    remote_updated_at: remoteAccount.remoteUpdatedAt?.toISOString(),
-    remote_was_deleted: remoteAccount.remoteWasDeleted,
-    remote_deleted_at: remoteAccount.remoteDeletedAt?.toISOString(),
-    detected_or_remote_deleted_at: remoteAccount.detectedOrRemoteDeletedAt?.toISOString(),
-    last_modified_at: lastModifiedAt?.toISOString(),
+    remote_id: remoteAccount.id,
+    remote_created_at: remoteAccount.createdAt?.toISOString(),
+    remote_updated_at: remoteAccount.updatedAt?.toISOString(),
+    remote_was_deleted: remoteAccount.isDeleted,
+    last_modified_at: remoteAccount.lastModifiedAt?.toISOString(),
     customer_id: customerId,
     connection_id: connectionId,
-    _remote_owner_id: remoteAccount.remoteOwnerId,
-    owner_id: remoteAccount.remoteOwnerId ? uuidv5(remoteAccount.remoteOwnerId, connectionId) : null,
+    _remote_owner_id: remoteAccount.ownerId,
+    owner_id: remoteAccount.ownerId ? uuidv5(remoteAccount.ownerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteAccount.rawData,
   };

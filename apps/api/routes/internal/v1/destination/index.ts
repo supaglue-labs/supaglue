@@ -12,7 +12,7 @@ import {
   UpdateDestinationPathParams,
   UpdateDestinationRequest,
   UpdateDestinationResponse,
-} from '@supaglue/schemas/mgmt';
+} from '@supaglue/schemas/v1/mgmt';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';

@@ -1,16 +1,23 @@
+export type SnakecasedCrmTenantFields = {
+  _supaglue_provider_name: string;
+  _supaglue_customer_id: string;
+};
+
 export type BaseCrmModel = {
+  id: string;
   remoteId: string;
   remoteCreatedAt: Date | null;
   remoteUpdatedAt: Date | null;
   remoteWasDeleted: boolean;
-};
-
-export type BaseCrmModelNonRemoteParams = {
-  id: string;
   lastModifiedAt: Date;
+  rawData?: Record<string, any>;
 };
 
-export type BaseCrmModelRemoteOnlyParams = {
-  remoteDeletedAt: Date | null;
-  detectedOrRemoteDeletedAt: Date | null;
+export type BaseCrmModelV2 = {
+  id: string;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+  isDeleted: boolean;
+  lastModifiedAt: Date;
+  rawData: Record<string, any>;
 };

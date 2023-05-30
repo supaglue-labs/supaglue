@@ -114,7 +114,7 @@ initRoutes(app);
 
 // init the processSyncChanges schedule
 const { connectionAndSyncService } = getDependencyContainer();
-connectionAndSyncService.createProcessSyncChangesTemporalScheduleIfNotExist().catch((err) => {
+connectionAndSyncService.upsertProcessSyncChangesTemporalSchedule().catch((err) => {
   logger.error(err);
 });
 

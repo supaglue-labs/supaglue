@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toSnakecasedKeysContact } from '@supaglue/core/mappers/crm';
+import { toSnakecasedKeysCrmContact } from '@supaglue/core/mappers/crm';
 import { toGetInternalParams, toListInternalParams, toSearchInternalParams } from '@supaglue/core/mappers/params';
 import {
   CreateContactPathParams,
@@ -19,7 +19,7 @@ import {
   UpdateContactQueryParams,
   UpdateContactRequest,
   UpdateContactResponse,
-} from '@supaglue/schemas/crm';
+} from '@supaglue/schemas/v1/crm';
 import { ListParams } from '@supaglue/types';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
@@ -46,7 +46,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toListInternalParams(req.query)
       );
-      const snakeCaseKeysResults = results.map(toSnakecasedKeysContact);
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysCrmContact);
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
@@ -62,7 +62,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toGetInternalParams(req.query)
       );
-      return res.status(200).send(toSnakecasedKeysContact(contact));
+      return res.status(200).send(toSnakecasedKeysCrmContact(contact));
     }
   );
 
@@ -78,7 +78,7 @@ export default function init(app: Router): void {
         connectionId,
         camelcaseKeysSansCustomFields(req.body.model)
       );
-      return res.status(200).send({ model: toSnakecasedKeysContact(contact) });
+      return res.status(200).send({ model: toSnakecasedKeysCrmContact(contact) });
     }
   );
 
@@ -93,7 +93,7 @@ export default function init(app: Router): void {
         id: req.params.contact_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
-      return res.status(200).send({ model: toSnakecasedKeysContact(contact) });
+      return res.status(200).send({ model: toSnakecasedKeysCrmContact(contact) });
     }
   );
 
@@ -109,7 +109,7 @@ export default function init(app: Router): void {
         camelcaseKeys(req.body.filters)
       );
 
-      const snakeCaseKeysResults = results.map(toSnakecasedKeysContact);
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysCrmContact);
 
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }

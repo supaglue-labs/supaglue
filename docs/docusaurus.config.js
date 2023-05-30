@@ -87,16 +87,28 @@ const config = {
             ].filter((obj) => !!obj)
           ),
           {
-            spec: '../openapi/crm/openapi.bundle.json',
-            route: '/next/references/api/crm',
+            spec: '../openapi/v1/crm/openapi.bundle.json',
+            route: '/next/references/api/v1/crm',
           },
           {
-            spec: '../openapi/engagement/openapi.bundle.json',
-            route: '/next/references/api/engagement',
+            spec: '../openapi/v1/engagement/openapi.bundle.json',
+            route: '/next/references/api/v1/engagement',
           },
           {
-            spec: '../openapi/mgmt/openapi.bundle.json',
-            route: '/next/references/api/mgmt',
+            spec: '../openapi/v1/mgmt/openapi.bundle.json',
+            route: '/next/references/api/v1/mgmt',
+          },
+          {
+            spec: '../openapi/v2/crm/openapi.bundle.json',
+            route: '/next/references/api/v2/crm',
+          },
+          {
+            spec: '../openapi/v2/engagement/openapi.bundle.json',
+            route: '/next/references/api/v2/engagement',
+          },
+          {
+            spec: '../openapi/v2/mgmt/openapi.bundle.json',
+            route: '/next/references/api/v2/mgmt',
           },
         ],
         // Theme Options for modifying how redoc renders them
@@ -304,7 +316,11 @@ const config = {
         return {
           plugins: [
             new WatchExternalFilesPlugin({
-              files: ['../openapi/mgmt/openapi.bundle.json', '../openapi/crm/openapi.bundle.json'],
+              files: [
+                '../openapi/v1/mgmt/openapi.bundle.json',
+                '../openapi/v1/crm/openapi.bundle.json',
+                '../openapi/v1/engagement/openapi.bundle.json',
+              ],
             }),
           ],
         };

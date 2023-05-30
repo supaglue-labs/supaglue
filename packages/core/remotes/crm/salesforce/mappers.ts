@@ -1,41 +1,37 @@
-import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/base';
 import type {
+  AccountCreateParams,
+  AccountUpdateParams,
+  AccountV2,
+  ContactCreateParams,
+  ContactUpdateParams,
+  ContactV2,
+  LeadCreateParams,
+  LeadUpdateParams,
+  LeadV2,
+  OpportunityCreateParams,
   OpportunityStatus,
-  RemoteAccount,
-  RemoteAccountCreateParams,
-  RemoteAccountUpdateParams,
-  RemoteContact,
-  RemoteContactCreateParams,
-  RemoteContactUpdateParams,
-  RemoteLead,
-  RemoteLeadCreateParams,
-  RemoteLeadUpdateParams,
-  RemoteOpportunity,
-  RemoteOpportunityCreateParams,
-  RemoteOpportunityUpdateParams,
-  RemoteUser,
+  OpportunityUpdateParams,
+  OpportunityV2,
+  UserV2,
 } from '@supaglue/types/crm';
+import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 
-const CONTACT_ID_PREFIX = '003';
-const LEAD_ID_PREFIX = '00Q';
-
-export const fromSalesforceUserToRemoteUser = (record: Record<string, any>): RemoteUser => {
+export const fromSalesforceUserToUserV2 = (record: Record<string, any>): UserV2 => {
   return {
-    remoteId: record.Id,
+    id: record.Id,
     name: record.Name,
     email: record.Email,
     isActive: record.IsActive,
     // These fields are not supported by Salesforce
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
 
-export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>): RemoteAccount => {
+export const fromSalesforceAccountToAccountV2 = (record: Record<string, any>): AccountV2 => {
   const billingAddress: Address | null =
     record.BillingCity ||
     record.BillingCountry ||
@@ -88,10 +84,10 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
   const phoneNumbers = [phoneNumber, faxPhoneNumber].filter((phoneNumber): phoneNumber is PhoneNumber => !!phoneNumber);
 
   return {
-    remoteId: record.Id,
+    id: record.Id,
     name: record.Name,
     description: record.Description ?? null,
-    remoteOwnerId: record.OwnerId ?? null,
+    ownerId: record.OwnerId ?? null,
     industry: record.Industry ?? null,
     website: record.Website ?? null,
     numberOfEmployees: record.NumberOfEmployees ? parseInt(record.NumberOfEmployees) : null,
@@ -101,16 +97,15 @@ export const fromSalesforceAccountToRemoteAccount = (record: Record<string, any>
     lifecycleStage: null,
     // Figure out where this comes from
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
 
-export const toSalesforceAccountCreateParams = (params: RemoteAccountCreateParams) => {
+export const toSalesforceAccountCreateParams = (params: AccountCreateParams) => {
   return {
     Name: params.name,
     Description: params.description,
@@ -123,14 +118,14 @@ export const toSalesforceAccountCreateParams = (params: RemoteAccountCreateParam
   };
 };
 
-export const toSalesforceAccountUpdateParams = (params: RemoteAccountUpdateParams) => {
+export const toSalesforceAccountUpdateParams = (params: AccountUpdateParams) => {
   return {
-    Id: params.remoteId,
+    Id: params.id,
     ...toSalesforceAccountCreateParams(params),
   };
 };
 
-export const fromSalesforceContactToRemoteContact = (record: Record<string, any>): RemoteContact => {
+export const fromSalesforceContactToContactV2 = (record: Record<string, any>): ContactV2 => {
   const mailingAddress: Address | null =
     record.MailingCity ||
     record.MailingCountry ||
@@ -186,9 +181,9 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
   }
 
   return {
-    remoteId: record.Id,
-    remoteAccountId: record.AccountId ?? null,
-    remoteOwnerId: record.OwnerId ?? null,
+    id: record.Id,
+    accountId: record.AccountId ?? null,
+    ownerId: record.OwnerId ?? null,
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
     addresses,
@@ -197,16 +192,15 @@ export const fromSalesforceContactToRemoteContact = (record: Record<string, any>
     // lifecycle stage is not supported in salesforce
     lifecycleStage: null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
 
-export const toSalesforceContactCreateParams = (params: RemoteContactCreateParams) => {
+export const toSalesforceContactCreateParams = (params: ContactCreateParams) => {
   return {
     FirstName: params.firstName,
     LastName: params.lastName,
@@ -218,29 +212,29 @@ export const toSalesforceContactCreateParams = (params: RemoteContactCreateParam
   };
 };
 
-export const toSalesforceContactUpdateParams = (params: RemoteContactUpdateParams) => {
+export const toSalesforceContactUpdateParams = (params: ContactUpdateParams) => {
   return {
-    Id: params.remoteId,
+    Id: params.id,
     ...toSalesforceContactCreateParams(params),
   };
 };
 
-export const fromSalesforceLeadToRemoteLead = (
+export const fromSalesforceLeadToLeadV2 = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   record: Record<string, any>
-): RemoteLead => {
+): LeadV2 => {
   return {
-    remoteId: record.Id,
+    id: record.Id,
     firstName: record.FirstName ?? null,
     lastName: record.LastName ?? null,
-    remoteOwnerId: record.OwnerId ?? null,
+    ownerId: record.OwnerId ?? null,
     title: record.Title ?? null,
     company: record.Company ?? null,
     convertedDate: record.ConvertedDate ? new Date(record.ConvertedDate) : null,
     leadSource: record.LeadSource ?? null,
     // TODO: support associated fields
-    convertedRemoteAccountId: record.ConvertedAccountId ?? null,
-    convertedRemoteContactId: record.ConvertedContactId ?? null,
+    convertedAccountId: record.ConvertedAccountId ?? null,
+    convertedContactId: record.ConvertedContactId ?? null,
     addresses: [
       {
         street1: record.Street ?? null,
@@ -261,16 +255,15 @@ export const fromSalesforceLeadToRemoteLead = (
           },
         ]
       : [],
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
 
-export const toSalesforceLeadCreateParams = (params: RemoteLeadCreateParams) => {
+export const toSalesforceLeadCreateParams = (params: LeadCreateParams) => {
   return {
     FirstName: params.firstName,
     LastName: params.lastName,
@@ -283,17 +276,17 @@ export const toSalesforceLeadCreateParams = (params: RemoteLeadCreateParams) => 
   };
 };
 
-export const toSalesforceLeadUpdateParams = (params: RemoteLeadUpdateParams) => {
+export const toSalesforceLeadUpdateParams = (params: LeadUpdateParams) => {
   return {
-    Id: params.remoteId,
+    Id: params.id,
     ...toSalesforceLeadCreateParams(params),
   };
 };
 
-export const fromSalesforceOpportunityToRemoteOpportunity = (
+export const fromSalesforceOpportunityToOpportunityV2 = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   record: Record<string, any>
-): RemoteOpportunity => {
+): OpportunityV2 => {
   let status: OpportunityStatus = 'OPEN';
   if (record.IsWon === 'true') {
     status = 'WON';
@@ -301,28 +294,27 @@ export const fromSalesforceOpportunityToRemoteOpportunity = (
     status = 'LOST';
   }
   return {
-    remoteId: record.Id,
+    id: record.Id,
     name: record.Name,
     description: record.Description ?? null,
-    remoteOwnerId: record.OwnerId ?? null,
+    ownerId: record.OwnerId ?? null,
     status,
     stage: record.StageName,
     closeDate: record.CloseDate ? new Date(record.CloseDate) : null,
-    remoteAccountId: record.AccountId ?? null,
+    accountId: record.AccountId ?? null,
     // pipeline is not supported in salesforce
     pipeline: null,
     amount: record.Amount ? parseInt(record.Amount) : null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
-    remoteCreatedAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
-    remoteUpdatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    remoteWasDeleted: record.IsDeleted === 'true',
-    remoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
-    detectedOrRemoteDeletedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,
+    updatedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : null,
+    isDeleted: record.IsDeleted === 'true',
+    lastModifiedAt: record.SystemModstamp ? new Date(record.SystemModstamp) : new Date(0),
     rawData: record,
   };
 };
 
-export const toSalesforceOpportunityCreateParams = (params: RemoteOpportunityCreateParams) => {
+export const toSalesforceOpportunityCreateParams = (params: OpportunityCreateParams) => {
   return {
     Amount: params.amount,
     CloseDate: params.closeDate,
@@ -334,9 +326,9 @@ export const toSalesforceOpportunityCreateParams = (params: RemoteOpportunityCre
   };
 };
 
-export const toSalesforceOpportunityUpdateParams = (params: RemoteOpportunityUpdateParams) => {
+export const toSalesforceOpportunityUpdateParams = (params: OpportunityUpdateParams) => {
   return {
-    Id: params.remoteId,
+    Id: params.id,
     ...toSalesforceOpportunityCreateParams(params),
   };
 };

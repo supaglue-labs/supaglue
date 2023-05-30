@@ -1,16 +1,13 @@
-import type { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields, User } from '.';
-import { Address, LifecycleStage, PhoneNumber } from '../base';
-import { EqualsFilter, Filter } from '../filter';
-import { SnakecasedKeys } from '../snakecased_keys';
+import type { BaseCrmModel, BaseCrmModelV2, CustomFields, SnakecasedCrmTenantFields } from '.';
+import type { EqualsFilter, Filter } from '../filter';
+import type { SnakecasedKeys } from '../snakecased_keys';
+import type { Address, LifecycleStage, PhoneNumber } from './common';
 
-export type SnakecasedKeysAccount = SnakecasedKeys<Account>;
+export type SnakecasedKeysCrmAccount = SnakecasedKeys<Account>;
+export type SnakecasedKeysCrmAccountV2 = SnakecasedKeys<AccountV2>;
+export type SnakecasedKeysCrmAccountV2WithTenant = SnakecasedKeysCrmAccountV2 & SnakecasedCrmTenantFields;
 
-export type SnakecasedKeysAccountWithTenant = SnakecasedKeysAccount & {
-  provider_name: string;
-  customer_id: string;
-};
-
-type BaseAccount = BaseCrmModel & {
+type CoreAccount = {
   name: string | null;
   description: string | null;
   industry: string | null;
@@ -20,50 +17,20 @@ type BaseAccount = BaseCrmModel & {
   phoneNumbers: PhoneNumber[];
   lastActivityAt: Date | null;
   lifecycleStage: LifecycleStage | null;
+  ownerId: string | null;
 };
 
-export type Account = BaseAccount &
-  BaseCrmModelNonRemoteParams & {
-    ownerId: string | null;
-    owner?: User;
-    rawData?: Record<string, any>;
-  };
+// TODO: Rename/consolidate when we move entirely to managed syncs
+export type Account = BaseCrmModel & CoreAccount;
 
-export type RemoteAccount = BaseAccount &
-  BaseCrmModelRemoteOnlyParams & {
-    remoteOwnerId: string | null;
-    rawData: Record<string, any>;
-  };
+export type AccountV2 = BaseCrmModelV2 & CoreAccount;
 
-type BaseAccountCreateParams = {
-  // TODO: Associations
-  // owner?: string | null;
-
-  name?: string | null;
-  description?: string | null;
-  industry?: string | null;
-  website?: string | null;
-  numberOfEmployees?: number | null;
-  addresses?: Address[];
-  phoneNumbers?: PhoneNumber[];
-  lifecycleStage?: LifecycleStage | null;
-
-  ownerId?: string | null;
-
-  // TODO: Need extra permissions to create/update this derived field in SF
-  // lastActivityAt?: Date | null;
+export type AccountCreateParams = Partial<CoreAccount> & {
   customFields?: CustomFields;
 };
 
-export type AccountCreateParams = BaseAccountCreateParams;
-export type RemoteAccountCreateParams = BaseAccountCreateParams;
-
 export type AccountUpdateParams = AccountCreateParams & {
   id: string;
-};
-
-export type RemoteAccountUpdateParams = RemoteAccountCreateParams & {
-  remoteId: string;
 };
 
 export type AccountFilters = {
@@ -72,7 +39,7 @@ export type AccountFilters = {
 };
 
 export type RemoteAccountTypes = {
-  object: RemoteAccount;
-  createParams: RemoteAccountCreateParams;
-  updateParams: RemoteAccountUpdateParams;
+  object: AccountV2;
+  createParams: AccountCreateParams;
+  updateParams: AccountUpdateParams;
 };

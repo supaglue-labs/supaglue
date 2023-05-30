@@ -2,11 +2,10 @@ import { COMMON_MODEL_DB_TABLES } from '@supaglue/db';
 import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInternalParams } from '@supaglue/types';
 import { Contact, ContactCreateParams, ContactFilters, ContactUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
-import { v5 as uuidv5 } from 'uuid';
-import { CommonModelBaseService, getLastModifiedAt, UpsertRemoteCommonModelsResult } from '..';
+import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 import { NotFoundError, UnauthorizedError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
-import { fromContactModel, fromRemoteContactToDbContactParams } from '../../../mappers/crm';
+import { fromContactModel, fromRemoteContactToDbContactParams, fromRemoteContactToModel } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
 export class ContactService extends CommonModelBaseService {
@@ -96,17 +95,10 @@ export class ContactService extends CommonModelBaseService {
       remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    const remoteContact = await remoteClient.createObject('contact', remoteCreateParams);
+    const id = await remoteClient.createObject('contact', remoteCreateParams);
+    const remoteContact = await remoteClient.getObject('contact', id);
     const contactModel = await this.prisma.crmContact.create({
-      data: {
-        id: uuidv5(remoteContact.remoteId, connectionId),
-        customerId,
-        connectionId,
-        lastModifiedAt: getLastModifiedAt(remoteContact),
-        ...remoteContact,
-        accountId: createParams.accountId,
-        ownerId: createParams.ownerId,
-      },
+      data: fromRemoteContactToModel(connectionId, customerId, remoteContact),
     });
     return fromContactModel(contactModel);
   }
@@ -133,24 +125,24 @@ export class ContactService extends CommonModelBaseService {
     }
 
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    const remoteContact = await remoteClient.updateObject('contact', {
+    const returnedId = await remoteClient.updateObject('contact', {
       ...remoteUpdateParams,
-      remoteId: foundContactModel.remoteId,
+      id: foundContactModel.remoteId,
     });
+    const remoteContact = await remoteClient.getObject('contact', returnedId);
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.
-    if (foundContactModel.remoteId !== remoteContact.remoteId) {
+    if (foundContactModel.remoteId !== remoteContact.id) {
       await this.prisma.crmContact.updateMany({
         where: {
           remoteId: {
-            in: [foundContactModel.remoteId, remoteContact.remoteId],
+            in: [foundContactModel.remoteId, remoteContact.id],
           },
           connectionId: foundContactModel.connectionId,
         },
         data: {
-          ...remoteContact,
+          ...fromRemoteContactToModel(connectionId, customerId, remoteContact),
           remoteId: undefined,
-          lastModifiedAt: getLastModifiedAt(remoteContact),
           ownerId: updateParams.ownerId,
         },
       });
@@ -159,8 +151,7 @@ export class ContactService extends CommonModelBaseService {
 
     const contactModel = await this.prisma.crmContact.update({
       data: {
-        ...remoteContact,
-        lastModifiedAt: getLastModifiedAt(remoteContact),
+        ...fromRemoteContactToModel(connectionId, customerId, remoteContact),
         accountId: updateParams.accountId,
         ownerId: updateParams.ownerId,
       },

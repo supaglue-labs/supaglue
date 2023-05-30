@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { toGetInternalParams, toListInternalParams } from '@supaglue/core/mappers';
-import { toSnakecasedKeysContact } from '@supaglue/core/mappers/engagement';
+import { toSnakecasedKeysEngagementContact } from '@supaglue/core/mappers/engagement';
 import {
   CreateContactPathParams,
   CreateContactRequest,
@@ -16,7 +16,7 @@ import {
   UpdateContactQueryParams,
   UpdateContactRequest,
   UpdateContactResponse,
-} from '@supaglue/schemas/engagement';
+} from '@supaglue/schemas/v1/engagement';
 import { ListParams } from '@supaglue/types';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
@@ -43,7 +43,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toListInternalParams(req.query)
       );
-      const snakeCaseKeysResults = results.map(toSnakecasedKeysContact);
+      const snakeCaseKeysResults = results.map(toSnakecasedKeysEngagementContact);
       return res.status(200).send({ next, previous, results: snakeCaseKeysResults });
     }
   );
@@ -59,7 +59,7 @@ export default function init(app: Router): void {
         req.customerConnection.id,
         toGetInternalParams(req.query)
       );
-      return res.status(200).send(toSnakecasedKeysContact(contact));
+      return res.status(200).send(toSnakecasedKeysEngagementContact(contact));
     }
   );
 
@@ -75,7 +75,7 @@ export default function init(app: Router): void {
         connectionId,
         camelcaseKeysSansCustomFields(req.body.model)
       );
-      return res.status(200).send({ model: toSnakecasedKeysContact(contact) });
+      return res.status(200).send({ model: toSnakecasedKeysEngagementContact(contact) });
     }
   );
 
@@ -90,7 +90,7 @@ export default function init(app: Router): void {
         id: req.params.contact_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
-      return res.status(200).send({ model: toSnakecasedKeysContact(contact) });
+      return res.status(200).send({ model: toSnakecasedKeysEngagementContact(contact) });
     }
   );
 

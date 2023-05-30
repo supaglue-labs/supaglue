@@ -1,20 +1,15 @@
-import { BaseCrmModel, BaseCrmModelNonRemoteParams, BaseCrmModelRemoteOnlyParams, CustomFields } from '.';
-import { EqualsFilter } from '../filter';
-import { SnakecasedKeys } from '../snakecased_keys';
-import type { Account } from './account';
-import { User } from './user';
+import type { BaseCrmModel, BaseCrmModelV2, CustomFields, SnakecasedCrmTenantFields } from '.';
+import type { EqualsFilter } from '../filter';
+import type { SnakecasedKeys } from '../snakecased_keys';
 
 export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
 
 export type SnakecasedKeysOpportunity = SnakecasedKeys<Opportunity>;
+export type SnakecasedKeysOpportunityV2 = SnakecasedKeys<OpportunityV2>;
+export type SnakecasedKeysOpportunityV2WithTenant = SnakecasedKeysOpportunityV2 & SnakecasedCrmTenantFields;
 
-export type SnakecasedKeysOpportunityWithTenant = SnakecasedKeysOpportunity & {
-  provider_name: string;
-  customer_id: string;
-};
-
-type BaseOpportunity = BaseCrmModel & {
+type CoreOpportunity = {
   name: string | null;
   description: string | null;
   amount: number | null;
@@ -23,50 +18,21 @@ type BaseOpportunity = BaseCrmModel & {
   lastActivityAt: Date | null;
   closeDate: Date | null;
   pipeline: string | null;
+  accountId: string | null;
+  ownerId: string | null;
 };
 
-export type Opportunity = BaseOpportunity &
-  BaseCrmModelNonRemoteParams & {
-    accountId: string | null;
-    account?: Account;
-    ownerId: string | null;
-    owner?: User;
-    rawData?: Record<string, any>;
-  };
+// TODO: Rename/consolidate when we move entirely to managed syncs
+export type Opportunity = BaseCrmModel & CoreOpportunity;
 
-export type RemoteOpportunity = BaseOpportunity &
-  BaseCrmModelRemoteOnlyParams & {
-    remoteAccountId: string | null;
-    remoteOwnerId: string | null;
-    rawData: Record<string, any>;
-  };
+export type OpportunityV2 = BaseCrmModelV2 & CoreOpportunity;
 
-type BaseOpportunityCreateParams = {
-  amount?: number | null;
-  closeDate?: Date | null;
-  description?: string | null;
-
-  // TODO: Need extra permissions to create/update this derived field in SF
-  // lastActivityAt?: Date | null;
-
-  name?: string | null;
-  stage?: string | null;
-  accountId?: string | null;
-  ownerId?: string | null;
-  pipeline?: string | null;
-
+export type OpportunityCreateParams = Partial<CoreOpportunity> & {
   customFields?: CustomFields;
 };
 
-export type OpportunityCreateParams = BaseOpportunityCreateParams;
-export type RemoteOpportunityCreateParams = BaseOpportunityCreateParams;
-
 export type OpportunityUpdateParams = OpportunityCreateParams & {
   id: string;
-};
-
-export type RemoteOpportunityUpdateParams = RemoteOpportunityCreateParams & {
-  remoteId: string;
 };
 
 export type OpportunityFilters = {
@@ -75,7 +41,7 @@ export type OpportunityFilters = {
 };
 
 export type RemoteOpportunityTypes = {
-  object: RemoteOpportunity;
-  createParams: RemoteOpportunityCreateParams;
-  updateParams: RemoteOpportunityUpdateParams;
+  object: OpportunityV2;
+  createParams: OpportunityCreateParams;
+  updateParams: OpportunityUpdateParams;
 };

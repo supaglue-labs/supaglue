@@ -3,11 +3,11 @@ import * as OpenApiValidator from 'express-openapi-validator';
 import fs from 'fs';
 import path from 'path';
 
-export const openapiMiddleware = (specDir: string) => {
-  let apiSpec = path.join(process.cwd(), `openapi/${specDir}/openapi.bundle.json`);
+export const openapiMiddleware = (specDir: string, version = 'v1') => {
+  let apiSpec = path.join(process.cwd(), `openapi/${version}/${specDir}/openapi.bundle.json`);
 
   if (process.env.NODE_ENV === 'development') {
-    apiSpec = path.join(process.cwd(), `../../openapi/${specDir}/openapi.bundle.json`);
+    apiSpec = path.join(process.cwd(), `../../openapi/${version}/${specDir}/openapi.bundle.json`);
   }
 
   const jsonApiSpec = JSON.parse(fs.readFileSync(apiSpec, 'utf8'));

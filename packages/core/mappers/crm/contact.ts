@@ -1,21 +1,17 @@
-import { CrmContact } from '@supaglue/db';
-import { GetInternalParams } from '@supaglue/types';
-import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/base';
-import { Contact, RemoteContact, SnakecasedKeysContact } from '@supaglue/types/crm';
+import type { CrmContact, Prisma } from '@supaglue/db';
+import type { GetInternalParams } from '@supaglue/types';
+import type { Contact, ContactV2, SnakecasedKeysCrmContact, SnakecasedKeysCrmContactV2 } from '@supaglue/types/crm';
+import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { v5 as uuidv5 } from 'uuid';
-import { toSnakecasedKeysAccount } from './account';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
-import { toSnakecasedKeysUser } from './user';
 
-export const toSnakecasedKeysContact = (contact: Contact): SnakecasedKeysContact => {
+export const toSnakecasedKeysCrmContact = (contact: Contact): SnakecasedKeysCrmContact => {
   return {
     id: contact.id,
     owner_id: contact.ownerId,
-    owner: contact.owner ? toSnakecasedKeysUser(contact.owner) : undefined,
     account_id: contact.accountId,
-    account: contact.account ? toSnakecasedKeysAccount(contact.account) : undefined,
     last_modified_at: contact.lastModifiedAt,
     remote_id: contact.remoteId,
     first_name: contact.firstName,
@@ -28,6 +24,26 @@ export const toSnakecasedKeysContact = (contact: Contact): SnakecasedKeysContact
     remote_created_at: contact.remoteCreatedAt,
     remote_updated_at: contact.remoteUpdatedAt,
     remote_was_deleted: contact.remoteWasDeleted,
+    raw_data: contact.rawData,
+  };
+};
+
+export const toSnakecasedKeysCrmContactV2 = (contact: ContactV2): SnakecasedKeysCrmContactV2 => {
+  return {
+    owner_id: contact.ownerId,
+    account_id: contact.accountId,
+    last_modified_at: contact.lastModifiedAt,
+    id: contact.id,
+    first_name: contact.firstName,
+    last_name: contact.lastName,
+    addresses: contact.addresses.map(toSnakecasedKeysAddress),
+    phone_numbers: contact.phoneNumbers.map(toSnakecasedKeysPhoneNumber),
+    email_addresses: contact.emailAddresses.map(toSnakecasedKeysEmailAddress),
+    last_activity_at: contact.lastActivityAt,
+    lifecycle_stage: contact.lifecycleStage,
+    created_at: contact.createdAt,
+    updated_at: contact.updatedAt,
+    is_deleted: contact.isDeleted,
     raw_data: contact.rawData,
   };
 };
@@ -73,25 +89,44 @@ export const fromContactModel = (
   };
 };
 
+export const fromRemoteContactToModel = (
+  connectionId: string,
+  customerId: string,
+  remoteContact: ContactV2
+): Prisma.CrmContactCreateInput => {
+  return {
+    id: uuidv5(remoteContact.id, connectionId),
+    remoteId: remoteContact.id,
+    customerId,
+    connectionId,
+    firstName: remoteContact.firstName,
+    lastName: remoteContact.lastName,
+    addresses: remoteContact.addresses,
+    emailAddresses: remoteContact.emailAddresses,
+    phoneNumbers: remoteContact.phoneNumbers,
+    lifecycleStage: remoteContact.lifecycleStage,
+    lastActivityAt: remoteContact.lastActivityAt?.toISOString(),
+    remoteCreatedAt: remoteContact.createdAt?.toISOString(),
+    remoteUpdatedAt: remoteContact.updatedAt?.toISOString(),
+    remoteWasDeleted: remoteContact.isDeleted,
+    lastModifiedAt: remoteContact.lastModifiedAt?.toISOString(),
+    remoteAccountId: remoteContact.accountId,
+    accountId: remoteContact.accountId ? uuidv5(remoteContact.accountId, connectionId) : null,
+    remoteOwnerId: remoteContact.ownerId,
+    ownerId: remoteContact.ownerId ? uuidv5(remoteContact.ownerId, connectionId) : null,
+    rawData: remoteContact.rawData,
+  };
+};
+
 // TODO: Use prisma generator to generate return type
 export const fromRemoteContactToDbContactParams = (
   connectionId: string,
   customerId: string,
-  remoteContact: RemoteContact
+  remoteContact: ContactV2
 ) => {
-  const lastModifiedAt =
-    remoteContact.remoteUpdatedAt || remoteContact.detectedOrRemoteDeletedAt
-      ? new Date(
-          Math.max(
-            remoteContact.remoteUpdatedAt?.getTime() || 0,
-            remoteContact.detectedOrRemoteDeletedAt?.getTime() || 0
-          )
-        )
-      : undefined;
-
   return {
-    id: uuidv5(remoteContact.remoteId, connectionId),
-    remote_id: remoteContact.remoteId,
+    id: uuidv5(remoteContact.id, connectionId),
+    remote_id: remoteContact.id,
     customer_id: customerId,
     connection_id: connectionId,
     first_name: remoteContact.firstName,
@@ -101,16 +136,14 @@ export const fromRemoteContactToDbContactParams = (
     phone_numbers: remoteContact.phoneNumbers,
     lifecycle_stage: remoteContact.lifecycleStage,
     last_activity_at: remoteContact.lastActivityAt?.toISOString(),
-    remote_created_at: remoteContact.remoteCreatedAt?.toISOString(),
-    remote_updated_at: remoteContact.remoteUpdatedAt?.toISOString(),
-    remote_was_deleted: remoteContact.remoteWasDeleted,
-    remote_deleted_at: remoteContact.remoteDeletedAt?.toISOString(),
-    detected_or_remote_deleted_at: remoteContact.detectedOrRemoteDeletedAt?.toISOString(),
-    last_modified_at: lastModifiedAt?.toISOString(),
-    _remote_account_id: remoteContact.remoteAccountId,
-    account_id: remoteContact.remoteAccountId ? uuidv5(remoteContact.remoteAccountId, connectionId) : null,
-    _remote_owner_id: remoteContact.remoteOwnerId,
-    owner_id: remoteContact.remoteOwnerId ? uuidv5(remoteContact.remoteOwnerId, connectionId) : null,
+    remote_created_at: remoteContact.createdAt?.toISOString(),
+    remote_updated_at: remoteContact.updatedAt?.toISOString(),
+    remote_was_deleted: remoteContact.isDeleted,
+    last_modified_at: remoteContact.lastModifiedAt?.toISOString(),
+    _remote_account_id: remoteContact.accountId,
+    account_id: remoteContact.accountId ? uuidv5(remoteContact.accountId, connectionId) : null,
+    _remote_owner_id: remoteContact.ownerId,
+    owner_id: remoteContact.ownerId ? uuidv5(remoteContact.ownerId, connectionId) : null,
     updated_at: new Date().toISOString(),
     raw_data: remoteContact.rawData,
   };

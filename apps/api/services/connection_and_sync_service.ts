@@ -5,6 +5,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import type { ApplicationService, IntegrationService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
+import { DestinationService } from '@supaglue/core/services/destination_service';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
@@ -13,12 +14,8 @@ import {
   PROCESS_SYNC_CHANGES_SCHEDULE_ID,
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
-import {
-  getRunSyncScheduleId,
-  getRunSyncWorkflowId,
-  runSync,
-  RUN_SYNC_PREFIX,
-} from '@supaglue/sync-workflows/workflows/run_sync';
+import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
+import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
 import type { ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
@@ -33,17 +30,17 @@ import {
   Client,
   IntervalSpec,
   ScheduleAlreadyRunning,
+  ScheduleNotFoundError,
   ScheduleOptionsAction,
   WorkflowNotFoundError,
 } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
-const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-
 export class ConnectionAndSyncService {
   #prisma: PrismaClient;
   #temporalClient: Client;
   #integrationService: IntegrationService;
+  #destinationService: DestinationService;
   #applicationService: ApplicationService;
   #connectionService: ConnectionService;
 
@@ -52,13 +49,15 @@ export class ConnectionAndSyncService {
     temporalClient: Client,
     integrationService: IntegrationService,
     applicationService: ApplicationService,
-    connectionService: ConnectionService
+    connectionService: ConnectionService,
+    destinationService: DestinationService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#integrationService = integrationService;
     this.#applicationService = applicationService;
     this.#connectionService = connectionService;
+    this.#destinationService = destinationService;
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
@@ -105,11 +104,18 @@ export class ConnectionAndSyncService {
     return fromConnectionModelToConnectionUnsafe<ProviderName>(connection);
   }
 
-  public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
+  public async create(version: 'v1' | 'v2', params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
     const integration = await this.#integrationService.getByProviderNameAndApplicationId(
       params.providerName,
       params.applicationId
     );
+    let strategyType = 'full then incremental';
+    if (version === 'v2' && integration.destinationId) {
+      const destination = await this.#destinationService.getDestinationById(integration.destinationId);
+      if (destination.type === 's3') {
+        strategyType = 'full only';
+      }
+    }
     const application = await this.#applicationService.getById(integration.applicationId);
     let errored = false;
 
@@ -138,11 +144,12 @@ export class ConnectionAndSyncService {
             id: syncId,
             connectionId,
             strategy: {
-              type: 'full then incremental',
+              type: strategyType,
             },
             state: {
               phase: 'created',
             },
+            version,
           },
         }),
         this.#prisma.syncChange.create({
@@ -225,16 +232,17 @@ export class ConnectionAndSyncService {
     await handle.trigger();
   }
 
-  public async createProcessSyncChangesTemporalScheduleIfNotExist(): Promise<void> {
+  public async upsertProcessSyncChangesTemporalSchedule(): Promise<void> {
+    const intervals = [
+      {
+        every: 10 * 1000, // 10 seconds
+      },
+    ];
     try {
       await this.#temporalClient.schedule.create({
         scheduleId: PROCESS_SYNC_CHANGES_SCHEDULE_ID,
         spec: {
-          intervals: [
-            {
-              every: 60 * 1000, // 1 minute
-            },
-          ],
+          intervals,
         },
         action: {
           type: 'startWorkflow',
@@ -246,12 +254,99 @@ export class ConnectionAndSyncService {
       });
     } catch (err: unknown) {
       if (err instanceof ScheduleAlreadyRunning) {
-        // swallow
-        // TODO: Allow updating the schedule
+        const handle = this.#temporalClient.schedule.getHandle(PROCESS_SYNC_CHANGES_SCHEDULE_ID);
+        await handle.update((prev) => {
+          return {
+            ...prev,
+            spec: {
+              intervals,
+            },
+          };
+        });
         return;
       }
 
       throw err;
+    }
+  }
+
+  // TODO: Remove when we're done migrating
+  async deleteTemporalSyncsV1(syncIds: string[]): Promise<void> {
+    // TODO: When we stop using temporalite locally, we should just use
+    // advanced visibility to search by custom attributes and find the workflows to kill.
+    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
+    // in Postgres and without an external ES cluster.
+    //
+    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
+    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
+
+    // Get the sync schedule handles
+    const syncScheduleHandles = syncIds.map((syncId) =>
+      this.#temporalClient.schedule.getHandle(getRunSyncScheduleId(syncId))
+    );
+
+    try {
+      // Pause the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
+
+      // Kill the associated workflows
+      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
+      const workflowIds = scheduleDescriptions.flatMap((description) =>
+        description.info.runningActions.map((action) => action.workflow.workflowId)
+      );
+      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
+      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
+
+      // Kill the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
+    } catch (err: unknown) {
+      if (err instanceof ScheduleNotFoundError) {
+        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
+      } else if (err instanceof WorkflowNotFoundError) {
+        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  // TODO: Remove when we're done migrating
+  async deleteTemporalSyncsV2(syncIds: string[]): Promise<void> {
+    // TODO: When we stop using temporalite locally, we should just use
+    // advanced visibility to search by custom attributes and find the workflows to kill.
+    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
+    // in Postgres and without an external ES cluster.
+    //
+    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
+    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
+
+    // Get the sync schedule handles
+    const syncScheduleHandles = syncIds.map((syncId) =>
+      this.#temporalClient.schedule.getHandle(getRunManagedSyncScheduleId(syncId))
+    );
+
+    try {
+      // Pause the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
+
+      // Kill the associated workflows
+      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
+      const workflowIds = scheduleDescriptions.flatMap((description) =>
+        description.info.runningActions.map((action) => action.workflow.workflowId)
+      );
+      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
+      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
+
+      // Kill the sync schedules
+      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
+    } catch (err: unknown) {
+      if (err instanceof ScheduleNotFoundError) {
+        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
+      } else if (err instanceof WorkflowNotFoundError) {
+        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
+      } else {
+        throw err;
+      }
     }
   }
 
@@ -260,92 +355,94 @@ export class ConnectionAndSyncService {
     workflowIdsTerminated: string[];
     scheduleIdsCreated: string[];
   }> {
-    // Find all the syncs in our DB
-    // TODO: paginate
-    const syncs = await this.#prisma.sync.findMany({
-      select: {
-        id: true,
-        connectionId: true,
-      },
-    });
-    const expectedSyncIds = syncs.map((sync) => sync.id);
-    const expectedScheduleIds = expectedSyncIds.map(getRunSyncScheduleId);
-    const expectedWorkflowIdPrefixes = expectedSyncIds.map(getRunSyncWorkflowId);
+    throw new Error('Not functioning during v1 to v2 migration');
 
-    // List out all the schedules in Temporal
-    const scheduleIdsDeleted: string[] = [];
-    for await (const schedule of this.#temporalClient.schedule.list()) {
-      // If the corresponding sync is not in our DB, delete it
-      // TODO: for some reason `schedule.action` is undefined for `runSync` schedules, but not in tctl
-      if (schedule.scheduleId.startsWith(RUN_SYNC_PREFIX) && !expectedScheduleIds.includes(schedule.scheduleId)) {
-        const handle = this.#temporalClient.schedule.getHandle(schedule.scheduleId);
-        await handle.delete();
-        scheduleIdsDeleted.push(schedule.scheduleId);
-      }
-    }
+    // // Find all the syncs in our DB
+    // // TODO: paginate
+    // const syncs = await this.#prisma.sync.findMany({
+    //   select: {
+    //     id: true,
+    //     connectionId: true,
+    //   },
+    // });
+    // const expectedSyncIds = syncs.map((sync) => sync.id);
+    // const expectedScheduleIds = expectedSyncIds.map(getRunSyncScheduleId);
+    // const expectedWorkflowIdPrefixes = expectedSyncIds.map(getRunSyncWorkflowId);
 
-    // List out all the workflows in Temporal
-    const workflowIdsTerminated: string[] = [];
-    for await (const workflow of this.#temporalClient.workflow.list()) {
-      if (workflow.status.name !== 'RUNNING') {
-        continue;
-      }
-      // If the corresponding sync is not in our DB, delete it
-      if (
-        workflow.workflowId.startsWith(RUN_SYNC_PREFIX) &&
-        !expectedWorkflowIdPrefixes.some((prefix) => workflow.workflowId.startsWith(prefix))
-      ) {
-        const handle = this.#temporalClient.workflow.getHandle(workflow.workflowId);
-        try {
-          await handle.terminate('could not find corresponding sync in DB');
-          workflowIdsTerminated.push(workflow.workflowId);
-        } catch (err) {
-          if (err instanceof WorkflowNotFoundError) {
-            // swallow
-          }
-        }
-      }
-    }
+    // // List out all the schedules in Temporal
+    // const scheduleIdsDeleted: string[] = [];
+    // for await (const schedule of this.#temporalClient.schedule.list()) {
+    //   // If the corresponding sync is not in our DB, delete it
+    //   // TODO: for some reason `schedule.action` is undefined for `runSync` schedules, but not in tctl
+    //   if (schedule.scheduleId.startsWith(RUN_SYNC_PREFIX) && !expectedScheduleIds.includes(schedule.scheduleId)) {
+    //     const handle = this.#temporalClient.schedule.getHandle(schedule.scheduleId);
+    //     await handle.delete();
+    //     scheduleIdsDeleted.push(schedule.scheduleId);
+    //   }
+    // }
 
-    // Upsert schedules in case
-    const connectionIds = syncs.map((sync) => sync.connectionId);
-    const connections = await this.#connectionService.getSafeByIds(connectionIds);
+    // // List out all the workflows in Temporal
+    // const workflowIdsTerminated: string[] = [];
+    // for await (const workflow of this.#temporalClient.workflow.list()) {
+    //   if (workflow.status.name !== 'RUNNING') {
+    //     continue;
+    //   }
+    //   // If the corresponding sync is not in our DB, delete it
+    //   if (
+    //     workflow.workflowId.startsWith(RUN_SYNC_PREFIX) &&
+    //     !expectedWorkflowIdPrefixes.some((prefix) => workflow.workflowId.startsWith(prefix))
+    //   ) {
+    //     const handle = this.#temporalClient.workflow.getHandle(workflow.workflowId);
+    //     try {
+    //       await handle.terminate('could not find corresponding sync in DB');
+    //       workflowIdsTerminated.push(workflow.workflowId);
+    //     } catch (err) {
+    //       if (err instanceof WorkflowNotFoundError) {
+    //         // swallow
+    //       }
+    //     }
+    //   }
+    // }
 
-    // Get the integrations
-    const integrationIds = connections.map((connection) => connection.integrationId);
-    const integrations = await this.#integrationService.getByIds(integrationIds);
+    // // Upsert schedules in case
+    // const connectionIds = syncs.map((sync) => sync.connectionId);
+    // const connections = await this.#connectionService.getSafeByIds(connectionIds);
 
-    // Upsert schedules for all the syncs (currently ignores updating periodMs)
-    const scheduleIdsCreated: string[] = [];
-    for (const syncId of expectedSyncIds) {
-      const sync = syncs.find((sync) => sync.id === syncId);
-      if (!sync) {
-        throw new Error('Unexpected error: sync not found');
-      }
-      const connection = connections.find((connection) => connection.id === sync.connectionId);
-      if (!connection) {
-        throw new Error('Unexpected error: connection not found');
-      }
-      const integration = integrations.find((integration) => integration.id === connection.integrationId);
-      if (!integration) {
-        throw new Error('Unexpected error: integration not found');
-      }
-      const justCreated = await this.#createTemporalSyncIfNotExist(
-        syncId,
-        connection,
-        integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
-      );
+    // // Get the integrations
+    // const integrationIds = connections.map((connection) => connection.integrationId);
+    // const integrations = await this.#integrationService.getByIds(integrationIds);
 
-      if (justCreated) {
-        scheduleIdsCreated.push(getRunSyncScheduleId(syncId));
-      }
-    }
+    // // Upsert schedules for all the syncs (currently ignores updating periodMs)
+    // const scheduleIdsCreated: string[] = [];
+    // for (const syncId of expectedSyncIds) {
+    //   const sync = syncs.find((sync) => sync.id === syncId);
+    //   if (!sync) {
+    //     throw new Error('Unexpected error: sync not found');
+    //   }
+    //   const connection = connections.find((connection) => connection.id === sync.connectionId);
+    //   if (!connection) {
+    //     throw new Error('Unexpected error: connection not found');
+    //   }
+    //   const integration = integrations.find((integration) => integration.id === connection.integrationId);
+    //   if (!integration) {
+    //     throw new Error('Unexpected error: integration not found');
+    //   }
+    //   const justCreated = await this.#createTemporalSyncIfNotExist(
+    //     syncId,
+    //     connection,
+    //     integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS
+    //   );
 
-    return {
-      scheduleIdsDeleted,
-      workflowIdsTerminated,
-      scheduleIdsCreated,
-    };
+    //   if (justCreated) {
+    //     scheduleIdsCreated.push(getRunSyncScheduleId(syncId));
+    //   }
+    // }
+
+    // return {
+    //   scheduleIdsDeleted,
+    //   workflowIdsTerminated,
+    //   scheduleIdsCreated,
+    // };
   }
 
   async #createTemporalSyncIfNotExist(
