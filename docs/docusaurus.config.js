@@ -70,21 +70,58 @@ const config = {
         // Plugin Options for loading OpenAPI files
         specs: [
           ...versions.flatMap((version) =>
-            [
-              {
-                spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
-                route: version === LATEST_VERSION ? '/references/api/crm' : `/${version}/references/api/crm`,
-              },
-              {
-                spec: `../openapi/versioned/version-${version}/engagement/openapi.bundle.json`,
-                route:
-                  version === LATEST_VERSION ? '/references/api/engagement' : `/${version}/references/api/engagement`,
-              },
-              {
-                spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
-                route: version === LATEST_VERSION ? '/references/api/mgmt' : `/${version}/references/api/mgmt`,
-              },
-            ].filter((obj) => !!obj)
+            version >= '0.9.0'
+              ? [
+                  {
+                    spec: `../openapi/versioned/version-${version}/v1/crm/openapi.bundle.json`,
+                    route: version === LATEST_VERSION ? '/references/api/v1/crm' : `/${version}/references/api/v1/crm`,
+                  },
+                  {
+                    spec: `../openapi/versioned/version-${version}/v1/engagement/openapi.bundle.json`,
+                    route:
+                      version === LATEST_VERSION
+                        ? '/references/api/v1/engagement'
+                        : `/${version}/references/api/v1/engagement`,
+                  },
+                  {
+                    spec: `../openapi/versioned/version-${version}/v1/mgmt/openapi.bundle.json`,
+                    route:
+                      version === LATEST_VERSION ? '/references/api/v1/mgmt' : `/${version}/references/api/v1/mgmt`,
+                  },
+                  {
+                    spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
+                    route: version === LATEST_VERSION ? '/references/api/v2/crm' : `/${version}/references/api/v2/crm`,
+                  },
+                  {
+                    spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
+                    route:
+                      version === LATEST_VERSION
+                        ? '/references/api/v2/engagement'
+                        : `/${version}/references/api/v2/engagement`,
+                  },
+                  {
+                    spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
+                    route:
+                      version === LATEST_VERSION ? '/references/api/v2/mgmt' : `/${version}/references/api/v2/mgmt`,
+                  },
+                ].filter((obj) => !!obj)
+              : [
+                  {
+                    spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
+                    route: version === LATEST_VERSION ? '/references/api/crm' : `/${version}/references/api/crm`,
+                  },
+                  {
+                    spec: `../openapi/versioned/version-${version}/engagement/openapi.bundle.json`,
+                    route:
+                      version === LATEST_VERSION
+                        ? '/references/api/engagement'
+                        : `/${version}/references/api/engagement`,
+                  },
+                  {
+                    spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
+                    route: version === LATEST_VERSION ? '/references/api/mgmt' : `/${version}/references/api/mgmt`,
+                  },
+                ].filter((obj) => !!obj)
           ),
           {
             spec: '../openapi/v1/crm/openapi.bundle.json',
