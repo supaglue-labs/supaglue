@@ -1,6 +1,7 @@
 export type SnakecasedCrmTenantFields = {
-  provider_name: string;
-  customer_id: string;
+  _supaglue_application_id: string;
+  _supaglue_provider_name: string;
+  _supaglue_customer_id: string;
 };
 
 export type BaseCrmModel = {

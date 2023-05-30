@@ -2,8 +2,9 @@ import { SnakecasedKeysOpportunityV2WithTenant } from '@supaglue/types/crm';
 import { arrayOfAllKeys } from '../util';
 
 export const keysOfSnakecasedOpportunityV2WithTenant = arrayOfAllKeys<SnakecasedKeysOpportunityV2WithTenant>()([
-  'provider_name',
-  'customer_id',
+  '_supaglue_application_id',
+  '_supaglue_provider_name',
+  '_supaglue_customer_id',
   'id',
   'created_at',
   'updated_at',

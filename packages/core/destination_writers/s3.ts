@@ -58,8 +58,8 @@ export class S3DestinationWriter extends BaseDestinationWriter {
           try {
             numRecords++;
             const mappedRecord = {
-              provider_name: providerName,
-              customer_id: customerId,
+              _supaglue_provider_name: providerName,
+              _supaglue_customer_id: customerId,
               ...mapper(chunk),
             };
             data.push(mappedRecord);
@@ -111,8 +111,8 @@ export class S3DestinationWriter extends BaseDestinationWriter {
         .map((result) =>
           JSON.stringify({
             ...result,
-            customer_id: customerId,
-            provider_name: providerName,
+            _supaglue_customer_id: customerId,
+            _supaglue_provider_name: providerName,
           })
         )
         .join('\n');
