@@ -129,7 +129,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${qualifiedTable})`);
       await client.query(
-        `CREATE INDEX IF NOT EXISTS ${tempTable}_application_idprovider_name_customer_id_id_idx ON ${tempTable} (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)`
+        `CREATE INDEX IF NOT EXISTS ${tempTable}_pk_idx ON ${tempTable} (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)`
       );
 
       const columns = getColumns(category, commonModelType);
