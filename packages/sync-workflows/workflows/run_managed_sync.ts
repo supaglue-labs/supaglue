@@ -11,8 +11,8 @@ import {
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
 import { EngagementCommonModelType, ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
-import { ImportRecordsResult } from '../activities/import_records';
 import type { createActivities } from '../activities/index';
+import { SyncRecordsToDestinationResult } from '../activities/sync_records_to_destination';
 
 const { syncRecordsToDestination } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
@@ -55,7 +55,7 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       const entry: [CommonModelType, string] = [commonModel, uuid4()];
       return entry;
     })
-  ) as Record<CommonModelType, string>;
+  );
 
   await Promise.all(
     getCommonModels(category).map(async (commonModel) => {
@@ -144,17 +144,17 @@ async function doFullOnlySync({
     },
   });
 
-  const importRecordsResultList = Object.fromEntries(
+  const syncRecordsToDestinationResultList = Object.fromEntries(
     await Promise.all(
       getCommonModels(category).map(async (commonModel) => {
-        const entry: [CommonModelType, ImportRecordsResult] = [
+        const entry: [CommonModelType, SyncRecordsToDestinationResult] = [
           commonModel,
           await syncRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
         ];
         return entry;
       })
     )
-  ) as Record<CommonModelType, ImportRecordsResult>;
+  );
 
   await updateSyncState({
     syncId: sync.id,
@@ -173,7 +173,10 @@ async function doFullOnlySync({
   });
 
   return Object.fromEntries(
-    getCommonModels(category).map((commonModel) => [commonModel, importRecordsResultList[commonModel].numRecordsSynced])
+    getCommonModels(category).map((commonModel) => [
+      commonModel,
+      syncRecordsToDestinationResultList[commonModel].numRecordsSynced,
+    ])
   ) as Record<CommonModelType, number>;
 }
 
@@ -194,33 +197,33 @@ async function doFullThenIncrementalSync({
       },
     });
 
-    const importRecordsResultList = Object.fromEntries(
+    const syncRecordsToDestinationResultList = Object.fromEntries(
       await Promise.all(
         getCommonModels(category).map(async (commonModel) => {
-          const entry: [CommonModelType, ImportRecordsResult] = [
+          const entry: [CommonModelType, SyncRecordsToDestinationResult] = [
             commonModel,
             await syncRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
           ];
           return entry;
         })
       )
-    ) as Record<CommonModelType, ImportRecordsResult>;
+    );
 
     const newMaxLastModifiedAtMsMap =
       category === 'crm'
         ? {
-            account: importRecordsResultList.account.maxLastModifiedAtMs,
-            lead: importRecordsResultList.lead.maxLastModifiedAtMs,
-            opportunity: importRecordsResultList.opportunity.maxLastModifiedAtMs,
-            contact: importRecordsResultList.contact.maxLastModifiedAtMs,
-            user: importRecordsResultList.user.maxLastModifiedAtMs,
+            account: syncRecordsToDestinationResultList.account.maxLastModifiedAtMs,
+            lead: syncRecordsToDestinationResultList.lead.maxLastModifiedAtMs,
+            opportunity: syncRecordsToDestinationResultList.opportunity.maxLastModifiedAtMs,
+            contact: syncRecordsToDestinationResultList.contact.maxLastModifiedAtMs,
+            user: syncRecordsToDestinationResultList.user.maxLastModifiedAtMs,
           }
         : {
-            contact: importRecordsResultList.contact.maxLastModifiedAtMs,
-            user: importRecordsResultList.user.maxLastModifiedAtMs,
-            sequence: importRecordsResultList.sequence.maxLastModifiedAtMs,
-            mailbox: importRecordsResultList.mailbox.maxLastModifiedAtMs,
-            sequence_state: importRecordsResultList.sequence_state.maxLastModifiedAtMs,
+            contact: syncRecordsToDestinationResultList.contact.maxLastModifiedAtMs,
+            user: syncRecordsToDestinationResultList.user.maxLastModifiedAtMs,
+            sequence: syncRecordsToDestinationResultList.sequence.maxLastModifiedAtMs,
+            mailbox: syncRecordsToDestinationResultList.mailbox.maxLastModifiedAtMs,
+            sequence_state: syncRecordsToDestinationResultList.sequence_state.maxLastModifiedAtMs,
           };
 
     await updateSyncState({
@@ -244,7 +247,7 @@ async function doFullThenIncrementalSync({
     return Object.fromEntries(
       getCommonModels(category).map((commonModel) => [
         commonModel,
-        importRecordsResultList[commonModel].numRecordsSynced,
+        syncRecordsToDestinationResultList[commonModel].numRecordsSynced,
       ])
     ) as Record<CommonModelType, number>;
   }
@@ -278,9 +281,9 @@ async function doFullThenIncrementalSync({
     }
 
     function computeUpdatedMaxLastModifiedAtMsMap(
-      importRecordsResultList:
-        | Record<CRMCommonModelType, ImportRecordsResult>
-        | Record<EngagementCommonModelType, ImportRecordsResult>
+      syncRecordsToDestinationResultList:
+        | Record<CRMCommonModelType, SyncRecordsToDestinationResult>
+        | Record<EngagementCommonModelType, SyncRecordsToDestinationResult>
     ): NumRecordsSyncedMap {
       const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMap();
 
@@ -289,7 +292,8 @@ async function doFullThenIncrementalSync({
           commonModel,
           Math.max(
             (originalMaxLastModifiedAtMsMap as Record<CommonModelType, number>)[commonModel],
-            (importRecordsResultList as Record<CommonModelType, ImportRecordsResult>)[commonModel].maxLastModifiedAtMs
+            (syncRecordsToDestinationResultList as Record<CommonModelType, SyncRecordsToDestinationResult>)[commonModel]
+              .maxLastModifiedAtMs
           ),
         ])
       ) as NumRecordsSyncedMap;
@@ -304,10 +308,10 @@ async function doFullThenIncrementalSync({
       },
     });
 
-    const importRecordsResultList = Object.fromEntries(
+    const syncRecordsToDestinationResultList = Object.fromEntries(
       await Promise.all(
         getCommonModels(category).map(async (commonModel) => {
-          const entry: [CommonModelType, ImportRecordsResult] = [
+          const entry: [CommonModelType, SyncRecordsToDestinationResult] = [
             commonModel,
             await syncRecordsToDestination({
               syncId: sync.id,
@@ -319,9 +323,9 @@ async function doFullThenIncrementalSync({
           return entry;
         })
       )
-    ) as Record<CommonModelType, ImportRecordsResult>;
+    ) as Record<CommonModelType, SyncRecordsToDestinationResult>;
 
-    const newMaxLastModifiedAtMsMap = computeUpdatedMaxLastModifiedAtMsMap(importRecordsResultList);
+    const newMaxLastModifiedAtMsMap = computeUpdatedMaxLastModifiedAtMsMap(syncRecordsToDestinationResultList);
 
     // TODO: Bring this back when we fix https://github.com/supaglue-labs/supaglue/issues/644
     // await updateSyncState({
@@ -345,7 +349,8 @@ async function doFullThenIncrementalSync({
     return Object.fromEntries(
       getCommonModels(category).map((commonModel) => [
         commonModel,
-        (importRecordsResultList as Record<CommonModelType, ImportRecordsResult>)[commonModel].numRecordsSynced,
+        (syncRecordsToDestinationResultList as Record<CommonModelType, SyncRecordsToDestinationResult>)[commonModel]
+          .numRecordsSynced,
       ])
     ) as NumRecordsSyncedMap;
   }
