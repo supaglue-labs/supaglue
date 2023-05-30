@@ -40,12 +40,13 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     heartbeat: () => void
   ): Promise<WriteCommonModelsResult> {
     await this.dropExistingRecordsIfNecessary(
+      connection.applicationId,
       connection.category,
       commonModelType,
       connection.customerId,
       connection.providerName
     );
-    const { providerName, customerId, category } = connection;
+    const { providerName, customerId, category, applicationId } = connection;
     let numRecords = 0;
     let maxLastModifiedAt: Date | null = null;
     let data: Record<string, any>[] = [];
@@ -58,6 +59,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
           try {
             numRecords++;
             const mappedRecord = {
+              _supaglue_application_id: applicationId,
               _supaglue_provider_name: providerName,
               _supaglue_customer_id: customerId,
               ...mapper(chunk),
@@ -93,17 +95,18 @@ export class S3DestinationWriter extends BaseDestinationWriter {
   }
 
   getKeyPrefix(
+    applicationId: string,
     category: IntegrationCategory,
     commonModelType: CommonModelType,
     customerId: string,
     providerName: ProviderName
   ) {
-    return `${category}/${commonModelType}/${customerId}/${providerName}`;
+    return `${applicationId}/${category}/${commonModelType}/${customerId}/${providerName}`;
   }
 
   async write(
     commonModelType: CommonModelType,
-    { providerName, customerId, category }: ConnectionSafeAny,
+    { providerName, customerId, category, applicationId }: ConnectionSafeAny,
     results: Record<string, any>[]
   ): Promise<void> {
     if (results.length) {
@@ -111,6 +114,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
         .map((result) =>
           JSON.stringify({
             ...result,
+            _supaglue_application_id: applicationId,
             _supaglue_customer_id: customerId,
             _supaglue_provider_name: providerName,
           })
@@ -119,7 +123,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
       const command = new PutObjectCommand({
         Bucket: this.#destination.config.bucket,
-        Key: `${this.getKeyPrefix(category, commonModelType, customerId, providerName)}/${Date.now()}`,
+        Key: `${this.getKeyPrefix(applicationId, category, commonModelType, customerId, providerName)}/${Date.now()}`,
         Body: ndjson,
       });
 
@@ -128,6 +132,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
   }
 
   async dropExistingRecordsIfNecessary(
+    applicationId: string,
     category: IntegrationCategory,
     commonModelType: CommonModelType,
     customerId: string,
@@ -140,7 +145,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
       },
       {
         Bucket: this.#destination.config.bucket,
-        Prefix: this.getKeyPrefix(category, commonModelType, customerId, providerName),
+        Prefix: this.getKeyPrefix(applicationId, category, commonModelType, customerId, providerName),
       }
     );
 
