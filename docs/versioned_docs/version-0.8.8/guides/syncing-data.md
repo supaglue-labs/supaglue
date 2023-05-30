@@ -34,7 +34,7 @@ View a [full example here](https://github.com/supaglue-labs/ts-etl-example) util
 
 ### 2. Register the webhook with Supaglue
 
-Use the [Management API's POST Webhook endpoint](references/api/mgmt#tag/Webhook/operation/createWebhook) to register the endpoint implemented above.
+Use the [Management API's POST Webhook endpoint](../references/api/mgmt#tag/Webhook/operation/createWebhook) to register the endpoint implemented above.
 
 You can also use the [Postman webhook reference call](https://www.postman.com/supaglue/workspace/supaglue-public/request/18172762-f62a5612-c293-44c5-bb82-3f7b6c26aeb7) to create the webhook.
 

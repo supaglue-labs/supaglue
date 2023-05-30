@@ -1,0 +1,35 @@
+post:
+  operationId: createForceSync
+  tags:
+    - Sync
+  security:
+    - ApiKeyAuth: []
+  summary: Force a full sync
+  description: >-
+    Force a full sync
+  parameters:
+    - name: customer_id
+      in: query
+      schema:
+        type: string
+        example: my-customer-1 
+      description: The customer ID that uniquely identifies the customer in your application
+      required: true
+    - name: provider_name
+      in: query
+      schema:
+        type: string
+        example: salesforce
+      description: The provider name
+      required: true
+  responses:
+    '200':
+      description: Force a full sync
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/force_sync.yaml
+          examples:
+            Example:
+              value:
+                success: true
