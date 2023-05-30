@@ -39,6 +39,8 @@ echo "Versioning docs..."
 yarn workspace docs docusaurus docs:version "$VERSION" > /dev/null
 yarn workspace docs version "$VERSION" > /dev/null
 
+echo "Running yarn generate..."
+yarn generate > /dev/null
 mkdir "openapi/versioned/version-${VERSION}" && cp -r openapi/common openapi/v1 openapi/v2 "openapi/versioned/version-${VERSION}/"
 
 echo "Deleting old docs..."
@@ -52,9 +54,6 @@ jq '.[0:2]' docs/versions.json > docs/versions.json.tmp && mv docs/versions.json
 
 echo "Building docs..."
 yarn workspace docs build > /dev/null
-
-echo "Running yarn generate..."
-yarn generate > /dev/null
 
 echo "Committing changes..."
 git add -A
