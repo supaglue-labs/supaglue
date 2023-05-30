@@ -1,3 +1,4 @@
+import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
 import { ConnectionService, RemoteService } from '@supaglue/core/services';
@@ -35,12 +36,36 @@ export function createSyncRecordsToDestination(
     commonModel,
     updatedAfterMs,
   }: SyncRecordsToDestinationArgs): Promise<SyncRecordsToDestinationResult> {
-    const connection = await connectionService.getSafeById(connectionId);
+    async function writeObjects(writer: DestinationWriter) {
+      let readable: Readable;
+      // TODO: Have better type-safety
+      if (client.category() === 'crm') {
+        readable = await (client as CrmRemoteClient).listObjects(
+          commonModel as CRMCommonModelType,
+          updatedAfter,
+          heartbeat
+        );
+        return await writer.writeObjects(
+          connection,
+          commonModel as CRMCommonModelType,
+          toHeartbeatingReadable(readable),
+          heartbeat
+        );
+      } else {
+        readable = await (client as EngagementRemoteClient).listObjects(
+          commonModel as EngagementCommonModelType,
+          updatedAfter
+        );
+        return await writer.writeObjects(
+          connection,
+          commonModel as EngagementCommonModelType,
+          toHeartbeatingReadable(readable),
+          heartbeat
+        );
+      }
+    }
 
-    const result = {
-      maxLastModifiedAt: null as Date | null,
-      numRecords: 0,
-    };
+    const connection = await connectionService.getSafeById(connectionId);
 
     logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: commonModel });
 
@@ -53,32 +78,7 @@ export function createSyncRecordsToDestination(
       throw new Error(`No destination found for integration ${connection.integrationId}`);
     }
 
-    let readable: Readable;
-    // TODO: Have better type-safety
-    if (client.category() === 'crm') {
-      readable = await (client as CrmRemoteClient).listObjects(
-        commonModel as CRMCommonModelType,
-        updatedAfter,
-        heartbeat
-      );
-      await writer.writeObjects(
-        connection,
-        commonModel as CRMCommonModelType,
-        toHeartbeatingReadable(readable),
-        heartbeat
-      );
-    } else {
-      readable = await (client as EngagementRemoteClient).listObjects(
-        commonModel as EngagementCommonModelType,
-        updatedAfter
-      );
-      await writer.writeObjects(
-        connection,
-        commonModel as EngagementCommonModelType,
-        toHeartbeatingReadable(readable),
-        heartbeat
-      );
-    }
+    const result = await writeObjects(writer);
 
     logEvent({
       eventName: 'Partially Completed Sync',
