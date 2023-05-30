@@ -1,5 +1,5 @@
-import type { CommonModel, ConnectionSafeAny, IntegrationCategory, PostgresDestination } from '@supaglue/types';
-import { CRMCommonModelType } from '@supaglue/types/crm';
+import type { CommonModelType, ConnectionSafeAny, IntegrationCategory, PostgresDestination } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { stringify } from 'csv-stringify';
 import { Pool, PoolClient } from 'pg';
@@ -43,9 +43,65 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
+  public override async upsertObject<T extends CRMCommonModelType>(
+    { providerName, customerId, category }: ConnectionSafeAny,
+    commonModelType: T,
+    object: CRMCommonModelTypeMap<T>['object']
+  ): Promise<void> {
+    const { schema } = this.#destination.config;
+    const table = getTableName(category, commonModelType);
+    const qualifiedTable = `${schema}.${table}`;
+
+    const client = await this.#getClient();
+
+    try {
+      // Create tables if necessary
+      // TODO: We should only need to do this once at the beginning
+      await client.query(getSchemaSetupSql(category, commonModelType)(schema));
+
+      const columns = getColumns(category, commonModelType);
+      const columnsWithoutPK = columns.filter(
+        (c) => c !== '_supaglue_provider_name' && c !== '_supaglue_customer_id' && c !== 'id'
+      );
+
+      const mapper = getSnakecasedKeysMapper(category, commonModelType);
+
+      const mappedRecord = {
+        _supaglue_provider_name: providerName,
+        _supaglue_customer_id: customerId,
+        ...mapper(object),
+      };
+
+      const columnsStr = columns.join(',');
+      const columnPlaceholderValuesStr = columns.map((column, index) => `$${index + 1}`).join(',');
+      const columnsToUpdateStr = columnsWithoutPK.join(',');
+      const excludedColumnsToUpdateStr = columnsWithoutPK.map((column) => `EXCLUDED.${column}`).join(',');
+      const values = columns.map((column) => {
+        const value = mappedRecord[column];
+        // pg doesn't seem to convert objects to JSON even though the docs say it does
+        // https://node-postgres.com/features/queries
+        if (value !== null && value !== undefined && typeof value === 'object') {
+          return JSON.stringify(value);
+        }
+        return value;
+      });
+
+      await client.query(
+        `INSERT INTO ${qualifiedTable} (${columnsStr})
+VALUES
+  (${columnPlaceholderValuesStr})
+ON CONFLICT (_supaglue_provider_name, _supaglue_customer_id, id)
+DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
+        values
+      );
+    } finally {
+      client.release();
+    }
+  }
+
   public override async writeObjects(
     { id: connectionId, providerName, customerId, category }: ConnectionSafeAny,
-    commonModelType: CommonModel,
+    commonModelType: CommonModelType,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteCommonModelsResult> {
@@ -68,11 +124,13 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${qualifiedTable})`);
       await client.query(
-        `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_id_idx ON ${tempTable} (provider_name, customer_id, id)`
+        `CREATE INDEX IF NOT EXISTS ${tempTable}_provider_name_customer_id_id_idx ON ${tempTable} (_supaglue_provider_name, _supaglue_customer_id, id)`
       );
 
       const columns = getColumns(category, commonModelType);
-      const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'id');
+      const columnsWithoutPK = columns.filter(
+        (c) => c !== '_supaglue_provider_name' && c !== '_supaglue_customer_id' && c !== 'id'
+      );
 
       // Output
       const stream = client.query(
@@ -104,8 +162,8 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
           transform: (chunk, encoding, callback) => {
             try {
               const mappedRecord = {
-                provider_name: providerName,
-                customer_id: customerId,
+                _supaglue_provider_name: providerName,
+                _supaglue_customer_id: customerId,
                 ...mapper(chunk),
               };
 
@@ -144,7 +202,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable}
 SELECT DISTINCT ON (id) * FROM (SELECT * FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
-ON CONFLICT (provider_name, customer_id, id)
+ON CONFLICT (_supaglue_provider_name, _supaglue_customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
         heartbeat();
@@ -162,7 +220,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const getTableName = (category: IntegrationCategory, commonModelType: CommonModel) => {
+const getTableName = (category: IntegrationCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return tableNamesByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -189,7 +247,7 @@ const tableNamesByCommonModelType: {
   },
 };
 
-const getColumns = (category: IntegrationCategory, commonModelType: CommonModel) => {
+const getColumns = (category: IntegrationCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return columnsByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -216,7 +274,7 @@ const columnsByCommonModelType: {
   },
 };
 
-const getSchemaSetupSql = (category: IntegrationCategory, commonModelType: CommonModel) => {
+const getSchemaSetupSql = (category: IntegrationCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return schemaSetupSqlByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -230,8 +288,8 @@ const schemaSetupSqlByCommonModelType: {
   crm: {
     account: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -249,12 +307,12 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "owner_id" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
     contact: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -271,12 +329,12 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "last_activity_at" TIMESTAMP(3),
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
     lead: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -296,12 +354,12 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "owner_id" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
     opportunity: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -319,12 +377,12 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "last_activity_at" TIMESTAMP(3),
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
     user: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -335,14 +393,14 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
   "is_active" BOOLEAN,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
   },
   engagement: {
     contact: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -361,12 +419,12 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
   "bounced_count" INTEGER NOT NULL,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
     mailbox: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_mailboxes" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -376,12 +434,12 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_mailboxes" (
   "user_id" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
     sequence: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -399,12 +457,12 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
   "is_enabled" BOOLEAN NOT NULL,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
     sequence_state: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequence_states" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -416,12 +474,12 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequence_states" (
   "state" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
     user: (schema: string) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_users" (
-  "provider_name" TEXT NOT NULL,
-  "customer_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -432,7 +490,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_users" (
   "email" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("provider_name", "customer_id", "id")
+  PRIMARY KEY ("_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
   },
 };

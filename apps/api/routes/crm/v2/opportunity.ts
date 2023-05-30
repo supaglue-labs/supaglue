@@ -42,8 +42,7 @@ export default function init(app: Router): void {
       req: Request<CreateOpportunityPathParams, CreateOpportunityResponse, CreateOpportunityRequest>,
       res: Response<CreateOpportunityResponse>
     ) => {
-      const { id: connectionId } = req.customerConnection;
-      const id = await crmCommonModelService.create('opportunity', connectionId, {
+      const id = await crmCommonModelService.create('opportunity', req.customerConnection, {
         ...camelcaseKeysSansCustomFields(req.body.model),
         closeDate: stringOrNullOrUndefinedToDate(req.body.model.close_date),
       });
@@ -57,8 +56,7 @@ export default function init(app: Router): void {
       req: Request<UpdateOpportunityPathParams, UpdateOpportunityResponse, UpdateOpportunityRequest>,
       res: Response<UpdateOpportunityResponse>
     ) => {
-      const { id: connectionId } = req.customerConnection;
-      await crmCommonModelService.update('opportunity', connectionId, {
+      await crmCommonModelService.update('opportunity', req.customerConnection, {
         id: req.params.opportunity_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
         closeDate: stringOrNullOrUndefinedToDate(req.body.model.close_date),

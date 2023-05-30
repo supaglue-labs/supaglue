@@ -3,8 +3,8 @@ import { arrayOfAllKeys } from '../util';
 
 export const keysOfSnakecasedEngagementContactV2WithTenant =
   arrayOfAllKeys<SnakecasedKeysEngagementContactV2WithTenant>()([
-    'provider_name',
-    'customer_id',
+    '_supaglue_provider_name',
+    '_supaglue_customer_id',
     'id',
     'created_at',
     'updated_at',

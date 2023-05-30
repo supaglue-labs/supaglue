@@ -2,8 +2,8 @@ import { SnakecasedKeysSequenceStateV2WithTenant } from '@supaglue/types/engagem
 import { arrayOfAllKeys } from '../util';
 
 export const keysOfSnakecasedSequenceStateV2WithTenant = arrayOfAllKeys<SnakecasedKeysSequenceStateV2WithTenant>()([
-  'provider_name',
-  'customer_id',
+  '_supaglue_provider_name',
+  '_supaglue_customer_id',
   'id',
   'created_at',
   'updated_at',

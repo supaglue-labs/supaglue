@@ -41,10 +41,9 @@ export default function init(app: Router): void {
       req: Request<CreateLeadPathParams, CreateLeadResponse, CreateLeadRequest>,
       res: Response<CreateLeadResponse>
     ) => {
-      const { id: connectionId } = req.customerConnection;
       const id = await crmCommonModelService.create(
         'lead',
-        connectionId,
+        req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.model)
       );
       return res.status(200).send({ model: { id } });
@@ -57,8 +56,7 @@ export default function init(app: Router): void {
       req: Request<UpdateLeadPathParams, UpdateLeadResponse, UpdateLeadRequest>,
       res: Response<UpdateLeadResponse>
     ) => {
-      const { id: connectionId } = req.customerConnection;
-      await crmCommonModelService.update('lead', connectionId, {
+      await crmCommonModelService.update('lead', req.customerConnection, {
         id: req.params.lead_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });

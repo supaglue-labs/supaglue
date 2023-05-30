@@ -1,7 +1,7 @@
 import { PrismaClient } from '@supaglue/db';
-import { CommonModel } from '@supaglue/types';
+import { CommonModelType } from '@supaglue/types';
 
-export const getRemoteId = async (prisma: PrismaClient, id: string, commonModel: CommonModel): Promise<string> => {
+export const getRemoteId = async (prisma: PrismaClient, id: string, commonModel: CommonModelType): Promise<string> => {
   let record = null;
   switch (commonModel) {
     case 'account': {

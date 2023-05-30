@@ -1,6 +1,6 @@
 import { maybeSendWebhookPayload } from '@supaglue/core/lib/webhook';
 import { ConnectionService, IntegrationService } from '@supaglue/core/services';
-import { CommonModel } from '@supaglue/types/common';
+import { CommonModelType } from '@supaglue/types/common';
 import { ApplicationService } from 'sync-worker/services';
 
 export function createMaybeSendSyncFinishWebhook({
@@ -24,7 +24,7 @@ export function createMaybeSendSyncFinishWebhook({
     connectionId: string;
     status: 'SYNC_SUCCESS' | 'SYNC_ERROR';
     numRecordsSynced: number;
-    commonModel: CommonModel;
+    commonModel: CommonModelType;
     errorMessage?: string;
   }) {
     const connection = await connectionService.getSafeById(connectionId);

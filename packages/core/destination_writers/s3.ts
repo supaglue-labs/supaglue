@@ -1,5 +1,6 @@
 import { DeleteObjectsCommand, paginateListObjectsV2, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { CommonModel, ConnectionSafeAny, IntegrationCategory, ProviderName, S3Destination } from '@supaglue/types';
+import { CommonModelType, ConnectionSafeAny, IntegrationCategory, ProviderName, S3Destination } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
@@ -23,9 +24,18 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     });
   }
 
+  public override async upsertObject<T extends CRMCommonModelType>(
+    connection: ConnectionSafeAny,
+    commonModelType: T,
+    object: CRMCommonModelTypeMap<T>['object']
+  ): Promise<void> {
+    // Do nothing
+    return;
+  }
+
   public override async writeObjects(
     connection: ConnectionSafeAny,
-    commonModelType: CommonModel,
+    commonModelType: CommonModelType,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteCommonModelsResult> {
@@ -48,8 +58,8 @@ export class S3DestinationWriter extends BaseDestinationWriter {
           try {
             numRecords++;
             const mappedRecord = {
-              provider_name: providerName,
-              customer_id: customerId,
+              _supaglue_provider_name: providerName,
+              _supaglue_customer_id: customerId,
               ...mapper(chunk),
             };
             data.push(mappedRecord);
@@ -84,7 +94,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
   getKeyPrefix(
     category: IntegrationCategory,
-    commonModelType: CommonModel,
+    commonModelType: CommonModelType,
     customerId: string,
     providerName: ProviderName
   ) {
@@ -92,7 +102,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
   }
 
   async write(
-    commonModelType: CommonModel,
+    commonModelType: CommonModelType,
     { providerName, customerId, category }: ConnectionSafeAny,
     results: Record<string, any>[]
   ): Promise<void> {
@@ -101,8 +111,8 @@ export class S3DestinationWriter extends BaseDestinationWriter {
         .map((result) =>
           JSON.stringify({
             ...result,
-            customer_id: customerId,
-            provider_name: providerName,
+            _supaglue_customer_id: customerId,
+            _supaglue_provider_name: providerName,
           })
         )
         .join('\n');
@@ -119,7 +129,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
   async dropExistingRecordsIfNecessary(
     category: IntegrationCategory,
-    commonModelType: CommonModel,
+    commonModelType: CommonModelType,
     customerId: string,
     providerName: ProviderName
   ) {

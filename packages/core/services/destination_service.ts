@@ -19,6 +19,16 @@ export class DestinationService {
     return models.map(fromDestinationModel);
   }
 
+  public async getDestinationByIntegrationId(integrationId: string): Promise<Destination | null> {
+    const model = await this.#prisma.destination.findFirst({
+      where: { integrations: { some: { id: integrationId } } },
+    });
+    if (!model) {
+      return null;
+    }
+    return fromDestinationModel(model);
+  }
+
   public async getDestinationById(id: string): Promise<Destination> {
     const model = await this.#prisma.destination.findUniqueOrThrow({
       where: { id },
@@ -51,15 +61,11 @@ export class DestinationService {
     return fromDestinationModel(model);
   }
 
-  public async getWriterByApplicationId(applicationId: string): Promise<DestinationWriter> {
-    const destinations = await this.getDestinationsByApplicationId(applicationId);
-    if (destinations.length === 0) {
-      throw new Error('No destinations found');
+  public async getWriterByIntegrationId(integrationId: string): Promise<DestinationWriter | null> {
+    const destination = await this.getDestinationByIntegrationId(integrationId);
+    if (!destination) {
+      return null;
     }
-    if (destinations.length > 1) {
-      throw new Error('Multiple destinations found');
-    }
-    const destination = destinations[0];
     switch (destination.type) {
       case 's3':
         return new S3DestinationWriter(destination);

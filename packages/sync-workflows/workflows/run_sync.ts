@@ -1,4 +1,4 @@
-import { CommonModel, IntegrationCategory } from '@supaglue/types/common';
+import { CommonModelType, IntegrationCategory } from '@supaglue/types/common';
 import { CRMCommonModelType, CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import {
   CRMNumRecordsSyncedMap,
@@ -51,10 +51,10 @@ export type RunSyncArgs = {
 export async function runSync({ syncId, connectionId, category }: RunSyncArgs): Promise<void> {
   const historyIdsMap = Object.fromEntries(
     getCommonModels(category).map((commonModel) => {
-      const entry: [CommonModel, string] = [commonModel, uuid4()];
+      const entry: [CommonModelType, string] = [commonModel, uuid4()];
       return entry;
     })
-  ) as Record<CommonModel, string>;
+  ) as Record<CommonModelType, string>;
 
   await Promise.all(
     getCommonModels(category).map(async (commonModel) => {
@@ -145,14 +145,14 @@ async function doFullThenIncrementalSync({
     const importRecordsResultList = Object.fromEntries(
       await Promise.all(
         getCommonModels(category).map(async (commonModel) => {
-          const entry: [CommonModel, ImportRecordsResult] = [
+          const entry: [CommonModelType, ImportRecordsResult] = [
             commonModel,
             await importRecords({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
           ];
           return entry;
         })
       )
-    ) as Record<CommonModel, ImportRecordsResult>;
+    ) as Record<CommonModelType, ImportRecordsResult>;
 
     const newMaxLastModifiedAtMsMap =
       category === 'crm'
@@ -194,7 +194,7 @@ async function doFullThenIncrementalSync({
         commonModel,
         importRecordsResultList[commonModel].numRecordsSynced,
       ])
-    ) as Record<CommonModel, number>;
+    ) as Record<CommonModelType, number>;
   }
 
   async function doIncrementalPhase(): Promise<NumRecordsSyncedMap> {
@@ -236,8 +236,8 @@ async function doFullThenIncrementalSync({
         getCommonModels(category).map((commonModel) => [
           commonModel,
           Math.max(
-            (originalMaxLastModifiedAtMsMap as Record<CommonModel, number>)[commonModel],
-            (importRecordsResultList as Record<CommonModel, ImportRecordsResult>)[commonModel].maxLastModifiedAtMs
+            (originalMaxLastModifiedAtMsMap as Record<CommonModelType, number>)[commonModel],
+            (importRecordsResultList as Record<CommonModelType, ImportRecordsResult>)[commonModel].maxLastModifiedAtMs
           ),
         ])
       ) as NumRecordsSyncedMap;
@@ -255,19 +255,19 @@ async function doFullThenIncrementalSync({
     const importRecordsResultList = Object.fromEntries(
       await Promise.all(
         getCommonModels(category).map(async (commonModel) => {
-          const entry: [CommonModel, ImportRecordsResult] = [
+          const entry: [CommonModelType, ImportRecordsResult] = [
             commonModel,
             await importRecords({
               syncId: sync.id,
               connectionId: sync.connectionId,
               commonModel,
-              updatedAfterMs: (getOriginalMaxLastModifiedAtMsMap() as Record<CommonModel, number>)[commonModel],
+              updatedAfterMs: (getOriginalMaxLastModifiedAtMsMap() as Record<CommonModelType, number>)[commonModel],
             }),
           ];
           return entry;
         })
       )
-    ) as Record<CommonModel, ImportRecordsResult>;
+    ) as Record<CommonModelType, ImportRecordsResult>;
 
     const newMaxLastModifiedAtMsMap = computeUpdatedMaxLastModifiedAtMsMap(importRecordsResultList);
 
@@ -293,7 +293,7 @@ async function doFullThenIncrementalSync({
     return Object.fromEntries(
       getCommonModels(category).map((commonModel) => [
         commonModel,
-        (importRecordsResultList as Record<CommonModel, ImportRecordsResult>)[commonModel].numRecordsSynced,
+        (importRecordsResultList as Record<CommonModelType, ImportRecordsResult>)[commonModel].numRecordsSynced,
       ])
     ) as NumRecordsSyncedMap;
   }
@@ -328,7 +328,7 @@ async function doReverseThenForwardSync({
 }: {
   sync: ReverseThenForwardSync;
   category: IntegrationCategory;
-}): Promise<Record<CommonModel, number>> {
+}): Promise<Record<CommonModelType, number>> {
   throw ApplicationFailure.nonRetryable('reverse then forward sync not currently supported');
 }
 
