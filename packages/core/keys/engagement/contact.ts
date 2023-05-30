@@ -3,7 +3,6 @@ import { arrayOfAllKeys } from '../util';
 
 export const keysOfSnakecasedEngagementContactV2WithTenant =
   arrayOfAllKeys<SnakecasedKeysEngagementContactV2WithTenant>()([
-    '_supaglue_application_id',
     '_supaglue_provider_name',
     '_supaglue_customer_id',
     'id',

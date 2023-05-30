@@ -1,5 +1,4 @@
 export type SnakecasedCrmTenantFields = {
-  _supaglue_application_id: string;
   _supaglue_provider_name: string;
   _supaglue_customer_id: string;
 };
