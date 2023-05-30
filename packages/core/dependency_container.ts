@@ -104,7 +104,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const webhookService = new WebhookService({ prisma });
   const destinationService = new DestinationService(prisma);
 
-  const crmCommonModelService = new CrmCommonModelService(remoteService);
+  const crmCommonModelService = new CrmCommonModelService(remoteService, destinationService);
   const engagementCommonModelService = new EngagementCommonModelService(remoteService);
 
   // crm

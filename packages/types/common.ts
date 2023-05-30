@@ -47,4 +47,4 @@ export type PaginatedResult<T> = {
 };
 
 export type IntegrationCategory = 'crm' | 'engagement';
-export type CommonModel = CRMCommonModelType | EngagementCommonModelType;
+export type CommonModelType = CRMCommonModelType | EngagementCommonModelType;

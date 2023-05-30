@@ -2,7 +2,7 @@ import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
 import { ConnectionService, RemoteService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
-import { CommonModel } from '@supaglue/types';
+import { CommonModelType } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { Context } from '@temporalio/activity';
@@ -12,14 +12,14 @@ import { logEvent } from '../lib/analytics';
 export type SyncRecordsToDestinationArgs = {
   syncId: string;
   connectionId: string;
-  commonModel: CommonModel;
+  commonModel: CommonModelType;
   updatedAfterMs?: number;
 };
 
 export type SyncRecordsToDestinationResult = {
   syncId: string;
   connectionId: string;
-  commonModel: CommonModel;
+  commonModel: CommonModelType;
   maxLastModifiedAtMs: number;
   numRecordsSynced: number;
 };
@@ -48,7 +48,10 @@ export function createSyncRecordsToDestination(
 
     const client = await remoteService.getRemoteClient(connectionId);
 
-    const writer = await destinationService.getWriterByApplicationId(connection.applicationId);
+    const writer = await destinationService.getWriterByIntegrationId(connection.integrationId);
+    if (!writer) {
+      throw new Error(`No destination found for integration ${connection.integrationId}`);
+    }
 
     let readable: Readable;
     // TODO: Have better type-safety

@@ -1,5 +1,5 @@
-import type { CommonModel, ConnectionSafeAny, IntegrationCategory, PostgresDestination } from '@supaglue/types';
-import { CRMCommonModelType } from '@supaglue/types/crm';
+import type { CommonModelType, ConnectionSafeAny, IntegrationCategory, PostgresDestination } from '@supaglue/types';
+import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { stringify } from 'csv-stringify';
 import { Pool, PoolClient } from 'pg';
@@ -43,9 +43,65 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
+  public override async upsertObject<T extends CRMCommonModelType>(
+    { id: connectionId, providerName, customerId, category }: ConnectionSafeAny,
+    commonModelType: T,
+    object: CRMCommonModelTypeMap<T>['object']
+  ): Promise<void> {
+    const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
+
+    const { schema } = this.#destination.config;
+    const table = getTableName(category, commonModelType);
+    const qualifiedTable = `${schema}.${table}`;
+
+    const client = await this.#getClient();
+
+    try {
+      // Create tables if necessary
+      // TODO: We should only need to do this once at the beginning
+      await client.query(getSchemaSetupSql(category, commonModelType)(schema));
+
+      const columns = getColumns(category, commonModelType);
+      const columnsWithoutPK = columns.filter((c) => c !== 'provider_name' && c !== 'customer_id' && c !== 'id');
+
+      const mapper = getSnakecasedKeysMapper(category, commonModelType);
+
+      const mappedRecord = {
+        provider_name: providerName,
+        customer_id: customerId,
+        ...mapper(object),
+      };
+
+      const columnsStr = columns.join(',');
+      const columnPlaceholderValuesStr = columns.map((column, index) => `$${index + 1}`).join(',');
+      const columnsToUpdateStr = columnsWithoutPK.join(',');
+      const excludedColumnsToUpdateStr = columnsWithoutPK.map((column) => `EXCLUDED.${column}`).join(',');
+      const values = columns.map((column) => {
+        const value = mappedRecord[column];
+        // pg doesn't seem to convert objects to JSON even though the docs say it does
+        // https://node-postgres.com/features/queries
+        if (value !== null && value !== undefined && typeof value === 'object') {
+          return JSON.stringify(value);
+        }
+        return value;
+      });
+
+      await client.query(
+        `INSERT INTO ${qualifiedTable} (${columnsStr})
+VALUES
+  (${columnPlaceholderValuesStr})
+ON CONFLICT (provider_name, customer_id, id)
+DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
+        values
+      );
+    } finally {
+      client.release();
+    }
+  }
+
   public override async writeObjects(
     { id: connectionId, providerName, customerId, category }: ConnectionSafeAny,
-    commonModelType: CommonModel,
+    commonModelType: CommonModelType,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteCommonModelsResult> {
@@ -162,7 +218,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const getTableName = (category: IntegrationCategory, commonModelType: CommonModel) => {
+const getTableName = (category: IntegrationCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return tableNamesByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -189,7 +245,7 @@ const tableNamesByCommonModelType: {
   },
 };
 
-const getColumns = (category: IntegrationCategory, commonModelType: CommonModel) => {
+const getColumns = (category: IntegrationCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return columnsByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -216,7 +272,7 @@ const columnsByCommonModelType: {
   },
 };
 
-const getSchemaSetupSql = (category: IntegrationCategory, commonModelType: CommonModel) => {
+const getSchemaSetupSql = (category: IntegrationCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return schemaSetupSqlByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }

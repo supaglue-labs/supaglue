@@ -1,4 +1,4 @@
-import { Application as SupaglueApplication, ConnectionSafe } from '@supaglue/types';
+import { Application as SupaglueApplication, ConnectionSafeAny } from '@supaglue/types';
 
 declare global {
   declare namespace Express {
@@ -7,7 +7,7 @@ declare global {
     interface Request {
       customerId: string;
       supaglueApplication: SupaglueApplication;
-      customerConnection: ConnectionSafe;
+      customerConnection: ConnectionSafeAny;
       orgId: string;
       sg: Record<string, string>;
     }

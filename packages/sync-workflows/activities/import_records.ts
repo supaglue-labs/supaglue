@@ -15,7 +15,7 @@ import {
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
 import { SequenceStateService } from '@supaglue/core/services/common_models/engagement/sequence_state_service';
-import { CommonModel, IntegrationCategory } from '@supaglue/types';
+import { CommonModelType, IntegrationCategory } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { Context } from '@temporalio/activity';
@@ -25,14 +25,14 @@ import { logEvent } from '../lib/analytics';
 export type ImportRecordsArgs = {
   syncId: string;
   connectionId: string;
-  commonModel: CommonModel;
+  commonModel: CommonModelType;
   updatedAfterMs?: number;
 };
 
 export type ImportRecordsResult = {
   syncId: string;
   connectionId: string;
-  commonModel: CommonModel;
+  commonModel: CommonModelType;
   maxLastModifiedAtMs: number;
   numRecordsSynced: number;
 };

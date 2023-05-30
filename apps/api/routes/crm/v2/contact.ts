@@ -42,10 +42,9 @@ export default function init(app: Router): void {
       req: Request<CreateContactPathParams, CreateContactResponse, CreateContactRequest>,
       res: Response<CreateContactResponse>
     ) => {
-      const { id: connectionId } = req.customerConnection;
       const id = await crmCommonModelService.create(
         'contact',
-        connectionId,
+        req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.model)
       );
       return res.status(200).send({ model: { id } });
@@ -58,8 +57,7 @@ export default function init(app: Router): void {
       req: Request<UpdateContactPathParams, UpdateContactResponse, UpdateContactRequest>,
       res: Response<UpdateContactResponse>
     ) => {
-      const { id: connectionId } = req.customerConnection;
-      await crmCommonModelService.update('contact', connectionId, {
+      await crmCommonModelService.update('contact', req.customerConnection, {
         id: req.params.contact_id,
         ...camelcaseKeysSansCustomFields(req.body.model),
       });
