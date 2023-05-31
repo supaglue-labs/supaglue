@@ -35,6 +35,13 @@ import {
   OpportunityV2,
   UserV2,
 } from '@supaglue/types/crm';
+import { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/crm/custom_object';
+import {
+  CustomObjectClass,
+  CustomObjectClassCreateParams,
+  CustomObjectClassUpdateParams,
+  CustomObjectFieldType,
+} from '@supaglue/types/crm/custom_object_class';
 import retry from 'async-retry';
 import { Readable } from 'stream';
 import {
@@ -804,6 +811,87 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   ): Promise<SendPassthroughRequestResponse> {
     await this.maybeRefreshAccessToken();
     return await super.sendPassthroughRequest(request);
+  }
+
+  public override async getCustomObjectClass(id: string): Promise<CustomObjectClass> {
+    await this.maybeRefreshAccessToken();
+    const response = await this.#client.crm.schemas.coreApi.getById(id);
+    return {
+      id: response.objectTypeId,
+      name: response.name,
+      description: null,
+      labels: {
+        // TODO
+        singular: response.labels.singular ?? '',
+        plural: response.labels.plural ?? '',
+      },
+      fields: response.properties.map((property) => ({
+        remoteKeyName: property.name,
+        displayName: property.label,
+        fieldType: property.type as CustomObjectFieldType, // TODO
+        isRequired: response.requiredProperties.includes(property.name),
+      })),
+    };
+  }
+
+  public override async createCustomObjectClass(params: CustomObjectClassCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await this.#client.crm.schemas.coreApi.create({
+      name: params.name,
+      labels: params.labels,
+      properties: params.fields.map((field) => ({
+        name: field.remoteKeyName,
+        label: field.displayName,
+        type: field.fieldType,
+        fieldType: 'text', // TODO
+      })),
+      requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.remoteKeyName),
+      searchableProperties: [],
+      secondaryDisplayProperties: [],
+      associatedObjects: [],
+    });
+    return response.objectTypeId;
+  }
+
+  public override async updateCustomObjectClass(params: CustomObjectClassUpdateParams): Promise<void> {
+    await this.maybeRefreshAccessToken();
+    await this.#client.crm.schemas.coreApi.update(params.id, {
+      // name: params.name, // TODO: this isn't supported on update
+      labels: params.labels,
+      // TODO: support properties update
+      // properties: params.fields.map((field) => ({
+      //   name: field.remoteKeyName,
+      //   label: field.displayName,
+      //   type: field.fieldType,
+      //   fieldType: 'text', // TODO
+      // })),
+      requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.remoteKeyName),
+    });
+  }
+
+  public override async getCustomObject(classId: string, id: string): Promise<CustomObject> {
+    await this.maybeRefreshAccessToken();
+    const response = await this.#client.crm.objects.basicApi.getById(classId, id);
+    return {
+      id: response.id,
+      classId,
+      fields: response.properties,
+    };
+  }
+
+  public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await this.#client.crm.objects.basicApi.create(params.classId, {
+      properties: params.fields as Record<string, string>, // TODO: map types?
+    });
+    return response.id;
+  }
+
+  public override async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
+    await this.maybeRefreshAccessToken();
+    await this.#client.crm.objects.basicApi.update(params.classId, params.id, {
+      properties: params.fields as Record<string, string>, // TODO: map types?
+    });
   }
 
   public handleErr(err: unknown): unknown {

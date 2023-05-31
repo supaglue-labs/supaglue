@@ -1,0 +1,24 @@
+type: object
+properties:
+  display_name:
+    type: string
+    example: Ticket ID
+  remote_key_name:
+    type: string
+    example: ticket_id
+  is_required:
+    type: boolean
+    example: false
+  field_type:
+    type: string
+    enum:
+      - string
+      - number
+      - date
+      - datetime
+      - bool
+required:
+  - display_name
+  - remote_key_name
+  - is_required
+  - field_type

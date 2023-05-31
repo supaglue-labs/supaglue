@@ -18,6 +18,7 @@ import {
   UserService as CrmUserService,
 } from './services/common_models/crm';
 import { CrmCommonModelService } from './services/common_models/crm/common_model_service';
+import { CrmCustomObjectService } from './services/common_models/crm/custom_object_service';
 import {
   ContactService as EngagementContactService,
   MailboxService,
@@ -46,6 +47,8 @@ export type CoreDependencyContainer = {
 
   crmCommonModelService: CrmCommonModelService;
   engagementCommonModelService: EngagementCommonModelService;
+
+  crmCustomObjectService: CrmCustomObjectService;
 
   // crm
   crm: {
@@ -107,6 +110,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const crmCommonModelService = new CrmCommonModelService(remoteService, destinationService);
   const engagementCommonModelService = new EngagementCommonModelService(remoteService);
 
+  const crmCustomObjectService = new CrmCustomObjectService(remoteService);
+
   // crm
   const accountService = new AccountService(pgPool, prisma, remoteService);
   const leadService = new LeadService(pgPool, prisma, remoteService);
@@ -137,6 +142,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     syncHistoryService,
     crmCommonModelService,
     engagementCommonModelService,
+    crmCustomObjectService,
     // crm
     crm: {
       contactService,

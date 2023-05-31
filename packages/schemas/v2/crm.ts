@@ -112,3 +112,58 @@ export type SendPassthroughRequestRequest =
   operations['sendPassthroughRequest']['requestBody']['content']['application/json'];
 export type SendPassthroughRequestResponse =
   operations['sendPassthroughRequest']['responses'][keyof operations['sendPassthroughRequest']['responses']]['content']['application/json'];
+
+export type CreateCustomObjectClassPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateCustomObjectClassQueryParams = Required<operations['createCustomObjectClass']>['parameters']['query'];
+export type CreateCustomObjectClassQueryParams = any;
+export type CreateCustomObjectClassRequest =
+  operations['createCustomObjectClass']['requestBody']['content']['application/json'];
+export type CreateCustomObjectClassResponse =
+  operations['createCustomObjectClass']['responses'][keyof operations['createCustomObjectClass']['responses']]['content']['application/json'];
+
+export type GetCustomObjectClassPathParams =
+  paths[`/custom-object-classes/{custom_object_class_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type GetCustomObjectClassQueryParams = Required<operations['getCustomObjectClass']>['parameters']['query'];
+export type GetCustomObjectClassQueryParams = any;
+export type GetCustomObjectClassRequest = never;
+export type GetCustomObjectClassResponse =
+  operations['getCustomObjectClass']['responses'][keyof operations['getCustomObjectClass']['responses']]['content']['application/json'];
+
+export type UpdateCustomObjectClassPathParams =
+  paths[`/custom-object-classes/{custom_object_class_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type UpdateCustomObjectClassQueryParams = Required<operations['getCustomObjectClass']>['parameters']['query'];
+export type UpdateCustomObjectClassQueryParams = any;
+export type UpdateCustomObjectClassRequest =
+  operations['updateCustomObjectClass']['requestBody']['content']['application/json'];
+export type UpdateCustomObjectClassResponse =
+  operations['updateCustomObjectClass']['responses'][keyof operations['updateCustomObjectClass']['responses']]['content']['application/json'];
+
+export type CreateCustomObjectPathParams =
+  paths[`/custom-object-classes/{custom_object_class_id}/custom-objects`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateCustomObjectQueryParams = Required<operations['createCustomObject']>['parameters']['query'];
+export type CreateCustomObjectQueryParams = any;
+export type CreateCustomObjectRequest = operations['createCustomObject']['requestBody']['content']['application/json'];
+export type CreateCustomObjectResponse =
+  operations['createCustomObject']['responses'][keyof operations['createCustomObject']['responses']]['content']['application/json'];
+
+export type GetCustomObjectPathParams =
+  paths[`/custom-object-classes/{custom_object_class_id}/custom-objects/{custom_object_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type GetCustomObjectQueryParams = Required<operations['getCustomObject']>['parameters']['query'];
+export type GetCustomObjectQueryParams = any;
+export type GetCustomObjectRequest = never;
+export type GetCustomObjectResponse =
+  operations['getCustomObject']['responses'][keyof operations['getCustomObject']['responses']]['content']['application/json'];
+
+export type UpdateCustomObjectPathParams =
+  paths[`/custom-object-classes/{custom_object_class_id}/custom-objects/{custom_object_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type UpdateCustomObjectQueryParams = Required<operations['getCustomObject']>['parameters']['query'];
+export type UpdateCustomObjectQueryParams = any;
+export type UpdateCustomObjectRequest = operations['updateCustomObject']['requestBody']['content']['application/json'];
+export type UpdateCustomObjectResponse =
+  operations['updateCustomObject']['responses'][keyof operations['updateCustomObject']['responses']]['content']['application/json'];
