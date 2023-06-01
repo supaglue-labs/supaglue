@@ -43,6 +43,14 @@ paths:
     $ref: paths/users@{user_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
+  '/custom-object-classes':
+    $ref: paths/custom-object-classes.yaml
+  '/custom-object-classes/{custom_object_class_id}':
+    $ref: paths/custom-object-classes@{custom_object_class_id}.yaml
+  '/custom-object-classes/{custom_object_class_id}/custom-objects':
+    $ref: paths/custom-objects.yaml
+  '/custom-object-classes/{custom_object_class_id}/custom-objects/{custom_object_id}':
+    $ref: paths/custom-objects@{custom_object_id}.yaml
 tags:
   - name: Accounts
     description: The `Account` Common Model is used to represent a "company" in CRMs.
@@ -56,6 +64,10 @@ tags:
     description: The `User` Common Model is used to represent a "user" that can login to CRMs.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
+  - name: Custom Object Classes
+    description: The `Custom Object Class` Common Model is used to represent a "custom object class" in CRMs.
+  - name: Custom Objects
+    description: The `Custom Object` Common Model is used to represent a "custom object" in CRMs.
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -105,6 +117,16 @@ components:
       $ref: ./components/schemas/filter.yaml
     lifecycle_stage:
       $ref: ./components/schemas/objects/lifecycle_stage.yaml
+    custom_object_class:
+      $ref: ./components/schemas/objects/custom_object_class.yaml
+    create_update_custom_object_class:
+      $ref: ./components/schemas/create_update_custom_object_class.yaml
+    custom_object:
+      $ref: ./components/schemas/objects/custom_object.yaml
+    create_update_custom_object:
+      $ref: ./components/schemas/create_update_custom_object.yaml
+    custom_object_field:
+      $ref: ./components/schemas/objects/custom_object_field.yaml
   parameters:
     include_deleted_data:
       $ref: ../../common/components/parameters/query/include_deleted_data.yaml

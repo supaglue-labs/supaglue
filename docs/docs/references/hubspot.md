@@ -45,11 +45,13 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
     Required for reads:
 
-    - `crm.objects.owners.read`
-    - `crm.objects.companies.read`
-    - `crm.lists.read`
-    - `crm.objects.deals.read`
     - `crm.objects.contacts.read`
+    - `crm.objects.companies.read`
+    - `crm.objects.deals.read`
+    - `crm.objects.owners.read`
+    - `crm.lists.read`
+    - `crm.objects.custom.read`
+    - `crm.schemas.custom.read`
 
     Required for writes:
 
@@ -57,6 +59,8 @@ Supaglue provides a redirect URL to send information to your app. To add the red
     - `crm.objects.companies.write`
     - `crm.objects.deals.write`
     - `crm.lists.write`
+    - `crm.objects.custom.write`
+    - `crm.schemas.custom.write`
 
 1. Click Save to update your changes.
 

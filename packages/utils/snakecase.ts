@@ -22,3 +22,16 @@ export function snakecaseKeysSansHeaders<T extends Record<string, any> & { heade
     headers: inputObject.headers,
   };
 }
+
+/**
+ * @deprecated This function is really expensive. Try not to use it.
+ * https://github.com/supaglue-labs/supaglue/issues/595
+ */
+export function snakecaseKeysSansFields<T extends Record<string, any> & { fields?: Record<string, any> }>(
+  inputObject: T
+) {
+  return {
+    ...snakecaseKeys(inputObject),
+    fields: inputObject.fields,
+  };
+}

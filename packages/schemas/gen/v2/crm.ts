@@ -86,6 +86,43 @@ export interface paths {
     post: operations["sendPassthroughRequest"];
     
   };
+  "/custom-object-classes": {
+    /** Create customObjectClass */
+    post: operations["createCustomObjectClass"];
+    
+  };
+  "/custom-object-classes/{custom_object_class_id}": {
+    /** Get customObjectClass */
+    get: operations["getCustomObjectClass"];
+    /** Update customObjectClass */
+    put: operations["updateCustomObjectClass"];
+    parameters: {
+      path: {
+        custom_object_class_id: string;
+      };
+    };
+  };
+  "/custom-object-classes/{custom_object_class_id}/custom-objects": {
+    /** Create customObject */
+    post: operations["createCustomObject"];
+    parameters: {
+      path: {
+        custom_object_class_id: string;
+      };
+    };
+  };
+  "/custom-object-classes/{custom_object_class_id}/custom-objects/{custom_object_id}": {
+    /** Get customObject */
+    get: operations["getCustomObject"];
+    /** Update customObject */
+    patch: operations["updateCustomObject"];
+    parameters: {
+      path: {
+        custom_object_class_id: string;
+        custom_object_id: string;
+      };
+    };
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -534,6 +571,58 @@ export interface components {
     filter: components["schemas"]["equals_filter"] | components["schemas"]["contains_filter"];
     /** @enum {string|null} */
     lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+    custom_object_class: {
+      /** @example 42579f73-8524-4570-9b67-ecbd702c6b14 */
+      id: string;
+      /** @example ticket */
+      name: string;
+      /** @example Ticket object */
+      description: string | null;
+      labels: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
+      fields: (components["schemas"]["custom_object_field"])[];
+    };
+    create_update_custom_object_class: {
+      /** @example ticket */
+      name: string;
+      /** @example Ticket object */
+      description: string | null;
+      labels: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
+      fields: (components["schemas"]["custom_object_field"])[];
+    };
+    custom_object: {
+      /** @example 42579f73-8524-4570-9b67-ecbd702c6b14 */
+      id: string;
+      /** @example 42579f73-8524-4570-9b67-ecbd702c6b15 */
+      class_id: string;
+      fields: {
+        [key: string]: unknown | undefined;
+      };
+    };
+    create_update_custom_object: {
+      fields: {
+        [key: string]: unknown | undefined;
+      };
+    };
+    custom_object_field: {
+      /** @example Ticket ID */
+      display_name: string;
+      /** @example ticket_id */
+      key_name: string;
+      /** @example false */
+      is_required: boolean;
+      /** @enum {string} */
+      field_type: "string" | "number";
+    };
   };
   responses: never;
   parameters: {
@@ -888,6 +977,122 @@ export interface operations {
               })[]) | ({
               [key: string]: unknown | undefined;
             });
+          };
+        };
+      };
+    };
+  };
+  createCustomObjectClass: {
+    /** Create customObjectClass */
+    requestBody: {
+      content: {
+        "application/json": {
+          class: components["schemas"]["create_update_custom_object_class"];
+        };
+      };
+    };
+    responses: {
+      /** @description CustomObjectClass created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            class?: {
+              id: string;
+            };
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getCustomObjectClass: {
+    /** Get customObjectClass */
+    responses: {
+      /** @description CustomObjectClass */
+      200: {
+        content: {
+          "application/json": components["schemas"]["custom_object_class"];
+        };
+      };
+    };
+  };
+  updateCustomObjectClass: {
+    /** Update customObjectClass */
+    requestBody: {
+      content: {
+        "application/json": {
+          class: components["schemas"]["create_update_custom_object_class"];
+        };
+      };
+    };
+    responses: {
+      /** @description CustomObjectClass updated */
+      200: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  createCustomObject: {
+    /** Create customObject */
+    requestBody: {
+      content: {
+        "application/json": {
+          model: components["schemas"]["create_update_custom_object"];
+        };
+      };
+    };
+    responses: {
+      /** @description CustomObject created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            model?: {
+              id: string;
+            };
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getCustomObject: {
+    /** Get customObject */
+    responses: {
+      /** @description CustomObject */
+      200: {
+        content: {
+          "application/json": components["schemas"]["custom_object"];
+        };
+      };
+    };
+  };
+  updateCustomObject: {
+    /** Update customObject */
+    requestBody: {
+      content: {
+        "application/json": {
+          model: components["schemas"]["create_update_custom_object"];
+        };
+      };
+    };
+    responses: {
+      /** @description CustomObject updated */
+      200: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            warnings?: components["schemas"]["warnings"];
           };
         };
       };
