@@ -2552,7 +2552,7 @@
             "type": "string",
             "example": "Ticket ID"
           },
-          "remote_key_name": {
+          "key_name": {
             "type": "string",
             "example": "ticket_id"
           },
@@ -2570,7 +2570,7 @@
         },
         "required": [
           "display_name",
-          "remote_key_name",
+          "key_name",
           "is_required",
           "field_type"
         ]

@@ -617,7 +617,7 @@ export interface components {
       /** @example Ticket ID */
       display_name: string;
       /** @example ticket_id */
-      remote_key_name: string;
+      key_name: string;
       /** @example false */
       is_required: boolean;
       /** @enum {string} */

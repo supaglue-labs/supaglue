@@ -17,7 +17,7 @@ export type CustomObjectClassUpdateParams = CustomObjectClass;
 
 export type CustomObjectFieldClass = {
   displayName: string;
-  remoteKeyName: string;
+  keyName: string;
   isRequired: boolean;
   fieldType: CustomObjectFieldType;
 };

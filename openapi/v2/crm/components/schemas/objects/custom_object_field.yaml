@@ -3,7 +3,7 @@ properties:
   display_name:
     type: string
     example: Ticket ID
-  remote_key_name:
+  key_name:
     type: string
     example: ticket_id
   is_required:
@@ -16,6 +16,6 @@ properties:
       - number
 required:
   - display_name
-  - remote_key_name
+  - key_name
   - is_required
   - field_type

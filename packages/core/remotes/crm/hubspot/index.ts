@@ -827,7 +827,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         plural: response.labels.plural ?? '',
       },
       fields: response.properties.map((property) => ({
-        remoteKeyName: property.name,
+        keyName: property.name,
         displayName: property.label,
         fieldType: property.type as CustomObjectFieldType, // TODO
         isRequired: response.requiredProperties.includes(property.name),
@@ -844,14 +844,14 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const response = await this.#client.crm.schemas.coreApi.create({
       name: params.name,
       labels: params.labels,
-      primaryDisplayProperty: params.fields[0].remoteKeyName, // this is a hack
+      primaryDisplayProperty: params.fields[0].keyName, // this is a hack
       properties: params.fields.map((field) => ({
-        name: field.remoteKeyName,
+        name: field.keyName,
         label: field.displayName,
         type: field.fieldType,
         fieldType: field.fieldType === 'number' ? 'number' : 'text', // TODO: support field formats
       })),
-      requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.remoteKeyName),
+      requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.keyName),
       searchableProperties: [],
       secondaryDisplayProperties: [],
       associatedObjects: [],
@@ -876,12 +876,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       labels,
       // TODO: support properties update
       // properties: params.fields.map((field) => ({
-      //   name: field.remoteKeyName,
+      //   name: field.keyName,
       //   label: field.displayName,
       //   type: field.fieldType,
       //   fieldType: 'text', // TODO
       // })),
-      requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.remoteKeyName),
+      requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.keyName),
     });
   }
 
