@@ -23,3 +23,12 @@ export function camelcaseKeysSansHeaders<T extends Record<string, any> & { heade
     headers: inputObject.headers,
   };
 }
+
+export function camelcaseKeysSansFields<T extends Record<string, any> & { fields?: Record<string, any> }>(
+  inputObject: T
+) {
+  return {
+    ...camelcaseKeys(inputObject),
+    fields: inputObject.fields,
+  };
+}
