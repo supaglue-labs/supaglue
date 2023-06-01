@@ -4,25 +4,38 @@ sidebar_position: 2
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import BrowserWindow from '@site/src/components/BrowserWindow';
 import ThemedImage from '@theme/ThemedImage';
 
 # Quickstart
 
-In less than 5 minutes, connect to a HubSpot or Salesforce account and query it using Supaglue's unified API.
+This guide will show you how to integrate Supaglue with your application in 10 minutes. By the end, you will have configured a CRM integration, connected a sample customer's CRM, and queried their account records.
 
 <iframe
   width="640"
   height="360"
-  src="https://www.loom.com/embed/3461d96c69424e37b72bf71e5768b695?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
+  src="https://www.loom.com/embed/2d6e6aadc7b54036a5c98290a5df47a6?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
   frameborder="0"
   webkitallowfullscreen
   mozallowfullscreen
   allowfullscreen
 ></iframe>
 
-## 1. Run Supaglue locally
+## 1. Setup your Supaglue instance
 
-Clone our repo, run our setup script which will create an `.env` file for this quickstart, and run the Supaglue stack locally using docker compose:
+<Tabs>
+
+<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
+
+Sign up for [Supaglue Cloud](https://form.typeform.com/to/jv9ucMZR) early access.
+
+After creating your account, you will be directed to the management portal.
+
+</TabItem>
+
+<TabItem value="localhost" label="Localhost">
+
+Clone the Github repo and run the Supaglue stack locally using docker compose:
 
 ```shell
 git clone -b v0.9.3 https://github.com/supaglue-labs/supaglue.git && cd supaglue
@@ -30,9 +43,80 @@ git clone -b v0.9.3 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 docker compose up
 ```
 
-## 2. Authenticate Supaglue example app
+Once Supaglue is running locally, open the [management portal](http://localhost:3000) in your browser.
 
-Click a card below to simulate a customer connecting their HubSpot or Salesforce account to your app. (Note: you'll need to have completed step 1 for this to work.)
+</TabItem>
+
+</Tabs>
+
+## 2. Configure integrations
+
+Go to the "Configurations" tab to configure the integrations your customers will connect to.
+
+<BrowserWindow url="http://localhost:3000/configuration/integrations/crm">
+
+![image](/img/configurations-ui.png)
+
+</BrowserWindow>
+
+Click on "Configure" and enter OAuth2 credentials for your HubSpot or Salesforce developers apps. You can find the credentials by following these guides:
+
+- [Salesforce](connectors/salesforce)
+- [HubSpot](connectors/hubspot)
+
+Add the scopes your application needs from your application.
+
+:::info
+Supaglue requires a set of minimum scopes to support reads and writes to common model objects.
+:::
+
+<BrowserWindow url="http://localhost:3000/configuration/integrations/crm/salesforce">
+
+![image](/img/configurations-details.png)
+
+</BrowserWindow>
+
+## 3. Obtain your Supaglue API key
+
+Go to Configuration -> API Keys and click "Regenerate" to generate a new API key. This API key is used to authenticate all your requests against Supaglue's API.
+
+<BrowserWindow url="http://localhost:3000/configuration/api_keys">
+
+![image](/img/configuration-api-key.png)
+
+</BrowserWindow>
+
+:::caution
+You will not be able to view the API key after leaving the page, so make sure you store it in a safe place.
+:::
+
+## 4. Create a Supaglue customer
+
+Navigate to the Customers page and click on the plus button to create a Supaglue customer:
+
+- **customer_id**: the primary key you use in your application that uniquely identifies this customer.
+- **name**: the name of the customer.
+- **email**: the email associated with the customer.
+
+<BrowserWindow url="http://localhost:3000/applications/5c4887c6-ae29-45ce-bc37-158e8dbe7b7f">
+
+![image](/img/create-customer.png)
+
+</BrowserWindow>
+
+:::info
+A customer is an end-user in your application. You can create a Supaglue customer through the management portal, or programatically when they signup in your application using the [Management API](../api/v2/mgmt#tag/Customers/operation/createCustomer).
+:::
+
+## 5. Add Embedded Link to your application
+
+In your frontend application, add an [Embedded Link](platform/embedded-links) to let customers authenticate their CRMs with your application using Supaglue.
+
+The format of the link is:
+
+- `{PROTOCOL}{DOMAIN}`/oauth/connect?applicationId=`{APPLICATION_ID}`&customerId=`{CUSTOMER_ID}`&providerName=`{PROVIDER_NAME}`&returnUrl=`{RETURN_URL}`
+
+You can wrap link with additional styling.
 
 export const IntegrationCard = ({ icon, provider, description, to }) => (
   <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
@@ -67,10 +151,11 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
 />
 </div>
 
-This will install the Supaglue Example App in the HubSpot or Salesforce account you've connected, so that your local Supaglue instance can start syncing data.
+## 6. Create a connection
+
+Click on the Embedded Link you added in step 5. Go through the OAuth flow and install your CRM Connected App in a HubSpot or Salesforce account with the requested scopes.
 
 <div className="grid grid-cols-2 gap-4 justify-items-center">
-
 <div>
   <ThemedImage
     alt="Salesforce Example App"
@@ -92,139 +177,49 @@ This will install the Supaglue Example App in the HubSpot or Salesforce account 
     }}
   />
 </div>
-
 </div>
 
-Upon successful login, you will be redirected back to this page.
+This creates a Supaglue connection, which you can verify by checking the customers page in the management portal.
 
-:::info
-To test running queries against Supaglue's API, you'll need the following:
+Upon successful connection, CRM common model records will start syncing to your Supaglue instance.
 
-1. A Salesforce or HubSpot app that your customers can connect their CRMs to.
-2. A sample "customer" to test with.
-3. The sample customer's CRM instance that you'd like to query.
+<BrowserWindow url="http://localhost:3000/customers">
 
-For your convenience in this quickstart, we've provided Supaglue example apps and two mock customers:
+![image](/img/customers-connections.png)
 
-- Salesforce: `external-customer-salesforce`
-- HubSpot: `external-customer-hubspot`
+</BrowserWindow>
 
-If you don't have a sample CRM instance, you can create a free developer [HubSpot](https://app.hubspot.com/signup-hubspot/crm) or [Salesforce](https://developer.salesforce.com/signup) account.
-:::
+## 7. Make API calls
 
-## 3. Query the Supaglue unified API
-
-Now that you've successfully installed the Supaglue Example App in a Salesforce or HubSpot account, Supaglue will start asynchronously syncing Contacts, Leads, Accounts, and Opportunities in the background. This can take a few seconds or minutes depending on the size of the CRM instance.
-
-Make a `GET` request to get a list of accounts:
+Once syncs have completed, you can start making API calls to Supaglue to read and write against the customer's CRM objects.
 
 <Tabs>
-<TabItem value="salesforce" label="Salesforce" default>
+<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
-```shell
-curl localhost:8080/crm/v1/accounts \
-  -H 'x-api-key: some-api-key' \
-  -H 'x-customer-id: external-customer-salesforce' \
-  -H 'x-provider-name: salesforce'
+The following API call lists all customer account records:
+
+```bash
+curl https://api.supaglue.io/crm/v1/accounts \
+  -H 'x-api-key: {API_KEY}' \
+  -H 'x-customer-id: {CUSTOMER_ID}' \
+  -H 'x-provider-name: {PROVIDER_NAME}'
 ```
 
 </TabItem>
-<TabItem value="hubspot" label="HubSpot">
 
-```shell
-curl localhost:8080/crm/v1/accounts \
-  -H 'x-api-key: some-api-key' \
-  -H 'x-customer-id: external-customer-hubspot' \
-  -H 'x-provider-name: hubspot'
+<TabItem value="localhost" label="Localhost">
+
+The following API call lists all customer account records:
+
+```bash
+curl http://localhost:8080/crm/v1/accounts \
+  -H 'x-api-key: {API_KEY}' \
+  -H 'x-customer-id: {CUSTOMER_ID}' \
+  -H 'x-provider-name: {PROVIDER_NAME}'
 ```
 
 </TabItem>
+
 </Tabs>
 
-Example result:
-
-```console
-{
-  "results": [
-    {
-      "id": "4019000e-8743-4603-9a0e-69633289666d",
-      "remote_id": "15134512387",
-      "owner_id": "005Dn000002DY8AIAW",
-      "name": "Supaglue",
-      "description": "open source unified api",
-      "industry": "software",
-      "website": "https://supaglue.com",
-      "number_of_employees": 6,
-      ...
-    },
-    ...
-  ]
-}
-```
-
-## 4. Check sync status (optional)
-
-If the curl in step 3 did not work, you can curl the `/mgmt/v1/sync-info` endpoint to check on the status of the syncs.
-
-<Tabs>
-<TabItem value="salesforce" label="Salesforce" default>
-
-```shell
-curl localhost:8080/mgmt/v1/sync-info \
-  -H 'x-api-key: some-api-key' \
-```
-
-Example result:
-
-```console
-[
-  {
-    "model_name": "account",
-    "last_sync_start": "2023-02-24T07:52:00.076Z",
-    "next_sync_start": "2023-02-24T07:53:00.000Z",
-    "status": "DONE",
-    "connection_id": "1c36e9c1-1ed7-4055-ba00-41caf5b8875a",
-    "application_id": "a4398523-03a2-42dd-9681-c91e3e2efaf4",
-    "customer_id": "external-customer-salesforce",
-    "category": "crm",
-    "provider_name": "salesforce"
-  },
-  ...
-]
-```
-
-</TabItem>
-<TabItem value="hubspot" label="HubSpot">
-
-```shell
-curl localhost:8080/mgmt/v1/sync-info \
-  -H 'x-api-key: some-api-key' \
-```
-
-Example result:
-
-```console
-[
-  {
-    "model_name": "account",
-    "last_sync_start": "2023-02-24T07:52:00.076Z",
-    "next_sync_start": "2023-02-24T07:53:00.000Z",
-    "status": "DONE",
-    "connection_id": "1c36e9c1-1ed7-4055-ba00-41caf5b8875a",
-    "application_id": "a4398523-03a2-42dd-9681-c91e3e2efaf4",
-    "customer_id": "external-customer-hubspot",
-    "category": "crm",
-    "provider_name": "hubspot"
-  },
-  ...
-]
-```
-
-</TabItem>
-</Tabs>
-
-## Next steps
-
-Check out the [API Reference](references/api) to view supported objects and HTTP methods, or the [Supaglue Postman Collection](https://www.postman.com/supaglue/workspace/supaglue-public/overview) to make HTTP requests against your instance of Supaglue.
-
-Continue to [Getting Started](getting-started) to integrate Supaglue with your own Salesforce or HubSpot connected app and your own customers' CRMs.
+See the complete [CRM API reference](api/v2/crm) for all endpoints.

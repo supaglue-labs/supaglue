@@ -190,7 +190,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'references/api',
+            docId: 'api',
             position: 'left',
             label: 'API Reference',
           },

@@ -1,6 +1,6 @@
 {
-  "label": "Guides",
-  "position": 6,
+  "label": "Platform",
+  "position": 4,
   "link": {
     "type": "generated-index",
     "description": "Learn about interacting with Supaglue's Unified API."
