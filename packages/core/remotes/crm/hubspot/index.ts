@@ -173,13 +173,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         this.#config.clientSecret,
         this.#config.refreshToken
       );
-
       const newAccessToken = token.accessToken;
       const newExpiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
-
       this.#config.accessToken = newAccessToken;
       this.#config.expiresAt = newExpiresAt;
-
       this.#client.setAccessToken(newAccessToken);
       this.emit('token_refreshed', newAccessToken, newExpiresAt);
     }
@@ -826,12 +823,14 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         singular: response.labels.singular ?? '',
         plural: response.labels.plural ?? '',
       },
-      fields: response.properties.map((property) => ({
-        keyName: property.name,
-        displayName: property.label,
-        fieldType: property.type as CustomObjectFieldType, // TODO
-        isRequired: response.requiredProperties.includes(property.name),
-      })),
+      fields: response.properties
+        .filter((property) => property.createdUserId && !property.hidden) // hack to filter for only user-created properties; might not be accurate
+        .map((property) => ({
+          keyName: property.name,
+          displayName: property.label,
+          fieldType: property.type as CustomObjectFieldType, // TODO
+          isRequired: response.requiredProperties.includes(property.name),
+        })),
     };
   }
 
@@ -871,27 +870,80 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         ? undefined
         : params.labels;
 
+    // Update the main class
     await this.#client.crm.schemas.coreApi.update(params.id, {
       // ignoring name because you can't update that in hubspot
       labels,
-      // TODO: support properties update
-      // properties: params.fields.map((field) => ({
-      //   name: field.keyName,
-      //   label: field.displayName,
-      //   type: field.fieldType,
-      //   fieldType: 'text', // TODO
-      // })),
       requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.keyName),
+    });
+
+    // Figure out which fields to create/update/delete
+    const fieldNamesToDelete = existingClass.fields
+      .map((field) => field.keyName)
+      .filter((keyName) => {
+        return !params.fields.map((field) => field.keyName).includes(keyName);
+      });
+    const fieldsToUpdate = params.fields.filter((field) => {
+      const existingField = existingClass.fields.find((f) => f.keyName === field.keyName);
+      if (!existingField) {
+        return false;
+      }
+
+      return (
+        field.displayName !== existingField.displayName ||
+        field.fieldType !== existingField.fieldType ||
+        field.isRequired !== existingField.isRequired
+      );
+    });
+    const fieldsToCreate = params.fields.filter(
+      (field) => !existingClass.fields.map((f) => f.keyName).includes(field.keyName)
+    );
+
+    // Delete fields
+    await this.#client.crm.properties.batchApi.archive(params.id, {
+      inputs: fieldNamesToDelete.map((keyName) => ({ name: keyName })),
+    });
+
+    // Update fields
+    for (const field of fieldsToUpdate) {
+      await this.#client.crm.properties.coreApi.update(params.id, field.keyName, {
+        label: field.displayName,
+        type: field.fieldType,
+        fieldType: field.fieldType === 'number' ? 'number' : 'text', // TODO: support field formats
+      });
+    }
+
+    // Create fields
+    // TODO: We should not assume that there is only one group
+    const { results: groups } = await this.#client.crm.properties.groupsApi.getAll(params.id);
+    const unarchivedGroups = groups.filter((group) => !group.archived);
+    if (!unarchivedGroups.length || unarchivedGroups.length > 1) {
+      throw new Error('Expected exactly one property group');
+    }
+
+    await this.#client.crm.properties.batchApi.create(params.id, {
+      inputs: fieldsToCreate.map((field) => ({
+        name: field.keyName,
+        label: field.displayName,
+        type: field.fieldType,
+        fieldType: field.fieldType === 'number' ? 'number' : 'text', // TODO: support field formats
+        groupName: unarchivedGroups[0].name, // TODO
+      })),
     });
   }
 
   public override async getCustomObject(classId: string, id: string): Promise<CustomObject> {
     await this.maybeRefreshAccessToken();
-    const response = await this.#client.crm.objects.basicApi.getById(classId, id);
+
+    // Get the properties to fetch
+    const customObjectClass = await this.getCustomObjectClass(classId);
+    const fieldsToFetch = customObjectClass.fields.map((field) => field.keyName);
+    const response = await this.#client.crm.objects.basicApi.getById(classId, id, fieldsToFetch);
+
     return {
       id: response.id,
       classId,
-      fields: response.properties,
+      fields: Object.fromEntries(Object.entries(response.properties).filter(([key]) => fieldsToFetch.includes(key))),
     };
   }
 
