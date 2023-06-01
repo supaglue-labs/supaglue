@@ -27,17 +27,6 @@ li > a.menu__link {
   justify-content: flex-start;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/activecampaign"]::before {
-  padding-right: 0.25rem;
-  background-size: 20px 20px;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  content:"";
-  background-image: url(/static/img/connector_icons/activecampaign.png);
-  background-repeat: no-repeat;
-}
-
 .theme-doc-sidebar-item-category-level-1 a[href$="/connectors/capsule"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
@@ -49,14 +38,14 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/copper"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/apollo"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
   width: 20px;
   height: 20px;
   content:"";
-  background-image: url(/static/img/connector_icons/copper.png);
+  background-image: url(/static/img/connector_icons/apollo.png);
   background-repeat: no-repeat;
 }
 

@@ -246,12 +246,8 @@ const config = {
             title: 'Connectors',
             items: [
               {
-                label: 'ActiveCampaign',
-                href: '/connectors/activecampaign',
-              },
-              {
-                label: 'Copper',
-                href: '/connectors/copper',
+                label: 'Apollo',
+                href: '/connectors/apollo',
               },
               {
                 label: 'HubSpot',

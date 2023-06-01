@@ -1,16 +1,13 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/activecampaign.png
-  category: 'CRM'
+  icon: /img/connector_icons/apollo.png
+  category: 'Sales engagement'
 description: ''
 ---
 
-# ActiveCampaign
+# Apollo
 
 ## Overview
-
-Supaglue interfaces with the ActiveCampaign V3 API.
-
 
 | Feature                    | Available |
 | -------------------------- | --------- |
@@ -21,3 +18,10 @@ Supaglue interfaces with the ActiveCampaign V3 API.
 | Updates                    | No        |
 
 Supported object types: -
+
+- Users
+- Accounts
+- Contacts
+- Emails
+- Sequences
+- Mailboxes
