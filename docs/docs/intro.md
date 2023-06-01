@@ -4,9 +4,11 @@ slug: /
 sidebar_label: Introduction
 ---
 
-# Supaglue: open source unified CRM API
+# Supaglue: open source user-facing integrations platform
 
-Supaglue is an open source unified API for CRMs. It handles authentication, caches and normalizes data from multiple CRM platforms, and provides a single set of API endpoints for reading and writing to those CRMs. Developers at B2B companies can use Supaglue to ship native, customer-facing CRM integrations in days.
+Supaglue is an open source platform that helps you integrate with their customers' CRM and sales tools. It provides a set of API endpoints and developer tools that lets you sync data into your application database or data warehouse, write directly to your customers' SaaS tools, and subscribe to change events in real-time.
+
+Supaglue comes out-of-the-box with managed authentication, monitoring and logging tools, and a growing library of extensible SaaS connectors.
 
 <figure>
 
@@ -14,31 +16,27 @@ Supaglue is an open source unified API for CRMs. It handles authentication, cach
 
 </figure>
 
-## Features
+## Integration patterns
 
-- **Unified API**: single developer interface to read from and write to multiple third-party providers.
-- **Common model**: a common data model for CRMs that normalizes core CRM entities and properties across multiple third-party providers.
-- **Open source**: self-host and run Supaglue for free.
-- **Privacy-first**: prevent sensitive customer data from leaving your infrastructure.
-- **Connectors**: use [Supaglue-maintained connectors](connectors), or extend Supaglue by bringing your own connectors.
-- **Monitoring and logs**: monitor the status of syncs and stream logs to your cloud.
+- **Managed Syncs**: managed service that continuously syncs data from your customers' SaaS tools into your application database or data warehouse.
+- **Actions API**: single access point to perform common read and write operations against third-party providers.
+- **Real-time change events**: managed service that sends webhooks to a specified target when records are updated in your customers' SaaS tools.
 
 ## Use cases
 
-- **Lead scoring** - sync CRM records into your application to power your proprietary rules and ML models.
-- **AI-based workflows** - segment, target, and compose personalized communications based on CRM data.
-- **Sales enablement** - manage accounts and opportunities in your customer's CRM via your application UI.
-- **CRM enrichment** - log emails, tasks, and product usage metrics to your customers' CRM.
+- **Lead scoring** - sync CRM records into your application to power your proprietary rules and AI/ML models.
+- **CRM enrichment** - log emails, tasks, and product usage metrics to your customers' CRM and sales engagement tools.
+- **Workflow automation** - trigger customer-facing notifications and workflows in real-time based on changes in their SaaS tools.
 
 ## How it works
 
-You can [integrate Supaglue with your application](getting-started) in about 15 minutes:
+You can [integrate Supaglue with your application](getting-started) in about 5 minutes:
 
 1. Create a Supaglue Cloud account or spin up Supaglue locally, and get your API key.
-2. Configure your integration scopes and OAuth credentials.
-3. Create Supaglue customers for each customer using your application.
-4. Connect an external CRM account to your app through a Supaglue-provided embedded link. The CRM data is synced into Supaglue's backend, where it is cached, mapped to a common data model, and exposed through a unified REST API.
-5. Access the Supaglue API from within your application to read/write data to your customers' CRMs.
+2. Configure your integration scopes and OAuth credentials, or use our hosted app.
+3. Create a Supaglue customer.
+4. Connect an external CRM account to your app through a Supaglue-provided embedded link.
+5. Access customer data using one of the integration patterns above.
 
 ## FAQ
 
