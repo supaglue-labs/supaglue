@@ -14,9 +14,6 @@ properties:
     enum:
       - string
       - number
-      - date
-      - datetime
-      - bool
 required:
   - display_name
   - remote_key_name

@@ -816,6 +816,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   public override async getCustomObjectClass(id: string): Promise<CustomObjectClass> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getById(id);
+
     return {
       id: response.objectTypeId,
       name: response.name,
@@ -835,15 +836,20 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public override async createCustomObjectClass(params: CustomObjectClassCreateParams): Promise<string> {
+    if (!params.fields.length) {
+      throw new Error('Cannot create custom object class with no fields');
+    }
+
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.create({
       name: params.name,
       labels: params.labels,
+      primaryDisplayProperty: params.fields[0].remoteKeyName, // this is a hack
       properties: params.fields.map((field) => ({
         name: field.remoteKeyName,
         label: field.displayName,
         type: field.fieldType,
-        fieldType: 'text', // TODO
+        fieldType: field.fieldType === 'number' ? 'number' : 'text', // TODO: support field formats
       })),
       requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.remoteKeyName),
       searchableProperties: [],
@@ -855,9 +861,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async updateCustomObjectClass(params: CustomObjectClassUpdateParams): Promise<void> {
     await this.maybeRefreshAccessToken();
+
+    // Only update fields that have changed; for example, if you pass in the same
+    // labels as the existing class, hubspot will throw an error.
+    const existingClass = await this.getCustomObjectClass(params.id);
+
+    const labels =
+      params.labels.singular === existingClass.labels.singular && params.labels.plural === existingClass.labels.plural
+        ? undefined
+        : params.labels;
+
     await this.#client.crm.schemas.coreApi.update(params.id, {
-      // name: params.name, // TODO: this isn't supported on update
-      labels: params.labels,
+      // ignoring name because you can't update that in hubspot
+      labels,
       // TODO: support properties update
       // properties: params.fields.map((field) => ({
       //   name: field.remoteKeyName,

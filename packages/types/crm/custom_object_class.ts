@@ -22,4 +22,4 @@ export type CustomObjectFieldClass = {
   fieldType: CustomObjectFieldType;
 };
 
-export type CustomObjectFieldType = 'string' | 'number' | 'date' | 'datetime' | 'bool';
+export type CustomObjectFieldType = 'string' | 'number';

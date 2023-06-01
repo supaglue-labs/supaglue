@@ -621,7 +621,7 @@ export interface components {
       /** @example false */
       is_required: boolean;
       /** @enum {string} */
-      field_type: "string" | "number" | "date" | "datetime" | "bool";
+      field_type: "string" | "number";
     };
   };
   responses: never;

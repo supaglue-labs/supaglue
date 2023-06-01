@@ -2564,10 +2564,7 @@
             "type": "string",
             "enum": [
               "string",
-              "number",
-              "date",
-              "datetime",
-              "bool"
+              "number"
             ]
           }
         },
