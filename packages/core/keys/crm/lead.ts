@@ -5,6 +5,7 @@ export const keysOfSnakecasedLeadV2WithTenant = arrayOfAllKeys<SnakecasedKeysCrm
   '_supaglue_application_id',
   '_supaglue_provider_name',
   '_supaglue_customer_id',
+  '_supaglue_emitted_at',
   'id',
   'created_at',
   'updated_at',

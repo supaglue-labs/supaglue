@@ -289,12 +289,28 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToAccountV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.results.map((result) => ({
+              object: fromHubSpotCompanyToAccountV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotCompanyToAccountV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.results.map((result) => ({
+              object: fromHubSpotCompanyToAccountV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -423,14 +439,28 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) =>
-          Readable.from(response.results.map((deal) => fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping))),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.results.map((deal) => ({
+              object: fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) =>
-          Readable.from(response.results.map((deal) => fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping))),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.results.map((deal) => ({
+              object: fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -585,12 +615,22 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotContactToRemoteContact)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.results.map((result) => ({ object: fromHubSpotContactToRemoteContact(result), emittedAt }))
+          );
+        },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubSpotContactToRemoteContact)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.results.map((result) => ({ object: fromHubSpotContactToRemoteContact(result), emittedAt }))
+          );
+        },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -763,12 +803,28 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToUserV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.results.map((result) => ({
+              object: fromHubspotOwnerToUserV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results.map(fromHubspotOwnerToUserV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.results.map((result) => ({
+              object: fromHubspotOwnerToUserV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);

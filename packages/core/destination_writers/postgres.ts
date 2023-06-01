@@ -60,7 +60,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       await client.query(getSchemaSetupSql(category, commonModelType)(schema));
 
       const columns = getColumns(category, commonModelType);
-      const columnsWithoutPK = columns.filter(
+      const columnsToUpdate = columns.filter(
         (c) =>
           c !== '_supaglue_application_id' &&
           c !== '_supaglue_provider_name' &&
@@ -74,13 +74,14 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         _supaglue_application_id: applicationId,
         _supaglue_provider_name: providerName,
         _supaglue_customer_id: customerId,
+        _supaglue_emitted_at: new Date(),
         ...mapper(object),
       };
 
       const columnsStr = columns.join(',');
       const columnPlaceholderValuesStr = columns.map((column, index) => `$${index + 1}`).join(',');
-      const columnsToUpdateStr = columnsWithoutPK.join(',');
-      const excludedColumnsToUpdateStr = columnsWithoutPK.map((column) => `EXCLUDED.${column}`).join(',');
+      const columnsToUpdateStr = columnsToUpdate.join(',');
+      const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
       const values = columns.map((column) => {
         const value = mappedRecord[column];
         // pg doesn't seem to convert objects to JSON even though the docs say it does
@@ -133,7 +134,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       );
 
       const columns = getColumns(category, commonModelType);
-      const columnsWithoutPK = columns.filter(
+      const columnsToUpdate = columns.filter(
         (c) =>
           c !== '_supaglue_application_id' &&
           c !== '_supaglue_provider_name' &&
@@ -170,11 +171,13 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
           objectMode: true,
           transform: (chunk, encoding, callback) => {
             try {
+              const { object, emittedAt } = chunk;
               const mappedRecord = {
                 _supaglue_application_id: applicationId,
                 _supaglue_provider_name: providerName,
                 _supaglue_customer_id: customerId,
-                ...mapper(chunk),
+                _supaglue_emitted_at: emittedAt,
+                ...mapper(object),
               };
 
               ++tempTableRowCount;
@@ -198,8 +201,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
 
       // Copy from temp table
       childLogger.info({ offset: null }, 'Copying from temp table to main table [IN PROGRESS]');
-      const columnsToUpdateStr = columnsWithoutPK.join(',');
-      const excludedColumnsToUpdateStr = columnsWithoutPK.map((column) => `EXCLUDED.${column}`).join(',');
+      const columnsToUpdateStr = columnsToUpdate.join(',');
+      const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
 
       // Paginate
       const batchSize = 10000;
@@ -301,6 +304,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -325,6 +329,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -348,6 +353,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -374,6 +380,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -398,6 +405,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -417,6 +425,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -442,6 +451,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_mailboxes" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -458,6 +468,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -482,6 +493,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequence_states" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
@@ -500,6 +512,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_users" (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "id" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),

@@ -58,11 +58,13 @@ export class S3DestinationWriter extends BaseDestinationWriter {
         transform: async (chunk, encoding, callback) => {
           try {
             numRecords++;
+            const { object, emittedAt } = chunk;
             const mappedRecord = {
               _supaglue_application_id: applicationId,
               _supaglue_provider_name: providerName,
               _supaglue_customer_id: customerId,
-              ...mapper(chunk),
+              _supaglue_emitted_at: emittedAt,
+              ...mapper(object),
             };
             data.push(mappedRecord);
 
