@@ -524,7 +524,10 @@ class SalesforceClient extends AbstractCrmRemoteClient {
         objectMode: true,
         transform: (chunk, encoding, callback) => {
           try {
-            callback(null, mapper(chunk));
+            callback(null, {
+              object: mapper(chunk),
+              emittedAt: new Date(), // TODO: should we generate this timestamp earlier?
+            });
           } catch (e: any) {
             return callback(e);
           }

@@ -154,7 +154,15 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachProspectToContactV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => ({
+              object: fromOutreachProspectToContactV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -165,7 +173,15 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachUserToUserV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => ({
+              object: fromOutreachUserToUserV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -176,7 +192,15 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachSequenceToSequenceV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => ({
+              object: fromOutreachSequenceToSequenceV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -187,7 +211,15 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data.map(fromOutreachMailboxToMailboxV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => ({
+              object: fromOutreachMailboxToMailboxV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
@@ -198,8 +230,15 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) =>
-          Readable.from(response.data.map(fromOutreachSequenceStateToSequenceStateV2)),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => ({
+              object: fromOutreachSequenceStateToSequenceStateV2(result),
+              emittedAt,
+            }))
+          );
+        },
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);

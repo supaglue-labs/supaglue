@@ -168,7 +168,15 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedrivePersonToContactV2) ?? []),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data?.map((result) => ({
+              object: fromPipedrivePersonToContactV2(result),
+              emittedAt,
+            })) ?? []
+          );
+        },
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -182,7 +190,15 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedriveLeadToLeadV2) ?? []),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data?.map((result) => ({
+              object: fromPipedriveLeadToLeadV2(result),
+              emittedAt,
+            })) ?? []
+          );
+        },
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -228,10 +244,15 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) =>
-          Readable.from(
-            response.data?.map((record) => fromPipedriveDealToOpportunityV2(record, pipelineStageMapping)) ?? []
-          ),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data?.map((record) => ({
+              object: fromPipedriveDealToOpportunityV2(record, pipelineStageMapping),
+              emittedAt,
+            })) ?? []
+          );
+        },
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -245,8 +266,15 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) =>
-          Readable.from(response.data?.map(fromPipedriveOrganizationToAccountV2) ?? []),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data?.map((result) => ({
+              object: fromPipedriveOrganizationToAccountV2(result),
+              emittedAt,
+            })) ?? []
+          );
+        },
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
@@ -260,7 +288,15 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.data?.map(fromPipedriveUserToUserV2) ?? []),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data?.map((result) => ({
+              object: fromPipedriveUserToUserV2(result),
+              emittedAt,
+            })) ?? []
+          );
+        },
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
