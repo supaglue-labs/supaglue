@@ -571,6 +571,8 @@ export interface components {
       next?: string | null;
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous?: string | null;
+      /** @example 100 */
+      total_count?: number;
     };
     /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {

@@ -317,6 +317,8 @@ export interface components {
       next?: string | null;
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous?: string | null;
+      /** @example 100 */
+      total_count?: number;
     };
     /**
      * @example [
