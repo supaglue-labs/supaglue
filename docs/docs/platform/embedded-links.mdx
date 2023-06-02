@@ -7,7 +7,7 @@ import Tabs from '@theme/Tabs';
 
 # Embedded links
 
-An embedded link is a HTTP link that initiates an authentication flow in your customer's third-party CRM to install your Connected App. Once installed, a connection is created in Supaglue allowing Supaglue to sync CRM data into its database. Embedded links allow your customers to connect their CRMs to your application using Supaglue.
+An embedded link is a HTTP URL that initiates an authentication flow in your customer's third-party provider to install your developer app. Once installed, a connection is created in Supaglue, allowing you to read from and write to your customers' SaaS provider. Embedded links allow your customers to connect their SaaS providers to your application using Supaglue.
 
 ## Link format
 
@@ -18,7 +18,7 @@ An embedded link takes the following form:
 <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
 ```
-https://api.supaglue.com/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}&loginUrl={LOGIN_URL}
+https://api.supaglue.io/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}&loginUrl={LOGIN_URL}
 ```
 
 </TabItem>
