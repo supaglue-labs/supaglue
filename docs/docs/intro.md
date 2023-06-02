@@ -12,7 +12,7 @@ Supaglue comes out-of-the-box with managed authentication, monitoring and loggin
 
 <figure>
 
-![supaglue-quickstart](/img/social_img.png)
+![supaglue-quickstart](/img/supaglue-diagram.png)
 
 </figure>
 
