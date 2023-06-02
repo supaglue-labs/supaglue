@@ -68,11 +68,11 @@ tags:
     description: The `User` Common Model is used to represent a "user" that can login to CRMs.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
-  - name: Custom Object Classes
+  - name: CustomObjectClasses
     description: The `Custom Object Class` Common Model is used to represent a "custom object class" in CRMs.
-  - name: Custom Objects
+  - name: CustomObjects
     description: The `Custom Object` Common Model is used to represent a "custom object" in CRMs.
-  - name: Association Types
+  - name: AssociationTypes
     description: The `Association Type` Common Model is used to represent an "association type" in CRMs.
   - name: Associations
     description: The `Association` Common Model is used to represent an "association" in CRMs.
