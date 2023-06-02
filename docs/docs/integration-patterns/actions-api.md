@@ -8,14 +8,13 @@ import TabItem from '@theme/TabItem';
 # Actions API
 
 The Actions API lets you perform common operations on your customers' SaaS tools.
+![actions_api_diagram](/img/actions-api-diagram.png 'actions API diagram')
 
-How it works:
+## How it works
 
 1. You call Supaglue’s Actions API with a request payload.
 2. Supaglue applies mappings and updates the data in Salesforce (or other remote provider). You can use Supaglue’s default unified mappings or your own.
 3. Optional: Supaglue updates your application DB for the corresponding record, before returning a 200 response (see cache invalidation).
-
-
 
 ## Unified API and schema
 
@@ -27,18 +26,40 @@ For example, you can update an Salesforce Account record and HubSpot Company rec
 
 <TabItem value="hubspot" label="HubSpot" default>
 
-```
-curl
+```shell
+
+curl --location --request POST 'https://api.supaglue.io/crm/v1/contacts' \
+--header 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
+--header 'x-provider-name: hubspot' \
+--header 'x-api-key: {{apiKey}}' \
+--header 'Content-Type: application/json' \
+--data '{
+    "model": {
+        "first_name": "John", 
+        "last_name": "Doe"
+    }    
+}'
 ```
 
 </TabItem>
 
 <TabItem value="salesforce" label="Salesforce">
 
-```
-curl salesforce
+```shell
 
+curl --location --request POST 'https://api.supaglue.io/crm/v1/contacts' \
+--header 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
+--header 'x-provider-name: salesforce' \
+--header 'x-api-key: {{apiKey}}' \
+--header 'Content-Type: application/json' \
+--data '{
+    "model": {
+        "first_name": "John", 
+        "last_name": "Doe"
+    }    
+}'
 ```
+
 </TabItem>
 
 </Tabs>

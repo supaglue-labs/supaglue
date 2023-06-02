@@ -14,9 +14,10 @@ Supaglue interfaces with the Pipedrive V1 API.
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes       |
-| Reads: Full refresh        | Yes       |
-| Reads: Incremental refresh | Yes       |
+| Managed syncs              | Yes       |
+| Point reads                | Yes       |
 | Creates                    | Yes       |
 | Updates                    | Yes       |
+| Real-time events           | No        |
 
 Supported object types: -

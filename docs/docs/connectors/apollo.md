@@ -11,11 +11,12 @@ description: ''
 
 | Feature                    | Available |
 | -------------------------- | --------- |
-| Auth                       | No        |
-| Reads: Full refresh        | No        |
-| Reads: Incremental refresh | No        |
-| Creates                    | No        |
-| Updates                    | No        |
+| Auth                       | Yes       |
+| Managed syncs              | Yes       |
+| Point reads                | Yes       |
+| Creates                    | Yes       |
+| Updates                    | Yes       |
+| Real-time events           | No        |
 
 Supported object types: -
 
@@ -24,4 +25,5 @@ Supported object types: -
 - Contacts
 - Emails
 - Sequences
+- Sequence States
 - Mailboxes

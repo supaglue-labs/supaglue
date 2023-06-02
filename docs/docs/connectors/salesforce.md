@@ -14,10 +14,11 @@ Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes       |
-| Reads: Full refresh        | Yes       |
-| Reads: Incremental refresh | Yes       |
+| Managed syncs              | Yes       |
+| Point reads                | Yes       |
 | Creates                    | Yes       |
 | Updates                    | Yes       |
+| Real-time events           | Yes       |
 
 Supported object types:
 

@@ -13,10 +13,11 @@ Supaglue interfaces with the Zoho REST V3 API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
-| Auth                       | Yes       |
-| Reads: Full refresh        | No        |
-| Reads: Incremental refresh | No        |
+| Auth                       | No        |
+| Managed syncs              | No        |
+| Point reads                | No        |
 | Creates                    | No        |
 | Updates                    | No        |
+| Real-time events           | No        |
 
 Supported object types: -

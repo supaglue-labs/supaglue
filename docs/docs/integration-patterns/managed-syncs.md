@@ -5,17 +5,15 @@ description: ''
 # Managed syncs
 
 Managed Syncs helps you sync data from your customers’ CRM directly into your own application database and data warehouse.
+![managed_syncs_diagram](/img/managed-syncs-diagram.png 'managed syncs diagram')
 
-How it works:
+## How it works
 
 1. Developer defines the parameters of the sync via the Supaglue management API – including the providers, destination, and integration (frequency, objects, sync strategy, etc).
 2. When a customer connects their CRM account via an OAuth flow, a connection config is created that optionally contains customer-specific field mappings.
 3. Supaglue sync workers execute workflows that fetch data from your customers’ source and land them in your destination (e.g. Postgres).
 
 You can setup a managed sync in 5 minutes.
-
-[video]
-
 
 ## Provider configuration
 
@@ -119,3 +117,27 @@ The first sync will sync all historical data, irrespective of the sync strategy 
 ## Notification webhooks
 
 You can optionally configure a webhook so that Supaglue notifies you each time a sync completes.
+
+## Destination schema
+
+| Field Name                  | Data Type |
+|-----------------------------|-----------|
+| _supaglue_application_id    | String    |
+| _supaglue_customer_id       | String    |
+| _supaglue_provider_name     | String    |
+| _supaglue_emitted_at        | Timestamp |
+| account_id                  | String    |
+| addresses                   | jsonb     |
+| created_at                  | Timestamp |
+| email_addresses             | jsonb     |
+| first_name                  | String    |
+| id                          | String    |
+| is_deleted                  | Boolean   |
+| last_activity_at            | Timestamp |
+| last_modified_at            | Timestamp |
+| last_name                   | String    |
+| lifecycle_stage             | String    |
+| owner_id                    | String    |
+| phone_numbers               | jsonb     |
+| raw_data                    | jsonb     |
+| updated_at                  | Timestamp |
