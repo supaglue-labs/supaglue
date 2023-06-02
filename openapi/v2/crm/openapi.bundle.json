@@ -1362,6 +1362,208 @@
           }
         }
       ]
+    },
+    "/association-types": {
+      "get": {
+        "operationId": "getAssociationTypes",
+        "tags": [
+          "Leads"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List associationTypes",
+        "description": "Get a list of associationTypes",
+        "parameters": [
+          {
+            "name": "source_object_class_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "source_object_class_type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/object_class_type"
+            },
+            "required": true
+          },
+          {
+            "name": "target_object_class_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "target_object_class_type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/object_class_type"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AssociationTypes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/association_type"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createAssociationType",
+        "summary": "Create associationType",
+        "tags": [
+          "AssociationTypes"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_association_type"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "AssociationType created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "association_type": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/association-types/{association_type_id}/associations": {
+      "put": {
+        "operationId": "createAssociation",
+        "summary": "Create association",
+        "tags": [
+          "Associations"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_association"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Association created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "association": {
+                      "$ref": "#/components/schemas/association"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "association_type_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4a1"
+          }
+        }
+      ]
     }
   },
   "tags": [
@@ -1396,6 +1598,14 @@
     {
       "name": "Custom Objects",
       "description": "The `Custom Object` Common Model is used to represent a \"custom object\" in CRMs."
+    },
+    {
+      "name": "Association Types",
+      "description": "The `Association Type` Common Model is used to represent an \"association type\" in CRMs."
+    },
+    {
+      "name": "Associations",
+      "description": "The `Association` Common Model is used to represent an \"association\" in CRMs."
     }
   ],
   "components": {
@@ -2573,6 +2783,168 @@
           "key_name",
           "is_required",
           "field_type"
+        ]
+      },
+      "association_type": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "source_object_class": {
+            "$ref": "#/components/schemas/object_class"
+          },
+          "target_object_class": {
+            "$ref": "#/components/schemas/object_class"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "cardinality": {
+            "$ref": "#/components/schemas/association_type_cardinality_or_unknown"
+          }
+        },
+        "required": [
+          "id",
+          "source_object_class",
+          "target_object_class",
+          "display_name",
+          "cardinality"
+        ]
+      },
+      "create_update_association_type": {
+        "type": "object",
+        "properties": {
+          "source_object_class": {
+            "$ref": "#/components/schemas/object_class"
+          },
+          "target_object_class": {
+            "$ref": "#/components/schemas/object_class"
+          },
+          "key_name": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "cardinality": {
+            "$ref": "#/components/schemas/association_type_cardinality"
+          }
+        },
+        "required": [
+          "source_object_class",
+          "target_object_class",
+          "key_name",
+          "display_name",
+          "cardinality"
+        ]
+      },
+      "object_class": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "origin_type": {
+            "$ref": "#/components/schemas/object_class_type"
+          }
+        },
+        "required": [
+          "id",
+          "origin_type"
+        ]
+      },
+      "object_class_type": {
+        "type": "string",
+        "enum": [
+          "CUSTOM_OBJECT",
+          "COMMON_MODEL"
+        ]
+      },
+      "association_type_cardinality": {
+        "type": "string",
+        "enum": [
+          "ONE_TO_MANY"
+        ]
+      },
+      "association_type_cardinality_or_unknown": {
+        "type": "string",
+        "enum": [
+          "ONE_TO_MANY",
+          "UNKNOWN"
+        ]
+      },
+      "create_update_association": {
+        "type": "object",
+        "properties": {
+          "source_object": {
+            "$ref": "#/components/schemas/object"
+          },
+          "target_object": {
+            "$ref": "#/components/schemas/object"
+          }
+        },
+        "required": [
+          "source_object",
+          "target_object"
+        ]
+      },
+      "association": {
+        "type": "object",
+        "properties": {
+          "source_object": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "object_class": {
+                "$ref": "#/components/schemas/object_class"
+              }
+            },
+            "required": [
+              "id",
+              "object_class"
+            ]
+          },
+          "target_object": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "object_class": {
+                "$ref": "#/components/schemas/object_class"
+              }
+            },
+            "required": [
+              "id",
+              "object_class"
+            ]
+          },
+          "association_type_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_object",
+          "target_object",
+          "association_type_id"
+        ]
+      },
+      "object": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object_class": {
+            "$ref": "#/components/schemas/object_class"
+          }
+        },
+        "required": [
+          "id",
+          "object_class"
         ]
       }
     },

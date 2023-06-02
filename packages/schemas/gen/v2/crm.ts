@@ -123,6 +123,25 @@ export interface paths {
       };
     };
   };
+  "/association-types": {
+    /**
+     * List associationTypes 
+     * @description Get a list of associationTypes
+     */
+    get: operations["getAssociationTypes"];
+    /** Create associationType */
+    post: operations["createAssociationType"];
+    
+  };
+  "/association-types/{association_type_id}/associations": {
+    /** Create association */
+    put: operations["createAssociation"];
+    parameters: {
+      path: {
+        association_type_id: string;
+      };
+    };
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -623,6 +642,49 @@ export interface components {
       /** @enum {string} */
       field_type: "string" | "number";
     };
+    association_type: {
+      id: string;
+      source_object_class: components["schemas"]["object_class"];
+      target_object_class: components["schemas"]["object_class"];
+      display_name: string;
+      cardinality: components["schemas"]["association_type_cardinality_or_unknown"];
+    };
+    create_update_association_type: {
+      source_object_class: components["schemas"]["object_class"];
+      target_object_class: components["schemas"]["object_class"];
+      key_name: string;
+      display_name: string;
+      cardinality: components["schemas"]["association_type_cardinality"];
+    };
+    object_class: {
+      id: string;
+      origin_type: components["schemas"]["object_class_type"];
+    };
+    /** @enum {string} */
+    object_class_type: "CUSTOM_OBJECT" | "COMMON_MODEL";
+    /** @enum {string} */
+    association_type_cardinality: "ONE_TO_MANY";
+    /** @enum {string} */
+    association_type_cardinality_or_unknown: "ONE_TO_MANY" | "UNKNOWN";
+    create_update_association: {
+      source_object: components["schemas"]["object"];
+      target_object: components["schemas"]["object"];
+    };
+    association: {
+      source_object: {
+        id: string;
+        object_class: components["schemas"]["object_class"];
+      };
+      target_object: {
+        id: string;
+        object_class: components["schemas"]["object_class"];
+      };
+      association_type_id: string;
+    };
+    object: {
+      id: string;
+      object_class: components["schemas"]["object_class"];
+    };
   };
   responses: never;
   parameters: {
@@ -1092,6 +1154,74 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getAssociationTypes: {
+    /**
+     * List associationTypes 
+     * @description Get a list of associationTypes
+     */
+    parameters: {
+      query: {
+        source_object_class_id: string;
+        source_object_class_type: components["schemas"]["object_class_type"];
+        target_object_class_id: string;
+        target_object_class_type: components["schemas"]["object_class_type"];
+      };
+    };
+    responses: {
+      /** @description AssociationTypes */
+      200: {
+        content: {
+          "application/json": {
+            results?: (components["schemas"]["association_type"])[];
+          };
+        };
+      };
+    };
+  };
+  createAssociationType: {
+    /** Create associationType */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_association_type"];
+      };
+    };
+    responses: {
+      /** @description AssociationType created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            association_type?: {
+              id: string;
+            };
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  createAssociation: {
+    /** Create association */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_association"];
+      };
+    };
+    responses: {
+      /** @description Association created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            association?: components["schemas"]["association"];
             warnings?: components["schemas"]["warnings"];
           };
         };

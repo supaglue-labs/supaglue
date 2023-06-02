@@ -1,0 +1,4 @@
+type: string
+enum:
+  - ONE_TO_MANY # hubspot only supports this on custom objects right now
+  - UNKNOWN
