@@ -9,16 +9,17 @@ info:
   description: |
     # Introduction
 
-    Welcome to the Supaglue unified CRM API documentation. You can use this API to read and write data from and to third-party providers.
+    Welcome to the Supaglue Actions API (CRM) documentation. You can use this API to read and write data from and to third-party providers.
+
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-fa1c1bb5-8b11-475a-8e9b-d2ad988ccaf0?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-fa1c1bb5-8b11-475a-8e9b-d2ad988ccaf0%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)
 
     ### Base API URL
-
     ```
     https://api.supaglue.io/crm/v2
     ```
-externalDocs:
-  description: Try out our API in Postman!
-  url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
+  # externalDocs:
+  #   description:
+  #   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
 servers:
   - url: 'https://api.supaglue.io/crm/v2'
     description: Supaglue API
