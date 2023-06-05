@@ -1,5 +1,12 @@
-import type { CommonModelType, ConnectionSafeAny, IntegrationCategory, PostgresDestination } from '@supaglue/types';
-import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
+import type {
+  CommonModelType,
+  CommonModelTypeForCategory,
+  CommonModelTypeMapForCategory,
+  ConnectionSafeAny,
+  IntegrationCategory,
+  PostgresDestination,
+} from '@supaglue/types';
+import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { stringify } from 'csv-stringify';
 import { Pool, PoolClient } from 'pg';
@@ -43,10 +50,10 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
-  public override async upsertObject<T extends CRMCommonModelType>(
+  public override async upsertObject<P extends IntegrationCategory, T extends CommonModelTypeForCategory<P>>(
     { providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonModelType: T,
-    object: CRMCommonModelTypeMap<T>['object']
+    object: CommonModelTypeMapForCategory<P>['object']
   ): Promise<void> {
     const { schema } = this.#destination.config;
     const table = getTableName(category, commonModelType);

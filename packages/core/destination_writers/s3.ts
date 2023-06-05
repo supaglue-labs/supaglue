@@ -1,6 +1,13 @@
 import { DeleteObjectsCommand, paginateListObjectsV2, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { CommonModelType, ConnectionSafeAny, IntegrationCategory, ProviderName, S3Destination } from '@supaglue/types';
-import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
+import {
+  CommonModelType,
+  CommonModelTypeForCategory,
+  CommonModelTypeMapForCategory,
+  ConnectionSafeAny,
+  IntegrationCategory,
+  ProviderName,
+  S3Destination,
+} from '@supaglue/types';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
@@ -24,10 +31,10 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     });
   }
 
-  public override async upsertObject<T extends CRMCommonModelType>(
+  public override async upsertObject<P extends IntegrationCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
-    object: CRMCommonModelTypeMap<T>['object']
+    object: CommonModelTypeMapForCategory<P>['object']
   ): Promise<void> {
     // Do nothing
     return;

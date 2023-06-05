@@ -30,7 +30,12 @@ export class EngagementCommonModelService {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
     const id = await remoteClient.createObject(type, params);
 
-    // TODO: Implement cache invalidation once we fix the writer interface to support engagement vertical
+    // If the associated integration has a destination, do cache invalidation
+    const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
+    if (writer) {
+      const object = await remoteClient.getObject(type, id);
+      await writer.upsertObject<'engagement', T>(connection, type, object);
+    }
 
     return id;
   }
@@ -43,6 +48,11 @@ export class EngagementCommonModelService {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
     await remoteClient.updateObject(type, params);
 
-    // TODO: Implement cache invalidation once we fix the writer interface to support engagement vertical
+    // If the associated integration has a destination, do cache invalidation
+    const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
+    if (writer) {
+      const object = await remoteClient.getObject(type, params.id);
+      await writer.upsertObject<'engagement', T>(connection, type, object);
+    }
   }
 }

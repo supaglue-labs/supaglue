@@ -1,5 +1,10 @@
-import type { CommonModelType, ConnectionSafeAny } from '@supaglue/types';
-import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
+import type {
+  CommonModelType,
+  CommonModelTypeForCategory,
+  CommonModelTypeMapForCategory,
+  ConnectionSafeAny,
+  IntegrationCategory,
+} from '@supaglue/types';
 import type { Readable } from 'stream';
 
 export type WriteCommonModelsResult = {
@@ -8,10 +13,10 @@ export type WriteCommonModelsResult = {
 };
 
 export interface DestinationWriter {
-  upsertObject<T extends CRMCommonModelType>(
+  upsertObject<P extends IntegrationCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
-    object: CRMCommonModelTypeMap<T>['object']
+    object: CommonModelTypeMapForCategory<P>['object']
   ): Promise<void>;
 
   writeObjects(
@@ -29,10 +34,10 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
    *
    * TODO: Support engagement vertical as well
    */
-  abstract upsertObject<T extends CRMCommonModelType>(
+  abstract upsertObject<P extends IntegrationCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
-    object: CRMCommonModelTypeMap<T>['object']
+    object: CommonModelTypeMapForCategory<P>['object']
   ): Promise<void>;
 
   /**
