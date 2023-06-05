@@ -22,7 +22,7 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl, loginUrl, version = 'v2' } = req.query;
+      const { applicationId, customerId, providerName, returnUrl, loginUrl } = req.query;
 
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
@@ -38,10 +38,6 @@ export default function init(app: Router): void {
 
       if (!returnUrl) {
         throw new Error('Missing returnUrl');
-      }
-
-      if (version !== 'v1' && version !== 'v2') {
-        throw new Error('Invalid version');
       }
 
       const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
@@ -84,7 +80,6 @@ export default function init(app: Router): void {
           providerName,
           scope: oauthScopes.join(' '), // TODO: this should be in a session
           loginUrl,
-          version,
         }),
         ...additionalAuthParams,
       });
@@ -113,7 +108,6 @@ export default function init(app: Router): void {
         customerId,
         applicationId,
         loginUrl,
-        version,
       }: {
         returnUrl: string;
         scope?: string;
@@ -121,7 +115,6 @@ export default function init(app: Router): void {
         providerName?: ProviderName;
         customerId?: string;
         loginUrl?: string;
-        version?: string;
       } = JSON.parse(decodeURIComponent(state));
 
       if (
@@ -224,7 +217,7 @@ export default function init(app: Router): void {
           : { ...basePayload, providerName };
 
       try {
-        await connectionAndSyncService.create(version === 'v1' ? 'v1' : 'v2', payload as ConnectionCreateParamsAny);
+        await connectionAndSyncService.create(payload as ConnectionCreateParamsAny);
       } catch (e: any) {
         if (e.code === 'P2002') {
           await connectionAndSyncService.upsert(payload as ConnectionUpsertParamsAny);

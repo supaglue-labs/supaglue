@@ -104,13 +104,13 @@ export class ConnectionAndSyncService {
     return fromConnectionModelToConnectionUnsafe<ProviderName>(connection);
   }
 
-  public async create(version: 'v1' | 'v2', params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
+  public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
     const integration = await this.#integrationService.getByProviderNameAndApplicationId(
       params.providerName,
       params.applicationId
     );
     let strategyType = 'full then incremental';
-    if (version === 'v2' && integration.destinationId) {
+    if (integration.destinationId) {
       const destination = await this.#destinationService.getDestinationById(integration.destinationId);
       if (destination.type === 's3') {
         strategyType = 'full only';
@@ -149,7 +149,7 @@ export class ConnectionAndSyncService {
             state: {
               phase: 'created',
             },
-            version,
+            version: 'v2',
           },
         }),
         this.#prisma.syncChange.create({
