@@ -16,6 +16,7 @@ import {
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { ApplicationService, SyncService } from 'sync-worker/services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
+import { createGetDestination } from './get_destination';
 import { createGetSync } from './get_sync';
 import { createImportRecords } from './import_records';
 import { createLogSyncFinish } from './log_sync_finish';
@@ -60,6 +61,7 @@ export const createActivities = ({
 }) => {
   return {
     getSync: createGetSync(syncService),
+    getDestination: createGetDestination(destinationService),
     doProcessSyncChanges: createDoProcessSyncChanges(syncService),
     setForceSyncFlag: createSetForceSyncFlag(syncService),
     updateSyncState: createUpdateSyncState(syncService),
