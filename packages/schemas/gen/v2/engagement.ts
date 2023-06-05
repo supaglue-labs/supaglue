@@ -14,11 +14,6 @@ export interface paths {
     
   };
   "/contacts": {
-    /**
-     * List contacts 
-     * @description Get a list of contacts
-     */
-    get: operations["getContacts"];
     /** Create contact */
     post: operations["createContact"];
     
@@ -34,14 +29,6 @@ export interface paths {
       };
     };
   };
-  "/users": {
-    /**
-     * List users 
-     * @description Get a list of users
-     */
-    get: operations["getUsers"];
-    
-  };
   "/users/{user_id}": {
     /** Get user */
     get: operations["getUser"];
@@ -51,14 +38,6 @@ export interface paths {
       };
     };
   };
-  "/mailboxes": {
-    /**
-     * List mailboxes 
-     * @description Get a list of mailboxes
-     */
-    get: operations["getMailboxes"];
-    
-  };
   "/mailboxes/{mailbox_id}": {
     /** Get mailbox */
     get: operations["getMailbox"];
@@ -67,14 +46,6 @@ export interface paths {
         mailbox_id: string;
       };
     };
-  };
-  "/sequences": {
-    /**
-     * List sequences 
-     * @description Get a list of sequences
-     */
-    get: operations["getSequences"];
-    
   };
   "/sequences/{sequence_id}": {
     /** Get sequence */
@@ -86,11 +57,6 @@ export interface paths {
     };
   };
   "/sequence_states": {
-    /**
-     * List sequence states 
-     * @description Get a list of sequence states
-     */
-    get: operations["getSequenceStates"];
     /** Create sequence state */
     post: operations["createSequenceState"];
     
@@ -345,6 +311,9 @@ export interface components {
     custom_fields: {
       [key: string]: unknown | undefined;
     };
+    created_model: {
+      id: string;
+    };
     /**
      * @example [
      *   {
@@ -516,22 +485,6 @@ export interface operations {
       };
     };
   };
-  getContacts: {
-    /**
-     * List contacts 
-     * @description Get a list of contacts
-     */
-    responses: {
-      /** @description Contacts */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["contact"])[];
-          };
-        };
-      };
-    };
-  };
   createContact: {
     /** Create contact */
     requestBody: {
@@ -578,7 +531,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
+            model?: components["schemas"]["created_model"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -612,24 +565,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["contact"];
             warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getUsers: {
-    /**
-     * List users 
-     * @description Get a list of users
-     */
-    responses: {
-      /** @description Users */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["user"])[];
           };
         };
       };
@@ -646,22 +582,6 @@ export interface operations {
       };
     };
   };
-  getMailboxes: {
-    /**
-     * List mailboxes 
-     * @description Get a list of mailboxes
-     */
-    responses: {
-      /** @description Mailboxes */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["mailbox"])[];
-          };
-        };
-      };
-    };
-  };
   getMailbox: {
     /** Get mailbox */
     responses: {
@@ -673,22 +593,6 @@ export interface operations {
       };
     };
   };
-  getSequences: {
-    /**
-     * List sequences 
-     * @description Get a list of sequences
-     */
-    responses: {
-      /** @description Sequences */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["sequence"])[];
-          };
-        };
-      };
-    };
-  };
   getSequence: {
     /** Get sequence */
     responses: {
@@ -696,22 +600,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["sequence"];
-        };
-      };
-    };
-  };
-  getSequenceStates: {
-    /**
-     * List sequence states 
-     * @description Get a list of sequence states
-     */
-    responses: {
-      /** @description Sequence States */
-      200: {
-        content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["sequence_state"])[];
-          };
         };
       };
     };
@@ -745,7 +633,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["sequence_state"];
+            model?: components["schemas"]["created_model"];
             warnings?: components["schemas"]["warnings"];
           };
         };

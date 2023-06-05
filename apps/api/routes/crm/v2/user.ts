@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { BadRequestError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmUserV2 } from '@supaglue/core/mappers/crm';
 import { GetUserPathParams, GetUserQueryParams, GetUserRequest, GetUserResponse } from '@supaglue/schemas/v2/crm';
 import { Request, Response, Router } from 'express';
@@ -22,6 +23,14 @@ export default function init(app: Router): void {
       return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysUser : rest);
     }
   );
+
+  router.post('/', async (req: Request, res: Response) => {
+    throw new BadRequestError('POST not supported for /users');
+  });
+
+  router.patch('/:mailbox_id', async (req: Request, res: Response) => {
+    throw new BadRequestError('PATCH not supported for /users');
+  });
 
   app.use('/users', router);
 }

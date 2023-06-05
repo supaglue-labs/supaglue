@@ -29,16 +29,10 @@ paths:
     $ref: paths/contacts.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
-  '/users':
-    $ref: paths/users.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
-  '/mailboxes':
-    $ref: paths/mailboxes.yaml
   '/mailboxes/{mailbox_id}':
     $ref: paths/mailboxes@{mailbox_id}.yaml
-  '/sequences':
-    $ref: paths/sequences.yaml
   '/sequences/{sequence_id}':
     $ref: paths/sequences@{sequence_id}.yaml
   '/sequence_states':
@@ -85,6 +79,8 @@ components:
       $ref: ./components/schemas/objects/email_addresses.yaml
     custom_fields:
       $ref: ./components/schemas/objects/custom_fields.yaml
+    created_model:
+      $ref: ../../common/components/schemas/created_model.yaml
     logs:
       $ref: ../../common/components/schemas/logs.yaml
     errors:

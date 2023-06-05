@@ -110,7 +110,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const destinationService = new DestinationService(prisma);
 
   const crmCommonModelService = new CrmCommonModelService(remoteService, destinationService);
-  const engagementCommonModelService = new EngagementCommonModelService(remoteService);
+  const engagementCommonModelService = new EngagementCommonModelService(remoteService, destinationService);
 
   const crmCustomObjectService = new CrmCustomObjectService(remoteService);
   const crmAssociationService = new CrmAssociationService(remoteService);

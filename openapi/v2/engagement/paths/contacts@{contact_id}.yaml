@@ -66,8 +66,6 @@ patch:
                 $ref: ../../../common/components/schemas/errors.yaml
               logs:
                 $ref: ../../../common/components/schemas/logs.yaml
-              model:
-                $ref: ../components/schemas/objects/contact.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 parameters:
