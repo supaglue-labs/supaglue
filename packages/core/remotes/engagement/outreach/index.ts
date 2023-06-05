@@ -107,38 +107,38 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   async getContact(id: string): Promise<ContactV2> {
-    const response = await axios.get<OutreachRecord>(`${this.#baseURL}/api/v2/prospects/${id}`, {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/prospects/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachProspectToContactV2(response.data);
+    return fromOutreachProspectToContactV2(response.data.data);
   }
 
   async getUser(id: string): Promise<UserV2> {
-    const response = await axios.get<OutreachRecord>(`${this.#baseURL}/api/v2/users/${id}`, {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/users/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachUserToUserV2(response.data);
+    return fromOutreachUserToUserV2(response.data.data);
   }
 
   async getSequence(id: string): Promise<SequenceV2> {
-    const response = await axios.get<OutreachRecord>(`${this.#baseURL}/api/v2/sequences/${id}`, {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequences/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachSequenceToSequenceV2(response.data);
+    return fromOutreachSequenceToSequenceV2(response.data.data);
   }
 
   async getMailbox(id: string): Promise<MailboxV2> {
-    const response = await axios.get<OutreachRecord>(`${this.#baseURL}/api/v2/mailboxes/${id}`, {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/mailboxes/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachMailboxToMailboxV2(response.data);
+    return fromOutreachMailboxToMailboxV2(response.data.data);
   }
 
   async getSequenceState(id: string): Promise<SequenceStateV2> {
-    const response = await axios.get<OutreachRecord>(`${this.#baseURL}/api/v2/sequence_states/${id}`, {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequence_states/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachSequenceStateToSequenceStateV2(response.data);
+    return fromOutreachSequenceStateToSequenceStateV2(response.data.data);
   }
 
   public override async listObjects(
