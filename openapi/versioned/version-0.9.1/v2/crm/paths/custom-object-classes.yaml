@@ -1,0 +1,43 @@
+post:
+  operationId: createCustomObjectClass
+  summary: Create customObjectClass
+  tags:
+    - CustomObjectClasses
+  parameters: []
+  security:
+    - ApiKeyAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            class:
+              $ref: ../components/schemas/create_update_custom_object_class.yaml
+          required:
+            - class
+  responses:
+    '201':
+      description: CustomObjectClass created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../../common/components/schemas/logs.yaml
+              class:
+                type: object
+                properties:
+                  id:
+                    type: string
+                required:
+                  - id
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml

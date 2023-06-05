@@ -1,0 +1,67 @@
+get:
+  operationId: getContact
+  summary: Get contact
+  tags:
+    - Contacts
+  security:
+    - ApiKeyAuth: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+  responses:
+    200:
+      description: Contact
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/contact.yaml
+patch:
+  operationId: updateContact
+  summary: Update contact
+  tags:
+    - Contacts
+  security:
+    - ApiKeyAuth: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            model:
+              $ref: ../components/schemas/create_update_contact.yaml
+          required:
+            - model
+        examples:
+          Example:
+            value:
+              model:
+                first_name: George
+                last_name: Xing
+                account_id: 0ce05511-adbc-4144-a049-6631c7ea3b04
+  responses:
+    200:
+      description: Contact updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../../common/components/schemas/logs.yaml
+              model:
+                $ref: ../components/schemas/objects/contact.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: contact_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

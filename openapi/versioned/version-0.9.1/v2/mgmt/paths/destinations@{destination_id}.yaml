@@ -1,0 +1,68 @@
+get:
+  operationId: getDestination
+  summary: Get destination
+  tags:
+    - Destinations
+  security:
+    - ApiKeyAuth: []
+  responses:
+    200:
+      description: Destination
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/destination.yaml
+          examples:
+            Example:
+              value:
+                id: 987e576f-73b1-47c7-bc1a-3d20e4d3cc5f
+                application_id: 9b9a31bb-9fe4-4fa5-ba84-4c035a27f258
+                name: My Postgres Destination
+                type: postgres
+                config:
+                  host: https://mydb.com
+                  port: 5432
+                  database: my_database
+                  schema: public
+                  user: user
+                  password: password
+put:
+  operationId: updateDestination
+  summary: Update destination
+  tags:
+    - Destinations
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_update_destination.yaml
+  responses:
+    200:
+      description: Destination
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/destination.yaml
+          examples:
+            Example:
+              value:
+                id: bc8583c0-74b2-4557-b9d7-ccf9415185f9
+                application_id: 9b9a31bb-9fe4-4fa5-ba84-4c035a27f258
+                name: My Postgres Destination
+                type: postgres
+                config:
+                  host: https://mydb.com
+                  port: 5432
+                  database: my_database
+                  schema: public
+                  user: user
+                  password: password
+parameters:
+  - name: destination_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

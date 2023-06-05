@@ -1,0 +1,45 @@
+post:
+  operationId: createLead
+  summary: Create lead
+  tags:
+    - Leads
+  security:
+    - ApiKeyAuth: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            model:
+              $ref: ../components/schemas/create_update_lead.yaml
+          required:
+            - model
+        example:
+          model:
+            company: Supaglue
+            first_name: George
+            last_name: Xing
+            lead_source: API Blogger
+            title: Co-Founder
+  responses:
+    '201':
+      description: Lead created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../../common/components/schemas/logs.yaml
+              model:
+                $ref: ../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
