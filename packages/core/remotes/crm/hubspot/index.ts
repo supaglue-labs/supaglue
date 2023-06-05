@@ -877,7 +877,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       name: response.name,
       description: null,
       labels: {
-        // TODO:
         singular: response.labels.singular ?? '',
         plural: response.labels.plural ?? '',
       },
@@ -1040,7 +1039,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async createAssociationType(params: AssociationTypeCreateParams): Promise<void> {
     if (params.cardinality !== 'ONE_TO_MANY') {
-      throw new Error('Only ONE_TO_MANY cardinality is supported in HubSpot');
+      throw new BadRequestError('Only ONE_TO_MANY cardinality is supported in HubSpot');
     }
 
     await this.maybeRefreshAccessToken();
