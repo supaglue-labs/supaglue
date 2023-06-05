@@ -1,0 +1,18 @@
+type: object
+properties:
+  id:
+    type: string
+  source_object_class:
+    $ref: ./object_class.yaml
+  target_object_class:
+    $ref: ./object_class.yaml
+  display_name:
+    type: string
+  cardinality:
+    $ref: ./association_type_cardinality_or_unknown.yaml
+required:
+  - id
+  - source_object_class
+  - target_object_class
+  - display_name
+  - cardinality

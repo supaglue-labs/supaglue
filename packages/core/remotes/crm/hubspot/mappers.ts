@@ -12,10 +12,28 @@ import {
   OpportunityV2,
   UserV2,
 } from '@supaglue/types/crm';
+import { ObjectClass } from '@supaglue/types/crm/association_type';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate, removeUndefinedValues } from '../../../lib';
+
+export const fromObjectClassToHubspotObjectType = (objectClass: ObjectClass): string => {
+  if (objectClass.originType === 'CUSTOM_OBJECT') {
+    return objectClass.id;
+  }
+
+  switch (objectClass.id) {
+    case 'account':
+      return 'company';
+    case 'contact':
+      return 'contact';
+    case 'opportunity':
+      return 'deal';
+    default:
+      throw new Error(`Unknown COMMON_MODEL object class: ${objectClass.id}`);
+  }
+};
 
 export const fromHubSpotCompanyToAccountV2 = ({
   id,

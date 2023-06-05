@@ -167,3 +167,29 @@ export type UpdateCustomObjectQueryParams = any;
 export type UpdateCustomObjectRequest = operations['updateCustomObject']['requestBody']['content']['application/json'];
 export type UpdateCustomObjectResponse =
   operations['updateCustomObject']['responses'][keyof operations['updateCustomObject']['responses']]['content']['application/json'];
+
+export type GetAssociationTypesPathParams = never;
+export type GetAssociationTypesQueryParams = Required<
+  Required<operations['getAssociationTypes']>['parameters']
+>['query'];
+export type GetAssociationTypesRequest = never;
+export type GetAssociationTypesResponse =
+  operations['getAssociationTypes']['responses'][keyof operations['getAssociationTypes']['responses']]['content']['application/json'];
+
+export type CreateAssociationTypePathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateAssociationTypeQueryParams = Required<operations['createAssociationType']>['parameters']['query'];
+export type CreateAssociationTypeQueryParams = any;
+export type CreateAssociationTypeRequest =
+  operations['createAssociationType']['requestBody']['content']['application/json'];
+export type CreateAssociationTypeResponse =
+  operations['createAssociationType']['responses'][keyof operations['createAssociationType']['responses']]['content']['application/json'];
+
+export type CreateAssociationPathParams =
+  paths[`/association-types/{association_type_id}/associations`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateAssociationQueryParams = Required<operations['createAssociation']>['parameters']['query'];
+export type CreateAssociationQueryParams = any;
+export type CreateAssociationRequest = operations['createAssociation']['requestBody']['content']['application/json'];
+export type CreateAssociationResponse =
+  operations['createAssociation']['responses'][keyof operations['createAssociation']['responses']]['content']['application/json'];

@@ -1,5 +1,7 @@
 import { ConnectionUnsafe, CRMIntegration, IntegrationCategory } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
+import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
+import { AssociationType, AssociationTypeCreateParams, ObjectClass } from '@supaglue/types/crm/association_type';
 import { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/crm/custom_object';
 import {
   CustomObjectClass,
@@ -31,6 +33,11 @@ export interface CrmRemoteClient extends RemoteClient {
   getCustomObject(classId: string, id: string): Promise<CustomObject>;
   createCustomObject(params: CustomObjectCreateParams): Promise<string>;
   updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
+
+  getAssociationTypes(sourceObjectClass: ObjectClass, targetObjectClass: ObjectClass): Promise<AssociationType[]>;
+  createAssociationType(params: AssociationTypeCreateParams): Promise<void>;
+
+  createAssociation(params: AssociationCreateParams): Promise<Association>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
@@ -81,6 +88,20 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
   public async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
+  public async getAssociationTypes(
+    sourceObjectClass: ObjectClass,
+    targetObjectClass: ObjectClass
+  ): Promise<AssociationType[]> {
+    throw new Error('Not implemented');
+  }
+  public async createAssociationType(params: AssociationTypeCreateParams): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
+  public async createAssociation(params: AssociationCreateParams): Promise<Association> {
     throw new Error('Not implemented');
   }
 }

@@ -51,6 +51,10 @@ paths:
     $ref: paths/custom-objects.yaml
   '/custom-object-classes/{custom_object_class_id}/custom-objects/{custom_object_id}':
     $ref: paths/custom-objects@{custom_object_id}.yaml
+  '/association-types':
+    $ref: paths/association-types.yaml
+  '/association-types/{association_type_id}/associations':
+    $ref: paths/associations.yaml
 tags:
   - name: Accounts
     description: The `Account` Common Model is used to represent a "company" in CRMs.
@@ -64,10 +68,14 @@ tags:
     description: The `User` Common Model is used to represent a "user" that can login to CRMs.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
-  - name: Custom Object Classes
+  - name: CustomObjectClasses
     description: The `Custom Object Class` Common Model is used to represent a "custom object class" in CRMs.
-  - name: Custom Objects
+  - name: CustomObjects
     description: The `Custom Object` Common Model is used to represent a "custom object" in CRMs.
+  - name: AssociationTypes
+    description: The `Association Type` Common Model is used to represent an "association type" in CRMs.
+  - name: Associations
+    description: The `Association` Common Model is used to represent an "association" in CRMs.
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -127,6 +135,24 @@ components:
       $ref: ./components/schemas/create_update_custom_object.yaml
     custom_object_field:
       $ref: ./components/schemas/objects/custom_object_field.yaml
+    association_type:
+      $ref: ./components/schemas/objects/association_type.yaml
+    create_update_association_type:
+      $ref: ./components/schemas/create_update_association_type.yaml
+    object_class:
+      $ref: ./components/schemas/objects/object_class.yaml
+    object_class_type:
+      $ref: ./components/schemas/objects/object_class_type.yaml
+    association_type_cardinality:
+      $ref: ./components/schemas/objects/association_type_cardinality.yaml
+    association_type_cardinality_or_unknown:
+      $ref: ./components/schemas/objects/association_type_cardinality_or_unknown.yaml
+    create_update_association:
+      $ref: ./components/schemas/create_update_association.yaml
+    association:
+      $ref: ./components/schemas/objects/association.yaml
+    object:
+      $ref: ./components/schemas/objects/object.yaml
   parameters:
     include_deleted_data:
       $ref: ../../common/components/parameters/query/include_deleted_data.yaml
