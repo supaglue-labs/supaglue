@@ -1,0 +1,4 @@
+type: string
+enum:
+  - CUSTOM_OBJECT
+  - COMMON_MODEL
