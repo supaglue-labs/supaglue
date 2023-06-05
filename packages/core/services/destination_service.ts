@@ -29,6 +29,13 @@ export class DestinationService {
     return fromDestinationModel(model);
   }
 
+  public async getDestinationByConnectionId(connectionId: string): Promise<Destination | null> {
+    const { integrationId } = await this.#prisma.connection.findUniqueOrThrow({
+      where: { id: connectionId },
+    });
+    return await this.getDestinationByIntegrationId(integrationId);
+  }
+
   public async getDestinationById(id: string): Promise<Destination> {
     const model = await this.#prisma.destination.findUniqueOrThrow({
       where: { id },

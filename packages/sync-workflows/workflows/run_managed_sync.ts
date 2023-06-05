@@ -22,7 +22,7 @@ const { syncRecordsToDestination } = proxyActivities<ReturnType<typeof createAct
   },
 });
 
-const { getSync, updateSyncState, logSyncStart, logSyncFinish, setForceSyncFlag } = proxyActivities<
+const { getSync, getDestination, updateSyncState, logSyncStart, logSyncFinish, setForceSyncFlag } = proxyActivities<
   ReturnType<typeof createActivities>
 >({
   startToCloseTimeout: '10 second',
@@ -50,6 +50,11 @@ export type RunManagedSyncArgs = {
 };
 
 export async function runManagedSync({ syncId, connectionId, category }: RunManagedSyncArgs): Promise<void> {
+  const { destination } = await getDestination({ connectionId });
+  if (!destination) {
+    return;
+  }
+
   const historyIdsMap = Object.fromEntries(
     getCommonModels(category).map((commonModel) => {
       const entry: [CommonModelType, string] = [commonModel, uuid4()];
