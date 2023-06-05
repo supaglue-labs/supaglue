@@ -5,11 +5,15 @@ description: ''
 import ThemedImage from '@theme/ThemedImage';
 import Tabs from '@theme/Tabs';
 
-# Embedded links
+# Managed authentication
+
+Supaglue securely manages connections between your application and your customers' data sources. We manage access and refresh tokens on your behalf.
+
+## Embedded links
 
 An embedded link is a HTTP URL that initiates an authentication flow in your customer's third-party provider to install your developer app. Once installed, a connection is created in Supaglue, allowing you to read from and write to your customers' SaaS provider. Embedded links allow your customers to connect their SaaS providers to your application using Supaglue.
 
-## Link format
+### Link format
 
 An embedded link takes the following form:
 
@@ -64,7 +68,7 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
   </div>
 );
 
-## Embedded links in UI components
+### Embedded links in UI components
 
 Embedded Links can be used in any UI components in your frontend application. For example, below are two cards that can be used to connect to Salesforce and HubSpot:
 

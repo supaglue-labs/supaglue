@@ -250,6 +250,10 @@ const config = {
                 href: '/connectors/apollo',
               },
               {
+                label: 'Gong',
+                href: '/connectors/gong',
+              },
+              {
                 label: 'HubSpot',
                 href: '/connectors/hubspot',
               },
@@ -258,7 +262,7 @@ const config = {
                 href: '/connectors/marketo',
               },
               {
-                label: 'Microsoft Dynamics 365 Sales',
+                label: 'Dynamics 365 Sales',
                 href: '/connectors/ms_dynamics_365_sales',
               },
               {
@@ -278,8 +282,8 @@ const config = {
                 href: '/connectors/salesloft',
               },
               {
-                label: 'Zoho CRM',
-                href: '/connectors/zoho_crm',
+                label: 'Zendesk Sell',
+                href: '/connectors/zendesk_sell',
               },
             ],
           },

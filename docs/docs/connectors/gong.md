@@ -1,15 +1,15 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/zoho_crm.png
-  category: 'CRM'
+  icon: /img/connector_icons/gong.png
+  category: 'Sales engagement'
 description: ''
 ---
 
-# Zoho CRM
+# Gong
 
 ## Overview
 
-Supaglue interfaces with the Zoho REST V3 API.
+Supaglue interfaces with the Gong V2 API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
