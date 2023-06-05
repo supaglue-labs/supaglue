@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toSnakecasedKeysSequenceStateV2 } from '@supaglue/core/mappers/engagement';
 import {
   CreateSequenceStatePathParams,
   CreateSequenceStateRequest,
@@ -6,34 +7,14 @@ import {
   GetSequenceStatePathParams,
   GetSequenceStateRequest,
   GetSequenceStateResponse,
-  GetSequenceStatesPathParams,
-  GetSequenceStatesRequest,
-  GetSequenceStatesResponse,
 } from '@supaglue/schemas/v2/engagement';
-import { ListParams } from '@supaglue/types';
+import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const {
-  engagement: { sequenceStateService },
-} = getDependencyContainer();
+const { engagementCommonModelService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
-
-  router.get(
-    '/',
-    async (
-      req: Request<
-        GetSequenceStatesPathParams,
-        GetSequenceStatesResponse,
-        GetSequenceStatesRequest,
-        /* GetSequenceStatesQueryParams */ ListParams
-      >,
-      res: Response<GetSequenceStatesResponse>
-    ) => {
-      throw new Error('Not implemented');
-    }
-  );
 
   router.get(
     '/:sequence_state_id',
@@ -41,7 +22,16 @@ export default function init(app: Router): void {
       req: Request<GetSequenceStatePathParams, GetSequenceStateResponse, GetSequenceStateRequest>,
       res: Response<GetSequenceStateResponse>
     ) => {
-      throw new Error('Not implemented');
+      const { id: connectionId } = req.customerConnection;
+      const mailbox = await engagementCommonModelService.get(
+        'sequence_state',
+        connectionId,
+        req.params.sequence_state_id
+      );
+      const snakecasedKeysMailbox = toSnakecasedKeysSequenceStateV2(mailbox);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { raw_data, ...rest } = snakecasedKeysMailbox;
+      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysMailbox : rest);
     }
   );
 
@@ -51,8 +41,18 @@ export default function init(app: Router): void {
       req: Request<CreateSequenceStatePathParams, CreateSequenceStateResponse, CreateSequenceStateRequest>,
       res: Response<CreateSequenceStateResponse>
     ) => {
-      throw new Error('Not implemented');
+      const id = await engagementCommonModelService.create(
+        'sequence_state',
+        req.customerConnection,
+        camelcaseKeysSansCustomFields(req.body.model)
+      );
+      return res.status(200).send({ model: { id } });
     }
   );
+
+  router.patch('/:sequence_state_id', async (req: Request, res: Response) => {
+    throw new Error('Not implemented');
+  });
+
   app.use('/sequence_states', router);
 }

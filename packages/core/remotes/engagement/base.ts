@@ -11,14 +11,18 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 export interface EngagementRemoteClient extends RemoteClient {
   category(): IntegrationCategory;
   listObjects(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
+  getObject<T extends EngagementCommonModelType>(
+    commonModelType: T,
+    id: string
+  ): Promise<EngagementCommonModelTypeMap<T>['object']>;
   createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
-  ): Promise<EngagementCommonModelTypeMap<T>['object']>;
+  ): Promise<string>;
   updateObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['updateParams']
-  ): Promise<EngagementCommonModelTypeMap<T>['object']>;
+  ): Promise<string>;
 }
 
 export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClient implements EngagementRemoteClient {
@@ -35,14 +39,18 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
   }
 
   abstract listObjects(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
+  abstract getObject<T extends EngagementCommonModelType>(
+    commonModelType: T,
+    id: string
+  ): Promise<EngagementCommonModelTypeMap<T>['object']>;
   abstract createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
-  ): Promise<EngagementCommonModelTypeMap<T>['object']>;
+  ): Promise<string>;
   abstract updateObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['updateParams']
-  ): Promise<EngagementCommonModelTypeMap<T>['object']>;
+  ): Promise<string>;
 }
 
 export abstract class EngagementRemoteClientEventEmitter extends EventEmitter {}

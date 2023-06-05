@@ -24,7 +24,7 @@ export type Sequence = BaseEngagementModel & CoreSequence;
 export type SequenceV2 = BaseEngagementModelV2 & CoreSequence;
 
 export type RemoteSequenceTypes = {
-  object: Sequence;
+  object: SequenceV2;
   createParams: never;
   updateParams: never;
 };

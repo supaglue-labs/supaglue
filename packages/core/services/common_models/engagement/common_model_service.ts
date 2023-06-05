@@ -1,12 +1,16 @@
+import { ConnectionSafeAny } from '@supaglue/types';
 import { EngagementCommonModelType, EngagementCommonModelTypeMap } from '@supaglue/types/engagement';
 import { EngagementRemoteClient } from '../../../remotes/engagement/base';
+import { DestinationService } from '../../destination_service';
 import { RemoteService } from '../../remote_service';
 
 export class EngagementCommonModelService {
   readonly #remoteService: RemoteService;
+  readonly #destinationService: DestinationService;
 
-  public constructor(remoteService: RemoteService) {
+  public constructor(remoteService: RemoteService, destinationService: DestinationService) {
     this.#remoteService = remoteService;
+    this.#destinationService = destinationService;
   }
 
   public async get<T extends EngagementCommonModelType>(
@@ -14,26 +18,31 @@ export class EngagementCommonModelService {
     connectionId: string,
     id: string
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
-    throw new Error('Unimplemented');
-    // const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
-    // return await remoteClient.getObject(type, id);
+    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
+    return await remoteClient.getObject(type, id);
   }
 
   public async create<T extends EngagementCommonModelType>(
     type: T,
-    connectionId: string,
+    connection: ConnectionSafeAny,
     params: EngagementCommonModelTypeMap<T>['createParams']
-  ): Promise<void> {
-    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
-    await remoteClient.createObject(type, params);
+  ): Promise<string> {
+    const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
+    const id = await remoteClient.createObject(type, params);
+
+    // TODO: Implement cache invalidation once we fix the writer interface to support engagement vertical
+
+    return id;
   }
 
   public async update<T extends EngagementCommonModelType>(
     type: T,
-    connectionId: string,
+    connection: ConnectionSafeAny,
     params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<void> {
-    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
+    const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
     await remoteClient.updateObject(type, params);
+
+    // TODO: Implement cache invalidation once we fix the writer interface to support engagement vertical
   }
 }

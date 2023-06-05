@@ -10,8 +10,11 @@ import {
   ContactV2,
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
+  MailboxV2,
   SequenceStateCreateParams,
   SequenceStateV2,
+  SequenceV2,
+  UserV2,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
@@ -81,6 +84,61 @@ class OutreachClient extends AbstractEngagementRemoteClient {
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
     return this.#headers;
+  }
+
+  public override async getObject<T extends EngagementCommonModelType>(
+    commonModelType: T,
+    id: string
+  ): Promise<EngagementCommonModelTypeMap<T>['object']> {
+    switch (commonModelType) {
+      case 'contact':
+        return await this.getContact(id);
+      case 'user':
+        return await this.getUser(id);
+      case 'sequence':
+        return await this.getSequence(id);
+      case 'mailbox':
+        return await this.getMailbox(id);
+      case 'sequence_state':
+        return await this.getSequenceState(id);
+      default:
+        throw new Error(`Common model ${commonModelType} not supported`);
+    }
+  }
+
+  async getContact(id: string): Promise<ContactV2> {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/prospects/${id}`, {
+      headers: this.#headers,
+    });
+    return fromOutreachProspectToContactV2(response.data.data);
+  }
+
+  async getUser(id: string): Promise<UserV2> {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/users/${id}`, {
+      headers: this.#headers,
+    });
+    return fromOutreachUserToUserV2(response.data.data);
+  }
+
+  async getSequence(id: string): Promise<SequenceV2> {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequences/${id}`, {
+      headers: this.#headers,
+    });
+    return fromOutreachSequenceToSequenceV2(response.data.data);
+  }
+
+  async getMailbox(id: string): Promise<MailboxV2> {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/mailboxes/${id}`, {
+      headers: this.#headers,
+    });
+    return fromOutreachMailboxToMailboxV2(response.data.data);
+  }
+
+  async getSequenceState(id: string): Promise<SequenceStateV2> {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequence_states/${id}`, {
+      headers: this.#headers,
+    });
+    return fromOutreachSequenceStateToSequenceStateV2(response.data.data);
   }
 
   public override async listObjects(
@@ -247,7 +305,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   public override async createObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
-  ): Promise<EngagementCommonModelTypeMap<T>['object']> {
+  ): Promise<string> {
     switch (commonModelType) {
       case 'sequence_state':
         return await this.createSequenceState(params as SequenceStateCreateParams);
@@ -262,7 +320,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  async createContact(params: ContactCreateParams): Promise<ContactV2> {
+  async createContact(params: ContactCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/prospects`,
@@ -271,10 +329,10 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromOutreachProspectToContactV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
-  async createSequenceState(params: SequenceStateCreateParams): Promise<SequenceStateV2> {
+  async createSequenceState(params: SequenceStateCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const response = await axios.post<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/sequenceStates`,
@@ -283,13 +341,13 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromOutreachSequenceStateToSequenceStateV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
   public override async updateObject<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['updateParams']
-  ): Promise<EngagementCommonModelTypeMap<T>['object']> {
+  ): Promise<string> {
     switch (commonModelType) {
       case 'contact':
         return await this.updateContact(params as ContactUpdateParams);
@@ -298,7 +356,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  async updateContact(params: ContactUpdateParams): Promise<ContactV2> {
+  async updateContact(params: ContactUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const response = await axios.patch<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/prospects/${params.id}`,
@@ -307,7 +365,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         headers: this.#headers,
       }
     );
-    return fromOutreachProspectToContactV2(response.data.data);
+    return response.data.data.id.toString();
   }
 
   public override async sendPassthroughRequest(
