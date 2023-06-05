@@ -7,14 +7,19 @@ import {
 import {
   AccountCreateParams,
   AccountUpdateParams,
+  AccountV2,
   ContactCreateParams,
   ContactUpdateParams,
+  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
   LeadCreateParams,
   LeadUpdateParams,
+  LeadV2,
   OpportunityCreateParams,
   OpportunityUpdateParams,
+  OpportunityV2,
+  UserV2,
 } from '@supaglue/types/crm';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -306,7 +311,61 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
-    throw new Error('Not yet implemented');
+    switch (commonModelType) {
+      case 'contact':
+        return await this.getContact(id);
+      case 'lead':
+        return await this.getLead(id);
+      case 'opportunity':
+        return await this.getOpportunity(id);
+      case 'account':
+        return await this.getAccount(id);
+      case 'user':
+        return await this.getUser(id);
+      default:
+        throw new Error(`Common model ${commonModelType} not supported`);
+    }
+  }
+
+  async getContact(id: string): Promise<ContactV2> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/persons/${id}`, {
+      headers: this.#headers,
+    });
+    return fromPipedrivePersonToContactV2(response.data.data);
+  }
+
+  async getLead(id: string): Promise<LeadV2> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/leads/${id}`, {
+      headers: this.#headers,
+    });
+    return fromPipedriveLeadToLeadV2(response.data.data);
+  }
+
+  async getOpportunity(id: string): Promise<OpportunityV2> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/deals/${id}`, {
+      headers: this.#headers,
+    });
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
+    return fromPipedriveDealToOpportunityV2(response.data.data, pipelineStageMapping);
+  }
+
+  async getAccount(id: string): Promise<AccountV2> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/organizations/${id}`, {
+      headers: this.#headers,
+    });
+    return fromPipedriveOrganizationToAccountV2(response.data.data);
+  }
+
+  async getUser(id: string): Promise<UserV2> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/users/${id}`, {
+      headers: this.#headers,
+    });
+    return fromPipedriveUserToUserV2(response.data.data);
   }
 
   public override async createObject<T extends CRMCommonModelType>(

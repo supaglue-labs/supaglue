@@ -14,6 +14,7 @@ import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/com
 import type { PipedriveRecord, PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate } from '../../../lib';
+import { getFullName } from '../../utils/name';
 
 export const fromPipedrivePersonToContactV2 = (person: PipedriveRecord): ContactV2 => {
   return {
@@ -177,9 +178,12 @@ export const fromPipedriveOrganizationToAddresses = (organization: PipedriveReco
 };
 
 export const toPipedrivePersonCreateParams = (params: ContactCreateParams) => {
+  const name = getFullName(params.firstName, params.lastName);
+  if (!name) {
+    throw new BadRequestError('Either firstName or lastName must be provided');
+  }
   return {
-    first_name: params.firstName,
-    last_name: params.lastName,
+    name,
     email: params.emailAddresses?.map(({ emailAddress, emailAddressType }) => ({
       label: emailAddressType,
       value: emailAddress,

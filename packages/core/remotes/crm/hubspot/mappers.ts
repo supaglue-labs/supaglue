@@ -17,6 +17,7 @@ import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/ty
 import { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate, removeUndefinedValues } from '../../../lib';
+import { getFullName } from '../../utils/name';
 
 export const fromObjectClassToHubspotObjectType = (objectClass: ObjectClass): string => {
   if (objectClass.originType === 'CUSTOM_OBJECT') {
@@ -255,19 +256,6 @@ export const fromHubspotOwnerToUserV2 = ({
       teams,
     },
   };
-};
-
-const getFullName = (firstName?: string, lastName?: string): string | null => {
-  if (firstName && lastName) {
-    return `${firstName} ${lastName}`;
-  }
-  if (firstName) {
-    return firstName;
-  }
-  if (lastName) {
-    return lastName;
-  }
-  return null;
 };
 
 export const toHubspotAccountCreateParams = (params: AccountCreateParams): Record<string, string> => {
