@@ -1,0 +1,15 @@
+type: object
+properties:
+  id:
+    type: string
+    example: 42579f73-8524-4570-9b67-ecbd702c6b14
+  class_id:
+    type: string
+    example: 42579f73-8524-4570-9b67-ecbd702c6b15
+  fields:
+    type: object
+    additionalProperties: true
+required:
+  - id
+  - class_id
+  - fields

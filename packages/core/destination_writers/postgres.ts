@@ -183,7 +183,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
               ++tempTableRowCount;
 
               // Update the max lastModifiedAt
-              const { lastModifiedAt } = chunk;
+              const { lastModifiedAt } = object;
               if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
                 maxLastModifiedAt = lastModifiedAt;
               }
