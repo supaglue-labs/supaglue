@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { BadRequestError } from '@supaglue/core/errors';
 import {
   CreateAssociationTypePathParams,
   CreateAssociationTypeRequest,
@@ -38,7 +39,7 @@ export default function init(app: Router): void {
         !target_object_class_id ||
         !target_object_class_type
       ) {
-        throw new Error('Missing required query params');
+        throw new BadRequestError('Missing required query params');
       }
 
       const associationTypes = await crmAssociationService.getAssociationTypes(
