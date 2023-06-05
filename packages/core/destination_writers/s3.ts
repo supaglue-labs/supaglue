@@ -69,7 +69,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
             data.push(mappedRecord);
 
             // Update the max lastModifiedAt
-            const { lastModifiedAt } = chunk;
+            const { lastModifiedAt } = object;
             if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
               maxLastModifiedAt = lastModifiedAt;
             }
