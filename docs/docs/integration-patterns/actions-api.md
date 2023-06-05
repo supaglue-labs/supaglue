@@ -16,9 +16,9 @@ The Actions API lets you perform common operations on your customers' SaaS tools
 2. Supaglue applies mappings and updates the data in Salesforce (or other remote provider). You can use Supaglue’s default unified mappings or your own.
 3. Optional: Supaglue updates your application DB for the corresponding record, before returning a 200 response (see cache invalidation).
 
-## Unified API and schema
+## Unified API
 
-Where possible, Supaglue unifies action API endpoints and request/response signatures across providers within a single category.
+Supaglue unifies action API endpoints, so that you can communicate with multiple providers within a single category with a single interface.
 
 For example, you can update an Salesforce Account record and HubSpot Company record with the same API endpoint and schema, just by changing a header:
 
@@ -64,6 +64,14 @@ curl --location --request POST 'https://api.supaglue.io/crm/v1/contacts' \
 
 </Tabs>
 
+
+:::info
+
+Besides unifying the API endpoints, the actions API also applies the Supaglue common model, which normalizes the request and response schemas across different providers in the same category. See [Common schema](../platform/common-schema) to learn more.
+
+:::
+
+
 ## Cache invalidation
 
 If you have configured a destination for managed syncs, Supaglue will immediately reflect any newly created records or updated records in your destination.
@@ -79,4 +87,4 @@ This feature is only supported for some destinations, not all.
 
 ## Pass-through API
 
-For any action not directly supported by Supaglue's API, you can use our pass-through API. This lets you make any API call directly against the remote provider.
+For any action not directly supported by Supaglue's API, you can use our pass-through API. This lets you make any API call directly against the remote provider. See our [API reference](https://docs.supaglue.com/api) for more details.

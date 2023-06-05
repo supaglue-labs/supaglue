@@ -20,4 +20,10 @@ Supaglue interfaces with the Pipedrive V1 API.
 | Updates                    | Yes       |
 | Real-time events           | No        |
 
-Supported object types: -
+Supported object types:
+
+- Account
+- Contact
+- Lead
+- Opportunity
+- User
