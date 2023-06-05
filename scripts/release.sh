@@ -31,7 +31,7 @@ EOF
 fi
 
 echo "Logging into 1password..."
-op signin --account supaglue.1password.com
+eval $(op signin --account supaglue.1password.com)
 
 git checkout main
 git pull
