@@ -18,7 +18,7 @@ export default function init(app: Router) {
       req: Request<GetSyncHistoryPathParams, GetSyncHistoryResponse, GetSyncHistoryRequest, GetSyncHistoryQueryParams>,
       res: Response<GetSyncHistoryResponse>
     ) => {
-      const { next, previous, results } = await syncHistoryService.list({
+      const { next, previous, results, totalCount } = await syncHistoryService.list({
         applicationId: req.supaglueApplication.id,
         paginationParams: toPaginationInternalParams({ page_size: req.query?.page_size, cursor: req.query?.cursor }),
         model: req.query?.model,
@@ -33,7 +33,7 @@ export default function init(app: Router) {
           endTimestamp: result.endTimestamp?.toISOString() ?? null,
         })
       );
-      return res.status(200).send({ next, previous, results: snakeCaseResults });
+      return res.status(200).send({ next, previous, results: snakeCaseResults, total_count: totalCount });
     }
   );
 }

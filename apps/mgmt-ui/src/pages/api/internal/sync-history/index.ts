@@ -4,8 +4,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSyncHistoryResponse | null>) {
-  // TODO: Implement real pagination
-  const result = await fetch(`${API_HOST}/internal/v1/sync-history?page_size=1000`, {
+  const queryParams = new URLSearchParams();
+  req.query?.page_size && queryParams.append('page_size', req.query.page_size as string);
+  req.query?.cursor && queryParams.append('cursor', req.query.cursor as string);
+
+  const result = await fetch(`${API_HOST}/internal/v1/sync-history?${queryParams}`, {
     method: 'GET',
     headers: getApplicationIdScopedHeaders(req),
   });

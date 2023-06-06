@@ -11,6 +11,9 @@ export function useSWRWithApplication<T>(path: string) {
       path,
       applicationId,
     },
-    fetcherWithApplication<T>
+    fetcherWithApplication<T>,
+    {
+      keepPreviousData: true,
+    }
   );
 }

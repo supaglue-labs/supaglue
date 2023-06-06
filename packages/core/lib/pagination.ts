@@ -58,7 +58,7 @@ export const decodeCursor = (encoded?: string): Cursor | undefined => {
 const MAX_PAGE_SIZE = 1000;
 
 export const toPaginationInternalParams = (paginationParams: PaginationParams): PaginationInternalParams => {
-  const page_size = paginationParams.page_size ? parseInt(paginationParams.page_size) : MAX_PAGE_SIZE;
+  const page_size = paginationParams.page_size ? parseInt(paginationParams.page_size, 10) : MAX_PAGE_SIZE;
   if (isNaN(page_size)) {
     throw new BadRequestError('Unable to parse page_size');
   }
