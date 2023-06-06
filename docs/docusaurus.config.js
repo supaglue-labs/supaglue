@@ -45,7 +45,8 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          lastVersion: LATEST_VERSION,
+          lastVersion: 'current',
+
           sidebarCollapsed: false,
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
@@ -70,82 +71,56 @@ const config = {
         // Plugin Options for loading OpenAPI files
         specs: [
           ...versions.flatMap((version) =>
-            version >= '0.9.0'
-              ? [
-                  {
-                    spec: `../openapi/versioned/version-${version}/v1/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/references/api/v1/crm' : `/${version}/references/api/v1/crm`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v1/engagement/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION
-                        ? '/references/api/v1/engagement'
-                        : `/${version}/references/api/v1/engagement`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v1/mgmt/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION ? '/references/api/v1/mgmt' : `/${version}/references/api/v1/mgmt`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/references/api/v2/crm' : `/${version}/references/api/v2/crm`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION
-                        ? '/references/api/v2/engagement'
-                        : `/${version}/references/api/v2/engagement`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION ? '/references/api/v2/mgmt' : `/${version}/references/api/v2/mgmt`,
-                  },
-                ].filter((obj) => !!obj)
-              : [
-                  {
-                    spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/references/api/crm' : `/${version}/references/api/crm`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/engagement/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION
-                        ? '/references/api/engagement'
-                        : `/${version}/references/api/engagement`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/references/api/mgmt' : `/${version}/references/api/mgmt`,
-                  },
-                ].filter((obj) => !!obj)
+            [
+              {
+                spec: `../openapi/versioned/version-${version}/v1/crm/openapi.bundle.json`,
+                route: `/${version}/api/v1/crm`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v1/engagement/openapi.bundle.json`,
+                route: `/${version}/api/v1/engagement`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v1/mgmt/openapi.bundle.json`,
+                route: `/${version}/api/v1/mgmt`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
+                route: `/${version}/api/v2/crm`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
+                route: `/${version}/api/v2/engagement`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
+                route: `/${version}/api/v2/mgmt`,
+              },
+            ].filter((obj) => !!obj)
           ),
           {
             spec: '../openapi/v1/crm/openapi.bundle.json',
-            route: '/next/references/api/v1/crm',
+            route: '/api/v1/crm',
           },
           {
             spec: '../openapi/v1/engagement/openapi.bundle.json',
-            route: '/next/references/api/v1/engagement',
+            route: '/api/v1/engagement',
           },
           {
             spec: '../openapi/v1/mgmt/openapi.bundle.json',
-            route: '/next/references/api/v1/mgmt',
+            route: '/api/v1/mgmt',
           },
           {
             spec: '../openapi/v2/crm/openapi.bundle.json',
-            route: '/next/references/api/v2/crm',
+            route: '/api/v2/crm',
           },
           {
             spec: '../openapi/v2/engagement/openapi.bundle.json',
-            route: '/next/references/api/v2/engagement',
+            route: '/api/v2/engagement',
           },
           {
             spec: '../openapi/v2/mgmt/openapi.bundle.json',
-            route: '/next/references/api/v2/mgmt',
+            route: '/api/v2/mgmt',
           },
         ],
         // Theme Options for modifying how redoc renders them
@@ -190,7 +165,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'references/api',
+            docId: 'api',
             position: 'left',
             label: 'API Reference',
           },
@@ -221,7 +196,7 @@ const config = {
               },
               {
                 label: 'API Reference',
-                to: 'references/api',
+                to: 'api',
               },
             ],
           },
@@ -246,12 +221,12 @@ const config = {
             title: 'Connectors',
             items: [
               {
-                label: 'ActiveCampaign',
-                href: '/connectors/activecampaign',
+                label: 'Apollo',
+                href: '/connectors/apollo',
               },
               {
-                label: 'Copper',
-                href: '/connectors/copper',
+                label: 'Gong',
+                href: '/connectors/gong',
               },
               {
                 label: 'HubSpot',
@@ -262,7 +237,7 @@ const config = {
                 href: '/connectors/marketo',
               },
               {
-                label: 'Microsoft Dynamics 365 Sales',
+                label: 'Dynamics 365 Sales',
                 href: '/connectors/ms_dynamics_365_sales',
               },
               {
@@ -282,8 +257,8 @@ const config = {
                 href: '/connectors/salesloft',
               },
               {
-                label: 'Zoho CRM',
-                href: '/connectors/zoho_crm',
+                label: 'Zendesk Sell',
+                href: '/connectors/zendesk_sell',
               },
             ],
           },

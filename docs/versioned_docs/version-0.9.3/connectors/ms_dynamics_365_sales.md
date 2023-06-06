@@ -13,10 +13,12 @@ Supaglue interfaces with the Microsoft Dynamics 365 V9 API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
-| Auth                       | Yes       |
-| Reads: Full refresh        | No        |
-| Reads: Incremental refresh | No        |
+| Auth                       | No        |
+| Managed syncs              | No        |
+| Point reads                | No        |
 | Creates                    | No        |
 | Updates                    | No        |
+| Real-time events           | No        |
+
 
 Supported object types: -

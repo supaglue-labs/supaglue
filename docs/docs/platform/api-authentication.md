@@ -2,7 +2,7 @@
 description: ''
 ---
 
-# Authentication
+# API authentication
 
 All requests to the Supaglue API must be authenticated via an API key. API keys can be generated in the Management Portal on the Configuration -> API Key page.
 

@@ -20,9 +20,9 @@
 
 # Supaglue
 
-Supaglue is an open source unified API for CRMs. It handles authentication, caches and normalizes data from multiple CRM platforms, and provides a single set of API endpoints for reading and writing to those CRMs. Developers at B2B companies can use Supaglue to streamline and scale the work of building customer-facing CRM integrations. Supaglue can be self-hosted and runs alongside your stack.
+Supaglue is an open source developer platform for user-facing product integrations. It provides configurable connectors and platform tools to help developers at B2B companies simplify and scale their integrations with their customers' CRMs and sales stack. Supaglue can be self-hosted and runs alongside your stack.
 
-https://user-images.githubusercontent.com/1925713/223279162-c53ceb43-b51e-4d78-9f7b-d36ac141cecf.mp4
+https://github.com/supaglue-labs/supaglue/assets/1925713/80f9e4e7-4a75-4c27-9c80-3f26c0206ab4
 
 ## Get Started
 
@@ -36,14 +36,11 @@ docker compose up
 
 ## Features
 
-- **Unified API**: single developer interface to read from and write to multiple third-party providers.
-- **Common model**: a common data model for CRMs that has been standardized across multiple third-party providers.
-- **High performance**: query against synced data in your own cloud with no rate limits.
-- **Open source**: self-host and run Supaglue for free.
-- **Privacy-first**: prevent sensitive customer data from leaving your infrastructure.
-- **BYO-connectors**: extend Supaglue with your own connectors.
-- **Developer-centric**: self-host multiple instances for local, staging, and production environments.
-- **Monitoring and logs**: monitor the status of syncs and stream logs to your cloud.
+Supaglue offers 3 main ways to integrate with your customers' providers.
+
+* **Managed Syncs:** managed service that continuously syncs data from your customers' SaaS tools into your application database or data warehouse.
+* **Actions API:** single access point to perform common read and write operations against third-party providers.
+* **Real-time events:** managed service that sends webhooks to a specified target when records are updated in your customers' SaaS tools.
 
 ## Connectors
 
@@ -51,13 +48,15 @@ See the [list of connectors](https://docs.supaglue.com/connectors) we currently 
 
 Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
 
-## Status
+## Common use cases
 
-We are currently in Public Alpha. Watch "releases" of this repo to be notified of significant updates (as minor semver releases).
+* **Lead scoring:** sync CRM records into your application to power your proprietary rules and AI/ML models.
+* **CRM enrichment:** log emails, tasks, and product usage metrics to your customers' CRM and sales engagement tools.
+* **Workflow automation:** trigger customer-facing notifications and workflows in real-time based on changes in their SaaS tools.
 
 ## Roadmap
 
-Check out our [roadmap](https://docs.supaglue.com/roadmap) to get informed on what we are currently working on, and what we have in mind for the next weeks, months, and quarters.
+Check out our [roadmap](https://github.com/orgs/supaglue-labs/projects/4) to get informed on what we are currently working on, and what we have in mind for the next weeks, months, and quarters.
 
 ## Community
 

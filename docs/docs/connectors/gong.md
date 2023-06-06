@@ -1,23 +1,23 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/activecampaign.png
-  category: 'CRM'
+  icon: /img/connector_icons/gong.png
+  category: 'Sales engagement'
 description: ''
 ---
 
-# ActiveCampaign
+# Gong
 
 ## Overview
 
-Supaglue interfaces with the ActiveCampaign V3 API.
-
+Supaglue interfaces with the Gong V2 API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | No        |
-| Reads: Full refresh        | No        |
-| Reads: Incremental refresh | No        |
+| Managed syncs              | No        |
+| Point reads                | No        |
 | Creates                    | No        |
 | Updates                    | No        |
+| Real-time events           | No        |
 
 Supported object types: -

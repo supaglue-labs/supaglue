@@ -41,11 +41,11 @@ http://localhost:8080/oauth/connect?applicationId={APPLICATION_ID}&customerId={C
 | `{RETURN_URL}`     | The URL to return to once the OAuth connection is complete.<br/> <b>NOTE:</b> this should be uriEncoded                                                                         | Yes      |
 | `{LOGIN_URL}`      | The login URL for Salesforce.<br/> This is used for sandbox accounts and should be `https://test.salesforce.com` for that use case.<br/> <b>NOTE:</b> this should be uriEncoded | No       |
 
-To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](../references/api/v2/crm) or management UI to create new integrations for your customers to have available for them to connect to.
+To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](../api/v2/crm) or management UI to create new integrations for your customers to have available for them to connect to.
 
 Examples:
 
-- <http://api.supaglue.com/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot>
+- <https://api.supaglue.com/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot>
 - <https://api.supaglue.com/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api>
 
 export const IntegrationCard = ({ icon, provider, description, to }) => (
