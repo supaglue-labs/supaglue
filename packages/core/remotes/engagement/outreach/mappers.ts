@@ -87,7 +87,7 @@ export const fromOutreachProspectToContactV2 = (record: OutreachRecord): Contact
     id: id.toString(),
     firstName: (attributes.firstName as string) ?? null,
     lastName: (attributes.lastName as string) ?? null,
-    jobTitle: (attributes.jobTitle as string) ?? null,
+    jobTitle: (attributes.title as string) ?? null,
     address: {
       street1: (attributes.addressStreet as string) ?? null,
       street2: (attributes.addressStreet2 as string) ?? null,
