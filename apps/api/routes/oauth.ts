@@ -22,7 +22,7 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl, loginUrl, version = 'v1' } = req.query;
+      const { applicationId, customerId, providerName, returnUrl, loginUrl, version = 'v2' } = req.query;
 
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
@@ -224,7 +224,7 @@ export default function init(app: Router): void {
           : { ...basePayload, providerName };
 
       try {
-        await connectionAndSyncService.create(version === 'v2' ? 'v2' : 'v1', payload as ConnectionCreateParamsAny);
+        await connectionAndSyncService.create(version === 'v1' ? 'v1' : 'v2', payload as ConnectionCreateParamsAny);
       } catch (e: any) {
         if (e.code === 'P2002') {
           await connectionAndSyncService.upsert(payload as ConnectionUpsertParamsAny);
