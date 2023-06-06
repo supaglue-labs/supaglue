@@ -30,8 +30,9 @@ You can setup a managed sync in 5 minutes.
       "credentials": {
         "client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
         "client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-     }
-   },
+      }
+    }
+  }
 }
 ```
 
@@ -62,7 +63,7 @@ Before Supaglue begins syncing data, we generate the destination tables and colu
   "credentials": {
     "access_key_id": "AKUADFSSDFS",
     "secret_access_key": "C12389cs809c809s809s",
-    "region": "us-west-2", 
+    "region": "us-west-2",
     "bucket": "my-s3-bucket"
   }
 }
@@ -83,7 +84,7 @@ The first sync will sync all historical data, irrespective of the sync strategy 
     "strategy": "full refresh",
   },
   "objects": [{
-      "object": "Contact", 
+      "object": "Contact",
       "supaglue_common_schema": false,  // default: true
       "raw_fields": false,               // default: true
       "custom_schema": {                 // optional: developer-defined schema for customers to map
@@ -141,27 +142,27 @@ The destination schema consists of the following components:
 
 This is an example of a destination schema associated with a managed sync for a CRM Contact object:
 
-| Field Name                  | Data Type |
-|-----------------------------|-----------|
-| _supaglue_application_id    | String    |
-| _supaglue_customer_id       | String    |
-| _supaglue_provider_name     | String    |
-| _supaglue_emitted_at        | Timestamp |
-| account_id                  | String    |
-| addresses                   | json     |
-| created_at                  | Timestamp |
-| email_addresses             | json     |
-| first_name                  | String    |
-| id                          | String    |
-| is_deleted                  | Boolean   |
-| last_activity_at            | Timestamp |
-| last_modified_at            | Timestamp |
-| last_name                   | String    |
-| lifecycle_stage             | String    |
-| owner_id                    | String    |
-| phone_numbers               | json     |
-| raw_data                    | json     |
-| updated_at                  | Timestamp |
+| Field Name               | Data Type |
+| ------------------------ | --------- |
+| _supaglue_application_id | String    |
+| _supaglue_customer_id    | String    |
+| _supaglue_provider_name  | String    |
+| _supaglue_emitted_at     | Timestamp |
+| account_id               | String    |
+| addresses                | json      |
+| created_at               | Timestamp |
+| email_addresses          | json      |
+| first_name               | String    |
+| id                       | String    |
+| is_deleted               | Boolean   |
+| last_activity_at         | Timestamp |
+| last_modified_at         | Timestamp |
+| last_name                | String    |
+| lifecycle_stage          | String    |
+| owner_id                 | String    |
+| phone_numbers            | json      |
+| raw_data                 | json      |
+| updated_at               | Timestamp |
 
 ## Notification webhooks
 
