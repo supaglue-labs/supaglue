@@ -1,15 +1,13 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/marketo.png
-  category: 'Marketing automation'
+  icon: /img/connector_icons/apollo.png
+  category: 'Sales engagement'
 description: ''
 ---
 
-# Marketo
+# Apollo
 
 ## Overview
-
-Supaglue uses the Marketo REST API.
 
 | Feature                    | Available |
 | -------------------------- | --------- |
@@ -20,15 +18,12 @@ Supaglue uses the Marketo REST API.
 | Updates                    | Yes       |
 | Real-time events           | No        |
 
-Supported object types:
+Supported object types: -
 
-- Actions
-- Automations
-- Campaigns
+- Users
+- Accounts
 - Contacts
 - Emails
-- Events
-- Lists
-- Messages
-- Templates
-- Users
+- Sequences
+- Sequence States
+- Mailboxes

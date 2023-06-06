@@ -11,6 +11,8 @@ const LATEST_VERSION = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'packa
 
 const versions = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
 
+const NEXT_VERSION = versions[0];
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Supaglue Docs',
@@ -45,7 +47,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          //  lastVersion: LATEST_VERSION,
+          lastVersion: NEXT_VERSION,
           sidebarCollapsed: false,
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
@@ -74,52 +76,41 @@ const config = {
               ? [
                   {
                     spec: `../openapi/versioned/version-${version}/v1/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/references/api/v1/crm' : `/${version}/references/api/v1/crm`,
+                    route: version === LATEST_VERSION ? '/api/v1/crm' : `/${version}/api/v1/crm`,
                   },
                   {
                     spec: `../openapi/versioned/version-${version}/v1/engagement/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION
-                        ? '/references/api/v1/engagement'
-                        : `/${version}/references/api/v1/engagement`,
+                    route: version === LATEST_VERSION ? '/api/v1/engagement' : `/${version}/api/v1/engagement`,
                   },
                   {
                     spec: `../openapi/versioned/version-${version}/v1/mgmt/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION ? '/references/api/v1/mgmt' : `/${version}/references/api/v1/mgmt`,
+                    route: version === LATEST_VERSION ? '/api/v1/mgmt' : `/${version}/api/v1/mgmt`,
                   },
                   {
                     spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/references/api/v2/crm' : `/${version}/references/api/v2/crm`,
+                    route: version === LATEST_VERSION ? '/api/v2/crm' : `/${version}/api/v2/crm`,
                   },
                   {
                     spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION
-                        ? '/references/api/v2/engagement'
-                        : `/${version}/references/api/v2/engagement`,
+                    route: version === LATEST_VERSION ? '/api/v2/engagement' : `/${version}/api/v2/engagement`,
                   },
                   {
                     spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION ? '/references/api/v2/mgmt' : `/${version}/references/api/v2/mgmt`,
+                    route: version === LATEST_VERSION ? '/api/v2/mgmt' : `/${version}/api/v2/mgmt`,
                   },
                 ].filter((obj) => !!obj)
               : [
                   {
                     spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/references/api/crm' : `/${version}/references/api/crm`,
+                    route: version === LATEST_VERSION ? '/api/crm' : `/${version}/api/crm`,
                   },
                   {
                     spec: `../openapi/versioned/version-${version}/engagement/openapi.bundle.json`,
-                    route:
-                      version === LATEST_VERSION
-                        ? '/references/api/engagement'
-                        : `/${version}/references/api/engagement`,
+                    route: version === LATEST_VERSION ? '/api/engagement' : `/${version}/api/engagement`,
                   },
                   {
                     spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/references/api/mgmt' : `/${version}/references/api/mgmt`,
+                    route: version === LATEST_VERSION ? '/api/mgmt' : `/${version}/api/mgmt`,
                   },
                 ].filter((obj) => !!obj)
           ),
@@ -221,7 +212,7 @@ const config = {
               },
               {
                 label: 'API Reference',
-                to: 'references/api',
+                to: 'api',
               },
             ],
           },
