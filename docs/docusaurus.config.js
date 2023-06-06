@@ -71,71 +71,56 @@ const config = {
         // Plugin Options for loading OpenAPI files
         specs: [
           ...versions.flatMap((version) =>
-            version >= '0.9.0'
-              ? [
-                  {
-                    spec: `../openapi/versioned/version-${version}/v1/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/v1/crm' : `/${version}/api/v1/crm`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v1/engagement/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/v1/engagement' : `/${version}/api/v1/engagement`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v1/mgmt/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/v1/mgmt' : `/${version}/api/v1/mgmt`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/v2/crm' : `/${version}/api/v2/crm`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/v2/engagement' : `/${version}/api/v2/engagement`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/v2/mgmt' : `/${version}/api/v2/mgmt`,
-                  },
-                ].filter((obj) => !!obj)
-              : [
-                  {
-                    spec: `../openapi/versioned/version-${version}/crm/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/crm' : `/${version}/api/crm`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/engagement/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/engagement' : `/${version}/api/engagement`,
-                  },
-                  {
-                    spec: `../openapi/versioned/version-${version}/mgmt/openapi.bundle.json`,
-                    route: version === LATEST_VERSION ? '/api/mgmt' : `/${version}/api/mgmt`,
-                  },
-                ].filter((obj) => !!obj)
+            [
+              {
+                spec: `../openapi/versioned/version-${version}/v1/crm/openapi.bundle.json`,
+                route: `/${version}/api/v1/crm`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v1/engagement/openapi.bundle.json`,
+                route: `/${version}/api/v1/engagement`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v1/mgmt/openapi.bundle.json`,
+                route: `/${version}/api/v1/mgmt`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
+                route: `/${version}/api/v2/crm`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
+                route: `/${version}/api/v2/engagement`,
+              },
+              {
+                spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
+                route: `/${version}/api/v2/mgmt`,
+              },
+            ].filter((obj) => !!obj)
           ),
           {
             spec: '../openapi/v1/crm/openapi.bundle.json',
-            route: '/next/api/v1/crm',
+            route: '/api/v1/crm',
           },
           {
             spec: '../openapi/v1/engagement/openapi.bundle.json',
-            route: '/next/api/v1/engagement',
+            route: '/api/v1/engagement',
           },
           {
             spec: '../openapi/v1/mgmt/openapi.bundle.json',
-            route: '/next/api/v1/mgmt',
+            route: '/api/v1/mgmt',
           },
           {
             spec: '../openapi/v2/crm/openapi.bundle.json',
-            route: '/next/api/v2/crm',
+            route: '/api/v2/crm',
           },
           {
             spec: '../openapi/v2/engagement/openapi.bundle.json',
-            route: '/next/api/v2/engagement',
+            route: '/api/v2/engagement',
           },
           {
             spec: '../openapi/v2/mgmt/openapi.bundle.json',
-            route: '/next/api/v2/mgmt',
+            route: '/api/v2/mgmt',
           },
         ],
         // Theme Options for modifying how redoc renders them

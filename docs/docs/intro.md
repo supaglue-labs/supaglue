@@ -30,7 +30,7 @@ Supaglue comes out-of-the-box with managed authentication, monitoring and loggin
 
 ## How it works
 
-You can [integrate Supaglue with your application](getting-started) in about 5 minutes:
+You can [integrate Supaglue with your application](quickstart) in about 5 minutes:
 
 1. Create a Supaglue Cloud account or spin up Supaglue locally, and get your API key.
 2. Configure your integration scopes and OAuth credentials, or use our hosted app.
