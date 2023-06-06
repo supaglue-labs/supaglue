@@ -37,27 +37,14 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
     if (destination?.type !== 'postgres') {
       return;
     }
-    if (!host) {
-      setHost(destination.config.host);
-    }
-    if (!name) {
-      setName(destination.name);
-    }
-    if (!port) {
-      setPort(destination.config.port);
-    }
-    if (!database) {
-      setDatabase(destination.config.database);
-    }
-    if (!schema) {
-      setSchema(destination.config.schema);
-    }
-    if (!user) {
-      setUser(destination.config.user);
-    }
-    if (!password) {
-      setPassword(destination.config.password);
-    }
+
+    setHost(destination.config.host);
+    setName(destination.name);
+    setPort(destination.config.port);
+    setDatabase(destination.config.database);
+    setSchema(destination.config.schema);
+    setUser(destination.config.user);
+    setPassword(destination.config.password);
   }, [destination?.id]);
 
   const createOrUpdateDestination = async (): Promise<Destination> => {
