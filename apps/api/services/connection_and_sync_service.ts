@@ -582,11 +582,14 @@ export class ConnectionAndSyncService {
     const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const syncs = await this.getSyncsByConnectionIds(connections.map((connection) => connection.id));
-    const syncIds = syncs.map((sync) => sync.id);
 
     const metadataList = await Promise.all(
-      syncIds.map(async (syncId) => ({ syncId, ...(await this.getMetadataFromSyncSchedule(syncId)) }))
+      syncs.map(async (sync) => ({
+        syncId: sync.id,
+        ...(await this.getMetadataFromSyncSchedule(sync.id, sync.version)),
+      }))
     );
+
     return metadataList.flatMap(({ syncId, lastSyncStart, nextSyncStart, status }) => {
       const connection = connections.find(
         (connection) => connection.id === syncs.find((sync) => sync.id === syncId)?.connectionId
@@ -609,12 +612,15 @@ export class ConnectionAndSyncService {
     });
   }
 
-  private async getMetadataFromSyncSchedule(syncId: string): Promise<{
+  private async getMetadataFromSyncSchedule(
+    syncId: string,
+    version: 'v1' | 'v2'
+  ): Promise<{
     lastSyncStart: Date | null;
     nextSyncStart: Date | null;
     status: SyncStatus | null;
   }> {
-    const scheduleId = getRunSyncScheduleId(syncId);
+    const scheduleId = version === 'v1' ? getRunSyncScheduleId(syncId) : getRunManagedSyncScheduleId(syncId);
     const handle = this.#temporalClient.schedule.getHandle(scheduleId);
     const description = await handle.describe();
 
@@ -642,6 +648,7 @@ function fromSyncModel(model: SyncModel): Sync {
     id: model.id,
     connectionId: model.connectionId,
     type,
+    version: model.version,
     ...otherStrategyProps,
     state: model.state as SyncState,
   } as Sync;
