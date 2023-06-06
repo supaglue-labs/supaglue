@@ -44,6 +44,9 @@ docker compose up
 
 Once Supaglue is running locally, open the [management portal](http://localhost:3000) in your browser.
 
+- username: `admin`
+- password: `admin`
+
 </TabItem>
 
 <TabItem value="self-host" label="Self-host">
@@ -62,7 +65,7 @@ Once Supaglue is up and running on your infrastructure, navigate to the manageme
 
 Go to the "Configurations" tab to configure the integrations your customers will connect to.
 
-<BrowserWindow url="http://localhost:3000/configuration/integrations/crm">
+<BrowserWindow url="https://app.supaglue.io/configuration/integrations/crm">
 
 ![image](/img/configurations-ui.png)
 
@@ -79,7 +82,7 @@ Add the scopes your application needs from your application.
 Supaglue requires a set of minimum scopes to support reads and writes to common model objects.
 :::
 
-<BrowserWindow url="http://localhost:3000/configuration/integrations/crm/salesforce">
+<BrowserWindow url="https://app.supaglue.io/configuration/integrations/crm/salesforce">
 
 ![image](/img/configurations-details.png)
 
@@ -89,7 +92,7 @@ Supaglue requires a set of minimum scopes to support reads and writes to common 
 
 Go to Configuration -> API Keys and click "Regenerate" to generate a new API key. This API key is used to authenticate all your requests against Supaglue's API.
 
-<BrowserWindow url="http://localhost:3000/configuration/api_keys">
+<BrowserWindow url="https://app.supaglue.io/configuration/api_keys">
 
 ![image](/img/configuration-api-key.png)
 
@@ -107,7 +110,7 @@ Navigate to the Customers page and click on the plus button to create a Supaglue
 - **name**: the name of the customer.
 - **email**: the email associated with the customer.
 
-<BrowserWindow url="http://localhost:3000/applications/5c4887c6-ae29-45ce-bc37-158e8dbe7b7f">
+<BrowserWindow url="https://app.supaglue.io/applications/5c4887c6-ae29-45ce-bc37-158e8dbe7b7f">
 
 ![image](/img/create-customer.png)
 
@@ -192,7 +195,7 @@ This creates a Supaglue connection, which you can verify by checking the custome
 
 Upon successful connection, CRM common model records will start syncing to your Supaglue instance.
 
-<BrowserWindow url="http://localhost:3000/customers">
+<BrowserWindow url="https://app.supaglue.io/customers">
 
 ![image](/img/customers-connections.png)
 
