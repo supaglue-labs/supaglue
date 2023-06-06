@@ -35,21 +35,16 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
     if (destination?.type !== 's3') {
       return;
     }
-    if (!region) {
-      setRegion(destination?.config?.region ?? '');
-    }
-    if (!name) {
-      setName(destination?.name ?? '');
-    }
-    if (!bucket) {
-      setBucket(destination?.config?.bucket ?? '');
-    }
-    if (!accessKeyId) {
-      setAccessKeyId(destination?.config?.accessKeyId ?? '');
-    }
-    if (!secretAccessKey) {
-      setSecretAccessKey(destination?.config?.secretAccessKey ?? '');
-    }
+
+    setRegion(destination?.config?.region ?? '');
+
+    setName(destination?.name ?? '');
+
+    setBucket(destination?.config?.bucket ?? '');
+
+    setAccessKeyId(destination?.config?.accessKeyId ?? '');
+
+    setSecretAccessKey(destination?.config?.secretAccessKey ?? '');
   }, [destination?.id]);
 
   const createOrUpdateDestination = async (): Promise<Destination> => {
