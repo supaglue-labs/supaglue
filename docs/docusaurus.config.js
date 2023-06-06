@@ -7,8 +7,6 @@ const path = require('path');
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
-const LATEST_VERSION = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8')).version;
-
 const versions = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
 
 /** @type {import('@docusaurus/types').Config} */
@@ -332,6 +330,9 @@ const config = {
                 '../openapi/v1/mgmt/openapi.bundle.json',
                 '../openapi/v1/crm/openapi.bundle.json',
                 '../openapi/v1/engagement/openapi.bundle.json',
+                '../openapi/v2/mgmt/openapi.bundle.json',
+                '../openapi/v2/crm/openapi.bundle.json',
+                '../openapi/v2/engagement/openapi.bundle.json',
               ],
             }),
           ],
