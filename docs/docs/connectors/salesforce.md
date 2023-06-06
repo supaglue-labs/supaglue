@@ -76,6 +76,10 @@ http://localhost:8080/oauth/callback
 
    </BrowserWindow>
 
+  :::info
+  Supaglue requires a set of minimum scopes to support reads and writes to common model objects.
+  :::
+
 1. Press the Save button at the bottom of the page.
 
 ### Fetch Salesforce Connected App credentials

@@ -75,6 +75,8 @@ Supaglue provides a redirect URL to send information to your app. To add the red
     - `crm.lists.read`
     - `crm.objects.deals.read`
     - `crm.objects.contacts.read`
+    - `crm.objects.custom.read` (required for custom objects)
+    - `crm.schemas.custom.read` (required for custom objects)
 
     Required for writes:
 
@@ -82,6 +84,12 @@ Supaglue provides a redirect URL to send information to your app. To add the red
     - `crm.objects.companies.write`
     - `crm.objects.deals.write`
     - `crm.lists.write`
+    - `crm.objects.custom.write`
+    - `crm.schemas.custom.write`
+
+    :::info
+    Supaglue requires a set of minimum scopes to support reads and writes to common model objects.
+    :::
 
 1. Click Save to update your changes.
 
