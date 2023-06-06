@@ -17,7 +17,7 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 1. Login to your HubSpot developer account: https://app.hubspot.com/developer
 1. Navigate to your Connected Application under "Apps" and go to the "Auth" tab.
 
-    <BrowserWindow url="app.hubspot.com/developer/12345678/application/123456">
+    <BrowserWindow url="https://app.hubspot.com/developer/12345678/application/123456">
 
     ![hubspot_connected_app_oauth](/img/hubspot_connected_app_oauth.png 'hubspot connected app oauth')
 

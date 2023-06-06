@@ -44,7 +44,7 @@ http://localhost:8080/oauth/callback
 
 1. Enable the following scopes: `id`, `api`, `refresh_token`
 
-   <BrowserWindow url="acmecorp.my.salesforce.com/app/mgmt/forceconnectedapp/forceAppEdit.apexp">
+   <BrowserWindow url="https://acmecorp.my.salesforce.com/app/mgmt/forceconnectedapp/forceAppEdit.apexp">
 
    ![sfdc_connected_app_oauth](/img/sfdc_connected_app_oauth.png 'sfdc connected app oauth')
 
