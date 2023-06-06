@@ -22,7 +22,7 @@
 
 Supaglue is an open source developer platform for user-facing product integrations. It provides configurable connectors and platform tools to help developers at B2B companies simplify and scale their integrations with their customers' CRMs and sales stack. Supaglue can be self-hosted and runs alongside your stack.
 
-https://github.com/supaglue-labs/supaglue/assets/1925713/3c3fdf13-15b7-40e4-997c-a3fd7bf0a10a
+https://github.com/supaglue-labs/supaglue/assets/1925713/8cd4cdd0-f502-423e-8427-5e62104f8097
 
 ## Get Started
 
