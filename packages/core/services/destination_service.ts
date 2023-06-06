@@ -3,6 +3,7 @@ import type { Destination, DestinationCreateParams, DestinationUpdateParams } fr
 import { DestinationWriter } from '../destination_writers/base';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
+import { BadRequestError } from '../errors';
 import { fromDestinationModel } from '../mappers/destination';
 
 export class DestinationService {
@@ -44,6 +45,9 @@ export class DestinationService {
   }
 
   public async createDestination(params: DestinationCreateParams): Promise<Destination> {
+    if (!params.name) {
+      throw new BadRequestError('name is required');
+    }
     const model = await this.#prisma.destination.create({
       data: {
         name: params.name,
@@ -56,6 +60,9 @@ export class DestinationService {
   }
 
   public async updateDestination(params: DestinationUpdateParams): Promise<Destination> {
+    if (!params.name) {
+      throw new BadRequestError('name is required');
+    }
     const model = await this.#prisma.destination.update({
       where: { id: params.id },
       data: {

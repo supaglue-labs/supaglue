@@ -13,7 +13,7 @@ Managed Syncs helps you sync data from your customers’ CRM directly into your 
 2. When a customer connects their CRM account via an OAuth flow, a connection config is created that optionally contains customer-specific field mappings.
 3. Supaglue sync workers execute workflows that fetch data from your customers’ source and land them in your destination (e.g. Postgres).
 
-You can setup a managed sync in 5 minutes.
+You can set up a managed sync in 5 minutes.
 
 ## Configuration
 
