@@ -382,6 +382,8 @@ export interface components {
       connection_id: string;
       /** @enum {string} */
       status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
+      /** @example 100 */
+      num_records_synced?: number | null;
     };
     force_sync: {
       /** @example true */

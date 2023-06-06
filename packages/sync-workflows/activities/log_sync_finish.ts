@@ -12,6 +12,7 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
     status,
     errorMessage,
     errorStack,
+    numRecordsSynced,
   }: {
     syncId: string;
     connectionId: string;
@@ -19,8 +20,9 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
     status: SyncHistoryStatus;
     errorMessage?: string;
     errorStack?: string;
+    numRecordsSynced: number | null;
   }) {
-    await syncHistoryService.logFinish({ historyId, status, errorMessage });
+    await syncHistoryService.logFinish({ historyId, status, errorMessage, numRecordsSynced });
     if (status === 'FAILURE') {
       const error = new Error(errorMessage);
       error.stack = errorStack;

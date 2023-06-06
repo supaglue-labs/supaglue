@@ -78,10 +78,12 @@ export class SyncHistoryService {
     historyId,
     status,
     errorMessage,
+    numRecordsSynced,
   }: {
     historyId: string;
     status: SyncHistoryStatus;
     errorMessage?: string;
+    numRecordsSynced: number | null;
   }): Promise<void> {
     await this.update({
       id: historyId,
@@ -89,6 +91,7 @@ export class SyncHistoryService {
         status,
         errorMessage: errorMessage ?? null,
         endTimestamp: new Date(),
+        numRecordsSynced,
       },
     });
   }
@@ -111,6 +114,7 @@ export class SyncHistoryService {
         errorMessage: null,
         startTimestamp: new Date(),
         endTimestamp: null,
+        numRecordsSynced: null,
       },
     });
     return historyId;

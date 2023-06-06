@@ -1999,6 +1999,11 @@
               "IN_PROGRESS",
               "FAILURE"
             ]
+          },
+          "num_records_synced": {
+            "type": "number",
+            "nullable": true,
+            "example": 100
           }
         },
         "required": [

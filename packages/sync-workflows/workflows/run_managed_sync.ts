@@ -98,6 +98,7 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
           status: 'FAILURE',
           errorMessage,
           errorStack,
+          numRecordsSynced: null,
         });
         await maybeSendSyncFinishWebhook({
           historyId: historyIdsMap[commonModel],
@@ -120,14 +121,22 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
 
   await Promise.all(
     getCommonModels(category).map(async (commonModel) => {
-      await logSyncFinish({ syncId, connectionId, historyId: historyIdsMap[commonModel], status: 'SUCCESS' });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore `numRecordsSyncedMap` is indeed defined here
+      const numRecordsSynced = numRecordsSyncedMap[commonModel];
+
+      await logSyncFinish({
+        syncId,
+        connectionId,
+        historyId: historyIdsMap[commonModel],
+        status: 'SUCCESS',
+        numRecordsSynced,
+      });
       await maybeSendSyncFinishWebhook({
         historyId: historyIdsMap[commonModel],
         status: 'SYNC_SUCCESS',
         connectionId,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore `numRecordsSyncedMap` is indeed defined here
-        numRecordsSynced: numRecordsSyncedMap[commonModel],
+        numRecordsSynced,
         commonModel,
       });
     })

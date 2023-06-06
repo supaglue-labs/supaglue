@@ -16,6 +16,7 @@ export type SyncHistory = {
   providerName: string;
   category: 'crm';
   connectionId: string;
+  numRecordsSynced: number | null;
 };
 
 export type SyncHistoryUpsertParams = {
@@ -24,6 +25,7 @@ export type SyncHistoryUpsertParams = {
   errorMessage: string | null;
   startTimestamp: Date;
   endTimestamp: Date | null;
+  numRecordsSynced: number | null;
 };
 
 export type SyncHistoryFilter = SyncInfoFilter & {

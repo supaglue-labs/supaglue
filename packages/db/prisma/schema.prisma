@@ -460,16 +460,17 @@ model SyncChange {
 }
 
 model SyncHistory {
-  id             String    @id @default(uuid())
-  syncId         String    @map("sync_id")
-  sync           Sync      @relation(fields: [syncId], references: [id], onDelete: Cascade)
+  id               String    @id @default(uuid())
+  syncId           String    @map("sync_id")
+  sync             Sync      @relation(fields: [syncId], references: [id], onDelete: Cascade)
   // contact, lead, account, opportunity, etc.
-  model          String
+  model            String
   // SUCCESS | ERROR | IN_PROGRESS
-  status         String
-  errorMessage   String?   @map("error_message")
-  startTimestamp DateTime  @map("start_timestamp")
-  endTimestamp   DateTime? @map("end_timestamp")
+  status           String
+  errorMessage     String?   @map("error_message")
+  startTimestamp   DateTime  @map("start_timestamp")
+  endTimestamp     DateTime? @map("end_timestamp")
+  numRecordsSynced Int?      @map("num_records_synced")
 
   @@map("sync_history")
 }

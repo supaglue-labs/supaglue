@@ -7,19 +7,25 @@ const columns: GridColDef[] = [
   { field: 'customerId', headerName: 'Customer Id', width: 200, sortable: false },
   { field: 'providerName', headerName: 'Provider', width: 120, sortable: false },
   { field: 'modelName', headerName: 'Model', width: 120, sortable: false },
-  { field: 'status', headerName: 'Status', width: 120, sortable: false },
+  { field: 'status', headerName: 'Status', width: 100, sortable: false },
   {
     field: 'startTimestamp',
     headerName: 'Start Time',
-    width: 180,
+    width: 160,
     valueFormatter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
     sortable: false,
   },
   {
     field: 'endTimestamp',
     headerName: 'End Time',
-    width: 180,
+    width: 160,
     valueFormatter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
+    sortable: false,
+  },
+  {
+    field: 'numRecordsSynced',
+    headerName: '# Synced',
+    width: 90,
     sortable: false,
   },
   {
