@@ -34,7 +34,7 @@ export class CrmCommonModelService {
     const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
     if (writer) {
       const object = await remoteClient.getObject(type, id);
-      await writer.upsertObject(connection, type, object);
+      await writer.upsertObject<'crm', T>(connection, type, object);
     }
 
     return id;
@@ -52,7 +52,7 @@ export class CrmCommonModelService {
     const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
     if (writer) {
       const object = await remoteClient.getObject(type, params.id);
-      await writer.upsertObject(connection, type, object);
+      await writer.upsertObject<'crm', T>(connection, type, object);
     }
   }
 }
