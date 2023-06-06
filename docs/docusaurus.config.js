@@ -11,8 +11,6 @@ const LATEST_VERSION = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'packa
 
 const versions = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
 
-const NEXT_VERSION = versions[0];
-
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Supaglue Docs',
@@ -47,7 +45,8 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          lastVersion: NEXT_VERSION,
+          lastVersion: 'current',
+
           sidebarCollapsed: false,
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
