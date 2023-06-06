@@ -10,6 +10,7 @@ export const fromSyncHistoryModelAndSync = ({
   startTimestamp,
   endTimestamp,
   sync,
+  numRecordsSynced,
 }: SyncHistoryModelExpanded): SyncHistory => {
   const { connection } = sync;
   const { applicationId, externalCustomerId } = parseCustomerIdPk(connection.customerId);
@@ -26,5 +27,6 @@ export const fromSyncHistoryModelAndSync = ({
     customerId: externalCustomerId,
     providerName: connection.providerName,
     category: connection.category as 'crm',
+    numRecordsSynced,
   };
 };
