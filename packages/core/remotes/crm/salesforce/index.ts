@@ -47,6 +47,7 @@ import {
   fromSalesforceLeadToLeadV2,
   fromSalesforceOpportunityToOpportunityV2,
   fromSalesforceUserToUserV2,
+  getMapperForCommonModelType,
   toSalesforceAccountCreateParams,
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
@@ -61,7 +62,7 @@ const FETCH_TIMEOUT = 60 * 1000;
 
 const COMPOUND_TYPES = ['location', 'address'];
 
-const propertiesToFetch: Record<CRMCommonModelType, string[]> = {
+const propertiesForCommonModel: Record<CRMCommonModelType, string[]> = {
   account: [
     'Id',
     'OwnerId',
@@ -228,28 +229,75 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public override async listObjects(
-    commonModelType: CRMCommonModelType,
-    updatedAfter?: Date | undefined,
-    onPoll?: () => void
+  async #listObjectsHelper(
+    object: string,
+    propertiesToFetch: string[],
+    modifiedAfter?: Date,
+    heartbeat?: () => void
   ): Promise<Readable> {
-    switch (commonModelType) {
-      case 'account':
-        return this.listAccounts(updatedAfter, onPoll);
-      case 'contact':
-        return this.listContacts(updatedAfter, onPoll);
-      case 'lead':
-        return this.listLeads(updatedAfter, onPoll);
-      case 'opportunity':
-        return this.listOpportunities(updatedAfter, onPoll);
-      case 'user':
-        return this.listUsers(updatedAfter, onPoll);
-      default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
-    }
+    const soql = `SELECT ${propertiesToFetch.join(',')}
+FROM ${object}
+${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER BY SystemModstamp ASC` : ''}`;
+
+    return pipeline(
+      await this.#getBulk2QueryJobResults(soql, heartbeat),
+      new Transform({
+        objectMode: true,
+        transform: (chunk, encoding, callback) => {
+          try {
+            callback(null, {
+              object: chunk,
+              emittedAt: new Date(), // TODO: should we generate this timestamp earlier?
+            });
+          } catch (e: any) {
+            return callback(e);
+          }
+        },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      () => {}
+    );
   }
 
-  public override async getObject<T extends CRMCommonModelType>(
+  public override async listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+    const allProperties = await this.getSObjectProperties(object);
+    return this.#listObjectsHelper(object, allProperties, modifiedAfter, heartbeat);
+  }
+
+  public override async listCommonModelRecords(
+    commonModelType: CRMCommonModelType,
+    updatedAfter?: Date | undefined,
+    heartbeat?: () => void
+  ): Promise<Readable> {
+    const sobject = capitalizeString(commonModelType);
+
+    const allProperties = await this.getSObjectProperties(sobject);
+    const propertiesToFetch = this.#syncAllFields
+      ? allProperties
+      : intersection(allProperties, propertiesForCommonModel[commonModelType]);
+
+    const stream = await this.#listObjectsHelper(sobject, propertiesToFetch, updatedAfter, heartbeat);
+    const mapper = getMapperForCommonModelType(commonModelType);
+
+    return pipeline(
+      stream,
+      new Transform({
+        objectMode: true,
+        transform: (chunk, encoding, callback) => {
+          try {
+            callback(null, {
+              object: mapper(chunk.object),
+              emittedAt: chunk.emittedAt,
+            });
+          } catch (e: any) {
+            return callback(e);
+          }
+        },
+      })
+    );
+  }
+
+  public override async getCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
@@ -269,7 +317,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async createObject<T extends CRMCommonModelType>(
+  public override async createCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
@@ -289,7 +337,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async updateObject<T extends CRMCommonModelType>(
+  public override async updateCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {
@@ -416,7 +464,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return await response.json();
   }
 
-  async #pollBulk2QueryJob(jobId: string, onPoll?: () => void): Promise<void> {
+  async #pollBulk2QueryJob(jobId: string, heartbeat?: () => void): Promise<void> {
     const poll = async (): Promise<SalesforceBulk2QueryJob> => {
       const response = await this.#fetch(`/services/data/v57.0/jobs/query/${jobId}`, {
         method: 'GET',
@@ -430,8 +478,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
     while (startTime + timeout > Date.now()) {
       const pollResponse = await poll();
-      if (onPoll) {
-        onPoll();
+      if (heartbeat) {
+        heartbeat();
       }
       const { state } = pollResponse;
       switch (state) {
@@ -467,11 +515,11 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #getBulk2QueryJobResults(soql: string, onPoll?: () => void): Promise<Readable> {
+  async #getBulk2QueryJobResults(soql: string, heartbeat?: () => void): Promise<Readable> {
     const response = await this.#submitBulk2QueryJob(soql);
     const { id } = response;
 
-    await this.#pollBulk2QueryJob(id, onPoll);
+    await this.#pollBulk2QueryJob(id, heartbeat);
 
     return await paginator([
       {
@@ -482,8 +530,8 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async getCommonModelSchema(commonModelName: CRMCommonModelType): Promise<string[]> {
-    const response = await this.#fetch(`/services/data/v57.0/sobjects/${commonModelName}/describe`, {
+  private async getSObjectProperties(sobject: string): Promise<string[]> {
+    const response = await this.#fetch(`/services/data/v57.0/sobjects/${sobject}/describe`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -493,53 +541,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return responseJson.fields
       .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
       .map((field: { name: string; type: string }) => field.name);
-  }
-
-  private async getPropertiesToFetch(commonModelName: CRMCommonModelType): Promise<string[]> {
-    const availableProperties = await this.getCommonModelSchema(commonModelName);
-    if (this.#syncAllFields) {
-      return availableProperties;
-    }
-    const properties = intersection(availableProperties, propertiesToFetch[commonModelName]);
-    return properties;
-  }
-
-  private async listCommonModelRecords(
-    commonModelName: CRMCommonModelType,
-    mapper: (record: Record<string, any>) => any,
-    updatedAfter?: Date,
-    onPoll?: () => void
-  ): Promise<Readable> {
-    const properties = await this.getPropertiesToFetch(commonModelName);
-    const baseSoql = `
-    SELECT ${properties.join(', ')}
-    FROM ${capitalizeString(commonModelName)}
-  `;
-    const soql = updatedAfter
-      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-      : baseSoql;
-    return pipeline(
-      await this.#getBulk2QueryJobResults(soql, onPoll),
-      new Transform({
-        objectMode: true,
-        transform: (chunk, encoding, callback) => {
-          try {
-            callback(null, {
-              object: mapper(chunk),
-              emittedAt: new Date(), // TODO: should we generate this timestamp earlier?
-            });
-          } catch (e: any) {
-            return callback(e);
-          }
-        },
-      }),
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      () => {}
-    );
-  }
-
-  public async listAccounts(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('account', fromSalesforceAccountToAccountV2, updatedAfter, onPoll);
   }
 
   public async getAccount(id: string): Promise<AccountV2> {
@@ -563,10 +564,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return response.id;
   }
 
-  public async listContacts(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('contact', fromSalesforceContactToContactV2, updatedAfter, onPoll);
-  }
-
   public async getContact(id: string): Promise<ContactV2> {
     const contact = await this.#client.retrieve('Contact', id);
     return fromSalesforceContactToContactV2(contact);
@@ -586,10 +583,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       throw new Error('Failed to update Salesforce contact');
     }
     return response.id;
-  }
-
-  public async listOpportunities(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('opportunity', fromSalesforceOpportunityToOpportunityV2, updatedAfter, onPoll);
   }
 
   public async getOpportunity(id: string): Promise<OpportunityV2> {
@@ -613,10 +606,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     return response.id;
   }
 
-  public async listLeads(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('lead', fromSalesforceLeadToLeadV2, updatedAfter, onPoll);
-  }
-
   public async getLead(id: string): Promise<LeadV2> {
     const contact = await this.#client.retrieve('Lead', id);
     return fromSalesforceLeadToLeadV2(contact);
@@ -636,10 +625,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       throw new Error('Failed to update Salesforce lead');
     }
     return response.id;
-  }
-
-  public async listUsers(updatedAfter?: Date, onPoll?: () => void): Promise<Readable> {
-    return this.listCommonModelRecords('user', fromSalesforceUserToUserV2, updatedAfter, onPoll);
   }
 
   public async getUser(id: string): Promise<UserV2> {

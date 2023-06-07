@@ -19,7 +19,7 @@ export class CrmCommonModelService {
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    return await remoteClient.getObject(type, id);
+    return await remoteClient.getCommonModelRecord(type, id);
   }
 
   public async create<T extends CRMCommonModelType>(
@@ -28,12 +28,12 @@ export class CrmCommonModelService {
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
-    const id = await remoteClient.createObject(type, params);
+    const id = await remoteClient.createCommonModelRecord(type, params);
 
     // If the associated integration has a destination, do cache invalidation
     const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
     if (writer) {
-      const object = await remoteClient.getObject(type, id);
+      const object = await remoteClient.getCommonModelRecord(type, id);
       await writer.upsertObject<'crm', T>(connection, type, object);
     }
 
@@ -46,12 +46,12 @@ export class CrmCommonModelService {
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<void> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
-    await remoteClient.updateObject(type, params);
+    await remoteClient.updateCommonModelRecord(type, params);
 
     // If the associated integration has a destination, do cache invalidation
     const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
     if (writer) {
-      const object = await remoteClient.getObject(type, params.id);
+      const object = await remoteClient.getCommonModelRecord(type, params.id);
       await writer.upsertObject<'crm', T>(connection, type, object);
     }
   }

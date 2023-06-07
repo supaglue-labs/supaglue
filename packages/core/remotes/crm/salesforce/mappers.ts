@@ -5,6 +5,8 @@ import type {
   ContactCreateParams,
   ContactUpdateParams,
   ContactV2,
+  CRMCommonModelType,
+  CRMCommonModelTypeMap,
   LeadCreateParams,
   LeadUpdateParams,
   LeadV2,
@@ -15,6 +17,25 @@ import type {
   UserV2,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
+
+export function getMapperForCommonModelType<T extends CRMCommonModelType>(
+  commonModelType: T
+): (record: Record<string, unknown>) => CRMCommonModelTypeMap<T>['object'] {
+  switch (commonModelType) {
+    case 'account':
+      return fromSalesforceAccountToAccountV2;
+    case 'contact':
+      return fromSalesforceContactToContactV2;
+    case 'lead':
+      return fromSalesforceLeadToLeadV2;
+    case 'opportunity':
+      return fromSalesforceOpportunityToOpportunityV2;
+    case 'user':
+      return fromSalesforceUserToUserV2;
+    default:
+      throw new Error(`Unsupported common model type: ${commonModelType}`);
+  }
+}
 
 export const fromSalesforceUserToUserV2 = (record: Record<string, any>): UserV2 => {
   return {

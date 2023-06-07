@@ -19,7 +19,7 @@ export class EngagementCommonModelService {
     id: string
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
-    return await remoteClient.getObject(type, id);
+    return await remoteClient.getCommonModelRecord(type, id);
   }
 
   public async create<T extends EngagementCommonModelType>(
@@ -28,12 +28,12 @@ export class EngagementCommonModelService {
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
-    const id = await remoteClient.createObject(type, params);
+    const id = await remoteClient.createCommonModelRecord(type, params);
 
     // If the associated integration has a destination, do cache invalidation
     const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
     if (writer) {
-      const object = await remoteClient.getObject(type, id);
+      const object = await remoteClient.getCommonModelRecord(type, id);
       await writer.upsertObject<'engagement', T>(connection, type, object);
     }
 
@@ -46,12 +46,12 @@ export class EngagementCommonModelService {
     params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<void> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
-    await remoteClient.updateObject(type, params);
+    await remoteClient.updateCommonModelRecord(type, params);
 
     // If the associated integration has a destination, do cache invalidation
     const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
     if (writer) {
-      const object = await remoteClient.getObject(type, params.id);
+      const object = await remoteClient.getCommonModelRecord(type, params.id);
       await writer.upsertObject<'engagement', T>(connection, type, object);
     }
   }
