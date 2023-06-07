@@ -1,10 +1,10 @@
 import type { Integration as IntegrationModel, Prisma } from '@supaglue/db';
 import {
   Integration,
-  IntegrationCategory,
   IntegrationConfigDecrypted,
   IntegrationConfigEncrypted,
   IntegrationCreateParams,
+  ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
 import { decryptFromString, encryptAsString } from '../lib/crypt';
@@ -26,7 +26,7 @@ export const fromIntegrationModel = async ({
     id,
     applicationId,
     destinationId,
-    category: category as IntegrationCategory,
+    category: category as ProviderCategory,
     authType: 'oauth2',
     providerName: providerName as ProviderName,
     config: await fromIntegrationConfigModel(config),

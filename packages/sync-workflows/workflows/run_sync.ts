@@ -1,4 +1,4 @@
-import { CommonModelType, IntegrationCategory } from '@supaglue/types/common';
+import { CommonModelType, ProviderCategory } from '@supaglue/types/common';
 import { CRMCommonModelType, CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import {
   CRMNumRecordsSyncedMap,
@@ -44,7 +44,7 @@ export const getRunSyncWorkflowId = (syncId: string): string => `${RUN_SYNC_PREF
 export type RunSyncArgs = {
   syncId: string;
   connectionId: string;
-  category: IntegrationCategory;
+  category: ProviderCategory;
   context: Record<string, unknown>;
 };
 
@@ -139,7 +139,7 @@ async function doFullThenIncrementalSync({
   category,
 }: {
   sync: FullThenIncrementalSync;
-  category: IntegrationCategory;
+  category: ProviderCategory;
 }): Promise<NumRecordsSyncedMap> {
   async function doFullStage(): Promise<NumRecordsSyncedMap> {
     await updateSyncState({
@@ -336,12 +336,12 @@ async function doReverseThenForwardSync({
   category,
 }: {
   sync: ReverseThenForwardSync;
-  category: IntegrationCategory;
+  category: ProviderCategory;
 }): Promise<Record<CommonModelType, number>> {
   throw ApplicationFailure.nonRetryable('reverse then forward sync not currently supported');
 }
 
-const getDefaultMaxLastModifiedAtMsMap = (category: IntegrationCategory): NumRecordsSyncedMap => {
+const getDefaultMaxLastModifiedAtMsMap = (category: ProviderCategory): NumRecordsSyncedMap => {
   if (category === 'crm') {
     return {
       account: 0,
@@ -373,5 +373,5 @@ const getErrorMessageStack = (err: Error): { message: string; stack: string } =>
   return { message: err.message ?? 'Unknown error', stack: err.stack ?? 'No stack' };
 };
 
-const getCommonModels = (category: IntegrationCategory) =>
+const getCommonModels = (category: ProviderCategory) =>
   category === 'crm' ? CRM_COMMON_MODEL_TYPES : ENGAGEMENT_COMMON_MODEL_TYPES;

@@ -47,13 +47,13 @@ export type PaginatedResult<T> = {
   totalCount?: number;
 };
 
-export type IntegrationCategory = 'crm' | 'engagement';
+export type ProviderCategory = 'crm' | 'engagement';
 export type CommonModelType = CRMCommonModelType | EngagementCommonModelType;
-export type CommonModelTypeForCategory<P extends IntegrationCategory> = {
+export type CommonModelTypeForCategory<P extends ProviderCategory> = {
   crm: CRMCommonModelType;
   engagement: EngagementCommonModelType;
 }[P];
 
-export type CommonModelTypeMapForCategory<P extends IntegrationCategory> = P extends 'crm'
+export type CommonModelTypeMapForCategory<P extends ProviderCategory> = P extends 'crm'
   ? CRMCommonModelTypeMap<CRMCommonModelType>
   : EngagementCommonModelTypeMap<EngagementCommonModelType>;

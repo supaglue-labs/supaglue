@@ -3,7 +3,7 @@ import type {
   CommonModelTypeForCategory,
   CommonModelTypeMapForCategory,
   ConnectionSafeAny,
-  IntegrationCategory,
+  ProviderCategory,
 } from '@supaglue/types';
 import type { Readable } from 'stream';
 
@@ -13,7 +13,7 @@ export type WriteCommonModelsResult = {
 };
 
 export interface DestinationWriter {
-  upsertObject<P extends IntegrationCategory, T extends CommonModelTypeForCategory<P>>(
+  upsertObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']
@@ -34,7 +34,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
    *
    * TODO: Support engagement vertical as well
    */
-  abstract upsertObject<P extends IntegrationCategory, T extends CommonModelTypeForCategory<P>>(
+  abstract upsertObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']

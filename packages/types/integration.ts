@@ -1,3 +1,4 @@
+import { OauthConfigDecrypted, OauthConfigEncrypted } from '.';
 import { CRMProviderName } from './crm';
 import { EngagementProviderName } from './engagement';
 import { SyncConfig } from './sync_config';
@@ -31,21 +32,6 @@ export type IntegrationConfigEncrypted = {
   providerAppId: string;
   oauth: OauthConfigEncrypted;
   sync: SyncConfig;
-};
-
-export type OauthConfigDecrypted = {
-  oauthScopes: string[];
-  credentials: OauthCredentials;
-};
-
-export type OauthConfigEncrypted = {
-  oauthScopes: string[];
-  credentials: string;
-};
-
-export type OauthCredentials = {
-  oauthClientId: string;
-  oauthClientSecret: string;
 };
 
 // TODO: Update params should not contain applicationId even if create params does.
