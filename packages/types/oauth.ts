@@ -1,14 +1,14 @@
-export type OauthConfigDecrypted = {
+export type OAuthConfigDecrypted = {
   oauthScopes: string[];
-  credentials: OauthCredentials;
+  credentials: OAuthCredentials;
 };
 
-export type OauthConfigEncrypted = {
+export type OAuthConfigEncrypted = {
   oauthScopes: string[];
   credentials: string;
 };
 
-export type OauthCredentials = {
+export type OAuthCredentials = {
   oauthClientId: string;
   oauthClientSecret: string;
 };

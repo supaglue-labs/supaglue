@@ -1,4 +1,4 @@
-import { OauthConfigDecrypted, OauthConfigEncrypted } from '.';
+import { OAuthConfigDecrypted, OAuthConfigEncrypted } from '.';
 import { CRMProviderName } from './crm';
 import { EngagementProviderName } from './engagement';
 
@@ -22,12 +22,12 @@ export type EngagementProvider = BaseProvider & {
 
 export type ProviderConfigDecrypted = {
   providerAppId: string;
-  oauth: OauthConfigDecrypted;
+  oauth: OAuthConfigDecrypted;
 };
 
 export type ProviderConfigEncrypted = {
   providerAppId: string;
-  oauth: OauthConfigEncrypted;
+  oauth: OAuthConfigEncrypted;
 };
 
 // TODO: Update params should not contain applicationId even if create params does.

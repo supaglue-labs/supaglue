@@ -1,4 +1,4 @@
-import { OauthConfigDecrypted, OauthConfigEncrypted } from '.';
+import { OAuthConfigDecrypted, OAuthConfigEncrypted } from '.';
 import { CRMProviderName } from './crm';
 import { EngagementProviderName } from './engagement';
 import { SyncConfig } from './sync_config';
@@ -24,13 +24,13 @@ export type EngagementIntegration = BaseIntegration & {
 
 export type IntegrationConfigDecrypted = {
   providerAppId: string;
-  oauth: OauthConfigDecrypted;
+  oauth: OAuthConfigDecrypted;
   sync: SyncConfig;
 };
 
 export type IntegrationConfigEncrypted = {
   providerAppId: string;
-  oauth: OauthConfigEncrypted;
+  oauth: OAuthConfigEncrypted;
   sync: SyncConfig;
 };
 
