@@ -6,7 +6,7 @@ import { DestinationService } from '@supaglue/core/services/destination_service'
 import { CommonModelType } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
-import { Context } from '@temporalio/activity';
+import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 
@@ -40,7 +40,7 @@ export function createSyncRecordsToDestination(
       let readable: Readable;
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
-        readable = await (client as CrmRemoteClient).listObjects(
+        readable = await (client as CrmRemoteClient).listCommonModelRecords(
           commonModel as CRMCommonModelType,
           updatedAfter,
           heartbeat
@@ -52,7 +52,7 @@ export function createSyncRecordsToDestination(
           heartbeat
         );
       } else {
-        readable = await (client as EngagementRemoteClient).listObjects(
+        readable = await (client as EngagementRemoteClient).listCommonModelRecords(
           commonModel as EngagementCommonModelType,
           updatedAfter
         );
@@ -75,7 +75,7 @@ export function createSyncRecordsToDestination(
 
     const writer = await destinationService.getWriterByIntegrationId(connection.integrationId);
     if (!writer) {
-      throw new Error(`No destination found for integration ${connection.integrationId}`);
+      throw ApplicationFailure.nonRetryable(`No destination found for integration ${connection.integrationId}`);
     }
 
     const result = await writeObjects(writer);
