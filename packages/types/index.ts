@@ -1,4 +1,4 @@
-import { IntegrationCategory } from './common';
+import { ProviderCategory } from './common';
 import { CRMCommonModelType, CRMProviderCategory, CRMProviderName } from './crm';
 import { EngagementCommonModelType, EngagementProviderCategory, EngagementProviderName } from './engagement';
 
@@ -10,7 +10,9 @@ export * from './customer';
 export * from './destination';
 export * as engagement from './engagement';
 export * from './integration';
+export * from './oauth';
 export * from './passthrough';
+export * from './provider';
 export * from './sg_user';
 export * from './sync';
 export * from './sync_config';
@@ -23,6 +25,6 @@ export type CategoryOfProviderName<T extends ProviderName> = T extends CRMProvid
   ? CRMProviderCategory
   : EngagementProviderCategory;
 
-export type CommonModelForCategory<T extends IntegrationCategory> = T extends 'crm'
+export type CommonModelForCategory<T extends ProviderCategory> = T extends 'crm'
   ? CRMCommonModelType
   : EngagementCommonModelType;

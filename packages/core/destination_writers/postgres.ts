@@ -3,8 +3,8 @@ import type {
   CommonModelTypeForCategory,
   CommonModelTypeMapForCategory,
   ConnectionSafeAny,
-  IntegrationCategory,
   PostgresDestination,
+  ProviderCategory,
 } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
@@ -50,7 +50,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
-  public override async upsertObject<P extends IntegrationCategory, T extends CommonModelTypeForCategory<P>>(
+  public override async upsertObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     { providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']
@@ -240,7 +240,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const getTableName = (category: IntegrationCategory, commonModelType: CommonModelType) => {
+const getTableName = (category: ProviderCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return tableNamesByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -267,7 +267,7 @@ const tableNamesByCommonModelType: {
   },
 };
 
-const getColumns = (category: IntegrationCategory, commonModelType: CommonModelType) => {
+const getColumns = (category: ProviderCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return columnsByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -294,7 +294,7 @@ const columnsByCommonModelType: {
   },
 };
 
-const getSchemaSetupSql = (category: IntegrationCategory, commonModelType: CommonModelType) => {
+const getSchemaSetupSql = (category: ProviderCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return schemaSetupSqlByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }

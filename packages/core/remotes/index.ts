@@ -1,4 +1,4 @@
-import { IntegrationCategory, ProviderName } from '@supaglue/types';
+import { ProviderCategory, ProviderName } from '@supaglue/types';
 import { CRMProviderName } from '@supaglue/types/crm';
 import { EngagementProviderName } from '@supaglue/types/engagement';
 import { crmConnectorConfigMap } from './crm';
@@ -14,7 +14,7 @@ export type ConnectorAuthConfig = {
   authorizePath: string;
 };
 
-export function getConnectorAuthConfig(category: IntegrationCategory, providerName: ProviderName): ConnectorAuthConfig {
+export function getConnectorAuthConfig(category: ProviderCategory, providerName: ProviderName): ConnectorAuthConfig {
   if (category === 'crm') {
     const { authConfig } = crmConnectorConfigMap[providerName as CRMProviderName];
     return authConfig;

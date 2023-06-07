@@ -9,7 +9,7 @@ import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { Integration, IntegrationCategory, ProviderName } from '@supaglue/types';
+import { Integration, ProviderCategory, ProviderName } from '@supaglue/types';
 import { CRMProviderName } from '@supaglue/types/crm';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -18,7 +18,7 @@ import { integrationCardsInfo } from './IntegrationTabPanelContainer';
 const ONE_HOUR_SECONDS = 60 * 60;
 
 export type IntegrationDetailsPanelProps = {
-  category: IntegrationCategory;
+  category: ProviderCategory;
   providerName: ProviderName;
   isLoading: boolean;
 };

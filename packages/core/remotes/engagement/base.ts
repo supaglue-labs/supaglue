@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, Integration, IntegrationCategory } from '@supaglue/types';
+import { ConnectionUnsafe, Integration, ProviderCategory } from '@supaglue/types';
 import {
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
@@ -9,7 +9,7 @@ import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface EngagementRemoteClient extends RemoteClient {
-  category(): IntegrationCategory;
+  category(): ProviderCategory;
   listCommonModelRecords(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
   getCommonModelRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
@@ -30,7 +30,7 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     super(...args);
   }
 
-  public category(): IntegrationCategory {
+  public category(): ProviderCategory {
     return 'engagement';
   }
 

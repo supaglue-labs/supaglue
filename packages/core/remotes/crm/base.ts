@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, CRMIntegration, IntegrationCategory } from '@supaglue/types';
+import { ConnectionUnsafe, CRMIntegration, ProviderCategory } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
 import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
 import { AssociationType, AssociationTypeCreateParams, ObjectClass } from '@supaglue/types/crm/association_type';
@@ -13,7 +13,7 @@ import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface CrmRemoteClient extends RemoteClient {
-  category(): IntegrationCategory;
+  category(): ProviderCategory;
 
   listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
 
@@ -54,7 +54,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     super(...args);
   }
 
-  public category(): IntegrationCategory {
+  public category(): ProviderCategory {
     return 'crm';
   }
 

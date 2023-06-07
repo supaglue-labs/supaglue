@@ -1,4 +1,4 @@
-import { CommonModelType, IntegrationCategory } from '@supaglue/types';
+import { CommonModelType, ProviderCategory } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import {
@@ -16,7 +16,7 @@ import {
   toSnakecasedKeysSequenceV2,
 } from '../mappers/engagement';
 
-export const getSnakecasedKeysMapper = (category: IntegrationCategory, commonModelType: CommonModelType) => {
+export const getSnakecasedKeysMapper = (category: ProviderCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return snakecasedKeysMapperByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }

@@ -4,7 +4,7 @@ import {
   CommonModelTypeForCategory,
   CommonModelTypeMapForCategory,
   ConnectionSafeAny,
-  IntegrationCategory,
+  ProviderCategory,
   ProviderName,
   S3Destination,
 } from '@supaglue/types';
@@ -31,7 +31,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     });
   }
 
-  public override async upsertObject<P extends IntegrationCategory, T extends CommonModelTypeForCategory<P>>(
+  public override async upsertObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']
@@ -105,7 +105,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
   getKeyPrefix(
     applicationId: string,
-    category: IntegrationCategory,
+    category: ProviderCategory,
     commonModelType: CommonModelType,
     customerId: string,
     providerName: ProviderName
@@ -142,7 +142,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
   async dropExistingRecordsIfNecessary(
     applicationId: string,
-    category: IntegrationCategory,
+    category: ProviderCategory,
     commonModelType: CommonModelType,
     customerId: string,
     providerName: ProviderName

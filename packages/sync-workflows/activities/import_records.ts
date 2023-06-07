@@ -15,7 +15,7 @@ import {
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
 import { SequenceStateService } from '@supaglue/core/services/common_models/engagement/sequence_state_service';
-import { CommonModelType, IntegrationCategory } from '@supaglue/types';
+import { CommonModelType, ProviderCategory } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { Context } from '@temporalio/activity';
@@ -56,7 +56,7 @@ export function createImportRecords(
   }
 ) {
   function getService(
-    category: IntegrationCategory,
+    category: ProviderCategory,
     commonModel: CRMCommonModelType | EngagementCommonModelType
   ): CommonModelBaseService {
     switch (category) {
