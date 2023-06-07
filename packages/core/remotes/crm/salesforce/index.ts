@@ -235,7 +235,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    // TODO: Can there be too many properties to fetch in one call?
     const soql = `SELECT ${propertiesToFetch.join(',')}
 FROM ${object}
 ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER BY SystemModstamp ASC` : ''}`;
