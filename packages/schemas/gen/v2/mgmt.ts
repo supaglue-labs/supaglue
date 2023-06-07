@@ -50,6 +50,28 @@ export interface paths {
       };
     };
   };
+  "/providers": {
+    /**
+     * List providers 
+     * @description Get a list of providers
+     */
+    get: operations["getProviders"];
+    /** Create provider */
+    post: operations["createProvider"];
+  };
+  "/providers/{provider_id}": {
+    /** Get provider */
+    get: operations["getProvider"];
+    /** Update provider */
+    put: operations["updateProvider"];
+    /** Delete provider */
+    delete: operations["deleteProvider"];
+    parameters: {
+      path: {
+        provider_id: string;
+      };
+    };
+  };
   "/integrations": {
     /**
      * List integrations 
@@ -179,6 +201,17 @@ export interface components {
       provider_name: components["schemas"]["provider_name"];
       config?: components["schemas"]["integration_config"];
     };
+    provider: {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      category: components["schemas"]["category"];
+      /** @enum {string} */
+      auth_type: "oauth2";
+      name?: components["schemas"]["provider_name"];
+      config: components["schemas"]["provider_config"];
+    };
     destination: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -286,6 +319,39 @@ export interface components {
         sync_all_fields?: boolean;
       };
     };
+    /**
+     * @example {
+     *   "provider_app_id": "my_app_id",
+     *   "oauth": {
+     *     "oauth_scopes": [
+     *       "crm.objects.contacts.read",
+     *       "crm.objects.companies.read",
+     *       "crm.objects.deals.read",
+     *       "crm.objects.owners.read",
+     *       "crm.objects.contacts.write",
+     *       "crm.objects.companies.write",
+     *       "crm.objects.deals.write"
+     *     ],
+     *     "credentials": {
+     *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+     *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+     *     }
+     *   }
+     * }
+     */
+    provider_config: {
+      /** @example my_app_id */
+      provider_app_id: string;
+      oauth: {
+        oauth_scopes: (string)[];
+        credentials: {
+          /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+          oauth_client_id: string;
+          /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+          oauth_client_secret: string;
+        };
+      };
+    };
     /** @enum {string} */
     provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach";
     /** @enum {string} */
@@ -313,6 +379,20 @@ export interface components {
       /** @enum {string} */
       category: "engagement";
       provider_name: components["schemas"]["provider_name_engagement"];
+    }]>;
+    create_update_provider: ({
+      /** @enum {string} */
+      auth_type: "oauth2";
+      config: components["schemas"]["provider_config"];
+      destination_id?: string | null;
+    }) & OneOf<[{
+      /** @enum {string} */
+      category: "crm";
+      name?: components["schemas"]["provider_name_crm"];
+    }, {
+      /** @enum {string} */
+      category: "engagement";
+      name?: components["schemas"]["provider_name_engagement"];
     }]>;
     create_update_destination: {
       /** @example My Destination */
@@ -550,6 +630,74 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["destination"];
+        };
+      };
+    };
+  };
+  getProviders: {
+    /**
+     * List providers 
+     * @description Get a list of providers
+     */
+    responses: {
+      /** @description Providers */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["provider"])[];
+        };
+      };
+    };
+  };
+  createProvider: {
+    /** Create provider */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_provider"];
+      };
+    };
+    responses: {
+      /** @description Provider created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["provider"];
+        };
+      };
+    };
+  };
+  getProvider: {
+    /** Get provider */
+    responses: {
+      /** @description Provider */
+      200: {
+        content: {
+          "application/json": components["schemas"]["provider"];
+        };
+      };
+    };
+  };
+  updateProvider: {
+    /** Update provider */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_provider"];
+      };
+    };
+    responses: {
+      /** @description Provider */
+      200: {
+        content: {
+          "application/json": components["schemas"]["provider"];
+        };
+      };
+    };
+  };
+  deleteProvider: {
+    /** Delete provider */
+    responses: {
+      /** @description Provider */
+      200: {
+        content: {
+          "application/json": components["schemas"]["provider"];
         };
       };
     };
