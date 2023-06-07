@@ -20,6 +20,7 @@ model Application {
   Customer    Customer[]
   Integration Integration[]
   Destination Destination[]
+  Provider    Provider[]
 
   @@unique([orgId, name])
   @@map("applications")
@@ -73,6 +74,37 @@ model Integration {
   @@map("integrations")
 }
 
+model Provider {
+  id            String       @id @default(uuid())
+  applicationId String       @map("application_id")
+  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  authType      String       @map("auth_type") // [oauth2]
+  category      String
+  name          String
+  config        Json? // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  connections   Connection[]
+
+  @@unique([applicationId, name])
+  @@map("providers")
+}
+
+model SyncConfig {
+  id            String   @id @default(uuid())
+  applicationId String   @map("application_id")
+  providerId    String   @map("provider_id")
+  destinationId String   @map("destination_id")
+  config        Json
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  Sync          Sync[]
+
+  // TODO: Eventually allow multiple destinations
+  @@unique([providerId])
+  @@map("sync_configs")
+}
+
 model IntegrationChange {
   id            String   @id @default(uuid())
   integrationId String   @map("integration_id")
@@ -100,6 +132,8 @@ model Connection {
   updatedAt     DateTime    @updatedAt @map("updated_at")
   sync          Sync?
   ReplayId      ReplayId[]
+  provider      Provider?   @relation(fields: [providerId], references: [id])
+  providerId    String?
 
   @@unique([customerId, integrationId])
   @@map("connections")
@@ -446,6 +480,8 @@ model Sync {
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   version         String        @default("v1")
+  syncConfigId    String?       @map("sync_config_id")
+  syncConfig      SyncConfig?   @relation(fields: [syncConfigId], references: [id])
   syncHistoryList SyncHistory[]
 
   @@map("syncs")
