@@ -4,7 +4,7 @@ import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import Box from '@mui/material/Box';
-import { IntegrationCategory, ProviderName } from '@supaglue/types';
+import { ProviderCategory, ProviderName } from '@supaglue/types';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -95,7 +95,7 @@ export default function IntegrationTabPanelContainer() {
       {isDetailPage && (
         <IntegrationDetailsPanel
           isLoading={isLoading}
-          category={category as IntegrationCategory}
+          category={category as ProviderCategory}
           providerName={providerName as ProviderName}
         />
       )}
