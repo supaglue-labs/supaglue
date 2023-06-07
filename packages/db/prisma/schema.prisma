@@ -131,7 +131,7 @@ model Connection {
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
   sync          Sync?
-  replayId      ReplayId[]
+  replayIds     ReplayId[]
   provider      Provider?   @relation(fields: [providerId], references: [id])
   // TODO: Eventually make this required
   providerId    String?     @map("provider_id")
