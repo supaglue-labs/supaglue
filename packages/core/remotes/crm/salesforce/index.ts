@@ -47,6 +47,7 @@ import {
   fromSalesforceLeadToLeadV2,
   fromSalesforceOpportunityToOpportunityV2,
   fromSalesforceUserToUserV2,
+  getMapperForCommonModelType,
   toSalesforceAccountCreateParams,
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
@@ -264,25 +265,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return this.#listObjectsHelper(object, allProperties, modifiedAfter, heartbeat);
   }
 
-  #getMapperForCommonModelType<T extends CRMCommonModelType>(
-    commonModelType: T
-  ): (record: Record<string, unknown>) => CRMCommonModelTypeMap<T>['object'] {
-    switch (commonModelType) {
-      case 'account':
-        return fromSalesforceAccountToAccountV2;
-      case 'contact':
-        return fromSalesforceContactToContactV2;
-      case 'lead':
-        return fromSalesforceLeadToLeadV2;
-      case 'opportunity':
-        return fromSalesforceOpportunityToOpportunityV2;
-      case 'user':
-        return fromSalesforceUserToUserV2;
-      default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
-    }
-  }
-
   public override async listCommonModelRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date | undefined,
@@ -296,7 +278,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       : intersection(allProperties, propertiesForCommonModel[commonModelType]);
 
     const stream = await this.#listObjectsHelper(sobject, propertiesToFetch, updatedAfter, heartbeat);
-    const mapper = this.#getMapperForCommonModelType(commonModelType);
+    const mapper = getMapperForCommonModelType(commonModelType);
 
     return pipeline(
       stream,

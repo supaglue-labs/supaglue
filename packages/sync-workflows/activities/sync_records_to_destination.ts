@@ -40,7 +40,7 @@ export function createSyncRecordsToDestination(
       let readable: Readable;
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
-        readable = await (client as CrmRemoteClient).listObjects(
+        readable = await (client as CrmRemoteClient).listCommonModelRecords(
           commonModel as CRMCommonModelType,
           updatedAfter,
           heartbeat
@@ -52,7 +52,7 @@ export function createSyncRecordsToDestination(
           heartbeat
         );
       } else {
-        readable = await (client as EngagementRemoteClient).listObjects(
+        readable = await (client as EngagementRemoteClient).listCommonModelRecords(
           commonModel as EngagementCommonModelType,
           updatedAfter
         );

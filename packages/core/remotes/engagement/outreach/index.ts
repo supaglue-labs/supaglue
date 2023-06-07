@@ -86,7 +86,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return this.#headers;
   }
 
-  public override async getObject<T extends EngagementCommonModelType>(
+  public override async getCommonModelRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<EngagementCommonModelTypeMap<T>['object']> {
@@ -141,7 +141,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return fromOutreachSequenceStateToSequenceStateV2(response.data.data);
   }
 
-  public override async listObjects(
+  public override async listCommonModelRecords(
     commonModelType: EngagementCommonModelType,
     updatedAfter?: Date
   ): Promise<Readable> {
@@ -302,7 +302,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  public override async createObject<T extends EngagementCommonModelType>(
+  public override async createCommonModelRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
@@ -344,7 +344,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
-  public override async updateObject<T extends EngagementCommonModelType>(
+  public override async updateCommonModelRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {
