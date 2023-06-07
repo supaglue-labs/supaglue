@@ -1899,6 +1899,10 @@
             "type": "string",
             "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
           },
+          "provider_id": {
+            "type": "string",
+            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+          },
           "provider_name": {
             "$ref": "#/components/schemas/provider_name"
           },
