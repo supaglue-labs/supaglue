@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const result = await fetch(`${API_HOST}/internal/v1/destinations/${req.query.integrationId}`, {
+  const result = await fetch(`${API_HOST}/internal/destinations/${req.query.integrationId}`, {
     method: 'GET',
     headers: getApplicationIdScopedHeaders(req),
   });

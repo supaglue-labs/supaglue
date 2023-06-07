@@ -10,7 +10,7 @@ export default async function handler(
   const orgId = getOrgId(req);
   switch (req.method) {
     case 'GET': {
-      const result = await fetch(`${API_HOST}/internal/v1/applications`, {
+      const result = await fetch(`${API_HOST}/internal/applications`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export default async function handler(
       return res.status(200).json(r);
     }
     case 'PUT': {
-      const result = await fetch(`${API_HOST}/internal/v1/applications`, {
+      const result = await fetch(`${API_HOST}/internal/applications`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

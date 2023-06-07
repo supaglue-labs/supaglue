@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<CreateIntegrationResponse | null>) {
-  const result = await fetch(`${API_HOST}/internal/v1/integrations`, {
+  const result = await fetch(`${API_HOST}/internal/integrations`, {
     method: 'POST',
     headers: getApplicationIdScopedHeaders(req),
     body: JSON.stringify(req.body),
