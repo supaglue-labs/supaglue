@@ -7,7 +7,7 @@ import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Application | null>) {
   switch (req.method) {
     case 'GET': {
-      const result = await fetch(`${API_HOST}/internal/v1/applications/${req.query.applicationId}`, {
+      const result = await fetch(`${API_HOST}/internal/applications/${req.query.applicationId}`, {
         method: 'GET',
         headers: getHeaders(req),
       });
@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return res.status(200).json(r);
     }
     case 'PATCH': {
-      const result = await fetch(`${API_HOST}/internal/v1/applications/${req.query.applicationId}`, {
+      const result = await fetch(`${API_HOST}/internal/applications/${req.query.applicationId}`, {
         method: 'PATCH',
         headers: getHeaders(req),
         body: JSON.stringify(req.body),
@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return res.status(200).json(r);
     }
     case 'DELETE': {
-      const result = await fetch(`${API_HOST}/internal/v1/applications/${req.query.applicationId}`, {
+      const result = await fetch(`${API_HOST}/internal/applications/${req.query.applicationId}`, {
         method: 'DELETE',
         headers: {
           'x-sg-internal-token': SG_INTERNAL_TOKEN,

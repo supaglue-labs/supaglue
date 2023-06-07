@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   req.query?.page_size && queryParams.append('page_size', req.query.page_size as string);
   req.query?.cursor && queryParams.append('cursor', req.query.cursor as string);
 
-  const result = await fetch(`${API_HOST}/internal/v1/sync-history?${queryParams}`, {
+  const result = await fetch(`${API_HOST}/internal/sync-history?${queryParams}`, {
     method: 'GET',
     headers: getApplicationIdScopedHeaders(req),
   });

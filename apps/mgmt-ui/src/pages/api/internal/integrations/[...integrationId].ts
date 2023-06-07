@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<GetIntegrationsResponse | null>) {
-  const result = await fetch(`${API_HOST}/internal/v1/integrations/${req.query.integrationId}`, {
+  const result = await fetch(`${API_HOST}/internal/integrations/${req.query.integrationId}`, {
     method: 'GET',
     headers: getApplicationIdScopedHeaders(req),
   });
