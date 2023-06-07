@@ -31,9 +31,8 @@ export default function Home() {
     await mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
   };
 
-  // TODO: count this on server?
   const totalConnections = customers
-    ?.map((customer) => customer.connections.length)
+    .map((customer) => customer.connections.length)
     .reduce((a: number, b: number) => a + b, 0);
 
   const handleDrawerToggle = () => {

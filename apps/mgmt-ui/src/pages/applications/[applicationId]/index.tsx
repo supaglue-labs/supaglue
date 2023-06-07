@@ -71,7 +71,7 @@ export default function Home() {
             </Box>
             <Box>
               <Typography variant="body1">
-                Learn how to sync your customers's data to your database using our guide below.
+                Learn how to sync your customers' data to your database using our guide below.
               </Typography>
             </Box>
 
