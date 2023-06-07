@@ -133,6 +133,7 @@ model Connection {
   sync          Sync?
   ReplayId      ReplayId[]
   provider      Provider?   @relation(fields: [providerId], references: [id])
+  // TODO: Eventually make this required
   providerId    String?
 
   @@unique([customerId, integrationId])
@@ -481,6 +482,7 @@ model Sync {
   updatedAt       DateTime      @updatedAt @map("updated_at")
   version         String        @default("v1")
   syncConfigId    String?       @map("sync_config_id")
+  // TODO: Eventually make this required
   syncConfig      SyncConfig?   @relation(fields: [syncConfigId], references: [id])
   syncHistoryList SyncHistory[]
 
