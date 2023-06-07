@@ -7,7 +7,7 @@ export const authOptions = {
     CredentialsProvider({
       name: 'Username/Password',
       async authorize(credentials) {
-        const authResponse = await fetch(`${API_HOST}/internal/v1/auth/_login`, {
+        const authResponse = await fetch(`${API_HOST}/internal/auth/_login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
