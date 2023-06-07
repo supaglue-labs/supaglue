@@ -1,20 +1,7 @@
-import { createCustomer } from '@/client';
-import MetricCard from '@/components/customers/MetricCard';
-import { NewCustomer } from '@/components/customers/NewCustomer';
-import Spinner from '@/components/Spinner';
-import { useNotification } from '@/context/notification';
-import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
-import { useCustomers } from '@/hooks/useCustomers';
-import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import providerToIcon from '@/utils/providerToIcon';
 import { getAuth } from '@clerk/nextjs/server';
-import { Link, PeopleAltOutlined } from '@mui/icons-material';
-import LinkIcon from '@mui/icons-material/Link';
-import { Box, Grid, IconButton, Stack } from '@mui/material';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { ConnectionSafeAny } from '@supaglue/types/connection';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { type GetServerSideProps } from 'next';
 import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
@@ -60,68 +47,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
 };
 
 export default function Home() {
-  const { nextLambdaEnv } = useNextLambdaEnv();
-  const { addNotification } = useNotification();
-  const { customers = [], isLoading, mutate } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const applicationId = useActiveApplicationId();
-
-  const onCreateCustomer = async (customerId: string, name: string, email: string) => {
-    await createCustomer(applicationId, customerId, name, email);
-    await mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
-  };
-
-  // TODO: count this on server?
-  const totalConnections = customers
-    ?.map((customer) => customer.connections.length)
-    .reduce((a: number, b: number) => a + b, 0);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const handleEmebedLinkClick = async (params: GridRenderCellParams) => {
-    addNotification({ message: 'Copied to clipboard', severity: 'success' });
-
-    await navigator.clipboard.writeText(
-      `${nextLambdaEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
-        params.id
-      )}&providerName={{REPLACE_ME}}&returnUrl={{REPLACE_ME}}`
-    );
-  };
-
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 300 },
-    { field: 'name', headerName: 'Name', width: 250 },
-    { field: 'email', headerName: 'Email', width: 250 },
-    {
-      field: 'connections',
-      headerName: 'Connections',
-      width: 150,
-      renderCell: (params) => {
-        return params.value.map((connection: ConnectionSafeAny) => providerToIcon(connection.providerName));
-      },
-    },
-    {
-      field: 'link',
-      headerName: 'Embed Link',
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <IconButton onClick={() => handleEmebedLinkClick(params)}>
-            <LinkIcon />
-          </IconButton>
-        );
-      },
-    },
-  ];
-
-  const rows = customers.map((customer) => ({
-    id: customer.customerId,
-    email: customer.email,
-    name: customer.name,
-    connections: customer?.connections,
-  }));
 
   return (
     <>
@@ -133,46 +63,27 @@ export default function Home() {
       </Head>
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Header title="Customers" onDrawerToggle={handleDrawerToggle} />
+        <Header title="Getting Started" onDrawerToggle={handleDrawerToggle} />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          {isLoading ? (
-            <Spinner />
-          ) : (
-            <Stack className="gap-2">
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <MetricCard
-                    icon={<PeopleAltOutlined />}
-                    value={
-                      <Stack direction="row" className="align-center justify-center justify-between">
-                        <div>{customers.length} customers</div>
-                        <NewCustomer onCreate={onCreateCustomer} />
-                      </Stack>
-                    }
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
-                </Grid>
-              </Grid>
+          <Stack>
+            <Box>
+              <Typography variant="h5">Welcome to the Supaglue Management Portal!</Typography>
+            </Box>
+            <Box>
+              <Typography variant="body1">
+                Learn how to sync your customers's data to your database using our guide below.
+              </Typography>
+            </Box>
 
-              <div style={{ height: '100%', width: '100%' }}>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  autoHeight
-                  sx={{
-                    boxShadow: 1,
-                    backgroundColor: 'white',
-                  }}
-                  density="comfortable"
-                  hideFooter
-                  disableColumnMenu
-                  rowSelection={false}
-                />
-              </div>
-            </Stack>
-          )}
+            <Box>
+              <Box fontSize="2.4rem">
+                👉{' '}
+                <Button variant="contained" color="primary" href="https://docs.supaglue.com/quickstart">
+                  Quickstart Guide
+                </Button>
+              </Box>
+            </Box>
+          </Stack>
         </Box>
       </Box>
     </>

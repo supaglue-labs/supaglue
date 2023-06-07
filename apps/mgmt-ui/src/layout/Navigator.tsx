@@ -2,6 +2,7 @@
 import ApplicationMenu from '@/components/ApplicationMenu';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
+import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import {
   Box,
@@ -46,8 +47,14 @@ export default function Navigator(props: DrawerProps) {
       id: 'Manage',
       children: [
         {
-          id: 'Customers',
+          id: 'Getting Started',
           to: `/applications/${applicationId}`,
+          icon: <HomeIcon />,
+          active: false,
+        },
+        {
+          id: 'Customers',
+          to: `/applications/${applicationId}/customers`,
           icon: <PeopleIcon />,
           active: false,
         },
