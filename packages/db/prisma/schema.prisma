@@ -98,7 +98,7 @@ model SyncConfig {
   config        Json
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
-  Sync          Sync[]
+  syncs         Sync[]
 
   // TODO: Eventually allow multiple destinations
   @@unique([providerId])
@@ -131,10 +131,10 @@ model Connection {
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
   sync          Sync?
-  ReplayId      ReplayId[]
+  replayId      ReplayId[]
   provider      Provider?   @relation(fields: [providerId], references: [id])
   // TODO: Eventually make this required
-  providerId    String?
+  providerId    String?     @map("provider_id")
 
   @@unique([customerId, integrationId])
   @@map("connections")

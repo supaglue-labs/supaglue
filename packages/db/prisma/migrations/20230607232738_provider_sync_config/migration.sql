@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE "connections" ADD COLUMN     "providerId" TEXT;
+ALTER TABLE "connections" ADD COLUMN     "provider_id" TEXT;
 
 -- AlterTable
 ALTER TABLE "syncs" ADD COLUMN     "sync_config_id" TEXT;
@@ -41,7 +41,7 @@ CREATE UNIQUE INDEX "sync_configs_provider_id_key" ON "sync_configs"("provider_i
 ALTER TABLE "providers" ADD CONSTRAINT "providers_application_id_fkey" FOREIGN KEY ("application_id") REFERENCES "applications"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "connections" ADD CONSTRAINT "connections_providerId_fkey" FOREIGN KEY ("providerId") REFERENCES "providers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "connections" ADD CONSTRAINT "connections_provider_id_fkey" FOREIGN KEY ("provider_id") REFERENCES "providers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "syncs" ADD CONSTRAINT "syncs_sync_config_id_fkey" FOREIGN KEY ("sync_config_id") REFERENCES "sync_configs"("id") ON DELETE SET NULL ON UPDATE CASCADE;

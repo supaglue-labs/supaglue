@@ -121,7 +121,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable> {
+  public override async listCommonModelRecords(
+    commonModelType: CRMCommonModelType,
+    updatedAfter?: Date
+  ): Promise<Readable> {
     switch (commonModelType) {
       case 'contact':
         return await this.listContacts(updatedAfter);
@@ -307,7 +310,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public override async getObject<T extends CRMCommonModelType>(
+  public override async getCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
@@ -368,7 +371,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return fromPipedriveUserToUserV2(response.data.data);
   }
 
-  public override async createObject<T extends CRMCommonModelType>(
+  public override async createCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
@@ -437,7 +440,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return response.data.data.id.toString();
   }
 
-  public override async updateObject<T extends CRMCommonModelType>(
+  public override async updateCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {
