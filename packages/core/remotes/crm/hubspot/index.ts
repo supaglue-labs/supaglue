@@ -185,7 +185,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async listCommonModelObjects(
+  public override async listCommonModelRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date | undefined
   ): Promise<Readable> {
@@ -205,7 +205,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async getCommonModelObject<T extends CRMCommonModelType>(
+  public override async getCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
@@ -225,7 +225,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async createCommonModelObject<T extends CRMCommonModelType>(
+  public override async createCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
@@ -245,7 +245,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async updateCommonModelObject<T extends CRMCommonModelType>(
+  public override async updateCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {

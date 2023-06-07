@@ -15,22 +15,22 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 export interface CrmRemoteClient extends RemoteClient {
   category(): IntegrationCategory;
 
-  listObjects(objectClass: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
+  listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
 
-  listCommonModelObjects(
+  listCommonModelRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
-  getCommonModelObject<T extends CRMCommonModelType>(
+  getCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']>;
-  createCommonModelObject<T extends CRMCommonModelType>(
+  createCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string>;
-  updateCommonModelObject<T extends CRMCommonModelType>(
+  updateCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string>;
@@ -62,24 +62,24 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     return err;
   }
 
-  public async listObjects(objectClass: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  public async listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
-  abstract listCommonModelObjects(
+  abstract listCommonModelRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
-  abstract getCommonModelObject<T extends CRMCommonModelType>(
+  abstract getCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']>;
-  abstract createCommonModelObject<T extends CRMCommonModelType>(
+  abstract createCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string>;
-  abstract updateCommonModelObject<T extends CRMCommonModelType>(
+  abstract updateCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string>;

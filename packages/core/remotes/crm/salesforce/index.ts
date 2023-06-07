@@ -229,14 +229,14 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   async #listObjectsHelper(
-    objectClass: string,
+    object: string,
     propertiesToFetch: string[],
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
     // TODO: Can there be too many properties to fetch in one call?
     const soql = `SELECT ${propertiesToFetch.join(',')}
-FROM ${objectClass}
+FROM ${object}
 ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER BY SystemModstamp ASC` : ''}`;
 
     return pipeline(
@@ -259,14 +259,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async listObjects(
-    objectClass: string,
-    modifiedAfter?: Date,
-    heartbeat?: () => void
-  ): Promise<Readable> {
-    // Get properties to fetch
-    const allProperties = await this.getSObjectProperties(objectClass);
-    return this.#listObjectsHelper(objectClass, allProperties, modifiedAfter, heartbeat);
+  public override async listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+    const allProperties = await this.getSObjectProperties(object);
+    return this.#listObjectsHelper(object, allProperties, modifiedAfter, heartbeat);
   }
 
   #getMapperForCommonModelType<T extends CRMCommonModelType>(
@@ -288,7 +283,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public override async listCommonModelObjects(
+  public override async listCommonModelRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date | undefined,
     heartbeat?: () => void
@@ -321,7 +316,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async getCommonModelObject<T extends CRMCommonModelType>(
+  public override async getCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
@@ -341,7 +336,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public override async createCommonModelObject<T extends CRMCommonModelType>(
+  public override async createCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
@@ -361,7 +356,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public override async updateCommonModelObject<T extends CRMCommonModelType>(
+  public override async updateCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {
@@ -565,49 +560,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return responseJson.fields
       .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
       .map((field: { name: string; type: string }) => field.name);
-  }
-
-  private async getPropertiesToFetch(commonModelName: CRMCommonModelType): Promise<string[]> {
-    const availableProperties = await this.getSObjectProperties(commonModelName);
-    if (this.#syncAllFields) {
-      return availableProperties;
-    }
-    const properties = intersection(availableProperties, propertiesForCommonModel[commonModelName]);
-    return properties;
-  }
-
-  private async listCommonModelRecords(
-    commonModelName: CRMCommonModelType,
-    mapper: (record: Record<string, any>) => any,
-    updatedAfter?: Date,
-    heartbeat?: () => void
-  ): Promise<Readable> {
-    const properties = await this.getPropertiesToFetch(commonModelName);
-    const baseSoql = `
-    SELECT ${properties.join(', ')}
-    FROM ${capitalizeString(commonModelName)}
-  `;
-    const soql = updatedAfter
-      ? `${baseSoql} WHERE SystemModstamp > ${updatedAfter.toISOString()} ORDER BY SystemModstamp ASC`
-      : baseSoql;
-    return pipeline(
-      await this.#getBulk2QueryJobResults(soql, heartbeat),
-      new Transform({
-        objectMode: true,
-        transform: (chunk, encoding, callback) => {
-          try {
-            callback(null, {
-              object: mapper(chunk),
-              emittedAt: new Date(), // TODO: should we generate this timestamp earlier?
-            });
-          } catch (e: any) {
-            return callback(e);
-          }
-        },
-      }),
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      () => {}
-    );
   }
 
   public async getAccount(id: string): Promise<AccountV2> {
