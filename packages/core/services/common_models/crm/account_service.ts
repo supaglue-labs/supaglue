@@ -88,8 +88,8 @@ export class AccountService extends CommonModelBaseService {
       remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    const id = await remoteClient.createObject('account', remoteCreateParams);
-    const remoteAccount = await remoteClient.getObject('account', id);
+    const id = await remoteClient.createCommonModelObject('account', remoteCreateParams);
+    const remoteAccount = await remoteClient.getCommonModelObject('account', id);
     const accountModel = await this.prisma.crmAccount.create({
       data: fromRemoteAccountToModel(connectionId, customerId, remoteAccount),
     });
@@ -114,11 +114,11 @@ export class AccountService extends CommonModelBaseService {
       remoteUpdateParams.ownerId = await getRemoteId(this.prisma, updateParams.ownerId, 'user');
     }
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    const returnedId = await remoteClient.updateObject('account', {
+    const returnedId = await remoteClient.updateCommonModelObject('account', {
       ...remoteUpdateParams,
       id: foundAccountModel.remoteId,
     });
-    const remoteAccount = await remoteClient.getObject('account', returnedId);
+    const remoteAccount = await remoteClient.getCommonModelObject('account', returnedId);
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.
     if (foundAccountModel.remoteId !== returnedId) {

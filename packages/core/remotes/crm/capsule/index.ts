@@ -13,25 +13,25 @@ class CapsuleClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public override listObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable> {
+  public override listCommonModelObjects(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
-  public override getObject<T extends CRMCommonModelType>(
+  public override getCommonModelObject<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     throw new Error('Not implemented');
   }
 
-  public override createObject<T extends CRMCommonModelType>(
+  public override createCommonModelObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
     throw new Error('Not implemented');
   }
 
-  public override updateObject<T extends CRMCommonModelType>(
+  public override updateCommonModelObject<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {
