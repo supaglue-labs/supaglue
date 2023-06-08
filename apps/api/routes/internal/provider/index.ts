@@ -21,7 +21,7 @@ import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
-const { providerService, integrationService } = getDependencyContainer();
+const { providerService, integrationService, connectionService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const providerRouter = Router();
@@ -54,6 +54,7 @@ export default function init(app: Router): void {
   // Delete once migrated
   providerRouter.post('/_backfill', async (req: Request<never, Provider[]>, res: Response<Provider[]>) => {
     const integrations = await integrationService.list(req.supaglueApplication.id);
+    const integrationIdToProviderIdMapping: Record<string, string> = {};
     const providers = await Promise.all(
       integrations.map(async (integration) => {
         const provider = await providerService.upsert({
@@ -66,9 +67,11 @@ export default function init(app: Router): void {
             oauth: integration.config.oauth,
           },
         } as ProviderCreateParams);
+        integrationIdToProviderIdMapping[integration.id] = provider.id;
         return provider;
       })
     );
+    await connectionService.backfillConnectionsWithProviderId(integrationIdToProviderIdMapping);
     return res.status(201).send(providers);
   });
 

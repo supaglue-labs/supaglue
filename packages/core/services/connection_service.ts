@@ -178,4 +178,17 @@ export class ConnectionService {
 
     return fromConnectionModelToConnectionSafe(updatedConnection);
   }
+  public async backfillConnectionsWithProviderId(
+    integrationIdToProviderIdMapping: Record<string, string>
+  ): Promise<void> {
+    const integrationIds = Object.keys(integrationIdToProviderIdMapping);
+    await Promise.all(
+      integrationIds.map(async (integrationId) => {
+        await this.#prisma.connection.updateMany({
+          where: { integrationId },
+          data: { providerId: integrationIdToProviderIdMapping[integrationId] },
+        });
+      })
+    );
+  }
 }
