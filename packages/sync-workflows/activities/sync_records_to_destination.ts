@@ -45,7 +45,7 @@ export function createSyncRecordsToDestination(
           updatedAfter,
           heartbeat
         );
-        return await writer.writeObjects(
+        return await writer.writeCommonModelObjects(
           connection,
           commonModel as CRMCommonModelType,
           toHeartbeatingReadable(readable),
@@ -56,7 +56,7 @@ export function createSyncRecordsToDestination(
           commonModel as EngagementCommonModelType,
           updatedAfter
         );
-        return await writer.writeObjects(
+        return await writer.writeCommonModelObjects(
           connection,
           commonModel as EngagementCommonModelType,
           toHeartbeatingReadable(readable),
@@ -77,6 +77,28 @@ export function createSyncRecordsToDestination(
     if (!writer) {
       throw ApplicationFailure.nonRetryable(`No destination found for integration ${connection.integrationId}`);
     }
+
+    // TODO: Begin testing of listRecords
+
+    // const stream = await (client as CrmRemoteClient).listRecords('contact', new Date(0), heartbeat);
+
+    // await pipelineAsync(
+    //   stream,
+    //   new Transform({
+    //     objectMode: true,
+    //     transform: (chunk, encoding, callback) => {
+    //       Context.current().heartbeat();
+    //       console.log('got a thing', JSON.stringify(chunk, null, 2));
+    //       try {
+    //         callback(null, chunk);
+    //       } catch (e: any) {
+    //         return callback(e);
+    //       }
+    //     },
+    //   })
+    // );
+
+    // TODO: End testing of listRecords
 
     const result = await writeObjects(writer);
 

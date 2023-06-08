@@ -13,13 +13,13 @@ export type WriteCommonModelsResult = {
 };
 
 export interface DestinationWriter {
-  upsertObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  upsertCommonModelObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']
   ): Promise<void>;
 
-  writeObjects(
+  writeCommonModelObjects(
     connection: ConnectionSafeAny,
     commonModelType: CommonModelType,
     stream: Readable,
@@ -34,7 +34,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
    *
    * TODO: Support engagement vertical as well
    */
-  abstract upsertObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  abstract upsertCommonModelObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']
@@ -43,7 +43,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
   /**
    * This is the main method used to sync objects to a destination
    */
-  abstract writeObjects(
+  abstract writeCommonModelObjects(
     connection: ConnectionSafeAny,
     commonModelType: CommonModelType,
     stream: Readable,

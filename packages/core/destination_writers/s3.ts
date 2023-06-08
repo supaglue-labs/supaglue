@@ -31,7 +31,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     });
   }
 
-  public override async upsertObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  public override async upsertCommonModelObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']
@@ -40,7 +40,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     return;
   }
 
-  public override async writeObjects(
+  public override async writeCommonModelObjects(
     connection: ConnectionSafeAny,
     commonModelType: CommonModelType,
     inputStream: Readable,

@@ -14,12 +14,12 @@ export interface RemoteClient {
 }
 
 export abstract class AbstractRemoteClient extends EventEmitter implements RemoteClient {
-  readonly #baseUrl: string;
+  protected readonly baseUrl: string;
 
   // this is public so that `CrmRemoteClient` can use `ConstructorParameters<typeof RemoteClient>`
   public constructor(baseUrl: string) {
     super();
-    this.#baseUrl = baseUrl;
+    this.baseUrl = baseUrl;
   }
 
   public on<U extends keyof RemoteClientEvents>(event: U, listener: RemoteClientEvents[U]): this {
@@ -37,7 +37,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   public async sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse> {
     const requestConfig = {
       method: request.method,
-      baseURL: this.#baseUrl,
+      baseURL: this.baseUrl,
       url: request.path,
       params: request.query,
       headers: {
