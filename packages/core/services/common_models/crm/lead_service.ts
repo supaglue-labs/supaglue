@@ -150,6 +150,7 @@ export class LeadService extends CommonModelBaseService {
         },
         data: {
           ...fromRemoteLeadToModel(connectionId, customerId, remoteLead),
+          id: undefined,
           remoteId: undefined,
           ownerId: updateParams.ownerId,
         },
