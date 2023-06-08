@@ -178,6 +178,7 @@ export class ConnectionService {
 
     return fromConnectionModelToConnectionSafe(updatedConnection);
   }
+
   public async backfillConnectionsWithProviderId(
     integrationIdToProviderIdMapping: Record<string, string>
   ): Promise<void> {
