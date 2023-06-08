@@ -24,7 +24,7 @@ allOf:
           $ref: ./objects/provider_name_crm.yaml
       required:
         - category
-        - provider_name
+        - name
     - type: object
       properties:
         category:
@@ -35,4 +35,4 @@ allOf:
           $ref: ./objects/provider_name_engagement.yaml
       required:
         - category
-        - provider_name
+        - name

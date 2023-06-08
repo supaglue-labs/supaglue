@@ -209,7 +209,7 @@ export interface components {
       category: components["schemas"]["category"];
       /** @enum {string} */
       auth_type: "oauth2";
-      name?: components["schemas"]["provider_name"];
+      name: components["schemas"]["provider_name"];
       config: components["schemas"]["provider_config"];
     };
     destination: {
@@ -390,11 +390,11 @@ export interface components {
     }) & OneOf<[{
       /** @enum {string} */
       category: "crm";
-      name?: components["schemas"]["provider_name_crm"];
+      name: components["schemas"]["provider_name_crm"];
     }, {
       /** @enum {string} */
       category: "engagement";
-      name?: components["schemas"]["provider_name_engagement"];
+      name: components["schemas"]["provider_name_engagement"];
     }]>;
     create_update_destination: {
       /** @example My Destination */

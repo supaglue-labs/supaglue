@@ -70,6 +70,33 @@ export type DeleteIntegrationRequest = never;
 export type DeleteIntegrationResponse =
   operations['deleteIntegration']['responses'][keyof operations['deleteIntegration']['responses']]['content']['application/json'];
 
+export type GetProvidersPathParams = never;
+export type GetProvidersQueryParams = never;
+export type GetProvidersRequest = never;
+export type GetProvidersResponse =
+  operations['getProviders']['responses'][keyof operations['getProviders']['responses']]['content']['application/json'];
+
+export type CreateProviderPathParams = never;
+export type CreateProviderRequest = operations['createProvider']['requestBody']['content']['application/json'];
+export type CreateProviderResponse =
+  operations['createProvider']['responses'][keyof operations['createProvider']['responses']]['content']['application/json'];
+
+export type GetProviderPathParams = paths[`/providers/{provider_id}`]['parameters']['path'];
+export type GetProviderRequest = never;
+export type GetProviderResponse =
+  operations['getProvider']['responses'][keyof operations['getProvider']['responses']]['content']['application/json'];
+
+export type UpdateProviderPathParams = paths[`/providers/{provider_id}`]['parameters']['path'];
+export type UpdateProviderRequest =
+  operations['updateProvider']['requestBody'][keyof operations['updateProvider']['requestBody']]['application/json'];
+export type UpdateProviderResponse =
+  operations['updateProvider']['responses'][keyof operations['updateProvider']['responses']]['content']['application/json'];
+
+export type DeleteProviderPathParams = paths[`/providers/{provider_id}`]['parameters']['path'];
+export type DeleteProviderRequest = never;
+export type DeleteProviderResponse =
+  operations['deleteProvider']['responses'][keyof operations['deleteProvider']['responses']]['content']['application/json'];
+
 export type GetConnectionsPathParams = paths['/customers/{customer_id}/connections']['parameters']['path'];
 export type GetConnectionsQueryParams = never;
 export type GetConnectionsRequest = never;
