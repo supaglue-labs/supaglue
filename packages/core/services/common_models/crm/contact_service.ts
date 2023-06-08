@@ -142,6 +142,7 @@ export class ContactService extends CommonModelBaseService {
         },
         data: {
           ...fromRemoteContactToModel(connectionId, customerId, remoteContact),
+          id: undefined,
           remoteId: undefined,
           ownerId: updateParams.ownerId,
         },

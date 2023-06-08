@@ -149,6 +149,7 @@ export class OpportunityService extends CommonModelBaseService {
         },
         data: {
           ...fromRemoteOpportunityToModel(connectionId, customerId, remoteOpportunity),
+          id: undefined,
           remoteId: undefined,
           ownerId: updateParams.ownerId,
         },

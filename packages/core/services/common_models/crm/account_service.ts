@@ -131,6 +131,7 @@ export class AccountService extends CommonModelBaseService {
         },
         data: {
           ...fromRemoteAccountToModel(connectionId, customerId, remoteAccount),
+          id: undefined,
           remoteId: undefined,
           ownerId: updateParams.ownerId,
         },
