@@ -35,6 +35,10 @@ paths:
     $ref: paths/destinations.yaml
   '/destinations/{destination_id}':
     $ref: paths/destinations@{destination_id}.yaml
+  '/providers':
+    $ref: paths/providers.yaml
+  '/providers/{provider_id}':
+    $ref: paths/providers@{provider_id}.yaml
   '/integrations':
     $ref: paths/integrations.yaml
   '/integrations/{integration_id}':
@@ -65,6 +69,8 @@ components:
       $ref: ./components/schemas/objects/customer.yaml
     integration:
       $ref: ./components/schemas/objects/integration.yaml
+    provider:
+      $ref: ./components/schemas/objects/provider.yaml
     destination:
       $ref: ./components/schemas/objects/destination.yaml
     s3_config:
@@ -77,6 +83,8 @@ components:
       $ref: ./components/schemas/objects/category.yaml
     integration_config:
       $ref: ./components/schemas/objects/integration_config.yaml
+    provider_config:
+      $ref: ./components/schemas/objects/provider_config.yaml
     provider_name:
       $ref: ./components/schemas/objects/provider_name.yaml
     provider_name_crm:
@@ -87,6 +95,8 @@ components:
       $ref: ./components/schemas/create_update_customer.yaml
     create_update_integration:
       $ref: ./components/schemas/create_update_integration.yaml
+    create_update_provider:
+      $ref: ./components/schemas/create_update_provider.yaml
     create_update_destination:
       $ref: ./components/schemas/create_update_destination.yaml
     webhook:

@@ -381,6 +381,302 @@
         }
       ]
     },
+    "/providers": {
+      "get": {
+        "operationId": "getProviders",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List providers",
+        "description": "Get a list of providers",
+        "responses": {
+          "200": {
+            "description": "Providers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/provider"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "e888cedf-e9d0-42c5-9485-2d72984faef8",
+                        "category": "crm",
+                        "auth_type": "oauth2",
+                        "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
+                        "provider_name": "hubspot",
+                        "config": {
+                          "provider_app_id": "my_app_id",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "id": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
+                        "category": "crm",
+                        "auth_type": "oauth2",
+                        "destination_id": null,
+                        "provider_name": "salesforce",
+                        "config": {
+                          "provider_app_id": "my_app_id2",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProvider",
+        "summary": "Create provider",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_provider"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Provider created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/providers/{provider_id}": {
+      "get": {
+        "operationId": "getProvider",
+        "summary": "Get provider",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "e252792a-de72-460a-ae42-c9115fe9321d",
+                      "category": "crm",
+                      "auth_type": "oauth2",
+                      "provider_name": "hubspot",
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateProvider",
+        "summary": "Update provider",
+        "tags": [
+          "Providers"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_provider"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "39477a27-80fd-4b6d-b07e-256e14ee094e",
+                      "category": "crm",
+                      "auth_type": "oauth2",
+                      "provider_name": "hubspot",
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteProvider",
+        "summary": "Delete provider",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "699e93b0-a7e6-4009-af59-07ec274db394",
+                      "category": "crm",
+                      "auth_type": "oauth2",
+                      "provider_name": "hubspot",
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "provider_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/integrations": {
       "get": {
         "operationId": "getIntegrations",
@@ -592,7 +888,7 @@
                 "examples": {
                   "Example": {
                     "value": {
-                      "id": "e888cedf-e9d0-42c5-9485-2d72984faef0",
+                      "id": "2d456dfe-27c1-43a8-9d38-2d43e8b95683",
                       "category": "crm",
                       "auth_type": "oauth2",
                       "provider_name": "hubspot",
@@ -1410,6 +1706,42 @@
           "provider_name"
         ]
       },
+      "provider": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+          },
+          "category": {
+            "$ref": "#/components/schemas/category"
+          },
+          "auth_type": {
+            "type": "string",
+            "enum": [
+              "oauth2"
+            ]
+          },
+          "name": {
+            "$ref": "#/components/schemas/provider_name"
+          },
+          "config": {
+            "$ref": "#/components/schemas/provider_config"
+          }
+        },
+        "required": [
+          "id",
+          "application_id",
+          "category",
+          "auth_type",
+          "name",
+          "config"
+        ]
+      },
       "destination": {
         "allOf": [
           {
@@ -1567,6 +1899,10 @@
             "type": "string",
             "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
           },
+          "provider_id": {
+            "type": "string",
+            "example": "677fcfca-cf89-4387-a189-71c885be67bc"
+          },
           "provider_name": {
             "$ref": "#/components/schemas/provider_name"
           },
@@ -1683,6 +2019,70 @@
           }
         }
       },
+      "provider_config": {
+        "type": "object",
+        "properties": {
+          "provider_app_id": {
+            "type": "string",
+            "example": "my_app_id"
+          },
+          "oauth": {
+            "type": "object",
+            "properties": {
+              "oauth_scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "crm.objects.contacts.read"
+                }
+              },
+              "credentials": {
+                "type": "object",
+                "properties": {
+                  "oauth_client_id": {
+                    "type": "string",
+                    "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                  },
+                  "oauth_client_secret": {
+                    "type": "string",
+                    "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                  }
+                },
+                "required": [
+                  "oauth_client_id",
+                  "oauth_client_secret"
+                ]
+              }
+            },
+            "required": [
+              "oauth_scopes",
+              "credentials"
+            ]
+          }
+        },
+        "required": [
+          "provider_app_id",
+          "oauth"
+        ],
+        "example": {
+          "provider_app_id": "my_app_id",
+          "oauth": {
+            "oauth_scopes": [
+              "crm.objects.contacts.read",
+              "crm.objects.companies.read",
+              "crm.objects.deals.read",
+              "crm.objects.owners.read",
+              "crm.objects.contacts.write",
+              "crm.objects.companies.write",
+              "crm.objects.deals.write"
+            ],
+            "credentials": {
+              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+            }
+          }
+        }
+      },
       "provider_name": {
         "type": "string",
         "enum": [
@@ -1796,6 +2196,72 @@
                 "required": [
                   "category",
                   "provider_name"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "create_update_provider": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "oauth2"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/provider_config"
+              },
+              "destination_id": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "required": [
+              "auth_type",
+              "config"
+            ]
+          },
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "crm"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_crm"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "engagement"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_engagement"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
                 ]
               }
             ]

@@ -1,21 +1,21 @@
 get:
-  operationId: getIntegration
-  summary: Get integration
+  operationId: getProvider
+  summary: Get provider
   tags:
-    - Integrations
+    - Providers
   security:
     - ApiKeyAuth: []
   responses:
     200:
-      description: Integration
+      description: Provider
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/integration.yaml
+            $ref: ../components/schemas/objects/provider.yaml
           examples:
             Example:
               value:
-                id: e888cedf-e9d0-42c5-9485-2d72984faef9
+                id: e252792a-de72-460a-ae42-c9115fe9321d
                 category: crm
                 auth_type: oauth2
                 provider_name: hubspot
@@ -33,31 +33,29 @@ get:
                     credentials:
                       oauth_client_id: 7393b5a4-5e20-4648-87af-b7b297793fd1
                       oauth_client_secret: 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a
-                  sync:
-                    period_ms: 60000
 put:
-  operationId: updateIntegration
-  summary: Update integration
+  operationId: updateProvider
+  summary: Update provider
   tags:
-    - Integrations
+    - Providers
   parameters: []
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_update_integration.yaml
+          $ref: ../components/schemas/create_update_provider.yaml
   responses:
     200:
-      description: Integration
+      description: Provider
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/integration.yaml
+            $ref: ../components/schemas/objects/provider.yaml
           examples:
             Example:
               value:
-                id: 2d456dfe-27c1-43a8-9d38-2d43e8b95683
+                id: 39477a27-80fd-4b6d-b07e-256e14ee094e
                 category: crm
                 auth_type: oauth2
                 provider_name: hubspot
@@ -75,26 +73,24 @@ put:
                     credentials:
                       oauth_client_id: 7393b5a4-5e20-4648-87af-b7b297793fd1
                       oauth_client_secret: 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a
-                  sync:
-                    period_ms: 60000
 delete:
-  operationId: deleteIntegration
-  summary: Delete integration
+  operationId: deleteProvider
+  summary: Delete provider
   tags:
-    - Integrations
+    - Providers
   security:
     - ApiKeyAuth: []
   responses:
     200:
-      description: Integration
+      description: Provider
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/integration.yaml
+            $ref: ../components/schemas/objects/provider.yaml
           examples:
             Example:
               value:
-                id: e888cedf-e9d0-42c5-9485-2d72984faefa
+                id: 699e93b0-a7e6-4009-af59-07ec274db394
                 category: crm
                 auth_type: oauth2
                 provider_name: hubspot
@@ -112,10 +108,8 @@ delete:
                     credentials:
                       oauth_client_id: 7393b5a4-5e20-4648-87af-b7b297793fd1
                       oauth_client_secret: 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a
-                  sync:
-                    period_ms: 60000
 parameters:
-  - name: integration_id
+  - name: provider_id
     in: path
     required: true
     schema:
