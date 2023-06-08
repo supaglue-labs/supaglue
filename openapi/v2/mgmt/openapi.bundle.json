@@ -583,7 +583,7 @@
                 "examples": {
                   "Example": {
                     "value": {
-                      "id": "e888cedf-e9d0-42c5-9485-2d72984faef0",
+                      "id": "39477a27-80fd-4b6d-b07e-256e14ee094e",
                       "category": "crm",
                       "auth_type": "oauth2",
                       "provider_name": "hubspot",
