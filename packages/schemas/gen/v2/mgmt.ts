@@ -264,7 +264,7 @@ export interface components {
       customer_id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       integration_id: string;
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      /** @example 677fcfca-cf89-4387-a189-71c885be67bc */
       provider_id?: string;
       provider_name: components["schemas"]["provider_name"];
       category: components["schemas"]["category"];
