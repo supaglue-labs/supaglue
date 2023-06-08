@@ -1,7 +1,7 @@
 import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable } from 'stream';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
+import { AbstractCrmRemoteClient, AdditionalConnectorAuthConfig, ConnectorAuthConfig } from '../base';
 
 class ZendeskSellClient extends AbstractCrmRemoteClient {
   public constructor() {
@@ -51,4 +51,8 @@ export const authConfig: ConnectorAuthConfig = {
   tokenPath: '/oauth2/token',
   authorizeHost: 'https://api.getbase.com',
   authorizePath: '/oauth2/authorize',
+};
+
+export const additionalAuthConfig: AdditionalConnectorAuthConfig = {
+  authorizeWithScope: false, // unverified
 };

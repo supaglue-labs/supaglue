@@ -14,6 +14,11 @@ export type ConnectorAuthConfig = {
   authorizePath: string;
 };
 
+export type AdditionalConnectorAuthConfig = {
+  authorizeWithScope: boolean;
+};
+
+// `authConfig` to be used in simple-oauth2
 export function getConnectorAuthConfig(category: ProviderCategory, providerName: ProviderName): ConnectorAuthConfig {
   if (category === 'crm') {
     const { authConfig } = crmConnectorConfigMap[providerName as CRMProviderName];
@@ -21,4 +26,17 @@ export function getConnectorAuthConfig(category: ProviderCategory, providerName:
   }
   const { authConfig } = engagementConnectorConfigMap[providerName as EngagementProviderName];
   return authConfig;
+}
+
+// The `authConfig` object can't be polluted with additional fields, so pass additional fields here
+export function getAdditionalConnectorAuthConfig(
+  category: ProviderCategory,
+  providerName: ProviderName
+): AdditionalConnectorAuthConfig {
+  if (category === 'crm') {
+    const { additionalAuthConfig } = crmConnectorConfigMap[providerName as CRMProviderName];
+    return additionalAuthConfig;
+  }
+  const { additionalAuthConfig } = engagementConnectorConfigMap[providerName as EngagementProviderName];
+  return additionalAuthConfig;
 }

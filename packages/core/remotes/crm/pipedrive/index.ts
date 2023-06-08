@@ -25,7 +25,7 @@ import axios from 'axios';
 import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import { paginator } from '../../utils/paginator';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
+import { AbstractCrmRemoteClient, AdditionalConnectorAuthConfig, ConnectorAuthConfig } from '../base';
 import {
   fromPipedriveDealToOpportunityV2,
   fromPipedriveLeadToLeadV2,
@@ -534,6 +534,10 @@ export const authConfig: ConnectorAuthConfig = {
   tokenPath: '/oauth/token',
   authorizeHost: 'https://oauth.pipedrive.com',
   authorizePath: '/oauth/authorize',
+};
+
+export const additionalAuthConfig: AdditionalConnectorAuthConfig = {
+  authorizeWithScope: false,
 };
 
 function filterForUpdatedAfter<

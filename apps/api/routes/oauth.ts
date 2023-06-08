@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError } from '@supaglue/core/errors';
-import { getConnectorAuthConfig } from '@supaglue/core/remotes';
+import { getAdditionalConnectorAuthConfig, getConnectorAuthConfig } from '@supaglue/core/remotes';
 import { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, ProviderName } from '@supaglue/types';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
 import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supaglue/types/engagement';
@@ -76,13 +76,13 @@ export default function init(app: Router): void {
 
       const authorizationUri = client.authorizeURL({
         redirect_uri: REDIRECT_URI,
-        scope: oauthScopes.join(' '),
+        scope: oauthScopes,
         state: JSON.stringify({
           returnUrl,
           applicationId,
           customerId,
           providerName,
-          scope: oauthScopes.join(' '), // TODO: this should be in a session
+          scope: oauthScopes, // TODO: this should be in a session
           loginUrl,
           version,
         }),
@@ -153,6 +153,7 @@ export default function init(app: Router): void {
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
       const auth = getConnectorAuthConfig(integration.category, providerName);
+      const additionalAuth = getAdditionalConnectorAuthConfig(integration.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
@@ -176,6 +177,7 @@ export default function init(app: Router): void {
       const tokenWrapper = await client.getToken({
         code,
         redirect_uri: REDIRECT_URI,
+        scope: additionalAuth.authorizeWithScope ? scope : undefined,
         ...additionalAuthParams,
       });
 

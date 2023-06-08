@@ -1,7 +1,7 @@
 import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable } from 'stream';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
+import { AbstractCrmRemoteClient, AdditionalConnectorAuthConfig, ConnectorAuthConfig } from '../base';
 
 class CapsuleClient extends AbstractCrmRemoteClient {
   public constructor() {
@@ -48,4 +48,8 @@ export const authConfig: ConnectorAuthConfig = {
   tokenPath: '/oauth/token',
   authorizeHost: 'https://api.capsulecrm.com',
   authorizePath: '/oauth/authorise',
+};
+
+export const additionalAuthConfig: AdditionalConnectorAuthConfig = {
+  authorizeWithScope: false, // unverified
 };

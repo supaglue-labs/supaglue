@@ -40,7 +40,7 @@ import {
 } from '../../../errors';
 import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
 import { paginator } from '../../utils/paginator';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
+import { AbstractCrmRemoteClient, AdditionalConnectorAuthConfig, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToAccountV2,
   fromSalesforceContactToContactV2,
@@ -684,6 +684,10 @@ export const authConfig: ConnectorAuthConfig = {
   tokenPath: '/services/oauth2/token',
   authorizeHost: 'https://login.salesforce.com',
   authorizePath: '/services/oauth2/authorize',
+};
+
+export const additionalAuthConfig: AdditionalConnectorAuthConfig = {
+  authorizeWithScope: false,
 };
 
 function capitalizeString(str: string): string {

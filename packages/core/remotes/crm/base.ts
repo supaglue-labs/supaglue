@@ -127,7 +127,12 @@ export type ConnectorAuthConfig = {
   authorizePath: string;
 };
 
+export type AdditionalConnectorAuthConfig = {
+  authorizeWithScope: boolean;
+};
+
 export type CrmConnectorConfig<T extends CRMProviderName> = {
+  additionalAuthConfig: AdditionalConnectorAuthConfig;
   authConfig: ConnectorAuthConfig;
   newClient: (connection: ConnectionUnsafe<T>, integration: CRMIntegration) => AbstractCrmRemoteClient;
 };
