@@ -50,7 +50,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
-  public override async upsertCommonModelObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  public override async upsertCommonModelRecord<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     { providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']
@@ -112,7 +112,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     }
   }
 
-  public override async writeCommonModelObjects(
+  public override async writeCommonModelRecords(
     { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonModelType: CommonModelType,
     inputStream: Readable,

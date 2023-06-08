@@ -34,7 +34,7 @@ export class EngagementCommonModelService {
     const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
     if (writer) {
       const object = await remoteClient.getCommonModelRecord(type, id);
-      await writer.upsertCommonModelObject<'engagement', T>(connection, type, object);
+      await writer.upsertCommonModelRecord<'engagement', T>(connection, type, object);
     }
 
     return id;
@@ -52,7 +52,7 @@ export class EngagementCommonModelService {
     const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
     if (writer) {
       const object = await remoteClient.getCommonModelRecord(type, params.id);
-      await writer.upsertCommonModelObject<'engagement', T>(connection, type, object);
+      await writer.upsertCommonModelRecord<'engagement', T>(connection, type, object);
     }
   }
 }

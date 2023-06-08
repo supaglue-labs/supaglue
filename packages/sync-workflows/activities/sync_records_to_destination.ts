@@ -45,7 +45,7 @@ export function createSyncRecordsToDestination(
           updatedAfter,
           heartbeat
         );
-        return await writer.writeCommonModelObjects(
+        return await writer.writeCommonModelRecords(
           connection,
           commonModel as CRMCommonModelType,
           toHeartbeatingReadable(readable),
@@ -56,7 +56,7 @@ export function createSyncRecordsToDestination(
           commonModel as EngagementCommonModelType,
           updatedAfter
         );
-        return await writer.writeCommonModelObjects(
+        return await writer.writeCommonModelRecords(
           connection,
           commonModel as EngagementCommonModelType,
           toHeartbeatingReadable(readable),
