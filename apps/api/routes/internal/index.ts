@@ -10,6 +10,7 @@ import customer from './customer';
 import destination from './destination';
 import integration from './integration';
 import provider from './provider';
+import syncConfig from './sync_config';
 import syncHistory from './sync_history';
 import syncInfo from './sync_info';
 import webhook from './webhook';
@@ -134,6 +135,7 @@ export default function init(app: Router): void {
   integration(v1Router);
   provider(v1Router);
   webhook(v1Router);
+  syncConfig(v1Router);
   syncInfo(v1Router);
   syncHistory(v1Router);
 

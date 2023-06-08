@@ -8,6 +8,7 @@ import {
   ProviderService,
   RemoteService,
   SgUserService,
+  SyncConfigService,
   SyncHistoryService,
 } from './services';
 import { ApplicationService } from './services/application_service';
@@ -42,6 +43,7 @@ export type CoreDependencyContainer = {
   connectionService: ConnectionService;
   integrationService: IntegrationService;
   providerService: ProviderService;
+  syncConfigService: SyncConfigService;
   customerService: CustomerService;
   remoteService: RemoteService;
   syncHistoryService: SyncHistoryService;
@@ -106,6 +108,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const sgUserService = new SgUserService();
   const integrationService = new IntegrationService(prisma);
   const providerService = new ProviderService(prisma);
+  const syncConfigService = new SyncConfigService(prisma);
   const connectionService = new ConnectionService(prisma, integrationService);
   const customerService = new CustomerService(prisma);
   const remoteService = new RemoteService(connectionService, integrationService);
@@ -143,6 +146,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     customerService,
     integrationService,
     providerService,
+    syncConfigService,
     remoteService,
     webhookService,
     destinationService,

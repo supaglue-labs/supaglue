@@ -6,4 +6,5 @@ export * as engagement from './engagement';
 export * from './integration';
 export * from './params';
 export * from './provider';
+export * from './sync_config';
 export * from './sync_history';
