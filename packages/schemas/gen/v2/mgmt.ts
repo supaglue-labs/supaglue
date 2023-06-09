@@ -72,6 +72,28 @@ export interface paths {
       };
     };
   };
+  "/sync_configs": {
+    /**
+     * List Sync Configs 
+     * @description Get a list of Sync Configs
+     */
+    get: operations["getSyncConfigs"];
+    /** Create Sync Config */
+    post: operations["createSyncConfig"];
+  };
+  "/sync_configs/{sync_config_id}": {
+    /** Get Sync Config */
+    get: operations["getSyncConfig"];
+    /** Update Sync Config */
+    put: operations["updateSyncConfig"];
+    /** Delete Sync Config */
+    delete: operations["deleteSyncConfig"];
+    parameters: {
+      path: {
+        sync_config_id: string;
+      };
+    };
+  };
   "/integrations": {
     /**
      * List integrations 
@@ -321,6 +343,54 @@ export interface components {
         sync_all_fields?: boolean;
       };
     };
+    sync_config: {
+      /** @example 465fdcb7-26b4-4090-894c-67cab41022bb */
+      id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
+      destination_id: string;
+      /** @example 7f72ec07-e5c1-47fd-8cf5-e71dd13873af */
+      provider_id: string;
+      config: components["schemas"]["sync_config_data"];
+    };
+    /**
+     * @example {
+     *   "default_config": {
+     *     "period_ms": 60000,
+     *     "strategy": "full then incremental"
+     *   }
+     * }
+     */
+    sync_config_data: {
+      default_config: {
+        /** @example 60000 */
+        period_ms: number;
+        /** @enum {string} */
+        strategy: "full then incremental" | "full only";
+      };
+      common_objects: ({
+          /** @example contacts */
+          object: string;
+          raw_fields: boolean;
+          config_override?: {
+            /** @example 60000 */
+            period_ms?: number;
+            /** @enum {string} */
+            strategy?: "full then incremental" | "full only";
+          };
+        })[];
+      raw_objects: ({
+          /** @example contacts */
+          object: string;
+          config_override?: {
+            /** @example 60000 */
+            period_ms?: number;
+            /** @enum {string} */
+            strategy?: "full then incremental" | "full only";
+          };
+        })[];
+    };
     /**
      * @example {
      *   "provider_app_id": "my_app_id",
@@ -408,6 +478,13 @@ export interface components {
       type: "postgres";
       config: components["schemas"]["postgres_config"];
     }]>;
+    create_update_sync_config: {
+      /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
+      destination_id: string;
+      /** @example 7f72ec07-e5c1-47fd-8cf5-e71dd13873af */
+      provider_id: string;
+      config: components["schemas"]["sync_config_data"];
+    };
     webhook: {
       url: string;
       notify_on_sync_success: boolean;
@@ -700,6 +777,74 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["provider"];
+        };
+      };
+    };
+  };
+  getSyncConfigs: {
+    /**
+     * List Sync Configs 
+     * @description Get a list of Sync Configs
+     */
+    responses: {
+      /** @description SyncConfigs */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["sync_config"])[];
+        };
+      };
+    };
+  };
+  createSyncConfig: {
+    /** Create Sync Config */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_sync_config"];
+      };
+    };
+    responses: {
+      /** @description SyncConfig created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["sync_config"];
+        };
+      };
+    };
+  };
+  getSyncConfig: {
+    /** Get Sync Config */
+    responses: {
+      /** @description SyncConfig */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync_config"];
+        };
+      };
+    };
+  };
+  updateSyncConfig: {
+    /** Update Sync Config */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_sync_config"];
+      };
+    };
+    responses: {
+      /** @description SyncConfig */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync_config"];
+        };
+      };
+    };
+  };
+  deleteSyncConfig: {
+    /** Delete Sync Config */
+    responses: {
+      /** @description SyncConfig */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync_config"];
         };
       };
     };

@@ -97,6 +97,33 @@ export type DeleteProviderRequest = never;
 export type DeleteProviderResponse =
   operations['deleteProvider']['responses'][keyof operations['deleteProvider']['responses']]['content']['application/json'];
 
+export type GetSyncConfigsPathParams = never;
+export type GetSyncConfigsQueryParams = never;
+export type GetSyncConfigsRequest = never;
+export type GetSyncConfigsResponse =
+  operations['getSyncConfigs']['responses'][keyof operations['getSyncConfigs']['responses']]['content']['application/json'];
+
+export type CreateSyncConfigPathParams = never;
+export type CreateSyncConfigRequest = operations['createSyncConfig']['requestBody']['content']['application/json'];
+export type CreateSyncConfigResponse =
+  operations['createSyncConfig']['responses'][keyof operations['createSyncConfig']['responses']]['content']['application/json'];
+
+export type GetSyncConfigPathParams = paths[`/sync_configs/{sync_config_id}`]['parameters']['path'];
+export type GetSyncConfigRequest = never;
+export type GetSyncConfigResponse =
+  operations['getSyncConfig']['responses'][keyof operations['getSyncConfig']['responses']]['content']['application/json'];
+
+export type UpdateSyncConfigPathParams = paths[`/sync_configs/{sync_config_id}`]['parameters']['path'];
+export type UpdateSyncConfigRequest =
+  operations['updateSyncConfig']['requestBody'][keyof operations['updateSyncConfig']['requestBody']]['application/json'];
+export type UpdateSyncConfigResponse =
+  operations['updateSyncConfig']['responses'][keyof operations['updateSyncConfig']['responses']]['content']['application/json'];
+
+export type DeleteSyncConfigPathParams = paths[`/sync_configs/{sync_config_id}`]['parameters']['path'];
+export type DeleteSyncConfigRequest = never;
+export type DeleteSyncConfigResponse =
+  operations['deleteSyncConfig']['responses'][keyof operations['deleteSyncConfig']['responses']]['content']['application/json'];
+
 export type GetConnectionsPathParams = paths['/customers/{customer_id}/connections']['parameters']['path'];
 export type GetConnectionsQueryParams = never;
 export type GetConnectionsRequest = never;

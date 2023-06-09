@@ -5,7 +5,6 @@ import {
   EngagementNumRecordsSyncedMap,
   FullThenIncrementalSync,
   NumRecordsSyncedMap,
-  ReverseThenForwardSync,
 } from '@supaglue/types/sync';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
@@ -71,9 +70,6 @@ export async function runSync({ syncId, connectionId, category }: RunSyncArgs): 
     switch (sync.type) {
       case 'full then incremental':
         numRecordsSyncedMap = await doFullThenIncrementalSync({ sync, category });
-        break;
-      case 'reverse then forward':
-        numRecordsSyncedMap = await doReverseThenForwardSync({ sync, category });
         break;
       default:
         throw new Error('Sync type not supported.');
@@ -329,16 +325,6 @@ async function doFullThenIncrementalSync({
     case 'incremental':
       return await doIncrementalPhase();
   }
-}
-
-async function doReverseThenForwardSync({
-  sync,
-  category,
-}: {
-  sync: ReverseThenForwardSync;
-  category: ProviderCategory;
-}): Promise<Record<CommonModelType, number>> {
-  throw ApplicationFailure.nonRetryable('reverse then forward sync not currently supported');
 }
 
 const getDefaultMaxLastModifiedAtMsMap = (category: ProviderCategory): NumRecordsSyncedMap => {

@@ -39,6 +39,10 @@ paths:
     $ref: paths/providers.yaml
   '/providers/{provider_id}':
     $ref: paths/providers@{provider_id}.yaml
+  '/sync_configs':
+    $ref: paths/sync_configs.yaml
+  '/sync_configs/{sync_config_id}':
+    $ref: paths/sync_configs@{sync_config_id}.yaml
   '/integrations':
     $ref: paths/integrations.yaml
   '/integrations/{integration_id}':
@@ -83,6 +87,10 @@ components:
       $ref: ./components/schemas/objects/category.yaml
     integration_config:
       $ref: ./components/schemas/objects/integration_config.yaml
+    sync_config:
+      $ref: ./components/schemas/objects/sync_config.yaml
+    sync_config_data:
+      $ref: ./components/schemas/objects/sync_config_data.yaml
     provider_config:
       $ref: ./components/schemas/objects/provider_config.yaml
     provider_name:
@@ -99,6 +107,8 @@ components:
       $ref: ./components/schemas/create_update_provider.yaml
     create_update_destination:
       $ref: ./components/schemas/create_update_destination.yaml
+    create_update_sync_config:
+      $ref: ./components/schemas/create_update_sync_config.yaml
     webhook:
       $ref: ./components/schemas/objects/webhook.yaml
     sync_info:
