@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError } from '@supaglue/core/errors';
-import { getConnectorAuthConfig } from '@supaglue/core/remotes';
+import { getAdditionalConnectorAuthConfig, getConnectorAuthConfig } from '@supaglue/core/remotes';
 import { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, ProviderName } from '@supaglue/types';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
 import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supaglue/types/engagement';
@@ -22,7 +22,7 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl, loginUrl, version = 'v2' } = req.query;
+      const { applicationId, customerId, providerName, returnUrl, loginUrl, loginParams, version = 'v2' } = req.query;
 
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
@@ -60,6 +60,11 @@ export default function init(app: Router): void {
         auth.authorizeHost = loginUrl;
       }
 
+      if (loginParams) {
+        auth.tokenPath = `${auth.tokenPath}?${loginParams}`;
+        auth.authorizePath = `${auth.authorizePath}?${loginParams}`;
+      }
+
       const client = new simpleOauth2.AuthorizationCode({
         client: {
           id: oauthClientId,
@@ -76,14 +81,15 @@ export default function init(app: Router): void {
 
       const authorizationUri = client.authorizeURL({
         redirect_uri: REDIRECT_URI,
-        scope: oauthScopes.join(' '),
+        scope: oauthScopes,
         state: JSON.stringify({
           returnUrl,
           applicationId,
           customerId,
           providerName,
-          scope: oauthScopes.join(' '), // TODO: this should be in a session
+          scope: oauthScopes, // TODO: this should be in a session
           loginUrl,
+          loginParams,
           version,
         }),
         ...additionalAuthParams,
@@ -113,6 +119,7 @@ export default function init(app: Router): void {
         customerId,
         applicationId,
         loginUrl,
+        loginParams,
         version,
       }: {
         returnUrl: string;
@@ -121,6 +128,7 @@ export default function init(app: Router): void {
         providerName?: ProviderName;
         customerId?: string;
         loginUrl?: string;
+        loginParams?: string;
         version?: string;
       } = JSON.parse(decodeURIComponent(state));
 
@@ -153,10 +161,16 @@ export default function init(app: Router): void {
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
       const auth = getConnectorAuthConfig(integration.category, providerName);
+      const additionalAuth = getAdditionalConnectorAuthConfig(integration.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
         auth.authorizeHost = loginUrl;
+      }
+
+      if (loginParams) {
+        auth.tokenPath = `${auth.tokenPath}?${loginParams}`;
+        auth.authorizePath = `${auth.authorizePath}?${loginParams}`;
       }
 
       const client = new simpleOauth2.AuthorizationCode({
@@ -176,6 +190,7 @@ export default function init(app: Router): void {
       const tokenWrapper = await client.getToken({
         code,
         redirect_uri: REDIRECT_URI,
+        scope: additionalAuth.authorizeWithScope ? scope : undefined,
         ...additionalAuthParams,
       });
 

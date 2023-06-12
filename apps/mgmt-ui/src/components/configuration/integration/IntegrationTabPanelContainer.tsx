@@ -1,4 +1,5 @@
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
+import MsDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';
 import OutreachIcon from '@/assets/connector_icons/outreach.png';
 import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
@@ -49,6 +50,13 @@ export const integrationCardsInfo: IntegrationCardInfo[] = [
     providerName: 'outreach',
     category: 'engagement',
     description: 'Configure your Outreach integration.',
+  },
+  {
+    icon: <Image alt="ms_dynamics_365_sales" src={MsDynamics365SalesIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+    name: 'MsDynamics365Sales (ALPHA)',
+    providerName: 'ms_dynamics_365_sales',
+    category: 'crm',
+    description: 'Configure your MS Dynamics 365 Sales integration.',
   },
 ];
 

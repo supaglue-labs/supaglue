@@ -22,7 +22,7 @@ An embedded link takes the following form:
 <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
 ```
-https://api.supaglue.io/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}&loginUrl={LOGIN_URL}
+https://api.supaglue.io/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}
 ```
 
 </TabItem>
@@ -30,20 +30,21 @@ https://api.supaglue.io/oauth/connect?applicationId={APPLICATION_ID}&customerId=
 <TabItem value="localhost" label="Localhost">
 
 ```
-http://localhost:8080/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}&loginUrl={LOGIN_URL}
+http://localhost:8080/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}
 ```
 
 </TabItem>
 
 </Tabs>
 
-| Parameter          | Description                                                                                                                                                                     | Required |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| `{APPLICATION_ID}` | The unique identifier for your Supaglue application                                                                                                                             | Yes      |
-| `{CUSTOMER_ID}`    | The unique identifier for a customer in your application                                                                                                                        | Yes      |
-| `{PROVIDER_NAME}`  | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                                                                                                       | Yes      |
-| `{RETURN_URL}`     | The URL to return to once the OAuth connection is complete.<br/> <b>NOTE:</b> this should be uriEncoded                                                                         | Yes      |
-| `{LOGIN_URL}`      | The login URL for Salesforce.<br/> This is used for sandbox accounts and should be `https://test.salesforce.com` for that use case.<br/> <b>NOTE:</b> this should be uriEncoded | No       |
+| Parameter          | Description                                                                                                                                                                                                                                                  | Required |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| `{APPLICATION_ID}` | The unique identifier for your Supaglue application                                                                                                                                                                                                          | Yes      |
+| `{CUSTOMER_ID}`    | The unique identifier for a customer in your application                                                                                                                                                                                                     | Yes      |
+| `{PROVIDER_NAME}`  | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                                                                                                                                                                                    | Yes      |
+| `{RETURN_URL}`     | The URL to return to once the OAuth connection is complete.<br/> <b>NOTE:</b> this should be uriEncoded                                                                                                                                                      | Yes      |
+| `{LOGIN_URL}`      | The Oauth2 hostname for authorize and token endpoints. <br/> This can be used for Salesforce sandbox accounts and should be `https://test.salesforce.com` for that use case.<br/> <b>NOTE:</b> this should be uriEncoded                                     | No       |
+| `{LOGIN_PARAMS}`   | The query parameters to be added for Oauth2 authorize and token URLs. <br/> This can be used for MS Dynamics 365 Sales accounts to specify the `resource`, e.g. `resource=https://org8d6f84ed.crm.dynamics.com`.<br/> <b>NOTE:</b> this should be uriEncoded | No       |
 
 To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](../api/v2/crm) or management UI to create new integrations for your customers to have available for them to connect to.
 

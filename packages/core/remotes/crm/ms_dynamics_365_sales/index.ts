@@ -1,7 +1,7 @@
 import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable } from 'stream';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
+import { AbstractCrmRemoteClient, AdditionalConnectorAuthConfig, ConnectorAuthConfig } from '../base';
 
 class MsDynamics365Sales extends AbstractCrmRemoteClient {
   public constructor() {
@@ -48,7 +48,11 @@ export function newClient(
 
 export const authConfig: ConnectorAuthConfig = {
   tokenHost: 'https://login.microsoftonline.com',
-  tokenPath: '/common/oauth2/v2.0/token',
+  tokenPath: '/common/oauth2/token',
   authorizeHost: 'https://login.microsoftonline.com',
-  authorizePath: '/common/oauth2/v2.0/authorize',
+  authorizePath: '/common/oauth2/authorize',
+};
+
+export const additionalAuthConfig: AdditionalConnectorAuthConfig = {
+  authorizeWithScope: true,
 };
