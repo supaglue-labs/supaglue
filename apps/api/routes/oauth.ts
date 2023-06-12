@@ -8,7 +8,7 @@ import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supag
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
-const { integrationService, connectionAndSyncService } = getDependencyContainer();
+const { providerService, integrationService, connectionAndSyncService } = getDependencyContainer();
 
 const SERVER_URL = process.env.SUPAGLUE_SERVER_URL ?? 'http://localhost:8080';
 const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
@@ -44,16 +44,14 @@ export default function init(app: Router): void {
         throw new Error('Invalid version');
       }
 
-      const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
+      const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
 
-      if (!integration.config) {
-        throw new Error('Integration is not configured');
-      }
+      const {
+        oauthScopes,
+        credentials: { oauthClientId, oauthClientSecret },
+      } = provider.config.oauth;
 
-      const { oauthScopes } = integration.config.oauth;
-      const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
-
-      const auth = getConnectorAuthConfig(integration.category, providerName);
+      const auth = getConnectorAuthConfig(provider.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
@@ -144,15 +142,11 @@ export default function init(app: Router): void {
         throw new Error('No customerId on state object');
       }
 
-      const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
+      const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
 
-      if (!integration.config) {
-        throw new Error('Integration is not configured');
-      }
+      const { oauthClientId, oauthClientSecret } = provider.config.oauth.credentials;
 
-      const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
-
-      const auth = getConnectorAuthConfig(integration.category, providerName);
+      const auth = getConnectorAuthConfig(provider.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
@@ -196,10 +190,12 @@ export default function init(app: Router): void {
       }
 
       const basePayload = {
-        category: integration.category,
+        category: provider.category,
         applicationId,
         customerId,
-        integrationId: integration.id,
+        // TODO: Delete
+        integrationId: provider.id,
+        providerId: provider.id,
         credentials: {
           type: 'oauth2' as const,
           accessToken: tokenWrapper.token['access_token'] as string,
