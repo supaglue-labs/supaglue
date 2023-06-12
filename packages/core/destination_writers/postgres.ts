@@ -50,7 +50,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
-  public override async upsertObject<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  public override async upsertCommonModelRecord<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
     { providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonModelType: T,
     object: CommonModelTypeMapForCategory<P>['object']
@@ -112,7 +112,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     }
   }
 
-  public override async writeObjects(
+  public override async writeCommonModelRecords(
     { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonModelType: CommonModelType,
     inputStream: Readable,
@@ -178,19 +178,19 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
           objectMode: true,
           transform: (chunk, encoding, callback) => {
             try {
-              const { object, emittedAt } = chunk;
+              const { record, emittedAt } = chunk;
               const mappedRecord = {
                 _supaglue_application_id: applicationId,
                 _supaglue_provider_name: providerName,
                 _supaglue_customer_id: customerId,
                 _supaglue_emitted_at: emittedAt,
-                ...mapper(object),
+                ...mapper(record),
               };
 
               ++tempTableRowCount;
 
               // Update the max lastModifiedAt
-              const { lastModifiedAt } = object;
+              const { lastModifiedAt } = record;
               if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
                 maxLastModifiedAt = lastModifiedAt;
               }

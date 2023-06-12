@@ -180,7 +180,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              object: fromPipedrivePersonToContactV2(result),
+              record: fromPipedrivePersonToContactV2(result),
               emittedAt,
             })) ?? []
           );
@@ -202,7 +202,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              object: fromPipedriveLeadToLeadV2(result),
+              record: fromPipedriveLeadToLeadV2(result),
               emittedAt,
             })) ?? []
           );
@@ -256,7 +256,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((record) => ({
-              object: fromPipedriveDealToOpportunityV2(record, pipelineStageMapping),
+              record: fromPipedriveDealToOpportunityV2(record, pipelineStageMapping),
               emittedAt,
             })) ?? []
           );
@@ -278,7 +278,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              object: fromPipedriveOrganizationToAccountV2(result),
+              record: fromPipedriveOrganizationToAccountV2(result),
               emittedAt,
             })) ?? []
           );
@@ -300,7 +300,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              object: fromPipedriveUserToUserV2(result),
+              record: fromPipedriveUserToUserV2(result),
               emittedAt,
             })) ?? []
           );

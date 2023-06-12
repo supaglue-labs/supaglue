@@ -4,7 +4,7 @@ import { ASYNC_RETRY_OPTIONS, logger } from '.';
 import { TooManyRequestsError } from '../errors';
 
 export const isAxiosRateLimited = (e: any): boolean => {
-  return isAxiosError(e) && e.status === 429;
+  return isAxiosError(e) && e.response?.status === 429;
 };
 
 export const retryWhenAxiosRateLimited = async <Args extends any[], Return>(
