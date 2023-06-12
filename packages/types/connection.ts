@@ -19,6 +19,10 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = BaseConnect
     ? {
         instanceUrl: string;
       }
+    : T extends 'ms_dynamics_365_sales'
+    ? {
+        instanceUrl: string;
+      }
     : object);
 
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;
