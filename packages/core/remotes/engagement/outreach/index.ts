@@ -27,7 +27,6 @@ import {
   UnauthorizedError,
 } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
-import { AdditionalConnectorAuthConfig } from '../../crm/base';
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import {
@@ -413,10 +412,6 @@ export const authConfig: ConnectorAuthConfig = {
   tokenPath: '/oauth/token',
   authorizeHost: 'https://api.outreach.io',
   authorizePath: '/oauth/authorize',
-};
-
-export const additionalAuthConfig: AdditionalConnectorAuthConfig = {
-  authorizeWithScope: false,
 };
 
 function getUpdatedAfterPathParam(updatedAfter: Date) {

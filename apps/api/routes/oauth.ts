@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError } from '@supaglue/core/errors';
-import { getAdditionalConnectorAuthConfig, getConnectorAuthConfig } from '@supaglue/core/remotes';
+import { getConnectorAuthConfig } from '@supaglue/core/remotes';
 import { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, ProviderName } from '@supaglue/types';
 import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
 import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supaglue/types/engagement';
@@ -161,7 +161,6 @@ export default function init(app: Router): void {
       const { oauthClientId, oauthClientSecret } = integration.config.oauth.credentials;
 
       const auth = getConnectorAuthConfig(integration.category, providerName);
-      const additionalAuth = getAdditionalConnectorAuthConfig(integration.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
@@ -173,12 +172,14 @@ export default function init(app: Router): void {
         auth.authorizePath = `${auth.authorizePath}?${loginParams}`;
       }
 
+      const { authorizeWithScope, ...simpleOauth2Auth } = auth;
+
       const client = new simpleOauth2.AuthorizationCode({
         client: {
           id: oauthClientId,
           secret: oauthClientSecret,
         },
-        auth,
+        auth: simpleOauth2Auth,
         options: {
           authorizationMethod: 'body' as AuthorizationMethod,
         },
@@ -190,7 +191,7 @@ export default function init(app: Router): void {
       const tokenWrapper = await client.getToken({
         code,
         redirect_uri: REDIRECT_URI,
-        scope: additionalAuth.authorizeWithScope ? scope : undefined,
+        scope: auth.authorizeWithScope ? scope : undefined,
         ...additionalAuthParams,
       });
 

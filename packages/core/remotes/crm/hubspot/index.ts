@@ -63,7 +63,7 @@ import {
   retryWhenAxiosRateLimited,
 } from '../../../lib';
 import { paginator } from '../../utils/paginator';
-import { AbstractCrmRemoteClient, AdditionalConnectorAuthConfig, ConnectorAuthConfig } from '../base';
+import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromHubSpotCompanyToAccountV2,
   fromHubSpotContactToRemoteContact,
@@ -1435,10 +1435,6 @@ export const authConfig: ConnectorAuthConfig = {
   tokenPath: '/oauth/v1/token',
   authorizeHost: 'https://app.hubspot.com',
   authorizePath: '/oauth/authorize',
-};
-
-export const additionalAuthConfig: AdditionalConnectorAuthConfig = {
-  authorizeWithScope: false,
 };
 
 const isRateLimited = (e: any): boolean => {

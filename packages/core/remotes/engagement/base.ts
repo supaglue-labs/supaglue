@@ -60,14 +60,10 @@ export type ConnectorAuthConfig = {
   tokenPath: string;
   authorizeHost: string;
   authorizePath: string;
-};
-
-export type AdditionalConnectorAuthConfig = {
-  authorizeWithScope: boolean;
+  authorizeWithScope?: boolean;
 };
 
 export type EngagementConnectorConfig<T extends EngagementProviderName> = {
-  additionalAuthConfig: AdditionalConnectorAuthConfig;
   authConfig: ConnectorAuthConfig;
   newClient: (connection: ConnectionUnsafe<T>, integration: Integration) => AbstractEngagementRemoteClient;
 };
