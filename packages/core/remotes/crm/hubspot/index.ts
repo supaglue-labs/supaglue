@@ -83,6 +83,8 @@ const propertiesToFetch = {
     'description',
     'industry',
     'website',
+    'domain',
+    'hs_additional_domains',
     'numberofemployees',
     'address',
     'address2',
