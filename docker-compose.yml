@@ -93,6 +93,7 @@ services:
         apk add --update curl
         rm -rf /var/cache/apk/*
         curl -sSf https://temporal.download/cli.sh | sh
+        /root/.temporalio/bin/temporal operator search-attribute create --name SyncId --type Keyword --name ApplicationId --type Keyword --name CustomerId --type Keyword --name IntegrationId --type Keyword --name ConnectionId --type Keyword --name ProviderCategory --type Keyword --name ProviderName --type Keyword
         /root/.temporalio/bin/temporal server start-dev -n default --ip 0.0.0.0 -f /data/temporal.db
     volumes:
       - temporalitedata:/data
@@ -121,22 +122,7 @@ services:
         condition: service_started
     volumes:
       - .env:/app/.env
-    command:
-      - sh
-      - -c
-      - |
-        npx prisma migrate deploy
-        node node_modules/@supaglue/db/prisma/seed.js
-        apk add --update curl
-        rm -rf /var/cache/apk/*
-        curl -sSf https://temporal.download/cli.sh | sh
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name SyncId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name ApplicationId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name CustomerId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name IntegrationId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name ConnectionId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name ProviderCategory --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name ProviderName --type Keyword
+    command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js'
 
 volumes:
   pgdata:
