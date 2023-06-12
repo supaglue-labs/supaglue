@@ -210,6 +210,10 @@ export default function init(app: Router): void {
         remoteId = instanceUrl;
       }
 
+      if (providerName === 'ms_dynamics_365_sales') {
+        instanceUrl = tokenWrapper.token.resource as string;
+      }
+
       const basePayload = {
         category: integration.category,
         applicationId,
