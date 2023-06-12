@@ -30,7 +30,8 @@ export type SyncStrategyConfig = {
 
 export type CommonObjectConfig = {
   object: string;
-  rawFields: boolean;
+  // If true, all fields will be fetched into the raw object and not just the ones needed for the common model.
+  fetchAllFieldsIntoRaw: boolean;
   configOverride?: Partial<SyncStrategyConfig>;
 };
 

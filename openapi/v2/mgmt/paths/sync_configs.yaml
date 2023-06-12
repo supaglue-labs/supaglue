@@ -28,11 +28,11 @@ get:
                       strategy: full then incremental
                     common_objects:
                       - object: contacts
-                        raw_fields: false
+                        fetch_all_fields_into_raw: false
                         config_override:
                           strategy: full only
                       - object: accounts
-                        raw_fields: false
+                        fetch_all_fields_into_raw: false
                         config_override:
                           strategy: full only
                     raw_objects:
@@ -50,7 +50,7 @@ get:
                       strategy: full then incremental
                     common_objects:
                       - object: accounts
-                        raw_fields: false
+                        fetch_all_fields_into_raw: false
                     raw_objects:
                       - object: tasks
 post:

@@ -372,7 +372,7 @@ export interface components {
       common_objects: ({
           /** @example contacts */
           object: string;
-          raw_fields: boolean;
+          fetch_all_fields_into_raw: boolean;
           config_override?: {
             /** @example 60000 */
             period_ms?: number;
