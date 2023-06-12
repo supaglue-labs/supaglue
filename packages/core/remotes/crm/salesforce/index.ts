@@ -246,7 +246,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         transform: (chunk, encoding, callback) => {
           try {
             callback(null, {
-              object: chunk,
+              record: chunk,
               emittedAt: new Date(), // TODO: should we generate this timestamp earlier?
             });
           } catch (e: any) {
@@ -286,7 +286,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         transform: (chunk, encoding, callback) => {
           try {
             callback(null, {
-              object: mapper(chunk.object),
+              record: mapper(chunk.record),
               emittedAt: chunk.emittedAt,
             });
           } catch (e: any) {
