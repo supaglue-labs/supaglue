@@ -4,13 +4,14 @@ import {
   CommonModelTypeForCategory,
   CommonModelTypeMapForCategory,
   ConnectionSafeAny,
+  NormalizedRawRecord,
   ProviderCategory,
   ProviderName,
   S3Destination,
 } from '@supaglue/types';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
+import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteRawRecordsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 const CHUNK_SIZE = 1000;
@@ -45,8 +46,8 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     commonModelType: CommonModelType,
     inputStream: Readable,
     heartbeat: () => void
-  ): Promise<WriteCommonModelsResult> {
-    await this.dropExistingRecordsIfNecessary(
+  ): Promise<WriteCommonModelRecordsResult> {
+    await this.dropExistingCommonModelRecordsIfNecessary(
       connection.applicationId,
       connection.category,
       commonModelType,
@@ -82,7 +83,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
             }
 
             if (data.length === CHUNK_SIZE) {
-              await this.write(commonModelType, connection, data);
+              await this.writeCommonModelRecord(commonModelType, connection, data);
               heartbeat();
               data = [];
             }
@@ -96,14 +97,14 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
     // Write any remaining data
     if (data.length) {
-      await this.write(commonModelType, connection, data);
+      await this.writeCommonModelRecord(commonModelType, connection, data);
       heartbeat();
     }
 
     return { numRecords, maxLastModifiedAt };
   }
 
-  getKeyPrefix(
+  getCommonModelKeyPrefix(
     applicationId: string,
     category: ProviderCategory,
     commonModelType: CommonModelType,
@@ -113,10 +114,10 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     return `${applicationId}/${category}/${commonModelType}/${customerId}/${providerName}`;
   }
 
-  async write(
+  async writeCommonModelRecord(
     commonModelType: CommonModelType,
     { providerName, customerId, category, applicationId }: ConnectionSafeAny,
-    results: Record<string, any>[]
+    results: Record<string, any>[] // TODO: type this
   ): Promise<void> {
     if (results.length) {
       const ndjson = results
@@ -132,7 +133,13 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
       const command = new PutObjectCommand({
         Bucket: this.#destination.config.bucket,
-        Key: `${this.getKeyPrefix(applicationId, category, commonModelType, customerId, providerName)}/${Date.now()}`,
+        Key: `${this.getCommonModelKeyPrefix(
+          applicationId,
+          category,
+          commonModelType,
+          customerId,
+          providerName
+        )}/${Date.now()}`,
         Body: ndjson,
       });
 
@@ -140,7 +147,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     }
   }
 
-  async dropExistingRecordsIfNecessary(
+  async dropExistingCommonModelRecordsIfNecessary(
     applicationId: string,
     category: ProviderCategory,
     commonModelType: CommonModelType,
@@ -154,7 +161,123 @@ export class S3DestinationWriter extends BaseDestinationWriter {
       },
       {
         Bucket: this.#destination.config.bucket,
-        Prefix: this.getKeyPrefix(applicationId, category, commonModelType, customerId, providerName),
+        Prefix: this.getCommonModelKeyPrefix(applicationId, category, commonModelType, customerId, providerName),
+      }
+    );
+
+    for await (const page of paginator) {
+      const keys = page.Contents?.flatMap((content) => content.Key ?? []) ?? [];
+      if (!keys.length) {
+        continue;
+      }
+      const command = new DeleteObjectsCommand({
+        Bucket: this.#destination.config.bucket,
+        Delete: {
+          Objects: keys.map((key) => ({ Key: key })),
+        },
+      });
+      await this.#client.send(command);
+    }
+  }
+
+  public override async writeRawRecords(
+    connection: ConnectionSafeAny,
+    object: string,
+    inputStream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteRawRecordsResult> {
+    await this.dropExistingRawRecordsIfNecessary(
+      connection.applicationId,
+      object,
+      connection.customerId,
+      connection.providerName
+    );
+    const { providerName, customerId, applicationId } = connection;
+    let numRecords = 0;
+    let maxLastModifiedAt: Date | null = null;
+    let data: Record<string, unknown>[] = [];
+    await pipeline(
+      inputStream,
+      new Transform({
+        objectMode: true,
+        transform: async (record: NormalizedRawRecord, encoding, callback) => {
+          try {
+            numRecords++;
+            const mappedRecord = {
+              _supaglue_application_id: applicationId,
+              _supaglue_provider_name: providerName,
+              _supaglue_customer_id: customerId,
+              _supaglue_emitted_at: record.emittedAt,
+              _supaglue_is_deleted: record.isDeleted,
+              _supaglue_raw_data: record.rawData,
+              id: record.id,
+            };
+            data.push(mappedRecord);
+
+            // Update the max lastModifiedAt
+            const { lastModifiedAt } = record;
+            if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
+              maxLastModifiedAt = lastModifiedAt;
+            }
+
+            if (data.length === CHUNK_SIZE) {
+              await this.writeRawRecord(object, connection, data);
+              heartbeat();
+              data = [];
+            }
+            callback();
+          } catch (e: any) {
+            return callback(e);
+          }
+        },
+      })
+    );
+
+    // Write any remaining data
+    if (data.length) {
+      await this.writeRawRecord(object, connection, data);
+      heartbeat();
+    }
+
+    return { numRecords, maxLastModifiedAt };
+  }
+
+  getRawRecordKeyPrefix(applicationId: string, object: string, customerId: string, providerName: ProviderName) {
+    return `${applicationId}/${providerName}/${object}/${customerId}`;
+  }
+
+  async writeRawRecord(
+    object: string,
+    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    results: Record<string, any>[] // TODO: type this
+  ): Promise<void> {
+    if (results.length) {
+      const ndjson = results.map((result) => JSON.stringify(result)).join('\n');
+
+      const command = new PutObjectCommand({
+        Bucket: this.#destination.config.bucket,
+        Key: `${this.getRawRecordKeyPrefix(applicationId, object, customerId, providerName)}/${Date.now()}`,
+        Body: ndjson,
+      });
+
+      await this.#client.send(command);
+    }
+  }
+
+  async dropExistingRawRecordsIfNecessary(
+    applicationId: string,
+    object: string,
+    customerId: string,
+    providerName: ProviderName
+  ) {
+    const paginator = paginateListObjectsV2(
+      {
+        client: this.#client,
+        pageSize: 1000,
+      },
+      {
+        Bucket: this.#destination.config.bucket,
+        Prefix: this.getRawRecordKeyPrefix(applicationId, object, customerId, providerName),
       }
     );
 
