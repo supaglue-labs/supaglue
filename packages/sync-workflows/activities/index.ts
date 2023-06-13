@@ -23,6 +23,7 @@ import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
 import { createSetForceSyncFlag } from './set_force_sync_flag';
+import { createSyncRawRecordsToDestination } from './sync_raw_records_to_destination';
 import { createSyncRecordsToDestination } from './sync_records_to_destination';
 import { createUpdateSyncState } from './update_sync_state';
 
@@ -67,6 +68,11 @@ export const createActivities = ({
     updateSyncState: createUpdateSyncState(syncService),
     importRecords: createImportRecords(connectionService, remoteService, crm, engagement),
     syncRecordsToDestination: createSyncRecordsToDestination(connectionService, remoteService, destinationService),
+    syncRawRecordsToDestination: createSyncRawRecordsToDestination(
+      connectionService,
+      remoteService,
+      destinationService
+    ),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
     logSyncFinish: createLogSyncFinish({ syncHistoryService }),
     maybeSendSyncFinishWebhook: createMaybeSendSyncFinishWebhook({

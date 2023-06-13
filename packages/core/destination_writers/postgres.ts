@@ -3,8 +3,10 @@ import type {
   CommonModelTypeForCategory,
   CommonModelTypeMapForCategory,
   ConnectionSafeAny,
+  NormalizedRawRecord,
   PostgresDestination,
   ProviderCategory,
+  ProviderName,
 } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
@@ -26,7 +28,7 @@ import { keysOfSnakecasedSequenceV2WithTenant } from '../keys/engagement/sequenc
 import { keysOfSnakecasedSequenceStateV2WithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedEngagementUserV2WithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
-import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
+import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteRawRecordsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 const destinationIdToPool: Record<string, Pool> = {};
@@ -56,7 +58,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     object: CommonModelTypeMapForCategory<P>['object']
   ): Promise<void> {
     const { schema } = this.#destination.config;
-    const table = getTableName(category, commonModelType);
+    const table = getCommonModelTableName(category, commonModelType);
     const qualifiedTable = `${schema}.${table}`;
 
     const client = await this.#getClient();
@@ -64,9 +66,9 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(getSchemaSetupSql(category, commonModelType)(schema));
+      await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema));
 
-      const columns = getColumns(category, commonModelType);
+      const columns = getColumnsForCommonModel(category, commonModelType);
       const columnsToUpdate = columns.filter(
         (c) =>
           c !== '_supaglue_application_id' &&
@@ -117,11 +119,11 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     commonModelType: CommonModelType,
     inputStream: Readable,
     heartbeat: () => void
-  ): Promise<WriteCommonModelsResult> {
+  ): Promise<WriteCommonModelRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
 
     const { schema } = this.#destination.config;
-    const table = getTableName(category, commonModelType);
+    const table = getCommonModelTableName(category, commonModelType);
     const qualifiedTable = `${schema}.${table}`;
     const tempTable = `temp_${table}`;
 
@@ -130,7 +132,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(getSchemaSetupSql(category, commonModelType)(schema));
+      await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema));
 
       // Create a temporary table
       // TODO: on the first run, we should be able to directly write into the table and skip the temp table
@@ -140,7 +142,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)`
       );
 
-      const columns = getColumns(category, commonModelType);
+      const columns = getColumnsForCommonModel(category, commonModelType);
       const columnsToUpdate = columns.filter(
         (c) =>
           c !== '_supaglue_application_id' &&
@@ -238,9 +240,148 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       client.release();
     }
   }
+
+  public override async writeRawRecords(
+    { id: connectionId, providerName, customerId, applicationId }: ConnectionSafeAny,
+    object: string,
+    inputStream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteRawRecordsResult> {
+    const childLogger = logger.child({ connectionId, providerName, customerId, object });
+
+    const { schema } = this.#destination.config;
+    const table = getRawObjectTableName(providerName, object);
+    const qualifiedTable = `${schema}.${table}`;
+    const tempTable = `temp_${table}`;
+
+    const client = await this.#getClient();
+
+    try {
+      // Create tables if necessary
+      // TODO: We should only need to do this once at the beginning
+      await client.query(getRawObjectSchemaSetupSql(providerName, object, schema));
+
+      // Create a temporary table
+      // TODO: on the first run, we should be able to directly write into the table and skip the temp table
+      // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
+      await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${qualifiedTable})`);
+      await client.query(
+        `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)`
+      );
+
+      // TODO: Make this type-safe
+      const columns = [
+        '_supaglue_application_id',
+        '_supaglue_provider_name',
+        '_supaglue_customer_id',
+        '_supaglue_emitted_at',
+        '_supaglue_is_deleted',
+        '_supaglue_raw_data',
+        'id',
+      ];
+      const columnsToUpdate = columns.filter(
+        (c) =>
+          c !== '_supaglue_application_id' &&
+          c !== '_supaglue_provider_name' &&
+          c !== '_supaglue_customer_id' &&
+          c !== 'id'
+      );
+
+      // Output
+      const stream = client.query(
+        copyFrom(`COPY ${tempTable} (${columns.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`)
+      );
+
+      // Input
+      const stringifier = stringify({
+        columns,
+        cast: {
+          boolean: (value: boolean) => value.toString(),
+          object: (value: object) => JSON.stringify(value),
+          date: (value: Date) => value.toISOString(),
+        },
+        quoted: true,
+      });
+
+      // Keep track of stuff
+      let tempTableRowCount = 0;
+      let maxLastModifiedAt: Date | null = null;
+
+      childLogger.info('Importing raw records into temp table [IN PROGRESS]');
+      await pipeline(
+        inputStream,
+        new Transform({
+          objectMode: true,
+          transform: (record: NormalizedRawRecord, encoding, callback) => {
+            try {
+              const mappedRecord = {
+                _supaglue_application_id: applicationId,
+                _supaglue_provider_name: providerName,
+                _supaglue_customer_id: customerId,
+                _supaglue_emitted_at: record.emittedAt,
+                _supaglue_is_deleted: record.isDeleted,
+                _supaglue_raw_data: record.rawData,
+                id: record.id,
+              };
+
+              ++tempTableRowCount;
+
+              // Update the max lastModifiedAt
+              const { lastModifiedAt } = record;
+              if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
+                maxLastModifiedAt = lastModifiedAt;
+              }
+
+              callback(null, mappedRecord);
+            } catch (e: any) {
+              return callback(e);
+            }
+          },
+        }),
+        stringifier,
+        stream
+      );
+      childLogger.info('Importing raw records into temp table [COMPLETED]');
+
+      // Copy from temp table
+      childLogger.info({ offset: null }, 'Copying from temp table to main table [IN PROGRESS]');
+      const columnsToUpdateStr = columnsToUpdate.join(',');
+      const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
+
+      // Paginate
+      const batchSize = 10000;
+      for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
+        childLogger.info({ offset }, 'Copying from temp table to main table [IN PROGRESS]');
+        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
+        // For example, hubspot will return the same record twice when querying for `archived: true` if
+        // the record was archived, restored, and archived again.
+        // TODO: This may have performance implications. We should look into this later.
+        // https://github.com/supaglue-labs/supaglue/issues/497
+        await client.query(`INSERT INTO ${qualifiedTable}
+SELECT DISTINCT ON (id) * FROM (SELECT * FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
+        childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
+        heartbeat();
+      }
+
+      childLogger.info('Copying from temp table to main table [COMPLETED]');
+
+      return {
+        maxLastModifiedAt,
+        numRecords: tempTableRowCount, // TODO: not quite accurate (because there can be duplicates) but good enough
+      };
+    } finally {
+      client.release();
+    }
+  }
 }
 
-const getTableName = (category: ProviderCategory, commonModelType: CommonModelType) => {
+const getRawObjectTableName = (providerName: ProviderName, object: string) => {
+  return `${providerName}_${object}`;
+};
+
+const getCommonModelTableName = (category: ProviderCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return tableNamesByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -267,7 +408,7 @@ const tableNamesByCommonModelType: {
   },
 };
 
-const getColumns = (category: ProviderCategory, commonModelType: CommonModelType) => {
+const getColumnsForCommonModel = (category: ProviderCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return columnsByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }
@@ -294,7 +435,24 @@ const columnsByCommonModelType: {
   },
 };
 
-const getSchemaSetupSql = (category: ProviderCategory, commonModelType: CommonModelType) => {
+const getRawObjectSchemaSetupSql = (providerName: ProviderName, object: string, schema: string) => {
+  const tableName = getRawObjectTableName(providerName, object);
+
+  return `-- CreateTable
+CREATE TABLE IF NOT EXISTS "${schema}"."${tableName}" (
+  "_supaglue_application_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
+  "_supaglue_is_deleted" BOOLEAN NOT NULL,
+  "_supaglue_raw_data" JSONB NOT NULL,
+  "id" TEXT NOT NULL,
+
+  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+);`;
+};
+
+const getCommonModelSchemaSetupSql = (category: ProviderCategory, commonModelType: CommonModelType) => {
   if (category === 'crm') {
     return schemaSetupSqlByCommonModelType.crm[commonModelType as CRMCommonModelType];
   }

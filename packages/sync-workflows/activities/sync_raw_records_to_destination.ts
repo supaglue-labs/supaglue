@@ -1,74 +1,53 @@
 import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
-import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
 import { ConnectionService, RemoteService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
-import { CommonModelType } from '@supaglue/types';
-import { CRMCommonModelType } from '@supaglue/types/crm';
-import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 
-export type SyncRecordsToDestinationArgs = {
+export type SyncRawRecordsToDestinationArgs = {
   syncId: string;
   connectionId: string;
-  commonModel: CommonModelType;
-  updatedAfterMs?: number;
+  object: string;
+  modifiedAfterMs?: number;
 };
 
-export type SyncRecordsToDestinationResult = {
+export type SyncRawRecordsToDestinationResult = {
   syncId: string;
   connectionId: string;
-  commonModel: CommonModelType;
+  object: string;
   maxLastModifiedAtMs: number;
   numRecordsSynced: number;
 };
 
-export function createSyncRecordsToDestination(
+export function createSyncRawRecordsToDestination(
   connectionService: ConnectionService,
   remoteService: RemoteService,
   destinationService: DestinationService
 ) {
-  return async function syncRecordsToDestination({
+  return async function syncRawRecordsToDestination({
     syncId,
     connectionId,
-    commonModel,
-    updatedAfterMs,
-  }: SyncRecordsToDestinationArgs): Promise<SyncRecordsToDestinationResult> {
+    object,
+    modifiedAfterMs,
+  }: SyncRawRecordsToDestinationArgs): Promise<SyncRawRecordsToDestinationResult> {
+    const modifiedAfter = modifiedAfterMs ? new Date(modifiedAfterMs) : undefined;
+
     async function writeObjects(writer: DestinationWriter) {
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
-        const readable = await (client as CrmRemoteClient).listCommonModelRecords(
-          commonModel as CRMCommonModelType,
-          updatedAfter,
-          heartbeat
-        );
-        return await writer.writeCommonModelRecords(
-          connection,
-          commonModel as CRMCommonModelType,
-          toHeartbeatingReadable(readable),
-          heartbeat
-        );
+        const stream = await (client as CrmRemoteClient).listRecords(object, modifiedAfter, heartbeat);
+        return await writer.writeRawRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
       } else {
-        const readable = await (client as EngagementRemoteClient).listCommonModelRecords(
-          commonModel as EngagementCommonModelType,
-          updatedAfter
-        );
-        return await writer.writeCommonModelRecords(
-          connection,
-          commonModel as EngagementCommonModelType,
-          toHeartbeatingReadable(readable),
-          heartbeat
-        );
+        throw ApplicationFailure.nonRetryable(`Unsupported category: ${client.category()}`);
       }
     }
 
     const connection = await connectionService.getSafeById(connectionId);
 
-    logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: commonModel });
-
-    const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
+    // TODO: Don't hack and use the same logEvent method
+    logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: object });
 
     const client = await remoteService.getRemoteClient(connectionId);
 
@@ -79,17 +58,18 @@ export function createSyncRecordsToDestination(
 
     const result = await writeObjects(writer);
 
+    // TODO: Don't hack and use the same logEvent method
     logEvent({
       eventName: 'Partially Completed Sync',
       syncId,
       providerName: connection.providerName,
-      modelName: commonModel,
+      modelName: object,
     });
 
     return {
       syncId,
       connectionId,
-      commonModel,
+      object,
       maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : 0,
       numRecordsSynced: result.numRecords,
     };
