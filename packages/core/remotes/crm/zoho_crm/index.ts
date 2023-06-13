@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
+import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -39,7 +39,7 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'zoho_crm'>, integration: CRMIntegration): ZohoCrmClient {
+export function newClient(connection: ConnectionUnsafe<'zoho_crm'>, provider: CRMProvider): ZohoCrmClient {
   return new ZohoCrmClient();
 }
 

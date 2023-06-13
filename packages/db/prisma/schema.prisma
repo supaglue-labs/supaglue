@@ -68,7 +68,6 @@ model Integration {
   config        Json? // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
-  connections   Connection[]
 
   @@unique([applicationId, providerName])
   @@map("integrations")
@@ -113,30 +112,37 @@ model IntegrationChange {
   @@map("integration_changes")
 }
 
+model SyncConfigChange {
+  id           String   @id @default(uuid())
+  syncConfigId String   @map("sync_config_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("sync_config_changes")
+}
+
 model Connection {
-  id            String      @id @default(uuid())
-  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
-  integrationId String      @map("integration_id")
+  id            String     @id @default(uuid())
+  integrationId String     @map("integration_id")
   // CRM, HRIS, etc.
   category      String
   // Salesforce, Hubspot, etc.
-  providerName  String      @map("provider_name")
+  providerName  String     @map("provider_name")
   status        String // available | added | authorized | callable
   credentials   Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
-  customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId    String      @map("customer_id")
+  customer      Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId    String     @map("customer_id")
   /// Deprecated
-  remoteId      String      @map("remote_id")
-  instanceUrl   String      @default("") @map("instance_url")
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  remoteId      String     @map("remote_id")
+  instanceUrl   String     @default("") @map("instance_url")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
   sync          Sync?
   replayIds     ReplayId[]
-  provider      Provider?   @relation(fields: [providerId], references: [id])
-  // TODO: Eventually make this required
-  providerId    String?     @map("provider_id")
+  provider      Provider   @relation(fields: [providerId], references: [id])
+  providerId    String     @map("provider_id")
 
   @@unique([customerId, integrationId])
+  @@unique([customerId, providerId])
   @@map("connections")
 }
 

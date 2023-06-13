@@ -22,9 +22,10 @@ import {
 
 import {
   ConnectionUnsafe,
-  CRMIntegration,
+  CRMProvider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
+  SyncConfig,
 } from '@supaglue/types';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
@@ -190,7 +191,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
 
   readonly #instanceUrl: string;
   readonly #refreshToken: string;
-  readonly #syncAllFields: boolean;
   #accessToken: string;
 
   public constructor({
@@ -200,7 +200,6 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     clientId,
     clientSecret,
     loginUrl,
-    syncAllFields,
   }: {
     instanceUrl: string;
     refreshToken: string;
@@ -208,14 +207,12 @@ class SalesforceClient extends AbstractCrmRemoteClient {
     clientId: string;
     clientSecret: string;
     loginUrl?: string;
-    syncAllFields?: boolean;
   }) {
     super(instanceUrl);
 
     this.#instanceUrl = instanceUrl;
     this.#refreshToken = refreshToken;
     this.#accessToken = accessToken;
-    this.#syncAllFields = !!syncAllFields;
 
     this.#client = new jsforce.Connection({
       oauth2: new jsforce.OAuth2({
@@ -267,12 +264,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public override async listCommonModelRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date | undefined,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    fetchAllFields = false
   ): Promise<Readable> {
     const sobject = capitalizeString(commonModelType);
 
     const allProperties = await this.getSObjectProperties(sobject);
-    const propertiesToFetch = this.#syncAllFields
+    const propertiesToFetch = fetchAllFields
       ? allProperties
       : intersection(allProperties, propertiesForCommonModel[commonModelType]);
 
@@ -667,15 +665,18 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'salesforce'>, integration: CRMIntegration): SalesforceClient {
+export function newClient(
+  connection: ConnectionUnsafe<'salesforce'>,
+  provider: CRMProvider,
+  syncConfig?: SyncConfig
+): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
-    clientId: integration.config.oauth.credentials.oauthClientId,
-    clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+    clientId: provider.config.oauth.credentials.oauthClientId,
+    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
     loginUrl: connection.credentials.loginUrl,
-    syncAllFields: integration.config.sync.syncAllFields,
   });
 }
 

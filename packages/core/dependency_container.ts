@@ -109,9 +109,9 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const integrationService = new IntegrationService(prisma);
   const providerService = new ProviderService(prisma);
   const syncConfigService = new SyncConfigService(prisma);
-  const connectionService = new ConnectionService(prisma, integrationService);
+  const connectionService = new ConnectionService(prisma, providerService);
   const customerService = new CustomerService(prisma);
-  const remoteService = new RemoteService(connectionService, integrationService);
+  const remoteService = new RemoteService(connectionService, providerService);
   const webhookService = new WebhookService({ prisma });
   const destinationService = new DestinationService(prisma);
 

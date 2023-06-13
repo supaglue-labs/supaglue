@@ -1,48 +1,48 @@
 import { ConnectionUnsafe } from '@supaglue/types';
+import { ProviderService } from '.';
 import { logger } from '../lib';
 import { getCrmRemoteClient } from '../remotes/crm';
 import type { CrmRemoteClient } from '../remotes/crm/base';
 import { getEngagementRemoteClient } from '../remotes/engagement';
 import type { EngagementRemoteClient } from '../remotes/engagement/base';
 import type { ConnectionService } from './connection_service';
-import type { IntegrationService } from './integration_service';
 
 export class RemoteService {
   #connectionService: ConnectionService;
-  #integrationService: IntegrationService;
+  #providerService: ProviderService;
 
-  public constructor(connectionService: ConnectionService, integrationService: IntegrationService) {
+  public constructor(connectionService: ConnectionService, providerService: ProviderService) {
     this.#connectionService = connectionService;
-    this.#integrationService = integrationService;
+    this.#providerService = providerService;
   }
 
   public async getRemoteClient(connectionId: string): Promise<CrmRemoteClient | EngagementRemoteClient> {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
-    const integration = await this.#integrationService.getById(connection.integrationId);
+    const provider = await this.#providerService.getById(connection.providerId);
 
-    if (connection.category !== integration.category) {
+    if (connection.category !== provider.category) {
       throw new Error(
-        `Connection category ${connection.category} does not match integration category ${integration.category}.`
+        `Connection category ${connection.category} does not match provider category ${provider.category}.`
       );
     }
 
-    if (connection.providerName !== integration.providerName) {
+    if (connection.providerName !== provider.name) {
       throw new Error(
-        `Connection providerName ${connection.providerName} does not match integration providerName ${integration.providerName}.`
+        `Connection providerName ${connection.providerName} does not match provider providerName ${provider.name}.`
       );
     }
 
-    if (!integration.config) {
-      throw new Error('Integration must have config');
+    if (!provider.config) {
+      throw new Error('provider must have config');
     }
 
     let client: CrmRemoteClient | EngagementRemoteClient;
-    if (integration.category === 'crm') {
-      const { providerName } = integration;
-      client = getCrmRemoteClient(connection as ConnectionUnsafe<typeof providerName>, integration);
+    if (provider.category === 'crm') {
+      const { name } = provider;
+      client = getCrmRemoteClient(connection as ConnectionUnsafe<typeof name>, provider);
     } else {
-      const { providerName } = integration;
-      client = getEngagementRemoteClient(connection as ConnectionUnsafe<typeof providerName>, integration);
+      const { name } = provider;
+      client = getEngagementRemoteClient(connection as ConnectionUnsafe<typeof name>, provider);
     }
 
     // Persist the refreshed token

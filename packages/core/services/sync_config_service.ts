@@ -27,6 +27,16 @@ export class SyncConfigService {
     return fromSyncConfigModel(syncConfig);
   }
 
+  public async findByProviderId(providerId: string): Promise<SyncConfig | null> {
+    const syncConfig = await this.#prisma.syncConfig.findUnique({
+      where: { providerId },
+    });
+    if (!syncConfig) {
+      return null;
+    }
+    return fromSyncConfigModel(syncConfig);
+  }
+
   public async getByProviderId(providerId: string): Promise<SyncConfig> {
     const syncConfig = await this.#prisma.syncConfig.findUnique({
       where: { providerId },
@@ -47,8 +57,26 @@ export class SyncConfigService {
     return fromSyncConfigModel(syncConfig);
   }
 
+  public async getBySyncId(syncId: string): Promise<SyncConfig | null> {
+    const sync = await this.#prisma.sync.findUnique({
+      where: { id: syncId },
+    });
+    if (!sync) {
+      throw new NotFoundError(`Can't find sync with id: ${syncId}`);
+    }
+    if (!sync.syncConfigId) {
+      return null;
+    }
+    return await this.getById(sync.syncConfigId);
+  }
+
   public async list(applicationId: string): Promise<SyncConfig[]> {
     const syncConfigs = await this.#prisma.syncConfig.findMany({ where: { applicationId } });
+    return Promise.all(syncConfigs.map(fromSyncConfigModel));
+  }
+
+  public async listByIds(ids: string[]): Promise<SyncConfig[]> {
+    const syncConfigs = await this.#prisma.syncConfig.findMany({ where: { id: { in: ids } } });
     return Promise.all(syncConfigs.map(fromSyncConfigModel));
   }
 

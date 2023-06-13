@@ -1,5 +1,5 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
-import { ConnectionService, IntegrationService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
+import { ConnectionService, ProviderService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
 import {
   AccountService,
   ContactService as CrmContactService,
@@ -27,7 +27,7 @@ type DependencyContainer = {
   remoteService: RemoteService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
-  integrationService: IntegrationService;
+  providerService: ProviderService;
   applicationService: ApplicationService;
   crm: {
     contactService: CrmContactService;
@@ -50,8 +50,16 @@ type DependencyContainer = {
 let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
-  const { prisma, connectionService, remoteService, syncHistoryService, integrationService, crm, engagement } =
-    getCoreDependencyContainer();
+  const {
+    prisma,
+    connectionService,
+    remoteService,
+    syncHistoryService,
+    providerService,
+    syncConfigService,
+    crm,
+    engagement,
+  } = getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
     process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
@@ -75,7 +83,7 @@ function createDependencyContainer(): DependencyContainer {
     }),
   });
 
-  const syncService = new SyncService(prisma, temporalClient, connectionService, integrationService);
+  const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService);
   const applicationService = new ApplicationService(prisma);
   const destinationService = new DestinationService(prisma);
 
@@ -87,7 +95,7 @@ function createDependencyContainer(): DependencyContainer {
     remoteService,
     syncService,
     syncHistoryService,
-    integrationService,
+    providerService,
     crm,
     engagement,
     destinationService,

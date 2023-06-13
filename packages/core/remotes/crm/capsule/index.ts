@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
+import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -39,7 +39,7 @@ class CapsuleClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'capsule'>, integration: CRMIntegration): CapsuleClient {
+export function newClient(connection: ConnectionUnsafe<'capsule'>, provider: CRMProvider): CapsuleClient {
   return new CapsuleClient();
 }
 

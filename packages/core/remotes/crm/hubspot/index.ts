@@ -14,7 +14,7 @@ import {
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
   ConnectionUnsafe,
-  CRMIntegration,
+  CRMProvider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -257,7 +257,6 @@ type HubspotClientConfig = {
   expiresAt: string | null; // ISO string
   clientId: string;
   clientSecret: string;
-  syncAllFields?: boolean;
 };
 
 class HubSpotClient extends AbstractCrmRemoteClient {
@@ -506,17 +505,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async listCommonModelRecords(
     commonModelType: CRMCommonModelType,
-    updatedAfter?: Date | undefined
+    updatedAfter?: Date | undefined,
+    heartbeat?: () => void,
+    fetchAllFields?: boolean
   ): Promise<Readable> {
     switch (commonModelType) {
       case 'account':
-        return this.listAccounts(updatedAfter);
+        return this.listAccounts(updatedAfter, fetchAllFields);
       case 'contact':
-        return this.listContacts(updatedAfter);
+        return this.listContacts(updatedAfter, fetchAllFields);
       case 'lead':
-        return this.listLeads(updatedAfter);
+        return this.listLeads(updatedAfter, fetchAllFields);
       case 'opportunity':
-        return this.listOpportunities(updatedAfter);
+        return this.listOpportunities(updatedAfter, fetchAllFields);
       case 'user':
         return this.listUsers();
       default:
@@ -592,16 +593,16 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getCommonModelPropertiesToFetch(objectType: HubSpotCommonModelObjectType) {
+  private async getCommonModelPropertiesToFetch(objectType: HubSpotCommonModelObjectType, fetchAllFields = false) {
     const availableProperties = await this.getObjectTypeProperties(objectType);
-    if (this.#config.syncAllFields) {
+    if (fetchAllFields) {
       return availableProperties;
     }
     return intersection(availableProperties, propertiesToFetch[objectType]);
   }
 
-  public async listAccounts(updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('company');
+  public async listAccounts(updatedAfter?: Date, fetchAllFields = false): Promise<Readable> {
+    const properties = await this.getCommonModelPropertiesToFetch('company', fetchAllFields);
     const normalPageFetcher = await this.#getListNormalAccountsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listAccountsFull(properties, /* archived */ true, after);
@@ -749,8 +750,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public async listOpportunities(updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('deal');
+  public async listOpportunities(updatedAfter?: Date, fetchAllFields?: boolean): Promise<Readable> {
+    const properties = await this.getCommonModelPropertiesToFetch('deal', fetchAllFields);
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
@@ -922,8 +923,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return deal.id;
   }
 
-  public async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('contact');
+  public async listContacts(updatedAfter?: Date, fetchAllFields?: boolean): Promise<Readable> {
+    const properties = await this.getCommonModelPropertiesToFetch('contact', fetchAllFields);
     const normalPageFetcher = await this.#getListNormalContactsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listContactsFull(properties, /* archived */ true, after);
@@ -1091,7 +1092,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return contact.id;
   }
 
-  public async listLeads(updatedAfter?: Date): Promise<Readable> {
+  public async listLeads(updatedAfter?: Date, fetchAllFields?: boolean): Promise<Readable> {
     return Readable.from([]);
   }
 
@@ -1419,14 +1420,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'hubspot'>, integration: CRMIntegration): HubSpotClient {
+export function newClient(connection: ConnectionUnsafe<'hubspot'>, provider: CRMProvider): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
     expiresAt: connection.credentials.expiresAt,
-    clientId: integration.config.oauth.credentials.oauthClientId,
-    clientSecret: integration.config.oauth.credentials.oauthClientSecret,
-    syncAllFields: integration.config.sync.syncAllFields,
+    clientId: provider.config.oauth.credentials.oauthClientId,
+    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
   });
 }
 

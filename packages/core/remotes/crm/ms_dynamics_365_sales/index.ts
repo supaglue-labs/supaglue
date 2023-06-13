@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, CRMIntegration } from '@supaglue/types';
+import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -41,7 +41,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
 export function newClient(
   connection: ConnectionUnsafe<'ms_dynamics_365_sales'>,
-  integration: CRMIntegration
+  provider: CRMProvider
 ): MsDynamics365Sales {
   return new MsDynamics365Sales();
 }
