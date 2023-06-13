@@ -5,7 +5,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { Prisma, PrismaClient, Sync as SyncModel } from '@supaglue/db';
+import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
   processSyncChanges,
@@ -107,8 +107,8 @@ export class ConnectionAndSyncService {
       const connectionId = uuidv4();
       const syncId = uuidv4();
 
-      const txns: Prisma.PrismaPromise<any>[] = [
-        this.#prisma.connection.create({
+      const connectionModel = await this.#prisma.$transaction(async () => {
+        const connectionModel = await this.#prisma.connection.create({
           data: {
             id: connectionId,
             category: params.category,
@@ -121,12 +121,9 @@ export class ConnectionAndSyncService {
             instanceUrl: params.instanceUrl,
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
-        }),
-      ];
-
-      if (syncConfig) {
-        txns.push(
-          this.#prisma.sync.create({
+        });
+        if (syncConfig) {
+          await this.#prisma.sync.create({
             data: {
               id: syncId,
               connectionId,
@@ -139,16 +136,15 @@ export class ConnectionAndSyncService {
               },
               version,
             },
-          }),
-          this.#prisma.syncChange.create({
+          });
+          await this.#prisma.syncChange.create({
             data: {
               syncId,
             },
-          })
-        );
-      }
-
-      const [connectionModel] = await this.#prisma.$transaction(txns);
+          });
+        }
+        return connectionModel;
+      });
 
       const connection = await fromConnectionModelToConnectionUnsafe<ProviderName>(connectionModel);
 
