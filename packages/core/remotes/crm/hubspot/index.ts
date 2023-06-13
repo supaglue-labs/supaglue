@@ -15,6 +15,7 @@ import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } 
 import {
   ConnectionUnsafe,
   CRMProvider,
+  NormalizedRawRecord,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -98,6 +99,23 @@ const hubspotObjectTypeSingularToPlural = {
   task: 'tasks',
 };
 
+const hubspotObjectTypeToAssociatedObjectTypes: Record<HubSpotObjectType, HubSpotObjectType[]> = {
+  company: ['contact'],
+  contact: ['contact', 'company'],
+  deal: ['contact', 'company', 'line_item'],
+  line_item: ['deal'],
+  product: [],
+  ticket: ['contact', 'deal', 'company'],
+  quote: [],
+  call: ['contact', 'deal', 'company', 'ticket'],
+  communication: ['contact', 'deal', 'company', 'ticket'],
+  email: ['contact', 'deal', 'company', 'ticket'],
+  meeting: ['contact', 'deal', 'company', 'ticket'],
+  note: ['contact', 'deal', 'company', 'ticket'],
+  postal_mail: ['contact', 'deal', 'company', 'ticket'],
+  task: ['contact', 'deal', 'company', 'ticket'],
+};
+
 const HUBSPOT_OBJECT_TYPES = [
   'company',
   'contact',
@@ -159,6 +177,11 @@ type RecordWithFlattenedAssociations = {
 
 type RecordsResponseWithFlattenedAssociations = {
   results: RecordWithFlattenedAssociations[];
+  paging?: HubSpotPaging;
+};
+
+type NormalizedRecordsResponseWithFlattenedAssociations = {
+  results: NormalizedRawRecord<RecordWithFlattenedAssociations>[];
   paging?: HubSpotPaging;
 };
 
@@ -304,7 +327,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const normalPageFetcher = await this.#getListRecordsFetcher(
       objectType,
       propertiesToFetch,
-      /* associatedObjectTypes */ [], // TODO fill these in
+      hubspotObjectTypeToAssociatedObjectTypes[objectType],
       /* archived */ false,
       modifiedAfter
     );
@@ -312,7 +335,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const archivedPageFetcher = await this.#getListRecordsFetcher(
       objectType,
       propertiesToFetch,
-      /* associatedObjectTypes */ [], // TODO fill these in
+      hubspotObjectTypeToAssociatedObjectTypes[objectType],
       /* archived */ true,
       modifiedAfter
     );
@@ -320,18 +343,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(response.results.map((result) => ({ record: result, emittedAt })));
-        },
+        createStreamFromPage: (response) => Readable.from(response.results),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(response.results.map((result) => ({ record: result, emittedAt })));
-        },
+        createStreamFromPage: (response) => Readable.from(response.results),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -343,7 +360,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     associatedObjectTypes: HubSpotObjectType[],
     archived: boolean,
     modifiedAfter?: Date
-  ): Promise<(after?: string) => Promise<RecordsResponseWithFlattenedAssociations>> {
+  ): Promise<(after?: string) => Promise<NormalizedRecordsResponseWithFlattenedAssociations>> {
     if (archived) {
       return async (after?: string) => {
         const response = await this.#fetchPageOfFullRecords(
@@ -353,7 +370,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           /* archived */ true,
           after
         );
-        return filterForArchivedAfterISOString(response, modifiedAfter);
+        const filteredResponse = filterForArchivedAfterISOString(response, modifiedAfter);
+        return normalizeResponse(filteredResponse);
       };
     }
 
@@ -376,11 +394,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             /* archived */ false,
             after
           );
-          return filterForUpdatedAfterISOString(response, modifiedAfter);
+          const filteredResponse = filterForUpdatedAfterISOString(response, modifiedAfter);
+          return normalizeResponse(filteredResponse);
         };
       }
       return async (after?: string) => {
-        return await this.#fetchPageOfIncrementalRecords(
+        const response = await this.#fetchPageOfIncrementalRecords(
           objectType,
           propertiesToFetch,
           associatedObjectTypes,
@@ -388,17 +407,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           HUBSPOT_RECORD_LIMIT,
           after
         );
+        return normalizeResponse(response);
       };
     }
 
     return async (after?: string) => {
-      return await this.#fetchPageOfFullRecords(
+      const response = await this.#fetchPageOfFullRecords(
         objectType,
         propertiesToFetch,
         associatedObjectTypes,
         /* archived */ false,
         after
       );
+      return normalizeResponse(response);
     };
   }
 
@@ -1543,5 +1564,20 @@ function filterForArchivedAfterISOString<
 
       return archivedAfter.toISOString() < record.archivedAt;
     }),
+  };
+}
+
+function normalizeResponse(
+  response: RecordsResponseWithFlattenedAssociations
+): NormalizedRecordsResponseWithFlattenedAssociations {
+  return {
+    results: response.results.map((result) => ({
+      id: result.id,
+      rawData: result,
+      isDeleted: result.archived,
+      lastModifiedAt: result.archivedAt ? new Date(result.archivedAt) : new Date(result.updatedAt),
+      emittedAt: new Date(),
+    })),
+    paging: response.paging,
   };
 }

@@ -42,10 +42,9 @@ export function createSyncRecordsToDestination(
       (obj) => obj.object === commonModel
     )?.fetchAllFieldsIntoRaw;
     async function writeObjects(writer: DestinationWriter) {
-      let readable: Readable;
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
-        readable = await (client as CrmRemoteClient).listCommonModelRecords(
+        const readable = await (client as CrmRemoteClient).listCommonModelRecords(
           commonModel as CRMCommonModelType,
           updatedAfter,
           heartbeat,
@@ -58,7 +57,7 @@ export function createSyncRecordsToDestination(
           heartbeat
         );
       } else {
-        readable = await (client as EngagementRemoteClient).listCommonModelRecords(
+        const readable = await (client as EngagementRemoteClient).listCommonModelRecords(
           commonModel as EngagementCommonModelType,
           updatedAfter
         );
@@ -83,28 +82,6 @@ export function createSyncRecordsToDestination(
     if (!writer) {
       throw ApplicationFailure.nonRetryable(`No destination found for sync ${syncId}`);
     }
-
-    // TODO: Begin testing of listRecords
-
-    // const stream = await (client as CrmRemoteClient).listRecords('contact', new Date(0), heartbeat);
-
-    // await pipelineAsync(
-    //   stream,
-    //   new Transform({
-    //     objectMode: true,
-    //     transform: (chunk, encoding, callback) => {
-    //       Context.current().heartbeat();
-    //       console.log('got a thing', JSON.stringify(chunk, null, 2));
-    //       try {
-    //         callback(null, chunk);
-    //       } catch (e: any) {
-    //         return callback(e);
-    //       }
-    //     },
-    //   })
-    // );
-
-    // TODO: End testing of listRecords
 
     const result = await writeObjects(writer);
 

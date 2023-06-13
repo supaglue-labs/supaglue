@@ -258,7 +258,32 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override async listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     const allProperties = await this.getSObjectProperties(object);
-    return this.#listObjectsHelper(object, allProperties, modifiedAfter, heartbeat);
+    const stream = await this.#listObjectsHelper(object, allProperties, modifiedAfter, heartbeat);
+
+    return pipeline(
+      stream,
+      new Transform({
+        objectMode: true,
+        transform: (chunk, encoding, callback) => {
+          // TODO: types
+          const { record, emittedAt } = chunk;
+          try {
+            // TODO: types
+            callback(null, {
+              id: record.Id,
+              rawData: record,
+              isDeleted: record.IsDeleted === 'true',
+              lastModifiedAt: new Date(record.SystemModstamp),
+              emittedAt: emittedAt,
+            });
+          } catch (e: any) {
+            return callback(e);
+          }
+        },
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      () => {}
+    );
   }
 
   public override async listCommonModelRecords(

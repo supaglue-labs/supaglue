@@ -7,7 +7,12 @@ import type {
 } from '@supaglue/types';
 import type { Readable } from 'stream';
 
-export type WriteCommonModelsResult = {
+export type WriteCommonModelRecordsResult = {
+  maxLastModifiedAt: Date | null;
+  numRecords: number;
+};
+
+export type WriteRawRecordsResult = {
   maxLastModifiedAt: Date | null;
   numRecords: number;
 };
@@ -24,7 +29,14 @@ export interface DestinationWriter {
     commonModelType: CommonModelType,
     stream: Readable,
     heartbeat: () => void
-  ): Promise<WriteCommonModelsResult>;
+  ): Promise<WriteCommonModelRecordsResult>;
+
+  writeRawRecords(
+    connection: ConnectionSafeAny,
+    object: string,
+    stream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteRawRecordsResult>;
 }
 
 export abstract class BaseDestinationWriter implements DestinationWriter {
@@ -48,5 +60,12 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     commonModelType: CommonModelType,
     stream: Readable,
     heartbeat: () => void
-  ): Promise<WriteCommonModelsResult>;
+  ): Promise<WriteCommonModelRecordsResult>;
+
+  abstract writeRawRecords(
+    connection: ConnectionSafeAny,
+    object: string,
+    stream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteRawRecordsResult>;
 }
