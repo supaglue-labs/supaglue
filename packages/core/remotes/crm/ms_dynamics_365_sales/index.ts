@@ -48,7 +48,8 @@ export function newClient(
 
 export const authConfig: ConnectorAuthConfig = {
   tokenHost: 'https://login.microsoftonline.com',
-  tokenPath: '/common/oauth2/v2.0/token',
+  tokenPath: '/common/oauth2/token',
   authorizeHost: 'https://login.microsoftonline.com',
-  authorizePath: '/common/oauth2/v2.0/authorize',
+  authorizePath: '/common/oauth2/authorize',
+  authorizeWithScope: true,
 };

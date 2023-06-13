@@ -127,6 +127,7 @@ export type ConnectorAuthConfig = {
   tokenPath: string;
   authorizeHost: string;
   authorizePath: string;
+  authorizeWithScope?: boolean;
 };
 
 export type CrmConnectorConfig<T extends CRMProviderName> = {

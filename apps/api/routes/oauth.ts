@@ -22,7 +22,7 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl, loginUrl, version = 'v2' } = req.query;
+      const { applicationId, customerId, providerName, returnUrl, loginUrl, loginParams, version = 'v2' } = req.query;
 
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
@@ -58,6 +58,11 @@ export default function init(app: Router): void {
         auth.authorizeHost = loginUrl;
       }
 
+      if (loginParams) {
+        auth.tokenPath = `${auth.tokenPath}?${loginParams}`;
+        auth.authorizePath = `${auth.authorizePath}?${loginParams}`;
+      }
+
       const client = new simpleOauth2.AuthorizationCode({
         client: {
           id: oauthClientId,
@@ -74,14 +79,15 @@ export default function init(app: Router): void {
 
       const authorizationUri = client.authorizeURL({
         redirect_uri: REDIRECT_URI,
-        scope: oauthScopes.join(' '),
+        scope: oauthScopes,
         state: JSON.stringify({
           returnUrl,
           applicationId,
           customerId,
           providerName,
-          scope: oauthScopes.join(' '), // TODO: this should be in a session
+          scope: oauthScopes, // TODO: this should be in a session
           loginUrl,
+          loginParams,
           version,
         }),
         ...additionalAuthParams,
@@ -111,6 +117,7 @@ export default function init(app: Router): void {
         customerId,
         applicationId,
         loginUrl,
+        loginParams,
         version,
       }: {
         returnUrl: string;
@@ -119,6 +126,7 @@ export default function init(app: Router): void {
         providerName?: ProviderName;
         customerId?: string;
         loginUrl?: string;
+        loginParams?: string;
         version?: string;
       } = JSON.parse(decodeURIComponent(state));
 
@@ -153,12 +161,19 @@ export default function init(app: Router): void {
         auth.authorizeHost = loginUrl;
       }
 
+      if (loginParams) {
+        auth.tokenPath = `${auth.tokenPath}?${loginParams}`;
+        auth.authorizePath = `${auth.authorizePath}?${loginParams}`;
+      }
+
+      const { authorizeWithScope, ...simpleOauth2Auth } = auth;
+
       const client = new simpleOauth2.AuthorizationCode({
         client: {
           id: oauthClientId,
           secret: oauthClientSecret,
         },
-        auth,
+        auth: simpleOauth2Auth,
         options: {
           authorizationMethod: 'body' as AuthorizationMethod,
         },
@@ -170,6 +185,7 @@ export default function init(app: Router): void {
       const tokenWrapper = await client.getToken({
         code,
         redirect_uri: REDIRECT_URI,
+        scope: auth.authorizeWithScope ? scope : undefined,
         ...additionalAuthParams,
       });
 
@@ -187,6 +203,10 @@ export default function init(app: Router): void {
       if (providerName === 'pipedrive') {
         instanceUrl = tokenWrapper.token.api_domain as string;
         remoteId = instanceUrl;
+      }
+
+      if (providerName === 'ms_dynamics_365_sales') {
+        instanceUrl = tokenWrapper.token.resource as string;
       }
 
       const basePayload = {
