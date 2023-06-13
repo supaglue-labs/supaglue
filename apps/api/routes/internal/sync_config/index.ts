@@ -55,7 +55,7 @@ export default function init(app: Router): void {
 
   syncConfigRouter.post(
     '/_backfill',
-    async (req: Request<never, SyncConfig[], { raw_fields: boolean }>, res: Response<SyncConfig[]>) => {
+    async (req: Request<never, SyncConfig[], { fetch_all_fields_into_raw: boolean }>, res: Response<SyncConfig[]>) => {
       const integrations = await integrationService.list(req.supaglueApplication.id);
       const providers = await providerService.list(req.supaglueApplication.id);
       const integrationsWithDestinations = integrations.filter((integration) => integration.destinationId);
@@ -72,7 +72,7 @@ export default function init(app: Router): void {
                 periodMs: integration.config.sync.periodMs,
                 strategy: destination?.type === 's3' ? 'full only' : 'full then incremental',
               },
-              commonObjects: getDefaultCommonObjects(integration.category, req.body.raw_fields),
+              commonObjects: getDefaultCommonObjects(integration.category, req.body.fetch_all_fields_into_raw),
               rawObjects: [],
             },
           });
@@ -127,15 +127,15 @@ export default function init(app: Router): void {
   app.use('/sync_configs', syncConfigRouter);
 }
 
-const getDefaultCommonObjects = (category: ProviderCategory, rawFields: boolean): CommonObjectConfig[] => {
+const getDefaultCommonObjects = (category: ProviderCategory, fetchAllFieldsIntoRaw: boolean): CommonObjectConfig[] => {
   if (category === 'engagement') {
     return ENGAGEMENT_COMMON_MODEL_TYPES.map((object) => ({
       object,
-      rawFields,
+      fetchAllFieldsIntoRaw,
     }));
   }
   return CRM_COMMON_MODEL_TYPES.map((object) => ({
     object,
-    rawFields,
+    fetchAllFieldsIntoRaw,
   }));
 };
