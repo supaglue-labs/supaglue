@@ -19,7 +19,6 @@ export async function fromConnectionModelToConnectionUnsafe<T extends ProviderNa
   providerName,
   status,
   credentials,
-  remoteId,
   instanceUrl,
 }: ConnectionModel): Promise<ConnectionUnsafe<T>> {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
@@ -33,7 +32,6 @@ export async function fromConnectionModelToConnectionUnsafe<T extends ProviderNa
     status: status as ConnectionStatus,
     providerName: providerName as T,
     credentials: JSON.parse(await decrypt(credentials)),
-    remoteId,
     instanceUrl,
   };
 }
@@ -46,7 +44,6 @@ export function fromConnectionModelToConnectionSafe({
   providerId,
   providerName,
   status,
-  remoteId,
   instanceUrl,
 }: ConnectionModel): ConnectionSafeAny {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
@@ -59,7 +56,6 @@ export function fromConnectionModelToConnectionSafe({
     category: category as 'crm',
     status: status as ConnectionStatus,
     providerName: providerName as CRMProviderName,
-    remoteId,
     instanceUrl,
   };
 }
