@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { SyncConfig, SyncConfigCreateParams, SyncConfigUpdateParams } from '@supaglue/types';
-import { NotFoundError } from '../errors';
+import { BadRequestError, NotFoundError } from '../errors';
 import { fromSyncConfigModel, toSyncConfigModel } from '../mappers';
 
 export class SyncConfigService {
@@ -81,6 +81,7 @@ export class SyncConfigService {
   }
 
   public async create(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
+    // TODO:(SUP1-350): Backfill sync schedules for connections
     const createdSyncConfig = await this.#prisma.syncConfig.create({
       data: await toSyncConfigModel(syncConfig),
     });
@@ -88,13 +89,29 @@ export class SyncConfigService {
   }
 
   public async update(id: string, syncConfig: SyncConfigUpdateParams): Promise<SyncConfig> {
-    const updatedSyncConfig = await this.#prisma.syncConfig.update({
-      where: { id },
-      data: await toSyncConfigModel(syncConfig),
-    });
+    // TODO(SUP1-328): Remove once we support updating destinations
+    if (syncConfig.destinationId) {
+      const { destinationId } = await this.getById(id);
+      if (destinationId && destinationId !== syncConfig.destinationId) {
+        throw new BadRequestError('Destination cannot be changed');
+      }
+    }
+
+    const [updatedSyncConfig] = await this.#prisma.$transaction([
+      this.#prisma.syncConfig.update({
+        where: { id },
+        data: await toSyncConfigModel(syncConfig),
+      }),
+      this.#prisma.syncConfigChange.create({
+        data: {
+          syncConfigId: id,
+        },
+      }),
+    ]);
     return fromSyncConfigModel(updatedSyncConfig);
   }
 
+  // Only used for backfill
   public async upsert(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     const upsertedSyncConfig = await this.#prisma.syncConfig.upsert({
       where: {
