@@ -30,11 +30,36 @@ export class DestinationService {
     return fromDestinationModel(model);
   }
 
-  public async getDestinationByConnectionId(connectionId: string): Promise<Destination | null> {
-    const { integrationId } = await this.#prisma.connection.findUniqueOrThrow({
-      where: { id: connectionId },
+  public async getDestinationByProviderId(providerId: string): Promise<Destination | null> {
+    const model = await this.#prisma.destination.findFirst({
+      where: {
+        syncConfigs: {
+          some: {
+            providerId,
+          },
+        },
+      },
     });
-    return await this.getDestinationByIntegrationId(integrationId);
+    if (!model) {
+      return null;
+    }
+    return fromDestinationModel(model);
+  }
+
+  public async getDestinationBySyncId(syncId: string): Promise<Destination | null> {
+    const { syncConfigId } = await this.#prisma.sync.findUniqueOrThrow({
+      where: { id: syncId },
+    });
+    if (!syncConfigId) {
+      return null;
+    }
+    const model = await this.#prisma.destination.findFirst({
+      where: { syncConfigs: { some: { id: syncConfigId } } },
+    });
+    if (!model) {
+      return null;
+    }
+    return fromDestinationModel(model);
   }
 
   public async getDestinationById(id: string): Promise<Destination> {
@@ -75,8 +100,21 @@ export class DestinationService {
     return fromDestinationModel(model);
   }
 
-  public async getWriterByIntegrationId(integrationId: string): Promise<DestinationWriter | null> {
-    const destination = await this.getDestinationByIntegrationId(integrationId);
+  public async getWriterByProviderId(providerId: string): Promise<DestinationWriter | null> {
+    const destination = await this.getDestinationByProviderId(providerId);
+    if (!destination) {
+      return null;
+    }
+    switch (destination.type) {
+      case 's3':
+        return new S3DestinationWriter(destination);
+      case 'postgres':
+        return new PostgresDestinationWriter(destination);
+    }
+  }
+
+  public async getWriterBySyncId(syncId: string): Promise<DestinationWriter | null> {
+    const destination = await this.getDestinationBySyncId(syncId);
     if (!destination) {
       return null;
     }

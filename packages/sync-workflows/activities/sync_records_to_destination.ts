@@ -79,9 +79,9 @@ export function createSyncRecordsToDestination(
 
     const client = await remoteService.getRemoteClient(connectionId);
 
-    const writer = await destinationService.getWriterByIntegrationId(connection.integrationId);
+    const writer = await destinationService.getWriterBySyncId(syncId);
     if (!writer) {
-      throw ApplicationFailure.nonRetryable(`No destination found for integration ${connection.integrationId}`);
+      throw ApplicationFailure.nonRetryable(`No destination found for sync ${syncId}`);
     }
 
     // TODO: Begin testing of listRecords

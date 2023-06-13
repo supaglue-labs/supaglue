@@ -36,6 +36,7 @@ model Destination {
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
   integrations  Integration[]
+  syncConfigs   SyncConfig[]
 
   @@unique([applicationId, name])
   @@map("destinations")
@@ -84,19 +85,22 @@ model Provider {
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
   connections   Connection[]
+  syncConfig    SyncConfig?
 
   @@unique([applicationId, name])
   @@map("providers")
 }
 
 model SyncConfig {
-  id            String   @id @default(uuid())
-  applicationId String   @map("application_id")
-  providerId    String   @map("provider_id")
-  destinationId String   @map("destination_id")
+  id            String      @id @default(uuid())
+  applicationId String      @map("application_id")
+  providerId    String      @map("provider_id")
+  provider      Provider    @relation(fields: [providerId], references: [id])
+  destinationId String      @map("destination_id")
+  destination   Destination @relation(fields: [destinationId], references: [id])
   config        Json
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
   syncs         Sync[]
 
   // TODO: Eventually allow multiple destinations
