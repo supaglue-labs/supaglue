@@ -1,6 +1,6 @@
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
-import { CommonModelType, ProviderName } from '@supaglue/types';
+import { ProviderName } from '@supaglue/types';
 
 export const logEvent = ({
   eventName,
@@ -12,7 +12,7 @@ export const logEvent = ({
 }: {
   eventName: string;
   providerName: ProviderName;
-  modelName: CommonModelType;
+  modelName: string;
   syncId: string;
   numRecordsSynced?: number;
   isSuccess?: boolean;
