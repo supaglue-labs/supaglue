@@ -29,8 +29,6 @@ import { logger } from '../lib';
 import { BaseDestinationWriter, WriteCommonModelsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
-const destinationIdToPool: Record<string, Pool> = {};
-
 export class PostgresDestinationWriter extends BaseDestinationWriter {
   readonly #destination: PostgresDestination;
 
@@ -40,13 +38,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   }
 
   async #getClient(): Promise<PoolClient> {
-    const existingPool = destinationIdToPool[this.#destination.id];
-    if (existingPool) {
-      return await existingPool.connect();
-    }
-
     const pool = new Pool(this.#destination.config);
-    destinationIdToPool[this.#destination.id] = pool;
     return await pool.connect();
   }
 
