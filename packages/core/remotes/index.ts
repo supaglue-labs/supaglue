@@ -12,8 +12,10 @@ export type ConnectorAuthConfig = {
   tokenPath: string;
   authorizeHost: string;
   authorizePath: string;
+  authorizeWithScope?: boolean;
 };
 
+// `authConfig` to be used in simple-oauth2
 export function getConnectorAuthConfig(category: ProviderCategory, providerName: ProviderName): ConnectorAuthConfig {
   if (category === 'crm') {
     const { authConfig } = crmConnectorConfigMap[providerName as CRMProviderName];

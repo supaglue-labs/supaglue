@@ -60,6 +60,7 @@ export type ConnectorAuthConfig = {
   tokenPath: string;
   authorizeHost: string;
   authorizePath: string;
+  authorizeWithScope?: boolean;
 };
 
 export type EngagementConnectorConfig<T extends EngagementProviderName> = {
