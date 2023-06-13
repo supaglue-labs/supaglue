@@ -1,6 +1,6 @@
 {
   "name": "sync-worker",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "dependencies": {
