@@ -1,7 +1,16 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { Integration, IntegrationCreateParams, IntegrationUpdateParams } from '@supaglue/types';
+import type {
+  Destination,
+  Integration,
+  IntegrationCreateParams,
+  IntegrationUpdateParams,
+  ProviderCreateParams,
+  SyncConfigCreateParams,
+} from '@supaglue/types';
+import { getDefaultCommonObjects } from '.';
 import { BadRequestError, NotFoundError } from '../errors';
-import { fromIntegrationModel, toIntegrationModel } from '../mappers';
+import { fromIntegrationModel, toIntegrationModel, toProviderModel, toSyncConfigModel } from '../mappers';
+import { fromDestinationModel } from '../mappers/destination';
 
 export class IntegrationService {
   #prisma: PrismaClient;
@@ -62,6 +71,20 @@ export class IntegrationService {
     const createdIntegration = await this.#prisma.integration.create({
       data: await toIntegrationModel(integration),
     });
+    const { id } = await this.#prisma.provider.create({
+      data: await toProviderModel(toProviderCreateParams(integration)),
+    });
+    if (integration.destinationId) {
+      const destination = await this.#prisma.destination.findUniqueOrThrow({
+        where: {
+          id: integration.destinationId,
+        },
+      });
+      const syncConfigParams = toSyncConfigCreateParams(integration, id, fromDestinationModel(destination));
+      await this.#prisma.syncConfig.create({
+        data: syncConfigParams,
+      });
+    }
     return fromIntegrationModel(createdIntegration);
   }
 
@@ -73,6 +96,14 @@ export class IntegrationService {
         throw new BadRequestError('Destination cannot be changed');
       }
     }
+    const provider = await this.#prisma.provider.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: integration.applicationId,
+          name: integration.providerName,
+        },
+      },
+    });
     const [updatedIntegration] = await this.#prisma.$transaction([
       this.#prisma.integration.update({
         where: { id },
@@ -85,6 +116,43 @@ export class IntegrationService {
       }),
     ]);
 
+    if (!provider) {
+      return fromIntegrationModel(updatedIntegration);
+    }
+
+    await this.#prisma.provider.update({
+      where: { id },
+      data: await toProviderModel(toProviderCreateParams(integration)),
+    });
+
+    const syncConfig = await this.#prisma.syncConfig.findUnique({
+      where: {
+        providerId: provider.id,
+      },
+    });
+    if (!syncConfig) {
+      return fromIntegrationModel(updatedIntegration);
+    }
+
+    const destination = await this.#prisma.destination.findUniqueOrThrow({
+      where: {
+        id: syncConfig.destinationId,
+      },
+    });
+
+    await this.#prisma.$transaction([
+      this.#prisma.syncConfig.update({
+        where: { id },
+        data: await toSyncConfigModel(
+          toSyncConfigCreateParams(integration, provider.id, fromDestinationModel(destination))
+        ),
+      }),
+      this.#prisma.syncConfigChange.create({
+        data: {
+          syncConfigId: id,
+        },
+      }),
+    ]);
     // TODO: implement best-effort trigger schedule to process sync changes
 
     return fromIntegrationModel(updatedIntegration);
@@ -96,3 +164,36 @@ export class IntegrationService {
     });
   }
 }
+
+const toProviderCreateParams = (integration: IntegrationCreateParams): ProviderCreateParams => {
+  return {
+    applicationId: integration.applicationId,
+    category: integration.category,
+    authType: 'oauth2',
+    name: integration.providerName,
+    config: {
+      providerAppId: integration.config.providerAppId,
+      oauth: integration.config.oauth,
+    },
+  } as ProviderCreateParams;
+};
+
+const toSyncConfigCreateParams = (
+  integration: IntegrationCreateParams,
+  providerId: string,
+  destination: Destination
+): SyncConfigCreateParams => {
+  return {
+    applicationId: integration.applicationId,
+    destinationId: destination.id,
+    providerId,
+    config: {
+      defaultConfig: {
+        periodMs: integration.config.sync.periodMs,
+        strategy: destination.type === 's3' ? 'full only' : 'full then incremental',
+      },
+      commonObjects: getDefaultCommonObjects(integration.category, false),
+      rawObjects: [],
+    },
+  };
+};
