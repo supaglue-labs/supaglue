@@ -35,8 +35,6 @@ export type ConnectionCreateParams<T extends ProviderName> = {
   category: CategoryOfProviderName<T>;
   providerName: T;
   credentials: ConnectionCredentialsDecrypted<T>;
-  // Deprecated -- use instanceUrl instead
-  remoteId: string;
   instanceUrl: string;
 };
 
