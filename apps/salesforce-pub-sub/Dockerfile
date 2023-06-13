@@ -34,17 +34,13 @@ WORKDIR /app
 ARG POSTHOG_API_KEY
 ENV SUPAGLUE_POSTHOG_API_KEY=$POSTHOG_API_KEY
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nodejs
-USER nodejs
-COPY --from=installer --chown=nodejs:nodejs /app/apps/salesforce-pub-sub/dist .
-COPY --from=installer --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=installer --chown=nodejs:nodejs /app/apps/salesforce-pub-sub/package.json .
-COPY --from=installer --chown=nodejs:nodejs /app/packages/core/dist ./node_modules/@supaglue/core
-COPY --from=installer --chown=nodejs:nodejs /app/packages/utils/dist ./node_modules/@supaglue/utils
-COPY --from=installer --chown=nodejs:nodejs /app/packages/db/dist ./node_modules/@supaglue/db
-COPY --from=installer --chown=nodejs:nodejs /app/packages/db/node_modules ./node_modules/@supaglue/db/node_modules
-COPY --from=installer --chown=nodejs:nodejs /app/packages/db/prisma ./prisma
+COPY --from=installer /app/apps/salesforce-pub-sub/dist .
+COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/apps/salesforce-pub-sub/package.json .
+COPY --from=installer /app/packages/core/dist ./node_modules/@supaglue/core
+COPY --from=installer /app/packages/utils/dist ./node_modules/@supaglue/utils
+COPY --from=installer /app/packages/db/dist ./node_modules/@supaglue/db
+COPY --from=installer /app/packages/db/node_modules ./node_modules/@supaglue/db/node_modules
+COPY --from=installer /app/packages/db/prisma ./prisma
 
 CMD node ./index.js

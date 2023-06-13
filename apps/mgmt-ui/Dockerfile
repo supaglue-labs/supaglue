@@ -30,17 +30,12 @@ FROM node:18-slim AS runner
 RUN apt-get update && apt-get install -y openssl libssl-dev && rm -rf /var/lib/apt/lists/* && apt-get clean
 WORKDIR /app
 
-# Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-USER nextjs
-
 COPY --from=installer /app/apps/mgmt-ui/next.config.js .
 COPY --from=installer /app/apps/mgmt-ui/package.json .
 
 # Leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer --chown=nextjs:nodejs /app/apps/mgmt-ui/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/mgmt-ui/.next/static ./apps/mgmt-ui/.next/static
+COPY --from=installer /app/apps/mgmt-ui/.next/standalone ./
+COPY --from=installer /app/apps/mgmt-ui/.next/static ./apps/mgmt-ui/.next/static
 
 CMD node apps/mgmt-ui/server.js
