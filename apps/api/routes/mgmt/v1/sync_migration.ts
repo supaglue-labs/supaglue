@@ -1,8 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { fromDestinationModel } from '@supaglue/core/mappers/destination';
 import { Router } from 'express';
 
-const { prisma, connectionAndSyncService } = getDependencyContainer();
+const { prisma, connectionAndSyncService, syncConfigService } = getDependencyContainer();
 
 export default function init(app: Router) {
   const router = Router();
@@ -10,7 +9,7 @@ export default function init(app: Router) {
   router.get('/_get_connections', async (req, res) => {
     const connections = await prisma.connection.findMany({
       where: {
-        integration: {
+        provider: {
           applicationId: req.supaglueApplication.id,
         },
       },
@@ -45,25 +44,6 @@ export default function init(app: Router) {
       });
     }
 
-    let strategyType = 'full then incremental';
-    if (version === 'v2') {
-      const { destination } = await prisma.integration.findFirstOrThrow({
-        where: {
-          connections: {
-            some: {
-              id: connection_id,
-            },
-          },
-        },
-        select: {
-          destination: true,
-        },
-      });
-      if (destination && fromDestinationModel(destination).type === 's3') {
-        strategyType = 'full only';
-      }
-    }
-
     const existingSync = await prisma.sync.findFirstOrThrow({
       where: {
         connection: {
@@ -72,9 +52,18 @@ export default function init(app: Router) {
       },
       select: {
         id: true,
+        syncConfigId: true,
         version: true,
       },
     });
+
+    let strategy = 'full then incremental';
+    if (existingSync.syncConfigId) {
+      const syncConfig = await syncConfigService.getBySyncId(existingSync.id);
+      if (syncConfig?.config.defaultConfig.strategy) {
+        ({ strategy } = syncConfig.config.defaultConfig);
+      }
+    }
 
     // Kill existing schedules before migrating syncs
     // Otherwise, when we set the strategy down below
@@ -94,7 +83,7 @@ export default function init(app: Router) {
           // TODO: we need to kill the old syncs first before we set this,
           // since it could be overridden by the old running syncs
           strategy: {
-            type: strategyType,
+            type: strategy,
           },
           state: {
             phase: 'created',
