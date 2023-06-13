@@ -23,7 +23,6 @@ COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace @supaglue/db prisma generate
-RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace salesforce-pub-sub dlx ts-patch install -s
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo run build --filter=salesforce-pub-sub...
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus --production salesforce-pub-sub
 
