@@ -195,7 +195,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     const { providerName, customerId, applicationId } = connection;
     let numRecords = 0;
     let maxLastModifiedAt: Date | null = null;
-    let data: Record<string, any>[] = [];
+    let data: Record<string, unknown>[] = [];
     await pipeline(
       inputStream,
       new Transform({

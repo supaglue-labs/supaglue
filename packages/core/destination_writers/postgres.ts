@@ -59,7 +59,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   ): Promise<void> {
     const { schema } = this.#destination.config;
     const table = getCommonModelTableName(category, commonModelType);
-    const qualifiedTable = `${schema}.${table}`;
+    const qualifiedTable = `"${schema}"."${table}"`;
 
     const client = await this.#getClient();
 
@@ -124,7 +124,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
 
     const { schema } = this.#destination.config;
     const table = getCommonModelTableName(category, commonModelType);
-    const qualifiedTable = `${schema}.${table}`;
+    const qualifiedTable = `"${schema}"."${table}"`;
     const tempTable = `temp_${table}`;
 
     const client = await this.#getClient();
@@ -251,7 +251,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
     const { schema } = this.#destination.config;
     const table = getRawObjectTableName(providerName, object);
-    const qualifiedTable = `${schema}.${table}`;
+    const qualifiedTable = `"${schema}"."${table}"`;
     const tempTable = `temp_${table}`;
 
     const client = await this.#getClient();
