@@ -7,6 +7,12 @@ if [ -z "${1-}" ]; then
   exit 1
 fi
 
+clean_up () {
+    mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
+    echo "Restored your previous apps/mgmt-uit/.env"
+    exit 1
+}
+
 WORKSPACE_NAME=$1
 
 WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${WORKSPACE_NAME}\") | .location")
@@ -29,6 +35,11 @@ ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
 # read version from package.json
 VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
 
+echo "Setting aside your apps/mgmt-ui/.env and using apps/mgmt-ui/.env.build"
+mv "${WORKSPACE_PATH}/.env" "${WORKSPACE_PATH}/.env.user-bak"
+cp "${WORKSPACE_PATH}/.env.build" "${WORKSPACE_PATH}/.env"
+
+trap clean_up EXIT
 depot build --project 2bljgst1rr \
   --platform linux/amd64,linux/arm64 \
   -f "./${WORKSPACE_PATH}/Dockerfile" \
@@ -38,3 +49,6 @@ depot build --project 2bljgst1rr \
   --push \
   ${ADDITIONAL_ARGS-} \
   .
+
+echo "Restored your previous apps/mgmt-uit/.env"
+mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
