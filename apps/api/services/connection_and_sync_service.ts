@@ -51,9 +51,6 @@ export class ConnectionAndSyncService {
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
-    if (!params.providerId) {
-      throw new Error(`ProviderId must be provided`);
-    }
     const provider = await this.#prisma.provider.findUnique({
       where: {
         applicationId_name: {
@@ -72,6 +69,7 @@ export class ConnectionAndSyncService {
         category: params.category,
         providerName: params.providerName,
         customerId,
+        // TODO: Delete
         integrationId: provider.id,
         providerId: provider.id,
         status,
@@ -88,7 +86,12 @@ export class ConnectionAndSyncService {
         remoteId: params.remoteId,
         credentials: await encrypt(JSON.stringify(params.credentials)),
       },
-      where: {},
+      where: {
+        customerId_providerId: {
+          customerId,
+          providerId: provider.id,
+        },
+      },
     });
 
     return fromConnectionModelToConnectionUnsafe<ProviderName>(connection);
