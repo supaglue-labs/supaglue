@@ -293,7 +293,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
             return callback(e);
           }
         },
-      })
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      () => {}
     );
   }
 
