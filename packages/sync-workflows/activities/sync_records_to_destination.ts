@@ -38,7 +38,9 @@ export function createSyncRecordsToDestination(
     updatedAfterMs,
   }: SyncRecordsToDestinationArgs): Promise<SyncRecordsToDestinationResult> {
     const syncConfig = await syncConfigService.getBySyncId(syncId);
-    const fetchAllFields = syncConfig?.config.commonObjects.find((obj) => obj.object === commonModel)?.rawFields;
+    const fetchAllFields = syncConfig?.config.commonObjects.find(
+      (obj) => obj.object === commonModel
+    )?.fetchAllFieldsIntoRaw;
     async function writeObjects(writer: DestinationWriter) {
       let readable: Readable;
       // TODO: Have better type-safety
