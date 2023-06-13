@@ -9,7 +9,7 @@ fi
 
 clean_up () {
     mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
-    echo "Restored your previous apps/mgmt-uit/.env"
+    echo "Restored your previous apps/mgmt-ui/.env"
     exit 1
 }
 
@@ -35,11 +35,13 @@ ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
 # read version from package.json
 VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
 
-echo "Setting aside your apps/mgmt-ui/.env and using apps/mgmt-ui/.env.build"
-mv "${WORKSPACE_PATH}/.env" "${WORKSPACE_PATH}/.env.user-bak"
-cp "${WORKSPACE_PATH}/.env.build" "${WORKSPACE_PATH}/.env"
+if [ $WORKSPACE_NAME == "mgmt-ui" ]; then
+  echo "Setting aside your apps/mgmt-ui/.env and using apps/mgmt-ui/.env.build"
+  mv "${WORKSPACE_PATH}/.env" "${WORKSPACE_PATH}/.env.user-bak"
+  cp "${WORKSPACE_PATH}/.env.build" "${WORKSPACE_PATH}/.env"
+  trap clean_up EXIT
+fi
 
-trap clean_up EXIT
 depot build --project 2bljgst1rr \
   --platform linux/amd64,linux/arm64 \
   -f "./${WORKSPACE_PATH}/Dockerfile" \
@@ -50,5 +52,7 @@ depot build --project 2bljgst1rr \
   ${ADDITIONAL_ARGS-} \
   .
 
-echo "Restored your previous apps/mgmt-uit/.env"
-mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
+if [ $WORKSPACE_NAME == "mgmt-ui" ]; then
+  echo "Restored your previous apps/mgmt-ui/.env"
+  mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
+fi
