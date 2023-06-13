@@ -23,7 +23,7 @@ properties:
         object:
           type: string
           example: contacts
-        raw_fields:
+        fetch_all_fields_into_raw:
           type: boolean
         config_override:
           type: object
@@ -39,7 +39,7 @@ properties:
                 - full only
       required:
         - object
-        - raw_fields
+        - fetch_all_fields_into_raw
   raw_objects:
     type: array
     items:

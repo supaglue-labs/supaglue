@@ -716,14 +716,14 @@
                           "common_objects": [
                             {
                               "object": "contacts",
-                              "raw_fields": false,
+                              "fetch_all_fields_into_raw": false,
                               "config_override": {
                                 "strategy": "full only"
                               }
                             },
                             {
                               "object": "accounts",
-                              "raw_fields": false,
+                              "fetch_all_fields_into_raw": false,
                               "config_override": {
                                 "strategy": "full only"
                               }
@@ -755,7 +755,7 @@
                           "common_objects": [
                             {
                               "object": "accounts",
-                              "raw_fields": false
+                              "fetch_all_fields_into_raw": false
                             }
                           ],
                           "raw_objects": [
@@ -843,14 +843,14 @@
                         "common_objects": [
                           {
                             "object": "contacts",
-                            "raw_fields": false,
+                            "fetch_all_fields_into_raw": false,
                             "config_override": {
                               "strategy": "full only"
                             }
                           },
                           {
                             "object": "accounts",
-                            "raw_fields": false,
+                            "fetch_all_fields_into_raw": false,
                             "config_override": {
                               "strategy": "full only"
                             }
@@ -916,14 +916,14 @@
                         "common_objects": [
                           {
                             "object": "contacts",
-                            "raw_fields": false,
+                            "fetch_all_fields_into_raw": false,
                             "config_override": {
                               "strategy": "full only"
                             }
                           },
                           {
                             "object": "accounts",
-                            "raw_fields": false,
+                            "fetch_all_fields_into_raw": false,
                             "config_override": {
                               "strategy": "full only"
                             }
@@ -983,14 +983,14 @@
                         "common_objects": [
                           {
                             "object": "contacts",
-                            "raw_fields": false,
+                            "fetch_all_fields_into_raw": false,
                             "config_override": {
                               "strategy": "full only"
                             }
                           },
                           {
                             "object": "accounts",
-                            "raw_fields": false,
+                            "fetch_all_fields_into_raw": false,
                             "config_override": {
                               "strategy": "full only"
                             }
@@ -2435,7 +2435,7 @@
                   "type": "string",
                   "example": "contacts"
                 },
-                "raw_fields": {
+                "fetch_all_fields_into_raw": {
                   "type": "boolean"
                 },
                 "config_override": {
@@ -2458,7 +2458,7 @@
               },
               "required": [
                 "object",
-                "raw_fields"
+                "fetch_all_fields_into_raw"
               ]
             }
           },
