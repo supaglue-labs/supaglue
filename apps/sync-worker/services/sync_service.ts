@@ -158,7 +158,10 @@ export class SyncService {
     // Upsert syncs
 
     // Get the sync configs
-    const syncConfigs = await this.#syncConfigService.listByIds(uniqueSyncConfigIds);
+    const syncConfigIds: string[] = syncs
+      .filter((sync) => syncIdsToUpsert.includes(sync.id))
+      .flatMap((sync) => (sync.syncConfigId ? [sync.syncConfigId] : []));
+    const syncConfigs = await this.#syncConfigService.listByIds(syncConfigIds);
 
     // Get the connections
     const connectionIds = syncs.filter((sync) => syncIdsToUpsert.includes(sync.id)).map((sync) => sync.connectionId);
