@@ -196,19 +196,16 @@ export default function init(app: Router): void {
       });
 
       let instanceUrl = (tokenWrapper.token['instance_url'] as string) ?? '';
-      let remoteId = instanceUrl ?? '';
 
       if (providerName === 'hubspot') {
         const accessToken = tokenWrapper.token['access_token'] as string;
         const hubspotClient = new HubspotClient({ accessToken: tokenWrapper.token['access_token'] as string });
         const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(accessToken);
-        remoteId = hubId.toString();
-        instanceUrl = `https://app.hubspot.com/contacts/${remoteId}`;
+        instanceUrl = `https://app.hubspot.com/contacts/${hubId.toString()}`;
       }
 
       if (providerName === 'pipedrive') {
         instanceUrl = tokenWrapper.token.api_domain as string;
-        remoteId = instanceUrl;
       }
 
       if (providerName === 'ms_dynamics_365_sales') {
@@ -226,7 +223,6 @@ export default function init(app: Router): void {
           refreshToken: tokenWrapper.token['refresh_token'] as string,
           expiresAt: (tokenWrapper.token['expires_at'] as string | undefined) ?? null,
         },
-        remoteId,
         instanceUrl,
       };
 
