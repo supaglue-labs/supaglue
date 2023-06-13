@@ -107,8 +107,8 @@ export class ConnectionAndSyncService {
       const connectionId = uuidv4();
       const syncId = uuidv4();
 
-      const connectionModel = await this.#prisma.$transaction(async () => {
-        const connectionModel = await this.#prisma.connection.create({
+      const connectionModel = await this.#prisma.$transaction(async (tx) => {
+        const connectionModel = await tx.connection.create({
           data: {
             id: connectionId,
             category: params.category,
@@ -123,7 +123,7 @@ export class ConnectionAndSyncService {
           },
         });
         if (syncConfig) {
-          await this.#prisma.sync.create({
+          await tx.sync.create({
             data: {
               id: syncId,
               connectionId,
@@ -137,7 +137,7 @@ export class ConnectionAndSyncService {
               version,
             },
           });
-          await this.#prisma.syncChange.create({
+          await tx.syncChange.create({
             data: {
               syncId,
             },
