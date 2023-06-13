@@ -1,5 +1,11 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
-import { ConnectionService, ProviderService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
+import {
+  ConnectionService,
+  ProviderService,
+  RemoteService,
+  SyncConfigService,
+  SyncHistoryService,
+} from '@supaglue/core/services';
 import {
   AccountService,
   ContactService as CrmContactService,
@@ -26,6 +32,7 @@ type DependencyContainer = {
   connectionService: ConnectionService;
   remoteService: RemoteService;
   syncService: SyncService;
+  syncConfigService: SyncConfigService;
   syncHistoryService: SyncHistoryService;
   providerService: ProviderService;
   applicationService: ApplicationService;
@@ -94,6 +101,7 @@ function createDependencyContainer(): DependencyContainer {
     connectionService,
     remoteService,
     syncService,
+    syncConfigService,
     syncHistoryService,
     providerService,
     crm,
