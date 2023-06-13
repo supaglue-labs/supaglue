@@ -81,19 +81,12 @@ services:
     restart: on-failure
 
   temporal:
-    image: alpine:3.18.0
+    image: slamdev/temporalite:0.3.0 # TODO: we should replace this with one hosted by us later
     ports:
       - 7233:7233
       - 8233:8233
+    entrypoint: temporalite start -n default --ip 0.0.0.0 -f /data/temporal.db
     restart: on-failure
-    command: 
-      - /bin/sh
-      - -c
-      - |
-        apk add --update curl
-        rm -rf /var/cache/apk/*
-        curl -sSf https://temporal.download/cli.sh | sh
-        /root/.temporalio/bin/temporal server start-dev -n default --ip 0.0.0.0 -f /data/temporal.db
     volumes:
       - temporalitedata:/data
 
@@ -121,22 +114,7 @@ services:
         condition: service_started
     volumes:
       - .env:/app/.env
-    command:
-      - sh
-      - -c
-      - |
-        npx prisma migrate deploy
-        node node_modules/@supaglue/db/prisma/seed.js
-        apk add --update curl
-        rm -rf /var/cache/apk/*
-        curl -sSf https://temporal.download/cli.sh | sh
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name SyncId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name ApplicationId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name CustomerId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name IntegrationId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name ConnectionId --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name ProviderCategory --type Keyword
-        /root/.temporalio/bin/temporal operator search-attribute create --address temporal:7233 --name ProviderName --type Keyword
+    command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js'
 
 volumes:
   pgdata:
