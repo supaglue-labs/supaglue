@@ -23,7 +23,7 @@ COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace @supaglue/db prisma generate
-RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace api dlx ts-patch install -s
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace api dlx -p ts-patch@2.1.0 ts-patch install -s
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo run build --filter=api...
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus --production api
 
