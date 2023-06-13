@@ -93,7 +93,12 @@ export class SyncService {
 
   public async processSyncChanges(): Promise<void> {
     // Get all the SyncConfigChange objects
-    const syncConfigChanges = await this.#prisma.syncConfigChange.findMany();
+    const syncConfigChanges = await this.#prisma.syncConfigChange.findMany({
+      select: {
+        id: true,
+        syncConfigId: true,
+      },
+    });
     const syncConfigChangeIds = syncConfigChanges.map((syncConfigChange) => syncConfigChange.id);
 
     // TODO: Process sync config changes
