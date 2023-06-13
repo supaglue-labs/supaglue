@@ -1,4 +1,5 @@
-import { createCustomer } from '@/client';
+import { createCustomer, deleteCustomer } from '@/client';
+import { DeleteCustomer } from '@/components/customers/DeleteCustomer';
 import MetricCard from '@/components/customers/MetricCard';
 import { NewCustomer } from '@/components/customers/NewCustomer';
 import Spinner from '@/components/Spinner';
@@ -9,12 +10,13 @@ import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import providerToIcon from '@/utils/providerToIcon';
-import { Link, PeopleAltOutlined } from '@mui/icons-material';
+import { PeopleAltOutlined } from '@mui/icons-material';
 import LinkIcon from '@mui/icons-material/Link';
-import { Box, Grid, IconButton, Stack } from '@mui/material';
+import { Box, Breadcrumbs, Grid, IconButton, Stack, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { ConnectionSafeAny } from '@supaglue/types/connection';
+import { ConnectionSafeAny } from '@supaglue/types';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export { getServerSideProps };
@@ -59,7 +61,15 @@ export default function Home() {
       headerName: 'Connections',
       width: 150,
       renderCell: (params) => {
-        return params.value.map((connection: ConnectionSafeAny) => providerToIcon(connection.providerName));
+        if (params.value.length === 0) {
+          return <div>--</div>;
+        }
+
+        return (
+          <Link href={`/applications/${applicationId}/customers/${params.id}/connections`}>
+            {params.value.map((connection: ConnectionSafeAny) => providerToIcon(connection.providerName))}
+          </Link>
+        );
       },
     },
     {
@@ -71,6 +81,26 @@ export default function Home() {
           <IconButton onClick={() => handleEmebedLinkClick(params)}>
             <LinkIcon />
           </IconButton>
+        );
+      },
+    },
+    {
+      field: '_',
+      headerName: 'Admin',
+      width: 100,
+      renderCell: (params) => {
+        return (
+          <DeleteCustomer
+            disabled={params.row.connections.length > 0}
+            customerId={params.row.id}
+            onDelete={async () => {
+              await deleteCustomer(applicationId, params.row.id);
+              await mutate(
+                customers.filter((customer) => customer.customerId !== params.row.id),
+                false
+              );
+            }}
+          />
         );
       },
     },
@@ -99,6 +129,12 @@ export default function Home() {
             <Spinner />
           ) : (
             <Stack className="gap-2">
+              <Breadcrumbs>
+                <Link color="inherit" href={`/applications/${applicationId}`}>
+                  Home
+                </Link>
+                <Typography color="text.primary">Customers</Typography>
+              </Breadcrumbs>
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <MetricCard
@@ -112,7 +148,7 @@ export default function Home() {
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <MetricCard icon={<Link />} value={`${totalConnections} connections`} />
+                  <MetricCard icon={<LinkIcon />} value={`${totalConnections} connections`} />
                 </Grid>
               </Grid>
 

@@ -172,4 +172,22 @@ export async function createCustomer(
   return r;
 }
 
-// TODO: add other calls
+export async function deleteCustomer(applicationId: string, customerId: string): Promise<void> {
+  await fetch(`/api/internal/customers/${customerId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+  });
+}
+
+export async function deleteConnection(applicationId: string, customerId: string, connectionId: string): Promise<void> {
+  await fetch(`/api/internal/customers/${customerId}/connections/${connectionId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+  });
+}

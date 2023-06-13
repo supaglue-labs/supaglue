@@ -1,7 +1,7 @@
 import { SignIn } from '@clerk/nextjs';
 import { GetServerSideProps } from 'next';
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: { session: null, signedIn: false },
   };
