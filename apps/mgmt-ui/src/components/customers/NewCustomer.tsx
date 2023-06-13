@@ -81,7 +81,7 @@ export function NewCustomer({ onCreate }: NewCustomerProps) {
             variant="standard"
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ justifyContent: 'space-between' }}>
           <Button onClick={handleClose}>Cancel</Button>
           <Button
             onClick={() => {
