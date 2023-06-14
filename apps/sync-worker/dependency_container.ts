@@ -64,6 +64,7 @@ function createDependencyContainer(): DependencyContainer {
     syncHistoryService,
     providerService,
     syncConfigService,
+    integrationService,
     crm,
     engagement,
   } = getCoreDependencyContainer();
@@ -90,7 +91,7 @@ function createDependencyContainer(): DependencyContainer {
     }),
   });
 
-  const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService);
+  const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService, integrationService);
   const applicationService = new ApplicationService(prisma);
   const destinationService = new DestinationService(prisma);
 

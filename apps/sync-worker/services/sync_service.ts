@@ -1,5 +1,5 @@
 import { logger } from '@supaglue/core/lib';
-import { ConnectionService, SyncConfigService } from '@supaglue/core/services';
+import { ConnectionService, IntegrationService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
@@ -43,17 +43,20 @@ export class SyncService {
   #temporalClient: Client;
   #connectionService: ConnectionService;
   #syncConfigService: SyncConfigService;
+  #integrationService: IntegrationService;
 
   public constructor(
     prisma: PrismaClient,
     temporalClient: Client,
     connectionService: ConnectionService,
-    syncConfigService: SyncConfigService
+    syncConfigService: SyncConfigService,
+    integrationService: IntegrationService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#connectionService = connectionService;
     this.#syncConfigService = syncConfigService;
+    this.#integrationService = integrationService;
   }
 
   public async getSyncById(id: string): Promise<Sync> {
@@ -178,19 +181,17 @@ export class SyncService {
       if (!connection) {
         throw new Error('Unexpected error: connection not found');
       }
-      const syncConfig = syncConfigs.find((syncConfig) => syncConfig.id === sync.syncConfigId);
-      if (!syncConfig) {
-        throw new Error('Unexpected error: syncConfig not found');
-      }
 
       if (sync.version === 'v1') {
+        const integration = await this.#integrationService.getById(connection.integrationId);
         await this.#deleteTemporalSyncsV2([sync.id]);
-        await this.upsertTemporalSyncV1(
-          sync.id,
-          connection,
-          syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
-        );
+        await this.upsertTemporalSyncV1(sync.id, connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
       } else if (sync.version === 'v2') {
+        const syncConfig = syncConfigs.find((syncConfig) => syncConfig.id === sync.syncConfigId);
+        if (!syncConfig) {
+          throw new Error('Unexpected error: syncConfig not found');
+        }
+
         await this.#deleteTemporalSyncsV1([sync.id]);
         await this.upsertTemporalSyncV2(
           sync.id,
