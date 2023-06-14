@@ -85,14 +85,14 @@ export abstract class CommonModelBaseService {
           objectMode: true,
           transform: (chunk, encoding, callback) => {
             try {
-              const { object } = chunk;
+              const { record } = chunk;
 
-              const mappedRecord = mapper(connectionId, customerId, object);
+              const mappedRecord = mapper(connectionId, customerId, record);
 
               ++tempTableRowCount;
 
               // Update the max lastModifiedAt
-              const { lastModifiedAt } = object;
+              const { lastModifiedAt } = record;
               if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
                 maxLastModifiedAt = lastModifiedAt;
               }

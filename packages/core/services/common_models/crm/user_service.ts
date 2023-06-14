@@ -3,7 +3,7 @@ import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglu
 import { User } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
-import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { NotFoundError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
 import { fromRemoteUserToDbUserParams, fromUserModel } from '../../../mappers/crm';
 
@@ -16,11 +16,8 @@ export class UserService extends CommonModelBaseService {
     const model = await this.prisma.crmUser.findUnique({
       where: { id },
     });
-    if (!model) {
+    if (!model || model.connectionId !== connectionId) {
       throw new NotFoundError(`Can't find user with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
     }
     return fromUserModel(model, getParams);
   }
