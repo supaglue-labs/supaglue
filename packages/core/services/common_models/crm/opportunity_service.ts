@@ -3,7 +3,7 @@ import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInte
 import { Opportunity, OpportunityCreateParams, OpportunityFilters, OpportunityUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
-import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { NotFoundError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
 import {
   fromOpportunityModel,
@@ -21,11 +21,8 @@ export class OpportunityService extends CommonModelBaseService {
     const model = await this.prisma.crmOpportunity.findUnique({
       where: { id },
     });
-    if (!model) {
+    if (!model || model.connectionId !== connectionId) {
       throw new NotFoundError(`Can't find Opportunity with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
     }
     return fromOpportunityModel(model, getParams);
   }
@@ -119,8 +116,8 @@ export class OpportunityService extends CommonModelBaseService {
       },
     });
 
-    if (foundOpportunityModel.customerId !== customerId) {
-      throw new Error('Opportunity customerId does not match');
+    if (foundOpportunityModel.customerId !== customerId || foundOpportunityModel.connectionId !== connectionId) {
+      throw new NotFoundError(`Opportunity not found`);
     }
 
     const remoteUpdateParams = { ...updateParams };
