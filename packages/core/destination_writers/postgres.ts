@@ -142,7 +142,6 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const tempTable = `temp_${table}`;
 
     const client = await this.#getClient();
-
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
@@ -210,6 +209,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 _supaglue_emitted_at: emittedAt,
                 ...mapper(record),
               };
+              if (applicationIdsForUnderscoredIds.includes(applicationId)) {
+                mappedRecord._id = mappedRecord.id;
+                delete mappedRecord.id;
+              }
 
               ++tempTableRowCount;
 
@@ -483,7 +486,9 @@ CREATE TABLE IF NOT EXISTS "${schema}"."${tableName}" (
   "_supaglue_raw_data" JSONB NOT NULL,
   "${underscoredId ? '_id' : 'id'}" TEXT NOT NULL,
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "${
+    underscoredId ? '_id' : 'id'
+  }")
 );`;
 };
 
@@ -522,7 +527,9 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
   "owner_id" TEXT,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "${
+    underscoredId ? '_id' : 'id'
+  }")
 );`,
     contact: (schema: string, underscoredId?: boolean) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
@@ -681,7 +688,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
   "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
-  "id" TEXT NOT NULL,
+  "${underscoredId ? '_id' : 'id'}" TEXT NOT NULL,
   "created_at" TIMESTAMP(3),
   "updated_at" TIMESTAMP(3),
   "is_deleted" BOOLEAN NOT NULL DEFAULT false,
@@ -698,7 +705,9 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
   "is_enabled" BOOLEAN NOT NULL,
   "raw_data" JSONB,
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "${
+    underscoredId ? '_id' : 'id'
+  }")
 );`,
     sequence_state: (schema: string, underscoredId?: boolean) => `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequence_states" (
