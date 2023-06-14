@@ -35,6 +35,7 @@ import { getSnakecasedKeysMapper } from './util';
 const applicationIdsForUnderscoredIds = [
   '39a890de-8dc7-4bdb-9007-e9a856a6b2e0',
   '7a695ded-b46d-406b-bd19-6e571880be74',
+  'd22ab9a1-9066-4ebe-8ddf-4918541334d9',
 ];
 
 const destinationIdToPool: Record<string, Pool> = {};
@@ -64,7 +65,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     object: CommonModelTypeMapForCategory<P>['object']
   ): Promise<void> {
     const { schema } = this.#destination.config;
-    const idColumn = applicationIdsForUnderscoredIds.includes(applicationId) ? 'id' : '_id';
+    const idColumn = applicationIdsForUnderscoredIds.includes(applicationId) ? '_id' : 'id';
     const table = getCommonModelTableName(category, commonModelType);
     const qualifiedTable = `"${schema}"."${table}"`;
 
@@ -132,7 +133,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteCommonModelRecordsResult> {
-    const idColumn = applicationIdsForUnderscoredIds.includes(applicationId) ? 'id' : '_id';
+    const idColumn = applicationIdsForUnderscoredIds.includes(applicationId) ? '_id' : 'id';
     const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
 
     const { schema } = this.#destination.config;
@@ -268,7 +269,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteRawRecordsResult> {
-    const idColumn = applicationIdsForUnderscoredIds.includes(applicationId) ? 'id' : '_id';
+    const idColumn = applicationIdsForUnderscoredIds.includes(applicationId) ? '_id' : 'id';
     const childLogger = logger.child({ connectionId, providerName, customerId, object });
 
     const { schema } = this.#destination.config;
@@ -281,7 +282,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(getRawObjectSchemaSetupSql(providerName, object, schema));
+      await client.query(
+        getRawObjectSchemaSetupSql(
+          providerName,
+          object,
+          schema,
+          applicationIdsForUnderscoredIds.includes(applicationId)
+        )
+      );
 
       // Create a temporary table
       // TODO: on the first run, we should be able to directly write into the table and skip the temp table
@@ -457,7 +465,12 @@ const columnsByCommonModelType: {
   },
 };
 
-const getRawObjectSchemaSetupSql = (providerName: ProviderName, object: string, schema: string) => {
+const getRawObjectSchemaSetupSql = (
+  providerName: ProviderName,
+  object: string,
+  schema: string,
+  underscoredId?: boolean
+) => {
   const tableName = getRawObjectTableName(providerName, object);
 
   return `-- CreateTable
@@ -468,7 +481,7 @@ CREATE TABLE IF NOT EXISTS "${schema}"."${tableName}" (
   "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "_supaglue_is_deleted" BOOLEAN NOT NULL,
   "_supaglue_raw_data" JSONB NOT NULL,
-  "id" TEXT NOT NULL,
+  "${underscoredId ? '_id' : 'id'}" TEXT NOT NULL,
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`;
