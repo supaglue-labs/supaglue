@@ -3,7 +3,7 @@ import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInte
 import { Lead, LeadCreateParams, LeadFilters, LeadUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
-import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { NotFoundError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
 import { fromLeadModel, fromRemoteLeadToDbLeadParams, fromRemoteLeadToModel } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
@@ -17,11 +17,8 @@ export class LeadService extends CommonModelBaseService {
     const model = await this.prisma.crmLead.findUnique({
       where: { id },
     });
-    if (!model) {
+    if (!model || model.connectionId !== connectionId) {
       throw new NotFoundError(`Can't find Lead with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
     }
     return fromLeadModel(model, getParams);
   }
@@ -123,8 +120,8 @@ export class LeadService extends CommonModelBaseService {
       },
     });
 
-    if (foundLeadModel.customerId !== customerId) {
-      throw new Error('Lead customerId does not match');
+    if (foundLeadModel.customerId !== customerId || foundLeadModel.connectionId !== connectionId) {
+      throw new NotFoundError('Lead not found');
     }
 
     const remoteUpdateParams = { ...updateParams };

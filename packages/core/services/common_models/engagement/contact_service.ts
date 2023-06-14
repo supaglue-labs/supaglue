@@ -4,7 +4,7 @@ import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
 import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglue/types';
 import { Contact, ContactCreateParams, ContactUpdateParams } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
-import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { NotFoundError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
 import { fromContactModel, fromRemoteContactToDbContactParams } from '../../../mappers/engagement';
 
@@ -17,11 +17,8 @@ export class ContactService extends CommonModelBaseService {
     const model = await this.prisma.engagementContact.findUnique({
       where: { id },
     });
-    if (!model) {
+    if (!model || model.connectionId !== connectionId) {
       throw new NotFoundError(`Can't find contact with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
     }
     return fromContactModel(model, getParams);
   }

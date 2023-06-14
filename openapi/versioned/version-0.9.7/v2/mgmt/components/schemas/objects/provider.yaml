@@ -1,0 +1,25 @@
+type: object
+properties:
+  id:
+    type: string
+    example: e888cedf-e9d0-42c5-9485-2d72984faef2
+  application_id:
+    type: string
+    example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+  category:
+    $ref: ./category.yaml
+  auth_type:
+    type: string
+    enum:
+      - oauth2
+  name:
+    $ref: ./provider_name.yaml
+  config:
+    $ref: ./provider_config.yaml
+required:
+  - id
+  - application_id
+  - category
+  - auth_type
+  - name
+  - config
