@@ -8,7 +8,7 @@ import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supag
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
-const { providerService, connectionAndSyncService } = getDependencyContainer();
+const { providerService, integrationService, connectionAndSyncService } = getDependencyContainer();
 
 const SERVER_URL = process.env.SUPAGLUE_SERVER_URL ?? 'http://localhost:8080';
 const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
@@ -152,6 +152,8 @@ export default function init(app: Router): void {
 
       const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
 
+      const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
+
       const { oauthClientId, oauthClientSecret } = provider.config.oauth.credentials;
 
       const auth = getConnectorAuthConfig(provider.category, providerName);
@@ -211,7 +213,7 @@ export default function init(app: Router): void {
         applicationId,
         customerId,
         // TODO: Delete
-        integrationId: provider.id,
+        integrationId: integration.id,
         providerId: provider.id,
         credentials: {
           type: 'oauth2' as const,

@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { getDefaultCommonObjects } from '@supaglue/core/services';
 import {
   CreateSyncConfigPathParams,
   CreateSyncConfigRequest,
@@ -16,9 +17,7 @@ import {
   UpdateSyncConfigRequest,
   UpdateSyncConfigResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { CommonObjectConfig, ProviderCategory, SyncConfig } from '@supaglue/types';
-import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
-import { ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
+import { SyncConfig } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
@@ -126,16 +125,3 @@ export default function init(app: Router): void {
 
   app.use('/sync_configs', syncConfigRouter);
 }
-
-const getDefaultCommonObjects = (category: ProviderCategory, fetchAllFieldsIntoRaw: boolean): CommonObjectConfig[] => {
-  if (category === 'engagement') {
-    return ENGAGEMENT_COMMON_MODEL_TYPES.map((object) => ({
-      object,
-      fetchAllFieldsIntoRaw,
-    }));
-  }
-  return CRM_COMMON_MODEL_TYPES.map((object) => ({
-    object,
-    fetchAllFieldsIntoRaw,
-  }));
-};
