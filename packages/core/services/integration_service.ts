@@ -125,34 +125,49 @@ export class IntegrationService {
       data: await toProviderModel(toProviderCreateParams(integration)),
     });
 
-    const syncConfig = await this.#prisma.syncConfig.findUnique({
-      where: {
-        providerId: provider.id,
-      },
-    });
-    if (!syncConfig) {
+    if (!integration.destinationId) {
       return fromIntegrationModel(updatedIntegration);
     }
 
     const destination = await this.#prisma.destination.findUniqueOrThrow({
       where: {
-        id: syncConfig.destinationId,
+        id: integration.destinationId,
       },
     });
 
-    await this.#prisma.$transaction([
-      this.#prisma.syncConfig.update({
-        where: { id: syncConfig.id },
-        data: await toSyncConfigModel(
-          toSyncConfigCreateParams(integration, provider.id, fromDestinationModel(destination))
-        ),
-      }),
-      this.#prisma.syncConfigChange.create({
-        data: {
-          syncConfigId: syncConfig.id,
+    const syncConfigData = await toSyncConfigModel(
+      toSyncConfigCreateParams(integration, provider.id, fromDestinationModel(destination))
+    );
+
+    await this.#prisma.$transaction(async (tx) => {
+      const { id } = await tx.syncConfig.upsert({
+        where: {
+          providerId: provider.id,
         },
-      }),
-    ]);
+        create: {
+          ...syncConfigData,
+        },
+        update: {
+          ...syncConfigData,
+        },
+      });
+      await tx.syncConfigChange.create({
+        data: {
+          syncConfigId: id,
+        },
+      });
+      // This is only for the v1 -> v2 migration
+      await tx.sync.updateMany({
+        where: {
+          connection: {
+            providerId: provider.id,
+          },
+        },
+        data: {
+          syncConfigId: id,
+        },
+      });
+    });
     // TODO: implement best-effort trigger schedule to process sync changes
 
     return fromIntegrationModel(updatedIntegration);
