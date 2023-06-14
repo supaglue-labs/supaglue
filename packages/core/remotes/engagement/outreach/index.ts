@@ -216,7 +216,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachProspectToContactV2(result),
+              record: fromOutreachProspectToContactV2(result),
               emittedAt,
             }))
           );
@@ -235,7 +235,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachUserToUserV2(result),
+              record: fromOutreachUserToUserV2(result),
               emittedAt,
             }))
           );
@@ -254,7 +254,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachSequenceToSequenceV2(result),
+              record: fromOutreachSequenceToSequenceV2(result),
               emittedAt,
             }))
           );
@@ -273,7 +273,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachMailboxToMailboxV2(result),
+              record: fromOutreachMailboxToMailboxV2(result),
               emittedAt,
             }))
           );
@@ -292,7 +292,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachSequenceStateToSequenceStateV2(result),
+              record: fromOutreachSequenceStateToSequenceStateV2(result),
               emittedAt,
             }))
           );
