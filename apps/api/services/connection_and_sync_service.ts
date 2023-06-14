@@ -122,14 +122,14 @@ export class ConnectionAndSyncService {
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         });
-        if (syncConfig) {
+        if (syncConfig || version === 'v1') {
           await tx.sync.create({
             data: {
               id: syncId,
               connectionId,
-              syncConfigId: syncConfig.id,
+              syncConfigId: syncConfig?.id,
               strategy: {
-                type: syncConfig.config.defaultConfig.strategy,
+                type: syncConfig?.config.defaultConfig.strategy ?? 'full then incremental',
               },
               state: {
                 phase: 'created',
