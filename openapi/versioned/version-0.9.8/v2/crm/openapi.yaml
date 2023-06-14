@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.9.6
+  version: 0.9.8
   title: Supaglue CRM API
   contact:
     name: Supaglue
@@ -9,50 +9,53 @@ info:
   description: |
     # Introduction
 
-    Welcome to the Supaglue unified CRM API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.
+    Welcome to the Supaglue Actions API (CRM) documentation. You can use this API to read and write data from and to third-party providers.
+
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-fa1c1bb5-8b11-475a-8e9b-d2ad988ccaf0?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-fa1c1bb5-8b11-475a-8e9b-d2ad988ccaf0%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)
 
     ### Base API URL
-
     ```
-    http://localhost:8080/crm/v1
+    https://api.supaglue.io/crm/v2
     ```
-externalDocs:
-  description: Try out our API in Postman!
-  url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
+  # externalDocs:
+  #   description:
+  #   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
 servers:
-  - url: 'http://localhost:8080/crm/v1'
-    description: Local Supaglue API
+  - url: 'https://api.supaglue.io/crm/v2'
+    description: Supaglue API
 paths:
   '/accounts':
     $ref: paths/accounts.yaml
-  '/accounts/_search':
-    $ref: paths/accounts@_search.yaml
   '/accounts/{account_id}':
     $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
-  '/contacts/_search':
-    $ref: paths/contacts@_search.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
   '/leads':
     $ref: paths/leads.yaml
   '/leads/{lead_id}':
     $ref: paths/leads@{lead_id}.yaml
-  '/leads/_search':
-    $ref: paths/leads@_search.yaml
   '/opportunities':
     $ref: paths/opportunities.yaml
-  '/opportunities/_search':
-    $ref: paths/opportunities@_search.yaml
   '/opportunities/{opportunity_id}':
     $ref: paths/opportunities@{opportunity_id}.yaml
-  '/users':
-    $ref: paths/users.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
+  '/custom-object-classes':
+    $ref: paths/custom-object-classes.yaml
+  '/custom-object-classes/{custom_object_class_id}':
+    $ref: paths/custom-object-classes@{custom_object_class_id}.yaml
+  '/custom-object-classes/{custom_object_class_id}/custom-objects':
+    $ref: paths/custom-objects.yaml
+  '/custom-object-classes/{custom_object_class_id}/custom-objects/{custom_object_id}':
+    $ref: paths/custom-objects@{custom_object_id}.yaml
+  '/association-types':
+    $ref: paths/association-types.yaml
+  '/association-types/{association_type_id}/associations':
+    $ref: paths/associations.yaml
 tags:
   - name: Accounts
     description: The `Account` Common Model is used to represent a "company" in CRMs.
@@ -66,6 +69,14 @@ tags:
     description: The `User` Common Model is used to represent a "user" that can login to CRMs.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
+  - name: CustomObjectClasses
+    description: The `Custom Object Class` Common Model is used to represent a "custom object class" in CRMs.
+  - name: CustomObjects
+    description: The `Custom Object` Common Model is used to represent a "custom object" in CRMs.
+  - name: AssociationTypes
+    description: The `Association Type` Common Model is used to represent an "association type" in CRMs.
+  - name: Associations
+    description: The `Association` Common Model is used to represent an "association" in CRMs.
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -95,6 +106,8 @@ components:
       $ref: ../../common/components/schemas/errors.yaml
     warnings:
       $ref: ../../common/components/schemas/warnings.yaml
+    created_model:
+      $ref: ../../common/components/schemas/created_model.yaml
     addresses:
       $ref: ./components/schemas/objects/addresses.yaml
     email_addresses:
@@ -113,6 +126,34 @@ components:
       $ref: ./components/schemas/filter.yaml
     lifecycle_stage:
       $ref: ./components/schemas/objects/lifecycle_stage.yaml
+    custom_object_class:
+      $ref: ./components/schemas/objects/custom_object_class.yaml
+    create_update_custom_object_class:
+      $ref: ./components/schemas/create_update_custom_object_class.yaml
+    custom_object:
+      $ref: ./components/schemas/objects/custom_object.yaml
+    create_update_custom_object:
+      $ref: ./components/schemas/create_update_custom_object.yaml
+    custom_object_field:
+      $ref: ./components/schemas/objects/custom_object_field.yaml
+    association_type:
+      $ref: ./components/schemas/objects/association_type.yaml
+    create_update_association_type:
+      $ref: ./components/schemas/create_update_association_type.yaml
+    object_class:
+      $ref: ./components/schemas/objects/object_class.yaml
+    object_class_type:
+      $ref: ./components/schemas/objects/object_class_type.yaml
+    association_type_cardinality:
+      $ref: ./components/schemas/objects/association_type_cardinality.yaml
+    association_type_cardinality_or_unknown:
+      $ref: ./components/schemas/objects/association_type_cardinality_or_unknown.yaml
+    create_update_association:
+      $ref: ./components/schemas/create_update_association.yaml
+    association:
+      $ref: ./components/schemas/objects/association.yaml
+    object:
+      $ref: ./components/schemas/objects/object.yaml
   parameters:
     include_deleted_data:
       $ref: ../../common/components/parameters/query/include_deleted_data.yaml

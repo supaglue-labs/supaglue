@@ -1,23 +1,19 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.9.6",
+    "version": "0.9.8",
     "title": "Supaglue Engagement API",
     "contact": {
       "name": "Supaglue",
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "# Introduction\n\nWelcome to the Supaglue unified Engagement API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.\n\n### Base API URL\n\n```\nhttp://localhost:8080/engagement/v1\n```\n"
-  },
-  "externalDocs": {
-    "description": "Try out our API in Postman!",
-    "url": "https://www.postman.com/supaglue/workspace/supaglue-public/overview"
+    "description": "# Introduction\n\nWelcome to the Supaglue Actions API (Engagement) documentation. You can use this API to read and write data from and to third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)\n\n### Base API URL\n\n```\nhttps://api.supaglue.io/engagement/v2\n```\n"
   },
   "servers": [
     {
-      "url": "http://localhost:8080/engagement/v1",
-      "description": "Local Supaglue API"
+      "url": "https://api.supaglue.io/engagement/v2",
+      "description": "Supaglue API"
     }
   ],
   "paths": {
@@ -164,109 +160,6 @@
       ]
     },
     "/contacts": {
-      "get": {
-        "operationId": "getContacts",
-        "tags": [
-          "Contacts"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "List contacts",
-        "description": "Get a list of contacts",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/include_deleted_data"
-          },
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/created_after"
-          },
-          {
-            "$ref": "#/components/parameters/created_before"
-          },
-          {
-            "$ref": "#/components/parameters/modified_after"
-          },
-          {
-            "$ref": "#/components/parameters/modified_before"
-          },
-          {
-            "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/page_size"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Contacts",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/pagination"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "results": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/contact"
-                          }
-                        }
-                      }
-                    }
-                  ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
-                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
-                      "results": [
-                        {
-                          "id": "4dec71a1-e789-4006-84fe-1a797202dddb",
-                          "address": {
-                            "city": "San Francisco",
-                            "country": "USA",
-                            "street_1": "525 Brannan St",
-                            "street_2": null,
-                            "postalCode": "94107",
-                            "state": "CA"
-                          },
-                          "email_addresses": [
-                            {
-                              "email_address": "hello@supaglue.com",
-                              "email_address_type": "workline2"
-                            }
-                          ],
-                          "first_name": "George",
-                          "remote_id": 1234,
-                          "last_name": "Xing",
-                          "phone_numbers": [
-                            {
-                              "phone_number": "+14151234567",
-                              "phone_number_type": "mobile"
-                            }
-                          ],
-                          "remote_created_at": "2023-02-27T00:00:00Z"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "operationId": "createContact",
         "summary": "Create contact",
@@ -296,7 +189,7 @@
               },
               "example": {
                 "model": {
-                  "id": "ed7ce0f0-8119-4b73-bf01-4e8e0296ef80",
+                  "id": 1234,
                   "address": {
                     "city": "San Francisco",
                     "country": "USA",
@@ -312,7 +205,6 @@
                     }
                   ],
                   "first_name": "George",
-                  "remote_id": 1234,
                   "last_name": "Xing",
                   "phone_numbers": [
                     {
@@ -320,7 +212,7 @@
                       "phone_number_type": "mobile"
                     }
                   ],
-                  "remote_created_at": "2023-02-27T00:00:00Z"
+                  "created_at": "2023-02-27T00:00:00Z"
                 }
               }
             }
@@ -341,7 +233,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -423,7 +315,7 @@
                 "Example": {
                   "value": {
                     "model": {
-                      "id": "6c018f45-f584-4ba8-b1a8-658bb29d300e",
+                      "id": 1234,
                       "address": {
                         "city": "San Francisco",
                         "country": "USA",
@@ -439,7 +331,6 @@
                         }
                       ],
                       "first_name": "George",
-                      "remote_id": 1234,
                       "last_name": "Xing",
                       "phone_numbers": [
                         {
@@ -447,7 +338,7 @@
                           "phone_number_type": "mobile"
                         }
                       ],
-                      "remote_created_at": "2023-02-27T00:00:00Z"
+                      "created_at": "2023-02-27T00:00:00Z"
                     }
                   }
                 }
@@ -468,9 +359,6 @@
                     },
                     "logs": {
                       "$ref": "#/components/schemas/logs"
-                    },
-                    "model": {
-                      "$ref": "#/components/schemas/contact"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -497,110 +385,6 @@
             "type": "string",
             "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
           }
-        }
-      ]
-    },
-    "/users": {
-      "get": {
-        "operationId": "getUsers",
-        "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "List users",
-        "description": "Get a list of users",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/include_deleted_data"
-          },
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/created_after"
-          },
-          {
-            "$ref": "#/components/parameters/created_before"
-          },
-          {
-            "$ref": "#/components/parameters/modified_after"
-          },
-          {
-            "$ref": "#/components/parameters/modified_before"
-          },
-          {
-            "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/page_size"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Users",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/pagination"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "results": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/user"
-                          }
-                        }
-                      }
-                    }
-                  ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
-                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
-                      "results": [
-                        {
-                          "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
-                          "remote_id": 1234,
-                          "first_name": "George",
-                          "last_name": "Xing",
-                          "email": "george@supaglue.com",
-                          "remote_created_at": "2021-11-10T00:00:00Z",
-                          "remote_updated_at": "2022-01-09T00:00:00Z"
-                        },
-                        {
-                          "id": "a0f8385c-4947-41d2-a276-740f792bb0e6",
-                          "remote_id": 1235,
-                          "first_name": "Thomas",
-                          "last_name": "Chen",
-                          "email": "tom@supaglue.com",
-                          "remote_created_at": "2021-11-10T00:00:00Z",
-                          "remote_updated_at": "2022-01-09T00:00:00Z"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -652,108 +436,6 @@
         }
       ]
     },
-    "/mailboxes": {
-      "get": {
-        "operationId": "getMailboxes",
-        "tags": [
-          "Mailboxes"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "List mailboxes",
-        "description": "Get a list of mailboxes",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/include_deleted_data"
-          },
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/created_after"
-          },
-          {
-            "$ref": "#/components/parameters/created_before"
-          },
-          {
-            "$ref": "#/components/parameters/modified_after"
-          },
-          {
-            "$ref": "#/components/parameters/modified_before"
-          },
-          {
-            "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/page_size"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Mailboxes",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/pagination"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "results": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/mailbox"
-                          }
-                        }
-                      }
-                    }
-                  ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
-                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
-                      "results": [
-                        {
-                          "id": "262b99cd-73fa-4bd3-bbc2-baecbd0fa14d",
-                          "remote_id": 1234,
-                          "email": "george@supaglue.com",
-                          "user_id": "fe4d5ef2-6b29-4082-96a3-cfe26e4ff22e",
-                          "remote_created_at": "2021-11-10T00:00:00Z",
-                          "remote_updated_at": "2022-01-09T00:00:00Z"
-                        },
-                        {
-                          "id": "da2bf8b7-d3fc-410a-81f8-6e7255ad9248",
-                          "remote_id": 1235,
-                          "email": "tom@supaglue.com",
-                          "user_id": "e330814b-77a7-4ca9-9381-19da883593e7",
-                          "remote_created_at": "2021-11-10T00:00:00Z",
-                          "remote_updated_at": "2022-01-09T00:00:00Z"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
     "/mailboxes/{mailbox_id}": {
       "get": {
         "operationId": "getMailbox",
@@ -799,110 +481,6 @@
             "type": "string",
             "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
           }
-        }
-      ]
-    },
-    "/sequences": {
-      "get": {
-        "operationId": "getSequences",
-        "summary": "List sequences",
-        "tags": [
-          "Sequences"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "description": "Get a list of sequences ",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/include_deleted_data"
-          },
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/created_after"
-          },
-          {
-            "$ref": "#/components/parameters/created_before"
-          },
-          {
-            "$ref": "#/components/parameters/modified_after"
-          },
-          {
-            "$ref": "#/components/parameters/modified_before"
-          },
-          {
-            "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/page_size"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Sequences",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/pagination"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "results": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/sequence"
-                          }
-                        }
-                      }
-                    }
-                  ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
-                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
-                      "results": [
-                        {
-                          "id": "13bc2a55-be6a-4cb9-8ea3-12dc1e41ac59",
-                          "is_enabled": true,
-                          "name": "Sample Sequence",
-                          "tags": [
-                            "tag1",
-                            "tag2"
-                          ],
-                          "num_steps": 5,
-                          "schedule_count": 0,
-                          "open_count": 0,
-                          "opt_out_count": 0,
-                          "reply_count": 0,
-                          "click_count": 0,
-                          "remote_created_at": "2023-02-27T00:00:00Z",
-                          "remote_updated_at": "2023-02-27T00:00:00Z",
-                          "last_modified": "2023-02-27T00:00:00Z"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -955,101 +533,6 @@
       ]
     },
     "/sequence_states": {
-      "get": {
-        "operationId": "getSequenceStates",
-        "tags": [
-          "Sequence States"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "summary": "List sequence states",
-        "description": "Get a list of sequence states",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/include_deleted_data"
-          },
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/created_after"
-          },
-          {
-            "$ref": "#/components/parameters/created_before"
-          },
-          {
-            "$ref": "#/components/parameters/modified_after"
-          },
-          {
-            "$ref": "#/components/parameters/modified_before"
-          },
-          {
-            "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/page_size"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Sequence States",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/pagination"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "results": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/sequence_state"
-                          }
-                        }
-                      }
-                    }
-                  ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "next": "eyJpZCI6IjEyYjU3ZTM0LWZkMjEtNDk1OS04ZGIwLTA5N2EzZGEzODg2YyIsInJldmVyc2UiOmZhbHNlfQ==",
-                      "previous": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9",
-                      "results": [
-                        {
-                          "id": "6bf506a8-0a5a-419a-bd24-32b4a66d5db5",
-                          "remote_id": 1234,
-                          "state": "active",
-                          "mailbox_id": "8308b381-7e78-44d2-a820-74af1c71c6c2",
-                          "contact_id": "f3185edb-39d8-4bff-a560-3dbc8bfd8056",
-                          "sequence_id": "05660383-6bac-463d-b7d6-b8ebc4cb6e3b",
-                          "remote_created_at": "2023-02-27T00:00:00Z",
-                          "remote_updated_at": "2023-02-27T00:00:00Z"
-                        },
-                        {
-                          "id": "e86309e9-25f5-4898-904b-7b4ee87a3181",
-                          "remote_id": 1235,
-                          "mailbox_id": "a379e517-1314-48d5-8ad9-2afb793be11e",
-                          "contact_id": "41a71062-48ce-462a-8e53-af77e5df2ac3",
-                          "sequence_id": "989146f3-611c-4a55-ae1b-ad83c769b197",
-                          "remote_created_at": "2023-02-27T00:00:00Z",
-                          "remote_updated_at": "2023-02-27T00:00:00Z"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "operationId": "createSequenceState",
         "summary": "Create sequence state",
@@ -1084,8 +567,8 @@
                   "mailbox_id": "a7e860b5-cb8b-400b-812d-921fa526140c",
                   "contact_id": "6bdcebc2-f886-4de3-88ed-0b9eb420f7b1",
                   "sequence_id": "45e07817-fd59-4ec8-a727-066d2db27c9b",
-                  "remote_created_at": "2023-02-27T00:00:00Z",
-                  "remote_updated_at": "2023-02-27T00:00:00Z"
+                  "created_at": "2023-02-27T00:00:00Z",
+                  "updated_at": "2023-02-27T00:00:00Z"
                 }
               }
             }
@@ -1106,7 +589,7 @@
                       "$ref": "#/components/schemas/logs"
                     },
                     "model": {
-                      "$ref": "#/components/schemas/sequence_state"
+                      "$ref": "#/components/schemas/created_model"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -1217,10 +700,6 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "4cee77aa-50ae-4369-be1e-03f15a55ef10"
-          },
-          "remote_id": {
-            "type": "string",
             "example": 54312
           },
           "owner_id": {
@@ -1294,19 +773,19 @@
           "bounced_count": {
             "type": "number"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "is_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1322,7 +801,6 @@
         },
         "required": [
           "id",
-          "remote_id",
           "owner_id",
           "first_name",
           "last_name",
@@ -1334,9 +812,9 @@
           "click_count",
           "reply_count",
           "bounced_count",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "is_deleted",
           "last_modified_at"
         ]
       },
@@ -1379,10 +857,6 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "e19a7c83-6480-46cc-9ea7-a5b82b30d04b"
-          },
-          "remote_id": {
-            "type": "string",
             "example": 54312
           },
           "state": {
@@ -1405,19 +879,19 @@
             "type": "string",
             "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "is_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1429,14 +903,13 @@
         },
         "required": [
           "id",
-          "remote_id",
           "state",
           "mailbox_id",
           "contact_id",
           "sequence_id",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "is_deleted",
           "last_modified_at"
         ]
       },
@@ -1467,10 +940,6 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "e19a7c83-6480-46cc-9ea7-a5b82b30d04b"
-          },
-          "remote_id": {
-            "type": "string",
             "example": 54312
           },
           "email": {
@@ -1483,19 +952,19 @@
             "type": "string",
             "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "is_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1507,12 +976,11 @@
         },
         "required": [
           "id",
-          "remote_id",
           "email",
           "user_id",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "is_deleted",
           "last_modified_at"
         ]
       },
@@ -1520,10 +988,6 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-          },
-          "remote_id": {
             "type": "string",
             "example": 54312
           },
@@ -1542,19 +1006,19 @@
             "nullable": true,
             "example": "george@supaglue.com"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_was_deleted": {
+          "is_deleted": {
             "type": "boolean",
             "example": false
           },
@@ -1566,29 +1030,24 @@
         },
         "required": [
           "id",
-          "remote_id",
           "first_name",
           "last_name",
           "email",
-          "remote_created_at",
-          "remote_updated_at",
-          "remote_was_deleted",
+          "created_at",
+          "updated_at",
+          "is_deleted",
           "last_modified_at"
         ]
       },
       "sequence": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "example": "88588bae-3785-4223-81b7-0649012fdeda"
-          },
           "owner_id": {
             "type": "string",
             "nullable": true,
             "example": "95fe0d29-e8cc-48ac-9afd-e02d8037a597"
           },
-          "remote_id": {
+          "id": {
             "type": "string",
             "example": 54312
           },
@@ -1624,13 +1083,13 @@
           "click_count": {
             "type": "number"
           },
-          "remote_created_at": {
+          "created_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
             "example": "2022-02-27T00:00:00Z"
           },
-          "remote_updated_at": {
+          "updated_at": {
             "type": "string",
             "nullable": true,
             "format": "date-time",
@@ -1644,7 +1103,6 @@
         },
         "required": [
           "id",
-          "remote_id",
           "is_enabled",
           "name",
           "tags",
@@ -1654,36 +1112,9 @@
           "opt_out_count",
           "reply_count",
           "click_count",
-          "remote_created_at",
-          "remote_updated_at",
+          "created_at",
+          "updated_at",
           "last_modified_at"
-        ]
-      },
-      "start_sequence": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "fields": {
-            "type": "object",
-            "properties": {
-              "contact_id": {
-                "type": "string"
-              },
-              "mailbox_id": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "contact_id",
-              "mailbox_id"
-            ]
-          }
-        },
-        "required": [
-          "id",
-          "fields"
         ]
       },
       "pagination": {
@@ -1793,6 +1224,17 @@
         "type": "object",
         "additionalProperties": true,
         "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
+      },
+      "created_model": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
       },
       "logs": {
         "type": "array",
