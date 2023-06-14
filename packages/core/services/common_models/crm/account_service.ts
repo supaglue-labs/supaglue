@@ -3,7 +3,7 @@ import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInte
 import { Account, AccountCreateParams, AccountFilters, AccountUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
-import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { NotFoundError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
 import { getWhereClauseForFilter } from '../../../lib/filter';
 import { fromAccountModel, fromRemoteAccountToDbAccountParams, fromRemoteAccountToModel } from '../../../mappers/crm';
@@ -18,11 +18,8 @@ export class AccountService extends CommonModelBaseService {
     const model = await this.prisma.crmAccount.findUnique({
       where: { id },
     });
-    if (!model) {
+    if (!model || model.connectionId !== connectionId) {
       throw new NotFoundError(`Can't find account with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
     }
     return fromAccountModel(model, getParams);
   }
@@ -105,8 +102,8 @@ export class AccountService extends CommonModelBaseService {
       },
     });
 
-    if (foundAccountModel.customerId !== customerId) {
-      throw new Error('Account customerId does not match');
+    if (foundAccountModel.customerId !== customerId || foundAccountModel.connectionId !== connectionId) {
+      throw new NotFoundError('Account not found');
     }
 
     const remoteUpdateParams = { ...updateParams };
