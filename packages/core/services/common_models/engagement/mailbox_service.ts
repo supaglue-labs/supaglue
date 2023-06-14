@@ -3,7 +3,7 @@ import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglu
 import { Mailbox } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
-import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { NotFoundError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
 import { fromMailboxModel, fromRemoteMailboxToDbMailboxParams } from '../../../mappers/engagement';
 
@@ -16,11 +16,8 @@ export class MailboxService extends CommonModelBaseService {
     const model = await this.prisma.engagementMailbox.findUnique({
       where: { id },
     });
-    if (!model) {
+    if (!model || model.connectionId !== connectionId) {
       throw new NotFoundError(`Can't find mailbox with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
     }
     return fromMailboxModel(model, getParams);
   }
