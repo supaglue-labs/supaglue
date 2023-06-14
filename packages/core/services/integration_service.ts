@@ -121,7 +121,7 @@ export class IntegrationService {
     }
 
     await this.#prisma.provider.update({
-      where: { id },
+      where: { id: provider.id },
       data: await toProviderModel(toProviderCreateParams(integration)),
     });
 
@@ -142,14 +142,14 @@ export class IntegrationService {
 
     await this.#prisma.$transaction([
       this.#prisma.syncConfig.update({
-        where: { id },
+        where: { id: syncConfig.id },
         data: await toSyncConfigModel(
           toSyncConfigCreateParams(integration, provider.id, fromDestinationModel(destination))
         ),
       }),
       this.#prisma.syncConfigChange.create({
         data: {
-          syncConfigId: id,
+          syncConfigId: syncConfig.id,
         },
       }),
     ]);
