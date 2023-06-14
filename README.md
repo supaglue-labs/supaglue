@@ -68,7 +68,7 @@ For general help using Supaglue, please refer to our [documentation](https://doc
 
 ## Contributing
 
-Learn about ways to [contribute to Supaglue](https://docs.supaglue.com/contributing).
+Learn about ways to [contribute to Supaglue](https://docs.supaglue.com/roadmap).
 
 ## License
 
