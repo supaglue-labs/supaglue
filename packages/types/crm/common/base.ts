@@ -10,10 +10,10 @@ export type Address = {
 
 export type PhoneNumber = {
   phoneNumber: string | null;
-  phoneNumberType: 'primary' | 'mobile' | 'fax';
+  phoneNumberType: 'primary' | 'mobile' | 'fax' | null;
 };
 
 export type EmailAddress = {
   emailAddress: string;
-  emailAddressType: 'primary' | 'work';
+  emailAddressType: 'primary' | 'work' | null;
 };

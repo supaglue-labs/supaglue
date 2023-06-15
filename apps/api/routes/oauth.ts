@@ -22,7 +22,7 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl, loginUrl, loginParams, version = 'v2' } = req.query;
+      const { applicationId, customerId, providerName, returnUrl, loginUrl, version = 'v2', scope } = req.query;
 
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
@@ -51,16 +51,24 @@ export default function init(app: Router): void {
         credentials: { oauthClientId, oauthClientSecret },
       } = provider.config.oauth;
 
-      const auth = getConnectorAuthConfig(provider.category, providerName);
+      if (provider.name === 'ms_dynamics_365_sales') {
+        // For Dynamics 365, we need to get the scope from the query params
+        // this is because the scope is in the form of: https://org8d6f84ed.crm.dynamics.com/.default
+        // and is per customer
+        if (!scope) {
+          throw new BadRequestError('Missing scope');
+        }
+
+        oauthScopes.push(scope);
+      }
+
+      const { additionalScopes, ...auth } = getConnectorAuthConfig(provider.category, providerName);
+
+      oauthScopes.push(...(additionalScopes ?? []));
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
         auth.authorizeHost = loginUrl;
-      }
-
-      if (loginParams) {
-        auth.tokenPath = `${auth.tokenPath}?${loginParams}`;
-        auth.authorizePath = `${auth.authorizePath}?${loginParams}`;
       }
 
       const client = new simpleOauth2.AuthorizationCode({
@@ -87,7 +95,6 @@ export default function init(app: Router): void {
           providerName,
           scope: oauthScopes, // TODO: this should be in a session
           loginUrl,
-          loginParams,
           version,
         }),
         ...additionalAuthParams,
@@ -117,7 +124,6 @@ export default function init(app: Router): void {
         customerId,
         applicationId,
         loginUrl,
-        loginParams,
         version,
       }: {
         returnUrl: string;
@@ -126,7 +132,6 @@ export default function init(app: Router): void {
         providerName?: ProviderName;
         customerId?: string;
         loginUrl?: string;
-        loginParams?: string;
         version?: string;
       } = JSON.parse(decodeURIComponent(state));
 
@@ -163,12 +168,7 @@ export default function init(app: Router): void {
         auth.authorizeHost = loginUrl;
       }
 
-      if (loginParams) {
-        auth.tokenPath = `${auth.tokenPath}?${loginParams}`;
-        auth.authorizePath = `${auth.authorizePath}?${loginParams}`;
-      }
-
-      const { authorizeWithScope, ...simpleOauth2Auth } = auth;
+      const { authorizeWithScope, additionalScopes, ...simpleOauth2Auth } = auth;
 
       const client = new simpleOauth2.AuthorizationCode({
         client: {
@@ -184,10 +184,12 @@ export default function init(app: Router): void {
       // TODO: implement code_verifier/code_challenge when we implement sessions
       const additionalAuthParams: Record<string, string> = {};
 
+      const scopes = authorizeWithScope ? [...scope.split(' '), ...(additionalScopes ?? [])] : undefined;
+
       const tokenWrapper = await client.getToken({
         code,
         redirect_uri: REDIRECT_URI,
-        scope: auth.authorizeWithScope ? scope : undefined,
+        scope: scopes,
         ...additionalAuthParams,
       });
 
@@ -205,7 +207,14 @@ export default function init(app: Router): void {
       }
 
       if (providerName === 'ms_dynamics_365_sales') {
-        instanceUrl = tokenWrapper.token.resource as string;
+        // find the scope that ends with .default
+        const defaultScope = (tokenWrapper.token.scope as string).split(' ').find((s) => s.endsWith('.default'));
+        if (!defaultScope) {
+          throw new BadRequestError('Missing required scope');
+        }
+
+        // the instance url is the scope without the .default
+        instanceUrl = defaultScope.replace('.default', '');
       }
 
       const basePayload = {

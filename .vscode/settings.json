@@ -36,5 +36,10 @@
       "username": "postgres",
       "password": "supaglue"
     }
-  ]
+  ],
+  "files.readonlyInclude": {
+    "**/node_modules/**": true,
+    ".yarn/**": true,
+    "**/yarn.lock": true
+  }
 }
