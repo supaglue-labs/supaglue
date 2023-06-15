@@ -89,6 +89,7 @@ export class SyncConfigService {
   }
 
   public async create(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
+    validateSyncConfigParams(syncConfig);
     // TODO:(SUP1-350): Backfill sync schedules for connections
     const createdSyncConfig = await this.#prisma.syncConfig.create({
       data: await toSyncConfigModel(syncConfig),
@@ -97,6 +98,7 @@ export class SyncConfigService {
   }
 
   public async update(id: string, syncConfig: SyncConfigUpdateParams): Promise<SyncConfig> {
+    validateSyncConfigParams(syncConfig);
     // TODO(SUP1-328): Remove once we support updating destinations
     if (syncConfig.destinationId) {
       const { destinationId } = await this.getById(id);
@@ -121,6 +123,7 @@ export class SyncConfigService {
 
   // Only used for backfill
   public async upsert(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
+    validateSyncConfigParams(syncConfig);
     const upsertedSyncConfig = await this.#prisma.syncConfig.upsert({
       where: {
         providerId: syncConfig.providerId,
@@ -171,4 +174,18 @@ export const getDefaultCommonObjects = (
     object,
     fetchAllFieldsIntoRaw,
   }));
+};
+
+const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
+  // Check that there are no duplicates among common objects and no duplicates among raw objects
+  const commonObjects = params.config.commonObjects.map((object) => object.object);
+  const rawObjects = params.config.rawObjects.map((object) => object.object);
+  const commonObjectDuplicates = commonObjects.filter((object, index) => commonObjects.indexOf(object) !== index);
+  const rawObjectDuplicates = rawObjects.filter((object, index) => rawObjects.indexOf(object) !== index);
+  if (commonObjectDuplicates.length > 0) {
+    throw new BadRequestError(`Duplicate common objects found: ${commonObjectDuplicates.join(', ')}`);
+  }
+  if (rawObjectDuplicates.length > 0) {
+    throw new BadRequestError(`Duplicate raw objects found: ${rawObjectDuplicates.join(', ')}`);
+  }
 };
