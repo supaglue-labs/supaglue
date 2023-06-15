@@ -1,6 +1,6 @@
 {
   "name": "salesforce-pub-sub",
-  "version": "0.9.8",
+  "version": "10.0.0",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "dependencies": {
