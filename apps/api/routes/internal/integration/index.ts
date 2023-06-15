@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { hideIntegrationManagedOauthConfig } from '@supaglue/core/mappers';
 import {
   CreateIntegrationPathParams,
   CreateIntegrationRequest,
@@ -32,7 +33,9 @@ export default function init(app: Router): void {
       res: Response<GetIntegrationsResponse>
     ) => {
       const integrations = await integrationService.list(req.supaglueApplication.id);
-      return res.status(200).send(integrations.map(snakecaseKeys));
+      return res
+        .status(200)
+        .send(integrations.map((integration) => snakecaseKeys(hideIntegrationManagedOauthConfig(integration))));
     }
   );
 
@@ -47,7 +50,7 @@ export default function init(app: Router): void {
         ...camelcaseKeys(req.body),
         destinationId: req.body.destination_id ?? null,
       });
-      return res.status(201).send(snakecaseKeys(integration));
+      return res.status(201).send(snakecaseKeys(hideIntegrationManagedOauthConfig(integration)));
     }
   );
 
@@ -61,7 +64,7 @@ export default function init(app: Router): void {
         req.params.integration_id,
         req.supaglueApplication.id
       );
-      return res.status(200).send(snakecaseKeys(integration));
+      return res.status(200).send(snakecaseKeys(hideIntegrationManagedOauthConfig(integration)));
     }
   );
 
@@ -76,7 +79,7 @@ export default function init(app: Router): void {
         ...camelcaseKeys(req.body),
         destinationId: req.body.destination_id ?? null,
       });
-      return res.status(200).send(snakecaseKeys(integration));
+      return res.status(200).send(snakecaseKeys(hideIntegrationManagedOauthConfig(integration)));
     }
   );
 

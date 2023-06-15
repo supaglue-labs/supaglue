@@ -44,7 +44,7 @@ put:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_update_provider.yaml
+          $ref: ../components/schemas/update_provider.yaml
   responses:
     200:
       description: Provider

@@ -232,7 +232,7 @@ export interface components {
       /** @enum {string} */
       auth_type: "oauth2";
       name: components["schemas"]["provider_name"];
-      config: components["schemas"]["provider_config"];
+      config: components["schemas"]["create_provider_config"];
     };
     destination: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -301,6 +301,7 @@ export interface components {
     /**
      * @example {
      *   "provider_app_id": "my_app_id",
+     *   "is_managed_auth_app": false,
      *   "oauth": {
      *     "oauth_scopes": [
      *       "crm.objects.contacts.read",
@@ -324,6 +325,11 @@ export interface components {
     integration_config: {
       /** @example my_app_id */
       provider_app_id: string;
+      /**
+       * @description True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials. 
+       * @example false
+       */
+      use_managed_oauth?: boolean;
       oauth: {
         oauth_scopes: (string)[];
         credentials: {
@@ -386,6 +392,7 @@ export interface components {
     /**
      * @example {
      *   "provider_app_id": "my_app_id",
+     *   "use_managed_oauth": true,
      *   "oauth": {
      *     "oauth_scopes": [
      *       "crm.objects.contacts.read",
@@ -403,7 +410,45 @@ export interface components {
      *   }
      * }
      */
-    provider_config: {
+    create_provider_config: {
+      /** @example my_app_id */
+      provider_app_id: string;
+      /**
+       * @description True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials. 
+       * @example false
+       */
+      use_managed_oauth?: boolean;
+      oauth: {
+        oauth_scopes: (string)[];
+        credentials: {
+          /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
+          oauth_client_id: string;
+          /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
+          oauth_client_secret: string;
+        };
+      };
+    };
+    /**
+     * @example {
+     *   "provider_app_id": "my_app_id",
+     *   "oauth": {
+     *     "oauth_scopes": [
+     *       "crm.objects.contacts.read",
+     *       "crm.objects.companies.read",
+     *       "crm.objects.deals.read",
+     *       "crm.objects.owners.read",
+     *       "crm.objects.contacts.write",
+     *       "crm.objects.companies.write",
+     *       "crm.objects.deals.write"
+     *     ],
+     *     "credentials": {
+     *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+     *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+     *     }
+     *   }
+     * }
+     */
+    update_provider_config: {
       /** @example my_app_id */
       provider_app_id: string;
       oauth: {
@@ -444,10 +489,24 @@ export interface components {
       category: "engagement";
       provider_name: components["schemas"]["provider_name_engagement"];
     }]>;
-    create_update_provider: ({
+    create_provider: ({
       /** @enum {string} */
       auth_type: "oauth2";
-      config: components["schemas"]["provider_config"];
+      config: components["schemas"]["create_provider_config"];
+      destination_id?: string | null;
+    }) & OneOf<[{
+      /** @enum {string} */
+      category: "crm";
+      name: components["schemas"]["provider_name_crm"];
+    }, {
+      /** @enum {string} */
+      category: "engagement";
+      name: components["schemas"]["provider_name_engagement"];
+    }]>;
+    update_provider: ({
+      /** @enum {string} */
+      auth_type: "oauth2";
+      config: components["schemas"]["update_provider_config"];
       destination_id?: string | null;
     }) & OneOf<[{
       /** @enum {string} */
@@ -727,7 +786,7 @@ export interface operations {
     /** Create provider */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_provider"];
+        "application/json": components["schemas"]["create_provider"];
       };
     };
     responses: {
@@ -754,7 +813,7 @@ export interface operations {
     /** Update provider */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_provider"];
+        "application/json": components["schemas"]["update_provider"];
       };
     };
     responses: {

@@ -70,7 +70,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_update_provider.yaml
+          $ref: ../components/schemas/create_provider.yaml
   responses:
     '201':
       description: Provider created

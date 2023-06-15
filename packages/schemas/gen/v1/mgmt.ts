@@ -244,6 +244,7 @@ export interface components {
     /**
      * @example {
      *   "provider_app_id": "my_app_id",
+     *   "is_managed_auth_app": false,
      *   "oauth": {
      *     "oauth_scopes": [
      *       "crm.objects.contacts.read",
@@ -267,6 +268,11 @@ export interface components {
     integration_config: {
       /** @example my_app_id */
       provider_app_id: string;
+      /**
+       * @description True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials. 
+       * @example false
+       */
+      use_managed_oauth?: boolean;
       oauth: {
         oauth_scopes: (string)[];
         credentials: {

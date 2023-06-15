@@ -23,11 +23,13 @@ export type EngagementProvider = BaseProvider & {
 export type ProviderConfigDecrypted = {
   providerAppId: string;
   oauth: OAuthConfigDecrypted;
+  useManagedOauth?: boolean;
 };
 
 export type ProviderConfigEncrypted = {
   providerAppId: string;
   oauth: OAuthConfigEncrypted;
+  useManagedOauth?: boolean;
 };
 
 // TODO: Update params should not contain applicationId even if create params does.
@@ -38,5 +40,10 @@ export type EngagementProviderCreateParams = Omit<EngagementProvider, 'id'>;
 export type EngagementProviderUpdateParams = Omit<EngagementProvider, 'id'>;
 
 export type Provider = CRMProvider | EngagementProvider;
+
 export type ProviderCreateParams = CRMProviderCreateParams | EngagementProviderCreateParams;
 export type ProviderUpdateParams = CRMProviderUpdateParams | EngagementProviderUpdateParams;
+
+export type ProviderConfigMapperArgs = {
+  managedOauthConfig: OAuthConfigDecrypted;
+};

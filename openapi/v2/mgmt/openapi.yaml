@@ -91,8 +91,10 @@ components:
       $ref: ./components/schemas/objects/sync_config.yaml
     sync_config_data:
       $ref: ./components/schemas/objects/sync_config_data.yaml
-    provider_config:
-      $ref: ./components/schemas/objects/provider_config.yaml
+    create_provider_config:
+      $ref: ./components/schemas/objects/create_provider_config.yaml
+    update_provider_config:
+      $ref: ./components/schemas/objects/update_provider_config.yaml
     provider_name:
       $ref: ./components/schemas/objects/provider_name.yaml
     provider_name_crm:
@@ -103,8 +105,10 @@ components:
       $ref: ./components/schemas/create_update_customer.yaml
     create_update_integration:
       $ref: ./components/schemas/create_update_integration.yaml
-    create_update_provider:
-      $ref: ./components/schemas/create_update_provider.yaml
+    create_provider:
+      $ref: ./components/schemas/create_provider.yaml
+    update_provider:
+      $ref: ./components/schemas/update_provider.yaml
     create_update_destination:
       $ref: ./components/schemas/create_update_destination.yaml
     create_update_sync_config:

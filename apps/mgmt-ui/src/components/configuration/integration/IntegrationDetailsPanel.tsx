@@ -7,7 +7,18 @@ import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import {
+  Button,
+  CardContent,
+  CardHeader,
+  FormControlLabel,
+  FormGroup,
+  FormHelperText,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
+} from '@mui/material';
 import Card from '@mui/material/Card';
 import { Integration, ProviderCategory, ProviderName } from '@supaglue/types';
 import { CRMProviderName } from '@supaglue/types/crm';
@@ -39,6 +50,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
   const [isFormValid, setIsFormValid] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [destinationId, setDestinationId] = useState<string | undefined>();
+  const [useManagedOauth, setUseManagedOauth] = useState<boolean>(true);
   const router = useRouter();
 
   const { integrations: existingIntegrations = [], mutate } = useIntegrations();
@@ -53,18 +65,14 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
 
   useEffect(() => {
     setFriendlyIntegrationId(integration?.id ?? '--');
-
     setClientId(integration?.config?.oauth?.credentials?.oauthClientId ?? '');
-
     setClientSecret(integration?.config?.oauth?.credentials?.oauthClientSecret ?? '');
-
     setOauthScopes(integration?.config?.oauth?.oauthScopes?.join(',') ?? '');
-
     setSyncPeriodSecs(
       integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : ONE_HOUR_SECONDS
     );
-
     setDestinationId(integration?.destinationId ?? undefined);
+    setUseManagedOauth(integration?.id ? Boolean(integration?.config?.useManagedOauth) : true);
   }, [integration?.id]);
 
   const createOrUpdateIntegration = async (): Promise<Integration> => {
@@ -100,6 +108,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
       providerName: providerName as CRMProviderName,
       config: {
         providerAppId: '', // TODO: add input field for this
+        useManagedOauth,
         oauth: {
           credentials: {
             oauthClientId: clientId,
@@ -124,94 +133,112 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
 
   return (
     <Card>
-      <Stack direction="column" className="gap-4" sx={{ padding: '2rem' }}>
-        <Stack direction="row" className="items-center justify-between w-full">
-          <Stack direction="row" className="items-center justify-center gap-2">
-            {providerToIcon(integrationCardInfo.providerName, 35)}
-            <Stack direction="column">
-              <Typography variant="subtitle1">{integrationCardInfo.name}</Typography>
-              <Typography fontSize={12}>{integrationCardInfo.category.toUpperCase()}</Typography>
-            </Stack>
+      <CardHeader
+        avatar={providerToIcon(integrationCardInfo.providerName, 35)}
+        className="gap-4 items-center justify-between w-full"
+        title={integrationCardInfo.name}
+        subheader={integrationCardInfo.category.toUpperCase()}
+        sx={{ paddingX: '2rem' }}
+      ></CardHeader>
+      <CardContent className="gap-4" sx={{ padding: '2rem' }}>
+        <Stack className="gap-2">
+          <TextField value={friendlyIntegrationId} size="small" label="Integration ID" variant="outlined" disabled />
+        </Stack>
+
+        <Stack className="pt-6">
+          <Typography variant="subtitle1">Provider Configuration</Typography>
+          <Stack className="gap-4 pt-4">
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    disabled={integration?.id ? true : false}
+                    checked={useManagedOauth}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setUseManagedOauth(event.target.checked);
+                    }}
+                  />
+                }
+                label="Use Supaglue's OAuth2 app"
+              />
+              <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>This cannot be changed once saved</FormHelperText>
+              <Stack className="gap-2 pt-4">
+                <TextField
+                  disabled={useManagedOauth}
+                  value={clientId}
+                  size="small"
+                  label="OAuth2 client ID"
+                  variant="outlined"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setClientId(event.target.value);
+                  }}
+                />
+                <TextField
+                  disabled={useManagedOauth}
+                  value={clientSecret}
+                  size="small"
+                  label="OAuth2 client secret"
+                  variant="outlined"
+                  type="password"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setClientSecret(event.target.value);
+                  }}
+                />
+                <TextField
+                  disabled={useManagedOauth || providerName === 'ms_dynamics_365_sales'}
+                  value={oauthScopes}
+                  size="small"
+                  label="OAuth2 scopes"
+                  variant="outlined"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setOauthScopes(event.target.value);
+                  }}
+                  helperText="Comma separated values (without spaces)"
+                />
+              </Stack>
+            </FormGroup>
           </Stack>
         </Stack>
 
-        <Stack className="gap-2">
-          <Typography variant="subtitle1">Integration Metadata</Typography>
-          <TextField value={friendlyIntegrationId} size="small" label="ID" variant="outlined" disabled />
+        <Stack className="pt-6">
+          <Typography variant="subtitle1">Destination Configuration</Typography>
+          <Stack className="gap-2 pt-4">
+            <Select
+              name="Destination"
+              disabled={isLoadingDestinations || !!integration?.destinationId}
+              onChange={setDestinationId}
+              value={destinationId ?? ''}
+              options={destinations?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
+              unselect
+            />
+          </Stack>
         </Stack>
 
-        <Stack className="gap-2">
-          <Typography variant="subtitle1">Credentials</Typography>
-          <TextField
-            value={clientId}
-            size="small"
-            label="Client ID"
-            variant="outlined"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setClientId(event.target.value);
-            }}
-          />
-          <TextField
-            value={clientSecret}
-            size="small"
-            label="Client Secret"
-            variant="outlined"
-            type="password"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setClientSecret(event.target.value);
-            }}
-          />
-        </Stack>
+        <Stack className="pt-6">
+          <Typography variant="subtitle1">Sync Configuration</Typography>
 
-        {providerName === 'ms_dynamics_365_sales' ? null : (
-          <Stack className="gap-2">
-            <Typography variant="subtitle1">Scopes</Typography>
+          <Stack className="gap-2 pt-4">
             <TextField
-              value={oauthScopes}
+              value={syncPeriodSecs}
               size="small"
-              label="OAuth scopes (comma separated)"
+              label="Frequency (every inputed seconds)"
               variant="outlined"
+              type="number"
+              helperText="Value needs to be 60 seconds or greater."
+              error={syncPeriodSecs === undefined || !isSyncPeriodSecsValid(syncPeriodSecs)}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setOauthScopes(event.target.value);
+                let value: number | undefined = parseInt(event.target.value, 10);
+                if (Number.isNaN(value)) {
+                  value = undefined;
+                }
+                setSyncPeriodSecs(value);
+                setIsFormValid(value !== undefined && isSyncPeriodSecsValid(value));
               }}
             />
           </Stack>
-        )}
-
-        <Stack className="gap-2">
-          <Typography variant="subtitle1">Destination</Typography>
-          <Select
-            name="Destination"
-            disabled={isLoadingDestinations || !!integration?.destinationId}
-            onChange={setDestinationId}
-            value={destinationId ?? ''}
-            options={destinations?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
-            unselect
-          />
         </Stack>
 
-        <Stack className="gap-2">
-          <Typography variant="subtitle1">Sync frequency</Typography>
-          <TextField
-            value={syncPeriodSecs}
-            size="small"
-            label="Sync every (in seconds)"
-            variant="outlined"
-            type="number"
-            helperText="Value needs to be 60 seconds or greater."
-            error={syncPeriodSecs === undefined || !isSyncPeriodSecsValid(syncPeriodSecs)}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              let value: number | undefined = parseInt(event.target.value, 10);
-              if (Number.isNaN(value)) {
-                value = undefined;
-              }
-              setSyncPeriodSecs(value);
-              setIsFormValid(value !== undefined && isSyncPeriodSecsValid(value));
-            }}
-          />
-        </Stack>
-
-        <Stack direction="row" className="gap-2 justify-between">
+        <Stack direction="row" className="pt-6 gap-2 justify-between">
           <Button
             variant="outlined"
             disabled={isSaving}
@@ -243,7 +270,7 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
             Save
           </Button>
         </Stack>
-      </Stack>
+      </CardContent>
     </Card>
   );
 }
