@@ -34,6 +34,8 @@ git clone -b v0.9.8 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 docker compose up
 ```
 
+The default login credentials are `username: admin` and `password: admin`. Alternatively, you can set the `ADMIN_PASSWORD` environment variable in the `.env` file created by `./scripts/create_quickstart_env.sh`.
+
 ## Features
 
 Supaglue offers 3 main ways to integrate with your customers' providers.
