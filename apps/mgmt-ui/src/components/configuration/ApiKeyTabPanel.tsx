@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createRemoteApiKey, deleteRemoteApiKey } from '@/client';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Box, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
+import { DeleteApiKey } from './DeleteApiKey';
+import { RegenerateApiKey } from './RegenerateApiKey';
 
 export default function ApiKeyTabPanel() {
   const activeApplicationId = useActiveApplicationId();
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState(Array(88).fill('-').join(''));
+  const [didRegenerate, setDidRegenerate] = useState<boolean>(false);
 
   return (
     <Box
@@ -23,6 +26,7 @@ export default function ApiKeyTabPanel() {
           <TextField
             value={apiKey}
             size="small"
+            type={didRegenerate ? 'text' : 'password'}
             label="API key"
             variant="outlined"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,29 +37,21 @@ export default function ApiKeyTabPanel() {
         </Stack>
 
         <Stack direction="row" className="gap-2 justify-between">
-          <Stack direction="row" className="gap-2">
-            <Button
-              variant="contained"
-              onClick={async () => {
-                const { api_key: newApiKey } = await createRemoteApiKey(activeApplicationId);
-                setApiKey(newApiKey);
-              }}
-            >
-              Regenerate
-            </Button>
-          </Stack>
-          <Stack direction="row" className="gap-2">
-            <Button
-              variant="text"
-              color="error"
-              onClick={() => {
-                deleteRemoteApiKey(activeApplicationId);
-                setApiKey('');
-              }}
-            >
-              Revoke
-            </Button>
-          </Stack>
+          <DeleteApiKey
+            disabled={false}
+            onDelete={() => {
+              deleteRemoteApiKey(activeApplicationId);
+              setApiKey('');
+            }}
+          />
+          <RegenerateApiKey
+            disabled={false}
+            onConfirm={async () => {
+              const { api_key: newApiKey } = await createRemoteApiKey(activeApplicationId);
+              setDidRegenerate(true);
+              setApiKey(newApiKey);
+            }}
+          />
         </Stack>
       </Stack>
     </Box>

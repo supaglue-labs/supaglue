@@ -6,6 +6,7 @@ import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { Box, Button, Stack, Switch, TextField, Typography } from '@mui/material';
 import { WebhookConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
+import { DeleteWebhook } from './DeleteWebhook';
 
 const defaultWebhook: WebhookConfig = {
   url: '',
@@ -90,54 +91,46 @@ export default function WebhookTabPanel() {
         </Stack>
 
         <Stack direction="row" className="gap-2 justify-between">
-          <Stack direction="row" className="gap-2">
-            <Button
-              variant="contained"
-              disabled={isLoading || isSaving || !activeApplication}
-              onClick={async () => {
-                if (!activeApplication) {
-                  return;
-                }
-                setIsSaving(true);
-                const webhook = {
-                  url: webhookUrl.trim(),
-                  requestType: 'POST',
-                  notifyOnSyncSuccess,
-                  notifyOnSyncError,
-                  notifyOnConnectionSuccess,
-                  notifyOnConnectionError,
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                };
-                await createOrUpdateWebhook(activeApplication.id, webhook);
-                mutate({ ...activeApplication, config: { ...activeApplication.config, webhook } }, false);
-                addNotification({ message: 'Successfully updated webhook', severity: 'success' });
-                setIsSaving(false);
-              }}
-            >
-              Update
-            </Button>
-          </Stack>
-          <Stack direction="row" className="gap-2">
-            <Button
-              variant="text"
-              color="error"
-              disabled={isLoading || isSaving || !activeApplication}
-              onClick={async () => {
-                if (!activeApplication) {
-                  return;
-                }
-                setIsSaving(true);
-                deleteWebhook(activeApplication.id);
-                mutate({ ...activeApplication, config: { ...activeApplication.config, webhook: null } }, false);
-                addNotification({ message: 'Successfully deleted webhook', severity: 'success' });
-                setIsSaving(false);
-              }}
-            >
-              Delete
-            </Button>
-          </Stack>
+          <DeleteWebhook
+            disabled={isLoading || isSaving || !activeApplication}
+            onDelete={() => {
+              if (!activeApplication) {
+                return;
+              }
+              setIsSaving(true);
+              deleteWebhook(activeApplication.id);
+              mutate({ ...activeApplication, config: { ...activeApplication.config, webhook: null } }, false);
+              addNotification({ message: 'Successfully deleted webhook', severity: 'success' });
+              setIsSaving(false);
+            }}
+          />
+          <Button
+            variant="contained"
+            disabled={isLoading || isSaving || !activeApplication}
+            onClick={async () => {
+              if (!activeApplication) {
+                return;
+              }
+              setIsSaving(true);
+              const webhook = {
+                url: webhookUrl.trim(),
+                requestType: 'POST',
+                notifyOnSyncSuccess,
+                notifyOnSyncError,
+                notifyOnConnectionSuccess,
+                notifyOnConnectionError,
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              };
+              await createOrUpdateWebhook(activeApplication.id, webhook);
+              mutate({ ...activeApplication, config: { ...activeApplication.config, webhook } }, false);
+              addNotification({ message: 'Successfully updated webhook', severity: 'success' });
+              setIsSaving(false);
+            }}
+          >
+            Update
+          </Button>
         </Stack>
       </Stack>
     </Box>
