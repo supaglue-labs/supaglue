@@ -22,7 +22,7 @@ let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
   const coreDependencyContainer = getCoreDependencyContainer();
-  const { prisma, integrationService, remoteService, connectionService, applicationService, destinationService } =
+  const { prisma, providerService, syncConfigService, remoteService, connectionService, applicationService } =
     coreDependencyContainer;
 
   const temporalClient = new Client({
@@ -43,10 +43,10 @@ function createDependencyContainer(): DependencyContainer {
   const connectionAndSyncService = new ConnectionAndSyncService(
     prisma,
     temporalClient,
-    integrationService,
+    providerService,
+    syncConfigService,
     applicationService,
-    connectionService,
-    destinationService
+    connectionService
   );
 
   const passthroughService = new PassthroughService(remoteService);

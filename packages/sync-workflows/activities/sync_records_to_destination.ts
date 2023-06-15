@@ -1,7 +1,7 @@
 import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
-import { ConnectionService, RemoteService } from '@supaglue/core/services';
+import { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { CommonModelType } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
@@ -28,7 +28,8 @@ export type SyncRecordsToDestinationResult = {
 export function createSyncRecordsToDestination(
   connectionService: ConnectionService,
   remoteService: RemoteService,
-  destinationService: DestinationService
+  destinationService: DestinationService,
+  syncConfigService: SyncConfigService
 ) {
   return async function syncRecordsToDestination({
     syncId,
@@ -36,13 +37,18 @@ export function createSyncRecordsToDestination(
     commonModel,
     updatedAfterMs,
   }: SyncRecordsToDestinationArgs): Promise<SyncRecordsToDestinationResult> {
+    const syncConfig = await syncConfigService.getBySyncId(syncId);
+    const fetchAllFields = syncConfig?.config.commonObjects.find(
+      (obj) => obj.object === commonModel
+    )?.fetchAllFieldsIntoRaw;
     async function writeObjects(writer: DestinationWriter) {
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
         const readable = await (client as CrmRemoteClient).listCommonModelRecords(
           commonModel as CRMCommonModelType,
           updatedAfter,
-          heartbeat
+          heartbeat,
+          fetchAllFields
         );
         return await writer.writeCommonModelRecords(
           connection,
@@ -72,9 +78,9 @@ export function createSyncRecordsToDestination(
 
     const client = await remoteService.getRemoteClient(connectionId);
 
-    const writer = await destinationService.getWriterByIntegrationId(connection.integrationId);
+    const writer = await destinationService.getWriterBySyncId(syncId);
     if (!writer) {
-      throw ApplicationFailure.nonRetryable(`No destination found for integration ${connection.integrationId}`);
+      throw ApplicationFailure.nonRetryable(`No destination found for sync ${syncId}`);
     }
 
     const result = await writeObjects(writer);

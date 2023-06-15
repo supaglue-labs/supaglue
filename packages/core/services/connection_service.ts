@@ -7,18 +7,18 @@ import type {
   ProviderName,
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
+import { ProviderService } from '.';
 import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
-import { IntegrationService } from './integration_service';
 
 export class ConnectionService {
   #prisma: PrismaClient;
-  #integrationService: IntegrationService;
+  #providerService: ProviderService;
 
-  constructor(prisma: PrismaClient, integrationService: IntegrationService) {
+  constructor(prisma: PrismaClient, providerService: ProviderService) {
     this.#prisma = prisma;
-    this.#integrationService = integrationService;
+    this.#providerService = providerService;
   }
 
   public async getUnsafeById<T extends ProviderName>(id: string): Promise<ConnectionUnsafe<T>> {
@@ -52,7 +52,7 @@ export class ConnectionService {
     const connections = await this.#prisma.connection.findMany({
       where: {
         id,
-        integration: {
+        provider: {
           applicationId,
         },
       },
@@ -69,10 +69,10 @@ export class ConnectionService {
     customerId?: string,
     providerName?: string
   ): Promise<ConnectionSafeAny[]> {
-    const integrations = await this.#integrationService.list(applicationId);
-    const integrationIds = integrations.map(({ id }) => id);
+    const providers = await this.#providerService.list(applicationId);
+    const providerIds = providers.map(({ id }) => id);
     const connections = await this.#prisma.connection.findMany({
-      where: { integrationId: { in: integrationIds }, customerId, providerName },
+      where: { providerId: { in: providerIds }, customerId, providerName },
     });
     return connections.map(fromConnectionModelToConnectionSafe);
   }
@@ -82,10 +82,10 @@ export class ConnectionService {
     customerId?: string,
     providerName?: string
   ): Promise<ConnectionUnsafeAny[]> {
-    const integrations = await this.#integrationService.list(applicationId);
-    const integrationIds = integrations.map(({ id }) => id);
+    const providers = await this.#providerService.list(applicationId);
+    const providerIds = providers.map(({ id }) => id);
     const connections = await this.#prisma.connection.findMany({
-      where: { integrationId: { in: integrationIds }, customerId, providerName },
+      where: { providerId: { in: providerIds }, customerId, providerName },
     });
     return await Promise.all(connections.map(fromConnectionModelToConnectionUnsafe));
   }
@@ -115,9 +115,9 @@ export class ConnectionService {
     const connection = await this.#prisma.connection.findFirst({
       where: {
         customerId,
-        integration: {
+        provider: {
           applicationId,
-          providerName,
+          name: providerName,
         },
       },
     });
@@ -129,23 +129,23 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connection);
   }
 
-  public async getSafeByCustomerIdAndIntegrationId({
+  public async getSafeByCustomerIdAndProviderId({
     customerId,
-    integrationId,
+    providerId,
   }: {
     customerId: string;
-    integrationId: string;
+    providerId: string;
   }): Promise<ConnectionSafeAny> {
     const connection = await this.#prisma.connection.findUnique({
       where: {
-        customerId_integrationId: {
+        customerId_providerId: {
           customerId,
-          integrationId,
+          providerId,
         },
       },
     });
     if (!connection) {
-      throw new NotFoundError(`Connection not found for customer: ${customerId} and integration: ${integrationId}`);
+      throw new NotFoundError(`Connection not found for customer: ${customerId} and provider: ${providerId}`);
     }
     return fromConnectionModelToConnectionSafe(connection);
   }

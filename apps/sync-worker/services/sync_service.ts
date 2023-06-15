@@ -1,5 +1,5 @@
 import { logger } from '@supaglue/core/lib';
-import { ConnectionService, IntegrationService } from '@supaglue/core/services';
+import { ConnectionService, IntegrationService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
@@ -31,6 +31,7 @@ function fromSyncModel(model: SyncModel): Sync {
     id: model.id,
     connectionId: model.connectionId,
     type,
+    syncConfigId: model.syncConfigId,
     ...otherStrategyProps,
     state: model.state as SyncState,
     forceSyncFlag: model.forceSyncFlag,
@@ -41,17 +42,20 @@ export class SyncService {
   #prisma: PrismaClient;
   #temporalClient: Client;
   #connectionService: ConnectionService;
+  #syncConfigService: SyncConfigService;
   #integrationService: IntegrationService;
 
   public constructor(
     prisma: PrismaClient,
     temporalClient: Client,
     connectionService: ConnectionService,
+    syncConfigService: SyncConfigService,
     integrationService: IntegrationService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#connectionService = connectionService;
+    this.#syncConfigService = syncConfigService;
     this.#integrationService = integrationService;
   }
 
@@ -91,23 +95,28 @@ export class SyncService {
   }
 
   public async processSyncChanges(): Promise<void> {
-    // Get all the IntegrationChange objects
-    const integrationChanges = await this.#prisma.integrationChange.findMany();
-    const integrationChangeIds = integrationChanges.map((integrationChange) => integrationChange.id);
+    // Get all the SyncConfigChange objects
+    const syncConfigChanges = await this.#prisma.syncConfigChange.findMany({
+      select: {
+        id: true,
+        syncConfigId: true,
+      },
+    });
+    const syncConfigChangeIds = syncConfigChanges.map((syncConfigChange) => syncConfigChange.id);
 
-    // Find out all the integrations that may have changed
-    const uniqueIntegrationIds = [
-      ...new Set(integrationChanges.map((integrationChange) => integrationChange.integrationId)),
+    // TODO: Process sync config changes
+
+    // Find out all the sync_configs that may have changed
+    const uniqueSyncConfigIds = [
+      ...new Set(syncConfigChanges.map((syncConfigChange) => syncConfigChange.syncConfigId)),
     ];
 
     // Get all the associated syncs and generate sync changes so that we update the schedule intervals.
     // TODO: Write a raw query instead of reading out all syncs and then writing sync changes.
-    const syncsForIntegrations = await this.#prisma.sync.findMany({
+    const syncsForSyncConfigs = await this.#prisma.sync.findMany({
       where: {
-        connection: {
-          integrationId: {
-            in: uniqueIntegrationIds,
-          },
+        syncConfigId: {
+          in: uniqueSyncConfigIds,
         },
       },
       select: {
@@ -121,7 +130,7 @@ export class SyncService {
 
     // Find out all the syncs that may have changed (for now, it's just created; syncs aren't updated).
     const uniqueSyncIds = [
-      ...new Set(syncsForIntegrations.map((sync) => sync.id)),
+      ...new Set(syncsForSyncConfigs.map((sync) => sync.id)),
       ...new Set(syncChanges.map((syncChange) => syncChange.syncId)),
     ];
     const syncs = await this.#prisma.sync.findMany({
@@ -133,6 +142,7 @@ export class SyncService {
       select: {
         id: true,
         connectionId: true,
+        syncConfigId: true,
         version: true,
       },
     });
@@ -155,13 +165,15 @@ export class SyncService {
 
     // Upsert syncs
 
+    // Get the sync configs
+    const syncConfigIds: string[] = syncs
+      .filter((sync) => syncIdsToUpsert.includes(sync.id))
+      .flatMap((sync) => (sync.syncConfigId ? [sync.syncConfigId] : []));
+    const syncConfigs = await this.#syncConfigService.listByIds(syncConfigIds);
+
     // Get the connections
     const connectionIds = syncs.filter((sync) => syncIdsToUpsert.includes(sync.id)).map((sync) => sync.connectionId);
     const connections = await this.#connectionService.getSafeByIds(connectionIds);
-
-    // Get the integrations
-    const integrationIds = connections.map((connection) => connection.integrationId);
-    const integrations = await this.#integrationService.getByIds(integrationIds);
 
     // Upsert schedules for all the syncs
     for (const sync of syncsToUpsert) {
@@ -169,28 +181,34 @@ export class SyncService {
       if (!connection) {
         throw new Error('Unexpected error: connection not found');
       }
-      const integration = integrations.find((integration) => integration.id === connection.integrationId);
-      if (!integration) {
-        throw new Error('Unexpected error: integration not found');
-      }
 
       if (sync.version === 'v1') {
+        const integration = await this.#integrationService.getById(connection.integrationId);
         await this.#deleteTemporalSyncsV2([sync.id]);
         await this.upsertTemporalSyncV1(sync.id, connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
       } else if (sync.version === 'v2') {
+        const syncConfig = syncConfigs.find((syncConfig) => syncConfig.id === sync.syncConfigId);
+        if (!syncConfig) {
+          throw new Error('Unexpected error: syncConfig not found');
+        }
+
         await this.#deleteTemporalSyncsV1([sync.id]);
-        await this.upsertTemporalSyncV2(sync.id, connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
+        await this.upsertTemporalSyncV2(
+          sync.id,
+          connection,
+          syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
+        );
       } else {
         throw new Error(`Unexpected error: sync version not valid: ${sync.version}`);
       }
     }
 
     await Promise.all([
-      // Delete the IntegrationChange objects
-      this.#prisma.integrationChange.deleteMany({
+      // Delete the SyncConfigChange objects
+      this.#prisma.syncConfigChange.deleteMany({
         where: {
           id: {
-            in: integrationChangeIds,
+            in: syncConfigChangeIds,
           },
         },
       }),
@@ -284,6 +302,7 @@ export class SyncService {
   }
 
   async upsertTemporalSyncV1(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
+    const sync = await this.getSyncById(syncId);
     const scheduleId = getRunSyncScheduleId(syncId);
     const interval: IntervalSpec = {
       every: syncPeriodMs,
@@ -305,6 +324,9 @@ export class SyncService {
             [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
             [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
             [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
+            [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
+            [TEMPORAL_CONTEXT_ARGS.SYNC_CONFIG_ID]: sync.syncConfigId,
+            [TEMPORAL_CONTEXT_ARGS.CONNECTION_ID]: sync.connectionId,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
           },
@@ -315,6 +337,8 @@ export class SyncService {
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_CONFIG_ID]: [sync.syncConfigId ?? ''],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
@@ -355,6 +379,7 @@ export class SyncService {
   }
 
   async upsertTemporalSyncV2(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
+    const sync = await this.getSyncById(syncId);
     const scheduleId = getRunManagedSyncScheduleId(syncId);
     const interval: IntervalSpec = {
       every: syncPeriodMs,
@@ -376,6 +401,9 @@ export class SyncService {
             [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
             [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
             [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
+            [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
+            [TEMPORAL_CONTEXT_ARGS.SYNC_CONFIG_ID]: sync.syncConfigId,
+            [TEMPORAL_CONTEXT_ARGS.CONNECTION_ID]: sync.connectionId,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
           },
@@ -386,6 +414,8 @@ export class SyncService {
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_CONFIG_ID]: [sync.syncConfigId ?? ''],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],

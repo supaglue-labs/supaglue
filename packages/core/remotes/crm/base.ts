@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, CRMIntegration, ProviderCategory } from '@supaglue/types';
+import { ConnectionUnsafe, CRMProvider, ProviderCategory } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
 import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
 import { AssociationType, AssociationTypeCreateParams, ObjectClass } from '@supaglue/types/crm/association_type';
@@ -20,7 +20,8 @@ export interface CrmRemoteClient extends RemoteClient {
   listCommonModelRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    fetchAllFields?: boolean
   ): Promise<Readable>;
   getCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
@@ -69,7 +70,8 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   abstract listCommonModelRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    fetchAllFields?: boolean
   ): Promise<Readable>;
   abstract getCommonModelRecord<T extends CRMCommonModelType>(
     commonModelType: T,
@@ -130,5 +132,5 @@ export type ConnectorAuthConfig = {
 
 export type CrmConnectorConfig<T extends CRMProviderName> = {
   authConfig: ConnectorAuthConfig;
-  newClient: (connection: ConnectionUnsafe<T>, integration: CRMIntegration) => AbstractCrmRemoteClient;
+  newClient: (connection: ConnectionUnsafe<T>, provider: CRMProvider) => AbstractCrmRemoteClient;
 };

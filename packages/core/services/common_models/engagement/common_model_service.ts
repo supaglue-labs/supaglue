@@ -30,8 +30,8 @@ export class EngagementCommonModelService {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
     const id = await remoteClient.createCommonModelRecord(type, params);
 
-    // If the associated integration has a destination, do cache invalidation
-    const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
+    // If the associated provider has a destination, do cache invalidation
+    const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await remoteClient.getCommonModelRecord(type, id);
       await writer.upsertCommonModelRecord<'engagement', T>(connection, type, object);
@@ -48,8 +48,8 @@ export class EngagementCommonModelService {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
     await remoteClient.updateCommonModelRecord(type, params);
 
-    // If the associated integration has a destination, do cache invalidation
-    const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
+    // If the associated provider has a destination, do cache invalidation
+    const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await remoteClient.getCommonModelRecord(type, params.id);
       await writer.upsertCommonModelRecord<'engagement', T>(connection, type, object);

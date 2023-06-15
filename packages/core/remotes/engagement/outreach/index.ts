@@ -1,6 +1,6 @@
 import {
   ConnectionUnsafe,
-  Integration,
+  EngagementProvider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -399,11 +399,11 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'outreach'>, integration: Integration): OutreachClient {
+export function newClient(connection: ConnectionUnsafe<'outreach'>, provider: EngagementProvider): OutreachClient {
   return new OutreachClient({
     ...connection.credentials,
-    clientId: integration.config.oauth.credentials.oauthClientId,
-    clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+    clientId: provider.config.oauth.credentials.oauthClientId,
+    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
   });
 }
 

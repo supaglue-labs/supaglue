@@ -3,10 +3,8 @@ import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
-import type { ApplicationService, IntegrationService } from '@supaglue/core/services';
+import { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { DestinationService } from '@supaglue/core/services/destination_service';
-import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
@@ -15,52 +13,56 @@ import {
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
 import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
-import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
+import { getRunSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_sync';
 import type { ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
-  ConnectionSafeAny,
   ConnectionStatus,
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
-import {
-  Client,
-  IntervalSpec,
-  ScheduleAlreadyRunning,
-  ScheduleNotFoundError,
-  ScheduleOptionsAction,
-  WorkflowNotFoundError,
-} from '@temporalio/client';
+import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
 export class ConnectionAndSyncService {
   #prisma: PrismaClient;
   #temporalClient: Client;
-  #integrationService: IntegrationService;
-  #destinationService: DestinationService;
+  #providerService: ProviderService;
+  #syncConfigService: SyncConfigService;
   #applicationService: ApplicationService;
   #connectionService: ConnectionService;
 
   constructor(
     prisma: PrismaClient,
     temporalClient: Client,
-    integrationService: IntegrationService,
+    providerService: ProviderService,
+    syncConfigService: SyncConfigService,
     applicationService: ApplicationService,
-    connectionService: ConnectionService,
-    destinationService: DestinationService
+    connectionService: ConnectionService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
-    this.#integrationService = integrationService;
+    this.#providerService = providerService;
+    this.#syncConfigService = syncConfigService;
     this.#applicationService = applicationService;
     this.#connectionService = connectionService;
-    this.#destinationService = destinationService;
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
+    const provider = await this.#prisma.provider.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: params.applicationId,
+          name: params.providerName,
+        },
+      },
+    });
+    if (!provider) {
+      throw new Error(`No provider found for ${params.providerName}`);
+    }
+    // TODO: Delete
     const integration = await this.#prisma.integration.findUnique({
       where: {
         applicationId_providerName: {
@@ -79,7 +81,9 @@ export class ConnectionAndSyncService {
         category: params.category,
         providerName: params.providerName,
         customerId,
+        // TODO: Delete
         integrationId: integration.id,
+        providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
       },
@@ -88,13 +92,14 @@ export class ConnectionAndSyncService {
         providerName: params.providerName,
         customerId,
         integrationId: integration.id,
+        providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
       },
       where: {
-        customerId_integrationId: {
-          customerId: customerId,
-          integrationId: integration.id,
+        customerId_providerId: {
+          customerId,
+          providerId: provider.id,
         },
       },
     });
@@ -103,19 +108,23 @@ export class ConnectionAndSyncService {
   }
 
   public async create(version: 'v1' | 'v2', params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
-    const integration = await this.#integrationService.getByProviderNameAndApplicationId(
-      params.providerName,
-      params.applicationId
-    );
-    let strategyType = 'full then incremental';
-    if (version === 'v2' && integration.destinationId) {
-      const destination = await this.#destinationService.getDestinationById(integration.destinationId);
-      if (destination.type === 's3') {
-        strategyType = 'full only';
-      }
-    }
-    const application = await this.#applicationService.getById(integration.applicationId);
+    const provider = await this.#providerService.getByNameAndApplicationId(params.providerName, params.applicationId);
+    const syncConfig = await this.#syncConfigService.findByProviderId(provider.id);
+    const application = await this.#applicationService.getById(provider.applicationId);
     let errored = false;
+
+    // TODO: Delete
+    const integration = await this.#prisma.integration.findUnique({
+      where: {
+        applicationId_providerName: {
+          applicationId: params.applicationId,
+          providerName: params.providerName,
+        },
+      },
+    });
+    if (!integration) {
+      throw new Error(`No integration found for ${params.providerName}`);
+    }
 
     try {
       const status: ConnectionStatus = 'added';
@@ -123,38 +132,44 @@ export class ConnectionAndSyncService {
       const connectionId = uuidv4();
       const syncId = uuidv4();
 
-      const [connectionModel] = await this.#prisma.$transaction([
-        this.#prisma.connection.create({
+      const connectionModel = await this.#prisma.$transaction(async (tx) => {
+        const connectionModel = await tx.connection.create({
           data: {
             id: connectionId,
             category: params.category,
             providerName: params.providerName,
             customerId: getCustomerIdPk(params.applicationId, params.customerId),
+            // TODO: Delete
             integrationId: integration.id,
+            providerId: provider.id,
             status,
             instanceUrl: params.instanceUrl,
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
-        }),
-        this.#prisma.sync.create({
-          data: {
-            id: syncId,
-            connectionId,
-            strategy: {
-              type: strategyType,
+        });
+        if (syncConfig || version === 'v1') {
+          await tx.sync.create({
+            data: {
+              id: syncId,
+              connectionId,
+              syncConfigId: syncConfig?.id,
+              strategy: {
+                type: syncConfig?.config.defaultConfig.strategy ?? 'full then incremental',
+              },
+              state: {
+                phase: 'created',
+              },
+              version,
             },
-            state: {
-              phase: 'created',
+          });
+          await tx.syncChange.create({
+            data: {
+              syncId,
             },
-            version,
-          },
-        }),
-        this.#prisma.syncChange.create({
-          data: {
-            syncId,
-          },
-        }),
-      ]);
+          });
+        }
+        return connectionModel;
+      });
 
       const connection = await fromConnectionModelToConnectionUnsafe<ProviderName>(connectionModel);
 
@@ -183,7 +198,7 @@ export class ConnectionAndSyncService {
     const connection = await this.#prisma.connection.findFirst({
       where: {
         id,
-        integration: {
+        provider: {
           applicationId,
         },
       },
@@ -442,82 +457,82 @@ export class ConnectionAndSyncService {
     // };
   }
 
-  async #createTemporalSyncIfNotExist(
-    syncId: string,
-    connection: ConnectionSafeAny,
-    syncPeriodMs: number
-  ): Promise<boolean> {
-    const scheduleId = getRunSyncScheduleId(syncId);
-    const interval: IntervalSpec = {
-      every: syncPeriodMs,
-      // so that not everybody is refreshing and hammering the DB at the same time
-      offset: Math.random() * syncPeriodMs,
-    };
-    const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
-      type: 'startWorkflow' as const,
-      workflowType: runSync,
-      workflowId: getRunSyncWorkflowId(syncId),
-      taskQueue: SYNC_TASK_QUEUE,
-      args: [
-        {
-          syncId,
-          connectionId: connection.id,
-          category: connection.category,
-          context: {
-            [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
-            [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
-            [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
-            [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
-          },
-        },
-      ],
-      searchAttributes: {
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
-      },
-    };
+  // async #createTemporalSyncIfNotExist(
+  //   syncId: string,
+  //   connection: ConnectionSafeAny,
+  //   syncPeriodMs: number
+  // ): Promise<boolean> {
+  //   const scheduleId = getRunSyncScheduleId(syncId);
+  //   const interval: IntervalSpec = {
+  //     every: syncPeriodMs,
+  //     // so that not everybody is refreshing and hammering the DB at the same time
+  //     offset: Math.random() * syncPeriodMs,
+  //   };
+  //   const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
+  //     type: 'startWorkflow' as const,
+  //     workflowType: runSync,
+  //     workflowId: getRunSyncWorkflowId(syncId),
+  //     taskQueue: SYNC_TASK_QUEUE,
+  //     args: [
+  //       {
+  //         syncId,
+  //         connectionId: connection.id,
+  //         category: connection.category,
+  //         context: {
+  //           [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
+  //           [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
+  //           [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
+  //           [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
+  //           [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
+  //           [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
+  //         },
+  //       },
+  //     ],
+  //     searchAttributes: {
+  //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
+  //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+  //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
+  //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
+  //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
+  //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
+  //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+  //     },
+  //   };
 
-    try {
-      await this.#temporalClient.schedule.create({
-        scheduleId,
-        spec: {
-          intervals: [interval],
-        },
-        action,
-        state: {
-          triggerImmediately: true,
-        },
-      });
-    } catch (err: unknown) {
-      if (err instanceof ScheduleAlreadyRunning) {
-        const handle = this.#temporalClient.schedule.getHandle(scheduleId);
-        await handle.update((prev) => {
-          const newInterval = prev.spec.intervals?.[0]?.every === syncPeriodMs ? prev.spec.intervals[0] : interval;
+  //   try {
+  //     await this.#temporalClient.schedule.create({
+  //       scheduleId,
+  //       spec: {
+  //         intervals: [interval],
+  //       },
+  //       action,
+  //       state: {
+  //         triggerImmediately: true,
+  //       },
+  //     });
+  //   } catch (err: unknown) {
+  //     if (err instanceof ScheduleAlreadyRunning) {
+  //       const handle = this.#temporalClient.schedule.getHandle(scheduleId);
+  //       await handle.update((prev) => {
+  //         const newInterval = prev.spec.intervals?.[0]?.every === syncPeriodMs ? prev.spec.intervals[0] : interval;
 
-          return {
-            ...prev,
-            spec: {
-              intervals: [newInterval],
-            },
-            action,
-          };
-        });
+  //         return {
+  //           ...prev,
+  //           spec: {
+  //             intervals: [newInterval],
+  //           },
+  //           action,
+  //         };
+  //       });
 
-        return false;
-      }
+  //       return false;
+  //     }
 
-      throw err;
-    }
+  //     throw err;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
   public async getSyncById(id: string): Promise<Sync> {
     const model = await this.#prisma.sync.findUniqueOrThrow({

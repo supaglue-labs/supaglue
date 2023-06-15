@@ -9,7 +9,7 @@ export default function init(app: Router) {
   router.get('/_get_connections', async (req, res) => {
     const connections = await prisma.connection.findMany({
       where: {
-        integration: {
+        provider: {
           applicationId: req.supaglueApplication.id,
         },
       },

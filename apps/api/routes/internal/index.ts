@@ -27,7 +27,7 @@ export default function init(app: Router): void {
   v1ApplicationRouter.get('/_migration_connections', async (req, res) => {
     const connections = await prisma.connection.findMany({
       where: {
-        integration: {
+        provider: {
           application: {
             orgId: req.orgId,
           },
@@ -65,7 +65,7 @@ export default function init(app: Router): void {
     const syncs = await prisma.sync.findMany({
       where: {
         connection: {
-          integration: {
+          provider: {
             application: {
               orgId: req.orgId,
             },

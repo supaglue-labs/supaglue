@@ -51,9 +51,9 @@ export function createSyncRawRecordsToDestination(
 
     const client = await remoteService.getRemoteClient(connectionId);
 
-    const writer = await destinationService.getWriterByIntegrationId(connection.integrationId);
+    const writer = await destinationService.getWriterByProviderId(connection.providerId);
     if (!writer) {
-      throw ApplicationFailure.nonRetryable(`No destination found for integration ${connection.integrationId}`);
+      throw ApplicationFailure.nonRetryable(`No destination found for provider ${connection.providerId}`);
     }
 
     const result = await writeObjects(writer);

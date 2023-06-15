@@ -31,7 +31,7 @@ export class CrmCommonModelService {
     const id = await remoteClient.createCommonModelRecord(type, params);
 
     // If the associated integration has a destination, do cache invalidation
-    const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
+    const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await remoteClient.getCommonModelRecord(type, id);
       await writer.upsertCommonModelRecord<'crm', T>(connection, type, object);
@@ -49,7 +49,7 @@ export class CrmCommonModelService {
     await remoteClient.updateCommonModelRecord(type, params);
 
     // If the associated integration has a destination, do cache invalidation
-    const writer = await this.#destinationService.getWriterByIntegrationId(connection.integrationId);
+    const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await remoteClient.getCommonModelRecord(type, params.id);
       await writer.upsertCommonModelRecord<'crm', T>(connection, type, object);
