@@ -9,6 +9,9 @@ import {
   GetDestinationsPathParams,
   GetDestinationsRequest,
   GetDestinationsResponse,
+  TestDestinationPathParams,
+  TestDestinationRequest,
+  TestDestinationResponse,
   UpdateDestinationPathParams,
   UpdateDestinationRequest,
   UpdateDestinationResponse,
@@ -55,6 +58,20 @@ export default function init(app: Router): void {
         ...camelcaseKeys(req.body),
       });
       return res.status(200).send(snakecaseKeys(destination));
+    }
+  );
+
+  destinationRouter.post(
+    '/_test',
+    async (
+      req: Request<TestDestinationPathParams, TestDestinationResponse, TestDestinationRequest>,
+      res: Response<TestDestinationResponse>
+    ) => {
+      const testResponse = await destinationService.testDestination({
+        applicationId: req.supaglueApplication.id,
+        ...camelcaseKeys(req.body),
+      });
+      return res.status(200).send(testResponse);
     }
   );
 

@@ -32,6 +32,11 @@ export type CreateDestinationRequest = operations['createDestination']['requestB
 export type CreateDestinationResponse =
   operations['createDestination']['responses'][keyof operations['createDestination']['responses']]['content']['application/json'];
 
+// Internal API only so no generated OpenAPI types:
+export type TestDestinationPathParams = never;
+export type TestDestinationRequest = operations['createDestination']['requestBody']['content']['application/json']; // Request shape is same as create
+export type TestDestinationResponse = { success: boolean; message: string | null };
+
 export type GetDestinationPathParams = paths[`/destinations/{destination_id}`]['parameters']['path'];
 export type GetDestinationRequest = never;
 export type GetDestinationResponse =

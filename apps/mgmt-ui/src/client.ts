@@ -3,6 +3,8 @@ import type {
   Customer,
   Destination,
   DestinationCreateParams,
+  DestinationTestParams,
+  DestinationTestResult,
   DestinationUpdateParams,
   Integration,
   IntegrationCreateParams,
@@ -95,6 +97,20 @@ export async function updateRemoteIntegration(applicationId: string, data: Integ
 
 export async function createDestination(data: DestinationCreateParams): Promise<Destination> {
   const result = await fetch(`/api/internal/destinations/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': data.applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  const r = await result.json();
+  return r;
+}
+
+export async function testDestination(data: DestinationTestParams): Promise<DestinationTestResult> {
+  const result = await fetch(`/api/internal/destinations/_test`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
