@@ -33,6 +33,8 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
   const [isTestSuccessful, setIsTestSuccessful] = useState<boolean>(false);
   const router = useRouter();
 
+  const isNew = !destination?.id;
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsTesting(false);
@@ -157,7 +159,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           <Typography variant="subtitle1">Destination Name</Typography>
           <TextField
             required={true}
-            error={name === ''}
+            error={!isNew && name === ''}
             value={name}
             size="small"
             label="Name (must be unique)"
@@ -173,7 +175,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           <Typography variant="subtitle1">Credentials</Typography>
           <TextField
             required={true}
-            error={accessKeyId === ''}
+            error={!isNew && accessKeyId === ''}
             value={accessKeyId}
             size="small"
             label="Access Key ID"
@@ -185,7 +187,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           />
           <TextField
             required={true}
-            error={secretAccessKey === ''}
+            error={!isNew && secretAccessKey === ''}
             value={secretAccessKey}
             size="small"
             label="Secret Access Key"
@@ -202,7 +204,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           <Typography variant="subtitle1">Region</Typography>
           <TextField
             required={true}
-            error={region === ''}
+            error={!isNew && region === ''}
             value={region}
             size="small"
             label="AWS Region"
@@ -218,7 +220,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           <Typography variant="subtitle1">Bucket</Typography>
           <TextField
             required={true}
-            error={bucket === ''}
+            error={!isNew && bucket === ''}
             value={bucket}
             size="small"
             label="Bucket"

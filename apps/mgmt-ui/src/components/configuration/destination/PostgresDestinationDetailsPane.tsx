@@ -35,6 +35,8 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const [isTesting, setIsTesting] = useState<boolean>(false);
   const router = useRouter();
 
+  const isNew = !destination?.id;
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsTesting(false);
@@ -167,7 +169,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           <Typography variant="subtitle1">Destination Name</Typography>
           <TextField
             required={true}
-            error={name === ''}
+            error={!isNew && name === ''}
             value={name}
             size="small"
             label="Name (must be unique)"
@@ -182,7 +184,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           <Typography variant="subtitle1">Host</Typography>
           <TextField
             required={true}
-            error={host === ''}
+            error={!isNew && host === ''}
             value={host}
             size="small"
             label="Host"
@@ -217,7 +219,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           <Typography variant="subtitle1">Database</Typography>
           <TextField
             required={true}
-            error={database === ''}
+            error={!isNew && database === ''}
             value={database}
             size="small"
             label="Database"
@@ -233,7 +235,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           <Typography variant="subtitle1">Schema</Typography>
           <TextField
             required={true}
-            error={schema === ''}
+            error={!isNew && schema === ''}
             value={schema}
             size="small"
             label="Schema"
@@ -250,7 +252,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           <Typography variant="subtitle1">Credentials</Typography>
           <TextField
             required={true}
-            error={user === ''}
+            error={!isNew && user === ''}
             value={user}
             size="small"
             label="User"
@@ -262,7 +264,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           />
           <TextField
             required={true}
-            error={password === ''}
+            error={!isNew && password === ''}
             value={password}
             size="small"
             label="Password"
