@@ -1,4 +1,4 @@
-import { SyncType } from '.';
+import { CommonModelType, SyncType } from '.';
 
 // DEPRECATED: Use SyncConfig instead.
 export type IntegrationSyncConfig = {
@@ -29,7 +29,7 @@ export type SyncStrategyConfig = {
 };
 
 export type CommonObjectConfig = {
-  object: string;
+  object: CommonModelType;
   // If true, all fields will be fetched into the raw object and not just the ones needed for the common model.
   fetchAllFieldsIntoRaw: boolean;
   configOverride?: Partial<SyncStrategyConfig>;
