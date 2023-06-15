@@ -37,13 +37,3 @@ alter default privileges in schema supaglue grant all privileges on tables to su
 grant supaglue_role to supaglue_user;
 
 ```
-
-## IP Whitelist
-
-The following are Supaglue's CIDR ranges:
-
-```
-54.214.243.61/32
-54.201.123.169/32
-44.226.37.107/32
-```
