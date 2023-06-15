@@ -515,9 +515,7 @@ export interface components {
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
     };
-    sync_history: {
-      /** @example Account */
-      model_name: string;
+    sync_history: ({
       error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
       start_timestamp: string;
@@ -537,7 +535,13 @@ export interface components {
       status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
       /** @example 100 */
       num_records_synced?: number | null;
-    };
+    }) & OneOf<[{
+      /** @example contact */
+      model_name: string;
+    }, {
+      /** @example account */
+      raw_object: string;
+    }]>;
     force_sync: {
       /** @example true */
       success: boolean;
