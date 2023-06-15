@@ -1,6 +1,6 @@
 import {
   ConnectionUnsafe,
-  CRMIntegration,
+  CRMProvider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -520,12 +520,12 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'pipedrive'>, integration: CRMIntegration): PipedriveClient {
+export function newClient(connection: ConnectionUnsafe<'pipedrive'>, provider: CRMProvider): PipedriveClient {
   return new PipedriveClient({
     ...connection.credentials,
     instanceUrl: connection.instanceUrl,
-    clientId: integration.config.oauth.credentials.oauthClientId,
-    clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+    clientId: provider.config.oauth.credentials.oauthClientId,
+    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
   });
 }
 

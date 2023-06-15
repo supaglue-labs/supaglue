@@ -1,4 +1,10 @@
-import type { ConnectionService, IntegrationService, RemoteService, SyncHistoryService } from '@supaglue/core/services';
+import {
+  ConnectionService,
+  ProviderService,
+  RemoteService,
+  SyncConfigService,
+  SyncHistoryService,
+} from '@supaglue/core/services';
 import {
   AccountService,
   ContactService,
@@ -32,7 +38,8 @@ export const createActivities = ({
   remoteService,
   syncService,
   syncHistoryService,
-  integrationService,
+  providerService,
+  syncConfigService,
   applicationService,
   destinationService,
   crm,
@@ -42,7 +49,8 @@ export const createActivities = ({
   remoteService: RemoteService;
   syncService: SyncService;
   syncHistoryService: SyncHistoryService;
-  integrationService: IntegrationService;
+  syncConfigService: SyncConfigService;
+  providerService: ProviderService;
   applicationService: ApplicationService;
   destinationService: DestinationService;
   crm: {
@@ -67,7 +75,12 @@ export const createActivities = ({
     setForceSyncFlag: createSetForceSyncFlag(syncService),
     updateSyncState: createUpdateSyncState(syncService),
     importRecords: createImportRecords(connectionService, remoteService, crm, engagement),
-    syncRecordsToDestination: createSyncRecordsToDestination(connectionService, remoteService, destinationService),
+    syncRecordsToDestination: createSyncRecordsToDestination(
+      connectionService,
+      remoteService,
+      destinationService,
+      syncConfigService
+    ),
     syncRawRecordsToDestination: createSyncRawRecordsToDestination(
       connectionService,
       remoteService,
@@ -77,7 +90,7 @@ export const createActivities = ({
     logSyncFinish: createLogSyncFinish({ syncHistoryService }),
     maybeSendSyncFinishWebhook: createMaybeSendSyncFinishWebhook({
       connectionService,
-      integrationService,
+      providerService,
       applicationService,
     }),
   };

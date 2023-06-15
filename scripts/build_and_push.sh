@@ -7,12 +7,6 @@ if [ -z "${1-}" ]; then
   exit 1
 fi
 
-clean_up () {
-    mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
-    echo "Restored your previous apps/mgmt-ui/.env"
-    exit 1
-}
-
 WORKSPACE_NAME=$1
 
 WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${WORKSPACE_NAME}\") | .location")
@@ -35,11 +29,25 @@ ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
 # read version from package.json
 VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
 
-if [ $WORKSPACE_NAME == "mgmt-ui" ]; then
-  echo "Setting aside your apps/mgmt-ui/.env and using apps/mgmt-ui/.env.build"
-  mv "${WORKSPACE_PATH}/.env" "${WORKSPACE_PATH}/.env.user-bak"
+if [ "${WORKSPACE_NAME}" == "mgmt-ui" ]; then
+  if [ -f "${WORKSPACE_PATH}/.env" ]; then
+    mv "${WORKSPACE_PATH}/.env" "${WORKSPACE_PATH}/.env.user-bak"
+    echo "Your apps/mgmt-ui/.env was set aside"
+  fi
   cp "${WORKSPACE_PATH}/.env.build" "${WORKSPACE_PATH}/.env"
+  clean_up () {
+    if [ -f "${WORKSPACE_PATH}/.env" ]; then
+      rm "${WORKSPACE_PATH}/.env"
+    fi
+    if [ -f "${WORKSPACE_PATH}/.env.user-bak" ]; then
+      mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
+      echo "Restored your previous apps/mgmt-ui/.env"
+    fi
+    exit 1
+  }
+
   trap clean_up EXIT
+  trap clean_up SIGINT
 fi
 
 depot build --project 2bljgst1rr \
@@ -48,11 +56,5 @@ depot build --project 2bljgst1rr \
   --tag "supaglue/${WORKSPACE_NAME}:${VERSION}" \
   --tag "supaglue/${WORKSPACE_NAME}:latest" \
   --label "org.opencontainers.image.source=https://github.com/supaglue-labs/supaglue" \
-  --push \
   ${ADDITIONAL_ARGS-} \
   .
-
-if [ $WORKSPACE_NAME == "mgmt-ui" ]; then
-  echo "Restored your previous apps/mgmt-ui/.env"
-  mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
-fi

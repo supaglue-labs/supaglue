@@ -3,7 +3,7 @@ import type { GetInternalParams, ListInternalParams, PaginatedResult, SearchInte
 import { Contact, ContactCreateParams, ContactFilters, ContactUpdateParams } from '@supaglue/types/crm';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
-import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { NotFoundError } from '../../../errors';
 import { getPaginationParams, getPaginationResult, getRemoteId } from '../../../lib';
 import { fromContactModel, fromRemoteContactToDbContactParams, fromRemoteContactToModel } from '../../../mappers/crm';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
@@ -17,11 +17,8 @@ export class ContactService extends CommonModelBaseService {
     const model = await this.prisma.crmContact.findUnique({
       where: { id },
     });
-    if (!model) {
+    if (!model || model.connectionId !== connectionId) {
       throw new NotFoundError(`Can't find contact with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
     }
     return fromContactModel(model, getParams);
   }
@@ -112,8 +109,8 @@ export class ContactService extends CommonModelBaseService {
       },
     });
 
-    if (foundContactModel.customerId !== customerId) {
-      throw new Error('Contact customerId does not match');
+    if (foundContactModel.customerId !== customerId || foundContactModel.connectionId !== connectionId) {
+      throw new NotFoundError(`Contact not found`);
     }
 
     const remoteUpdateParams = { ...updateParams };

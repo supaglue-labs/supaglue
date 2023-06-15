@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, Integration, ProviderCategory } from '@supaglue/types';
+import { ConnectionUnsafe, EngagementProvider, ProviderCategory } from '@supaglue/types';
 import {
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
@@ -65,5 +65,5 @@ export type ConnectorAuthConfig = {
 
 export type EngagementConnectorConfig<T extends EngagementProviderName> = {
   authConfig: ConnectorAuthConfig;
-  newClient: (connection: ConnectionUnsafe<T>, integration: Integration) => AbstractEngagementRemoteClient;
+  newClient: (connection: ConnectionUnsafe<T>, provider: EngagementProvider) => AbstractEngagementRemoteClient;
 };

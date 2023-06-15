@@ -14,7 +14,7 @@ const EVENT_TYPES_TO_SUBSCRIBE_TO = [
   'UserChangeEvent',
 ];
 
-const { connectionService, integrationService, webhookService, applicationService } = getCoreDependencyContainer();
+const { connectionService, providerService, webhookService, applicationService } = getCoreDependencyContainer();
 (async () => {
   logger.info('Starting Salesforce CDC worker');
   const connections = await connectionService.listAllUnsafe({ providerName: 'salesforce' });
@@ -27,15 +27,15 @@ const { connectionService, integrationService, webhookService, applicationServic
       id: connectionId,
     } = connection;
 
-    const integration = await integrationService.getById(connection.integrationId);
+    const provider = await providerService.getById(connection.providerId);
 
     let conn: jsforce.Connection;
     try {
       conn = new jsforce.Connection({
         oauth2: new jsforce.OAuth2({
           loginUrl,
-          clientId: integration.config.oauth.credentials.oauthClientId,
-          clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+          clientId: provider.config.oauth.credentials.oauthClientId,
+          clientSecret: provider.config.oauth.credentials.oauthClientSecret,
         }),
         instanceUrl,
         refreshToken,
@@ -55,7 +55,7 @@ const { connectionService, integrationService, webhookService, applicationServic
             salesforceEdition,
             connectionId,
             applicationId: connection.applicationId,
-            integrationId: connection.integrationId,
+            providerId: connection.providerId,
           },
           'Unsupported Salesforce edition, skipping'
         );
@@ -63,7 +63,7 @@ const { connectionService, integrationService, webhookService, applicationServic
       }
     } catch (err: any) {
       logger.error(
-        { err, connectionId, applicationId: connection.applicationId, integrationId: connection.integrationId },
+        { err, connectionId, applicationId: connection.applicationId, providerId: connection.providerId },
         "couldn't connect to salesforce due to error, skipping"
       );
       continue;
@@ -98,7 +98,7 @@ const { connectionService, integrationService, webhookService, applicationServic
         {
           connectionId,
           applicationId: connection.applicationId,
-          integrationId: connection.integrationId,
+          providerId: connection.providerId,
           eventType,
         },
         'starting stream'
@@ -127,7 +127,7 @@ const { connectionService, integrationService, webhookService, applicationServic
               changeType,
               connectionId,
               applicationId: connection.applicationId,
-              integrationId: connection.integrationId,
+              providerId: connection.providerId,
               eventType,
             },
             'skipping gap event'
@@ -152,7 +152,7 @@ const { connectionService, integrationService, webhookService, applicationServic
               webhookPayload,
               connectionId,
               applicationId: connection.applicationId,
-              integrationId: connection.integrationId,
+              providerId: connection.providerId,
               eventType,
             },
             'sent webhook'
@@ -177,7 +177,7 @@ const { connectionService, integrationService, webhookService, applicationServic
               err,
               connectionId,
               applicationId: connection.applicationId,
-              integrationId: connection.integrationId,
+              providerId: connection.providerId,
               eventType,
             },
             'unrecoverable error starting stream, skipping'
@@ -190,7 +190,7 @@ const { connectionService, integrationService, webhookService, applicationServic
             err,
             connectionId,
             applicationId: connection.applicationId,
-            integrationId: connection.integrationId,
+            providerId: connection.providerId,
             eventType,
           },
           'error in stream, restarting'

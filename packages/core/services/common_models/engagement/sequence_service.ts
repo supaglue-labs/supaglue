@@ -3,7 +3,7 @@ import { GetInternalParams, ListInternalParams, PaginatedResult } from '@supaglu
 import { Sequence } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import { CommonModelBaseService, UpsertRemoteCommonModelsResult } from '..';
-import { NotFoundError, UnauthorizedError } from '../../../errors';
+import { NotFoundError } from '../../../errors';
 import { getPaginationParams, getPaginationResult } from '../../../lib';
 import { fromRemoteSequenceToDbSequenceParams, fromSequenceModel } from '../../../mappers/engagement';
 
@@ -16,11 +16,8 @@ export class SequenceService extends CommonModelBaseService {
     const model = await this.prisma.engagementSequence.findUnique({
       where: { id },
     });
-    if (!model) {
+    if (!model || model.connectionId !== connectionId) {
       throw new NotFoundError(`Can't find sequence with id: ${id}`);
-    }
-    if (model.connectionId !== connectionId) {
-      throw new UnauthorizedError('Unauthorized');
     }
     return fromSequenceModel(model, getParams);
   }

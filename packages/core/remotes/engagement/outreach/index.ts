@@ -1,6 +1,6 @@
 import {
   ConnectionUnsafe,
-  Integration,
+  EngagementProvider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -216,7 +216,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachProspectToContactV2(result),
+              record: fromOutreachProspectToContactV2(result),
               emittedAt,
             }))
           );
@@ -235,7 +235,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachUserToUserV2(result),
+              record: fromOutreachUserToUserV2(result),
               emittedAt,
             }))
           );
@@ -254,7 +254,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachSequenceToSequenceV2(result),
+              record: fromOutreachSequenceToSequenceV2(result),
               emittedAt,
             }))
           );
@@ -273,7 +273,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachMailboxToMailboxV2(result),
+              record: fromOutreachMailboxToMailboxV2(result),
               emittedAt,
             }))
           );
@@ -292,7 +292,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              object: fromOutreachSequenceStateToSequenceStateV2(result),
+              record: fromOutreachSequenceStateToSequenceStateV2(result),
               emittedAt,
             }))
           );
@@ -399,11 +399,11 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'outreach'>, integration: Integration): OutreachClient {
+export function newClient(connection: ConnectionUnsafe<'outreach'>, provider: EngagementProvider): OutreachClient {
   return new OutreachClient({
     ...connection.credentials,
-    clientId: integration.config.oauth.credentials.oauthClientId,
-    clientSecret: integration.config.oauth.credentials.oauthClientSecret,
+    clientId: provider.config.oauth.credentials.oauthClientId,
+    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
   });
 }
 

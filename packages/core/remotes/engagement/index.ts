@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, Integration } from '@supaglue/types';
+import { ConnectionUnsafe, EngagementProvider } from '@supaglue/types';
 import { EngagementProviderName } from '@supaglue/types/engagement';
 import { EngagementConnectorConfig, EngagementRemoteClient } from './base';
 import * as outreach from './outreach';
@@ -11,10 +11,10 @@ export const engagementConnectorConfigMap: {
 
 export function getEngagementRemoteClient<T extends EngagementProviderName>(
   connection: ConnectionUnsafe<T>,
-  integration: Integration
+  provider: EngagementProvider
 ): EngagementRemoteClient {
   const { newClient } = engagementConnectorConfigMap[connection.providerName];
-  const client = newClient(connection, integration);
+  const client = newClient(connection, provider);
 
   // Intercept and log errors to remotes
   return new Proxy(client, {

@@ -49,7 +49,7 @@ export type RunManagedSyncArgs = {
 };
 
 export async function runManagedSync({ syncId, connectionId, category }: RunManagedSyncArgs): Promise<void> {
-  const { destination } = await getDestination({ connectionId });
+  const { destination } = await getDestination({ syncId });
   if (!destination) {
     return;
   }

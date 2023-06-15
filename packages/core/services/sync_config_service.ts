@@ -1,6 +1,14 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { SyncConfig, SyncConfigCreateParams, SyncConfigUpdateParams } from '@supaglue/types';
-import { NotFoundError } from '../errors';
+import type {
+  CommonObjectConfig,
+  ProviderCategory,
+  SyncConfig,
+  SyncConfigCreateParams,
+  SyncConfigUpdateParams,
+} from '@supaglue/types';
+import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
+import { ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
+import { BadRequestError, NotFoundError } from '../errors';
 import { fromSyncConfigModel, toSyncConfigModel } from '../mappers';
 
 export class SyncConfigService {
@@ -27,6 +35,16 @@ export class SyncConfigService {
     return fromSyncConfigModel(syncConfig);
   }
 
+  public async findByProviderId(providerId: string): Promise<SyncConfig | null> {
+    const syncConfig = await this.#prisma.syncConfig.findUnique({
+      where: { providerId },
+    });
+    if (!syncConfig) {
+      return null;
+    }
+    return fromSyncConfigModel(syncConfig);
+  }
+
   public async getByProviderId(providerId: string): Promise<SyncConfig> {
     const syncConfig = await this.#prisma.syncConfig.findUnique({
       where: { providerId },
@@ -47,12 +65,31 @@ export class SyncConfigService {
     return fromSyncConfigModel(syncConfig);
   }
 
+  public async getBySyncId(syncId: string): Promise<SyncConfig | null> {
+    const sync = await this.#prisma.sync.findUnique({
+      where: { id: syncId },
+    });
+    if (!sync) {
+      throw new NotFoundError(`Can't find sync with id: ${syncId}`);
+    }
+    if (!sync.syncConfigId) {
+      return null;
+    }
+    return await this.getById(sync.syncConfigId);
+  }
+
   public async list(applicationId: string): Promise<SyncConfig[]> {
     const syncConfigs = await this.#prisma.syncConfig.findMany({ where: { applicationId } });
     return Promise.all(syncConfigs.map(fromSyncConfigModel));
   }
 
+  public async listByIds(ids: string[]): Promise<SyncConfig[]> {
+    const syncConfigs = await this.#prisma.syncConfig.findMany({ where: { id: { in: ids } } });
+    return Promise.all(syncConfigs.map(fromSyncConfigModel));
+  }
+
   public async create(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
+    // TODO:(SUP1-350): Backfill sync schedules for connections
     const createdSyncConfig = await this.#prisma.syncConfig.create({
       data: await toSyncConfigModel(syncConfig),
     });
@@ -60,13 +97,29 @@ export class SyncConfigService {
   }
 
   public async update(id: string, syncConfig: SyncConfigUpdateParams): Promise<SyncConfig> {
-    const updatedSyncConfig = await this.#prisma.syncConfig.update({
-      where: { id },
-      data: await toSyncConfigModel(syncConfig),
-    });
+    // TODO(SUP1-328): Remove once we support updating destinations
+    if (syncConfig.destinationId) {
+      const { destinationId } = await this.getById(id);
+      if (destinationId && destinationId !== syncConfig.destinationId) {
+        throw new BadRequestError('Destination cannot be changed');
+      }
+    }
+
+    const [updatedSyncConfig] = await this.#prisma.$transaction([
+      this.#prisma.syncConfig.update({
+        where: { id },
+        data: await toSyncConfigModel(syncConfig),
+      }),
+      this.#prisma.syncConfigChange.create({
+        data: {
+          syncConfigId: id,
+        },
+      }),
+    ]);
     return fromSyncConfigModel(updatedSyncConfig);
   }
 
+  // Only used for backfill
   public async upsert(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     const upsertedSyncConfig = await this.#prisma.syncConfig.upsert({
       where: {
@@ -103,3 +156,19 @@ export class SyncConfigService {
     });
   }
 }
+
+export const getDefaultCommonObjects = (
+  category: ProviderCategory,
+  fetchAllFieldsIntoRaw: boolean
+): CommonObjectConfig[] => {
+  if (category === 'engagement') {
+    return ENGAGEMENT_COMMON_MODEL_TYPES.map((object) => ({
+      object,
+      fetchAllFieldsIntoRaw,
+    }));
+  }
+  return CRM_COMMON_MODEL_TYPES.map((object) => ({
+    object,
+    fetchAllFieldsIntoRaw,
+  }));
+};

@@ -1,0 +1,200 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import ThemedImage from '@theme/ThemedImage';
+
+# Quickstart
+
+This guide will show you how to integrate Supaglue with your application in 10 minutes. By the end, you will have synced data from a sample customer's CRM to your Postgres database and queried it.
+
+<iframe
+  width="640"
+  height="360"
+  src="https://www.loom.com/embed/c52d363f6fd549168f8f9bda5595fb94?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
+  frameborder="0"
+  webkitallowfullscreen
+  mozallowfullscreen
+  allowfullscreen
+></iframe>
+
+## 1. Set up your Supaglue instance
+
+<Tabs>
+
+<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
+
+Sign up for [Supaglue Cloud](https://form.typeform.com/to/jv9ucMZR) early access.
+
+After creating your account, you will be directed to the management portal.
+
+</TabItem>
+
+<TabItem value="localhost" label="Localhost">
+
+Clone the Github repo and run the Supaglue stack locally using docker compose:
+
+```shell
+git clone -b v0.9.8 https://github.com/supaglue-labs/supaglue.git && cd supaglue
+./scripts/create_quickstart_env.sh
+docker compose up
+```
+
+Once Supaglue is running locally, open the [management portal](http://localhost:3000) in your browser.
+
+</TabItem>
+
+</Tabs>
+
+## 2. Configure CRM integration
+
+Go to the "Configurations" tab to configure the integrations your customers will connect to.
+
+<BrowserWindow url="http://localhost:3000/configuration/integrations/crm">
+
+![image](/img/configurations-ui.png)
+
+</BrowserWindow>
+
+Click on "Configure" and enter the OAuth2 credentials and respective scopes for your HubSpot or Salesforce developers apps. Follow the respective guides below:
+
+- [Salesforce](connectors/salesforce#provider-setup)
+- [HubSpot](connectors/hubspot#provider-setup)
+
+<BrowserWindow url="http://localhost:3000/configuration/integrations/crm/salesforce">
+
+![image](/img/configurations-details.png)
+
+</BrowserWindow>
+
+## 3. Configure Postgres destination
+
+Navigate to the "Destinations" tab to configure where you'll sync your customers' CRM data. Select Postgres.
+
+Fill out the connection form and run the appropriate grants:
+
+```
+create schema supaglue;
+create role supaglue_role;
+grant connect on database <your db name> to supaglue_role;
+grant all privileges on schema supaglue to supaglue_role;
+grant all privileges on all tables in schema supaglue to supaglue_role;
+alter default privileges in schema supaglue grant all privileges on tables to supaglue_role;
+grant supaglue_role to supaglue_user;
+```
+
+:::info
+Note: your Postgres schema should be read-only. We recommend creating a separate Supaglue role, user, and schema:
+:::
+
+<BrowserWindow url="http://localhost:3000/configuration/destinations/postgres">
+
+![image](/img/postgres-form.png)
+
+</BrowserWindow>
+
+## 4. Create a sample customer
+
+Navigate to the Customers page and click on the plus button to create a sample customer:
+
+- **customer_id**: the primary key you use in your application that uniquely identifies this customer.
+- **name**: the name of the customer.
+- **email**: the email associated with the customer.
+
+<BrowserWindow url="http://localhost:3000/applications/5c4887c6-ae29-45ce-bc37-158e8dbe7b7f">
+
+![image](/img/create-customer.png)
+
+</BrowserWindow>
+
+:::info
+A customer is an end-user in your application. You can create a Supaglue customer through the management portal, or programatically when they signup in your application using the [Management API](../api/v2/mgmt#tag/Customers/operation/createCustomer).
+:::
+
+## 5. Add Embedded Link to your application
+
+In your frontend application, add an embedded link (/platform/managed-auth#embedded-links) to let customers authenticate their CRMs with your application using Supaglue.
+
+The format of the link is:
+
+- `{PROTOCOL}{DOMAIN}`/oauth/connect?applicationId=`{APPLICATION_ID}`&customerId=`{CUSTOMER_ID}`&providerName=`{PROVIDER_NAME}`&returnUrl=`{RETURN_URL}`
+
+You can wrap link with additional styling.
+
+export const IntegrationCard = ({ icon, provider, description, to }) => (
+  <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
+    <img src={icon} style={{ width: 'auto', height: '36px' }} />
+    <div className="font-semibold mt-4">{provider}</div>
+    <div className="text-xs mt-2">{description}</div>
+    <div
+      onClick={() => {
+        window.location.href = to;
+      }}
+      className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
+    >
+      Connect
+    </div>
+  </div>
+);
+
+<div className="grid grid-cols-2 gap-4">
+
+<IntegrationCard
+  icon="/img/salesforce.svg"
+  provider="Salesforce"
+  description="Sync your leads in and out of Salesforce"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-salesforce&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+/>
+
+<IntegrationCard
+  icon="/img/hubspot.svg"
+  provider="Hubspot"
+  description="Sync your leads in and out of HubSpot"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+/>
+</div>
+
+## 6. Create a connection
+
+Click on the Embedded Link you added in step 5. Go through the OAuth flow and install your CRM developer app in a HubSpot or Salesforce account with the requested scopes.
+
+This creates a Supaglue connection, which you can verify by checking the customers page in the management portal. Upon successful connection, CRM common model records will start syncing to your Postgres database.
+
+:::info
+
+In production, this step would be performed by your customer and your developer app would be installed in their CRM account.
+
+:::
+
+<div className="grid grid-cols-2 gap-4 justify-items-center">
+<div>
+  <ThemedImage
+    alt="Salesforce Example App"
+    width="100%"
+    sources={{
+      light: '/img/salesforce_app.png',
+      dark: '/img/salesforce_app.png',
+    }}
+  />
+</div>
+
+<div>
+  <ThemedImage
+    alt="HubSpot Example App"
+    width="100%"
+    sources={{
+      light: '/img/hubspot_app.png',
+      dark: '/img/hubspot_app.png',
+    }}
+  />
+</div>
+</div>
+
+## 7. Query CRM data from Postgres
+
+Once syncs have completed, you can start querying your customer's CRM data directly from Postgres.
+
+![image](/img/postgres-sql.png)

@@ -29,7 +29,7 @@ https://github.com/supaglue-labs/supaglue/assets/1925713/80f9e4e7-4a75-4c27-9c80
 ### Run Supaglue locally
 
 ```shell
-git clone -b v0.9.7 https://github.com/supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.10.0 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
 docker compose up
 ```
@@ -68,7 +68,7 @@ For general help using Supaglue, please refer to our [documentation](https://doc
 
 ## Contributing
 
-Learn about ways to [contribute to Supaglue](https://docs.supaglue.com/contributing).
+Learn about ways to [contribute to Supaglue](https://docs.supaglue.com/roadmap).
 
 ## License
 
