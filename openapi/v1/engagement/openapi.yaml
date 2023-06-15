@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.9.8
+  version: 0.10.0
   title: Supaglue Engagement API
   contact:
     name: Supaglue
