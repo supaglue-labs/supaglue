@@ -35,7 +35,7 @@ export function RegenerateApiKey({ disabled, onConfirm }: RegenerateApiKeyProps)
             variant="text"
             onClick={() => {
               onConfirm();
-              addNotification({ message: 'Successfully removed API Key', severity: 'success' });
+              addNotification({ message: 'Successfully regenerated API Key', severity: 'success' });
               handleClose();
             }}
           >

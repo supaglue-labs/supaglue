@@ -2,12 +2,12 @@ import { useNotification } from '@/context/notification';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { useState } from 'react';
 
-export type DeleteApiKeyProps = {
+export type RevokeApiKeyProps = {
   disabled: boolean;
   onDelete: () => void;
 };
 
-export function DeleteApiKey({ disabled, onDelete }: DeleteApiKeyProps) {
+export function RevokeApiKey({ disabled, onDelete }: RevokeApiKeyProps) {
   const { addNotification } = useNotification();
   const [open, setOpen] = useState(false);
 
@@ -22,7 +22,7 @@ export function DeleteApiKey({ disabled, onDelete }: DeleteApiKeyProps) {
   return (
     <>
       <Button variant="text" color="error" onClick={handleClickOpen} size="small" disabled={disabled}>
-        Delete
+        Revoke
       </Button>
 
       <Dialog open={open} onClose={handleClose}>
@@ -36,11 +36,11 @@ export function DeleteApiKey({ disabled, onDelete }: DeleteApiKeyProps) {
             color="error"
             onClick={() => {
               onDelete();
-              addNotification({ message: 'Successfully removed API key', severity: 'success' });
+              addNotification({ message: 'Successfully revoked API key', severity: 'success' });
               handleClose();
             }}
           >
-            Delete
+            Revoke
           </Button>
           <Button variant="contained" onClick={handleClose}>
             Cancel

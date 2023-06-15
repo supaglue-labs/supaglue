@@ -3,8 +3,8 @@ import { createRemoteApiKey, deleteRemoteApiKey } from '@/client';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Box, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
-import { DeleteApiKey } from './DeleteApiKey';
 import { RegenerateApiKey } from './RegenerateApiKey';
+import { RevokeApiKey } from './RevokeApiKey';
 
 export default function ApiKeyTabPanel() {
   const activeApplicationId = useActiveApplicationId();
@@ -37,7 +37,7 @@ export default function ApiKeyTabPanel() {
         </Stack>
 
         <Stack direction="row" className="gap-2 justify-between">
-          <DeleteApiKey
+          <RevokeApiKey
             disabled={false}
             onDelete={() => {
               deleteRemoteApiKey(activeApplicationId);

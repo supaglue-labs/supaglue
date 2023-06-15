@@ -36,7 +36,7 @@ export function DeleteWebhook({ disabled, onDelete }: DeleteWebhookProps) {
             color="error"
             onClick={() => {
               onDelete();
-              addNotification({ message: 'Successfully removed webhook', severity: 'success' });
+              addNotification({ message: 'Successfully deleted webhook', severity: 'success' });
               handleClose();
             }}
           >
