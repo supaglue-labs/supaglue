@@ -31,12 +31,12 @@ VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
 
 if [ "${WORKSPACE_NAME}" == "mgmt-ui" ]; then
   if [ -f "${WORKSPACE_PATH}/.env" ]; then
-    echo "Setting aside your apps/mgmt-ui/.env"
     mv "${WORKSPACE_PATH}/.env" "${WORKSPACE_PATH}/.env.user-bak"
+    echo "Your apps/mgmt-ui/.env was set aside"
   fi
   cp "${WORKSPACE_PATH}/.env.build" "${WORKSPACE_PATH}/.env"
   clean_up () {
-    if [ -f "${WORKSPACE_PATH}/env" ]; then
+    if [ -f "${WORKSPACE_PATH}/.env" ]; then
       rm "${WORKSPACE_PATH}/.env"
     fi
     if [ -f "${WORKSPACE_PATH}/.env.user-bak" ]; then
