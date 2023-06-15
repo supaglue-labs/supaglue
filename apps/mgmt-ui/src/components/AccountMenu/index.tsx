@@ -1,12 +1,34 @@
+import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Link as MUILink, ListItemIcon, MenuItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
+import NextLink from 'next/link';
 import * as React from 'react';
 import { Logout } from '../Logout';
 
+function Profile() {
+  return (
+    <MUILink
+      href="https://accounts.supaglue.io/user"
+      component={NextLink}
+      sx={{ color: 'inherit', textDecoration: 'inherit' }}
+    >
+      <MenuItem>
+        <ListItemIcon>
+          <AccountCircleIcon />
+        </ListItemIcon>
+        Profile
+      </MenuItem>
+    </MUILink>
+  );
+}
+
 export default function AccountMenu() {
+  const { nextLambdaEnv } = useNextLambdaEnv();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -66,6 +88,7 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
+        {nextLambdaEnv?.IS_CLOUD ? <Profile /> : null}
         <Logout />
       </Menu>
     </React.Fragment>

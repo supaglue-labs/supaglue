@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import ApplicationMenu from '@/components/ApplicationMenu';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PeopleIcon from '@mui/icons-material/People';
 import {
   Box,
@@ -37,6 +39,7 @@ const item = {
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
 
+  const { nextLambdaEnv } = useNextLambdaEnv();
   const applicationId = useActiveApplicationId();
 
   const categories: {
@@ -70,6 +73,16 @@ export default function Navigator(props: DrawerProps) {
           icon: <FindInPage />,
           active: false,
         },
+        ...(nextLambdaEnv?.IS_CLOUD
+          ? [
+              {
+                id: 'Team Settings',
+                to: 'https://accounts.supaglue.io/organization',
+                icon: <ManageAccountsIcon />,
+                active: false,
+              },
+            ]
+          : []),
       ],
     },
     {
