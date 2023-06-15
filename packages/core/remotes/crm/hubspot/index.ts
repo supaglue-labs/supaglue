@@ -116,6 +116,15 @@ const hubspotObjectTypeToAssociatedObjectTypes: Record<HubSpotObjectType, HubSpo
   task: ['contact', 'deal', 'company', 'ticket'],
 };
 
+const archivedUnsupportedObjectTypes: HubSpotObjectType[] = [
+  'postal_mail',
+  'meeting',
+  'note',
+  'communication',
+  'call',
+  'email',
+];
+
 const HUBSPOT_OBJECT_TYPES = [
   'company',
   'contact',
@@ -340,12 +349,21 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       modifiedAfter
     );
 
+    const normalFetcherAndHandler = {
+      pageFetcher: normalPageFetcher,
+      createStreamFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
+        Readable.from(response.results),
+      getNextCursorFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
+        response.paging?.next?.after,
+    };
+
+    if (archivedUnsupportedObjectTypes.includes(objectType)) {
+      // Can't get archived records for these types
+      return await paginator([normalFetcherAndHandler]);
+    }
+
     return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results),
-        getNextCursorFromPage: (response) => response.paging?.next?.after,
-      },
+      normalFetcherAndHandler,
       {
         pageFetcher: archivedPageFetcher,
         createStreamFromPage: (response) => Readable.from(response.results),
