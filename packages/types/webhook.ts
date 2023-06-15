@@ -23,8 +23,14 @@ export type SyncWebhookPayload = {
   providerName: string;
   historyId: string;
   numRecordsSynced: number;
-  commonModel: CommonModelType;
   errorMessage?: string;
-};
+} & (
+  | {
+      commonModel: CommonModelType;
+    }
+  | {
+      rawObject: string;
+    }
+);
 
 export type WebhookPayload = ConnectionWebhookPayload | SyncWebhookPayload;

@@ -469,6 +469,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     after?: string
   ): Promise<RecordsResponseWithFlattenedAssociationsAndTotal> {
     // Get records
+    // hubspot doesn't set hs_lastmodifieddate for some reason for contact
+    const lastModifiedAtPropertyName = objectType === 'contact' ? 'lastmodifieddate' : 'hs_lastmodifieddate';
     const response = await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       return await axios.post<HubSpotAPIV3SearchResponse>(
@@ -478,7 +480,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             {
               filters: [
                 {
-                  propertyName: 'lastmodifieddate', // hubspot doesn't set hs_lastmodifieddate for some reason
+                  propertyName: lastModifiedAtPropertyName,
                   operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
                   value: modifiedAfter.getTime().toString(),
                 },
@@ -487,7 +489,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           ],
           sorts: [
             {
-              propertyName: 'lastmodifieddate',
+              propertyName: lastModifiedAtPropertyName,
               direction: 'ASCENDING',
             },
           ],

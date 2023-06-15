@@ -1,10 +1,10 @@
 import { CommonModelType, ProviderCategory } from '@supaglue/types/common';
 import { CRMCommonModelType, CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import {
-  CRMNumRecordsSyncedMap,
-  EngagementNumRecordsSyncedMap,
+  CRMNumCommonRecordsSyncedMap,
+  EngagementNumCommonRecordsSyncedMap,
   FullThenIncrementalSync,
-  NumRecordsSyncedMap,
+  NumCommonRecordsSyncedMap,
 } from '@supaglue/types/sync';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
@@ -64,7 +64,7 @@ export async function runSync({ syncId, connectionId, category }: RunSyncArgs): 
   // Read sync from DB
   const { sync } = await getSync({ syncId });
 
-  let numRecordsSyncedMap: NumRecordsSyncedMap | undefined;
+  let numRecordsSyncedMap: NumCommonRecordsSyncedMap | undefined;
   try {
     // Figure out what to do based on sync strategy
     switch (sync.type) {
@@ -136,8 +136,8 @@ async function doFullThenIncrementalSync({
 }: {
   sync: FullThenIncrementalSync;
   category: ProviderCategory;
-}): Promise<NumRecordsSyncedMap> {
-  async function doFullStage(): Promise<NumRecordsSyncedMap> {
+}): Promise<NumCommonRecordsSyncedMap> {
+  async function doFullStage(): Promise<NumCommonRecordsSyncedMap> {
     await updateSyncState({
       syncId: sync.id,
       state: {
@@ -202,8 +202,8 @@ async function doFullThenIncrementalSync({
     ) as Record<CommonModelType, number>;
   }
 
-  async function doIncrementalPhase(): Promise<NumRecordsSyncedMap> {
-    function getOriginalMaxLastModifiedAtMsMap(): NumRecordsSyncedMap {
+  async function doIncrementalPhase(): Promise<NumCommonRecordsSyncedMap> {
+    function getOriginalMaxLastModifiedAtMsMap(): NumCommonRecordsSyncedMap {
       // TODO: we shouldn't need to do this, since it's not possible to
       // start the incremental phase if the full phase hasn't been completed.
       if (sync.state.phase === 'created') {
@@ -211,7 +211,7 @@ async function doFullThenIncrementalSync({
       }
 
       if (category === 'crm') {
-        const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as CRMNumRecordsSyncedMap;
+        const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as CRMNumCommonRecordsSyncedMap;
         return {
           account: maxLastModifiedAtMsMap['account'] ?? 0,
           lead: maxLastModifiedAtMsMap['lead'] ?? 0,
@@ -220,7 +220,7 @@ async function doFullThenIncrementalSync({
           user: maxLastModifiedAtMsMap['user'] ?? 0,
         };
       }
-      const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as EngagementNumRecordsSyncedMap;
+      const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as EngagementNumCommonRecordsSyncedMap;
       return {
         contact: maxLastModifiedAtMsMap['contact'] ?? 0,
         user: maxLastModifiedAtMsMap['user'] ?? 0,
@@ -234,7 +234,7 @@ async function doFullThenIncrementalSync({
       importRecordsResultList:
         | Record<CRMCommonModelType, ImportRecordsResult>
         | Record<EngagementCommonModelType, ImportRecordsResult>
-    ): NumRecordsSyncedMap {
+    ): NumCommonRecordsSyncedMap {
       const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMap();
 
       return Object.fromEntries(
@@ -245,7 +245,7 @@ async function doFullThenIncrementalSync({
             (importRecordsResultList as Record<CommonModelType, ImportRecordsResult>)[commonModel].maxLastModifiedAtMs
           ),
         ])
-      ) as NumRecordsSyncedMap;
+      ) as NumCommonRecordsSyncedMap;
     }
 
     await updateSyncState({
@@ -300,7 +300,7 @@ async function doFullThenIncrementalSync({
         commonModel,
         (importRecordsResultList as Record<CommonModelType, ImportRecordsResult>)[commonModel].numRecordsSynced,
       ])
-    ) as NumRecordsSyncedMap;
+    ) as NumCommonRecordsSyncedMap;
   }
 
   // Short circuit normal state transitions if we're forcing a sync which will reset the state
@@ -327,7 +327,7 @@ async function doFullThenIncrementalSync({
   }
 }
 
-const getDefaultMaxLastModifiedAtMsMap = (category: ProviderCategory): NumRecordsSyncedMap => {
+const getDefaultMaxLastModifiedAtMsMap = (category: ProviderCategory): NumCommonRecordsSyncedMap => {
   if (category === 'crm') {
     return {
       account: 0,

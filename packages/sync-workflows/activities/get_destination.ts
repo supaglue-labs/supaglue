@@ -5,12 +5,12 @@ export type GetDestinationArgs = {
   syncId: string;
 };
 
-export type GetdestinationResult = {
+export type GetDestinationResult = {
   destination: Destination | null;
 };
 
 export function createGetDestination(destinationService: DestinationService) {
-  return async function getDestination({ syncId }: GetDestinationArgs): Promise<GetdestinationResult> {
+  return async function getDestination({ syncId }: GetDestinationArgs): Promise<GetDestinationResult> {
     const destination = await destinationService.getDestinationBySyncId(syncId);
     return { destination };
   };

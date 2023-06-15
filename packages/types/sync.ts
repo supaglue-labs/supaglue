@@ -23,9 +23,14 @@ export type FullOnlySync = BaseSync & {
 export type SyncType = 'full then incremental' | 'full only';
 export type Sync = FullThenIncrementalSync | FullOnlySync;
 
-export type CRMNumRecordsSyncedMap = Record<CRMCommonModelType, number>;
-export type EngagementNumRecordsSyncedMap = Record<EngagementCommonModelType, number>;
-export type NumRecordsSyncedMap = CRMNumRecordsSyncedMap | EngagementNumRecordsSyncedMap;
+export type CRMNumCommonRecordsSyncedMap = {
+  [K in CRMCommonModelType]?: number;
+};
+export type EngagementNumCommonRecordsSyncedMap = {
+  [K in EngagementCommonModelType]?: number;
+};
+export type NumCommonRecordsSyncedMap = CRMNumCommonRecordsSyncedMap | EngagementNumCommonRecordsSyncedMap;
+export type NumRawRecordsSyncedMap = Record<string, number>;
 
 export type FullOnlySyncStateCreatedPhase = {
   phase: 'created';
@@ -44,7 +49,9 @@ export type FullThenIncrementalSyncStateCreatedPhase = {
 export type FullThenIncrementalSyncStateLivePhase = {
   phase: 'full' | 'incremental';
   status: 'in progress' | 'done';
-  maxLastModifiedAtMsMap: NumRecordsSyncedMap;
+  // for common models
+  maxLastModifiedAtMsMap: NumCommonRecordsSyncedMap;
+  maxLastModifedAtMsMapForRawObjects?: Record<string, number>;
 };
 export type FullThenIncrementalSyncState =
   | FullThenIncrementalSyncStateCreatedPhase

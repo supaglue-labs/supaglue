@@ -32,6 +32,7 @@ export class SyncHistoryService {
   }): Promise<SyncHistory> {
     const created: SyncHistoryModelExpanded = await this.#prisma.syncHistory.upsert({
       where: { id },
+      // TODO: add prisma column
       create: {
         ...createParams,
         id,
@@ -96,37 +97,40 @@ export class SyncHistoryService {
     });
   }
 
-  public async logStart({
-    syncId,
-    historyId,
-    commonModel,
-  }: {
-    syncId: string;
-    historyId: string;
-    commonModel: string;
-  }): Promise<string> {
+  public async logStart(
+    args: {
+      syncId: string;
+      historyId: string;
+    } & (
+      | {
+          commonModel: string;
+        }
+      | {
+          rawObject: string;
+        }
+    )
+  ): Promise<string> {
+    const baseParams = {
+      status: 'IN_PROGRESS' as const,
+      errorMessage: null,
+      startTimestamp: new Date(),
+      endTimestamp: null,
+      numRecordsSynced: null,
+    };
     await this.upsert({
-      id: historyId,
-      syncId,
-      createParams: {
-        model: commonModel,
-        status: 'IN_PROGRESS',
-        errorMessage: null,
-        startTimestamp: new Date(),
-        endTimestamp: null,
-        numRecordsSynced: null,
-      },
+      id: args.historyId,
+      syncId: args.syncId,
+      createParams:
+        'commonModel' in args
+          ? { ...baseParams, model: args.commonModel }
+          : { ...baseParams, rawObject: args.rawObject },
     });
-    return historyId;
+    return args.historyId;
   }
 
-  public async list({
-    applicationId,
-    paginationParams,
-    model,
-    externalCustomerId,
-    providerName,
-  }: SyncHistoryFilter): Promise<PaginatedResult<SyncHistory>> {
+  public async list(args: SyncHistoryFilter): Promise<PaginatedResult<SyncHistory>> {
+    // TODO: add prisma column
+    const { applicationId, paginationParams, externalCustomerId, providerName } = args;
     const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const connectionIds = connections.map(({ id }) => id);
@@ -137,7 +141,8 @@ export class SyncHistoryService {
         sync: {
           connectionId: { in: connectionIds },
         },
-        model,
+        model: 'model' in args ? args.model : undefined,
+        rawObject: 'rawObject' in args ? args.rawObject : undefined,
       },
       include: {
         sync: {
@@ -156,7 +161,8 @@ export class SyncHistoryService {
         sync: {
           connectionId: { in: connectionIds },
         },
-        model,
+        model: 'model' in args ? args.model : undefined,
+        rawObject: 'rawObject' in args ? args.rawObject : undefined,
       },
     });
 

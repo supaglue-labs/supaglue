@@ -510,8 +510,10 @@ model SyncHistory {
   id               String    @id @default(uuid())
   syncId           String    @map("sync_id")
   sync             Sync      @relation(fields: [syncId], references: [id], onDelete: Cascade)
+  // exactly one of `model` or `rawObject` should be set
   // contact, lead, account, opportunity, etc.
-  model            String
+  model            String?
+  rawObject        String?    @map("raw_object")
   // SUCCESS | ERROR | IN_PROGRESS
   status           String
   errorMessage     String?   @map("error_message")
