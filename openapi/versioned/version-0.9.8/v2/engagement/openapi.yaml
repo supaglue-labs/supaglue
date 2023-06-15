@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.9.6
+  version: 0.9.8
   title: Supaglue Engagement API
   contact:
     name: Supaglue
@@ -9,19 +9,21 @@ info:
   description: |
     # Introduction
 
-    Welcome to the Supaglue unified Engagement API documentation. You can use this API to read data that has been synced into Supaglue from third-party providers.
+    Welcome to the Supaglue Actions API (Engagement) documentation. You can use this API to read and write data from and to third-party providers.
 
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)
+    
     ### Base API URL
 
     ```
-    http://localhost:8080/engagement/v1
+    https://api.supaglue.io/engagement/v2
     ```
-externalDocs:
-  description: Try out our API in Postman!
-  url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
+# externalDocs:
+#   description: Try out our API in Postman!
+#   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
 servers:
-  - url: 'http://localhost:8080/engagement/v1'
-    description: Local Supaglue API
+  - url: 'https://api.supaglue.io/engagement/v2'
+    description: Supaglue API
 paths:
   '/passthrough':
     $ref: paths/passthrough.yaml
@@ -29,16 +31,10 @@ paths:
     $ref: paths/contacts.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
-  '/users':
-    $ref: paths/users.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
-  '/mailboxes':
-    $ref: paths/mailboxes.yaml
   '/mailboxes/{mailbox_id}':
     $ref: paths/mailboxes@{mailbox_id}.yaml
-  '/sequences':
-    $ref: paths/sequences.yaml
   '/sequences/{sequence_id}':
     $ref: paths/sequences@{sequence_id}.yaml
   '/sequence_states':
@@ -77,8 +73,6 @@ components:
       $ref: ./components/schemas/objects/user.yaml
     sequence:
       $ref: ./components/schemas/objects/sequence.yaml
-    start_sequence:
-      $ref: ./components/schemas/start_sequence.yaml
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     address:
@@ -87,6 +81,8 @@ components:
       $ref: ./components/schemas/objects/email_addresses.yaml
     custom_fields:
       $ref: ./components/schemas/objects/custom_fields.yaml
+    created_model:
+      $ref: ../../common/components/schemas/created_model.yaml
     logs:
       $ref: ../../common/components/schemas/logs.yaml
     errors:
