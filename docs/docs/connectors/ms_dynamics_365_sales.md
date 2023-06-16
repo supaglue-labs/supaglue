@@ -11,14 +11,67 @@ description: ''
 
 Supaglue interfaces with the Microsoft Dynamics 365 V9 API.
 
-| Feature                    | Available |
-| -------------------------- | --------- |
-| Auth                       | No        |
-| Managed syncs              | No        |
-| Point reads                | No        |
-| Creates                    | No        |
-| Updates                    | No        |
-| Real-time events           | No        |
+| Feature          | Available |
+| ---------------- | --------- |
+| Auth             | Yes       |
+| Managed syncs    | Yes       |
+| Point reads      | No        |
+| Creates          | No        |
+| Updates          | No        |
+| Real-time events | No        |
 
+Supported object types:
 
-Supported object types: -
+- Account
+- Contact
+- Lead
+- Opportunity
+- User
+
+## Provider setup
+
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+To connect to your customers' Microsoft Dynamics 365 Sales instances, you'll need to update the redirect URL to point to Supaglue and fetch the API access credentials in your [Azure account](https://portal.azure.com/).
+
+### Add Redirect URL to your Azure app
+
+Supaglue provides a redirect URL to send information to your app. To add the redirect URL to your HubSpot app:
+
+1. Login to your Azure console: <https://portal.azure.com/>
+1. Navigate to Active Directory and find your application under "App registrations" from the left menu, in the "All applications" tab.
+
+    <BrowserWindow url="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Overview/appId/6bf0afcb-7896-45d4-b6ad-b42655b4c321/isMSAApp~/false">
+
+    ![azure_app_oauth](/img/azure_app_oauth.png 'azure app oauth')
+
+    </BrowserWindow>
+
+1. Choose "Authentication" from the left menu, then under "Redirect URIs", click "Add URI" and paste Supaglue's redirect URL:
+
+    <Tabs>
+    <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
+
+    ```
+    https://api.supaglue.io/oauth/callback
+    ```
+
+    </TabItem>
+    <TabItem value="localhost" label="Localhost">
+
+    ```
+    http://localhost:8080/oauth/callback
+    ```
+
+    </TabItem>
+    </Tabs>
+
+1. Click Save to update your changes.
+
+### Fetch Azure App credentials
+
+1. Copy the Consumer Key, Consumer Secret, and paste them into the Microsoft Dynamics 365 Sales configuration form in the management portal.
+
+1. Copy the "Client ID" and "Client secret" values into the Supaglue Management Portal.
