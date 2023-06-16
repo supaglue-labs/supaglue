@@ -1358,8 +1358,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
 
     // Get the properties to fetch
-    const customObjectClass = await this.getCustomObject(objectId);
-    const fieldsToFetch = customObjectClass.fields.map((field) => field.keyName);
+    const customObject = await this.getCustomObject(objectId);
+    const fieldsToFetch = customObject.fields.map((field) => field.keyName);
     const response = await this.#client.crm.objects.basicApi.getById(objectId, id, fieldsToFetch);
 
     return {
