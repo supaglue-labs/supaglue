@@ -37,14 +37,18 @@ import {
   UserV2,
 } from '@supaglue/types/crm';
 import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
-import { AssociationType, AssociationTypeCreateParams, ObjectClass } from '@supaglue/types/crm/association_type';
-import { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/crm/custom_object';
+import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import {
-  CustomObjectClass,
-  CustomObjectClassCreateParams,
-  CustomObjectClassUpdateParams,
+  CustomObject,
+  CustomObjectCreateParams,
   CustomObjectFieldType,
-} from '@supaglue/types/crm/custom_object_class';
+  CustomObjectUpdateParams,
+} from '@supaglue/types/crm/custom_object';
+import {
+  CustomObjectRecord,
+  CustomObjectRecordCreateParams,
+  CustomObjectRecordUpdateParams,
+} from '@supaglue/types/crm/custom_object_record';
 import retry from 'async-retry';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -70,7 +74,7 @@ import {
   fromHubSpotContactToRemoteContact,
   fromHubSpotDealToOpportunityV2,
   fromHubspotOwnerToUserV2,
-  fromObjectClassToHubspotObjectType,
+  fromObjectToHubspotObjectType,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
   toHubspotContactCreateParams,
@@ -1230,7 +1234,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
-  public override async getCustomObjectClass(id: string): Promise<CustomObjectClass> {
+  public override async getCustomObject(id: string): Promise<CustomObject> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getById(id);
     return {
@@ -1252,7 +1256,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     };
   }
 
-  public override async createCustomObjectClass(params: CustomObjectClassCreateParams): Promise<string> {
+  public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
     if (!params.fields.length) {
       throw new Error('Cannot create custom object class with no fields');
     }
@@ -1276,12 +1280,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return response.objectTypeId;
   }
 
-  public override async updateCustomObjectClass(params: CustomObjectClassUpdateParams): Promise<void> {
+  public override async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
     await this.maybeRefreshAccessToken();
 
     // Only update fields that have changed; for example, if you pass in the same
     // labels as the existing class, hubspot will throw an error.
-    const existingClass = await this.getCustomObjectClass(params.id);
+    const existingClass = await this.getCustomObject(params.id);
 
     const labels =
       params.labels.singular === existingClass.labels.singular && params.labels.plural === existingClass.labels.plural
@@ -1350,49 +1354,46 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public override async getCustomObject(classId: string, id: string): Promise<CustomObject> {
+  public override async getCustomRecord(classId: string, id: string): Promise<CustomObjectRecord> {
     await this.maybeRefreshAccessToken();
 
     // Get the properties to fetch
-    const customObjectClass = await this.getCustomObjectClass(classId);
+    const customObjectClass = await this.getCustomObject(classId);
     const fieldsToFetch = customObjectClass.fields.map((field) => field.keyName);
     const response = await this.#client.crm.objects.basicApi.getById(classId, id, fieldsToFetch);
 
     return {
       id: response.id,
-      classId,
+      objectId: classId,
       fields: Object.fromEntries(Object.entries(response.properties).filter(([key]) => fieldsToFetch.includes(key))),
     };
   }
 
-  public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
+  public override async createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
-    const response = await this.#client.crm.objects.basicApi.create(params.classId, {
+    const response = await this.#client.crm.objects.basicApi.create(params.objectId, {
       properties: params.fields as Record<string, string>, // TODO: map types?
     });
     return response.id;
   }
 
-  public override async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
+  public override async updateCustomRecord(params: CustomObjectRecordUpdateParams): Promise<void> {
     await this.maybeRefreshAccessToken();
-    await this.#client.crm.objects.basicApi.update(params.classId, params.id, {
+    await this.#client.crm.objects.basicApi.update(params.objectId, params.id, {
       properties: params.fields as Record<string, string>, // TODO: map types?
     });
   }
 
-  public async getAssociationTypes(
-    sourceObjectClass: ObjectClass,
-    targetObjectClass: ObjectClass
-  ): Promise<AssociationType[]> {
+  public async getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.associations.v4.definitionsApi.getAll(
-      fromObjectClassToHubspotObjectType(sourceObjectClass),
-      fromObjectClassToHubspotObjectType(targetObjectClass)
+      fromObjectToHubspotObjectType(sourceObject),
+      fromObjectToHubspotObjectType(targetObject)
     );
     return response.results.map((result) => ({
       id: result.typeId.toString(),
-      sourceObjectClass,
-      targetObjectClass,
+      sourceObject: sourceObject,
+      targetObject: targetObject,
       displayName: result.label ?? '',
       cardinality: 'UNKNOWN',
     }));
@@ -1405,8 +1406,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     await this.maybeRefreshAccessToken();
     await this.#client.crm.associations.v4.definitionsApi.create(
-      fromObjectClassToHubspotObjectType(params.sourceObjectClass),
-      fromObjectClassToHubspotObjectType(params.targetObjectClass),
+      fromObjectToHubspotObjectType(params.sourceObject),
+      fromObjectToHubspotObjectType(params.targetObject),
       {
         label: params.displayName,
         name: params.keyName,
@@ -1418,13 +1419,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
 
     await this.#client.crm.associations.v4.batchApi.create(
-      fromObjectClassToHubspotObjectType(params.sourceObject.objectClass),
-      fromObjectClassToHubspotObjectType(params.targetObject.objectClass),
+      fromObjectToHubspotObjectType(params.sourceRecord.object),
+      fromObjectToHubspotObjectType(params.targetRecord.object),
       {
         inputs: [
           {
-            _from: { id: params.sourceObject.id },
-            to: { id: params.targetObject.id },
+            _from: { id: params.sourceRecord.id },
+            to: { id: params.targetRecord.id },
             types: [
               {
                 associationCategory: 'USER_DEFINED', // TODO: does this work all the time?

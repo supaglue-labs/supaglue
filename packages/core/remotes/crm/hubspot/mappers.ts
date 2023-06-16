@@ -12,19 +12,19 @@ import {
   OpportunityV2,
   UserV2,
 } from '@supaglue/types/crm';
-import { ObjectClass } from '@supaglue/types/crm/association_type';
+import { SGObject } from '@supaglue/types/crm/association_type';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate, removeUndefinedValues } from '../../../lib';
 import { getFullName } from '../../utils/name';
 
-export const fromObjectClassToHubspotObjectType = (objectClass: ObjectClass): string => {
-  if (objectClass.originType === 'CUSTOM_OBJECT') {
-    return objectClass.id;
+export const fromObjectToHubspotObjectType = (object: SGObject): string => {
+  if (object.originType === 'CUSTOM_OBJECT') {
+    return object.id;
   }
 
-  switch (objectClass.id) {
+  switch (object.id) {
     case 'account':
       return 'company';
     case 'contact':
@@ -32,7 +32,7 @@ export const fromObjectClassToHubspotObjectType = (objectClass: ObjectClass): st
     case 'opportunity':
       return 'deal';
     default:
-      throw new Error(`Unknown COMMON_MODEL object class: ${objectClass.id}`);
+      throw new Error(`Unknown COMMON_MODEL object: ${object.id}`);
   }
 };
 

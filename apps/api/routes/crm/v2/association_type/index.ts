@@ -30,27 +30,21 @@ export default function init(app: Router): void {
       >,
       res: Response<GetAssociationTypesResponse>
     ) => {
-      const { source_object_class_id, source_object_class_type, target_object_class_id, target_object_class_type } =
-        req.query;
+      const { source_object_id, source_object_type, target_object_id, target_object_type } = req.query;
 
-      if (
-        !source_object_class_id ||
-        !source_object_class_type ||
-        !target_object_class_id ||
-        !target_object_class_type
-      ) {
+      if (!source_object_id || !source_object_type || !target_object_id || !target_object_type) {
         throw new BadRequestError('Missing required query params');
       }
 
       const associationTypes = await crmAssociationService.getAssociationTypes(
         req.customerConnection.id,
         {
-          id: source_object_class_id,
-          originType: source_object_class_type,
+          id: source_object_id,
+          originType: source_object_type,
         },
         {
-          id: target_object_class_id,
-          originType: target_object_class_type,
+          id: target_object_id,
+          originType: target_object_type,
         }
       );
       return res.status(200).send({ results: associationTypes.map(snakecaseKeys) });

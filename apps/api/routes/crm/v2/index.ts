@@ -3,7 +3,7 @@ import { Router } from 'express';
 import accounts from './account';
 import associationTypes from './association_type';
 import contacts from './contact';
-import customObjectClasses from './custom_object_class';
+import customObjects from './custom_object';
 import leads from './lead';
 import opportunities from './opportunity';
 import passthrough from './passthrough';
@@ -20,7 +20,7 @@ export default function init(app: Router): void {
   opportunities(v2Router);
   users(v2Router);
 
-  customObjectClasses(v2Router);
+  customObjects(v2Router);
   associationTypes(v2Router);
 
   passthrough(v2Router);

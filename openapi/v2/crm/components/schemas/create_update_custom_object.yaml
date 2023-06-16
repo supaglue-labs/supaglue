@@ -1,7 +1,30 @@
 type: object
 properties:
-  fields:
+  name:
+    type: string
+    example: ticket
+  description:
+    type: string
+    nullable: true
+    example: Ticket object
+  labels:
     type: object
-    additionalProperties: true
+    properties:
+      singular:
+        type: string
+        example: Ticket
+      plural:
+        type: string
+        example: Tickets
+    required:
+      - singular
+      - plural
+  fields:
+    type: array
+    items:
+      $ref: './objects/custom_object_field.yaml'
 required:
+  - name
+  - description
+  - labels
   - fields

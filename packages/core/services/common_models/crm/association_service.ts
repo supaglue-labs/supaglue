@@ -1,5 +1,5 @@
 import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
-import { AssociationType, AssociationTypeCreateParams, ObjectClass } from '@supaglue/types/crm/association_type';
+import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 import { RemoteService } from '../../remote_service';
 
@@ -12,8 +12,8 @@ export class CrmAssociationService {
 
   public async getAssociationTypes(
     connectionId: string,
-    sourceObjectClass: ObjectClass,
-    targetObjectClass: ObjectClass
+    sourceObjectClass: SGObject,
+    targetObjectClass: SGObject
   ): Promise<AssociationType[]> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     return await remoteClient.getAssociationTypes(sourceObjectClass, targetObjectClass);

@@ -995,180 +995,7 @@
         }
       ]
     },
-    "/custom-object-classes": {
-      "post": {
-        "operationId": "createCustomObjectClass",
-        "summary": "Create customObjectClass",
-        "tags": [
-          "CustomObjectClasses"
-        ],
-        "parameters": [],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "class": {
-                    "$ref": "#/components/schemas/create_update_custom_object_class"
-                  }
-                },
-                "required": [
-                  "class"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "CustomObjectClass created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
-                    "class": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "id"
-                      ]
-                    },
-                    "warnings": {
-                      "$ref": "#/components/schemas/warnings"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
-    "/custom-object-classes/{custom_object_class_id}": {
-      "get": {
-        "operationId": "getCustomObjectClass",
-        "summary": "Get customObjectClass",
-        "tags": [
-          "CustomObjectClasses"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "CustomObjectClass",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/custom_object_class"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "operationId": "updateCustomObjectClass",
-        "summary": "Update customObjectClass",
-        "tags": [
-          "CustomObjectClasses"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "class": {
-                    "$ref": "#/components/schemas/create_update_custom_object_class"
-                  }
-                },
-                "required": [
-                  "class"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "CustomObjectClass updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
-                    "warnings": {
-                      "$ref": "#/components/schemas/warnings"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        },
-        {
-          "name": "custom_object_class_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
-        }
-      ]
-    },
-    "/custom-object-classes/{custom_object_class_id}/custom-objects": {
+    "/custom-objects": {
       "post": {
         "operationId": "createCustomObject",
         "summary": "Create customObject",
@@ -1188,12 +1015,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "object": {
                     "$ref": "#/components/schemas/create_update_custom_object"
                   }
                 },
                 "required": [
-                  "model"
+                  "object"
                 ]
               }
             }
@@ -1213,7 +1040,7 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
+                    "object": {
                       "type": "object",
                       "properties": {
                         "id": {
@@ -1240,19 +1067,10 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
-        },
-        {
-          "name": "custom_object_class_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
         }
       ]
     },
-    "/custom-object-classes/{custom_object_class_id}/custom-objects/{custom_object_id}": {
+    "/custom-objects/{custom_object_id}": {
       "get": {
         "operationId": "getCustomObject",
         "summary": "Get customObject",
@@ -1278,7 +1096,7 @@
           }
         }
       },
-      "patch": {
+      "put": {
         "operationId": "updateCustomObject",
         "summary": "Update customObject",
         "tags": [
@@ -1297,12 +1115,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "object": {
                     "$ref": "#/components/schemas/create_update_custom_object"
                   }
                 },
                 "required": [
-                  "model"
+                  "object"
                 ]
               }
             }
@@ -1340,7 +1158,189 @@
           "$ref": "#/components/parameters/x-provider-name"
         },
         {
-          "name": "custom_object_class_id",
+          "name": "custom_object_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/custom-objects/{custom_object_id}/records": {
+      "post": {
+        "operationId": "createCustomObjectRecord",
+        "summary": "Create customObjectRecord",
+        "tags": [
+          "CustomObjectRecords"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_custom_object_record"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "CustomObjectRecord created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "record": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "custom_object_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/custom-objects/{custom_object_id}/records/{record_id}": {
+      "get": {
+        "operationId": "getCustomObjectRecord",
+        "summary": "Get customObjectRecord",
+        "tags": [
+          "CustomObjectRecords"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "CustomObject",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/custom_object_record"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateCustomObjectRecord",
+        "summary": "Update customObjectRecord",
+        "tags": [
+          "CustomObjectRecords"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_custom_object_record"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CustomObjectRecord updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "custom_object_id",
           "in": "path",
           "required": true,
           "schema": {
@@ -1349,7 +1349,7 @@
           }
         },
         {
-          "name": "custom_object_id",
+          "name": "record_id",
           "in": "path",
           "required": true,
           "schema": {
@@ -1374,7 +1374,7 @@
         "description": "Get a list of associationTypes",
         "parameters": [
           {
-            "name": "source_object_class_id",
+            "name": "source_object_id",
             "in": "query",
             "schema": {
               "type": "string"
@@ -1382,15 +1382,15 @@
             "required": true
           },
           {
-            "name": "source_object_class_type",
+            "name": "source_object_type",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/object_class_type"
+              "$ref": "#/components/schemas/object_type"
             },
             "required": true
           },
           {
-            "name": "target_object_class_id",
+            "name": "target_object_id",
             "in": "query",
             "schema": {
               "type": "string"
@@ -1398,10 +1398,10 @@
             "required": true
           },
           {
-            "name": "target_object_class_type",
+            "name": "target_object_type",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/object_class_type"
+              "$ref": "#/components/schemas/object_type"
             },
             "required": true
           }
@@ -1588,12 +1588,12 @@
       "description": "Passthrough operations to underlying providers."
     },
     {
-      "name": "CustomObjectClasses",
-      "description": "The `Custom Object Class` Common Model is used to represent a \"custom object class\" in CRMs."
+      "name": "CustomObjects",
+      "description": "The `Custom Objects` Common Model is used to represent a \"custom object\" in CRMs."
     },
     {
-      "name": "CustomObjects",
-      "description": "The `Custom Object` Common Model is used to represent a \"custom object\" in CRMs."
+      "name": "CustomObjectRecords",
+      "description": "The `Custom Object Record` Common Model is used to represent a \"custom object record\" in CRMs."
     },
     {
       "name": "AssociationTypes",
@@ -2630,7 +2630,7 @@
           "other"
         ]
       },
-      "custom_object_class": {
+      "custom_object": {
         "type": "object",
         "properties": {
           "id": {
@@ -2678,7 +2678,7 @@
           "fields"
         ]
       },
-      "create_update_custom_object_class": {
+      "create_update_custom_object": {
         "type": "object",
         "properties": {
           "name": {
@@ -2721,14 +2721,14 @@
           "fields"
         ]
       },
-      "custom_object": {
+      "custom_object_record": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
             "example": "42579f73-8524-4570-9b67-ecbd702c6b14"
           },
-          "class_id": {
+          "object_id": {
             "type": "string",
             "example": "42579f73-8524-4570-9b67-ecbd702c6b15"
           },
@@ -2739,11 +2739,11 @@
         },
         "required": [
           "id",
-          "class_id",
+          "object_id",
           "fields"
         ]
       },
-      "create_update_custom_object": {
+      "create_update_custom_object_record": {
         "type": "object",
         "properties": {
           "fields": {
@@ -2791,11 +2791,11 @@
           "id": {
             "type": "string"
           },
-          "source_object_class": {
-            "$ref": "#/components/schemas/object_class"
+          "source_object": {
+            "$ref": "#/components/schemas/object"
           },
-          "target_object_class": {
-            "$ref": "#/components/schemas/object_class"
+          "target_object": {
+            "$ref": "#/components/schemas/object"
           },
           "display_name": {
             "type": "string"
@@ -2806,8 +2806,8 @@
         },
         "required": [
           "id",
-          "source_object_class",
-          "target_object_class",
+          "source_object",
+          "target_object",
           "display_name",
           "cardinality"
         ]
@@ -2815,11 +2815,11 @@
       "create_update_association_type": {
         "type": "object",
         "properties": {
-          "source_object_class": {
-            "$ref": "#/components/schemas/object_class"
+          "source_object": {
+            "$ref": "#/components/schemas/object"
           },
-          "target_object_class": {
-            "$ref": "#/components/schemas/object_class"
+          "target_object": {
+            "$ref": "#/components/schemas/object"
           },
           "key_name": {
             "type": "string"
@@ -2832,21 +2832,21 @@
           }
         },
         "required": [
-          "source_object_class",
-          "target_object_class",
+          "source_object",
+          "target_object",
           "key_name",
           "display_name",
           "cardinality"
         ]
       },
-      "object_class": {
+      "object": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
           "origin_type": {
-            "$ref": "#/components/schemas/object_class_type"
+            "$ref": "#/components/schemas/object_type"
           }
         },
         "required": [
@@ -2854,7 +2854,7 @@
           "origin_type"
         ]
       },
-      "object_class_type": {
+      "object_type": {
         "type": "string",
         "enum": [
           "CUSTOM_OBJECT",
@@ -2877,49 +2877,49 @@
       "create_update_association": {
         "type": "object",
         "properties": {
-          "source_object": {
-            "$ref": "#/components/schemas/object"
+          "source_record": {
+            "$ref": "#/components/schemas/record"
           },
-          "target_object": {
-            "$ref": "#/components/schemas/object"
+          "target_record": {
+            "$ref": "#/components/schemas/record"
           }
         },
         "required": [
-          "source_object",
-          "target_object"
+          "source_record",
+          "target_record"
         ]
       },
       "association": {
         "type": "object",
         "properties": {
-          "source_object": {
+          "source_record": {
             "type": "object",
             "properties": {
               "id": {
                 "type": "string"
               },
-              "object_class": {
-                "$ref": "#/components/schemas/object_class"
+              "object": {
+                "$ref": "#/components/schemas/object"
               }
             },
             "required": [
               "id",
-              "object_class"
+              "object"
             ]
           },
-          "target_object": {
+          "target_record": {
             "type": "object",
             "properties": {
               "id": {
                 "type": "string"
               },
-              "object_class": {
-                "$ref": "#/components/schemas/object_class"
+              "object": {
+                "$ref": "#/components/schemas/object"
               }
             },
             "required": [
               "id",
-              "object_class"
+              "object"
             ]
           },
           "association_type_id": {
@@ -2927,24 +2927,24 @@
           }
         },
         "required": [
-          "source_object",
-          "target_object",
+          "source_record",
+          "target_record",
           "association_type_id"
         ]
       },
-      "object": {
+      "record": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string"
           },
-          "object_class": {
-            "$ref": "#/components/schemas/object_class"
+          "object": {
+            "$ref": "#/components/schemas/object"
           }
         },
         "required": [
           "id",
-          "object_class"
+          "object"
         ]
       }
     },

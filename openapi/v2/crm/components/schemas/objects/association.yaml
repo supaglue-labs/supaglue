@@ -1,28 +1,28 @@
 type: object
 properties:
-  source_object:
+  source_record:
     type: object
     properties:
       id:
         type: string
-      object_class:
-        $ref: ./object_class.yaml
+      object:
+        $ref: ./object.yaml
     required:
       - id
-      - object_class
-  target_object:
+      - object
+  target_record:
     type: object
     properties:
       id:
         type: string
-      object_class:
-        $ref: ./object_class.yaml
+      object:
+        $ref: ./object.yaml
     required:
       - id
-      - object_class
+      - object
   association_type_id:
     type: string
 required:
-  - source_object
-  - target_object
+  - source_record
+  - target_record
   - association_type_id

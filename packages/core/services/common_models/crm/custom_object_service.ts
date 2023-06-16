@@ -1,9 +1,9 @@
 import { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/crm/custom_object';
 import {
-  CustomObjectClass,
-  CustomObjectClassCreateParams,
-  CustomObjectClassUpdateParams,
-} from '@supaglue/types/crm/custom_object_class';
+  CustomObjectRecord,
+  CustomObjectRecordCreateParams,
+  CustomObjectRecordUpdateParams,
+} from '@supaglue/types/crm/custom_object_record';
 import { RemoteService } from '../..';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 
@@ -16,24 +16,9 @@ export class CrmCustomObjectService {
     this.#remoteService = remoteService;
   }
 
-  public async getClass(connectionId: string, id: string): Promise<CustomObjectClass> {
+  public async getObject(connectionId: string, id: string): Promise<CustomObject> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    return await remoteClient.getCustomObjectClass(id);
-  }
-
-  public async createClass(connectionId: string, params: CustomObjectClassCreateParams): Promise<string> {
-    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    return await remoteClient.createCustomObjectClass(params);
-  }
-
-  public async updateClass(connectionId: string, params: CustomObjectClassUpdateParams): Promise<void> {
-    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    await remoteClient.updateCustomObjectClass(params);
-  }
-
-  public async getObject(connectionId: string, classId: string, id: string): Promise<CustomObject> {
-    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    return await remoteClient.getCustomObject(classId, id);
+    return await remoteClient.getCustomObject(id);
   }
 
   public async createObject(connectionId: string, params: CustomObjectCreateParams): Promise<string> {
@@ -44,5 +29,20 @@ export class CrmCustomObjectService {
   public async updateObject(connectionId: string, params: CustomObjectUpdateParams): Promise<void> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
     await remoteClient.updateCustomObject(params);
+  }
+
+  public async getRecord(connectionId: string, classId: string, id: string): Promise<CustomObjectRecord> {
+    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
+    return await remoteClient.getCustomRecord(classId, id);
+  }
+
+  public async createRecord(connectionId: string, params: CustomObjectRecordCreateParams): Promise<string> {
+    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
+    return await remoteClient.createCustomRecord(params);
+  }
+
+  public async updateRecord(connectionId: string, params: CustomObjectRecordUpdateParams): Promise<void> {
+    const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
+    await remoteClient.updateCustomRecord(params);
   }
 }

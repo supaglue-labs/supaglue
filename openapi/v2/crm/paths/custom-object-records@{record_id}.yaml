@@ -1,23 +1,23 @@
 get:
-  operationId: getCustomObjectClass
-  summary: Get customObjectClass
+  operationId: getCustomObjectRecord
+  summary: Get customObjectRecord
   tags:
-    - CustomObjectClasses
+    - CustomObjectRecords
   security:
     - ApiKeyAuth: []
   parameters: []
   responses:
     200:
-      description: CustomObjectClass
+      description: CustomObject
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/custom_object_class.yaml
-put:
-  operationId: updateCustomObjectClass
-  summary: Update customObjectClass
+            $ref: ../components/schemas/objects/custom_object_record.yaml
+patch:
+  operationId: updateCustomObjectRecord
+  summary: Update customObjectRecord
   tags:
-    - CustomObjectClasses
+    - CustomObjectRecords
   security:
     - ApiKeyAuth: []
   parameters: []
@@ -28,13 +28,13 @@ put:
         schema:
           type: object
           properties:
-            class:
-              $ref: ../components/schemas/create_update_custom_object_class.yaml
+            record:
+              $ref: ../components/schemas/create_update_custom_object_record.yaml
           required:
-            - class
+            - record
   responses:
     200:
-      description: CustomObjectClass updated
+      description: CustomObjectRecord updated
       content:
         application/json:
           schema:
@@ -49,7 +49,13 @@ put:
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
-  - name: custom_object_class_id
+  - name: custom_object_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
+  - name: record_id
     in: path
     required: true
     schema:
