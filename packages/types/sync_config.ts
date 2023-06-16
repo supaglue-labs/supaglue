@@ -19,8 +19,9 @@ export type SyncConfigUpdateParams = SyncConfigCreateParams;
 
 export type SyncConfigData = {
   defaultConfig: SyncStrategyConfig;
-  commonObjects: CommonObjectConfig[];
-  rawObjects: RawObjectConfig[];
+  commonObjects?: CommonObjectConfig[];
+  rawObjects?: RawObjectConfig[];
+  rawCustomObjects?: RawCustomObjectConfig[];
 };
 
 export type SyncStrategyConfig = {
@@ -36,6 +37,11 @@ export type CommonObjectConfig = {
 };
 
 export type RawObjectConfig = {
+  object: string;
+  configOverride?: Partial<SyncStrategyConfig>;
+};
+
+export type RawCustomObjectConfig = {
   object: string;
   configOverride?: Partial<SyncStrategyConfig>;
 };

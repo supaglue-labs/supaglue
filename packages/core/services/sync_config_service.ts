@@ -178,8 +178,8 @@ export const getDefaultCommonObjects = (
 
 const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
   // Check that there are no duplicates among common objects and no duplicates among raw objects
-  const commonObjects = params.config.commonObjects.map((object) => object.object);
-  const rawObjects = params.config.rawObjects.map((object) => object.object);
+  const commonObjects = params.config.commonObjects?.map((object) => object.object) ?? [];
+  const rawObjects = params.config.rawObjects?.map((object) => object.object) ?? [];
   const commonObjectDuplicates = commonObjects.filter((object, index) => commonObjects.indexOf(object) !== index);
   const rawObjectDuplicates = rawObjects.filter((object, index) => rawObjects.indexOf(object) !== index);
   if (commonObjectDuplicates.length > 0) {

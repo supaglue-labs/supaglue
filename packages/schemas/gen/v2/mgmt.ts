@@ -369,7 +369,7 @@ export interface components {
         /** @enum {string} */
         strategy: "full then incremental" | "full only";
       };
-      common_objects: ({
+      common_objects?: ({
           /** @example contacts */
           object: string;
           fetch_all_fields_into_raw: boolean;
@@ -380,7 +380,17 @@ export interface components {
             strategy?: "full then incremental" | "full only";
           };
         })[];
-      raw_objects: ({
+      raw_objects?: ({
+          /** @example contacts */
+          object: string;
+          config_override?: {
+            /** @example 60000 */
+            period_ms?: number;
+            /** @enum {string} */
+            strategy?: "full then incremental" | "full only";
+          };
+        })[];
+      raw_custom_objects?: ({
           /** @example contacts */
           object: string;
           config_override?: {

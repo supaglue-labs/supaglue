@@ -16,6 +16,7 @@ export interface CrmRemoteClient extends RemoteClient {
   category(): ProviderCategory;
 
   listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
+  listCustomRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
 
   listCommonModelRecords(
     commonModelType: CRMCommonModelType,
@@ -64,6 +65,10 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   }
 
   public async listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+
+  public async listCustomRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
