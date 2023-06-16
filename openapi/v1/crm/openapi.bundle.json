@@ -3207,9 +3207,9 @@
               "type": "string",
               "enum": [
                 "primary",
-                "work"
-              ],
-              "nullable": true
+                "work",
+                "other"
+              ]
             }
           },
           "required": [
@@ -3239,9 +3239,9 @@
               "enum": [
                 "primary",
                 "mobile",
-                "fax"
-              ],
-              "nullable": true
+                "fax",
+                "other"
+              ]
             }
           },
           "required": [

@@ -10,7 +10,7 @@ items:
       enum:
         - primary
         - work
-      nullable: true
+        - other
   required:
     - email_address
     - email_address_type

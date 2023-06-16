@@ -100,14 +100,14 @@ export const fromDynamicsAccountToRemoteAccount = (dynamicsAccount: DynamicsAcco
   if (dynamicsAccount.telephone2) {
     phoneNumbers.push({
       phoneNumber: dynamicsAccount.telephone2,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'other', // Dynamics doesn't have a phone number type
     });
   }
 
   if (dynamicsAccount.telephone3) {
     phoneNumbers.push({
       phoneNumber: dynamicsAccount.telephone3,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'other', // Dynamics doesn't have a phone number type
     });
   }
 
@@ -347,14 +347,14 @@ export const fromDynamicsContactToRemoteContact = (dynamicsContact: DynamicsCont
   if (dynamicsContact.telephone2) {
     phoneNumbers.push({
       phoneNumber: dynamicsContact.telephone2,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'other', // Dynamics doesn't have a phone number type
     });
   }
 
   if (dynamicsContact.telephone3) {
     phoneNumbers.push({
       phoneNumber: dynamicsContact.telephone3,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'other', // Dynamics doesn't have a phone number type
     });
   }
 
@@ -370,14 +370,14 @@ export const fromDynamicsContactToRemoteContact = (dynamicsContact: DynamicsCont
   if (dynamicsContact.emailaddress2) {
     emailAddresses.push({
       emailAddress: dynamicsContact.emailaddress2,
-      emailAddressType: null, // Dynamics doesn't have an email address type
+      emailAddressType: 'other', // Dynamics doesn't have an email address type
     });
   }
 
   if (dynamicsContact.emailaddress3) {
     emailAddresses.push({
       emailAddress: dynamicsContact.emailaddress3,
-      emailAddressType: null, // Dynamics doesn't have an email address type
+      emailAddressType: 'other', // Dynamics doesn't have an email address type
     });
   }
 
@@ -578,14 +578,14 @@ export const fromDynamicsLeadToRemoteLead = (dynamicsLead: DynamicsLead): LeadV2
   if (dynamicsLead.telephone2) {
     phoneNumbers.push({
       phoneNumber: dynamicsLead.telephone2,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'other', // Dynamics doesn't have a phone number type
     });
   }
 
   if (dynamicsLead.telephone3) {
     phoneNumbers.push({
       phoneNumber: dynamicsLead.telephone3,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'other', // Dynamics doesn't have a phone number type
     });
   }
 
@@ -601,14 +601,14 @@ export const fromDynamicsLeadToRemoteLead = (dynamicsLead: DynamicsLead): LeadV2
   if (dynamicsLead.emailaddress2) {
     emailAddresses.push({
       emailAddress: dynamicsLead.emailaddress2,
-      emailAddressType: null, // Dynamics doesn't have an email address type
+      emailAddressType: 'other', // Dynamics doesn't have an email address type
     });
   }
 
   if (dynamicsLead.emailaddress3) {
     emailAddresses.push({
       emailAddress: dynamicsLead.emailaddress3,
-      emailAddressType: null, // Dynamics doesn't have an email address type
+      emailAddressType: 'other', // Dynamics doesn't have an email address type
     });
   }
 

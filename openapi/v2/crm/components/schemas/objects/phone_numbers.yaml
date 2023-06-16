@@ -12,7 +12,7 @@ items:
         - primary
         - mobile
         - fax
-      nullable: true
+        - other
   required:
     - phone_number
     - phone_number_type

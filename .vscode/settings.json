@@ -40,6 +40,8 @@
   "files.readonlyInclude": {
     "**/node_modules/**": true,
     ".yarn/**": true,
-    "**/yarn.lock": true
+    "**/yarn.lock": true,
+    "**/openapi.bundle.json": true,
+    "**/gen/**": true
   }
 }
