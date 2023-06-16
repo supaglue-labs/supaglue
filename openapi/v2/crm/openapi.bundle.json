@@ -2497,7 +2497,8 @@
               "type": "string",
               "enum": [
                 "primary",
-                "work"
+                "work",
+                "other"
               ]
             }
           },
@@ -2528,7 +2529,8 @@
               "enum": [
                 "primary",
                 "mobile",
-                "fax"
+                "fax",
+                "other"
               ]
             }
           },

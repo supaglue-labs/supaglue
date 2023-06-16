@@ -163,18 +163,20 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
           />
         </Stack>
 
-        <Stack className="gap-2">
-          <Typography variant="subtitle1">Scopes</Typography>
-          <TextField
-            value={oauthScopes}
-            size="small"
-            label="OAuth scopes (comma separated)"
-            variant="outlined"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setOauthScopes(event.target.value);
-            }}
-          />
-        </Stack>
+        {providerName === 'ms_dynamics_365_sales' ? null : (
+          <Stack className="gap-2">
+            <Typography variant="subtitle1">Scopes</Typography>
+            <TextField
+              value={oauthScopes}
+              size="small"
+              label="OAuth scopes (comma separated)"
+              variant="outlined"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setOauthScopes(event.target.value);
+              }}
+            />
+          </Stack>
+        )}
 
         <Stack className="gap-2">
           <Typography variant="subtitle1">Destination</Typography>

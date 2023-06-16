@@ -12,7 +12,7 @@ export type ConnectorAuthConfig = {
   tokenPath: string;
   authorizeHost: string;
   authorizePath: string;
-  authorizeWithScope?: boolean;
+  additionalScopes?: string[];
 };
 
 // `authConfig` to be used in simple-oauth2

@@ -551,7 +551,7 @@ export interface components {
         /** @example hello@supaglue.com */
         email_address: string;
         /** @enum {string} */
-        email_address_type: "primary" | "work";
+        email_address_type: "primary" | "work" | "other";
       })[];
     /**
      * @example [
@@ -565,7 +565,7 @@ export interface components {
         /** @example +14151234567 */
         phone_number: string | null;
         /** @enum {string} */
-        phone_number_type: "primary" | "mobile" | "fax";
+        phone_number_type: "primary" | "mobile" | "fax" | "other";
       })[];
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */

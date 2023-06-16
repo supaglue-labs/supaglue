@@ -50,8 +50,6 @@ export class RemoteService {
       this.#connectionService
         .updateConnectionWithNewAccessToken(connectionId, accessToken, expiresAt)
         .catch((err: unknown) => {
-          // TODO: Use logger
-          // eslint-disable-next-line no-console
           logger.error({ err, connectionId }, `Failed to persist refreshed token`);
         });
     });

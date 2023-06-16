@@ -12,6 +12,7 @@ items:
         - primary
         - mobile
         - fax
+        - other
   required:
     - phone_number
     - phone_number_type
