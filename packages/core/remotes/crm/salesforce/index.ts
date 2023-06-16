@@ -671,6 +671,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'INVALID_TYPE':
       case 'MISSING_ARGUMENT':
       case 'MALFORMED_ID':
+      case 'INVALID_EMAIL_ADDRESS':
       case 'ERROR_HTTP_400':
         return new BadRequestError(error.message);
       case 'INVALID_ID_FIELD':
