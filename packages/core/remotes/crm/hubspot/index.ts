@@ -116,6 +116,15 @@ const hubspotObjectTypeToAssociatedObjectTypes: Record<HubSpotObjectType, HubSpo
   task: ['contact', 'deal', 'company', 'ticket'],
 };
 
+const archivedUnsupportedObjectTypes: HubSpotObjectType[] = [
+  'postal_mail',
+  'meeting',
+  'note',
+  'communication',
+  'call',
+  'email',
+];
+
 const HUBSPOT_OBJECT_TYPES = [
   'company',
   'contact',
@@ -340,12 +349,21 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       modifiedAfter
     );
 
+    const normalFetcherAndHandler = {
+      pageFetcher: normalPageFetcher,
+      createStreamFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
+        Readable.from(response.results),
+      getNextCursorFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
+        response.paging?.next?.after,
+    };
+
+    if (archivedUnsupportedObjectTypes.includes(objectType)) {
+      // Can't get archived records for these types
+      return await paginator([normalFetcherAndHandler]);
+    }
+
     return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results),
-        getNextCursorFromPage: (response) => response.paging?.next?.after,
-      },
+      normalFetcherAndHandler,
       {
         pageFetcher: archivedPageFetcher,
         createStreamFromPage: (response) => Readable.from(response.results),
@@ -469,6 +487,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     after?: string
   ): Promise<RecordsResponseWithFlattenedAssociationsAndTotal> {
     // Get records
+    // hubspot doesn't set hs_lastmodifieddate for some reason for contact
+    const lastModifiedAtPropertyName = objectType === 'contact' ? 'lastmodifieddate' : 'hs_lastmodifieddate';
     const response = await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       return await axios.post<HubSpotAPIV3SearchResponse>(
@@ -478,7 +498,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             {
               filters: [
                 {
-                  propertyName: 'lastmodifieddate', // hubspot doesn't set hs_lastmodifieddate for some reason
+                  propertyName: lastModifiedAtPropertyName,
                   operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
                   value: modifiedAfter.getTime().toString(),
                 },
@@ -487,7 +507,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           ],
           sorts: [
             {
-              propertyName: 'lastmodifieddate',
+              propertyName: lastModifiedAtPropertyName,
               direction: 'ASCENDING',
             },
           ],

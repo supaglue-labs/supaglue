@@ -24,6 +24,7 @@ import type { ApplicationService, SyncService } from 'sync-worker/services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetDestination } from './get_destination';
 import { createGetSync } from './get_sync';
+import { createGetSyncConfigBySyncId } from './get_sync_config_by_sync_id';
 import { createImportRecords } from './import_records';
 import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
@@ -71,6 +72,7 @@ export const createActivities = ({
   return {
     getSync: createGetSync(syncService),
     getDestination: createGetDestination(destinationService),
+    getSyncConfigBySyncId: createGetSyncConfigBySyncId(syncConfigService),
     doProcessSyncChanges: createDoProcessSyncChanges(syncService),
     setForceSyncFlag: createSetForceSyncFlag(syncService),
     updateSyncState: createUpdateSyncState(syncService),

@@ -5,7 +5,6 @@ export type SyncHistoryStatus = 'SUCCESS' | 'FAILURE' | 'IN_PROGRESS';
 export type SyncHistory = {
   id: string;
   syncId: string;
-  modelName: string;
   status: SyncHistoryStatus;
   errorMessage: string | null;
   startTimestamp: Date;
@@ -17,18 +16,37 @@ export type SyncHistory = {
   category: 'crm';
   connectionId: string;
   numRecordsSynced: number | null;
-};
+} & (
+  | {
+      modelName: string;
+    }
+  | {
+      rawObject: string;
+    }
+);
 
 export type SyncHistoryUpsertParams = {
-  model: string;
   status: SyncHistoryStatus;
   errorMessage: string | null;
   startTimestamp: Date;
   endTimestamp: Date | null;
   numRecordsSynced: number | null;
-};
+} & (
+  | {
+      model: string;
+    }
+  | {
+      rawObject: string;
+    }
+);
 
 export type SyncHistoryFilter = SyncInfoFilter & {
   paginationParams: PaginationInternalParams;
-  model?: string;
-};
+} & (
+    | {
+        model?: string;
+      }
+    | {
+        rawObject?: string;
+      }
+  );

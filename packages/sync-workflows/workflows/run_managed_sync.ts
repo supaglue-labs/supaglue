@@ -1,19 +1,20 @@
 import { CommonModelType, ProviderCategory } from '@supaglue/types/common';
-import { CRMCommonModelType, CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
+import { CRMCommonModelType } from '@supaglue/types/crm';
 import {
-  CRMNumRecordsSyncedMap,
-  EngagementNumRecordsSyncedMap,
   FullOnlySync,
   FullThenIncrementalSync,
-  NumRecordsSyncedMap,
+  NumCommonRecordsSyncedMap,
+  NumRawRecordsSyncedMap,
 } from '@supaglue/types/sync';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
-import { EngagementCommonModelType, ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
+import { SyncConfig } from '@supaglue/types';
+import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import type { createActivities } from '../activities/index';
+import { SyncRawRecordsToDestinationResult } from '../activities/sync_raw_records_to_destination';
 import { SyncRecordsToDestinationResult } from '../activities/sync_records_to_destination';
 
-const { syncRecordsToDestination } = proxyActivities<ReturnType<typeof createActivities>>({
+const { syncRecordsToDestination, syncRawRecordsToDestination } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '15 minute',
   retry: {
@@ -21,9 +22,15 @@ const { syncRecordsToDestination } = proxyActivities<ReturnType<typeof createAct
   },
 });
 
-const { getSync, getDestination, updateSyncState, logSyncStart, logSyncFinish, setForceSyncFlag } = proxyActivities<
-  ReturnType<typeof createActivities>
->({
+const {
+  getSync,
+  getSyncConfigBySyncId,
+  getDestination,
+  updateSyncState,
+  logSyncStart,
+  logSyncFinish,
+  setForceSyncFlag,
+} = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '10 second',
   retry: {
     maximumAttempts: 3,
@@ -49,55 +56,87 @@ export type RunManagedSyncArgs = {
 };
 
 export async function runManagedSync({ syncId, connectionId, category }: RunManagedSyncArgs): Promise<void> {
+  // Where are we syncing to?
   const { destination } = await getDestination({ syncId });
   if (!destination) {
     return;
   }
 
-  const historyIdsMap = Object.fromEntries(
-    getCommonModels(category).map((commonModel) => {
-      const entry: [CommonModelType, string] = [commonModel, uuid4()];
+  // What are we syncing?
+  const { syncConfig } = await getSyncConfigBySyncId({ syncId });
+  const { commonObjects, rawObjects } = syncConfig.config;
+
+  // What is the sync type?
+  const { sync } = await getSync({ syncId });
+
+  // TODO: Validate that the commonObjects are valid in this category?
+  const commonObjectHistoryIdsMap = Object.fromEntries(
+    commonObjects.map((commonObject) => {
+      const entry: [CommonModelType, string] = [commonObject.object, uuid4()];
+      return entry;
+    })
+  );
+  const rawObjectHistoryIdsMap = Object.fromEntries(
+    rawObjects.map((rawObject) => {
+      const entry: [string, string] = [rawObject.object, uuid4()];
       return entry;
     })
   );
 
+  // Record that syncs have started
   await Promise.all(
-    getCommonModels(category).map(async (commonModel) => {
-      await logSyncStart({ syncId, historyId: historyIdsMap[commonModel], commonModel });
+    commonObjects.map(async (commonObject) => {
+      await logSyncStart({
+        syncId,
+        historyId: commonObjectHistoryIdsMap[commonObject.object],
+        commonModel: commonObject.object,
+      });
+    })
+  );
+  await Promise.all(
+    rawObjects.map(async (rawObject) => {
+      await logSyncStart({
+        syncId,
+        historyId: rawObjectHistoryIdsMap[rawObject.object],
+        rawObject: rawObject.object,
+      });
     })
   );
 
-  // Read sync from DB
-  const { sync } = await getSync({ syncId });
-
-  let numRecordsSyncedMap: NumRecordsSyncedMap | undefined;
+  let numCommonRecordsSyncedMap: NumCommonRecordsSyncedMap | undefined;
+  let numRawRecordsSyncedMap: NumRawRecordsSyncedMap | undefined;
   try {
     // Figure out what to do based on sync strategy
     switch (sync.type) {
       case 'full then incremental':
-        numRecordsSyncedMap = await doFullThenIncrementalSync({ sync, category });
+        ({ numCommonRecordsSyncedMap, numRawRecordsSyncedMap } = await doFullThenIncrementalSync({
+          sync,
+          syncConfig,
+          category,
+        }));
         break;
       case 'full only':
-        numRecordsSyncedMap = await doFullOnlySync({ sync, category });
+        ({ numCommonRecordsSyncedMap, numRawRecordsSyncedMap } = await doFullOnlySync({ sync, syncConfig, category }));
         break;
       default:
         throw new Error('Sync type not supported.');
     }
   } catch (err: any) {
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
+
     await Promise.all(
-      getCommonModels(category).map(async (commonModel) => {
+      commonObjects.map(async ({ object: commonModel }) => {
         await logSyncFinish({
           syncId,
           connectionId,
-          historyId: historyIdsMap[commonModel],
+          historyId: commonObjectHistoryIdsMap[commonModel],
           status: 'FAILURE',
           errorMessage,
           errorStack,
           numRecordsSynced: null,
         });
         await maybeSendSyncFinishWebhook({
-          historyId: historyIdsMap[commonModel],
+          historyId: commonObjectHistoryIdsMap[commonModel],
           status: 'SYNC_ERROR',
           connectionId,
           // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
@@ -108,28 +147,55 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       })
     );
 
+    await Promise.all(
+      rawObjects.map(async ({ object }) => {
+        await logSyncFinish({
+          syncId,
+          connectionId,
+          historyId: rawObjectHistoryIdsMap[object],
+          status: 'FAILURE',
+          errorMessage,
+          errorStack,
+          numRecordsSynced: null,
+        });
+        await maybeSendSyncFinishWebhook({
+          historyId: rawObjectHistoryIdsMap[object],
+          status: 'SYNC_ERROR',
+          connectionId,
+          // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
+          numRecordsSynced: 0,
+          rawObject: object,
+          errorMessage,
+        });
+      })
+    );
+
     throw err;
   }
 
-  if (!numRecordsSyncedMap) {
-    throw ApplicationFailure.nonRetryable('Unexpectedly numRecordsSyncedMap was not set');
+  if (!numCommonRecordsSyncedMap) {
+    throw ApplicationFailure.nonRetryable('Unexpectedly numCommonRecordsSyncedMap was not set');
+  }
+
+  if (!numRawRecordsSyncedMap) {
+    throw ApplicationFailure.nonRetryable('Unexpectedly numRawRecordsSyncedMap was not set');
   }
 
   await Promise.all(
-    getCommonModels(category).map(async (commonModel) => {
+    commonObjects.map(async ({ object: commonModel }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore `numRecordsSyncedMap` is indeed defined here
-      const numRecordsSynced = numRecordsSyncedMap[commonModel];
+      // @ts-ignore `numCommonRecordsSyncedMap` is indeed defined here
+      const numRecordsSynced = numCommonRecordsSyncedMap[commonModel];
 
       await logSyncFinish({
         syncId,
         connectionId,
-        historyId: historyIdsMap[commonModel],
+        historyId: commonObjectHistoryIdsMap[commonModel],
         status: 'SUCCESS',
         numRecordsSynced,
       });
       await maybeSendSyncFinishWebhook({
-        historyId: historyIdsMap[commonModel],
+        historyId: commonObjectHistoryIdsMap[commonModel],
         status: 'SYNC_SUCCESS',
         connectionId,
         numRecordsSynced,
@@ -137,15 +203,42 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       });
     })
   );
+
+  await Promise.all(
+    rawObjects.map(async ({ object }) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore `numRawRecordsSyncedMap` is indeed defined here
+      const numRecordsSynced = numRawRecordsSyncedMap[object];
+
+      await logSyncFinish({
+        syncId,
+        connectionId,
+        historyId: rawObjectHistoryIdsMap[object],
+        status: 'SUCCESS',
+        numRecordsSynced,
+      });
+      await maybeSendSyncFinishWebhook({
+        historyId: rawObjectHistoryIdsMap[object],
+        status: 'SYNC_SUCCESS',
+        connectionId,
+        numRecordsSynced,
+        rawObject: object,
+      });
+    })
+  );
 }
 
 async function doFullOnlySync({
   sync,
+  syncConfig: {
+    config: { commonObjects, rawObjects },
+  },
   category,
 }: {
   sync: FullOnlySync;
+  syncConfig: SyncConfig;
   category: ProviderCategory;
-}): Promise<NumRecordsSyncedMap> {
+}): Promise<{ numCommonRecordsSyncedMap: NumCommonRecordsSyncedMap; numRawRecordsSyncedMap: NumRawRecordsSyncedMap }> {
   await updateSyncState({
     syncId: sync.id,
     state: {
@@ -156,10 +249,22 @@ async function doFullOnlySync({
 
   const syncRecordsToDestinationResultList = Object.fromEntries(
     await Promise.all(
-      getCommonModels(category).map(async (commonModel) => {
+      commonObjects.map(async ({ object: commonModel }) => {
         const entry: [CommonModelType, SyncRecordsToDestinationResult] = [
           commonModel,
           await syncRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
+        ];
+        return entry;
+      })
+    )
+  );
+
+  const syncRawRecordsToDestinationResultList = Object.fromEntries(
+    await Promise.all(
+      rawObjects.map(async ({ object }) => {
+        const entry: [string, SyncRawRecordsToDestinationResult] = [
+          object,
+          await syncRawRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, object }),
         ];
         return entry;
       })
@@ -170,143 +275,175 @@ async function doFullOnlySync({
     syncId: sync.id,
     state: {
       phase: 'full',
-      status: 'in progress',
-    },
-  });
-
-  await updateSyncState({
-    syncId: sync.id,
-    state: {
-      phase: 'full',
       status: 'done',
     },
   });
 
-  return Object.fromEntries(
-    getCommonModels(category).map((commonModel) => [
+  const numCommonRecordsSyncedMap = Object.fromEntries(
+    commonObjects.map(({ object: commonModel }) => [
       commonModel,
       syncRecordsToDestinationResultList[commonModel].numRecordsSynced,
     ])
-  ) as Record<CommonModelType, number>;
+  ) as NumCommonRecordsSyncedMap; // TODO: better types
+  const numRawRecordsSyncedMap = Object.fromEntries(
+    rawObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
+  ) as Record<string, number>;
+
+  return {
+    numCommonRecordsSyncedMap,
+    numRawRecordsSyncedMap,
+  };
 }
 
 async function doFullThenIncrementalSync({
   sync,
+  syncConfig: {
+    config: { commonObjects, rawObjects },
+  },
   category,
 }: {
   sync: FullThenIncrementalSync;
+  syncConfig: SyncConfig;
   category: ProviderCategory;
-}): Promise<NumRecordsSyncedMap> {
-  async function doFullStage(): Promise<NumRecordsSyncedMap> {
+}): Promise<{ numCommonRecordsSyncedMap: NumCommonRecordsSyncedMap; numRawRecordsSyncedMap: NumRawRecordsSyncedMap }> {
+  async function doFullStage(): Promise<{
+    numCommonRecordsSyncedMap: NumCommonRecordsSyncedMap;
+    numRawRecordsSyncedMap: NumRawRecordsSyncedMap;
+  }> {
     await updateSyncState({
       syncId: sync.id,
       state: {
         phase: 'full',
         status: 'in progress',
-        maxLastModifiedAtMsMap: getDefaultMaxLastModifiedAtMsMap(category),
+        maxLastModifiedAtMsMap: {},
+        maxLastModifedAtMsMapForRawObjects: {},
       },
     });
 
+    // Sync everything at the same time
+    // TODO: Do we really want to do all of these in parallel?
+    // Common objects
     const syncRecordsToDestinationResultList = Object.fromEntries(
       await Promise.all(
-        getCommonModels(category).map(async (commonModel) => {
+        commonObjects.map(async ({ object }) => {
           const entry: [CommonModelType, SyncRecordsToDestinationResult] = [
-            commonModel,
-            await syncRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, commonModel }),
+            object,
+            await syncRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, commonModel: object }),
           ];
           return entry;
         })
       )
     );
 
-    const newMaxLastModifiedAtMsMap =
-      category === 'crm'
-        ? {
-            account: syncRecordsToDestinationResultList.account.maxLastModifiedAtMs,
-            lead: syncRecordsToDestinationResultList.lead.maxLastModifiedAtMs,
-            opportunity: syncRecordsToDestinationResultList.opportunity.maxLastModifiedAtMs,
-            contact: syncRecordsToDestinationResultList.contact.maxLastModifiedAtMs,
-            user: syncRecordsToDestinationResultList.user.maxLastModifiedAtMs,
-          }
-        : {
-            contact: syncRecordsToDestinationResultList.contact.maxLastModifiedAtMs,
-            user: syncRecordsToDestinationResultList.user.maxLastModifiedAtMs,
-            sequence: syncRecordsToDestinationResultList.sequence.maxLastModifiedAtMs,
-            mailbox: syncRecordsToDestinationResultList.mailbox.maxLastModifiedAtMs,
-            sequence_state: syncRecordsToDestinationResultList.sequence_state.maxLastModifiedAtMs,
-          };
+    // Raw objects
+    const syncRawRecordsToDestinationResultList = Object.fromEntries(
+      await Promise.all(
+        rawObjects.map(async ({ object }) => {
+          const entry: [string, SyncRawRecordsToDestinationResult] = [
+            object,
+            await syncRawRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, object }),
+          ];
+          return entry;
+        })
+      )
+    );
 
-    await updateSyncState({
-      syncId: sync.id,
-      state: {
-        phase: 'full',
-        status: 'in progress',
-        maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
-      },
-    });
+    const newMaxLastModifiedAtMsMap = Object.fromEntries(
+      Object.entries(syncRecordsToDestinationResultList).map(([object, { maxLastModifiedAtMs }]) => [
+        object,
+        maxLastModifiedAtMs,
+      ])
+    );
 
+    const newMaxLastModifiedAtMsMapForRawObjects = Object.fromEntries(
+      Object.entries(syncRawRecordsToDestinationResultList).map(([object, { maxLastModifiedAtMs }]) => [
+        object,
+        maxLastModifiedAtMs,
+      ])
+    );
+
+    // We don't merge with old maxLastModifiedAtMsMap because if we previously were syncing accounts,
+    // then stopped, then resumed, we should start from 0 anyway.
     await updateSyncState({
       syncId: sync.id,
       state: {
         phase: 'full',
         status: 'done',
         maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
+        maxLastModifedAtMsMapForRawObjects: newMaxLastModifiedAtMsMapForRawObjects,
       },
     });
 
-    return Object.fromEntries(
-      getCommonModels(category).map((commonModel) => [
+    const numCommonRecordsSyncedMap = Object.fromEntries(
+      commonObjects.map(({ object: commonModel }) => [
         commonModel,
         syncRecordsToDestinationResultList[commonModel].numRecordsSynced,
       ])
-    ) as Record<CommonModelType, number>;
+    ) as NumCommonRecordsSyncedMap; // TODO: better types
+    const numRawRecordsSyncedMap = Object.fromEntries(
+      rawObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
+    ) as Record<string, number>;
+
+    return {
+      numCommonRecordsSyncedMap,
+      numRawRecordsSyncedMap,
+    };
   }
 
-  async function doIncrementalPhase(): Promise<NumRecordsSyncedMap> {
-    function getOriginalMaxLastModifiedAtMsMap(): NumRecordsSyncedMap {
-      // TODO: we shouldn't need to do this, since it's not possible to
+  async function doIncrementalPhase(): Promise<{
+    numCommonRecordsSyncedMap: NumCommonRecordsSyncedMap;
+    numRawRecordsSyncedMap: NumRawRecordsSyncedMap;
+  }> {
+    function getOriginalMaxLastModifiedAtMsMap(): NumCommonRecordsSyncedMap {
+      // we shouldn't need to do this, since it's not possible to
       // start the incremental phase if the full phase hasn't been completed.
       if (sync.state.phase === 'created') {
-        return getDefaultMaxLastModifiedAtMsMap(category);
+        return {};
       }
 
-      if (category === 'crm') {
-        const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as CRMNumRecordsSyncedMap;
-        return {
-          account: maxLastModifiedAtMsMap['account'] ?? 0,
-          lead: maxLastModifiedAtMsMap['lead'] ?? 0,
-          opportunity: maxLastModifiedAtMsMap['opportunity'] ?? 0,
-          contact: maxLastModifiedAtMsMap['contact'] ?? 0,
-          user: maxLastModifiedAtMsMap['user'] ?? 0,
-        };
-      }
-      const maxLastModifiedAtMsMap = sync.state.maxLastModifiedAtMsMap as EngagementNumRecordsSyncedMap;
-      return {
-        contact: maxLastModifiedAtMsMap['contact'] ?? 0,
-        user: maxLastModifiedAtMsMap['user'] ?? 0,
-        sequence: maxLastModifiedAtMsMap['sequence'] ?? 0,
-        mailbox: maxLastModifiedAtMsMap['mailbox'] ?? 0,
-        sequence_state: maxLastModifiedAtMsMap['sequence_state'] ?? 0,
-      };
+      return sync.state.maxLastModifiedAtMsMap;
     }
 
     function computeUpdatedMaxLastModifiedAtMsMap(
       syncRecordsToDestinationResultList:
         | Record<CRMCommonModelType, SyncRecordsToDestinationResult>
         | Record<EngagementCommonModelType, SyncRecordsToDestinationResult>
-    ): NumRecordsSyncedMap {
+    ): NumCommonRecordsSyncedMap {
       const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMap();
 
       return Object.fromEntries(
-        getCommonModels(category).map((commonModel) => [
+        commonObjects.map(({ object: commonModel }) => [
           commonModel,
           Math.max(
-            (originalMaxLastModifiedAtMsMap as Record<CommonModelType, number>)[commonModel],
+            (originalMaxLastModifiedAtMsMap as Record<CommonModelType, number>)[commonModel] ?? 0,
             (syncRecordsToDestinationResultList as Record<CommonModelType, SyncRecordsToDestinationResult>)[commonModel]
               .maxLastModifiedAtMs
           ),
         ])
-      ) as NumRecordsSyncedMap;
+      ) as NumCommonRecordsSyncedMap;
+    }
+
+    function getOriginalMaxLastModifiedAtMsMapForRawObjects(): NumRawRecordsSyncedMap {
+      // we shouldn't need to do this, since it's not possible to
+      // start the incremental phase if the full phase hasn't been completed.
+      if (sync.state.phase === 'created') {
+        return {};
+      }
+
+      return sync.state.maxLastModifedAtMsMapForRawObjects ?? {};
+    }
+
+    function computeUpdatedMaxLastModifiedAtMsMapForRawObjects(
+      syncRawRecordsToDestinationResultList: Record<string, SyncRawRecordsToDestinationResult>
+    ): NumRawRecordsSyncedMap {
+      const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMapForRawObjects();
+
+      return Object.fromEntries(
+        Object.entries(syncRawRecordsToDestinationResultList).map(([object, { maxLastModifiedAtMs }]) => [
+          object,
+          Math.max(originalMaxLastModifiedAtMsMap[object] ?? 0, maxLastModifiedAtMs),
+        ])
+      );
     }
 
     await updateSyncState({
@@ -315,12 +452,14 @@ async function doFullThenIncrementalSync({
         phase: 'incremental',
         status: 'in progress',
         maxLastModifiedAtMsMap: getOriginalMaxLastModifiedAtMsMap(),
+        maxLastModifedAtMsMapForRawObjects: getOriginalMaxLastModifiedAtMsMapForRawObjects(),
       },
     });
 
+    // Sync common objects
     const syncRecordsToDestinationResultList = Object.fromEntries(
       await Promise.all(
-        getCommonModels(category).map(async (commonModel) => {
+        commonObjects.map(async ({ object: commonModel }) => {
           const entry: [CommonModelType, SyncRecordsToDestinationResult] = [
             commonModel,
             await syncRecordsToDestination({
@@ -337,15 +476,27 @@ async function doFullThenIncrementalSync({
 
     const newMaxLastModifiedAtMsMap = computeUpdatedMaxLastModifiedAtMsMap(syncRecordsToDestinationResultList);
 
-    // TODO: Bring this back when we fix https://github.com/supaglue-labs/supaglue/issues/644
-    // await updateSyncState({
-    //   syncId: sync.id,
-    //   state: {
-    //     phase: 'incremental',
-    //     status: 'in progress',
-    //     maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
-    //   },
-    // });
+    // Sync raw objects
+    const syncRawRecordsToDestinationResultList = Object.fromEntries(
+      await Promise.all(
+        rawObjects.map(async ({ object }) => {
+          const entry: [string, SyncRawRecordsToDestinationResult] = [
+            object,
+            await syncRawRecordsToDestination({
+              syncId: sync.id,
+              connectionId: sync.connectionId,
+              object,
+              modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForRawObjects()[object],
+            }),
+          ];
+          return entry;
+        })
+      )
+    );
+
+    const newMaxLastModifiedAtMsMapForRawObjects = computeUpdatedMaxLastModifiedAtMsMapForRawObjects(
+      syncRawRecordsToDestinationResultList
+    );
 
     await updateSyncState({
       syncId: sync.id,
@@ -353,16 +504,24 @@ async function doFullThenIncrementalSync({
         phase: 'incremental',
         status: 'done',
         maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
+        maxLastModifedAtMsMapForRawObjects: newMaxLastModifiedAtMsMapForRawObjects,
       },
     });
 
-    return Object.fromEntries(
-      getCommonModels(category).map((commonModel) => [
+    const numCommonRecordsSyncedMap = Object.fromEntries(
+      commonObjects.map(({ object: commonModel }) => [
         commonModel,
-        (syncRecordsToDestinationResultList as Record<CommonModelType, SyncRecordsToDestinationResult>)[commonModel]
-          .numRecordsSynced,
+        syncRecordsToDestinationResultList[commonModel].numRecordsSynced,
       ])
-    ) as NumRecordsSyncedMap;
+    ) as NumCommonRecordsSyncedMap; // TODO: better types
+    const numRawRecordsSyncedMap = Object.fromEntries(
+      rawObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
+    ) as Record<string, number>;
+
+    return {
+      numCommonRecordsSyncedMap,
+      numRawRecordsSyncedMap,
+    };
   }
 
   // Short circuit normal state transitions if we're forcing a sync which will reset the state
@@ -389,25 +548,6 @@ async function doFullThenIncrementalSync({
   }
 }
 
-const getDefaultMaxLastModifiedAtMsMap = (category: ProviderCategory): NumRecordsSyncedMap => {
-  if (category === 'crm') {
-    return {
-      account: 0,
-      lead: 0,
-      opportunity: 0,
-      contact: 0,
-      user: 0,
-    };
-  }
-  return {
-    contact: 0,
-    user: 0,
-    sequence: 0,
-    mailbox: 0,
-    sequence_state: 0,
-  };
-};
-
 const getErrorMessageStack = (err: Error): { message: string; stack: string } => {
   if (err instanceof ActivityFailure) {
     return {
@@ -420,6 +560,3 @@ const getErrorMessageStack = (err: Error): { message: string; stack: string } =>
   }
   return { message: err.message ?? 'Unknown error', stack: err.stack ?? 'No stack' };
 };
-
-const getCommonModels = (category: ProviderCategory) =>
-  category === 'crm' ? CRM_COMMON_MODEL_TYPES : ENGAGEMENT_COMMON_MODEL_TYPES;

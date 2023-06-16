@@ -33,7 +33,14 @@ export default function init(app: Router) {
           endTimestamp: result.endTimestamp?.toISOString() ?? null,
         })
       );
-      return res.status(200).send({ next, previous, results: snakeCaseResults });
+      return res.status(200).send({
+        next,
+        previous,
+        results: snakeCaseResults.map((result) => ({
+          ...result,
+          model_name: 'model_name' in result ? result.model_name : '',
+        })),
+      });
     }
   );
 }

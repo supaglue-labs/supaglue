@@ -17,7 +17,7 @@ import {
   UpdateSyncConfigRequest,
   UpdateSyncConfigResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { SyncConfig } from '@supaglue/types';
+import { CommonModelType, SyncConfig } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
@@ -46,7 +46,16 @@ export default function init(app: Router): void {
     ) => {
       const syncConfig = await syncConfigService.create({
         applicationId: req.supaglueApplication.id,
-        ...camelcaseKeys(req.body),
+        ...camelcaseKeys({
+          ...req.body,
+          config: {
+            ...req.body.config,
+            common_objects: req.body.config.common_objects.map((commonObject) => ({
+              ...commonObject,
+              object: commonObject.object as CommonModelType,
+            })),
+          },
+        }),
       });
       return res.status(201).send(snakecaseKeys(syncConfig));
     }
@@ -106,7 +115,16 @@ export default function init(app: Router): void {
     ) => {
       const syncConfig = await syncConfigService.update(req.params.sync_config_id, {
         applicationId: req.supaglueApplication.id,
-        ...camelcaseKeys(req.body),
+        ...camelcaseKeys({
+          ...req.body,
+          config: {
+            ...req.body.config,
+            common_objects: req.body.config.common_objects.map((commonObject) => ({
+              ...commonObject,
+              object: commonObject.object as CommonModelType,
+            })),
+          },
+        }),
       });
       return res.status(200).send(snakecaseKeys(syncConfig));
     }
