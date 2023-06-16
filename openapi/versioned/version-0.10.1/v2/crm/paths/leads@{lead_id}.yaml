@@ -1,0 +1,67 @@
+get:
+  operationId: getLead
+  summary: Get lead
+  tags:
+    - Leads
+  security:
+    - ApiKeyAuth: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+  responses:
+    200:
+      description: Lead
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/lead.yaml
+patch:
+  operationId: updateLead
+  summary: Update lead
+  tags:
+    - Leads
+  security:
+    - ApiKeyAuth: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            record:
+              $ref: ../components/schemas/create_update_lead.yaml
+          required:
+            - record
+        examples:
+          Example:
+            value:
+              record:
+                company: Supaglue
+                first_name: George
+                last_name: Xing
+                lead_source: API Blogger
+                title: Co-Founder
+  responses:
+    200:
+      description: Lead updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../../common/components/schemas/logs.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: lead_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 82de27cb-6f8c-4278-b783-82d1d916eddc
