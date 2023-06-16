@@ -1258,7 +1258,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
     if (!params.fields.length) {
-      throw new Error('Cannot create custom object class with no fields');
+      throw new Error('Cannot create custom object with no fields');
     }
 
     await this.maybeRefreshAccessToken();
@@ -1358,8 +1358,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
 
     // Get the properties to fetch
-    const customObjectClass = await this.getCustomObject(objectId);
-    const fieldsToFetch = customObjectClass.fields.map((field) => field.keyName);
+    const customObject = await this.getCustomObject(objectId);
+    const fieldsToFetch = customObject.fields.map((field) => field.keyName);
     const response = await this.#client.crm.objects.basicApi.getById(objectId, id, fieldsToFetch);
 
     return {

@@ -44,7 +44,7 @@ export interface CrmRemoteClient extends RemoteClient {
   createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string>;
   updateCustomRecord(params: CustomObjectRecordUpdateParams): Promise<void>;
 
-  getAssociationTypes(sourceObjectClass: SGObject, targetObjectClass: SGObject): Promise<AssociationType[]>;
+  getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]>;
   createAssociationType(params: AssociationTypeCreateParams): Promise<void>;
 
   createAssociation(params: AssociationCreateParams): Promise<Association>;
@@ -106,10 +106,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
-  public async getAssociationTypes(
-    sourceObjectClass: SGObject,
-    targetObjectClass: SGObject
-  ): Promise<AssociationType[]> {
+  public async getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]> {
     throw new Error('Not implemented');
   }
   public async createAssociationType(params: AssociationTypeCreateParams): Promise<void> {
