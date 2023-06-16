@@ -106,7 +106,7 @@ components:
       $ref: ../../common/components/schemas/errors.yaml
     warnings:
       $ref: ../../common/components/schemas/warnings.yaml
-    created_model:
+    created_record:
       $ref: ../../common/components/schemas/created_model.yaml
     addresses:
       $ref: ./components/schemas/objects/addresses.yaml

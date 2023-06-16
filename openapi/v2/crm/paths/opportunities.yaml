@@ -13,12 +13,12 @@ post:
         schema:
           type: object
           properties:
-            model:
+            record:
               $ref: ../components/schemas/create_update_opportunity.yaml
           required:
-            - model
+            - record
         example:
-          model:
+          record:
             amount: 100000
             close_date: '2023-02-27T00:00:00Z'
             description: Wants to use open source unified API for third-party integrations
@@ -37,7 +37,7 @@ post:
                 $ref: ../../../common/components/schemas/errors.yaml
               logs:
                 $ref: ../../../common/components/schemas/logs.yaml
-              model:
+              record:
                 $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml

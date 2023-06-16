@@ -44,9 +44,9 @@ export default function init(app: Router): void {
       const id = await crmCommonModelService.create(
         'account',
         req.customerConnection,
-        camelcaseKeysSansCustomFields(req.body.model)
+        camelcaseKeysSansCustomFields(req.body.record)
       );
-      return res.status(200).send({ model: { id } });
+      return res.status(200).send({ record: { id } });
     }
   );
 
@@ -58,7 +58,7 @@ export default function init(app: Router): void {
     ) => {
       await crmCommonModelService.update('account', req.customerConnection, {
         id: req.params.account_id,
-        ...camelcaseKeysSansCustomFields(req.body.model),
+        ...camelcaseKeysSansCustomFields(req.body.record),
       });
       return res.status(200).send({});
     }

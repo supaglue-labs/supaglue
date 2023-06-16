@@ -507,7 +507,7 @@ export interface components {
         /** @example Unrecognized Field */
         title?: string;
       })[];
-    created_model: {
+    created_record: {
       id: string;
     };
     /**
@@ -725,7 +725,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_account"];
+          record: components["schemas"]["create_update_account"];
         };
       };
     };
@@ -736,7 +736,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["created_model"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -759,7 +759,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_account"];
+          record: components["schemas"]["create_update_account"];
         };
       };
     };
@@ -782,7 +782,7 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "model": {
+         *   "record": {
          *     "first_name": "George",
          *     "last_activity_at": "2022-02-10T00:00:00Z",
          *     "last_name": "Xing",
@@ -791,7 +791,7 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_update_contact"];
+          record: components["schemas"]["create_update_contact"];
         };
       };
     };
@@ -802,7 +802,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["created_model"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -825,7 +825,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_contact"];
+          record: components["schemas"]["create_update_contact"];
         };
       };
     };
@@ -848,7 +848,7 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "model": {
+         *   "record": {
          *     "company": "Supaglue",
          *     "first_name": "George",
          *     "last_name": "Xing",
@@ -858,7 +858,7 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_update_lead"];
+          record: components["schemas"]["create_update_lead"];
         };
       };
     };
@@ -869,7 +869,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["created_model"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -892,7 +892,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_lead"];
+          record: components["schemas"]["create_update_lead"];
         };
       };
     };
@@ -915,7 +915,7 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "model": {
+         *   "record": {
          *     "amount": 100000,
          *     "close_date": "2023-02-27T00:00:00Z",
          *     "description": "Wants to use open source unified API for third-party integrations",
@@ -926,7 +926,7 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_update_opportunity"];
+          record: components["schemas"]["create_update_opportunity"];
         };
       };
     };
@@ -937,7 +937,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["created_model"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -960,7 +960,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_opportunity"];
+          record: components["schemas"]["create_update_opportunity"];
         };
       };
     };

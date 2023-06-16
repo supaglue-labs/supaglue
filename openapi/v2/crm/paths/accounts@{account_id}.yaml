@@ -60,10 +60,10 @@ patch:
         schema:
           type: object
           properties:
-            model:
+            record:
               $ref: ../components/schemas/create_update_account.yaml
           required:
-            - model
+            - record
   responses:
     200:
       description: Account updated

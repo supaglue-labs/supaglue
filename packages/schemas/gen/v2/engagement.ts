@@ -313,7 +313,7 @@ export interface components {
     custom_fields: {
       [key: string]: unknown | undefined;
     };
-    created_model: {
+    created_record: {
       id: string;
     };
     /**
@@ -493,7 +493,7 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "model": {
+         *   "record": {
          *     "id": 1234,
          *     "address": {
          *       "city": "San Francisco",
@@ -522,7 +522,7 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_contact"];
+          record: components["schemas"]["create_contact"];
         };
       };
     };
@@ -533,7 +533,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["created_model"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -556,7 +556,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_contact"];
+          record: components["schemas"]["create_contact"];
         };
       };
     };
@@ -612,7 +612,7 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "model": {
+         *   "record": {
          *     "id": "355843a5-c536-4e82-b497-05160bfb7d78",
          *     "state": "active",
          *     "mailbox_id": "a7e860b5-cb8b-400b-812d-921fa526140c",
@@ -624,7 +624,7 @@ export interface operations {
          * }
          */
         "application/json": {
-          model: components["schemas"]["create_sequence_state"];
+          record: components["schemas"]["create_sequence_state"];
         };
       };
     };
@@ -635,7 +635,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: components["schemas"]["created_model"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };

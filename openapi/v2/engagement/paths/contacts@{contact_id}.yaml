@@ -29,14 +29,14 @@ patch:
         schema:
           type: object
           properties:
-            model:
+            record:
               $ref: ../components/schemas/create_update_contact.yaml
           required:
-            - model
+            - record
         examples:
           Example:
             value:
-              model:
+              record:
                 id: 1234
                 address:
                   city: San Francisco

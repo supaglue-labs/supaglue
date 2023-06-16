@@ -13,12 +13,12 @@ post:
         schema:
           type: object
           properties:
-            model:
+            record:
               $ref: ../components/schemas/create_update_contact.yaml
           required:
-            - model
+            - record
         example:
-          model:
+          record:
             id: 1234
             address:
               city: San Francisco
@@ -48,7 +48,7 @@ post:
                 $ref: ../../../common/components/schemas/errors.yaml
               logs:
                 $ref: ../../../common/components/schemas/logs.yaml
-              model:
+              record:
                 $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml

@@ -43,10 +43,10 @@ export default function init(app: Router): void {
       res: Response<CreateOpportunityResponse>
     ) => {
       const id = await crmCommonModelService.create('opportunity', req.customerConnection, {
-        ...camelcaseKeysSansCustomFields(req.body.model),
-        closeDate: stringOrNullOrUndefinedToDate(req.body.model.close_date),
+        ...camelcaseKeysSansCustomFields(req.body.record),
+        closeDate: stringOrNullOrUndefinedToDate(req.body.record.close_date),
       });
-      return res.status(200).send({ model: { id } });
+      return res.status(200).send({ record: { id } });
     }
   );
 
@@ -58,8 +58,8 @@ export default function init(app: Router): void {
     ) => {
       await crmCommonModelService.update('opportunity', req.customerConnection, {
         id: req.params.opportunity_id,
-        ...camelcaseKeysSansCustomFields(req.body.model),
-        closeDate: stringOrNullOrUndefinedToDate(req.body.model.close_date),
+        ...camelcaseKeysSansCustomFields(req.body.record),
+        closeDate: stringOrNullOrUndefinedToDate(req.body.record.close_date),
       });
       return res.status(200).send({});
     }

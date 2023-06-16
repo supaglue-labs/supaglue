@@ -81,7 +81,7 @@ components:
       $ref: ./components/schemas/objects/email_addresses.yaml
     custom_fields:
       $ref: ./components/schemas/objects/custom_fields.yaml
-    created_model:
+    created_record:
       $ref: ../../common/components/schemas/created_model.yaml
     logs:
       $ref: ../../common/components/schemas/logs.yaml

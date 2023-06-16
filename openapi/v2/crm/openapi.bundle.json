@@ -37,12 +37,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_update_account"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               }
             }
@@ -62,8 +62,8 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/created_model"
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -175,12 +175,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_update_account"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               }
             }
@@ -248,16 +248,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_update_contact"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               },
               "example": {
-                "model": {
+                "record": {
                   "first_name": "George",
                   "last_activity_at": "2022-02-10T00:00:00Z",
                   "last_name": "Xing",
@@ -281,8 +281,8 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/created_model"
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -352,18 +352,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_update_contact"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               },
               "examples": {
                 "Example": {
                   "value": {
-                    "model": {
+                    "record": {
                       "first_name": "George",
                       "last_name": "Xing",
                       "account_id": "0ce05511-adbc-4144-a049-6631c7ea3b04"
@@ -436,16 +436,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_update_lead"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               },
               "example": {
-                "model": {
+                "record": {
                   "company": "Supaglue",
                   "first_name": "George",
                   "last_name": "Xing",
@@ -470,8 +470,8 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/created_model"
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -541,18 +541,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_update_lead"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               },
               "examples": {
                 "Example": {
                   "value": {
-                    "model": {
+                    "record": {
                       "company": "Supaglue",
                       "first_name": "George",
                       "last_name": "Xing",
@@ -627,16 +627,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_update_opportunity"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               },
               "example": {
-                "model": {
+                "record": {
                   "amount": 100000,
                   "close_date": "2023-02-27T00:00:00Z",
                   "description": "Wants to use open source unified API for third-party integrations",
@@ -662,8 +662,8 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/created_model"
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -752,12 +752,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_update_opportunity"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               }
             }
@@ -2405,7 +2405,7 @@
           }
         ]
       },
-      "created_model": {
+      "created_record": {
         "type": "object",
         "properties": {
           "id": {
