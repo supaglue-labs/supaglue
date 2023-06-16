@@ -1473,8 +1473,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     );
     return response.results.map((result) => ({
       id: result.typeId.toString(),
-      sourceObject: sourceObject,
-      targetObject: targetObject,
+      sourceObject,
+      targetObject,
       displayName: result.label ?? '',
       cardinality: 'UNKNOWN',
     }));
