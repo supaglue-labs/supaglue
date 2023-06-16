@@ -1354,17 +1354,17 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public override async getCustomRecord(classId: string, id: string): Promise<CustomObjectRecord> {
+  public override async getCustomRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
     await this.maybeRefreshAccessToken();
 
     // Get the properties to fetch
-    const customObjectClass = await this.getCustomObject(classId);
+    const customObjectClass = await this.getCustomObject(objectId);
     const fieldsToFetch = customObjectClass.fields.map((field) => field.keyName);
-    const response = await this.#client.crm.objects.basicApi.getById(classId, id, fieldsToFetch);
+    const response = await this.#client.crm.objects.basicApi.getById(objectId, id, fieldsToFetch);
 
     return {
       id: response.id,
-      objectId: classId,
+      objectId,
       fields: Object.fromEntries(Object.entries(response.properties).filter(([key]) => fieldsToFetch.includes(key))),
     };
   }

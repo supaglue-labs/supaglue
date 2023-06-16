@@ -38,7 +38,7 @@ export default function init(app: Router): void {
   );
 
   customObjectRouter.get(
-    '/:custom_object_id',
+    '/:record_id',
     async (
       req: Request<GetCustomObjectRecordPathParams, GetCustomObjectRecordResponse, GetCustomObjectRecordRequest>,
       res: Response<GetCustomObjectRecordResponse>
@@ -53,7 +53,7 @@ export default function init(app: Router): void {
   );
 
   customObjectRouter.patch(
-    '/:custom_object_id',
+    '/:record_id',
     async (
       req: Request<
         UpdateCustomObjectRecordPathParams,
@@ -63,13 +63,13 @@ export default function init(app: Router): void {
       res: Response<UpdateCustomObjectRecordResponse>
     ) => {
       await crmCustomObjectService.updateRecord(req.customerConnection.id, {
-        id: req.params.custom_object_id,
         objectId: req.params.custom_object_id,
+        id: req.params.record_id,
         ...camelcaseKeysSansFields(req.body.record),
       });
       return res.status(204).send();
     }
   );
 
-  app.use('/custom-objects', customObjectRouter);
+  app.use('/records', customObjectRouter);
 }

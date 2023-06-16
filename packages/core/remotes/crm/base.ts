@@ -40,7 +40,7 @@ export interface CrmRemoteClient extends RemoteClient {
   createCustomObject(params: CustomObjectCreateParams): Promise<string>;
   updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
 
-  getCustomRecord(classId: string, id: string): Promise<CustomObjectRecord>;
+  getCustomRecord(objectId: string, id: string): Promise<CustomObjectRecord>;
   createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string>;
   updateCustomRecord(params: CustomObjectRecordUpdateParams): Promise<void>;
 
@@ -96,7 +96,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
-  public async getCustomRecord(classId: string, id: string): Promise<CustomObjectRecord> {
+  public async getCustomRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
     throw new Error('Not implemented');
   }
   public async createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string> {
