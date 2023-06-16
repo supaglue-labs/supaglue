@@ -210,38 +210,36 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
         </Stack>
 
         <Stack direction="row" className="gap-2 justify-between">
-          <Stack direction="row" className="gap-2">
-            <Button
-              variant="outlined"
-              disabled={isSaving}
-              onClick={() => {
-                router.back();
-              }}
-            >
-              Back
-            </Button>
-            <Button
-              variant="contained"
-              disabled={!isFormValid || isSaving || isLoading}
-              onClick={async () => {
-                setIsSaving(true);
-                const newIntegration = await createOrUpdateIntegration();
-                const latestIntegrations = [
-                  ...existingIntegrations.filter((integration) => integration.id !== newIntegration.id),
-                  newIntegration,
-                ];
-                addNotification({ message: 'Successfully updated integration', severity: 'success' });
-                await mutate(latestIntegrations, {
-                  optimisticData: latestIntegrations,
-                  revalidate: false,
-                  populateCache: false,
-                });
-                setIsSaving(false);
-              }}
-            >
-              Save
-            </Button>
-          </Stack>
+          <Button
+            variant="outlined"
+            disabled={isSaving}
+            onClick={() => {
+              router.back();
+            }}
+          >
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            disabled={!isFormValid || isSaving || isLoading}
+            onClick={async () => {
+              setIsSaving(true);
+              const newIntegration = await createOrUpdateIntegration();
+              const latestIntegrations = [
+                ...existingIntegrations.filter((integration) => integration.id !== newIntegration.id),
+                newIntegration,
+              ];
+              addNotification({ message: 'Successfully updated integration', severity: 'success' });
+              await mutate(latestIntegrations, {
+                optimisticData: latestIntegrations,
+                revalidate: false,
+                populateCache: false,
+              });
+              setIsSaving(false);
+            }}
+          >
+            Save
+          </Button>
         </Stack>
       </Stack>
     </Card>

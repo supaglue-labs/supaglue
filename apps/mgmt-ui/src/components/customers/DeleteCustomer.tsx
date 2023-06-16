@@ -37,7 +37,7 @@ export function DeleteCustomer({ disabled, customerId, onDelete }: DeleteCustome
             ?
           </Typography>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between' }}>
+        <DialogActions sx={{ justifyContent: 'space-between', padding: '16px 24px' }}>
           <Button
             variant="text"
             color="error"
