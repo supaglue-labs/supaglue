@@ -810,7 +810,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          record?: components["schemas"]["create_update_contact"];
+          model: components["schemas"]["create_update_contact"];
         };
       };
     };
