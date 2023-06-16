@@ -127,7 +127,6 @@ export type ConnectorAuthConfig = {
   tokenPath: string;
   authorizeHost: string;
   authorizePath: string;
-  authorizeWithScope?: boolean;
   additionalScopes?: string[];
 };
 

@@ -168,14 +168,12 @@ export default function init(app: Router): void {
         auth.authorizeHost = loginUrl;
       }
 
-      const { authorizeWithScope, additionalScopes, ...simpleOauth2Auth } = auth;
-
       const client = new simpleOauth2.AuthorizationCode({
         client: {
           id: oauthClientId,
           secret: oauthClientSecret,
         },
-        auth: simpleOauth2Auth,
+        auth,
         options: {
           authorizationMethod: 'body' as AuthorizationMethod,
         },
@@ -184,12 +182,9 @@ export default function init(app: Router): void {
       // TODO: implement code_verifier/code_challenge when we implement sessions
       const additionalAuthParams: Record<string, string> = {};
 
-      const scopes = authorizeWithScope ? [...scope.split(' '), ...(additionalScopes ?? [])] : undefined;
-
       const tokenWrapper = await client.getToken({
         code,
         redirect_uri: REDIRECT_URI,
-        scope: auth.authorizeWithScope ? scopes : undefined,
         ...additionalAuthParams,
       });
 
