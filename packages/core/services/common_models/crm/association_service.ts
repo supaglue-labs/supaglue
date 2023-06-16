@@ -12,11 +12,11 @@ export class CrmAssociationService {
 
   public async getAssociationTypes(
     connectionId: string,
-    sourceObjectClass: SGObject,
-    targetObjectClass: SGObject
+    sourceObject: SGObject,
+    targetObject: SGObject
   ): Promise<AssociationType[]> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    return await remoteClient.getAssociationTypes(sourceObjectClass, targetObjectClass);
+    return await remoteClient.getAssociationTypes(sourceObject, targetObject);
   }
 
   public async createAssociationType(connectionId: string, params: AssociationTypeCreateParams): Promise<void> {

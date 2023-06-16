@@ -1258,7 +1258,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
     if (!params.fields.length) {
-      throw new Error('Cannot create custom object class with no fields');
+      throw new Error('Cannot create custom object with no fields');
     }
 
     await this.maybeRefreshAccessToken();

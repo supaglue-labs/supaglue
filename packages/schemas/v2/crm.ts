@@ -123,7 +123,7 @@ export type CreateCustomObjectResponse =
 
 export type GetCustomObjectPathParams = paths[`/custom-objects/{custom_object_id}`]['parameters']['path'];
 // TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
-// export type GetCustomObjectClassQueryParams = Required<operations['getCustomObjectClass']>['parameters']['query'];
+// export type GetCustomObjectQueryParams = Required<operations['getCustomObject']>['parameters']['query'];
 export type GetCustomObjectQueryParams = any;
 export type GetCustomObjectRequest = never;
 export type GetCustomObjectResponse =
