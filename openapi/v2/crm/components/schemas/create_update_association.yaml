@@ -1,9 +1,9 @@
 type: object
 properties:
-  source_object:
-    $ref: ./objects/object.yaml
-  target_object:
-    $ref: ./objects/object.yaml
+  source_record:
+    $ref: ./objects/record.yaml
+  target_record:
+    $ref: ./objects/record.yaml
 required:
-  - source_object
-  - target_object
+  - source_record
+  - target_record

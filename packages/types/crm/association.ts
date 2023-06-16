@@ -1,15 +1,15 @@
-import { ObjectClass } from './association_type';
+import { SGObject } from './association_type';
 
 type BaseAssociation = {
-  sourceObject: AssociatedObject;
-  targetObject: AssociatedObject;
+  sourceRecord: AssociatedRecord;
+  targetRecord: AssociatedRecord;
   associationTypeId: string;
 };
 
 export type Association = BaseAssociation;
 export type AssociationCreateParams = BaseAssociation;
 
-type AssociatedObject = {
+type AssociatedRecord = {
   id: string;
-  objectClass: ObjectClass;
+  object: SGObject;
 };

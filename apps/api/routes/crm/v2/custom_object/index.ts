@@ -10,14 +10,15 @@ import {
   UpdateCustomObjectRequest,
   UpdateCustomObjectResponse,
 } from '@supaglue/schemas/v2/crm';
-import { camelcaseKeysSansFields } from '@supaglue/utils/camelcase';
-import { snakecaseKeysSansFields } from '@supaglue/utils/snakecase';
+import { camelcaseKeys } from '@supaglue/utils/camelcase';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
+import customObject from './record';
 
 const { crmCustomObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
-  const customObjectRouter = Router({ mergeParams: true });
+  const customObjectRouter = Router();
 
   customObjectRouter.post(
     '/',
@@ -25,11 +26,8 @@ export default function init(app: Router): void {
       req: Request<CreateCustomObjectPathParams, CreateCustomObjectResponse, CreateCustomObjectRequest>,
       res: Response<CreateCustomObjectResponse>
     ) => {
-      const id = await crmCustomObjectService.createObject(req.customerConnection.id, {
-        classId: req.params.custom_object_class_id,
-        ...camelcaseKeysSansFields(req.body.model),
-      });
-      return res.status(201).send({ model: { id } });
+      const id = await crmCustomObjectService.createObject(req.customerConnection.id, camelcaseKeys(req.body.object));
+      return res.status(201).send({ object: { id } });
     }
   );
 
@@ -41,14 +39,13 @@ export default function init(app: Router): void {
     ) => {
       const customObject = await crmCustomObjectService.getObject(
         req.customerConnection.id,
-        req.params.custom_object_class_id,
         req.params.custom_object_id
       );
-      return res.status(200).send(snakecaseKeysSansFields(customObject));
+      return res.status(200).send(snakecaseKeys(customObject));
     }
   );
 
-  customObjectRouter.patch(
+  customObjectRouter.put(
     '/:custom_object_id',
     async (
       req: Request<UpdateCustomObjectPathParams, UpdateCustomObjectResponse, UpdateCustomObjectRequest>,
@@ -56,12 +53,16 @@ export default function init(app: Router): void {
     ) => {
       await crmCustomObjectService.updateObject(req.customerConnection.id, {
         id: req.params.custom_object_id,
-        classId: req.params.custom_object_class_id,
-        ...camelcaseKeysSansFields(req.body.model),
+        ...camelcaseKeys(req.body.object),
       });
       return res.status(204).send();
     }
   );
 
   app.use('/custom-objects', customObjectRouter);
+
+  const perCustomObjectRouter = Router({ mergeParams: true });
+
+  customObject(perCustomObjectRouter);
+  customObjectRouter.use('/:custom_object_id', perCustomObjectRouter);
 }

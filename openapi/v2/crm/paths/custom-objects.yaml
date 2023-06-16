@@ -13,10 +13,10 @@ post:
         schema:
           type: object
           properties:
-            model:
+            object:
               $ref: ../components/schemas/create_update_custom_object.yaml
           required:
-            - model
+            - object
   responses:
     '201':
       description: CustomObject created
@@ -29,7 +29,7 @@ post:
                 $ref: ../../../common/components/schemas/errors.yaml
               logs:
                 $ref: ../../../common/components/schemas/logs.yaml
-              model:
+              object:
                 type: object
                 properties:
                   id:
@@ -41,9 +41,3 @@ post:
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
-  - name: custom_object_class_id
-    in: path
-    required: true
-    schema:
-      type: string
-      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

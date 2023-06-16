@@ -86,40 +86,40 @@ export interface paths {
     post: operations["sendPassthroughRequest"];
     
   };
-  "/custom-object-classes": {
-    /** Create customObjectClass */
-    post: operations["createCustomObjectClass"];
-    
-  };
-  "/custom-object-classes/{custom_object_class_id}": {
-    /** Get customObjectClass */
-    get: operations["getCustomObjectClass"];
-    /** Update customObjectClass */
-    put: operations["updateCustomObjectClass"];
-    parameters: {
-      path: {
-        custom_object_class_id: string;
-      };
-    };
-  };
-  "/custom-object-classes/{custom_object_class_id}/custom-objects": {
+  "/custom-objects": {
     /** Create customObject */
     post: operations["createCustomObject"];
-    parameters: {
-      path: {
-        custom_object_class_id: string;
-      };
-    };
+    
   };
-  "/custom-object-classes/{custom_object_class_id}/custom-objects/{custom_object_id}": {
+  "/custom-objects/{custom_object_id}": {
     /** Get customObject */
     get: operations["getCustomObject"];
     /** Update customObject */
-    patch: operations["updateCustomObject"];
+    put: operations["updateCustomObject"];
     parameters: {
       path: {
-        custom_object_class_id: string;
         custom_object_id: string;
+      };
+    };
+  };
+  "/custom-objects/{custom_object_id}/records": {
+    /** Create customObjectRecord */
+    post: operations["createCustomObjectRecord"];
+    parameters: {
+      path: {
+        custom_object_id: string;
+      };
+    };
+  };
+  "/custom-objects/{custom_object_id}/records/{record_id}": {
+    /** Get customObjectRecord */
+    get: operations["getCustomObjectRecord"];
+    /** Update customObjectRecord */
+    patch: operations["updateCustomObjectRecord"];
+    parameters: {
+      path: {
+        custom_object_id: string;
+        record_id: string;
       };
     };
   };
@@ -592,44 +592,44 @@ export interface components {
     filter: components["schemas"]["equals_filter"] | components["schemas"]["contains_filter"];
     /** @enum {string|null} */
     lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
-    custom_object_class: {
-      /** @example 42579f73-8524-4570-9b67-ecbd702c6b14 */
-      id: string;
-      /** @example ticket */
-      name: string;
-      /** @example Ticket object */
-      description: string | null;
-      labels: {
-        /** @example Ticket */
-        singular: string;
-        /** @example Tickets */
-        plural: string;
-      };
-      fields: (components["schemas"]["custom_object_field"])[];
-    };
-    create_update_custom_object_class: {
-      /** @example ticket */
-      name: string;
-      /** @example Ticket object */
-      description: string | null;
-      labels: {
-        /** @example Ticket */
-        singular: string;
-        /** @example Tickets */
-        plural: string;
-      };
-      fields: (components["schemas"]["custom_object_field"])[];
-    };
     custom_object: {
       /** @example 42579f73-8524-4570-9b67-ecbd702c6b14 */
       id: string;
+      /** @example ticket */
+      name: string;
+      /** @example Ticket object */
+      description: string | null;
+      labels: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
+      fields: (components["schemas"]["custom_object_field"])[];
+    };
+    create_update_custom_object: {
+      /** @example ticket */
+      name: string;
+      /** @example Ticket object */
+      description: string | null;
+      labels: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
+      fields: (components["schemas"]["custom_object_field"])[];
+    };
+    custom_object_record: {
+      /** @example 42579f73-8524-4570-9b67-ecbd702c6b14 */
+      id: string;
       /** @example 42579f73-8524-4570-9b67-ecbd702c6b15 */
-      class_id: string;
+      object_id: string;
       fields: {
         [key: string]: unknown | undefined;
       };
     };
-    create_update_custom_object: {
+    create_update_custom_object_record: {
       fields: {
         [key: string]: unknown | undefined;
       };
@@ -646,46 +646,46 @@ export interface components {
     };
     association_type: {
       id: string;
-      source_object_class: components["schemas"]["object_class"];
-      target_object_class: components["schemas"]["object_class"];
+      source_object: components["schemas"]["object"];
+      target_object: components["schemas"]["object"];
       display_name: string;
       cardinality: components["schemas"]["association_type_cardinality_or_unknown"];
     };
     create_update_association_type: {
-      source_object_class: components["schemas"]["object_class"];
-      target_object_class: components["schemas"]["object_class"];
+      source_object: components["schemas"]["object"];
+      target_object: components["schemas"]["object"];
       key_name: string;
       display_name: string;
       cardinality: components["schemas"]["association_type_cardinality"];
     };
-    object_class: {
+    object: {
       id: string;
-      origin_type: components["schemas"]["object_class_type"];
+      origin_type: components["schemas"]["object_type"];
     };
     /** @enum {string} */
-    object_class_type: "CUSTOM_OBJECT" | "COMMON_MODEL";
+    object_type: "CUSTOM_OBJECT" | "COMMON_MODEL";
     /** @enum {string} */
     association_type_cardinality: "ONE_TO_MANY";
     /** @enum {string} */
     association_type_cardinality_or_unknown: "ONE_TO_MANY" | "UNKNOWN";
     create_update_association: {
-      source_object: components["schemas"]["object"];
-      target_object: components["schemas"]["object"];
+      source_record: components["schemas"]["record"];
+      target_record: components["schemas"]["record"];
     };
     association: {
-      source_object: {
+      source_record: {
         id: string;
-        object_class: components["schemas"]["object_class"];
+        object: components["schemas"]["object"];
       };
-      target_object: {
+      target_record: {
         id: string;
-        object_class: components["schemas"]["object_class"];
+        object: components["schemas"]["object"];
       };
       association_type_id: string;
     };
-    object: {
+    record: {
       id: string;
-      object_class: components["schemas"]["object_class"];
+      object: components["schemas"]["object"];
     };
   };
   responses: never;
@@ -1046,70 +1046,12 @@ export interface operations {
       };
     };
   };
-  createCustomObjectClass: {
-    /** Create customObjectClass */
-    requestBody: {
-      content: {
-        "application/json": {
-          class: components["schemas"]["create_update_custom_object_class"];
-        };
-      };
-    };
-    responses: {
-      /** @description CustomObjectClass created */
-      201: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            class?: {
-              id: string;
-            };
-            warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  getCustomObjectClass: {
-    /** Get customObjectClass */
-    responses: {
-      /** @description CustomObjectClass */
-      200: {
-        content: {
-          "application/json": components["schemas"]["custom_object_class"];
-        };
-      };
-    };
-  };
-  updateCustomObjectClass: {
-    /** Update customObjectClass */
-    requestBody: {
-      content: {
-        "application/json": {
-          class: components["schemas"]["create_update_custom_object_class"];
-        };
-      };
-    };
-    responses: {
-      /** @description CustomObjectClass updated */
-      200: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
-            warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
   createCustomObject: {
     /** Create customObject */
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_custom_object"];
+          object: components["schemas"]["create_update_custom_object"];
         };
       };
     };
@@ -1120,7 +1062,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             logs?: components["schemas"]["logs"];
-            model?: {
+            object?: {
               id: string;
             };
             warnings?: components["schemas"]["warnings"];
@@ -1145,12 +1087,70 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          model: components["schemas"]["create_update_custom_object"];
+          object: components["schemas"]["create_update_custom_object"];
         };
       };
     };
     responses: {
       /** @description CustomObject updated */
+      200: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  createCustomObjectRecord: {
+    /** Create customObjectRecord */
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_custom_object_record"];
+        };
+      };
+    };
+    responses: {
+      /** @description CustomObjectRecord created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            logs?: components["schemas"]["logs"];
+            record?: {
+              id: string;
+            };
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getCustomObjectRecord: {
+    /** Get customObjectRecord */
+    responses: {
+      /** @description CustomObject */
+      200: {
+        content: {
+          "application/json": components["schemas"]["custom_object_record"];
+        };
+      };
+    };
+  };
+  updateCustomObjectRecord: {
+    /** Update customObjectRecord */
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_custom_object_record"];
+        };
+      };
+    };
+    responses: {
+      /** @description CustomObjectRecord updated */
       200: {
         content: {
           "application/json": {
@@ -1169,10 +1169,10 @@ export interface operations {
      */
     parameters: {
       query: {
-        source_object_class_id: string;
-        source_object_class_type: components["schemas"]["object_class_type"];
-        target_object_class_id: string;
-        target_object_class_type: components["schemas"]["object_class_type"];
+        source_object_id: string;
+        source_object_type: components["schemas"]["object_type"];
+        target_object_id: string;
+        target_object_type: components["schemas"]["object_type"];
       };
     };
     responses: {

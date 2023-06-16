@@ -1,4 +1,7 @@
-export type ObjectClass = {
+/**
+ * Not calling this `Object` because it is a reserved word in JS
+ */
+export type SGObject = {
   id: string;
   originType: 'CUSTOM_OBJECT' | 'COMMON_MODEL';
 };
@@ -9,15 +12,15 @@ export type AssociationTypeCardinalityOrUnknown = AssociationTypeCardinality | '
 
 export type AssociationType = {
   id: string;
-  sourceObjectClass: ObjectClass;
-  targetObjectClass: ObjectClass;
+  sourceObject: SGObject;
+  targetObject: SGObject;
   displayName: string;
   cardinality: AssociationTypeCardinalityOrUnknown;
 };
 
 export type AssociationTypeCreateParams = {
-  sourceObjectClass: ObjectClass;
-  targetObjectClass: ObjectClass;
+  sourceObject: SGObject;
+  targetObject: SGObject;
   keyName: string;
   displayName: string;
   cardinality: AssociationTypeCardinality;

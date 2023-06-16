@@ -1,13 +1,13 @@
 import { ConnectionUnsafe, CRMProvider, ProviderCategory } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
 import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
-import { AssociationType, AssociationTypeCreateParams, ObjectClass } from '@supaglue/types/crm/association_type';
+import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/crm/custom_object';
 import {
-  CustomObjectClass,
-  CustomObjectClassCreateParams,
-  CustomObjectClassUpdateParams,
-} from '@supaglue/types/crm/custom_object_class';
+  CustomObjectRecord,
+  CustomObjectRecordCreateParams,
+  CustomObjectRecordUpdateParams,
+} from '@supaglue/types/crm/custom_object_record';
 import { EventEmitter } from 'events';
 import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
@@ -36,15 +36,15 @@ export interface CrmRemoteClient extends RemoteClient {
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string>;
 
-  getCustomObjectClass(id: string): Promise<CustomObjectClass>;
-  createCustomObjectClass(params: CustomObjectClassCreateParams): Promise<string>;
-  updateCustomObjectClass(params: CustomObjectClassUpdateParams): Promise<void>;
-
-  getCustomObject(classId: string, id: string): Promise<CustomObject>;
+  getCustomObject(id: string): Promise<CustomObject>;
   createCustomObject(params: CustomObjectCreateParams): Promise<string>;
   updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
 
-  getAssociationTypes(sourceObjectClass: ObjectClass, targetObjectClass: ObjectClass): Promise<AssociationType[]>;
+  getCustomRecord(objectId: string, id: string): Promise<CustomObjectRecord>;
+  createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string>;
+  updateCustomRecord(params: CustomObjectRecordUpdateParams): Promise<void>;
+
+  getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]>;
   createAssociationType(params: AssociationTypeCreateParams): Promise<void>;
 
   createAssociation(params: AssociationCreateParams): Promise<Association>;
@@ -86,17 +86,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string>;
 
-  public async getCustomObjectClass(id: string): Promise<CustomObjectClass> {
-    throw new Error('Not implemented');
-  }
-  public async createCustomObjectClass(params: CustomObjectClassCreateParams): Promise<string> {
-    throw new Error('Not implemented');
-  }
-  public async updateCustomObjectClass(params: CustomObjectClassUpdateParams): Promise<void> {
-    throw new Error('Not implemented');
-  }
-
-  public async getCustomObject(classId: string, id: string): Promise<CustomObject> {
+  public async getCustomObject(id: string): Promise<CustomObject> {
     throw new Error('Not implemented');
   }
   public async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
@@ -106,10 +96,17 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
-  public async getAssociationTypes(
-    sourceObjectClass: ObjectClass,
-    targetObjectClass: ObjectClass
-  ): Promise<AssociationType[]> {
+  public async getCustomRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
+    throw new Error('Not implemented');
+  }
+  public async createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string> {
+    throw new Error('Not implemented');
+  }
+  public async updateCustomRecord(params: CustomObjectRecordUpdateParams): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
+  public async getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]> {
     throw new Error('Not implemented');
   }
   public async createAssociationType(params: AssociationTypeCreateParams): Promise<void> {

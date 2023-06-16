@@ -8,25 +8,25 @@ get:
   description: >-
     Get a list of associationTypes
   parameters:
-    - name: source_object_class_id
+    - name: source_object_id
       in: query
       schema:
         type: string
       required: true
-    - name: source_object_class_type
+    - name: source_object_type
       in: query
       schema:
-        $ref: ../components/schemas/objects/object_class_type.yaml
+        $ref: ../components/schemas/objects/object_type.yaml
       required: true
-    - name: target_object_class_id
+    - name: target_object_id
       in: query
       schema:
         type: string
       required: true
-    - name: target_object_class_type
+    - name: target_object_type
       in: query
       schema:
-        $ref: ../components/schemas/objects/object_class_type.yaml
+        $ref: ../components/schemas/objects/object_type.yaml
       required: true
   responses:
     '200':
