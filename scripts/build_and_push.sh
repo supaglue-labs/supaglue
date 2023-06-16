@@ -56,6 +56,6 @@ depot build --project 2bljgst1rr \
   --tag "supaglue/${WORKSPACE_NAME}:${VERSION}" \
   --tag "supaglue/${WORKSPACE_NAME}:latest" \
   --label "org.opencontainers.image.source=https://github.com/supaglue-labs/supaglue" \
-  --push
+  --push \
   ${ADDITIONAL_ARGS-} \
   .
