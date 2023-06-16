@@ -44,10 +44,10 @@ patch:
         schema:
           type: object
           properties:
-            model:
+            record:
               $ref: ../components/schemas/create_update_opportunity.yaml
           required:
-            - model
+            - record
   responses:
     200:
       description: Opportunity updated

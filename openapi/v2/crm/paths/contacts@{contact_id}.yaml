@@ -29,14 +29,14 @@ patch:
         schema:
           type: object
           properties:
-            model:
+            record:
               $ref: ../components/schemas/create_update_contact.yaml
           required:
-            - model
+            - record
         examples:
           Example:
             value:
-              model:
+              record:
                 first_name: George
                 last_name: Xing
                 account_id: 0ce05511-adbc-4144-a049-6631c7ea3b04

@@ -13,12 +13,12 @@ post:
         schema:
           type: object
           properties:
-            model:
+            record:
               $ref: ../components/schemas/create_update_contact.yaml
           required:
-            - model
+            - record
         example:
-          model:
+          record:
             first_name: George
             last_activity_at: '2022-02-10T00:00:00Z'
             last_name: Xing
@@ -35,7 +35,7 @@ post:
                 $ref: ../../../common/components/schemas/errors.yaml
               logs:
                 $ref: ../../../common/components/schemas/logs.yaml
-              model:
+              record:
                 $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml

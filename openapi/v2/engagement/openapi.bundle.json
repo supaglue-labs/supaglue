@@ -179,16 +179,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_contact"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               },
               "example": {
-                "model": {
+                "record": {
                   "id": 1234,
                   "address": {
                     "city": "San Francisco",
@@ -232,8 +232,8 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/created_model"
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -303,18 +303,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_contact"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               },
               "examples": {
                 "Example": {
                   "value": {
-                    "model": {
+                    "record": {
                       "id": 1234,
                       "address": {
                         "city": "San Francisco",
@@ -552,16 +552,16 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "model": {
+                  "record": {
                     "$ref": "#/components/schemas/create_sequence_state"
                   }
                 },
                 "required": [
-                  "model"
+                  "record"
                 ]
               },
               "example": {
-                "model": {
+                "record": {
                   "id": "355843a5-c536-4e82-b497-05160bfb7d78",
                   "state": "active",
                   "mailbox_id": "a7e860b5-cb8b-400b-812d-921fa526140c",
@@ -588,8 +588,8 @@
                     "logs": {
                       "$ref": "#/components/schemas/logs"
                     },
-                    "model": {
-                      "$ref": "#/components/schemas/created_model"
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -1225,7 +1225,7 @@
         "additionalProperties": true,
         "description": "Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API."
       },
-      "created_model": {
+      "created_record": {
         "type": "object",
         "properties": {
           "id": {

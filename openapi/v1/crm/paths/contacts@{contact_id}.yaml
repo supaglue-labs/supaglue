@@ -29,7 +29,7 @@ patch:
         schema:
           type: object
           properties:
-            model:
+            record:
               $ref: ../components/schemas/create_update_contact.yaml
           required:
             - model

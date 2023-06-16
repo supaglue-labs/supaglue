@@ -44,9 +44,9 @@ export default function init(app: Router): void {
       const id = await engagementCommonModelService.create(
         'sequence_state',
         req.customerConnection,
-        camelcaseKeysSansCustomFields(req.body.model)
+        camelcaseKeysSansCustomFields(req.body.record)
       );
-      return res.status(200).send({ model: { id } });
+      return res.status(200).send({ record: { id } });
     }
   );
 
