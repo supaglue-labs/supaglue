@@ -1,9 +1,0 @@
-type: object
-properties:
-  source_object:
-    $ref: ./objects/object.yaml
-  target_object:
-    $ref: ./objects/object.yaml
-required:
-  - source_object
-  - target_object

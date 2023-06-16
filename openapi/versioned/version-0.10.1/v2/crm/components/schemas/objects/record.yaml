@@ -1,0 +1,9 @@
+type: object
+properties:
+  id:
+    type: string
+  object:
+    $ref: ./object.yaml
+required:
+  - id
+  - object
