@@ -64,7 +64,7 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
 
   // What are we syncing?
   const { syncConfig } = await getSyncConfigBySyncId({ syncId });
-  const { commonObjects, rawObjects } = syncConfig.config;
+  const { commonObjects = [], rawObjects = [] } = syncConfig.config;
 
   // What is the sync type?
   const { sync } = await getSync({ syncId });
@@ -231,7 +231,7 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
 async function doFullOnlySync({
   sync,
   syncConfig: {
-    config: { commonObjects, rawObjects },
+    config: { commonObjects = [], rawObjects = [], rawCustomObjects = [] },
   },
   category,
 }: {
@@ -260,15 +260,32 @@ async function doFullOnlySync({
   );
 
   const syncRawRecordsToDestinationResultList = Object.fromEntries(
-    await Promise.all(
-      rawObjects.map(async ({ object }) => {
+    await Promise.all([
+      ...rawObjects.map(async ({ object }) => {
         const entry: [string, SyncRawRecordsToDestinationResult] = [
           object,
-          await syncRawRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, object }),
+          await syncRawRecordsToDestination({
+            syncId: sync.id,
+            connectionId: sync.connectionId,
+            object,
+            isCustom: false,
+          }),
         ];
         return entry;
-      })
-    )
+      }),
+      ...rawCustomObjects.map(async ({ object }) => {
+        const entry: [string, SyncRawRecordsToDestinationResult] = [
+          object,
+          await syncRawRecordsToDestination({
+            syncId: sync.id,
+            connectionId: sync.connectionId,
+            object,
+            isCustom: true,
+          }),
+        ];
+        return entry;
+      }),
+    ])
   );
 
   await updateSyncState({
@@ -298,7 +315,7 @@ async function doFullOnlySync({
 async function doFullThenIncrementalSync({
   sync,
   syncConfig: {
-    config: { commonObjects, rawObjects },
+    config: { commonObjects = [], rawObjects = [], rawCustomObjects = [] },
   },
   category,
 }: {
@@ -337,15 +354,32 @@ async function doFullThenIncrementalSync({
 
     // Raw objects
     const syncRawRecordsToDestinationResultList = Object.fromEntries(
-      await Promise.all(
-        rawObjects.map(async ({ object }) => {
+      await Promise.all([
+        ...rawObjects.map(async ({ object }) => {
           const entry: [string, SyncRawRecordsToDestinationResult] = [
             object,
-            await syncRawRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, object }),
+            await syncRawRecordsToDestination({
+              syncId: sync.id,
+              connectionId: sync.connectionId,
+              object,
+              isCustom: false,
+            }),
           ];
           return entry;
-        })
-      )
+        }),
+        ...rawCustomObjects.map(async ({ object }) => {
+          const entry: [string, SyncRawRecordsToDestinationResult] = [
+            object,
+            await syncRawRecordsToDestination({
+              syncId: sync.id,
+              connectionId: sync.connectionId,
+              object,
+              isCustom: true,
+            }),
+          ];
+          return entry;
+        }),
+      ])
     );
 
     const newMaxLastModifiedAtMsMap = Object.fromEntries(
@@ -478,20 +512,34 @@ async function doFullThenIncrementalSync({
 
     // Sync raw objects
     const syncRawRecordsToDestinationResultList = Object.fromEntries(
-      await Promise.all(
-        rawObjects.map(async ({ object }) => {
+      await Promise.all([
+        ...rawObjects.map(async ({ object }) => {
           const entry: [string, SyncRawRecordsToDestinationResult] = [
             object,
             await syncRawRecordsToDestination({
               syncId: sync.id,
               connectionId: sync.connectionId,
               object,
+              isCustom: false,
               modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForRawObjects()[object],
             }),
           ];
           return entry;
-        })
-      )
+        }),
+        ...rawCustomObjects.map(async ({ object }) => {
+          const entry: [string, SyncRawRecordsToDestinationResult] = [
+            object,
+            await syncRawRecordsToDestination({
+              syncId: sync.id,
+              connectionId: sync.connectionId,
+              object,
+              isCustom: true,
+              modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForRawObjects()[object],
+            }),
+          ];
+          return entry;
+        }),
+      ])
     );
 
     const newMaxLastModifiedAtMsMapForRawObjects = computeUpdatedMaxLastModifiedAtMsMapForRawObjects(

@@ -10,6 +10,7 @@ export type SyncRawRecordsToDestinationArgs = {
   syncId: string;
   connectionId: string;
   object: string;
+  isCustom: boolean;
   modifiedAfterMs?: number;
 };
 
@@ -30,14 +31,17 @@ export function createSyncRawRecordsToDestination(
     syncId,
     connectionId,
     object,
+    isCustom,
     modifiedAfterMs,
   }: SyncRawRecordsToDestinationArgs): Promise<SyncRawRecordsToDestinationResult> {
     const modifiedAfter = modifiedAfterMs ? new Date(modifiedAfterMs) : undefined;
 
-    async function writeObjects(writer: DestinationWriter) {
+    async function writeRecords(writer: DestinationWriter) {
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
-        const stream = await (client as CrmRemoteClient).listRecords(object, modifiedAfter, heartbeat);
+        const stream = isCustom
+          ? await (client as CrmRemoteClient).listCustomRecords(object, modifiedAfter, heartbeat)
+          : await (client as CrmRemoteClient).listRecords(object, modifiedAfter, heartbeat);
         return await writer.writeRawRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
       } else {
         throw ApplicationFailure.nonRetryable(`Unsupported category: ${client.category()}`);
@@ -56,7 +60,7 @@ export function createSyncRawRecordsToDestination(
       throw ApplicationFailure.nonRetryable(`No destination found for provider ${connection.providerId}`);
     }
 
-    const result = await writeObjects(writer);
+    const result = await writeRecords(writer);
 
     // TODO: Don't hack and use the same logEvent method
     logEvent({

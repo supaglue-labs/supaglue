@@ -62,10 +62,30 @@ properties:
                 - full only
       required:
         - object
+  raw_custom_objects:
+    type: array
+    items:
+      type: object
+      properties:
+        object:
+          type: string
+          example: contacts
+        config_override:
+          type: object
+          properties:
+            period_ms:
+              type: integer
+              minimum: 60000
+              example: 60000
+            strategy:
+              type: string
+              enum:
+                - full then incremental
+                - full only
+      required:
+        - object
 required:
   - default_config
-  - common_objects
-  - raw_objects
 example:
   default_config:
     period_ms: 60000

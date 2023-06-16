@@ -49,7 +49,7 @@ export default function init(app: Router): void {
           ...req.body,
           config: {
             ...req.body.config,
-            common_objects: req.body.config.common_objects.map((commonObject) => ({
+            common_objects: req.body.config.common_objects?.map((commonObject) => ({
               ...commonObject,
               object: commonObject.object as CommonModelType,
             })),
@@ -86,7 +86,7 @@ export default function init(app: Router): void {
           ...req.body,
           config: {
             ...req.body.config,
-            common_objects: req.body.config.common_objects.map((commonObject) => ({
+            common_objects: req.body.config.common_objects?.map((commonObject) => ({
               ...commonObject,
               object: commonObject.object as CommonModelType,
             })),
