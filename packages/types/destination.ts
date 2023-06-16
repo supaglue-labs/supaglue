@@ -56,7 +56,10 @@ export type PostgresConfig = {
 
 export type Destination = S3Destination | PostgresDestination;
 export type DestinationCreateParams = S3DestinationCreateParams | PostgresDestinationCreateParams;
+export type DestinationTestParams = DestinationCreateParams;
 export type DestinationUpdateParams = S3DestinationUpdateParams | PostgresDestinationUpdateParams;
+
+export type DestinationTestResult = { success: boolean; message: string | null };
 
 export type DestinationConfig = S3Config | PostgresConfig;
 

@@ -1,5 +1,14 @@
+import { ListBucketsCommand, S3Client } from '@aws-sdk/client-s3';
+import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
 import type { PrismaClient } from '@supaglue/db';
-import type { Destination, DestinationCreateParams, DestinationUpdateParams } from '@supaglue/types';
+import type {
+  Destination,
+  DestinationCreateParams,
+  DestinationTestParams,
+  DestinationTestResult,
+  DestinationUpdateParams,
+} from '@supaglue/types';
+import { Client } from 'pg';
 import { DestinationWriter } from '../destination_writers/base';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
@@ -82,6 +91,66 @@ export class DestinationService {
       },
     });
     return fromDestinationModel(model);
+  }
+
+  public async testDestination(params: DestinationTestParams): Promise<DestinationTestResult> {
+    let success = false;
+    let message: string | null = null;
+
+    switch (params.type) {
+      case 's3':
+        try {
+          const s3Client = new S3Client({
+            credentials: {
+              accessKeyId: params.config.accessKeyId,
+              secretAccessKey: params.config.secretAccessKey,
+            },
+            region: params.config.region,
+            requestHandler: new NodeHttpHandler({
+              connectionTimeout: 1500,
+            }),
+          });
+
+          const command = new ListBucketsCommand({}); // Use listing as a proxy for appropriate credentials
+          const result = await s3Client.send(command);
+          s3Client.destroy();
+          if (result.$metadata.httpStatusCode === 200) {
+            success = true;
+          }
+        } catch (err: any) {
+          ({ message } = err);
+        }
+        break;
+      case 'postgres':
+        {
+          try {
+            const pgClient = new Client({
+              ...params.config,
+              connectionTimeoutMillis: 1500,
+              statement_timeout: 1500,
+            });
+            await pgClient.connect();
+
+            const schemaResult = await pgClient.query(
+              `SELECT schema_name FROM information_schema.schemata WHERE schema_name = '${params.config.schema}'`
+            ); // Use existence of schema as a proxy for appropriate grants
+
+            await pgClient.end();
+
+            if (schemaResult.rowCount === 0) {
+              message = 'schema does not exist';
+            } else {
+              success = true;
+            }
+          } catch (err: any) {
+            ({ message } = err);
+          }
+        }
+        break;
+      default:
+        throw new BadRequestError(`unknown destination type`);
+    }
+    return { success, message };
   }
 
   public async updateDestination(params: DestinationUpdateParams): Promise<Destination> {
