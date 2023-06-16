@@ -93,7 +93,7 @@ export const fromDynamicsAccountToRemoteAccount = (dynamicsAccount: DynamicsAcco
   if (dynamicsAccount.telephone1) {
     phoneNumbers.push({
       phoneNumber: dynamicsAccount.telephone1,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'primary', // Dynamics doesn't have a phone number type, but we assume that their "main phone" (telephone1) is primary
     });
   }
 
@@ -340,7 +340,7 @@ export const fromDynamicsContactToRemoteContact = (dynamicsContact: DynamicsCont
   if (dynamicsContact.telephone1) {
     phoneNumbers.push({
       phoneNumber: dynamicsContact.telephone1,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'primary', // Dynamics doesn't have a phone number type, but we assume that their "business phone" (telephone1) is primary
     });
   }
 
@@ -363,7 +363,7 @@ export const fromDynamicsContactToRemoteContact = (dynamicsContact: DynamicsCont
   if (dynamicsContact.emailaddress1) {
     emailAddresses.push({
       emailAddress: dynamicsContact.emailaddress1,
-      emailAddressType: null, // Dynamics doesn't have an email address type
+      emailAddressType: 'primary', // Dynamics doesn't have an email address type, but we assume the first is primary
     });
   }
 
@@ -571,7 +571,7 @@ export const fromDynamicsLeadToRemoteLead = (dynamicsLead: DynamicsLead): LeadV2
   if (dynamicsLead.telephone1) {
     phoneNumbers.push({
       phoneNumber: dynamicsLead.telephone1,
-      phoneNumberType: null, // Dynamics doesn't have a phone number type
+      phoneNumberType: 'primary', // Dynamics doesn't have a phone number type, but we assume that their "business phone" (telephone1) is primary
     });
   }
 
@@ -594,7 +594,7 @@ export const fromDynamicsLeadToRemoteLead = (dynamicsLead: DynamicsLead): LeadV2
   if (dynamicsLead.emailaddress1) {
     emailAddresses.push({
       emailAddress: dynamicsLead.emailaddress1,
-      emailAddressType: null, // Dynamics doesn't have an email address type
+      emailAddressType: 'primary', // Dynamics doesn't have an email address type, but we assume the first is primary
     });
   }
 
