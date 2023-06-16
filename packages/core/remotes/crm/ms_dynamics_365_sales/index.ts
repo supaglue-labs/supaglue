@@ -12,6 +12,7 @@ import {
   OpportunityV2,
 } from '@supaglue/types/crm';
 import { o, OHandler } from 'odata';
+import querystring from 'querystring';
 import simpleOauth2 from 'simple-oauth2';
 import { Readable } from 'stream';
 import {
@@ -96,14 +97,17 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   private getUrlForEntityAndParams(entity: string, params: Record<string, any>): string {
     const url = new URL(`${this.baseUrl}${entity}`);
     // we can't use URLSearchParams because odata doesn't expect the keys to be urlencoded
-    url.search = Object.entries(params)
-      .map(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-          return `${key}=${encodeURIComponent(value)}`;
-        }
-      })
-      .filter(Boolean)
-      .join('&');
+    url.search = querystring.stringify(
+      Object.fromEntries(Object.entries(params).filter(([_, v]) => Boolean(v))), // filter out empty values
+      '&',
+      '=',
+      {
+        encodeURIComponent: (s) =>
+          s.startsWith('$') // don't encode keys that start with `$`
+            ? s
+            : querystring.escape(s),
+      }
+    );
     return url.toString();
   }
 

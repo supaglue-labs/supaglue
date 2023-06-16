@@ -37,16 +37,16 @@ http://localhost:8080/oauth/connect?applicationId={APPLICATION_ID}&customerId={C
 
 </Tabs>
 
-| Parameter          | Description                                                                                                                                                                                                                                                  | Required |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
-| `{APPLICATION_ID}` | The unique identifier for your Supaglue application                                                                                                                                                                                                          | Yes      |
-| `{CUSTOMER_ID}`    | The unique identifier for a customer in your application                                                                                                                                                                                                     | Yes      |
-| `{PROVIDER_NAME}`  | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                                                                                                                                                                                    | Yes      |
-| `{RETURN_URL}`     | The URL to return to once the OAuth connection is complete.<br/> <b>NOTE:</b> this should be uriEncoded                                                                                                                                                      | Yes      |
-| `{LOGIN_URL}`      | The Oauth2 hostname for authorize and token endpoints. <br/> This can be used for Salesforce sandbox accounts and should be `https://test.salesforce.com` for that use case.<br/> <b>NOTE:</b> this should be uriEncoded                                     | No       |
-| `{LOGIN_PARAMS}`   | The query parameters to be added for Oauth2 authorize and token URLs. <br/> This can be used for MS Dynamics 365 Sales accounts to specify the `resource`, e.g. `resource=https://org8d6f84ed.crm.dynamics.com`.<br/> <b>NOTE:</b> this should be uriEncoded | No       |
+| Parameter       | Description                                                                                                                                                                                                                                                            | Required |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `applicationId` | The unique identifier for your Supaglue application                                                                                                                                                                                                                    | Yes      |
+| `customerId`    | The unique identifier for a customer in your application                                                                                                                                                                                                               | Yes      |
+| `providerName`  | The name of the third-party provider (e.g. `salesforce`, `hubspot`, etc.)                                                                                                                                                                                              | Yes      |
+| `returnUrl`     | The URL to return to once the OAuth connection is complete.<br/> <b>NOTE:</b> this should be uriEncoded                                                                                                                                                                | Yes      |
+| `loginUrl`      | The Oauth2 hostname for authorize and token endpoints.<br/> This can be used for Salesforce sandbox accounts and should be `https://test.salesforce.com` for that use case.<br/> <b>NOTE:</b> this should be uriEncoded                                                | No       |
+| `scope`         | Required for Microsoft Dynamics 365 connections.<br/> This based on the customer's Dynamics 365 URL and should be in the form `<customer dynamics URL>.default` e.g.`scope=https://org8d6f84ed.crm.dynamics.com/.default`.<br/> <b>NOTE:</b> this should be uriEncoded | No       |
 
-To obtain a `{PROVIDER_NAME}`, use the [Supaglue API](../api/v2/crm) or management UI to create new integrations for your customers to have available for them to connect to.
+To obtain a `providerName`, use the [Supaglue API](../api/v2/crm) or management UI to create new integrations for your customers to have available for them to connect to.
 
 Examples:
 

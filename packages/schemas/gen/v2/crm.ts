@@ -550,8 +550,8 @@ export interface components {
     email_addresses: ({
         /** @example hello@supaglue.com */
         email_address: string;
-        /** @enum {string} */
-        email_address_type: "primary" | "work";
+        /** @enum {string|null} */
+        email_address_type: "primary" | "work" | null;
       })[];
     /**
      * @example [
@@ -564,8 +564,8 @@ export interface components {
     phone_numbers: ({
         /** @example +14151234567 */
         phone_number: string | null;
-        /** @enum {string} */
-        phone_number_type: "primary" | "mobile" | "fax";
+        /** @enum {string|null} */
+        phone_number_type: "primary" | "mobile" | "fax" | null;
       })[];
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */

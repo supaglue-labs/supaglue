@@ -189,7 +189,7 @@ export default function init(app: Router): void {
       const tokenWrapper = await client.getToken({
         code,
         redirect_uri: REDIRECT_URI,
-        scope: scopes,
+        scope: auth.authorizeWithScope ? scopes : undefined,
         ...additionalAuthParams,
       });
 

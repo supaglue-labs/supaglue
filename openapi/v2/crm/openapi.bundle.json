@@ -2498,7 +2498,8 @@
               "enum": [
                 "primary",
                 "work"
-              ]
+              ],
+              "nullable": true
             }
           },
           "required": [
@@ -2529,7 +2530,8 @@
                 "primary",
                 "mobile",
                 "fax"
-              ]
+              ],
+              "nullable": true
             }
           },
           "required": [
