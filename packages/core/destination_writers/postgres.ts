@@ -129,7 +129,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // Create a temporary table
       // TODO: on the first run, we should be able to directly write into the table and skip the temp table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
-      await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${qualifiedTable})`);
+      await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema, true));
       await client.query(
         `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)`
       );
@@ -456,12 +456,12 @@ const getCommonModelSchemaSetupSql = (category: ProviderCategory, commonModelTyp
 };
 
 const schemaSetupSqlByCommonModelType: {
-  crm: Record<CRMCommonModelType, (schema: string) => string>;
-  engagement: Record<EngagementCommonModelType, (schema: string) => string>;
+  crm: Record<CRMCommonModelType, (schema: string, temp?: boolean) => string>;
+  engagement: Record<EngagementCommonModelType, (schema: string, temp?: boolean) => string>;
 } = {
   crm: {
-    account: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
+    account: (schema: string, temp = false) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_accounts' : `"${schema}"."crm_accounts"`} (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -485,8 +485,8 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_accounts" (
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
-    contact: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
+    contact: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_contacts' : `"${schema}".crm_contacts`} (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -509,8 +509,8 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_contacts" (
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
-    lead: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
+    lead: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_leads' : `"${schema}".crm_leads`} (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -536,8 +536,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_leads" (
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
-    opportunity: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
+    opportunity: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_crm_opportunities' : `"${schema}".crm_opportunities`
+    } (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -561,8 +563,8 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_opportunities" (
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
-    user: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
+    user: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' : `"${schema}".crm_users`} (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -581,8 +583,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."crm_users" (
 );`,
   },
   engagement: {
-    contact: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
+    contact: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_engagement_contacts' : `"${schema}".engagement_contacts`
+    } (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -607,8 +611,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_contacts" (
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
-    mailbox: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."engagement_mailboxes" (
+    mailbox: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_engagement_mailboxes' : `"${schema}".engagement_mailboxes`
+    } (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -624,8 +630,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_mailboxes" (
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
-    sequence: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
+    sequence: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_engagement_sequences' : `"${schema}".engagement_sequences`
+    } (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -649,8 +657,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequences" (
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
-    sequence_state: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequence_states" (
+    sequence_state: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_engagement_sequence_states' : `"${schema}".engagement_sequence_states`
+    } (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -668,8 +678,10 @@ CREATE TABLE IF NOT EXISTS "${schema}"."engagement_sequence_states" (
 
   PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
 );`,
-    user: (schema: string) => `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."engagement_users" (
+    user: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_engagement_users' : `"${schema}".engagement_users`
+    } (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
