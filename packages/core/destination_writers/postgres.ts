@@ -214,8 +214,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         // the record was archived, restored, and archived again.
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
-        await client.query(`INSERT INTO ${qualifiedTable}
-SELECT DISTINCT ON (id) * FROM (SELECT * FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
+        await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
+SELECT DISTINCT ON (id) * FROM (SELECT ${columns.join(
+          ','
+        )} FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
@@ -349,8 +351,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         // the record was archived, restored, and archived again.
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
-        await client.query(`INSERT INTO ${qualifiedTable}
-SELECT DISTINCT ON (id) * FROM (SELECT * FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
+        await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
+SELECT DISTINCT ON (id) * FROM (SELECT ${columns.join(
+          ','
+        )} FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
