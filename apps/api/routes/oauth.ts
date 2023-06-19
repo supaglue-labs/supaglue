@@ -37,11 +37,11 @@ export default function init(app: Router): void {
       }
 
       if (!returnUrl) {
-        throw new Error('Missing returnUrl');
+        throw new BadRequestError('Missing returnUrl');
       }
 
       if (version !== 'v1' && version !== 'v2') {
-        throw new Error('Invalid version');
+        throw new BadRequestError('Invalid version');
       }
 
       const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
@@ -161,7 +161,7 @@ export default function init(app: Router): void {
 
       const { oauthClientId, oauthClientSecret } = provider.config.oauth.credentials;
 
-      const auth = getConnectorAuthConfig(provider.category, providerName);
+      const { additionalScopes: _, ...auth } = getConnectorAuthConfig(provider.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
