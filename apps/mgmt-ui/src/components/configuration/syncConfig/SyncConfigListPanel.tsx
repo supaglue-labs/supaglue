@@ -12,6 +12,8 @@ import { IconButton, Stack } from '@mui/material';
 import Link from '@mui/material/Link';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
+const lightColor = 'rgba(255, 255, 255, 0.7)';
+
 export default function SyncConfigListPanel() {
   const { syncConfigs = [], isLoading } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
@@ -37,15 +39,7 @@ export default function SyncConfigListPanel() {
         return (
           <Link
             href={`/applications/${applicationId}/configuration/providers/${provider.category}/${provider.name}`}
-            sx={{
-              textDecoration: 'none',
-              // color: lightColor,
-              '&:hover': {
-                color: 'common.white',
-              },
-            }}
-            rel="noopener noreferrer"
-            target="_blank"
+            className="flex flex-row gap-2 items-center w-full h-full"
           >
             {providerToIcon(provider.name)}
           </Link>
@@ -65,7 +59,10 @@ export default function SyncConfigListPanel() {
         return (
           <Link
             href={`/applications/${applicationId}/configuration/destinations/${destination.id}`}
-            className="flex flex-row gap-2 items-center justify-center"
+            sx={{
+              textDecoration: 'none',
+            }}
+            className="flex flex-row gap-2 items-center w-full h-full"
           >
             {getIcon(destination.type)}
             <p>{destination.name}</p>
