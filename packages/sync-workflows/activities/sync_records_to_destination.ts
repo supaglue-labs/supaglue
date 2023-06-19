@@ -44,7 +44,7 @@ export function createSyncRecordsToDestination(
     async function writeObjects(writer: DestinationWriter) {
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
-        const readable = await (client as CrmRemoteClient).listCommonModelRecords(
+        const readable = await (client as CrmRemoteClient).listCommonObjectRecords(
           commonModel as CRMCommonModelType,
           updatedAfter,
           heartbeat,
@@ -57,7 +57,7 @@ export function createSyncRecordsToDestination(
           heartbeat
         );
       } else {
-        const readable = await (client as EngagementRemoteClient).listCommonModelRecords(
+        const readable = await (client as EngagementRemoteClient).listCommonObjectRecords(
           commonModel as EngagementCommonModelType,
           updatedAfter
         );

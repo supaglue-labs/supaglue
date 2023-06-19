@@ -86,7 +86,7 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
-const hubspotStandardObjectTypeToPlural = {
+const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
   contact: 'contacts',
   deal: 'deals',
@@ -149,23 +149,28 @@ const HUBSPOT_STANDARD_OBJECT_TYPES = [
   'task',
 ] as const;
 
+const HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED = HUBSPOT_STANDARD_OBJECT_TYPES.map(
+  (objectType) => hubspotStandardObjectTypeToPlural[objectType]
+);
+
 type HubSpotStandardObjectType = (typeof HUBSPOT_STANDARD_OBJECT_TYPES)[number];
 
 type HubSpotCommonModelObjectType = 'company' | 'contact' | 'deal';
 
-type HubSpotAPIV3ListSchemasResponse = {
-  results: HubSpotAPIV3ListSchemasResponseResult[];
-};
-
-type HubSpotAPIV3ListSchemasResponseResult = {
+type HubSpotCustomSchema = {
   labels: {
     singular: string;
     plural: string;
   };
   id: string;
   objectTypeId: string;
+  fullyQualifiedName: string;
   archived: boolean;
   name: string;
+};
+
+type HubSpotAPIV3ListSchemasResponse = {
+  results: HubSpotCustomSchema[];
 };
 
 type HubSpotPaging = {
@@ -300,7 +305,7 @@ export type PipelineStageMapping = Record<string, { label: string; stageIdsToLab
 const isStandardObjectType = (objectType: string): objectType is HubSpotStandardObjectType =>
   HUBSPOT_STANDARD_OBJECT_TYPES.includes(objectType as HubSpotStandardObjectType);
 
-const fromObjectStrToType = (objectStr: string): HubSpotStandardObjectType => {
+const toStandardObjectType = (objectStr: string): HubSpotStandardObjectType => {
   if (!isStandardObjectType(objectStr)) {
     throw new Error(`Unsupported object type: ${objectStr}`);
   }
@@ -353,22 +358,29 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
-    const objectType = fromObjectStrToType(object);
-    const propertiesToFetch = await this.getObjectTypeProperties(objectType);
+  public override async listRawStandardObjectRecords(
+    object: string,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
+    const standardObjectType = toStandardObjectType(object);
+    const propertiesToFetch = await this.getObjectTypeProperties(standardObjectType);
+    const associatedStandardObjectTypes = hubspotStandardObjectTypeToAssociatedStandardObjectTypes[standardObjectType];
 
     const normalPageFetcher = await this.#getListRecordsFetcher(
-      objectType,
+      standardObjectType,
       propertiesToFetch,
-      hubspotStandardObjectTypeToAssociatedStandardObjectTypes[objectType],
+      associatedStandardObjectTypes,
+      /* associatedCustomObjectSchemas */ [], // TODO: should we sync custom object associations?
       /* archived */ false,
       modifiedAfter
     );
 
     const archivedPageFetcher = await this.#getListRecordsFetcher(
-      objectType,
+      standardObjectType,
       propertiesToFetch,
-      hubspotStandardObjectTypeToAssociatedStandardObjectTypes[objectType],
+      associatedStandardObjectTypes,
+      /* associatedCustomObjectSchemas */ [], // TODO: should we sync custom object associations?
       /* archived */ true,
       modifiedAfter
     );
@@ -381,7 +393,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         response.paging?.next?.after,
     };
 
-    if (archivedUnsupportedStandardObjectTypes.includes(objectType)) {
+    if (archivedUnsupportedStandardObjectTypes.includes(standardObjectType)) {
       // Can't get archived records for these types
       return await paginator([normalFetcherAndHandler]);
     }
@@ -396,7 +408,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  #getObjectTypeIdByCustomObjectName = async (objectName: string): Promise<string> => {
+  async #getAllCustomObjectSchemas(): Promise<HubSpotCustomSchema[]> {
     return await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const response = await axios.get<HubSpotAPIV3ListSchemasResponse>(`${this.baseUrl}/crm/v3/schemas`, {
@@ -405,16 +417,73 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         },
       });
 
-      const matchingResult = response.data.results.find((result) => result.name === objectName);
-      if (!matchingResult) {
-        throw new BadRequestError(`Couldn't find object type with name: ${objectName}`);
+      return response.data.results.filter((result) => !result.archived);
+    });
+  }
+
+  async #getObjectTypeIdByCustomObjectName(objectName: string): Promise<string> {
+    const objectTypeSchemas = await this.#getAllCustomObjectSchemas();
+    const matchingResult = objectTypeSchemas.find((result) => result.name === objectName);
+    if (!matchingResult) {
+      throw new BadRequestError(`Couldn't find object type with name: ${objectName}`);
+    }
+
+    return matchingResult.objectTypeId;
+  }
+
+  async #getAssociatedObjectTypesForCustomObject(fromObjectTypeId: string): Promise<{
+    standardObjectTypes: string[];
+    customObjectSchemas: HubSpotCustomSchema[];
+  }> {
+    // For each standard object type, see if there is an association type
+    const standardObjectTypes: string[] = [];
+    for (const toObjectType of HUBSPOT_STANDARD_OBJECT_TYPES) {
+      await retryWhenAxiosRateLimited(async () => {
+        await this.maybeRefreshAccessToken();
+        const response = await axios.get<HubSpotAPIV3ListResponse>(
+          `${this.baseUrl}/crm/v4/associations/${fromObjectTypeId}/${toObjectType}/labels`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.#config.accessToken}`,
+            },
+          }
+        );
+
+        if (response.data.results.length) {
+          standardObjectTypes.push(toObjectType);
+        }
+      });
+    }
+
+    // For each custom object type, see if there is an association type
+    const allCustomObjectSchemas = await this.#getAllCustomObjectSchemas();
+    const customObjectSchemas: HubSpotCustomSchema[] = [];
+    for (const customObjectSchema of allCustomObjectSchemas) {
+      if (fromObjectTypeId === customObjectSchema.objectTypeId) {
+        continue;
       }
 
-      return matchingResult.objectTypeId;
-    });
-  };
+      await retryWhenAxiosRateLimited(async () => {
+        await this.maybeRefreshAccessToken();
+        const response = await axios.get<HubSpotAPIV3ListResponse>(
+          `${this.baseUrl}/crm/v4/associations/${fromObjectTypeId}/${customObjectSchema.objectTypeId}/labels`,
+          {
+            headers: {
+              Authorization: `Bearer ${this.#config.accessToken}`,
+            },
+          }
+        );
 
-  public override async listCustomRecords(
+        if (response.data.results.length) {
+          customObjectSchemas.push(customObjectSchema);
+        }
+      });
+    }
+
+    return { standardObjectTypes, customObjectSchemas };
+  }
+
+  public override async listRawCustomObjectRecords(
     object: string,
     modifiedAfter?: Date,
     heartbeat?: () => void
@@ -423,10 +492,15 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const objectTypeId = await this.#getObjectTypeIdByCustomObjectName(object);
     const propertiesToFetch = await this.getObjectTypeProperties(objectTypeId);
 
+    // Find the associated object types for the object
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForCustomObject(objectTypeId);
+
     const normalPageFetcher = await this.#getListRecordsFetcher(
       objectTypeId,
       propertiesToFetch,
-      [], // TODO: support associations for custom objects
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
       /* archived */ false,
       modifiedAfter
     );
@@ -434,7 +508,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const archivedPageFetcher = await this.#getListRecordsFetcher(
       objectTypeId,
       propertiesToFetch,
-      [], // TODO: support associations for custom objects
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
       /* archived */ true,
       modifiedAfter
     );
@@ -456,7 +531,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   async #getListRecordsFetcher(
     objectType: string,
     propertiesToFetch: string[],
-    associatedObjectTypes: string[],
+    associatedStandardObjectTypes: string[],
+    associatedCustomObjectSchemas: HubSpotCustomSchema[],
     archived: boolean,
     modifiedAfter?: Date
   ): Promise<(after?: string) => Promise<NormalizedRecordsResponseWithFlattenedAssociations>> {
@@ -465,7 +541,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         const response = await this.#fetchPageOfFullRecords(
           objectType,
           propertiesToFetch,
-          associatedObjectTypes,
+          associatedStandardObjectTypes,
+          associatedCustomObjectSchemas,
           /* archived */ true,
           after
         );
@@ -480,7 +557,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       const response = await this.#fetchPageOfIncrementalRecords(
         objectType,
         propertiesToFetch,
-        associatedObjectTypes,
+        associatedStandardObjectTypes,
+        associatedCustomObjectSchemas,
         modifiedAfter,
         0
       );
@@ -489,7 +567,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const response = await this.#fetchPageOfFullRecords(
             objectType,
             propertiesToFetch,
-            associatedObjectTypes,
+            associatedStandardObjectTypes,
+            associatedCustomObjectSchemas,
             /* archived */ false,
             after
           );
@@ -501,7 +580,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         const response = await this.#fetchPageOfIncrementalRecords(
           objectType,
           propertiesToFetch,
-          associatedObjectTypes,
+          associatedStandardObjectTypes,
+          associatedCustomObjectSchemas,
           modifiedAfter,
           HUBSPOT_RECORD_LIMIT,
           after
@@ -514,7 +594,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       const response = await this.#fetchPageOfFullRecords(
         objectType,
         propertiesToFetch,
-        associatedObjectTypes,
+        associatedStandardObjectTypes,
+        associatedCustomObjectSchemas,
         /* archived */ false,
         after
       );
@@ -525,18 +606,23 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   async #fetchPageOfFullRecords(
     objectType: string,
     propertiesToFetch: string[],
-    associatedObjectTypes: string[],
+    associatedStandardObjectTypes: string[],
+    associatedCustomObjectSchemas: HubSpotCustomSchema[],
     archived: boolean,
     after?: string
   ): Promise<RecordsResponseWithFlattenedAssociations> {
     return await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
+      const associations = [
+        ...associatedStandardObjectTypes,
+        ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
+      ];
       const response = await axios.get<HubSpotAPIV3ListResponse>(`${this.baseUrl}/crm/v3/objects/${objectType}`, {
         params: {
           limit: HUBSPOT_RECORD_LIMIT,
           after,
           properties: propertiesToFetch.length ? propertiesToFetch.join(',') : undefined,
-          associations: associatedObjectTypes.length ? associatedObjectTypes.join(',') : undefined,
+          associations: associations.length ? associations.join(',') : undefined,
           archived,
         },
         headers: {
@@ -550,8 +636,21 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         results: response.data.results.map(({ associations, ...rest }) => ({
           ...rest,
           associations: Object.entries(associations ?? {}).reduce((acc, [associatedObjectType, { results }]) => {
-            // TODO: associatedObjectType will be of plural form; should we convert to singular?
-            acc[associatedObjectType] = results.map(({ id }) => id);
+            // If associatedObjectType is for a standard object, it will be pluralized
+            if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectType)) {
+              acc[associatedObjectType] = results.map(({ id }) => id);
+              return acc;
+            }
+
+            // If associatedObjectType is for a custom object, it will be the fullyQualifiedName,
+            // and we want to use the objectTypeId for consistency
+            const matchingCustomObjectSchema = associatedCustomObjectSchemas.find(
+              (schema) => schema.fullyQualifiedName === associatedObjectType
+            );
+            if (!matchingCustomObjectSchema) {
+              throw new Error(`Couldn't find matching custom object schema for ${associatedObjectType}`);
+            }
+            acc[matchingCustomObjectSchema.objectTypeId] = results.map(({ id }) => id);
             return acc;
           }, {} as Record<string, string[]>),
         })),
@@ -562,7 +661,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   async #fetchPageOfIncrementalRecords(
     objectType: string,
     propertiesToFetch: string[],
-    associatedObjectTypes: string[],
+    associatedStandardObjectTypes: string[],
+    associatedCustomObjectSchemas: HubSpotCustomSchema[],
     modifiedAfter: Date,
     limit: number,
     after?: string
@@ -607,29 +707,46 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     const objectIds = response.data.results.map((result) => result.id);
 
-    // Get associations
     const ret: RecordsResponseWithFlattenedAssociationsAndTotal = response.data;
-    for (const associatedObjectType of associatedObjectTypes) {
-      const associationMap = await this.#listAssociations(objectType, associatedObjectType, objectIds);
+
+    // Get associations for standard objects
+    for (const associatedStandardObjectType of associatedStandardObjectTypes) {
+      const associationMap = await this.#listAssociations(objectType, associatedStandardObjectType, objectIds);
 
       // Add associations to results
       ret.results.forEach((result) => {
         if (!result.associations) {
           result.associations = {};
         }
-        // TODO: support associations for custom objects
-        if (!isStandardObjectType(associatedObjectType)) {
-          return;
-        }
+        const validatedAssociatedStandardObjectType = toStandardObjectType(associatedStandardObjectType);
         // In the full fetcher, the associations use the plural object types, so we should do the same here
-        result.associations[hubspotStandardObjectTypeToPlural[associatedObjectType]] = associationMap[result.id];
+        result.associations[hubspotStandardObjectTypeToPlural[validatedAssociatedStandardObjectType]] =
+          associationMap[result.id];
+      });
+    }
+
+    // Get associations for custom objects
+    for (const associatedCustomObjectSchema of associatedCustomObjectSchemas) {
+      const associationMap = await this.#listAssociations(
+        objectType,
+        associatedCustomObjectSchema.objectTypeId,
+        objectIds
+      );
+
+      // Add associations to results
+      ret.results.forEach((result) => {
+        if (!result.associations) {
+          result.associations = {};
+        }
+        //
+        result.associations[associatedCustomObjectSchema.objectTypeId] = associationMap[result.id];
       });
     }
 
     return ret;
   }
 
-  public override async listCommonModelRecords(
+  public override async listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date | undefined,
     heartbeat?: () => void,
@@ -651,7 +768,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async getCommonModelRecord<T extends CRMCommonModelType>(
+  public override async getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
@@ -671,7 +788,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async createCommonModelRecord<T extends CRMCommonModelType>(
+  public override async createCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
@@ -691,7 +808,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async updateCommonModelRecord<T extends CRMCommonModelType>(
+  public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {
@@ -1435,7 +1552,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public override async getCustomRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
+  public override async getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
     await this.maybeRefreshAccessToken();
 
     // Get the properties to fetch
@@ -1450,7 +1567,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     };
   }
 
-  public override async createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string> {
+  public override async createCustomObjectRecord(params: CustomObjectRecordCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.objects.basicApi.create(params.objectId, {
       properties: params.fields as Record<string, string>, // TODO: map types?
@@ -1458,7 +1575,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return response.id;
   }
 
-  public override async updateCustomRecord(params: CustomObjectRecordUpdateParams): Promise<void> {
+  public override async updateCustomObjectRecord(params: CustomObjectRecordUpdateParams): Promise<void> {
     await this.maybeRefreshAccessToken();
     await this.#client.crm.objects.basicApi.update(params.objectId, params.id, {
       properties: params.fields as Record<string, string>, // TODO: map types?
