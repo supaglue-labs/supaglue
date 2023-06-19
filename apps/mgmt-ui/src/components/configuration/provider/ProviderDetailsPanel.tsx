@@ -1,0 +1,184 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import { createRemoteProvider, updateRemoteProvider } from '@/client';
+import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
+import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import { useProviders } from '@/hooks/useProviders';
+import providerToIcon from '@/utils/providerToIcon';
+import { Button, Stack, TextField, Typography } from '@mui/material';
+import Card from '@mui/material/Card';
+import { Provider, ProviderCategory, ProviderCreateParams, ProviderName } from '@supaglue/types';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { providerCardsInfo } from './ProviderTabPanelContainer';
+
+export type ProviderDetailsPanelProps = {
+  category: ProviderCategory;
+  providerName: ProviderName;
+  isLoading: boolean;
+};
+
+export default function ProviderDetailsPanel({ providerName, category, isLoading }: ProviderDetailsPanelProps) {
+  const activeApplicationId = useActiveApplicationId();
+  const { addNotification } = useNotification();
+  const [friendlyProviderId, setFriendlyProviderId] = useState<string>('--');
+  const [clientId, setClientId] = useState<string>('');
+  const [clientSecret, setClientSecret] = useState<string>('');
+  const [oauthScopes, setOauthScopes] = useState<string>('');
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const router = useRouter();
+
+  const { providers: existingProviders = [], mutate } = useProviders();
+
+  const provider = existingProviders.find((existingProvider) => existingProvider.name === providerName);
+
+  const providerCardInfo = providerCardsInfo.find((providerCardInfo) => providerCardInfo.providerName === providerName);
+
+  useEffect(() => {
+    setFriendlyProviderId(provider?.id ?? '--');
+
+    setClientId(provider?.config?.oauth?.credentials?.oauthClientId ?? '');
+
+    setClientSecret(provider?.config?.oauth?.credentials?.oauthClientSecret ?? '');
+
+    setOauthScopes(provider?.config?.oauth?.oauthScopes?.join(',') ?? '');
+  }, [provider?.id]);
+
+  const createOrUpdateProvider = async (): Promise<Provider> => {
+    if (provider) {
+      const newProvider: Provider = {
+        ...provider,
+        config: {
+          ...provider?.config,
+          providerAppId: '', // TODO: add input field for this
+          oauth: {
+            ...provider?.config?.oauth,
+            credentials: {
+              oauthClientId: clientId,
+              oauthClientSecret: clientSecret,
+            },
+            oauthScopes: oauthScopes.split(','),
+          },
+        },
+      };
+      return await updateRemoteProvider(activeApplicationId, newProvider);
+    }
+    return await createRemoteProvider(activeApplicationId, {
+      applicationId: activeApplicationId,
+      authType: 'oauth2',
+      // TODO: Support creating engagement providers
+      category: category,
+      name: providerName as ProviderName,
+      config: {
+        providerAppId: '', // TODO: add input field for this
+        oauth: {
+          credentials: {
+            oauthClientId: clientId,
+            oauthClientSecret: clientSecret,
+          },
+          oauthScopes: oauthScopes.split(','),
+        },
+      },
+    } as ProviderCreateParams);
+  };
+
+  if (!providerCardInfo) {
+    return null;
+  }
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  return (
+    <Card>
+      <Stack direction="column" className="gap-4" sx={{ padding: '2rem' }}>
+        <Stack direction="row" className="items-center justify-between w-full">
+          <Stack direction="row" className="items-center justify-center gap-2">
+            {providerToIcon(providerCardInfo.providerName, 35)}
+            <Stack direction="column">
+              <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
+              <Typography fontSize={12}>{providerCardInfo.category.toUpperCase()}</Typography>
+            </Stack>
+          </Stack>
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Provider Metadata</Typography>
+          <TextField value={friendlyProviderId} size="small" label="ID" variant="outlined" disabled />
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Credentials</Typography>
+          <TextField
+            value={clientId}
+            size="small"
+            label="Client ID"
+            variant="outlined"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setClientId(event.target.value);
+            }}
+          />
+          <TextField
+            value={clientSecret}
+            size="small"
+            label="Client Secret"
+            variant="outlined"
+            type="password"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setClientSecret(event.target.value);
+            }}
+          />
+        </Stack>
+
+        {providerName === 'ms_dynamics_365_sales' ? null : (
+          <Stack className="gap-2">
+            <Typography variant="subtitle1">Scopes</Typography>
+            <TextField
+              value={oauthScopes}
+              size="small"
+              label="OAuth scopes (comma separated)"
+              variant="outlined"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setOauthScopes(event.target.value);
+              }}
+            />
+          </Stack>
+        )}
+
+        <Stack direction="row" className="gap-2 justify-between">
+          <Button
+            variant="outlined"
+            disabled={isSaving}
+            onClick={() => {
+              router.back();
+            }}
+          >
+            Back
+          </Button>
+          <Button
+            variant="contained"
+            disabled={isSaving || isLoading}
+            onClick={async () => {
+              setIsSaving(true);
+              const newProvider = await createOrUpdateProvider();
+              const latestProviders = [
+                ...existingProviders.filter((provider) => provider.id !== newProvider.id),
+                newProvider,
+              ];
+              addNotification({ message: 'Successfully updated provider', severity: 'success' });
+              await mutate(latestProviders, {
+                optimisticData: latestProviders,
+                revalidate: false,
+                populateCache: false,
+              });
+              setIsSaving(false);
+            }}
+          >
+            Save
+          </Button>
+        </Stack>
+      </Stack>
+    </Card>
+  );
+}
