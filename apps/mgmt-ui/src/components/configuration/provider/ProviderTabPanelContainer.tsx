@@ -3,8 +3,8 @@ import MsDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sal
 import OutreachIcon from '@/assets/connector_icons/outreach.png';
 import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
+import { TabPanel } from '@/components/TabPanel';
 import { useProviders } from '@/hooks/useProviders';
-import Box from '@mui/material/Box';
 import { ProviderCategory, ProviderName } from '@supaglue/types';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -59,28 +59,6 @@ export const providerCardsInfo: ProviderCardInfo[] = [
     description: 'Configure your MS Dynamics 365 Sales provider.',
   },
 ];
-
-interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
 
 export default function ProviderTabPanelContainer() {
   const router = useRouter();

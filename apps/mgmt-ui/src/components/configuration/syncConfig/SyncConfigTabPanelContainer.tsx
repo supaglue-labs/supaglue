@@ -1,37 +1,6 @@
-import Box from '@mui/material/Box';
+import { TabPanel } from '@/components/TabPanel';
 import { useRouter } from 'next/router';
-import * as React from 'react';
 import SyncConfigsListPanel from './SyncConfigListPanel';
-
-export type SyncConfigCardInfo = {
-  icon?: React.ReactNode;
-  name: string;
-  category: 'crm' | 'engagement';
-  syncconfigName: string;
-  description: string;
-};
-
-interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`vertical-tabpanel-${index}`}
-      aria-labelledby={`vertical-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
 
 export default function SyncConfigTabPanelContainer() {
   const router = useRouter();

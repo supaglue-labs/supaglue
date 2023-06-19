@@ -4,6 +4,7 @@ import DestinationTabPanelContainer from '@/components/configuration/destination
 import ProviderTabPanelContainer from '@/components/configuration/provider/ProviderTabPanelContainer';
 import SyncConfigTabPanelContainer from '@/components/configuration/syncConfig/SyncConfigTabPanelContainer';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
+import { TabPanel } from '@/components/TabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
@@ -39,28 +40,6 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
     value: 'cdc_webhooks',
   },
 ];
-
-interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`horizontal-tabpanel-${index}`}
-      aria-labelledby={`horizontal-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
 
 export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | null }) {
   const router = useRouter();

@@ -8,7 +8,7 @@ export function useSyncConfig(syncConfigId: string) {
   );
 
   return {
-    syncconfig: data ? camelcaseKeys(data) : undefined,
+    syncConfig: data ? camelcaseKeys(data) : undefined,
     isLoading,
     error,
     ...rest,

@@ -8,6 +8,8 @@ import type {
   DestinationUpdateParams,
   Provider,
   ProviderCreateParams,
+  SyncConfig,
+  SyncConfigCreateParams,
   WebhookConfig,
 } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
@@ -80,6 +82,34 @@ export async function createRemoteProvider(applicationId: string, data: Provider
 
 export async function updateRemoteProvider(applicationId: string, data: Provider): Promise<Provider> {
   const result = await fetch(`/api/internal/providers/update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  const r = await result.json();
+  return r;
+}
+
+export async function createSyncConfig(applicationId: string, data: SyncConfigCreateParams): Promise<SyncConfig> {
+  const result = await fetch(`/api/internal/sync-configs/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  const r = await result.json();
+  return r;
+}
+
+export async function updateSyncConfig(applicationId: string, data: SyncConfig): Promise<SyncConfig> {
+  const result = await fetch(`/api/internal/sync-configs/update`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
