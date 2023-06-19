@@ -161,7 +161,7 @@ export default function init(app: Router): void {
 
       const { oauthClientId, oauthClientSecret } = provider.config.oauth.credentials;
 
-      const auth = getConnectorAuthConfig(provider.category, providerName);
+      const { additionalScopes: _, ...auth } = getConnectorAuthConfig(provider.category, providerName);
 
       if (loginUrl) {
         auth.tokenHost = loginUrl;
