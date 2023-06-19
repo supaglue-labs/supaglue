@@ -33,7 +33,18 @@ export default function init(app: Router): void {
       res: Response<GetSyncConfigsResponse>
     ) => {
       const syncConfigs = await syncConfigService.list(req.supaglueApplication.id);
-      return res.status(200).send(syncConfigs.map(snakecaseKeys));
+      return res.status(200).send(
+        syncConfigs.map((syncConfig) => {
+          const { rawObjects, ...rest } = syncConfig.config;
+          return snakecaseKeys({
+            ...syncConfig,
+            config: {
+              ...rest,
+              rawStandardObjects: rawObjects, // TODO: remove when we propogate `rawStandardObjects` all the way through code
+            },
+          });
+        })
+      );
     }
   );
 
@@ -53,6 +64,7 @@ export default function init(app: Router): void {
               ...commonObject,
               object: commonObject.object as CommonModelType,
             })),
+            raw_objects: req.body.config.raw_standard_objects,
           },
         }),
       });
@@ -70,7 +82,16 @@ export default function init(app: Router): void {
         req.params.sync_config_id,
         req.supaglueApplication.id
       );
-      return res.status(200).send(snakecaseKeys(syncConfig));
+      const { rawObjects, ...rest } = syncConfig.config;
+      return res.status(200).send(
+        snakecaseKeys({
+          ...syncConfig,
+          config: {
+            ...rest,
+            rawStandardObjects: rawObjects, // TODO: remove when we propogate `rawStandardObjects` all the way through code
+          },
+        })
+      );
     }
   );
 
@@ -90,10 +111,20 @@ export default function init(app: Router): void {
               ...commonObject,
               object: commonObject.object as CommonModelType,
             })),
+            raw_objects: req.body.config.raw_standard_objects,
           },
         }),
       });
-      return res.status(200).send(snakecaseKeys(syncConfig));
+      const { rawObjects, ...rest } = syncConfig.config;
+      return res.status(200).send(
+        snakecaseKeys({
+          ...syncConfig,
+          config: {
+            ...rest,
+            rawStandardObjects: rawObjects, // TODO: remove when we propogate `rawStandardObjects` all the way through code
+          },
+        })
+      );
     }
   );
 
