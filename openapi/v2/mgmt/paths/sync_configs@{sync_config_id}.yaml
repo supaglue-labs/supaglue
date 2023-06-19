@@ -25,17 +25,10 @@ get:
                   common_objects:
                     - object: contacts
                       fetch_all_fields_into_raw: false
-                      config_override:
-                        strategy: full only
                     - object: accounts
                       fetch_all_fields_into_raw: false
-                      config_override:
-                        strategy: full only
-                  raw_objects:
+                  raw_standard_objects:
                     - object: emails
-                      config_override:
-                        period_ms: 30000
-                        strategy: full only
                     - object: tasks
 put:
   operationId: updateSyncConfig
@@ -69,17 +62,10 @@ put:
                   common_objects:
                     - object: contacts
                       fetch_all_fields_into_raw: false
-                      config_override:
-                        strategy: full only
                     - object: accounts
                       fetch_all_fields_into_raw: false
-                      config_override:
-                        strategy: full only
-                  raw_objects:
+                  raw_standard_objects:
                     - object: emails
-                      config_override:
-                        period_ms: 30000
-                        strategy: full only
                     - object: tasks
 delete:
   operationId: deleteSyncConfig
@@ -108,17 +94,10 @@ delete:
                   common_objects:
                     - object: contacts
                       fetch_all_fields_into_raw: false
-                      config_override:
-                        strategy: full only
                     - object: accounts
                       fetch_all_fields_into_raw: false
-                      config_override:
-                        strategy: full only
-                  raw_objects:
+                  raw_standard_objects:
                     - object: emails
-                      config_override:
-                        period_ms: 30000
-                        strategy: full only
                     - object: tasks
 parameters:
   - name: sync_config_id

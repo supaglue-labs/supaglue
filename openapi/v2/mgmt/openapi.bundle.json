@@ -716,26 +716,16 @@
                           "common_objects": [
                             {
                               "object": "contacts",
-                              "fetch_all_fields_into_raw": false,
-                              "config_override": {
-                                "strategy": "full only"
-                              }
+                              "fetch_all_fields_into_raw": false
                             },
                             {
                               "object": "accounts",
-                              "fetch_all_fields_into_raw": false,
-                              "config_override": {
-                                "strategy": "full only"
-                              }
+                              "fetch_all_fields_into_raw": false
                             }
                           ],
-                          "raw_objects": [
+                          "raw_standard_objects": [
                             {
-                              "object": "emails",
-                              "config_override": {
-                                "period_ms": 30000,
-                                "strategy": "full only"
-                              }
+                              "object": "emails"
                             },
                             {
                               "object": "tasks"
@@ -758,7 +748,7 @@
                               "fetch_all_fields_into_raw": false
                             }
                           ],
-                          "raw_objects": [
+                          "raw_standard_objects": [
                             {
                               "object": "tasks"
                             }
@@ -843,26 +833,16 @@
                         "common_objects": [
                           {
                             "object": "contacts",
-                            "fetch_all_fields_into_raw": false,
-                            "config_override": {
-                              "strategy": "full only"
-                            }
+                            "fetch_all_fields_into_raw": false
                           },
                           {
                             "object": "accounts",
-                            "fetch_all_fields_into_raw": false,
-                            "config_override": {
-                              "strategy": "full only"
-                            }
+                            "fetch_all_fields_into_raw": false
                           }
                         ],
-                        "raw_objects": [
+                        "raw_standard_objects": [
                           {
-                            "object": "emails",
-                            "config_override": {
-                              "period_ms": 30000,
-                              "strategy": "full only"
-                            }
+                            "object": "emails"
                           },
                           {
                             "object": "tasks"
@@ -916,26 +896,16 @@
                         "common_objects": [
                           {
                             "object": "contacts",
-                            "fetch_all_fields_into_raw": false,
-                            "config_override": {
-                              "strategy": "full only"
-                            }
+                            "fetch_all_fields_into_raw": false
                           },
                           {
                             "object": "accounts",
-                            "fetch_all_fields_into_raw": false,
-                            "config_override": {
-                              "strategy": "full only"
-                            }
+                            "fetch_all_fields_into_raw": false
                           }
                         ],
-                        "raw_objects": [
+                        "raw_standard_objects": [
                           {
-                            "object": "emails",
-                            "config_override": {
-                              "period_ms": 30000,
-                              "strategy": "full only"
-                            }
+                            "object": "emails"
                           },
                           {
                             "object": "tasks"
@@ -983,26 +953,16 @@
                         "common_objects": [
                           {
                             "object": "contacts",
-                            "fetch_all_fields_into_raw": false,
-                            "config_override": {
-                              "strategy": "full only"
-                            }
+                            "fetch_all_fields_into_raw": false
                           },
                           {
                             "object": "accounts",
-                            "fetch_all_fields_into_raw": false,
-                            "config_override": {
-                              "strategy": "full only"
-                            }
+                            "fetch_all_fields_into_raw": false
                           }
                         ],
-                        "raw_objects": [
+                        "raw_standard_objects": [
                           {
-                            "object": "emails",
-                            "config_override": {
-                              "period_ms": 30000,
-                              "strategy": "full only"
-                            }
+                            "object": "emails"
                           },
                           {
                             "object": "tasks"
@@ -2122,6 +2082,7 @@
             "oneOf": [
               {
                 "type": "object",
+                "title": "s3",
                 "properties": {
                   "type": {
                     "type": "string",
@@ -2140,6 +2101,7 @@
               },
               {
                 "type": "object",
+                "title": "postgres",
                 "properties": {
                   "type": {
                     "type": "string",
@@ -2437,23 +2399,6 @@
                 },
                 "fetch_all_fields_into_raw": {
                   "type": "boolean"
-                },
-                "config_override": {
-                  "type": "object",
-                  "properties": {
-                    "period_ms": {
-                      "type": "integer",
-                      "minimum": 60000,
-                      "example": 60000
-                    },
-                    "strategy": {
-                      "type": "string",
-                      "enum": [
-                        "full then incremental",
-                        "full only"
-                      ]
-                    }
-                  }
                 }
               },
               "required": [
@@ -2462,7 +2407,7 @@
               ]
             }
           },
-          "raw_objects": {
+          "raw_standard_objects": {
             "type": "array",
             "items": {
               "type": "object",
@@ -2470,23 +2415,6 @@
                 "object": {
                   "type": "string",
                   "example": "contacts"
-                },
-                "config_override": {
-                  "type": "object",
-                  "properties": {
-                    "period_ms": {
-                      "type": "integer",
-                      "minimum": 60000,
-                      "example": 60000
-                    },
-                    "strategy": {
-                      "type": "string",
-                      "enum": [
-                        "full then incremental",
-                        "full only"
-                      ]
-                    }
-                  }
                 }
               },
               "required": [
@@ -2502,23 +2430,6 @@
                 "object": {
                   "type": "string",
                   "example": "contacts"
-                },
-                "config_override": {
-                  "type": "object",
-                  "properties": {
-                    "period_ms": {
-                      "type": "integer",
-                      "minimum": 60000,
-                      "example": 60000
-                    },
-                    "strategy": {
-                      "type": "string",
-                      "enum": [
-                        "full then incremental",
-                        "full only"
-                      ]
-                    }
-                  }
                 }
               },
               "required": [
@@ -2748,6 +2659,7 @@
             "oneOf": [
               {
                 "type": "object",
+                "title": "crm",
                 "properties": {
                   "category": {
                     "type": "string",
@@ -2766,6 +2678,7 @@
               },
               {
                 "type": "object",
+                "title": "engagement",
                 "properties": {
                   "category": {
                     "type": "string",
@@ -2804,6 +2717,7 @@
             "oneOf": [
               {
                 "type": "object",
+                "title": "s3",
                 "properties": {
                   "type": {
                     "type": "string",
@@ -2822,6 +2736,7 @@
               },
               {
                 "type": "object",
+                "title": "postgres",
                 "properties": {
                   "type": {
                     "type": "string",
