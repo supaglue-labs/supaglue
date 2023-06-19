@@ -37,11 +37,11 @@ export default function init(app: Router): void {
       }
 
       if (!returnUrl) {
-        throw new Error('Missing returnUrl');
+        throw new BadRequestError('Missing returnUrl');
       }
 
       if (version !== 'v1' && version !== 'v2') {
-        throw new Error('Invalid version');
+        throw new BadRequestError('Invalid version');
       }
 
       const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
