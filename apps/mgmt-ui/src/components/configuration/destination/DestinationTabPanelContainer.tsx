@@ -55,7 +55,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-export default function IntegrationTabPanelContainer() {
+export default function DestinationTabPanelContainer() {
   const router = useRouter();
   const { tab = [] } = router.query;
   const [, type] = Array.isArray(tab) ? tab : [tab];

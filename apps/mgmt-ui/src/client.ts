@@ -6,8 +6,6 @@ import type {
   DestinationTestParams,
   DestinationTestResult,
   DestinationUpdateParams,
-  Integration,
-  IntegrationCreateParams,
   Provider,
   ProviderCreateParams,
   WebhookConfig,
@@ -64,37 +62,6 @@ export async function deleteWebhook(applicationId: string): Promise<void> {
       'x-application-id': applicationId,
     },
   });
-}
-
-export async function createRemoteIntegration(
-  applicationId: string,
-  data: IntegrationCreateParams
-): Promise<Integration> {
-  const result = await fetch(`/api/internal/integrations/create`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-application-id': applicationId,
-    },
-    body: JSON.stringify(snakecaseKeys(data)),
-  });
-
-  const r = await result.json();
-  return r;
-}
-
-export async function updateRemoteIntegration(applicationId: string, data: Integration): Promise<Integration> {
-  const result = await fetch(`/api/internal/integrations/update`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-application-id': applicationId,
-    },
-    body: JSON.stringify(snakecaseKeys(data)),
-  });
-
-  const r = await result.json();
-  return r;
 }
 
 export async function createRemoteProvider(applicationId: string, data: ProviderCreateParams): Promise<Provider> {

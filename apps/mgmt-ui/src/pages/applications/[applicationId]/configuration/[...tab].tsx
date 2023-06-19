@@ -1,7 +1,6 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
 import CDCWebhookTabPanel from '@/components/configuration/CDCWebhookTabPanel';
 import DestinationTabPanelContainer from '@/components/configuration/destination/DestinationTabPanelContainer';
-import IntegrationTabPanelContainer from '@/components/configuration/integration/IntegrationTabPanelContainer';
 import ProviderTabPanelContainer from '@/components/configuration/provider/ProviderTabPanelContainer';
 import SyncConfigTabPanelContainer from '@/components/configuration/syncConfig/SyncConfigTabPanelContainer';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
@@ -21,10 +20,6 @@ type ConfigurationHeaderTab = {
   value: string;
 };
 const configurationHeaderTabs: ConfigurationHeaderTab[] = [
-  {
-    label: 'Integrations',
-    value: 'integrations',
-  },
   { label: 'Providers', value: 'providers' },
   {
     label: 'Destinations',
@@ -105,7 +100,6 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
         <Header
           tabs={
             <Tabs value={value} textColor="inherit" onChange={handleChange}>
-              <Tab label="Integrations" />
               <Tab label="Providers" />
               <Tab label="Destinations" />
               <Tab label="Syncs" />
@@ -119,25 +113,22 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
         />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
           <TabPanel value={value} index={0} className="w-full">
-            <IntegrationTabPanelContainer />
-          </TabPanel>
-          <TabPanel value={value} index={1} className="w-full">
             <ProviderTabPanelContainer />
           </TabPanel>
-          <TabPanel value={value} index={2} className="w-full">
+          <TabPanel value={value} index={1} className="w-full">
             <DestinationTabPanelContainer />
           </TabPanel>
-          <TabPanel value={value} index={3} className="w-full">
+          <TabPanel value={value} index={2} className="w-full">
             <SyncConfigTabPanelContainer />
           </TabPanel>
-          <TabPanel value={value} index={4} className="w-full">
+          <TabPanel value={value} index={3} className="w-full">
             <WebhookTabPanel />
           </TabPanel>
-          <TabPanel value={value} index={5} className="w-full">
+          <TabPanel value={value} index={4} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
           {svixDashboardUrl ? (
-            <TabPanel value={value} index={6} className="w-full">
+            <TabPanel value={value} index={5} className="w-full">
               <CDCWebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
             </TabPanel>
           ) : null}
