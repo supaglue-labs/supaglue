@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ProviderDetailsPanel from './ProviderDetailsPanel';
-import ProvidersListPanel from './ProviderTabPanel';
+import ProvidersListPanel from './ProvidersListPanel';
 
 const ICON_SIZE = 35;
 

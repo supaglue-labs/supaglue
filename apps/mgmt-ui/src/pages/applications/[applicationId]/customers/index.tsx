@@ -1,7 +1,7 @@
 import { createCustomer, deleteCustomer } from '@/client';
 import { DeleteCustomer } from '@/components/customers/DeleteCustomer';
-import MetricCard from '@/components/customers/MetricCard';
 import { NewCustomer } from '@/components/customers/NewCustomer';
+import MetricCard from '@/components/MetricCard';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';

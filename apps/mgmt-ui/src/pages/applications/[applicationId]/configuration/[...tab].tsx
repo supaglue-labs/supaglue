@@ -3,6 +3,7 @@ import CDCWebhookTabPanel from '@/components/configuration/CDCWebhookTabPanel';
 import DestinationTabPanelContainer from '@/components/configuration/destination/DestinationTabPanelContainer';
 import IntegrationTabPanelContainer from '@/components/configuration/integration/IntegrationTabPanelContainer';
 import ProviderTabPanelContainer from '@/components/configuration/provider/ProviderTabPanelContainer';
+import SyncConfigTabPanelContainer from '@/components/configuration/syncConfig/SyncConfigTabPanelContainer';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
@@ -29,6 +30,7 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
     label: 'Destinations',
     value: 'destinations',
   },
+  { label: 'Sync Configs', value: 'sync_configs' },
   {
     label: 'Webhook',
     value: 'webhook',
@@ -106,6 +108,7 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
               <Tab label="Integrations" />
               <Tab label="Providers" />
               <Tab label="Destinations" />
+              <Tab label="Syncs" />
               <Tab label="Webhook" />
               <Tab label="API Key" />
               {svixDashboardUrl ? <Tab label="CDC Webhooks" /> : null}
@@ -125,13 +128,16 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
             <DestinationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={3} className="w-full">
-            <WebhookTabPanel />
+            <SyncConfigTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={4} className="w-full">
+            <WebhookTabPanel />
+          </TabPanel>
+          <TabPanel value={value} index={5} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
           {svixDashboardUrl ? (
-            <TabPanel value={value} index={5} className="w-full">
+            <TabPanel value={value} index={6} className="w-full">
               <CDCWebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
             </TabPanel>
           ) : null}

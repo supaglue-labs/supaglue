@@ -8461,7 +8461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.3.1":
+"classnames@npm:^2.3.1, classnames@npm:^2.3.2":
   version: 2.3.2
   resolution: "classnames@npm:2.3.2"
   checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
@@ -13985,6 +13985,7 @@ __metadata:
     "@types/react-dom": 18.0.11
     "@types/sharp": ^0
     autoprefixer: ^10.4.13
+    classnames: ^2.3.2
     dayjs: ^1.11.7
     eslint: 8.35.0
     eslint-config-next: 13.2.3
@@ -13997,6 +13998,7 @@ __metadata:
     sharp: ^0.31.3
     svix: ^0.84.1
     swr: ^2.1.0
+    tailwind-override: ^0.6.1
     tailwindcss: ^3.2.7
     typescript: 4.9.5
   languageName: unknown
@@ -19000,6 +19002,13 @@ __metadata:
     "@pkgr/utils": ^2.3.1
     tslib: ^2.5.0
   checksum: 8a9560e5d8f3d94dc3cf5f7b9c83490ffa30d320093560a37b88f59483040771fd1750e76b9939abfbb1b5a23fd6dfbae77f6b338abffe7cae7329cd9b9bb86b
+  languageName: node
+  linkType: hard
+
+"tailwind-override@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "tailwind-override@npm:0.6.1"
+  checksum: 8c0eb4d84b4ce81a3606e4df2225a9eee295ebb4070ecc74eb35312c4c4ac9556f435736d0bfada2b94e91ad69e0800c4c4511cbf71f1d05d95444bbe88c5c70
   languageName: node
   linkType: hard
 
