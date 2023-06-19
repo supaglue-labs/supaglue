@@ -10,8 +10,10 @@ import {
   CRMCommonModelTypeMap,
   LeadV2,
   OpportunityV2,
+  UserV2,
 } from '@supaglue/types/crm';
 import { o, OHandler } from 'odata';
+import { plural } from 'pluralize';
 import querystring from 'querystring';
 import simpleOauth2 from 'simple-oauth2';
 import { Readable } from 'stream';
@@ -115,21 +117,44 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     return this.#headers;
   }
 
+  public override async listRecords(object: string, updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+    const idkey = `${object}id`;
+    return paginator([
+      {
+        pageFetcher: this.getListFetcherForEntity(plural(object), updatedAfter, undefined, heartbeat),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.value.map((result: any) => ({
+              id: result[idkey],
+              rawData: result,
+              isDeleted: false,
+              lastModifiedAt: new Date(result.modifiedon),
+              emittedAt,
+            }))
+          );
+        },
+        getNextCursorFromPage: (response) => response['@odata.nextLink'],
+      },
+    ]);
+  }
+
   public override async listCommonModelRecords(
     commonModelType: CRMCommonModelType,
-    updatedAfter?: Date
+    updatedAfter?: Date,
+    heartbeat?: () => void
   ): Promise<Readable> {
     switch (commonModelType) {
       case 'account':
-        return await this.listAccounts(updatedAfter);
+        return await this.listAccounts(updatedAfter, heartbeat);
       case 'contact':
-        return await this.listContacts(updatedAfter);
+        return await this.listContacts(updatedAfter, heartbeat);
       case 'lead':
-        return await this.listLeads(updatedAfter);
+        return await this.listLeads(updatedAfter, heartbeat);
       case 'opportunity':
-        return await this.listOpportunities(updatedAfter);
+        return await this.listOpportunities(updatedAfter, heartbeat);
       case 'user':
-        return await this.listUsers(updatedAfter);
+        return await this.listUsers(updatedAfter, heartbeat);
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -148,6 +173,8 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         return this.getLead(id);
       case 'opportunity':
         return this.getOpportunity(id);
+      case 'user':
+        return await this.getUser(id);
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -193,10 +220,18 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     );
   }
 
+  private async getUser(id: string): Promise<UserV2> {
+    await this.maybeRefreshAccessToken();
+    return fromDynamicsUserToRemoteUser(
+      await this.#odata.get('systemusers').query({ $filter: `systemuserid eq '${id}'` })
+    );
+  }
+
   private getListFetcherForEntity(
     entity: string,
     updatedAfter?: Date,
-    expand?: string
+    expand?: string,
+    heartbeat?: () => void
   ): (nextUrl?: string) => Promise<any> {
     return async (nextUrl?: string) => {
       await this.maybeRefreshAccessToken();
@@ -209,6 +244,9 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           }),
         { headers: this.#headers }
       );
+      if (heartbeat) {
+        heartbeat();
+      }
       if (!response.ok) {
         throw this.handleErr(response);
       }
@@ -216,10 +254,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     };
   }
 
-  private async listAccounts(updatedAfter?: Date): Promise<Readable> {
+  private async listAccounts(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('accounts', updatedAfter),
+        pageFetcher: this.getListFetcherForEntity('accounts', updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -231,10 +269,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listContacts(updatedAfter?: Date): Promise<Readable> {
+  private async listContacts(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('contacts', updatedAfter),
+        pageFetcher: this.getListFetcherForEntity('contacts', updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -246,13 +284,14 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listOpportunities(updatedAfter?: Date): Promise<Readable> {
+  private async listOpportunities(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity(
           'opportunities',
           updatedAfter,
-          'stageid_processstage($select=stagename),opportunity_leadtoopportunitysalesprocess($select=name)'
+          'stageid_processstage($select=stagename),opportunity_leadtoopportunitysalesprocess($select=name)',
+          heartbeat
         ),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
@@ -268,10 +307,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listLeads(updatedAfter?: Date): Promise<Readable> {
+  private async listLeads(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('leads', updatedAfter),
+        pageFetcher: this.getListFetcherForEntity('leads', updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -286,10 +325,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listUsers(updatedAfter?: Date): Promise<Readable> {
+  private async listUsers(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('systemusers', updatedAfter),
+        pageFetcher: this.getListFetcherForEntity('systemusers', updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(

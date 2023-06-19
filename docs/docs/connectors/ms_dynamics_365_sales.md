@@ -15,7 +15,7 @@ Supaglue interfaces with the Microsoft Dynamics 365 V9 API.
 | ---------------- | --------- |
 | Auth             | Yes       |
 | Managed syncs    | Yes       |
-| Point reads      | No        |
+| Point reads      | Yes       |
 | Creates          | No        |
 | Updates          | No        |
 | Real-time events | No        |
