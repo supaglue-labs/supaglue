@@ -21,8 +21,8 @@ import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
-import { ApplicationService } from 'sync-worker/services';
 import { logEvent } from '../lib/analytics';
+import { ApplicationService } from '../services';
 
 export type ImportRecordsArgs = {
   syncId: string;

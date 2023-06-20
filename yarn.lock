@@ -5611,7 +5611,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@supaglue/db@workspace:*, @supaglue/db@workspace:packages/db":
+"@supaglue/db@workspace:*, @supaglue/db@workspace:^, @supaglue/db@workspace:packages/db":
   version: 0.0.0-use.local
   resolution: "@supaglue/db@workspace:packages/db"
   dependencies:
@@ -5638,6 +5638,7 @@ __metadata:
   resolution: "@supaglue/sync-workflows@workspace:packages/sync-workflows"
   dependencies:
     "@supaglue/core": "workspace:*"
+    "@supaglue/db": "workspace:^"
     "@supaglue/types": "workspace:^"
     "@temporalio/activity": ^1.6.0
     "@temporalio/client": ^1.6.0

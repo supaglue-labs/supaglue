@@ -5,8 +5,8 @@ import { ConnectionService, RemoteService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
-import { ApplicationService } from 'sync-worker/services';
 import { logEvent } from '../lib/analytics';
+import { ApplicationService } from '../services';
 
 export type SyncRawRecordsToDestinationArgs = {
   syncId: string;

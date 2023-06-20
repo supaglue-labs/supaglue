@@ -22,9 +22,9 @@ import {
 } from '@supaglue/core/services/common_models/engagement';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { PrismaClient } from '@supaglue/db';
+import { ApplicationService, SyncService } from '@supaglue/sync-workflows/services';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';
-import { ApplicationService, SyncService } from './services';
 
 type DependencyContainer = {
   prisma: PrismaClient;

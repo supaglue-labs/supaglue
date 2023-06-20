@@ -1,7 +1,7 @@
 import { maybeSendWebhookPayload } from '@supaglue/core/lib/webhook';
 import { ConnectionService, ProviderService } from '@supaglue/core/services';
 import { CommonModelType } from '@supaglue/types/common';
-import { ApplicationService } from 'sync-worker/services';
+import { ApplicationService } from '../services';
 
 export type MaybeSendSyncFinishWebhookArgs = {
   historyId: string;

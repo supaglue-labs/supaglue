@@ -20,7 +20,7 @@ import {
   UserService as EngagementUserService,
 } from '@supaglue/core/services/common_models/engagement';
 import { DestinationService } from '@supaglue/core/services/destination_service';
-import type { ApplicationService, SyncService } from 'sync-worker/services';
+import type { ApplicationService, SyncService } from '../services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetDestination } from './get_destination';
 import { createGetSync } from './get_sync';

@@ -3,7 +3,7 @@ import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import { ConnectionService, SyncHistoryService } from '@supaglue/core/services';
 import { SyncHistoryStatus } from '@supaglue/types/sync_history';
-import { ApplicationService } from 'sync-worker/services';
+import { ApplicationService } from '../services';
 
 export function createLogSyncFinish({
   syncHistoryService,
