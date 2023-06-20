@@ -1,12 +1,13 @@
 import { getApplicationIdScopedHeaders } from '@/utils/headers';
-import { GetIntegrationsResponse } from '@supaglue/schemas/v2/mgmt';
+import { UpdateProviderResponse } from '@supaglue/schemas/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<GetIntegrationsResponse | null>) {
-  const result = await fetch(`${API_HOST}/internal/integrations/${req.query.integrationId}`, {
-    method: 'GET',
+export default async function handler(req: NextApiRequest, res: NextApiResponse<UpdateProviderResponse | null>) {
+  const result = await fetch(`${API_HOST}/internal/providers/${req.body.id}`, {
+    method: 'PUT',
     headers: getApplicationIdScopedHeaders(req),
+    body: JSON.stringify(req.body),
   });
 
   if (!result.ok) {

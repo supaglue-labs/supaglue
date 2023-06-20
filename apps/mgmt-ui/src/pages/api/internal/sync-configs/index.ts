@@ -1,10 +1,10 @@
 import { getApplicationIdScopedHeaders } from '@/utils/headers';
-import { GetIntegrationsResponse } from '@supaglue/schemas/v2/mgmt';
+import { GetSyncConfigsResponse } from '@supaglue/schemas/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<GetIntegrationsResponse | null>) {
-  const result = await fetch(`${API_HOST}/internal/integrations/${req.query.integrationId}`, {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSyncConfigsResponse | null>) {
+  const result = await fetch(`${API_HOST}/internal/sync_configs`, {
     method: 'GET',
     headers: getApplicationIdScopedHeaders(req),
   });
