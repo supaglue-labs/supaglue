@@ -15,7 +15,7 @@ Supaglue interfaces with the Microsoft Dynamics 365 V9 API.
 | ---------------- | --------- |
 | Auth             | Yes       |
 | Managed syncs    | Yes       |
-| Point reads      | No        |
+| Point reads      | Yes       |
 | Creates          | No        |
 | Updates          | No        |
 | Real-time events | No        |
@@ -34,7 +34,7 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-To connect to your customers' Microsoft Dynamics 365 Sales instances, you'll need to update the redirect URL to point to Supaglue and fetch the API access credentials in your [Azure account](https://portal.azure.com/).
+To connect to your customers' Microsoft Dynamics 365 Sales instances, you'll need to update the redirect URL to point to Supaglue, enable API permissions, and fetch the API access credentials in your [Azure account](https://portal.azure.com/).
 
 ### Add Redirect URL to your Azure app
 
@@ -69,6 +69,20 @@ Supaglue provides a redirect URL to send information to your app. To add the red
     </Tabs>
 
 1. Click Save to update your changes.
+
+### Enable API permissions
+
+1. Go to API permissions from the left menu.
+
+1. Click "Add a permission" and select Dynamics 365.
+
+1. Under permissions, check the box for `user_impersonation`.
+
+  <BrowserWindow url="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/CallAnAPI/appId/9a0ed275-1fd4-4099-b809-a2030f4f4e07/isMSAApp~/false">
+
+  ![dynamics_api_permissions](/img/dynamics_api_permissions.png 'dynamics api permissions')
+
+  </BrowserWindow>
 
 ### Fetch Azure App credentials
 
