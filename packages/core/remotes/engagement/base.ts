@@ -10,16 +10,16 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface EngagementRemoteClient extends RemoteClient {
   category(): ProviderCategory;
-  listCommonModelRecords(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
-  getCommonModelRecord<T extends EngagementCommonModelType>(
+  listCommonObjectRecords(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
+  getCommonObjectRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<EngagementCommonModelTypeMap<T>['object']>;
-  createCommonModelRecord<T extends EngagementCommonModelType>(
+  createCommonObjectRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<string>;
-  updateCommonModelRecord<T extends EngagementCommonModelType>(
+  updateCommonObjectRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<string>;
@@ -38,16 +38,16 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     return err;
   }
 
-  abstract listCommonModelRecords(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
-  abstract getCommonModelRecord<T extends EngagementCommonModelType>(
+  abstract listCommonObjectRecords(commonModelType: EngagementCommonModelType, updatedAfter?: Date): Promise<Readable>;
+  abstract getCommonObjectRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<EngagementCommonModelTypeMap<T>['object']>;
-  abstract createCommonModelRecord<T extends EngagementCommonModelType>(
+  abstract createCommonObjectRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['createParams']
   ): Promise<string>;
-  abstract updateCommonModelRecord<T extends EngagementCommonModelType>(
+  abstract updateCommonObjectRecord<T extends EngagementCommonModelType>(
     commonModelType: T,
     params: EngagementCommonModelTypeMap<T>['updateParams']
   ): Promise<string>;

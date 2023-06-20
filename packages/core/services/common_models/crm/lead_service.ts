@@ -103,8 +103,8 @@ export class LeadService extends CommonModelBaseService {
       );
     }
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    const id = await remoteClient.createCommonModelRecord('lead', remoteCreateParams);
-    const remoteLead = await remoteClient.getCommonModelRecord('lead', id);
+    const id = await remoteClient.createCommonObjectRecord('lead', remoteCreateParams);
+    const remoteLead = await remoteClient.getCommonObjectRecord('lead', id);
     const leadModel = await this.prisma.crmLead.create({
       data: fromRemoteLeadToModel(connectionId, customerId, remoteLead),
     });
@@ -130,11 +130,11 @@ export class LeadService extends CommonModelBaseService {
     }
 
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    const returnedId = await remoteClient.updateCommonModelRecord('lead', {
+    const returnedId = await remoteClient.updateCommonObjectRecord('lead', {
       ...remoteUpdateParams,
       id: foundLeadModel.remoteId,
     });
-    const remoteLead = await remoteClient.getCommonModelRecord('lead', returnedId);
+    const remoteLead = await remoteClient.getCommonObjectRecord('lead', returnedId);
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.
     if (foundLeadModel.remoteId !== remoteLead.id) {

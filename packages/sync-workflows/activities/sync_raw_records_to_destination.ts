@@ -40,8 +40,8 @@ export function createSyncRawRecordsToDestination(
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
         const stream = isCustom
-          ? await (client as CrmRemoteClient).listCustomRecords(object, modifiedAfter, heartbeat)
-          : await (client as CrmRemoteClient).listRecords(object, modifiedAfter, heartbeat);
+          ? await (client as CrmRemoteClient).listRawCustomObjectRecords(object, modifiedAfter, heartbeat)
+          : await (client as CrmRemoteClient).listRawStandardObjectRecords(object, modifiedAfter, heartbeat);
         return await writer.writeRawRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
       } else {
         throw ApplicationFailure.nonRetryable(`Unsupported category: ${client.category()}`);

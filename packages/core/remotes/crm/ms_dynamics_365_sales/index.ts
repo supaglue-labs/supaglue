@@ -117,7 +117,11 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     return this.#headers;
   }
 
-  public override async listRecords(object: string, updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  public override async listRawStandardObjectRecords(
+    object: string,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     const idkey = `${object}id`;
     return paginator([
       {
@@ -139,7 +143,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public override async listCommonModelRecords(
+  public override async listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
     heartbeat?: () => void
@@ -160,7 +164,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async getCommonModelRecord<T extends CRMCommonModelType>(
+  public override async getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
@@ -180,14 +184,14 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async createCommonModelRecord<T extends CRMCommonModelType>(
+  public override async createCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
     throw new Error('Not implemented');
   }
 
-  public override async updateCommonModelRecord<T extends CRMCommonModelType>(
+  public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {
