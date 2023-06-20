@@ -2,7 +2,10 @@ import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
 import CDCWebhookTabPanel from '@/components/configuration/CDCWebhookTabPanel';
 import DestinationTabPanelContainer from '@/components/configuration/destination/DestinationTabPanelContainer';
 import IntegrationTabPanelContainer from '@/components/configuration/integration/IntegrationTabPanelContainer';
+import ProviderTabPanelContainer from '@/components/configuration/provider/ProviderTabPanelContainer';
+import SyncConfigTabPanelContainer from '@/components/configuration/syncConfig/SyncConfigTabPanelContainer';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
+import { TabPanel } from '@/components/TabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
@@ -19,14 +22,13 @@ type ConfigurationHeaderTab = {
   value: string;
 };
 const configurationHeaderTabs: ConfigurationHeaderTab[] = [
-  {
-    label: 'Integrations',
-    value: 'integrations',
-  },
+  { label: 'Providers', value: 'providers' },
   {
     label: 'Destinations',
     value: 'destinations',
   },
+  { label: 'Sync Configs', value: 'sync_configs' },
+  { label: 'Integrations (deprecated)', value: 'integrations' },
   {
     label: 'Webhook',
     value: 'webhook',
@@ -40,28 +42,6 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
     value: 'cdc_webhooks',
   },
 ];
-
-interface TabPanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`horizontal-tabpanel-${index}`}
-      aria-labelledby={`horizontal-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
 
 export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | null }) {
   const router = useRouter();
@@ -101,8 +81,10 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
         <Header
           tabs={
             <Tabs value={value} textColor="inherit" onChange={handleChange}>
-              <Tab label="Integrations" />
+              <Tab label="Providers" />
               <Tab label="Destinations" />
+              <Tab label="Syncs" />
+              <Tab label="Integrations (deprecated)" />
               <Tab label="Webhook" />
               <Tab label="API Key" />
               {svixDashboardUrl ? <Tab label="CDC Webhooks" /> : null}
@@ -113,19 +95,25 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
         />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
           <TabPanel value={value} index={0} className="w-full">
-            <IntegrationTabPanelContainer />
+            <ProviderTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={1} className="w-full">
             <DestinationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={2} className="w-full">
-            <WebhookTabPanel />
+            <SyncConfigTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={3} className="w-full">
+            <IntegrationTabPanelContainer />
+          </TabPanel>
+          <TabPanel value={value} index={4} className="w-full">
+            <WebhookTabPanel />
+          </TabPanel>
+          <TabPanel value={value} index={5} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
           {svixDashboardUrl ? (
-            <TabPanel value={value} index={4} className="w-full">
+            <TabPanel value={value} index={6} className="w-full">
               <CDCWebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
             </TabPanel>
           ) : null}
