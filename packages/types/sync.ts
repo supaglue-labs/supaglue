@@ -8,6 +8,15 @@ type BaseSync = {
   syncConfigId?: string;
   forceSyncFlag: boolean; // flag: whether to transition a sync to the phase "created"
   version: 'v1' | 'v2';
+  schemaMappingsConfig?: {
+    standardObjects?: {
+      object: string;
+      fieldMappings: {
+        schemaField: string; // my_first_column
+        mappedField: string; // blah_1
+      }[];
+    }[];
+  };
 };
 
 export type FullThenIncrementalSync = BaseSync & {

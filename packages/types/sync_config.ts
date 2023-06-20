@@ -33,15 +33,31 @@ export type CommonObjectConfig = {
   object: CommonModelType;
   // If true, all fields will be fetched into the raw object and not just the ones needed for the common model.
   fetchAllFieldsIntoRaw: boolean;
-  configOverride?: Partial<SyncStrategyConfig>;
 };
 
 export type RawObjectConfig = {
   object: string;
-  configOverride?: Partial<SyncStrategyConfig>;
+  schema: RawObjectSchema;
+};
+
+export type RawObjectInheritedSchema = {
+  type: 'inherited';
+  fields: undefined;
+};
+
+export type RawObjectDefinedSchema = {
+  type: 'defined';
+  fields: RawObjectSchemaField[];
+  allowAdditionalFieldMappings: boolean;
+};
+
+export type RawObjectSchema = RawObjectInheritedSchema | RawObjectDefinedSchema;
+
+export type RawObjectSchemaField = {
+  name: string; // my_first_column
+  mappedName?: string; // salesforce_first_column
 };
 
 export type RawCustomObjectConfig = {
   object: string;
-  configOverride?: Partial<SyncStrategyConfig>;
 };
