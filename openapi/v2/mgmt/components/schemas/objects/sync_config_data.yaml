@@ -12,7 +12,7 @@ properties:
         enum:
           - full then incremental
           - full only
-      enable_sync_on_connection_creation:
+      start_sync_on_connection_creation:
         type: boolean
     required:
       - period_ms

@@ -374,7 +374,7 @@ export interface components {
         period_ms: number;
         /** @enum {string} */
         strategy: "full then incremental" | "full only";
-        enable_sync_on_connection_creation?: boolean;
+        start_sync_on_connection_creation?: boolean;
       };
       common_objects?: ({
           /** @example contacts */
