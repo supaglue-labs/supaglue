@@ -15,7 +15,6 @@
   "peerDependencies": {
     "@temporalio/activity": "^1.6.0",
     "@temporalio/client": "^1.6.0",
-    "@temporalio/worker": "^1.6.0",
     "@temporalio/workflow": "^1.6.0"
   },
   "scripts": {

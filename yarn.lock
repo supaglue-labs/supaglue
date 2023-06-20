@@ -5647,7 +5647,6 @@ __metadata:
   peerDependencies:
     "@temporalio/activity": ^1.6.0
     "@temporalio/client": ^1.6.0
-    "@temporalio/worker": ^1.6.0
     "@temporalio/workflow": ^1.6.0
   languageName: unknown
   linkType: soft
@@ -7424,7 +7423,6 @@ __metadata:
     "@supaglue/sync-workflows": "workspace:*"
     "@temporalio/activity": ^1.6.0
     "@temporalio/client": ^1.6.0
-    "@temporalio/worker": ^1.6.0
     "@temporalio/workflow": ^1.6.0
     "@tsconfig/node18": ^1.0.1
     "@types/cors": ^2.8.13
