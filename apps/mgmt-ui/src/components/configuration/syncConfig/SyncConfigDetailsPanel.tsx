@@ -218,6 +218,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
             <Stack className="gap-2">
               <Typography variant="subtitle1">Standard objects</Typography>
               <Autocomplete
+                key={providerId}
                 multiple
                 id="standard-objects"
                 options={[]}
@@ -237,6 +238,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
             <Stack className="gap-2">
               <Typography variant="subtitle1">Custom objects</Typography>
               <Autocomplete
+                key={providerId}
                 multiple
                 id="custom-objects"
                 options={[]}
