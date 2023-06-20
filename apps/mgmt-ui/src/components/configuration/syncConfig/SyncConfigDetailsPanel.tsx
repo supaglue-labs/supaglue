@@ -8,9 +8,9 @@ import { useDestinations } from '@/hooks/useDestinations';
 import { useProviders } from '@/hooks/useProviders';
 import { useSyncConfig } from '@/hooks/useSyncConfig';
 import { useSyncConfigs } from '@/hooks/useSyncConfigs';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { CommonObjectConfig, ProviderCategory, SyncConfig, SyncConfigCreateParams, SyncType } from '@supaglue/types';
+import { CommonModelType, CommonObjectConfig, SyncConfig, SyncConfigCreateParams, SyncType } from '@supaglue/types';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
 import { useRouter } from 'next/router';
@@ -18,50 +18,80 @@ import { useEffect, useState } from 'react';
 
 const ONE_HOUR_SECONDS = 60 * 60;
 
-const isSyncPeriodSecsValid = (syncPeriodSecs: number) => {
+const isSyncPeriodSecsValid = (syncPeriodSecs: number | undefined) => {
+  if (!syncPeriodSecs) {
+    return false;
+  }
   return syncPeriodSecs < 60 ? false : true;
 };
 
-export type SyncConfigDetailsPanelProps = {
-  syncConfigId: string;
+export function SyncConfigDetailsPanel({ syncConfigId }: { syncConfigId: string }) {
+  const { syncConfig, isLoading } = useSyncConfig(syncConfigId);
+  return <SyncConfigDetailsPanelImpl syncConfig={syncConfig} isLoading={isLoading} />;
+}
+
+export function NewSyncConfigPanel() {
+  return <SyncConfigDetailsPanelImpl isLoading={false} />;
+}
+
+type SyncConfigDetailsPanelImplProps = {
+  syncConfig?: SyncConfig;
+  isLoading: boolean;
 };
 
-export default function SyncConfigDetailsPanel({ syncConfigId }: SyncConfigDetailsPanelProps) {
+function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetailsPanelImplProps) {
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
-  const { syncConfig, isLoading } = useSyncConfig(syncConfigId);
   const { syncConfigs = [], mutate } = useSyncConfigs();
-  const { providers, isLoading: isLoadingProviders } = useProviders();
+  const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations, isLoading: isLoadingDestinations } = useDestinations();
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
-  const [isFormValid, setIsFormValid] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [providerId, setProviderId] = useState<string | undefined>();
   const [destinationId, setDestinationId] = useState<string | undefined>();
   const [strategy, setStrategy] = useState<SyncType>('full then incremental');
+  const [commonObjects, setCommonObjects] = useState<CommonModelType[]>([]);
+  const [standardObjects, setStandardObjects] = useState<string[]>([]);
+  const [customObjects, setCustomObjects] = useState<string[]>([]);
   const router = useRouter();
+
+  const isFormValid = destinationId && providerId && isSyncPeriodSecsValid(syncPeriodSecs);
 
   useEffect(() => {
     setDestinationId(syncConfig?.destinationId ?? undefined);
     setProviderId(syncConfig?.providerId ?? undefined);
     setSyncPeriodSecs(
-      syncConfig?.config?.defaultConfig?.periodMs ? syncConfig?.config?.defaultConfig?.periodMs / 1000 : undefined
+      syncConfig?.config?.defaultConfig?.periodMs
+        ? syncConfig?.config?.defaultConfig?.periodMs / 1000
+        : ONE_HOUR_SECONDS
     );
     setStrategy(syncConfig?.config?.defaultConfig?.strategy ?? 'full then incremental');
+    setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
+    setStandardObjects(syncConfig?.config?.rawObjects?.map((o) => o.object) ?? []);
+    setCustomObjects(syncConfig?.config?.rawCustomObjects?.map((o) => o.object) ?? []);
   }, [syncConfig?.id]);
 
-  if (isLoading) {
+  if (isLoading || isLoadingProviders || isLoadingDestinations) {
     return <Spinner />;
   }
 
-  if (!syncConfig) {
-    return null;
-  }
+  const formTitle = syncConfig ? 'Edit Sync Config' : 'New Sync Config';
+  const provider = providers?.find((p) => p.id === providerId);
 
-  const createOrUpdateSyncConfig = async (): Promise<SyncConfig> => {
+  const createOrUpdateSyncConfig = async (): Promise<SyncConfig | undefined> => {
     if (!destinationId || !providerId) {
-      throw new Error('Destination and Provider must be selected');
+      addNotification({ message: 'Destination and Provider must be selected', severity: 'error' });
+      return;
     }
+    if (isLoading) {
+      addNotification({ message: 'Cannot save while loading', severity: 'error' });
+      return;
+    }
+    if (!syncConfig && syncConfigs.find((s) => s.providerId === providerId)) {
+      addNotification({ message: 'Sync config already exists for provider', severity: 'error' });
+      return;
+    }
+
     if (syncConfig) {
       const newSyncConfig: SyncConfig = {
         ...syncConfig,
@@ -74,6 +104,9 @@ export default function SyncConfigDetailsPanel({ syncConfigId }: SyncConfigDetai
             periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
             strategy,
           },
+          commonObjects: commonObjects.map((object) => ({ object, fetchAllFieldsIntoRaw: true } as CommonObjectConfig)),
+          rawObjects: standardObjects.map((object) => ({ object })),
+          rawCustomObjects: customObjects.map((object) => ({ object })),
         },
       };
       return await updateSyncConfig(activeApplicationId, newSyncConfig);
@@ -93,7 +126,9 @@ export default function SyncConfigDetailsPanel({ syncConfigId }: SyncConfigDetai
           periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
           strategy,
         },
-        commonObjects: getDefaultCommonObjects(provider.category, false),
+        commonObjects: commonObjects.map((object) => ({ object, fetchAllFieldsIntoRaw: true } as CommonObjectConfig)),
+        rawObjects: standardObjects.map((object) => ({ object })),
+        rawCustomObjects: customObjects.map((object) => ({ object })),
       },
     };
     return await createSyncConfig(activeApplicationId, newSyncConfig);
@@ -105,7 +140,7 @@ export default function SyncConfigDetailsPanel({ syncConfigId }: SyncConfigDetai
         <Stack direction="row" className="items-center justify-between w-full">
           <Stack direction="row" className="items-center justify-center gap-2">
             <Stack direction="column">
-              <Typography variant="subtitle1">{syncConfig.id}</Typography>
+              <Typography variant="subtitle1">{formTitle}</Typography>
             </Stack>
           </Stack>
         </Stack>
@@ -113,22 +148,31 @@ export default function SyncConfigDetailsPanel({ syncConfigId }: SyncConfigDetai
           <Typography variant="subtitle1">Provider</Typography>
           <Select
             name="Provider"
-            disabled={isLoadingProviders}
-            onChange={setProviderId}
+            disabled={isLoadingProviders || !!syncConfig}
+            onChange={(value) => {
+              if (value === providerId) {
+                return;
+              }
+              const provider = providers.find((p) => p.id === value);
+              setProviderId(value);
+              setCommonObjects(
+                provider?.category === 'crm' ? [...CRM_COMMON_MODEL_TYPES] : [...ENGAGEMENT_COMMON_MODEL_TYPES]
+              );
+              setStandardObjects([]);
+              setCustomObjects([]);
+            }}
             value={providerId ?? ''}
             options={providers?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
-            unselect
           />
         </Stack>
         <Stack className="gap-2">
           <Typography variant="subtitle1">Destination</Typography>
           <Select
             name="Destination"
-            disabled={isLoadingDestinations}
+            disabled={isLoadingDestinations || !!syncConfig}
             onChange={setDestinationId}
             value={destinationId ?? ''}
             options={destinations?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
-            unselect
           />
         </Stack>
         <Stack className="gap-2">
@@ -147,10 +191,70 @@ export default function SyncConfigDetailsPanel({ syncConfigId }: SyncConfigDetai
                 value = undefined;
               }
               setSyncPeriodSecs(value);
-              setIsFormValid(value !== undefined && isSyncPeriodSecsValid(value));
             }}
           />
         </Stack>
+        {provider && (
+          <>
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Common objects</Typography>
+              <Autocomplete
+                key={providerId}
+                multiple
+                id="common-objects"
+                options={CRM_COMMON_MODEL_TYPES}
+                defaultValue={commonObjects}
+                renderTags={(value: readonly string[], getTagProps) =>
+                  value.map((option: string, index: number) => (
+                    <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                  ))
+                }
+                renderInput={(params) => <TextField {...params} label="common objects" />}
+                onChange={(event: any, value: string[]) => {
+                  setCommonObjects(value as CommonModelType[]);
+                }}
+              />
+            </Stack>
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Standard objects</Typography>
+              <Autocomplete
+                multiple
+                id="standard-objects"
+                options={[]}
+                defaultValue={standardObjects}
+                freeSolo
+                renderTags={(value: readonly string[], getTagProps) =>
+                  value.map((option: string, index: number) => (
+                    <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                  ))
+                }
+                renderInput={(params) => <TextField {...params} label="standard objects" />}
+                onChange={(event: any, value: string[]) => {
+                  setStandardObjects(value);
+                }}
+              />
+            </Stack>
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Custom objects</Typography>
+              <Autocomplete
+                multiple
+                id="custom-objects"
+                options={[]}
+                defaultValue={customObjects}
+                freeSolo
+                renderTags={(value: readonly string[], getTagProps) =>
+                  value.map((option: string, index: number) => (
+                    <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                  ))
+                }
+                renderInput={(params) => <TextField {...params} label="custom objects" />}
+                onChange={(event: any, value: string[]) => {
+                  setStandardObjects(value);
+                }}
+              />
+            </Stack>
+          </>
+        )}
         <Stack direction="row" className="gap-2 justify-between">
           <Button
             variant="outlined"
@@ -163,20 +267,22 @@ export default function SyncConfigDetailsPanel({ syncConfigId }: SyncConfigDetai
           </Button>
           <Button
             variant="contained"
-            disabled={isSaving || isLoading}
+            disabled={!isFormValid || isSaving || isLoading}
             onClick={async () => {
               setIsSaving(true);
               const newSyncConfig = await createOrUpdateSyncConfig();
-              const latestSyncConfigs = [
-                ...syncConfigs.filter((syncConfig) => syncConfig.id !== newSyncConfig.id),
-                newSyncConfig,
-              ];
-              addNotification({ message: 'Successfully updated Sync Config', severity: 'success' });
-              await mutate(latestSyncConfigs, {
-                optimisticData: latestSyncConfigs,
-                revalidate: false,
-                populateCache: false,
-              });
+              if (newSyncConfig) {
+                const latestSyncConfigs = [
+                  ...syncConfigs.filter((syncConfig) => syncConfig.id !== newSyncConfig.id),
+                  newSyncConfig,
+                ];
+                addNotification({ message: 'Successfully updated Sync Config', severity: 'success' });
+                await mutate(latestSyncConfigs, {
+                  optimisticData: latestSyncConfigs,
+                  revalidate: false,
+                  populateCache: false,
+                });
+              }
               setIsSaving(false);
             }}
           >
@@ -187,16 +293,3 @@ export default function SyncConfigDetailsPanel({ syncConfigId }: SyncConfigDetai
     </Card>
   );
 }
-
-const getDefaultCommonObjects = (category: ProviderCategory, fetchAllFieldsIntoRaw: boolean): CommonObjectConfig[] => {
-  if (category === 'engagement') {
-    return ENGAGEMENT_COMMON_MODEL_TYPES.map((object) => ({
-      object,
-      fetchAllFieldsIntoRaw,
-    }));
-  }
-  return CRM_COMMON_MODEL_TYPES.map((object) => ({
-    object,
-    fetchAllFieldsIntoRaw,
-  }));
-};

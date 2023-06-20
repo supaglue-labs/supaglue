@@ -12,8 +12,6 @@ import { IconButton, Stack } from '@mui/material';
 import Link from '@mui/material/Link';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
-const lightColor = 'rgba(255, 255, 255, 0.7)';
-
 export default function SyncConfigListPanel() {
   const { syncConfigs = [], isLoading } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
@@ -25,7 +23,24 @@ export default function SyncConfigListPanel() {
   }
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 300 },
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 300,
+      renderCell: (params) => {
+        return (
+          <Link
+            href={`/applications/${applicationId}/configuration/sync_configs/${params.id}`}
+            className="flex flex-row gap-2 items-center w-full h-full"
+            sx={{
+              textDecoration: 'none',
+            }}
+          >
+            {params.id}
+          </Link>
+        );
+      },
+    },
     {
       field: 'provider',
       headerName: 'Provider',
@@ -91,7 +106,15 @@ export default function SyncConfigListPanel() {
               {syncConfigs.length} Sync {syncConfigs.length === 1 ? 'Configuration' : 'Configurations'}
             </div>
             <IconButton className="p-1" size="small">
-              <AddIcon />
+              <Link
+                href={`/applications/${applicationId}/configuration/sync_configs/new`}
+                className="flex flex-row gap-2 items-center w-full h-full"
+                sx={{
+                  color: 'rgba(0, 0, 0, 0.54);',
+                }}
+              >
+                <AddIcon />
+              </Link>
             </IconButton>
           </Stack>
         }

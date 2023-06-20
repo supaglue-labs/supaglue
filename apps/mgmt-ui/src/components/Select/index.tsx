@@ -37,8 +37,10 @@ export default function Select({ name, value, options, onChange, unselect, disab
               <em>None</em>
             </MenuItem>
           )}
-          {options.map((option) => (
-            <MenuItem value={option.value}>{option.displayValue ?? option.value}</MenuItem>
+          {options.map((option, idx) => (
+            <MenuItem key={idx} value={option.value}>
+              {option.displayValue ?? option.value}
+            </MenuItem>
           ))}
         </MuiSelect>
       </FormControl>
