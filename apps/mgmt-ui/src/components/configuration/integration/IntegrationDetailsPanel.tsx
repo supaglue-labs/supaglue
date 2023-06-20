@@ -8,6 +8,7 @@ import { useDestinations } from '@/hooks/useDestinations';
 import { useIntegrations } from '@/hooks/useIntegrations';
 import providerToIcon from '@/utils/providerToIcon';
 import {
+  Box,
   Button,
   CardContent,
   CardHeader,
@@ -39,6 +40,7 @@ const isSyncPeriodSecsValid = (syncPeriodSecs: number) => {
 };
 
 export default function IntegrationDetailsPanel({ providerName, category, isLoading }: IntegrationDetailsPanelProps) {
+  const shouldAllowManagedOauth = ['salesforce', 'hubspot'].includes(providerName);
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
   const [friendlyIntegrationId, setFriendlyIntegrationId] = useState<string>('--');
@@ -72,7 +74,11 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
       integration?.config?.sync?.periodMs ? integration?.config?.sync?.periodMs / 1000 : ONE_HOUR_SECONDS
     );
     setDestinationId(integration?.destinationId ?? undefined);
-    setUseManagedOauth(integration?.id ? Boolean(integration?.config?.useManagedOauth) : true);
+    setUseManagedOauth(
+      integration?.id
+        ? Boolean(integration?.config?.useManagedOauth) && shouldAllowManagedOauth
+        : shouldAllowManagedOauth
+    );
   }, [integration?.id]);
 
   const createOrUpdateIntegration = async (): Promise<Integration> => {
@@ -149,20 +155,26 @@ export default function IntegrationDetailsPanel({ providerName, category, isLoad
           <Typography variant="subtitle1">Provider Configuration</Typography>
           <Stack className="gap-4 pt-4">
             <FormGroup>
-              <FormControlLabel
-                control={
-                  <Switch
-                    disabled={integration?.id ? true : false}
-                    checked={useManagedOauth}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      setUseManagedOauth(event.target.checked);
-                    }}
+              {shouldAllowManagedOauth && (
+                <Box className="pb-4">
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        disabled={integration?.id ? true : false}
+                        checked={useManagedOauth}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          setUseManagedOauth(event.target.checked);
+                        }}
+                      />
+                    }
+                    label="Use Supaglue's OAuth2 app"
                   />
-                }
-                label="Use Supaglue's OAuth2 app"
-              />
-              <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>This cannot be changed once saved</FormHelperText>
-              <Stack className="gap-2 pt-4">
+                  <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>
+                    This cannot be changed once saved
+                  </FormHelperText>
+                </Box>
+              )}
+              <Stack className="gap-2">
                 <TextField
                   disabled={useManagedOauth}
                   value={clientId}
