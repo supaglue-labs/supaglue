@@ -8,6 +8,9 @@ type BaseSync = {
   syncConfigId?: string;
   forceSyncFlag: boolean; // flag: whether to transition a sync to the phase "created"
   version: 'v1' | 'v2';
+  // If this is undefined, we treat it as "true" to be backwards compatible.
+  // TODO: This should be required
+  enabled?: boolean;
   schemaMappingsConfig?: {
     standardObjects?: {
       object: string;
