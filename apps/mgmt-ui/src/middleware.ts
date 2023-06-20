@@ -1,4 +1,4 @@
-import { getAuth, withClerkMiddleware } from '@clerk/nextjs/server';
+import { authMiddleware } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { IS_CLOUD } from './pages/api';
@@ -21,28 +21,30 @@ const isCloudOnlyPath = (path: string) => {
   return cloudOnlyPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
 };
 
-const cloudMiddleware = withClerkMiddleware((request: NextRequest) => {
-  if (isCloudPublicPath(request.nextUrl.pathname)) {
+const cloudMiddleware = authMiddleware({
+  afterAuth(auth, request) {
+    if (isCloudPublicPath(request.nextUrl.pathname)) {
+      return NextResponse.next();
+    }
+
+    const { userId, orgId } = auth;
+
+    // if the user is not signed in redirect them to the sign in page.
+    if (!userId) {
+      const signInUrl = new URL('/sign-in', request.url);
+      signInUrl.searchParams.set('redirect_url', process.env.FRONTEND_URL ?? request.url);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    // if the user is signed in but does not have an org, redirect them to create an org.
+    // (but don't redirect if the path is already `/create-organization`)
+    if (!orgId && !isCloudCreateOrgPath(request.nextUrl.pathname)) {
+      const createOrgUrl = new URL('/create-organization', request.url);
+      createOrgUrl.searchParams.set('redirect_url', process.env.FRONTEND_URL ?? request.url);
+      return NextResponse.redirect(createOrgUrl);
+    }
     return NextResponse.next();
-  }
-
-  const { userId, orgId } = getAuth(request);
-
-  // if the user is not signed in redirect them to the sign in page.
-  if (!userId) {
-    const signInUrl = new URL('/sign-in', request.url);
-    signInUrl.searchParams.set('redirect_url', process.env.FRONTEND_URL ?? request.url);
-    return NextResponse.redirect(signInUrl);
-  }
-
-  // if the user is signed in but does not have an org, redirect them to create an org.
-  // (but don't redirect if the path is already `/create-organization`)
-  if (!orgId && !isCloudCreateOrgPath(request.nextUrl.pathname)) {
-    const createOrgUrl = new URL('/create-organization', request.url);
-    createOrgUrl.searchParams.set('redirect_url', process.env.FRONTEND_URL ?? request.url);
-    return NextResponse.redirect(createOrgUrl);
-  }
-  return NextResponse.next();
+  },
 });
 
 const nonCloudMiddleware = async (request: NextRequest) => {
