@@ -93,13 +93,11 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   return (
     <Card>
       <Stack direction="column" className="gap-4" sx={{ padding: '2rem' }}>
-        <Stack direction="row" className="items-center justify-between w-full">
-          <Stack direction="row" className="items-center justify-center gap-2">
-            {providerToIcon(providerCardInfo.providerName, 35)}
-            <Stack direction="column">
-              <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
-              <Typography fontSize={12}>{providerCardInfo.category.toUpperCase()}</Typography>
-            </Stack>
+        <Stack direction="row" className="items-center gap-2">
+          {providerToIcon(providerCardInfo.providerName, 35)}
+          <Stack direction="column">
+            <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
+            <Typography fontSize={12}>{providerCardInfo.category.toUpperCase()}</Typography>
           </Stack>
         </Stack>
 

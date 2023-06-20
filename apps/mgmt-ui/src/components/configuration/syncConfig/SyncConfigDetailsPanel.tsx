@@ -138,10 +138,8 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
     <Card>
       <Stack direction="column" className="gap-4" sx={{ padding: '2rem' }}>
         <Stack direction="row" className="items-center justify-between w-full">
-          <Stack direction="row" className="items-center justify-center gap-2">
-            <Stack direction="column">
-              <Typography variant="subtitle1">{formTitle}</Typography>
-            </Stack>
+          <Stack direction="column">
+            <Typography variant="subtitle1">{formTitle}</Typography>
           </Stack>
         </Stack>
         <Stack className="gap-2">
