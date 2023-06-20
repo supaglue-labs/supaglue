@@ -490,6 +490,7 @@ model Sync {
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
   version         String        @default("v1")
+  paused          Boolean       @default(false)
   syncConfigId    String?       @map("sync_config_id")
   // TODO: Eventually make this required
   syncConfig      SyncConfig?   @relation(fields: [syncConfigId], references: [id])
@@ -513,7 +514,7 @@ model SyncHistory {
   // exactly one of `model` or `rawObject` should be set
   // contact, lead, account, opportunity, etc.
   model            String?
-  rawObject        String?    @map("raw_object")
+  rawObject        String?   @map("raw_object")
   // SUCCESS | ERROR | IN_PROGRESS
   status           String
   errorMessage     String?   @map("error_message")
