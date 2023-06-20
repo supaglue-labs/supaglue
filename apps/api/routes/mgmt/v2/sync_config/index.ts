@@ -119,13 +119,14 @@ export default function init(app: Router): void {
           },
         }),
       });
-      const { rawObjects, ...rest } = syncConfig.config;
+      const { rawObjects, rawCustomObjects, ...rest } = syncConfig.config;
       return res.status(200).send(
         snakecaseKeys({
           ...syncConfig,
           config: {
             ...rest,
-            rawStandardObjects: rawObjects, // TODO: remove when we propogate `rawStandardObjects` all the way through code
+            standardObjects: rawObjects, // TODO: remove when we propogate `standardObjects` all the way through code
+            customObjects: rawCustomObjects,
           },
         })
       );
