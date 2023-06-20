@@ -33,16 +33,16 @@ export class CrmCustomObjectService {
 
   public async getRecord(connectionId: string, objectId: string, id: string): Promise<CustomObjectRecord> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    return await remoteClient.getCustomRecord(objectId, id);
+    return await remoteClient.getCustomObjectRecord(objectId, id);
   }
 
   public async createRecord(connectionId: string, params: CustomObjectRecordCreateParams): Promise<string> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    return await remoteClient.createCustomRecord(params);
+    return await remoteClient.createCustomObjectRecord(params);
   }
 
   public async updateRecord(connectionId: string, params: CustomObjectRecordUpdateParams): Promise<void> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    await remoteClient.updateCustomRecord(params);
+    await remoteClient.updateCustomObjectRecord(params);
   }
 }

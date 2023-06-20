@@ -95,8 +95,8 @@ export class OpportunityService extends CommonModelBaseService {
       remoteCreateParams.ownerId = await getRemoteId(this.prisma, createParams.ownerId, 'user');
     }
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    const id = await remoteClient.createCommonModelRecord('opportunity', remoteCreateParams);
-    const remoteOpportunity = await remoteClient.getCommonModelRecord('opportunity', id);
+    const id = await remoteClient.createCommonObjectRecord('opportunity', remoteCreateParams);
+    const remoteOpportunity = await remoteClient.getCommonObjectRecord('opportunity', id);
     const opportunityModel = await this.prisma.crmOpportunity.create({
       data: fromRemoteOpportunityToModel(connectionId, customerId, remoteOpportunity),
     });
@@ -129,11 +129,11 @@ export class OpportunityService extends CommonModelBaseService {
     }
 
     const remoteClient = (await this.remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    const returnedId = await remoteClient.updateCommonModelRecord('opportunity', {
+    const returnedId = await remoteClient.updateCommonObjectRecord('opportunity', {
       ...remoteUpdateParams,
       id: foundOpportunityModel.remoteId,
     });
-    const remoteOpportunity = await remoteClient.getCommonModelRecord('opportunity', returnedId);
+    const remoteOpportunity = await remoteClient.getCommonObjectRecord('opportunity', returnedId);
 
     // This can happen for hubspot if 2 records got merged. In this case, we should update both.
     if (foundOpportunityModel.remoteId !== remoteOpportunity.id) {

@@ -723,7 +723,7 @@
                               "fetch_all_fields_into_raw": false
                             }
                           ],
-                          "raw_standard_objects": [
+                          "standard_objects": [
                             {
                               "object": "emails"
                             },
@@ -748,7 +748,7 @@
                               "fetch_all_fields_into_raw": false
                             }
                           ],
-                          "raw_standard_objects": [
+                          "standard_objects": [
                             {
                               "object": "tasks"
                             }
@@ -840,7 +840,7 @@
                             "fetch_all_fields_into_raw": false
                           }
                         ],
-                        "raw_standard_objects": [
+                        "standard_objects": [
                           {
                             "object": "emails"
                           },
@@ -903,7 +903,7 @@
                             "fetch_all_fields_into_raw": false
                           }
                         ],
-                        "raw_standard_objects": [
+                        "standard_objects": [
                           {
                             "object": "emails"
                           },
@@ -960,7 +960,7 @@
                             "fetch_all_fields_into_raw": false
                           }
                         ],
-                        "raw_standard_objects": [
+                        "standard_objects": [
                           {
                             "object": "emails"
                           },
@@ -2407,7 +2407,7 @@
               ]
             }
           },
-          "raw_standard_objects": {
+          "standard_objects": {
             "type": "array",
             "items": {
               "type": "object",
@@ -2422,7 +2422,7 @@
               ]
             }
           },
-          "raw_custom_objects": {
+          "custom_objects": {
             "type": "array",
             "items": {
               "type": "object",

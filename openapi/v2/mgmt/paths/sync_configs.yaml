@@ -31,7 +31,7 @@ get:
                         fetch_all_fields_into_raw: false
                       - object: accounts
                         fetch_all_fields_into_raw: false
-                    raw_standard_objects:
+                    standard_objects:
                       - object: emails
                       - object: tasks
                 - id: 200080b0-374a-48bd-877f-d9cc5a0e3399
@@ -44,7 +44,7 @@ get:
                     common_objects:
                       - object: accounts
                         fetch_all_fields_into_raw: false
-                    raw_standard_objects:
+                    standard_objects:
                       - object: tasks
 post:
   operationId: createSyncConfig

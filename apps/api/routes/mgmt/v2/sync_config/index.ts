@@ -35,12 +35,13 @@ export default function init(app: Router): void {
       const syncConfigs = await syncConfigService.list(req.supaglueApplication.id);
       return res.status(200).send(
         syncConfigs.map((syncConfig) => {
-          const { rawObjects, ...rest } = syncConfig.config;
+          const { rawObjects, rawCustomObjects, ...rest } = syncConfig.config;
           return snakecaseKeys({
             ...syncConfig,
             config: {
               ...rest,
-              rawStandardObjects: rawObjects, // TODO: remove when we propogate `rawStandardObjects` all the way through code
+              standardObjects: rawObjects, // TODO: remove when we propogate `standardObjects` all the way through code
+              customObjects: rawCustomObjects,
             },
           });
         })
@@ -64,7 +65,8 @@ export default function init(app: Router): void {
               ...commonObject,
               object: commonObject.object as CommonModelType,
             })),
-            raw_objects: req.body.config.raw_standard_objects,
+            raw_objects: req.body.config.standard_objects,
+            raw_custom_objects: req.body.config.custom_objects,
           },
         }),
       });
@@ -82,13 +84,14 @@ export default function init(app: Router): void {
         req.params.sync_config_id,
         req.supaglueApplication.id
       );
-      const { rawObjects, ...rest } = syncConfig.config;
+      const { rawObjects, rawCustomObjects, ...rest } = syncConfig.config;
       return res.status(200).send(
         snakecaseKeys({
           ...syncConfig,
           config: {
             ...rest,
-            rawStandardObjects: rawObjects, // TODO: remove when we propogate `rawStandardObjects` all the way through code
+            standardObjects: rawObjects, // TODO: remove when we propogate `standardObjects` all the way through code
+            customObjects: rawCustomObjects,
           },
         })
       );
@@ -111,17 +114,19 @@ export default function init(app: Router): void {
               ...commonObject,
               object: commonObject.object as CommonModelType,
             })),
-            raw_objects: req.body.config.raw_standard_objects,
+            raw_objects: req.body.config.standard_objects,
+            raw_custom_objects: req.body.config.custom_objects,
           },
         }),
       });
-      const { rawObjects, ...rest } = syncConfig.config;
+      const { rawObjects, rawCustomObjects, ...rest } = syncConfig.config;
       return res.status(200).send(
         snakecaseKeys({
           ...syncConfig,
           config: {
             ...rest,
-            rawStandardObjects: rawObjects, // TODO: remove when we propogate `rawStandardObjects` all the way through code
+            standardObjects: rawObjects, // TODO: remove when we propogate `standardObjects` all the way through code
+            customObjects: rawCustomObjects,
           },
         })
       );

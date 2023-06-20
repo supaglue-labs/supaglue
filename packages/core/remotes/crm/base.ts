@@ -15,24 +15,24 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 export interface CrmRemoteClient extends RemoteClient {
   category(): ProviderCategory;
 
-  listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
-  listCustomRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
-
-  listCommonModelRecords(
+  listRawStandardObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
+  listRawCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
+  listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
     heartbeat?: () => void,
     fetchAllFields?: boolean
   ): Promise<Readable>;
-  getCommonModelRecord<T extends CRMCommonModelType>(
+
+  getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']>;
-  createCommonModelRecord<T extends CRMCommonModelType>(
+  createCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string>;
-  updateCommonModelRecord<T extends CRMCommonModelType>(
+  updateCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string>;
@@ -41,9 +41,9 @@ export interface CrmRemoteClient extends RemoteClient {
   createCustomObject(params: CustomObjectCreateParams): Promise<string>;
   updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
 
-  getCustomRecord(objectId: string, id: string): Promise<CustomObjectRecord>;
-  createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string>;
-  updateCustomRecord(params: CustomObjectRecordUpdateParams): Promise<void>;
+  getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord>;
+  createCustomObjectRecord(params: CustomObjectRecordCreateParams): Promise<string>;
+  updateCustomObjectRecord(params: CustomObjectRecordUpdateParams): Promise<void>;
 
   getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]>;
   createAssociationType(params: AssociationTypeCreateParams): Promise<void>;
@@ -64,29 +64,37 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     return err;
   }
 
-  public async listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  public async listRawStandardObjectRecords(
+    object: string,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
-  public async listCustomRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  public async listRawCustomObjectRecords(
+    object: string,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
-  abstract listCommonModelRecords(
+  abstract listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
     heartbeat?: () => void,
     fetchAllFields?: boolean
   ): Promise<Readable>;
-  abstract getCommonModelRecord<T extends CRMCommonModelType>(
+  abstract getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']>;
-  abstract createCommonModelRecord<T extends CRMCommonModelType>(
+  abstract createCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string>;
-  abstract updateCommonModelRecord<T extends CRMCommonModelType>(
+  abstract updateCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string>;
@@ -101,13 +109,13 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
-  public async getCustomRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
+  public async getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
     throw new Error('Not implemented');
   }
-  public async createCustomRecord(params: CustomObjectRecordCreateParams): Promise<string> {
+  public async createCustomObjectRecord(params: CustomObjectRecordCreateParams): Promise<string> {
     throw new Error('Not implemented');
   }
-  public async updateCustomRecord(params: CustomObjectRecordUpdateParams): Promise<void> {
+  public async updateCustomObjectRecord(params: CustomObjectRecordUpdateParams): Promise<void> {
     throw new Error('Not implemented');
   }
 

@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { PostHog } from 'posthog-node';
 
-const enable = Boolean(process.env.SUPAGLUE_DISABLE_ANALYTICS !== '1' && process.env.SUPAGLUE_POSTHOG_API_KEY);
+const enable = process.env.SUPAGLUE_DISABLE_ANALYTICS !== '1' && process.env.SUPAGLUE_POSTHOG_API_KEY !== undefined;
 
-export const posthogClient = new PostHog(process.env.SUPAGLUE_POSTHOG_API_KEY ?? 'dummy', {
+export const posthogClient = new PostHog(process.env.SUPAGLUE_POSTHOG_API_KEY!, {
   enable,
 });
 

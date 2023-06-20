@@ -172,7 +172,7 @@ const server = app.listen(port, (): void => {
   }
   logger.info(`Server listening on port ${port}`);
 
-  if (distinctId) {
+  if (distinctId && !process.env.IS_CLOUD) {
     posthogClient.capture({
       distinctId,
       event: 'API Server started',

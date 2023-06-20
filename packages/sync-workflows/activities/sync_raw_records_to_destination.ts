@@ -1,10 +1,12 @@
 import { DestinationWriter } from '@supaglue/core/destination_writers/base';
+import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import { ConnectionService, RemoteService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
+import { ApplicationService } from '../services';
 
 export type SyncRawRecordsToDestinationArgs = {
   syncId: string;
@@ -25,7 +27,8 @@ export type SyncRawRecordsToDestinationResult = {
 export function createSyncRawRecordsToDestination(
   connectionService: ConnectionService,
   remoteService: RemoteService,
-  destinationService: DestinationService
+  destinationService: DestinationService,
+  applicationService: ApplicationService
 ) {
   return async function syncRawRecordsToDestination({
     syncId,
@@ -40,8 +43,8 @@ export function createSyncRawRecordsToDestination(
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
         const stream = isCustom
-          ? await (client as CrmRemoteClient).listCustomRecords(object, modifiedAfter, heartbeat)
-          : await (client as CrmRemoteClient).listRecords(object, modifiedAfter, heartbeat);
+          ? await (client as CrmRemoteClient).listRawCustomObjectRecords(object, modifiedAfter, heartbeat)
+          : await (client as CrmRemoteClient).listRawStandardObjectRecords(object, modifiedAfter, heartbeat);
         return await writer.writeRawRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
       } else {
         throw ApplicationFailure.nonRetryable(`Unsupported category: ${client.category()}`);
@@ -49,9 +52,15 @@ export function createSyncRawRecordsToDestination(
     }
 
     const connection = await connectionService.getSafeById(connectionId);
+    const application = await applicationService.getById(connection.applicationId);
 
-    // TODO: Don't hack and use the same logEvent method
-    logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: object });
+    logEvent({
+      distinctId: distinctId ?? application.orgId,
+      eventName: 'Start Sync',
+      syncId,
+      providerName: connection.providerName,
+      modelName: object,
+    });
 
     const client = await remoteService.getRemoteClient(connectionId);
 
@@ -62,8 +71,8 @@ export function createSyncRawRecordsToDestination(
 
     const result = await writeRecords(writer);
 
-    // TODO: Don't hack and use the same logEvent method
     logEvent({
+      distinctId: distinctId ?? application.orgId,
       eventName: 'Partially Completed Sync',
       syncId,
       providerName: connection.providerName,
