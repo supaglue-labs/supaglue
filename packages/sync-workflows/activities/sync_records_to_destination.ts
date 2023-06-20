@@ -1,4 +1,5 @@
 import { DestinationWriter } from '@supaglue/core/destination_writers/base';
+import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
 import { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
@@ -9,6 +10,7 @@ import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
+import { ApplicationService } from '../services';
 
 export type SyncRecordsToDestinationArgs = {
   syncId: string;
@@ -29,7 +31,8 @@ export function createSyncRecordsToDestination(
   connectionService: ConnectionService,
   remoteService: RemoteService,
   destinationService: DestinationService,
-  syncConfigService: SyncConfigService
+  syncConfigService: SyncConfigService,
+  applicationService: ApplicationService
 ) {
   return async function syncRecordsToDestination({
     syncId,
@@ -71,8 +74,15 @@ export function createSyncRecordsToDestination(
     }
 
     const connection = await connectionService.getSafeById(connectionId);
+    const application = await applicationService.getById(connection.applicationId);
 
-    logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: commonModel });
+    logEvent({
+      distinctId: distinctId ?? application.orgId,
+      eventName: 'Start Sync',
+      syncId,
+      providerName: connection.providerName,
+      modelName: commonModel,
+    });
 
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
 
@@ -86,6 +96,7 @@ export function createSyncRecordsToDestination(
     const result = await writeObjects(writer);
 
     logEvent({
+      distinctId: distinctId ?? application.orgId,
       eventName: 'Partially Completed Sync',
       syncId,
       providerName: connection.providerName,

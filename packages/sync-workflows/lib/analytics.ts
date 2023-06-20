@@ -1,8 +1,8 @@
-import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import { ProviderName } from '@supaglue/types';
 
 export const logEvent = ({
+  distinctId,
   eventName,
   providerName,
   modelName,
@@ -10,6 +10,7 @@ export const logEvent = ({
   numRecordsSynced,
   isSuccess = true,
 }: {
+  distinctId: string;
   eventName: string;
   providerName: ProviderName;
   modelName: string;
@@ -17,10 +18,6 @@ export const logEvent = ({
   numRecordsSynced?: number;
   isSuccess?: boolean;
 }): void => {
-  if (!distinctId) {
-    return;
-  }
-
   posthogClient.capture({
     distinctId,
     event: eventName,
