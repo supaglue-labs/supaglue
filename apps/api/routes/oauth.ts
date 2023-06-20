@@ -8,7 +8,7 @@ import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supag
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
-const { providerService, integrationService, connectionAndSyncService } = getDependencyContainer();
+const { providerService, integrationService, connectionAndSyncService, applicationService } = getDependencyContainer();
 
 const SERVER_URL = process.env.SUPAGLUE_SERVER_URL ?? 'http://localhost:8080';
 const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
@@ -27,6 +27,9 @@ export default function init(app: Router): void {
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
       }
+
+      // set the req.orgId so that we can use it in the posthog middleware
+      req.orgId = (await applicationService.getById(applicationId)).orgId;
 
       if (!customerId) {
         throw new BadRequestError('Missing customerId');
@@ -135,6 +138,12 @@ export default function init(app: Router): void {
         version?: string;
       } = JSON.parse(decodeURIComponent(state));
 
+      if (!applicationId) {
+        throw new Error('No applicationId on state object');
+      }
+      // set the req.orgId so that we can use it in the posthog middleware
+      req.orgId = (await applicationService.getById(applicationId)).orgId;
+
       if (
         !providerName ||
         (!SUPPORTED_CRM_CONNECTIONS.includes(providerName as CRMProviderName) &&
@@ -145,10 +154,6 @@ export default function init(app: Router): void {
 
       if (!scope) {
         throw new Error('No scope on state object');
-      }
-
-      if (!applicationId) {
-        throw new Error('No applicationId on state object');
       }
 
       if (!customerId) {

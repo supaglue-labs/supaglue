@@ -50,13 +50,6 @@
   "engines": {
     "node": "18.x"
   },
-  "dependencies": {
-    "api": "workspace:^",
-    "posthog-docusaurus": "^2.0.0",
-    "posthog-node": "^2.5.4",
-    "sync-worker": "workspace:^",
-    "workspace": "^0.0.1-preview.1"
-  },
   "resolutions": {
     "qs": "6.9.7",
     "webpack": "5.76.0",

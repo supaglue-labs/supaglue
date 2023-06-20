@@ -2,6 +2,7 @@ import { RewriteFrames } from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 import { logger } from '@supaglue/core/lib';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
+import { posthogClient } from '@supaglue/core/lib/posthog';
 import { createActivities } from '@supaglue/sync-workflows';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
@@ -114,6 +115,7 @@ async function run() {
   });
 
   const handle = () => {
+    posthogClient.shutdown();
     worker.shutdown();
     process.exit(0);
   };

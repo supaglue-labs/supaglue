@@ -1,3 +1,4 @@
+import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
 import { CommonModelBaseService, ConnectionService, RemoteService } from '@supaglue/core/services';
@@ -20,6 +21,7 @@ import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import { Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
+import { ApplicationService } from 'sync-worker/services';
 import { logEvent } from '../lib/analytics';
 
 export type ImportRecordsArgs = {
@@ -40,6 +42,7 @@ export type ImportRecordsResult = {
 export function createImportRecords(
   connectionService: ConnectionService,
   remoteService: RemoteService,
+  applicationService: ApplicationService,
   crm: {
     accountService: AccountService;
     contactService: ContactService;
@@ -100,13 +103,20 @@ export function createImportRecords(
     updatedAfterMs,
   }: ImportRecordsArgs): Promise<ImportRecordsResult> {
     const connection = await connectionService.getSafeById(connectionId);
+    const application = await applicationService.getById(connection.applicationId);
 
     let result = {
       maxLastModifiedAt: null as Date | null,
       numRecords: 0,
     };
 
-    logEvent({ eventName: 'Start Sync', syncId, providerName: connection.providerName, modelName: commonModel });
+    logEvent({
+      distinctId: distinctId ?? application.orgId,
+      eventName: 'Start Sync',
+      syncId,
+      providerName: connection.providerName,
+      modelName: commonModel,
+    });
 
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
 
@@ -135,6 +145,7 @@ export function createImportRecords(
     );
 
     logEvent({
+      distinctId: distinctId ?? application.orgId,
       eventName: 'Partially Completed Sync',
       syncId,
       providerName: connection.providerName,

@@ -5603,7 +5603,7 @@ __metadata:
     pino-pretty: ^9.4.0
     pino-sentry: ^0.14.0
     pluralize: ^8.0.0
-    posthog-node: ^2.5.4
+    posthog-node: ^3.1.1
     simple-oauth2: ^5.0.0
     svix: ^0.84.1
     typescript: ^4.9.5
@@ -7407,7 +7407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"api@workspace:^, api@workspace:apps/api":
+"api@workspace:apps/api":
   version: 0.0.0-use.local
   resolution: "api@workspace:apps/api"
   dependencies:
@@ -9758,6 +9758,7 @@ __metadata:
     autoprefixer: ^10.4.13
     clsx: ^1.2.1
     postcss: ^8.4.21
+    posthog-docusaurus: ^2.0.0
     prism-react-renderer: ^1.3.5
     react: ^17.0.2
     react-dom: ^17.0.2
@@ -16229,12 +16230,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"posthog-node@npm:^2.5.4":
-  version: 2.5.4
-  resolution: "posthog-node@npm:2.5.4"
+"posthog-node@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "posthog-node@npm:3.1.1"
   dependencies:
     axios: ^0.27.0
-  checksum: 185159380baa279ffc43153a9e679f9da55c248a6577b48a4de35a8f0bd983bb1368c7b9586a278789859a4109c2f5f3a143302730fd870a25525033924ca1f1
+    rusha: ^0.8.14
+  checksum: 9401a173fc9ed699eb8668b03609e255455017b92903a2e068499456bf850952a034700f69f1b8c3c705655122345c45b3f5a1cc7745942e3a21d7695e1079ed
   languageName: node
   linkType: hard
 
@@ -17603,6 +17605,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rusha@npm:^0.8.14":
+  version: 0.8.14
+  resolution: "rusha@npm:0.8.14"
+  checksum: d76d7b4b5df1191712eca1e2465d07054dc9bd5e9ec357e1e0f3ddf95006a762330a3c0348e96ac39853656a3fbe02e65e780aa5f61b9355ad914fa296185623
+  languageName: node
+  linkType: hard
+
 "rxjs@npm:^6.6.0":
   version: 6.6.7
   resolution: "rxjs@npm:6.6.7"
@@ -18821,23 +18830,18 @@ __metadata:
     "@types/prettier": ^2
     "@typescript-eslint/eslint-plugin": ^5.52.0
     "@typescript-eslint/parser": ^5.52.0
-    api: "workspace:^"
     eslint: ^8.34.0
     eslint-config-prettier: ^8.6.0
     eslint-plugin-prettier: ^4.2.1
     husky: ^8.0.3
     lint-staged: ^13.1.2
-    posthog-docusaurus: ^2.0.0
-    posthog-node: ^2.5.4
     prettier: ^2.8.4
     prettier-plugin-organize-imports: ^3.2.2
     prettier-plugin-prisma: ^4.12.0
-    sync-worker: "workspace:^"
     tsc-files: ^1.1.3
     tsx: ^3.12.3
     turbo: ^1.10.1
     typescript: ^4.9.5
-    workspace: ^0.0.1-preview.1
   languageName: unknown
   linkType: soft
 
@@ -18982,7 +18986,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sync-worker@workspace:^, sync-worker@workspace:apps/sync-worker":
+"sync-worker@workspace:apps/sync-worker":
   version: 0.0.0-use.local
   resolution: "sync-worker@workspace:apps/sync-worker"
   dependencies:
@@ -20593,13 +20597,6 @@ __metadata:
   version: 1.2.3
   resolution: "word-wrap@npm:1.2.3"
   checksum: 30b48f91fcf12106ed3186ae4fa86a6a1842416df425be7b60485de14bec665a54a68e4b5156647dec3a70f25e84d270ca8bc8cd23182ed095f5c7206a938c1f
-  languageName: node
-  linkType: hard
-
-"workspace@npm:^0.0.1-preview.1":
-  version: 0.0.1-preview.1
-  resolution: "workspace@npm:0.0.1-preview.1"
-  checksum: 0d3a1ed8a5735bd3295f2685a92cfd59a53d9386d6177e3dc036416e0b200729632a3760d9b34d75597b826e30620d7b02d9852c9bc2e0028c64436c9c5cda2e
   languageName: node
   linkType: hard
 

@@ -76,20 +76,22 @@ export const createActivities = ({
     doProcessSyncChanges: createDoProcessSyncChanges(syncService),
     setForceSyncFlag: createSetForceSyncFlag(syncService),
     updateSyncState: createUpdateSyncState(syncService),
-    importRecords: createImportRecords(connectionService, remoteService, crm, engagement),
+    importRecords: createImportRecords(connectionService, remoteService, applicationService, crm, engagement),
     syncRecordsToDestination: createSyncRecordsToDestination(
       connectionService,
       remoteService,
       destinationService,
-      syncConfigService
+      syncConfigService,
+      applicationService
     ),
     syncRawRecordsToDestination: createSyncRawRecordsToDestination(
       connectionService,
       remoteService,
-      destinationService
+      destinationService,
+      applicationService
     ),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
-    logSyncFinish: createLogSyncFinish({ syncHistoryService }),
+    logSyncFinish: createLogSyncFinish({ syncHistoryService, applicationService, connectionService }),
     maybeSendSyncFinishWebhook: createMaybeSendSyncFinishWebhook({
       connectionService,
       providerService,
