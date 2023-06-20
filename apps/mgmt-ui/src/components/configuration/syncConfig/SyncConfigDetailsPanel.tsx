@@ -7,7 +7,7 @@ import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useProviders } from '@/hooks/useProviders';
 import { useSyncConfig } from '@/hooks/useSyncConfig';
-import { useSyncConfigs } from '@/hooks/useSyncConfigs';
+import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import { Autocomplete, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import { CommonModelType, CommonObjectConfig, SyncConfig, SyncConfigCreateParams, SyncType } from '@supaglue/types';
@@ -274,10 +274,10 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
               setIsSaving(true);
               const newSyncConfig = await createOrUpdateSyncConfig();
               if (newSyncConfig) {
-                const latestSyncConfigs = [
+                const latestSyncConfigs = toGetSyncConfigsResponse([
                   ...syncConfigs.filter((syncConfig) => syncConfig.id !== newSyncConfig.id),
                   newSyncConfig,
-                ];
+                ]);
                 addNotification({ message: 'Successfully updated Sync Config', severity: 'success' });
                 await mutate(latestSyncConfigs, {
                   optimisticData: latestSyncConfigs,
