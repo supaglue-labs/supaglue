@@ -42,7 +42,6 @@ export type RawObjectConfig = {
 
 export type RawObjectInheritedSchema = {
   type: 'inherited';
-  fields: undefined;
 };
 
 export type RawObjectDefinedSchema = {
