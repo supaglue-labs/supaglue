@@ -27,6 +27,9 @@ export type SyncConfigData = {
 export type SyncStrategyConfig = {
   periodMs: number;
   strategy: SyncType;
+  // When this is undefined, we treat it as "true" to be backwards compatible.
+  // TODO: When we have time, migrate this to be a required field.
+  enableSyncOnConnectionCreation?: boolean;
 };
 
 export type CommonObjectConfig = {
