@@ -37,7 +37,7 @@ export type CommonObjectConfig = {
 
 export type RawObjectConfig = {
   object: string;
-  schema: RawObjectSchema;
+  schema?: RawObjectSchema;
 };
 
 export type RawObjectInheritedSchema = {

@@ -71,7 +71,6 @@ properties:
                 - type
       required:
         - object
-        - schema
   custom_objects:
     type: array
     items:

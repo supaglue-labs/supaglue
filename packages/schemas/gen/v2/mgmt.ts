@@ -383,7 +383,7 @@ export interface components {
       standard_objects?: ({
           /** @example contacts */
           object: string;
-          schema: OneOf<[{
+          schema?: OneOf<[{
             /** @enum {string} */
             type: "defined";
             fields: ({
