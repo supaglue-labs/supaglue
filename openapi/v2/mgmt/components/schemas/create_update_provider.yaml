@@ -15,6 +15,7 @@ allOf:
       - config
   - oneOf:
     - type: object
+      title: crm
       properties:
         category:
           type: string
@@ -26,6 +27,7 @@ allOf:
         - category
         - name
     - type: object
+      title: engagement
       properties:
         category:
           type: string
