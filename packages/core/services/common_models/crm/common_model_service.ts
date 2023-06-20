@@ -19,7 +19,7 @@ export class CrmCommonModelService {
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as CrmRemoteClient;
-    return await remoteClient.getCommonModelRecord(type, id);
+    return await remoteClient.getCommonObjectRecord(type, id);
   }
 
   public async create<T extends CRMCommonModelType>(
@@ -28,12 +28,12 @@ export class CrmCommonModelService {
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
-    const id = await remoteClient.createCommonModelRecord(type, params);
+    const id = await remoteClient.createCommonObjectRecord(type, params);
 
     // If the associated integration has a destination, do cache invalidation
     const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      const object = await remoteClient.getCommonModelRecord(type, id);
+      const object = await remoteClient.getCommonObjectRecord(type, id);
       await writer.upsertCommonModelRecord<'crm', T>(connection, type, object);
     }
 
@@ -46,12 +46,12 @@ export class CrmCommonModelService {
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<void> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
-    await remoteClient.updateCommonModelRecord(type, params);
+    await remoteClient.updateCommonObjectRecord(type, params);
 
     // If the associated integration has a destination, do cache invalidation
     const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      const object = await remoteClient.getCommonModelRecord(type, params.id);
+      const object = await remoteClient.getCommonObjectRecord(type, params.id);
       await writer.upsertCommonModelRecord<'crm', T>(connection, type, object);
     }
   }

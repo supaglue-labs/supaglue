@@ -1,10 +1,19 @@
 import { logger } from '@supaglue/core/lib';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
-import { SyncHistoryService } from '@supaglue/core/services';
+import { ConnectionService, SyncHistoryService } from '@supaglue/core/services';
 import { SyncHistoryStatus } from '@supaglue/types/sync_history';
+import { ApplicationService } from '../services';
 
-export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService: SyncHistoryService }) {
+export function createLogSyncFinish({
+  syncHistoryService,
+  connectionService,
+  applicationService,
+}: {
+  syncHistoryService: SyncHistoryService;
+  connectionService: ConnectionService;
+  applicationService: ApplicationService;
+}) {
   return async function logSyncFinish({
     syncId,
     connectionId,
@@ -29,12 +38,11 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
       logger.error(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
     }
 
-    if (!distinctId) {
-      return;
-    }
+    const connection = await connectionService.getSafeById(connectionId);
+    const application = await applicationService.getById(connection.applicationId);
     posthogClient.capture({
-      distinctId,
-      event: `Sync ${status}`,
+      distinctId: distinctId ?? application.orgId,
+      event: `Completed Sync`,
       properties: {
         result: status === 'FAILURE' ? 'error' : 'success',
         params: {
@@ -42,6 +50,7 @@ export function createLogSyncFinish({ syncHistoryService }: { syncHistoryService
           connectionId,
           historyId,
           errorMessage,
+          providerName: connection.providerName,
         },
         source: 'sync-workflows',
         system: getSystemProperties(),

@@ -27,7 +27,7 @@ get:
                       fetch_all_fields_into_raw: false
                     - object: accounts
                       fetch_all_fields_into_raw: false
-                  raw_standard_objects:
+                  standard_objects:
                     - object: emails
                     - object: tasks
 put:
@@ -64,7 +64,7 @@ put:
                       fetch_all_fields_into_raw: false
                     - object: accounts
                       fetch_all_fields_into_raw: false
-                  raw_standard_objects:
+                  standard_objects:
                     - object: emails
                     - object: tasks
 delete:
@@ -96,7 +96,7 @@ delete:
                       fetch_all_fields_into_raw: false
                     - object: accounts
                       fetch_all_fields_into_raw: false
-                  raw_standard_objects:
+                  standard_objects:
                     - object: emails
                     - object: tasks
 parameters:

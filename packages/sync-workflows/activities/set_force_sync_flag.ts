@@ -1,5 +1,5 @@
 import { Sync } from '@supaglue/types';
-import { SyncService } from 'sync-worker/services/sync_service';
+import { SyncService } from '../services/sync_service';
 
 export type SetForceSyncFlagResult = {
   sync: Sync;

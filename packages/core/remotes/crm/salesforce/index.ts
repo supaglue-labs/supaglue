@@ -256,7 +256,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async listRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  public override async listRawStandardObjectRecords(
+    object: string,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     const allProperties = await this.getSObjectProperties(object);
     const stream = await this.#listObjectsHelper(object, allProperties, modifiedAfter, heartbeat);
 
@@ -286,7 +290,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async listCommonModelRecords(
+  public override async listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date | undefined,
     heartbeat?: () => void,
@@ -322,7 +326,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async getCommonModelRecord<T extends CRMCommonModelType>(
+  public override async getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     id: string
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
@@ -342,7 +346,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public override async createCommonModelRecord<T extends CRMCommonModelType>(
+  public override async createCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
@@ -362,7 +366,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public override async updateCommonModelRecord<T extends CRMCommonModelType>(
+  public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {

@@ -4,15 +4,18 @@
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "@supaglue/core": "workspace:*",
-    "@supaglue/types": "workspace:^",
-    "@temporalio/activity": "^1.6.0",
-    "@temporalio/client": "^1.6.0",
-    "@temporalio/workflow": "^1.6.0"
+    "@supaglue/db": "workspace:^",
+    "@supaglue/types": "workspace:^"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
     "tsx": "^3.12.3",
     "typescript": "^4.9.5"
+  },
+  "peerDependencies": {
+    "@temporalio/activity": "^1.6.0",
+    "@temporalio/client": "^1.6.0",
+    "@temporalio/workflow": "^1.6.0"
   },
   "scripts": {
     "build": "yarn run clean && tsc -p .",
