@@ -374,11 +374,11 @@ export interface components {
           object: string;
           fetch_all_fields_into_raw: boolean;
         })[];
-      raw_standard_objects?: ({
+      standard_objects?: ({
           /** @example contacts */
           object: string;
         })[];
-      raw_custom_objects?: ({
+      custom_objects?: ({
           /** @example contacts */
           object: string;
         })[];
