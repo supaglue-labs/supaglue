@@ -4,7 +4,7 @@ import {
   GetSyncInfosQueryParams,
   GetSyncInfosRequest,
   GetSyncInfosResponse,
-} from '@supaglue/schemas/v1/mgmt';
+} from '@supaglue/schemas/v2/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 

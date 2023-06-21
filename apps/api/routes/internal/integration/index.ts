@@ -16,7 +16,7 @@ import {
   UpdateIntegrationPathParams,
   UpdateIntegrationRequest,
   UpdateIntegrationResponse,
-} from '@supaglue/schemas/v1/mgmt';
+} from '@supaglue/schemas/v2/mgmt';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';

@@ -71,18 +71,6 @@ const config = {
           ...versions.flatMap((version) =>
             [
               {
-                spec: `../openapi/versioned/version-${version}/v1/crm/openapi.bundle.json`,
-                route: `/${version}/api/v1/crm`,
-              },
-              {
-                spec: `../openapi/versioned/version-${version}/v1/engagement/openapi.bundle.json`,
-                route: `/${version}/api/v1/engagement`,
-              },
-              {
-                spec: `../openapi/versioned/version-${version}/v1/mgmt/openapi.bundle.json`,
-                route: `/${version}/api/v1/mgmt`,
-              },
-              {
                 spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
                 route: `/${version}/api/v2/crm`,
               },
@@ -96,18 +84,6 @@ const config = {
               },
             ].filter((obj) => !!obj)
           ),
-          {
-            spec: '../openapi/v1/crm/openapi.bundle.json',
-            route: '/api/v1/crm',
-          },
-          {
-            spec: '../openapi/v1/engagement/openapi.bundle.json',
-            route: '/api/v1/engagement',
-          },
-          {
-            spec: '../openapi/v1/mgmt/openapi.bundle.json',
-            route: '/api/v1/mgmt',
-          },
           {
             spec: '../openapi/v2/crm/openapi.bundle.json',
             route: '/api/v2/crm',
@@ -327,9 +303,6 @@ const config = {
           plugins: [
             new WatchExternalFilesPlugin({
               files: [
-                '../openapi/v1/mgmt/openapi.bundle.json',
-                '../openapi/v1/crm/openapi.bundle.json',
-                '../openapi/v1/engagement/openapi.bundle.json',
                 '../openapi/v2/mgmt/openapi.bundle.json',
                 '../openapi/v2/crm/openapi.bundle.json',
                 '../openapi/v2/engagement/openapi.bundle.json',

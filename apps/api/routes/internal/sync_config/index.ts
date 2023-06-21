@@ -1,5 +1,4 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { getDefaultCommonObjects } from '@supaglue/core/services';
 import {
   CreateSyncConfigPathParams,
   CreateSyncConfigRequest,
@@ -17,12 +16,12 @@ import {
   UpdateSyncConfigRequest,
   UpdateSyncConfigResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { CommonModelType, SyncConfig } from '@supaglue/types';
+import { CommonModelType } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
-const { integrationService, syncConfigService, providerService, destinationService } = getDependencyContainer();
+const { syncConfigService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const syncConfigRouter = Router();
@@ -72,38 +71,6 @@ export default function init(app: Router): void {
         }),
       });
       return res.status(201).send(snakecaseKeys(syncConfig));
-    }
-  );
-
-  syncConfigRouter.post(
-    '/_backfill',
-    async (req: Request<never, SyncConfig[], { fetch_all_fields_into_raw: boolean }>, res: Response<SyncConfig[]>) => {
-      const integrations = await integrationService.list(req.supaglueApplication.id);
-      const providers = await providerService.list(req.supaglueApplication.id);
-      const integrationsWithDestinations = integrations.filter((integration) => integration.destinationId);
-      const integrationIdToSyncConfigIdMapping: Record<string, string> = {};
-      const syncConfigs = await Promise.all(
-        integrationsWithDestinations.map(async (integration) => {
-          const destination = await destinationService.getDestinationByIntegrationId(integration.id);
-          const syncConfig = await syncConfigService.upsert({
-            applicationId: req.supaglueApplication.id,
-            destinationId: integration.destinationId!,
-            providerId: providers.find((provider) => provider.name === integration.providerName)!.id,
-            config: {
-              defaultConfig: {
-                periodMs: integration.config.sync.periodMs,
-                strategy: destination?.type === 's3' ? 'full only' : 'full then incremental',
-              },
-              commonObjects: getDefaultCommonObjects(integration.category, req.body.fetch_all_fields_into_raw),
-              rawObjects: [],
-            },
-          });
-          integrationIdToSyncConfigIdMapping[integration.id] = syncConfig.id;
-          return syncConfig;
-        })
-      );
-      await syncConfigService.backfillSyncConfigIds(integrationIdToSyncConfigIdMapping);
-      return res.status(201).send(syncConfigs);
     }
   );
 

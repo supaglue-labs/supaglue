@@ -16,7 +16,7 @@
     "lint": "turbo run lint",
     "generate": "turbo run generate",
     "generate:clients": "turbo run generate:clients",
-    "bundle-openapi": "tsx scripts/validate_and_bundle_openapi.ts openapi/v1/crm/openapi.yaml openapi/v1/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v1/engagement/openapi.yaml openapi/v1/engagement/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v1/mgmt/openapi.yaml openapi/v1/mgmt/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v2/crm/openapi.yaml openapi/v2/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v2/engagement/openapi.yaml openapi/v2/engagement/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v2/mgmt/openapi.yaml openapi/v2/mgmt/openapi.bundle.json"
+    "bundle-openapi": "tsx scripts/validate_and_bundle_openapi.ts openapi/v2/crm/openapi.yaml openapi/v2/crm/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v2/engagement/openapi.yaml openapi/v2/engagement/openapi.bundle.json && tsx scripts/validate_and_bundle_openapi.ts openapi/v2/mgmt/openapi.yaml openapi/v2/mgmt/openapi.bundle.json"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit",
