@@ -14,7 +14,7 @@ import syncHistory from './sync_history';
 import syncInfo from './sync_info';
 import webhook from './webhook';
 
-const { prisma, connectionAndSyncService } = getDependencyContainer();
+const { prisma } = getDependencyContainer();
 
 export default function init(app: Router): void {
   // application routes should not require application header
