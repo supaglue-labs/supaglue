@@ -61,18 +61,6 @@ export class ConnectionAndSyncService {
     if (!provider) {
       throw new Error(`No provider found for ${params.providerName}`);
     }
-    // TODO: Delete
-    const integration = await this.#prisma.integration.findUnique({
-      where: {
-        applicationId_providerName: {
-          applicationId: params.applicationId,
-          providerName: params.providerName,
-        },
-      },
-    });
-    if (!integration) {
-      throw new Error(`No integration found for ${params.providerName}`);
-    }
     const status: ConnectionStatus = 'added';
     const customerId = getCustomerIdPk(params.applicationId, params.customerId);
     const connection = await this.#prisma.connection.upsert({
@@ -80,7 +68,6 @@ export class ConnectionAndSyncService {
         category: params.category,
         providerName: params.providerName,
         customerId,
-        // TODO: Delete
         providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
@@ -110,19 +97,6 @@ export class ConnectionAndSyncService {
     const application = await this.#applicationService.getById(provider.applicationId);
     let errored = false;
 
-    // TODO: Delete
-    const integration = await this.#prisma.integration.findUnique({
-      where: {
-        applicationId_providerName: {
-          applicationId: params.applicationId,
-          providerName: params.providerName,
-        },
-      },
-    });
-    if (!integration) {
-      throw new Error(`No integration found for ${params.providerName}`);
-    }
-
     try {
       const status: ConnectionStatus = 'added';
 
@@ -136,7 +110,6 @@ export class ConnectionAndSyncService {
             category: params.category,
             providerName: params.providerName,
             customerId: getCustomerIdPk(params.applicationId, params.customerId),
-            // TODO: Delete
             providerId: provider.id,
             status,
             instanceUrl: params.instanceUrl,

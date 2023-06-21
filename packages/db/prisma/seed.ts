@@ -37,11 +37,6 @@ const EXTERNAL_CUSTOMER_IDS = [
   CAPSULE_CUSTOMER_ID,
 ];
 
-// Remove once we can stop seeding integrations
-function getKey(secret: string, salt: Buffer): Buffer {
-  return crypto.pbkdf2Sync(secret, salt, 100000, 32, 'sha512');
-}
-
 // NOTE: copied from crypt.ts (can be de-duplicated after seed becomes a script)
 export async function cryptoHash(text: string): Promise<{ original: string; hashed: string }> {
   const hashedText = crypto.scryptSync(text, SUPAGLUE_API_ENCRYPTION_SECRET!, 64).toString('hex');
