@@ -36,7 +36,7 @@ export const fromObjectToHubspotObjectType = (object: SGObject): string => {
   }
 };
 
-export const fromHubSpotCompanyToAccountV2 = ({
+export const fromHubSpotCompanyToAccount = ({
   id,
   properties,
   createdAt,
@@ -94,7 +94,7 @@ export const fromHubSpotCompanyToAccountV2 = ({
   };
 };
 
-export const fromHubSpotContactToRemoteContact = ({
+export const fromHubSpotContactToContact = ({
   id,
   properties,
   createdAt,
@@ -177,7 +177,7 @@ export const fromHubSpotContactToRemoteContact = ({
   };
 };
 
-export const fromHubSpotDealToOpportunityV2 = (
+export const fromHubSpotDealToOpportunity = (
   { id, properties, createdAt, updatedAt, associations, archived, archivedAt }: HubSpotDeal,
   pipelineStageMapping: PipelineStageMapping
 ): Opportunity => {
@@ -223,7 +223,7 @@ export const fromHubSpotDealToOpportunityV2 = (
   };
 };
 
-export const fromHubspotOwnerToUserV2 = ({
+export const fromHubspotOwnerToUser = ({
   id,
   firstName,
   lastName,

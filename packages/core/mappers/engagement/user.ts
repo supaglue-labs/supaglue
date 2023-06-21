@@ -1,6 +1,6 @@
 import type { SnakecasedKeysEngagementUser, User } from '@supaglue/types/engagement';
 
-export const toSnakecasedKeysEngagementUserV2 = (user: User): SnakecasedKeysEngagementUser => {
+export const toSnakecasedKeysEngagementUser = (user: User): SnakecasedKeysEngagementUser => {
   return {
     last_modified_at: user.lastModifiedAt,
     id: user.id,

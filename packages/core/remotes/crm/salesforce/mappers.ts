@@ -23,21 +23,21 @@ export function getMapperForCommonModelType<T extends CRMCommonModelType>(
 ): (record: Record<string, unknown>) => CRMCommonModelTypeMap<T>['object'] {
   switch (commonModelType) {
     case 'account':
-      return fromSalesforceAccountToAccountV2;
+      return fromSalesforceAccountToAccount;
     case 'contact':
-      return fromSalesforceContactToContactV2;
+      return fromSalesforceContactToContact;
     case 'lead':
-      return fromSalesforceLeadToLeadV2;
+      return fromSalesforceLeadToLead;
     case 'opportunity':
-      return fromSalesforceOpportunityToOpportunityV2;
+      return fromSalesforceOpportunityToOpportunity;
     case 'user':
-      return fromSalesforceUserToUserV2;
+      return fromSalesforceUserToUser;
     default:
       throw new Error(`Unsupported common model type: ${commonModelType}`);
   }
 }
 
-export const fromSalesforceUserToUserV2 = (record: Record<string, any>): User => {
+export const fromSalesforceUserToUser = (record: Record<string, any>): User => {
   return {
     id: record.Id,
     name: record.Name,
@@ -52,7 +52,7 @@ export const fromSalesforceUserToUserV2 = (record: Record<string, any>): User =>
   };
 };
 
-export const fromSalesforceAccountToAccountV2 = (record: Record<string, any>): Account => {
+export const fromSalesforceAccountToAccount = (record: Record<string, any>): Account => {
   const billingAddress: Address | null =
     record.BillingCity ||
     record.BillingCountry ||
@@ -146,7 +146,7 @@ export const toSalesforceAccountUpdateParams = (params: AccountUpdateParams) => 
   };
 };
 
-export const fromSalesforceContactToContactV2 = (record: Record<string, any>): Contact => {
+export const fromSalesforceContactToContact = (record: Record<string, any>): Contact => {
   const mailingAddress: Address | null =
     record.MailingCity ||
     record.MailingCountry ||
@@ -240,7 +240,7 @@ export const toSalesforceContactUpdateParams = (params: ContactUpdateParams) => 
   };
 };
 
-export const fromSalesforceLeadToLeadV2 = (
+export const fromSalesforceLeadToLead = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   record: Record<string, any>
 ): Lead => {
@@ -304,7 +304,7 @@ export const toSalesforceLeadUpdateParams = (params: LeadUpdateParams) => {
   };
 };
 
-export const fromSalesforceOpportunityToOpportunityV2 = (
+export const fromSalesforceOpportunityToOpportunity = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   record: Record<string, any>
 ): Opportunity => {

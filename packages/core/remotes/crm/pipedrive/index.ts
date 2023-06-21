@@ -27,11 +27,11 @@ import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromPipedriveDealToOpportunityV2,
-  fromPipedriveLeadToLeadV2,
-  fromPipedriveOrganizationToAccountV2,
-  fromPipedrivePersonToContactV2,
-  fromPipedriveUserToUserV2,
+  fromPipedriveDealToOpportunity,
+  fromPipedriveLeadToLead,
+  fromPipedriveOrganizationToAccount,
+  fromPipedrivePersonToContact,
+  fromPipedriveUserToUser,
   toPipedriveDealCreateParams,
   toPipedriveDealUpdateParams,
   toPipedriveLeadCreateParams,
@@ -180,7 +180,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedrivePersonToContactV2(result),
+              record: fromPipedrivePersonToContact(result),
               emittedAt,
             })) ?? []
           );
@@ -202,7 +202,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedriveLeadToLeadV2(result),
+              record: fromPipedriveLeadToLead(result),
               emittedAt,
             })) ?? []
           );
@@ -256,7 +256,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((record) => ({
-              record: fromPipedriveDealToOpportunityV2(record, pipelineStageMapping),
+              record: fromPipedriveDealToOpportunity(record, pipelineStageMapping),
               emittedAt,
             })) ?? []
           );
@@ -278,7 +278,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedriveOrganizationToAccountV2(result),
+              record: fromPipedriveOrganizationToAccount(result),
               emittedAt,
             })) ?? []
           );
@@ -300,7 +300,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedriveUserToUserV2(result),
+              record: fromPipedriveUserToUser(result),
               emittedAt,
             })) ?? []
           );
@@ -335,7 +335,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/persons/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedrivePersonToContactV2(response.data.data);
+    return fromPipedrivePersonToContact(response.data.data);
   }
 
   async getLead(id: string): Promise<Lead> {
@@ -343,7 +343,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/leads/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedriveLeadToLeadV2(response.data.data);
+    return fromPipedriveLeadToLead(response.data.data);
   }
 
   async getOpportunity(id: string): Promise<Opportunity> {
@@ -352,7 +352,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       headers: this.#headers,
     });
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    return fromPipedriveDealToOpportunityV2(response.data.data, pipelineStageMapping);
+    return fromPipedriveDealToOpportunity(response.data.data, pipelineStageMapping);
   }
 
   async getAccount(id: string): Promise<Account> {
@@ -360,7 +360,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/organizations/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedriveOrganizationToAccountV2(response.data.data);
+    return fromPipedriveOrganizationToAccount(response.data.data);
   }
 
   async getUser(id: string): Promise<User> {
@@ -368,7 +368,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/users/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedriveUserToUserV2(response.data.data);
+    return fromPipedriveUserToUser(response.data.data);
   }
 
   public override async createCommonObjectRecord<T extends CRMCommonModelType>(

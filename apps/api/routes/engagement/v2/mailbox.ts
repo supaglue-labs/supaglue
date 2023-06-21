@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toSnakecasedKeysMailboxV2 } from '@supaglue/core/mappers/engagement';
+import { toSnakecasedKeysMailbox } from '@supaglue/core/mappers/engagement';
 import { GetMailboxPathParams, GetMailboxRequest, GetMailboxResponse } from '@supaglue/schemas/v2/engagement';
 import { Request, Response, Router } from 'express';
 
@@ -16,7 +16,7 @@ export default function init(app: Router): void {
     ) => {
       const { id: connectionId } = req.customerConnection;
       const mailbox = await engagementCommonModelService.get('mailbox', connectionId, req.params.mailbox_id);
-      const snakecasedKeysMailbox = toSnakecasedKeysMailboxV2(mailbox);
+      const snakecasedKeysMailbox = toSnakecasedKeysMailbox(mailbox);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysMailbox;
       return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysMailbox : rest);

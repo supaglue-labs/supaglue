@@ -182,7 +182,7 @@ export class SyncService {
           throw new Error('Unexpected error: syncConfig not found');
         }
 
-        await this.upsertTemporalSyncV2(
+        await this.upsertTemporalSync(
           sync.id,
           connection,
           syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
@@ -251,7 +251,7 @@ export class SyncService {
     }
   }
 
-  async upsertTemporalSyncV2(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
+  async upsertTemporalSync(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
     const sync = await this.getSyncById(syncId);
     const scheduleId = getRunManagedSyncScheduleId(syncId);
     const interval: IntervalSpec = {

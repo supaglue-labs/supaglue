@@ -1,18 +1,18 @@
 import { SnakecasedKeys } from '../snakecased_keys';
 import { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
 
-export type SnakecasedKeysMailboxV2 = SnakecasedKeys<MailboxV2>;
-export type SnakecasedKeysMailboxWithTenant = SnakecasedKeysMailboxV2 & SnakecasedEngagementTenantFields;
+export type SnakecasedKeysMailbox = SnakecasedKeys<Mailbox>;
+export type SnakecasedKeysMailboxWithTenant = SnakecasedKeysMailbox & SnakecasedEngagementTenantFields;
 
 type CoreMailbox = {
   email: string | null;
   userId: string | null;
 };
 
-export type MailboxV2 = BaseEngagementModel & CoreMailbox;
+export type Mailbox = BaseEngagementModel & CoreMailbox;
 
 export type RemoteMailboxTypes = {
-  object: MailboxV2;
+  object: Mailbox;
   createParams: never;
   updateParams: never;
 };

@@ -3,7 +3,7 @@ import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysEmailAddress } from './email_address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 
-export const toSnakecasedKeysCrmLeadV2 = (lead: Lead): SnakecasedKeysCrmLead => {
+export const toSnakecasedKeysCrmLead = (lead: Lead): SnakecasedKeysCrmLead => {
   return {
     owner_id: lead.ownerId,
     last_modified_at: lead.lastModifiedAt,

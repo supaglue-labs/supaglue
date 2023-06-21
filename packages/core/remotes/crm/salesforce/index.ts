@@ -43,11 +43,11 @@ import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromSalesforceAccountToAccountV2,
-  fromSalesforceContactToContactV2,
-  fromSalesforceLeadToLeadV2,
-  fromSalesforceOpportunityToOpportunityV2,
-  fromSalesforceUserToUserV2,
+  fromSalesforceAccountToAccount,
+  fromSalesforceContactToContact,
+  fromSalesforceLeadToLead,
+  fromSalesforceOpportunityToOpportunity,
+  fromSalesforceUserToUser,
   getMapperForCommonModelType,
   toSalesforceAccountCreateParams,
   toSalesforceAccountUpdateParams,
@@ -574,7 +574,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getAccount(id: string): Promise<Account> {
     const account = await this.#client.retrieve('Account', id);
-    return fromSalesforceAccountToAccountV2(account);
+    return fromSalesforceAccountToAccount(account);
   }
 
   public async createAccount(params: AccountCreateParams): Promise<string> {
@@ -595,7 +595,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getContact(id: string): Promise<Contact> {
     const contact = await this.#client.retrieve('Contact', id);
-    return fromSalesforceContactToContactV2(contact);
+    return fromSalesforceContactToContact(contact);
   }
 
   public async createContact(params: ContactCreateParams): Promise<string> {
@@ -616,7 +616,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getOpportunity(id: string): Promise<Opportunity> {
     const contact = await this.#client.retrieve('Opportunity', id);
-    return fromSalesforceOpportunityToOpportunityV2(contact);
+    return fromSalesforceOpportunityToOpportunity(contact);
   }
 
   public async createOpportunity(params: OpportunityCreateParams): Promise<string> {
@@ -637,7 +637,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getLead(id: string): Promise<Lead> {
     const contact = await this.#client.retrieve('Lead', id);
-    return fromSalesforceLeadToLeadV2(contact);
+    return fromSalesforceLeadToLead(contact);
   }
 
   public async createLead(params: LeadCreateParams): Promise<string> {
@@ -658,7 +658,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getUser(id: string): Promise<User> {
     const user = await this.#client.retrieve('User', id);
-    return fromSalesforceUserToUserV2(user);
+    return fromSalesforceUserToUser(user);
   }
 
   public handleErr(err: unknown): unknown {

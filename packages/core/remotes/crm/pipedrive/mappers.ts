@@ -16,7 +16,7 @@ import { BadRequestError } from '../../../errors';
 import { maxDate } from '../../../lib';
 import { getFullName } from '../../utils/name';
 
-export const fromPipedrivePersonToContactV2 = (person: PipedriveRecord): Contact => {
+export const fromPipedrivePersonToContact = (person: PipedriveRecord): Contact => {
   return {
     id: person.id.toString(),
     firstName: person.first_name ?? null,
@@ -39,7 +39,7 @@ export const fromPipedrivePersonToContactV2 = (person: PipedriveRecord): Contact
   };
 };
 
-export const fromPipedriveLeadToLeadV2 = (lead: PipedriveRecord): Lead => {
+export const fromPipedriveLeadToLead = (lead: PipedriveRecord): Lead => {
   return {
     id: lead.id.toString(),
     leadSource: lead.source_name ?? null,
@@ -63,7 +63,7 @@ export const fromPipedriveLeadToLeadV2 = (lead: PipedriveRecord): Lead => {
   };
 };
 
-export const fromPipedriveDealToOpportunityV2 = (
+export const fromPipedriveDealToOpportunity = (
   deal: PipedriveRecord,
   pipelineStageMapping: PipelineStageMapping
 ): Opportunity => {
@@ -100,7 +100,7 @@ export const fromPipedriveDealToOpportunityV2 = (
   };
 };
 
-export const fromPipedriveOrganizationToAccountV2 = (organization: PipedriveRecord): Account => {
+export const fromPipedriveOrganizationToAccount = (organization: PipedriveRecord): Account => {
   return {
     id: organization.id.toString(),
     name: organization.name ?? null,
@@ -124,7 +124,7 @@ export const fromPipedriveOrganizationToAccountV2 = (organization: PipedriveReco
   };
 };
 
-export const fromPipedriveUserToUserV2 = (user: PipedriveRecord): User => {
+export const fromPipedriveUserToUser = (user: PipedriveRecord): User => {
   return {
     id: user.id.toString(),
     name: user.name ?? null,

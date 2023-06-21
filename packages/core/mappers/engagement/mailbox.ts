@@ -1,6 +1,6 @@
-import type { MailboxV2, SnakecasedKeysMailboxV2 } from '@supaglue/types/engagement';
+import type { Mailbox, SnakecasedKeysMailbox } from '@supaglue/types/engagement';
 
-export const toSnakecasedKeysMailboxV2 = (mailbox: MailboxV2): SnakecasedKeysMailboxV2 => {
+export const toSnakecasedKeysMailbox = (mailbox: Mailbox): SnakecasedKeysMailbox => {
   return {
     user_id: mailbox.userId,
     last_modified_at: mailbox.lastModifiedAt,

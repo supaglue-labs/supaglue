@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toSnakecasedKeysSequenceStateV2 } from '@supaglue/core/mappers/engagement';
+import { toSnakecasedKeysSequenceState } from '@supaglue/core/mappers/engagement';
 import {
   CreateSequenceStatePathParams,
   CreateSequenceStateRequest,
@@ -28,7 +28,7 @@ export default function init(app: Router): void {
         connectionId,
         req.params.sequence_state_id
       );
-      const snakecasedKeysMailbox = toSnakecasedKeysSequenceStateV2(mailbox);
+      const snakecasedKeysMailbox = toSnakecasedKeysSequenceState(mailbox);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysMailbox;
       return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysMailbox : rest);

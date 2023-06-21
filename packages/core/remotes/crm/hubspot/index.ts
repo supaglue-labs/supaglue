@@ -70,10 +70,10 @@ import {
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromHubSpotCompanyToAccountV2,
-  fromHubSpotContactToRemoteContact,
-  fromHubSpotDealToOpportunityV2,
-  fromHubspotOwnerToUserV2,
+  fromHubSpotCompanyToAccount,
+  fromHubSpotContactToContact,
+  fromHubSpotDealToOpportunity,
+  fromHubspotOwnerToUser,
   fromObjectToHubspotObjectType,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
@@ -859,7 +859,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((result) => ({
-              record: fromHubSpotCompanyToAccountV2(result),
+              record: fromHubSpotCompanyToAccount(result),
               emittedAt,
             }))
           );
@@ -872,7 +872,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((result) => ({
-              record: fromHubSpotCompanyToAccountV2(result),
+              record: fromHubSpotCompanyToAccount(result),
               emittedAt,
             }))
           );
@@ -955,7 +955,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const properties = await this.getCommonModelPropertiesToFetch('company');
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(id, properties);
-    return fromHubSpotCompanyToAccountV2(company);
+    return fromHubSpotCompanyToAccount(company);
   }
 
   public async createAccount(params: AccountCreateParams): Promise<string> {
@@ -1009,7 +1009,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((deal) => ({
-              record: fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping),
+              record: fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
               emittedAt,
             }))
           );
@@ -1022,7 +1022,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((deal) => ({
-              record: fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping),
+              record: fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
               emittedAt,
             }))
           );
@@ -1135,7 +1135,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
     );
-    return fromHubSpotDealToOpportunityV2(deal, pipelineStageMapping);
+    return fromHubSpotDealToOpportunity(deal, pipelineStageMapping);
   }
 
   public async createOpportunity(params: OpportunityCreateParams): Promise<string> {
@@ -1180,7 +1180,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.results.map((result) => ({ record: fromHubSpotContactToRemoteContact(result), emittedAt }))
+            response.results.map((result) => ({ record: fromHubSpotContactToContact(result), emittedAt }))
           );
         },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
@@ -1190,7 +1190,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.results.map((result) => ({ record: fromHubSpotContactToRemoteContact(result), emittedAt }))
+            response.results.map((result) => ({ record: fromHubSpotContactToContact(result), emittedAt }))
           );
         },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
@@ -1300,7 +1300,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
     );
-    return fromHubSpotContactToRemoteContact(contact);
+    return fromHubSpotContactToContact(contact);
   }
 
   public async createContact(params: ContactCreateParams): Promise<string> {
@@ -1349,7 +1349,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async getUser(id: string): Promise<User> {
     const owner = await this.#client.crm.owners.ownersApi.getById(parseInt(id));
-    return fromHubspotOwnerToUserV2(owner);
+    return fromHubspotOwnerToUser(owner);
   }
 
   public async listUsers(updatedAfter?: Date): Promise<Readable> {
@@ -1369,7 +1369,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((result) => ({
-              record: fromHubspotOwnerToUserV2(result),
+              record: fromHubspotOwnerToUser(result),
               emittedAt,
             }))
           );
@@ -1382,7 +1382,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((result) => ({
-              record: fromHubspotOwnerToUserV2(result),
+              record: fromHubspotOwnerToUser(result),
               emittedAt,
             }))
           );

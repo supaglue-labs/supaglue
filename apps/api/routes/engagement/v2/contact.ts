@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toSnakecasedKeysEngagementContactV2 } from '@supaglue/core/mappers/engagement';
+import { toSnakecasedKeysEngagementContact } from '@supaglue/core/mappers/engagement';
 import {
   CreateContactPathParams,
   CreateContactRequest,
@@ -29,7 +29,7 @@ export default function init(app: Router): void {
     ) => {
       const { id: connectionId } = req.customerConnection;
       const contact = await engagementCommonModelService.get('contact', connectionId, req.params.contact_id);
-      const snakecasedKeysContact = toSnakecasedKeysEngagementContactV2(contact);
+      const snakecasedKeysContact = toSnakecasedKeysEngagementContact(contact);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysContact;
       return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysContact : rest);

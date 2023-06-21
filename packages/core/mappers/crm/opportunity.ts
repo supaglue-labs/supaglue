@@ -1,6 +1,6 @@
 import type { Opportunity, SnakecasedKeysOpportunity } from '@supaglue/types/crm';
 
-export const toSnakecasedKeysCrmOpportunityV2 = (opportunity: Opportunity): SnakecasedKeysOpportunity => {
+export const toSnakecasedKeysCrmOpportunity = (opportunity: Opportunity): SnakecasedKeysOpportunity => {
   return {
     owner_id: opportunity.ownerId,
     account_id: opportunity.accountId,
