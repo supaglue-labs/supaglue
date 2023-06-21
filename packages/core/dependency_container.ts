@@ -4,7 +4,6 @@ import { Pool } from 'pg';
 import {
   ConnectionService,
   CustomerService,
-  IntegrationService,
   ProviderService,
   RemoteService,
   SgUserService,
@@ -12,24 +11,10 @@ import {
   SyncHistoryService,
 } from './services';
 import { ApplicationService } from './services/application_service';
-import {
-  AccountService,
-  ContactService as CrmContactService,
-  LeadService,
-  OpportunityService,
-  UserService as CrmUserService,
-} from './services/common_models/crm';
 import { CrmAssociationService } from './services/common_models/crm/association_service';
 import { CrmCommonModelService } from './services/common_models/crm/common_model_service';
 import { CrmCustomObjectService } from './services/common_models/crm/custom_object_service';
-import {
-  ContactService as EngagementContactService,
-  MailboxService,
-  SequenceService,
-  UserService as EngagementUserService,
-} from './services/common_models/engagement';
 import { EngagementCommonModelService } from './services/common_models/engagement/common_model_service';
-import { SequenceStateService } from './services/common_models/engagement/sequence_state_service';
 import { DestinationService } from './services/destination_service';
 import { WebhookService } from './services/webhook_service';
 
@@ -41,7 +26,6 @@ export type CoreDependencyContainer = {
   applicationService: ApplicationService;
   sgUserService: SgUserService;
   connectionService: ConnectionService;
-  integrationService: IntegrationService;
   providerService: ProviderService;
   syncConfigService: SyncConfigService;
   customerService: CustomerService;
@@ -55,24 +39,6 @@ export type CoreDependencyContainer = {
 
   crmCustomObjectService: CrmCustomObjectService;
   crmAssociationService: CrmAssociationService;
-
-  // crm
-  crm: {
-    accountService: AccountService;
-    contactService: CrmContactService;
-    leadService: LeadService;
-    opportunityService: OpportunityService;
-    userService: CrmUserService;
-  };
-
-  // engagement
-  engagement: {
-    contactService: EngagementContactService;
-    userService: EngagementUserService;
-    sequenceService: SequenceService;
-    mailboxService: MailboxService;
-    sequenceStateService: SequenceStateService;
-  };
 };
 
 // global
@@ -106,7 +72,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   // mgmt
   const applicationService = new ApplicationService(prisma);
   const sgUserService = new SgUserService();
-  const integrationService = new IntegrationService(prisma);
   const providerService = new ProviderService(prisma);
   const syncConfigService = new SyncConfigService(prisma);
   const connectionService = new ConnectionService(prisma, providerService);
@@ -121,20 +86,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const crmCustomObjectService = new CrmCustomObjectService(remoteService);
   const crmAssociationService = new CrmAssociationService(remoteService);
 
-  // crm
-  const accountService = new AccountService(pgPool, prisma, remoteService);
-  const leadService = new LeadService(pgPool, prisma, remoteService);
-  const opportunityService = new OpportunityService(pgPool, prisma, remoteService);
-  const contactService = new CrmContactService(pgPool, prisma, remoteService);
   const syncHistoryService = new SyncHistoryService(prisma, connectionService);
-  const userService = new CrmUserService(pgPool, prisma, remoteService);
-
-  // engagement
-  const engagementContactService = new EngagementContactService(pgPool, prisma, remoteService);
-  const engagementUserService = new EngagementUserService(pgPool, prisma, remoteService);
-  const sequenceService = new SequenceService(pgPool, prisma, remoteService);
-  const mailboxService = new MailboxService(pgPool, prisma, remoteService);
-  const sequenceStateService = new SequenceStateService(pgPool, prisma, remoteService);
 
   return {
     pgPool,
@@ -144,7 +96,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     sgUserService,
     connectionService,
     customerService,
-    integrationService,
     providerService,
     syncConfigService,
     remoteService,
@@ -155,22 +106,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     engagementCommonModelService,
     crmCustomObjectService,
     crmAssociationService,
-    // crm
-    crm: {
-      contactService,
-      accountService,
-      leadService,
-      opportunityService,
-      userService,
-    },
-    // engagement
-    engagement: {
-      contactService: engagementContactService,
-      userService: engagementUserService,
-      sequenceService,
-      mailboxService,
-      sequenceStateService,
-    },
   };
 }
 

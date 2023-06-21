@@ -29,16 +29,6 @@ export class DestinationService {
     return models.map(fromDestinationModel);
   }
 
-  public async getDestinationByIntegrationId(integrationId: string): Promise<Destination | null> {
-    const model = await this.#prisma.destination.findFirst({
-      where: { integrations: { some: { id: integrationId } } },
-    });
-    if (!model) {
-      return null;
-    }
-    return fromDestinationModel(model);
-  }
-
   public async getDestinationByProviderId(providerId: string): Promise<Destination | null> {
     const model = await this.#prisma.destination.findFirst({
       where: {

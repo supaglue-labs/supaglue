@@ -30,7 +30,6 @@ export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<P
 export type ConnectionCreateParams<T extends ProviderName> = {
   applicationId: string;
   customerId: string; // external customer id
-  integrationId: string;
   providerId: string;
   category: CategoryOfProviderName<T>;
   providerName: T;

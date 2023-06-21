@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
-import { toSnakecasedKeysCrmOpportunityV2 } from '@supaglue/core/mappers/crm';
+import { toSnakecasedKeysCrmOpportunity } from '@supaglue/core/mappers/crm';
 import {
   CreateOpportunityPathParams,
   CreateOpportunityRequest,
@@ -29,7 +29,7 @@ export default function init(app: Router): void {
     ) => {
       const { id: connectionId } = req.customerConnection;
       const opportunity = await crmCommonModelService.get('opportunity', connectionId, req.params.opportunity_id);
-      const snakecasedKeysOpportunity = toSnakecasedKeysCrmOpportunityV2(opportunity);
+      const snakecasedKeysOpportunity = toSnakecasedKeysCrmOpportunity(opportunity);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysOpportunity;
       return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysOpportunity : rest);

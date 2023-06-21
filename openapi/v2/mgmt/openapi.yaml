@@ -43,10 +43,6 @@ paths:
     $ref: paths/sync_configs.yaml
   '/sync_configs/{sync_config_id}':
     $ref: paths/sync_configs@{sync_config_id}.yaml
-  '/integrations':
-    $ref: paths/integrations.yaml
-  '/integrations/{integration_id}':
-    $ref: paths/integrations@{integration_id}.yaml
   '/customers/{customer_id}/connections':
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/{connection_id}':
@@ -71,8 +67,6 @@ components:
   schemas:
     customer:
       $ref: ./components/schemas/objects/customer.yaml
-    integration:
-      $ref: ./components/schemas/objects/integration.yaml
     provider:
       $ref: ./components/schemas/objects/provider.yaml
     destination:
@@ -85,8 +79,6 @@ components:
       $ref: ./components/schemas/objects/connection.yaml
     category:
       $ref: ./components/schemas/objects/category.yaml
-    integration_config:
-      $ref: ./components/schemas/objects/integration_config.yaml
     sync_config:
       $ref: ./components/schemas/objects/sync_config.yaml
     sync_config_data:
@@ -103,8 +95,6 @@ components:
       $ref: ./components/schemas/objects/provider_name_engagement.yaml
     create_update_customer:
       $ref: ./components/schemas/create_update_customer.yaml
-    create_update_integration:
-      $ref: ./components/schemas/create_update_integration.yaml
     create_provider:
       $ref: ./components/schemas/create_provider.yaml
     update_provider:

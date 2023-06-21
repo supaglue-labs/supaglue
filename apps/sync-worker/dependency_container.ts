@@ -6,20 +6,6 @@ import {
   SyncConfigService,
   SyncHistoryService,
 } from '@supaglue/core/services';
-import {
-  AccountService,
-  ContactService as CrmContactService,
-  LeadService,
-  OpportunityService,
-  UserService as CrmUserService,
-} from '@supaglue/core/services/common_models/crm';
-import {
-  ContactService as EngagementContactService,
-  MailboxService,
-  SequenceService,
-  SequenceStateService,
-  UserService as EngagementUserService,
-} from '@supaglue/core/services/common_models/engagement';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { PrismaClient } from '@supaglue/db';
 import { ApplicationService, SyncService } from '@supaglue/sync-workflows/services';
@@ -36,20 +22,6 @@ type DependencyContainer = {
   syncHistoryService: SyncHistoryService;
   providerService: ProviderService;
   applicationService: ApplicationService;
-  crm: {
-    contactService: CrmContactService;
-    accountService: AccountService;
-    leadService: LeadService;
-    userService: CrmUserService;
-    opportunityService: OpportunityService;
-  };
-  engagement: {
-    contactService: EngagementContactService;
-    userService: EngagementUserService;
-    sequenceService: SequenceService;
-    mailboxService: MailboxService;
-    sequenceStateService: SequenceStateService;
-  };
   destinationService: DestinationService;
 };
 
@@ -57,17 +29,8 @@ type DependencyContainer = {
 let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
-  const {
-    prisma,
-    connectionService,
-    remoteService,
-    syncHistoryService,
-    providerService,
-    syncConfigService,
-    integrationService,
-    crm,
-    engagement,
-  } = getCoreDependencyContainer();
+  const { prisma, connectionService, remoteService, syncHistoryService, providerService, syncConfigService } =
+    getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
     process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
@@ -91,7 +54,7 @@ function createDependencyContainer(): DependencyContainer {
     }),
   });
 
-  const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService, integrationService);
+  const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService);
   const applicationService = new ApplicationService(prisma);
   const destinationService = new DestinationService(prisma);
 
@@ -105,8 +68,6 @@ function createDependencyContainer(): DependencyContainer {
     syncConfigService,
     syncHistoryService,
     providerService,
-    crm,
-    engagement,
     destinationService,
   };
 }

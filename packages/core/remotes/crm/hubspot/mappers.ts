@@ -3,14 +3,14 @@ import { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/a
 import { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
+  Account,
   AccountCreateParams,
-  AccountV2,
+  Contact,
   ContactCreateParams,
-  ContactV2,
+  Opportunity,
   OpportunityCreateParams,
   OpportunityStatus,
-  OpportunityV2,
-  UserV2,
+  User,
 } from '@supaglue/types/crm';
 import { SGObject } from '@supaglue/types/crm/association_type';
 import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
@@ -36,14 +36,14 @@ export const fromObjectToHubspotObjectType = (object: SGObject): string => {
   }
 };
 
-export const fromHubSpotCompanyToAccountV2 = ({
+export const fromHubSpotCompanyToAccount = ({
   id,
   properties,
   createdAt,
   updatedAt,
   archived,
   archivedAt,
-}: HubSpotCompany): AccountV2 => {
+}: HubSpotCompany): Account => {
   const addresses: Address[] =
     properties.address ||
     properties.address2 ||
@@ -94,7 +94,7 @@ export const fromHubSpotCompanyToAccountV2 = ({
   };
 };
 
-export const fromHubSpotContactToRemoteContact = ({
+export const fromHubSpotContactToContact = ({
   id,
   properties,
   createdAt,
@@ -102,7 +102,7 @@ export const fromHubSpotContactToRemoteContact = ({
   associations,
   archived,
   archivedAt,
-}: HubSpotContact): ContactV2 => {
+}: HubSpotContact): Contact => {
   const emailAddresses = [
     properties.email
       ? {
@@ -177,10 +177,10 @@ export const fromHubSpotContactToRemoteContact = ({
   };
 };
 
-export const fromHubSpotDealToOpportunityV2 = (
+export const fromHubSpotDealToOpportunity = (
   { id, properties, createdAt, updatedAt, associations, archived, archivedAt }: HubSpotDeal,
   pipelineStageMapping: PipelineStageMapping
-): OpportunityV2 => {
+): Opportunity => {
   let status: OpportunityStatus = 'OPEN';
   if (properties.hs_is_closed_won) {
     status = 'WON';
@@ -223,7 +223,7 @@ export const fromHubSpotDealToOpportunityV2 = (
   };
 };
 
-export const fromHubspotOwnerToUserV2 = ({
+export const fromHubspotOwnerToUser = ({
   id,
   firstName,
   lastName,
@@ -233,7 +233,7 @@ export const fromHubspotOwnerToUserV2 = ({
   archived,
   userId,
   teams,
-}: HubspotOwner): UserV2 => {
+}: HubspotOwner): User => {
   return {
     id,
     name: getFullName(firstName, lastName),

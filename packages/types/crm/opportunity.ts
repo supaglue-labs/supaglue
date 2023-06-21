@@ -1,4 +1,4 @@
-import type { BaseCrmModel, BaseCrmModelV2, CustomFields, SnakecasedCrmTenantFields } from '.';
+import type { BaseCrmModel, CustomFields, SnakecasedCrmTenantFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
@@ -6,8 +6,7 @@ export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
 
 export type SnakecasedKeysOpportunity = SnakecasedKeys<Opportunity>;
-export type SnakecasedKeysOpportunityV2 = SnakecasedKeys<OpportunityV2>;
-export type SnakecasedKeysOpportunityV2WithTenant = SnakecasedKeysOpportunityV2 & SnakecasedCrmTenantFields;
+export type SnakecasedKeysOpportunityWithTenant = SnakecasedKeysOpportunity & SnakecasedCrmTenantFields;
 
 type CoreOpportunity = {
   name: string | null;
@@ -22,10 +21,7 @@ type CoreOpportunity = {
   ownerId: string | null;
 };
 
-// TODO: Rename/consolidate when we move entirely to managed syncs
 export type Opportunity = BaseCrmModel & CoreOpportunity;
-
-export type OpportunityV2 = BaseCrmModelV2 & CoreOpportunity;
 
 export type OpportunityCreateParams = Partial<CoreOpportunity> & {
   customFields?: CustomFields;
@@ -41,7 +37,7 @@ export type OpportunityFilters = {
 };
 
 export type RemoteOpportunityTypes = {
-  object: OpportunityV2;
+  object: Opportunity;
   createParams: OpportunityCreateParams;
   updateParams: OpportunityUpdateParams;
 };

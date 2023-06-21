@@ -8,7 +8,6 @@ import application from './application';
 import auth from './auth';
 import customer from './customer';
 import destination from './destination';
-import integration from './integration';
 import provider from './provider';
 import syncConfig from './sync_config';
 import syncHistory from './sync_history';
@@ -19,12 +18,12 @@ const { prisma, connectionAndSyncService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   // application routes should not require application header
-  const v1ApplicationRouter = Router();
-  v1ApplicationRouter.use(internalMiddleware);
+  const internalApplicationRouter = Router();
+  internalApplicationRouter.use(internalMiddleware);
 
-  v1ApplicationRouter.use(orgHeaderMiddleware);
+  internalApplicationRouter.use(orgHeaderMiddleware);
 
-  v1ApplicationRouter.get('/_migration_connections', async (req, res) => {
+  internalApplicationRouter.get('/_migration_connections', async (req, res) => {
     const connections = await prisma.connection.findMany({
       where: {
         provider: {
@@ -55,89 +54,25 @@ export default function init(app: Router): void {
     );
   });
 
-  // TODO: Need to reset sync state too
-  v1ApplicationRouter.post('/_migrate_connections', async (req, res) => {
-    const { version, strategy } = req.body; // v1 or v2
-    if (version !== 'v1' && version !== 'v2') {
-      throw new Error(`Invalid version: ${version}`);
-    }
+  application(internalApplicationRouter);
+  auth(internalApplicationRouter);
 
-    const syncs = await prisma.sync.findMany({
-      where: {
-        connection: {
-          provider: {
-            application: {
-              orgId: req.orgId,
-            },
-          },
-        },
-      },
-      select: {
-        id: true,
-        version: true,
-      },
-    });
-
-    for (const sync of syncs) {
-      // Kill existing schedules before migrating syncs
-      // Otherwise, when we set the strategy down below
-      // the old syncs can override it
-      if (sync.version === 'v1') {
-        await connectionAndSyncService.deleteTemporalSyncsV1([sync.id]);
-      } else if (sync.version === 'v2') {
-        await connectionAndSyncService.deleteTemporalSyncsV2([sync.id]);
-      }
-    }
-
-    await prisma.$transaction([
-      prisma.sync.updateMany({
-        data: {
-          // TODO: we need to kill the old syncs first before we set this,
-          // since it could be overridden by the old running syncs
-          strategy: {
-            type: strategy,
-          },
-          state: {
-            phase: 'created',
-          },
-          version,
-        },
-        where: {
-          id: {
-            in: syncs.map((sync) => sync.id),
-          },
-        },
-      }),
-      prisma.syncChange.createMany({
-        data: syncs.map((sync) => ({
-          syncId: sync.id,
-        })),
-      }),
-    ]);
-
-    return res.status(200).send();
-  });
-
-  application(v1ApplicationRouter);
-  auth(v1ApplicationRouter);
-
-  app.use('/internal', v1ApplicationRouter);
+  app.use('/internal', internalApplicationRouter);
 
   // non-application routes require application header
-  const v1Router = Router();
-  v1Router.use(internalMiddleware);
-  v1Router.use(orgHeaderMiddleware);
-  v1Router.use(internalApplicationMiddleware);
+  const internalRouter = Router();
+  internalRouter.use(internalMiddleware);
+  internalRouter.use(orgHeaderMiddleware);
+  internalRouter.use(internalApplicationMiddleware);
 
-  apiKey(v1Router);
-  customer(v1Router);
-  destination(v1Router);
-  integration(v1Router);
-  provider(v1Router);
-  webhook(v1Router);
-  syncConfig(v1Router);
-  syncInfo(v1Router);
-  syncHistory(v1Router);
+  apiKey(internalRouter);
+  customer(internalRouter);
+  destination(internalRouter);
+  provider(internalRouter);
+  webhook(internalRouter);
+  syncConfig(internalRouter);
+  syncInfo(internalRouter);
+  syncHistory(internalRouter);
 
-  app.use('/internal', v1Router);
+  app.use('/internal', internalRouter);
 }

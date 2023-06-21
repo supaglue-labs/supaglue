@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { toSnakecasedKeysCrmAccountV2 } from '@supaglue/core/mappers/crm';
+import { toSnakecasedKeysCrmAccount } from '@supaglue/core/mappers/crm';
 import {
   CreateAccountPathParams,
   CreateAccountRequest,
@@ -28,7 +28,7 @@ export default function init(app: Router): void {
     ) => {
       const { id: connectionId } = req.customerConnection;
       const account = await crmCommonModelService.get('account', connectionId, req.params.account_id);
-      const snakecasedKeysAccount = toSnakecasedKeysCrmAccountV2(account);
+      const snakecasedKeysAccount = toSnakecasedKeysCrmAccount(account);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysAccount;
       return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysAccount : rest);

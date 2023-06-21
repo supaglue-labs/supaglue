@@ -1,11 +1,5 @@
 import { CommonModelType, SyncType } from '.';
 
-// DEPRECATED: Use SyncConfig instead.
-export type IntegrationSyncConfig = {
-  periodMs: number;
-  syncAllFields?: boolean;
-};
-
 export type SyncConfig = {
   id: string;
   applicationId: string;

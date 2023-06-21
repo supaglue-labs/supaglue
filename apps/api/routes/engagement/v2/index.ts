@@ -8,18 +8,18 @@ import sequenceState from './sequence_state';
 import user from './user';
 
 export default function init(app: Router): void {
-  const v1Router = Router();
+  const v2Router = Router();
 
-  v1Router.use(openapiMiddleware('engagement', 'v2'));
+  v2Router.use(openapiMiddleware('engagement', 'v2'));
 
-  contact(v1Router);
-  user(v1Router);
-  sequence(v1Router);
-  sequenceState(v1Router);
-  mailbox(v1Router);
-  passthrough(v1Router);
+  contact(v2Router);
+  user(v2Router);
+  sequence(v2Router);
+  sequenceState(v2Router);
+  mailbox(v2Router);
+  passthrough(v2Router);
 
-  v1Router.use(openApiErrorHandlerMiddleware);
+  v2Router.use(openApiErrorHandlerMiddleware);
 
-  app.use('/v2', v1Router);
+  app.use('/v2', v2Router);
 }

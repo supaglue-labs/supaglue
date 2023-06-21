@@ -2,18 +2,18 @@ import { CommonModelType, ProviderCategory } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
 import { EngagementCommonModelType } from '@supaglue/types/engagement';
 import {
-  toSnakecasedKeysCrmAccountV2,
-  toSnakecasedKeysCrmContactV2,
-  toSnakecasedKeysCrmLeadV2,
-  toSnakecasedKeysCrmOpportunityV2,
-  toSnakecasedKeysCrmUserV2,
+  toSnakecasedKeysCrmAccount,
+  toSnakecasedKeysCrmContact,
+  toSnakecasedKeysCrmLead,
+  toSnakecasedKeysCrmOpportunity,
+  toSnakecasedKeysCrmUser,
 } from '../mappers/crm';
 import {
-  toSnakecasedKeysEngagementContactV2,
-  toSnakecasedKeysEngagementUserV2,
-  toSnakecasedKeysMailboxV2,
-  toSnakecasedKeysSequenceStateV2,
-  toSnakecasedKeysSequenceV2,
+  toSnakecasedKeysEngagementContact,
+  toSnakecasedKeysEngagementUser,
+  toSnakecasedKeysMailbox,
+  toSnakecasedKeysSequence,
+  toSnakecasedKeysSequenceState,
 } from '../mappers/engagement';
 
 export const getSnakecasedKeysMapper = (category: ProviderCategory, commonModelType: CommonModelType) => {
@@ -28,17 +28,17 @@ const snakecasedKeysMapperByCommonModelType: {
   engagement: Record<EngagementCommonModelType, (obj: any) => any>;
 } = {
   crm: {
-    account: toSnakecasedKeysCrmAccountV2,
-    contact: toSnakecasedKeysCrmContactV2,
-    lead: toSnakecasedKeysCrmLeadV2,
-    opportunity: toSnakecasedKeysCrmOpportunityV2,
-    user: toSnakecasedKeysCrmUserV2,
+    account: toSnakecasedKeysCrmAccount,
+    contact: toSnakecasedKeysCrmContact,
+    lead: toSnakecasedKeysCrmLead,
+    opportunity: toSnakecasedKeysCrmOpportunity,
+    user: toSnakecasedKeysCrmUser,
   },
   engagement: {
-    contact: toSnakecasedKeysEngagementContactV2,
-    mailbox: toSnakecasedKeysMailboxV2,
-    sequence: toSnakecasedKeysSequenceV2,
-    sequence_state: toSnakecasedKeysSequenceStateV2,
-    user: toSnakecasedKeysEngagementUserV2,
+    contact: toSnakecasedKeysEngagementContact,
+    mailbox: toSnakecasedKeysMailbox,
+    sequence: toSnakecasedKeysSequence,
+    sequence_state: toSnakecasedKeysSequenceState,
+    user: toSnakecasedKeysEngagementUser,
   },
 };

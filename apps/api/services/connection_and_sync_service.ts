@@ -13,7 +13,6 @@ import {
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
 import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
-import { getRunSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_sync';
 import type { ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
@@ -23,7 +22,7 @@ import type {
 } from '@supaglue/types/connection';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
-import { Client, ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
+import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
 export class ConnectionAndSyncService {
@@ -62,18 +61,6 @@ export class ConnectionAndSyncService {
     if (!provider) {
       throw new Error(`No provider found for ${params.providerName}`);
     }
-    // TODO: Delete
-    const integration = await this.#prisma.integration.findUnique({
-      where: {
-        applicationId_providerName: {
-          applicationId: params.applicationId,
-          providerName: params.providerName,
-        },
-      },
-    });
-    if (!integration) {
-      throw new Error(`No integration found for ${params.providerName}`);
-    }
     const status: ConnectionStatus = 'added';
     const customerId = getCustomerIdPk(params.applicationId, params.customerId);
     const connection = await this.#prisma.connection.upsert({
@@ -81,8 +68,6 @@ export class ConnectionAndSyncService {
         category: params.category,
         providerName: params.providerName,
         customerId,
-        // TODO: Delete
-        integrationId: integration.id,
         providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
@@ -91,7 +76,6 @@ export class ConnectionAndSyncService {
         category: params.category,
         providerName: params.providerName,
         customerId,
-        integrationId: integration.id,
         providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
@@ -107,24 +91,11 @@ export class ConnectionAndSyncService {
     return fromConnectionModelToConnectionUnsafe<ProviderName>(connection);
   }
 
-  public async create(version: 'v1' | 'v2', params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
+  public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
     const provider = await this.#providerService.getByNameAndApplicationId(params.providerName, params.applicationId);
     const syncConfig = await this.#syncConfigService.findByProviderId(provider.id);
     const application = await this.#applicationService.getById(provider.applicationId);
     let errored = false;
-
-    // TODO: Delete
-    const integration = await this.#prisma.integration.findUnique({
-      where: {
-        applicationId_providerName: {
-          applicationId: params.applicationId,
-          providerName: params.providerName,
-        },
-      },
-    });
-    if (!integration) {
-      throw new Error(`No integration found for ${params.providerName}`);
-    }
 
     try {
       const status: ConnectionStatus = 'added';
@@ -139,15 +110,13 @@ export class ConnectionAndSyncService {
             category: params.category,
             providerName: params.providerName,
             customerId: getCustomerIdPk(params.applicationId, params.customerId),
-            // TODO: Delete
-            integrationId: integration.id,
             providerId: provider.id,
             status,
             instanceUrl: params.instanceUrl,
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         });
-        if (syncConfig || version === 'v1') {
+        if (syncConfig) {
           await tx.sync.create({
             data: {
               id: syncId,
@@ -159,7 +128,7 @@ export class ConnectionAndSyncService {
               state: {
                 phase: 'created',
               },
-              version,
+              version: 'v2',
             },
           });
           await tx.syncChange.create({
@@ -279,86 +248,6 @@ export class ConnectionAndSyncService {
       }
 
       throw err;
-    }
-  }
-
-  // TODO: Remove when we're done migrating
-  async deleteTemporalSyncsV1(syncIds: string[]): Promise<void> {
-    // TODO: When we stop using temporalite locally, we should just use
-    // advanced visibility to search by custom attributes and find the workflows to kill.
-    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
-    // in Postgres and without an external ES cluster.
-    //
-    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
-    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
-
-    // Get the sync schedule handles
-    const syncScheduleHandles = syncIds.map((syncId) =>
-      this.#temporalClient.schedule.getHandle(getRunSyncScheduleId(syncId))
-    );
-
-    try {
-      // Pause the sync schedules
-      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
-
-      // Kill the associated workflows
-      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
-      const workflowIds = scheduleDescriptions.flatMap((description) =>
-        description.info.runningActions.map((action) => action.workflow.workflowId)
-      );
-      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
-      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
-
-      // Kill the sync schedules
-      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
-    } catch (err: unknown) {
-      if (err instanceof ScheduleNotFoundError) {
-        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
-      } else if (err instanceof WorkflowNotFoundError) {
-        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
-      } else {
-        throw err;
-      }
-    }
-  }
-
-  // TODO: Remove when we're done migrating
-  async deleteTemporalSyncsV2(syncIds: string[]): Promise<void> {
-    // TODO: When we stop using temporalite locally, we should just use
-    // advanced visibility to search by custom attributes and find the workflows to kill.
-    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
-    // in Postgres and without an external ES cluster.
-    //
-    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
-    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
-
-    // Get the sync schedule handles
-    const syncScheduleHandles = syncIds.map((syncId) =>
-      this.#temporalClient.schedule.getHandle(getRunManagedSyncScheduleId(syncId))
-    );
-
-    try {
-      // Pause the sync schedules
-      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
-
-      // Kill the associated workflows
-      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
-      const workflowIds = scheduleDescriptions.flatMap((description) =>
-        description.info.runningActions.map((action) => action.workflow.workflowId)
-      );
-      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
-      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
-
-      // Kill the sync schedules
-      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
-    } catch (err: unknown) {
-      if (err instanceof ScheduleNotFoundError) {
-        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
-      } else if (err instanceof WorkflowNotFoundError) {
-        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
-      } else {
-        throw err;
-      }
     }
   }
 
@@ -492,7 +381,6 @@ export class ConnectionAndSyncService {
   //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
   //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
   //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
-  //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
   //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
   //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
   //       [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
@@ -598,7 +486,7 @@ export class ConnectionAndSyncService {
     const metadataList = await Promise.all(
       syncs.map(async (sync) => ({
         syncId: sync.id,
-        ...(await this.getMetadataFromSyncSchedule(sync.id, sync.version)),
+        ...(await this.getMetadataFromSyncSchedule(sync.id)),
       }))
     );
 
@@ -624,15 +512,12 @@ export class ConnectionAndSyncService {
     });
   }
 
-  private async getMetadataFromSyncSchedule(
-    syncId: string,
-    version: 'v1' | 'v2'
-  ): Promise<{
+  private async getMetadataFromSyncSchedule(syncId: string): Promise<{
     lastSyncStart: Date | null;
     nextSyncStart: Date | null;
     status: SyncStatus | null;
   }> {
-    const scheduleId = version === 'v1' ? getRunSyncScheduleId(syncId) : getRunManagedSyncScheduleId(syncId);
+    const scheduleId = getRunManagedSyncScheduleId(syncId);
     const handle = this.#temporalClient.schedule.getHandle(scheduleId);
     const description = await handle.describe();
 

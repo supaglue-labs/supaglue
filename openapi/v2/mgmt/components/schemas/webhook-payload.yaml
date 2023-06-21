@@ -60,7 +60,7 @@ oneOf:
           customer_id:
             type: string
             example: e30cbb93-5b05-4186-b6de-1acc10013795
-          integration_id:
+          provider_id:
             type: string
             example: 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024
           category:
@@ -75,7 +75,7 @@ oneOf:
             example: hubspot
         required:
           - customer_id
-          - integration_id
+          - provider_id
           - category
           - provider_name
     required:

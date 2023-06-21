@@ -1,9 +1,8 @@
-import type { BaseCrmModel, BaseCrmModelV2, SnakecasedCrmTenantFields } from '.';
+import type { BaseCrmModel, SnakecasedCrmTenantFields } from '.';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysCrmUser = SnakecasedKeys<User>;
-export type SnakecasedKeysCrmUserV2 = SnakecasedKeys<UserV2>;
-export type SnakecasedKeysCrmUserV2WithTenant = SnakecasedKeysCrmUserV2 & SnakecasedCrmTenantFields;
+export type SnakecasedKeysCrmUserWithTenant = SnakecasedKeysCrmUser & SnakecasedCrmTenantFields;
 
 type CoreUser = {
   name: string | null;
@@ -11,13 +10,10 @@ type CoreUser = {
   isActive: boolean | null;
 };
 
-// TODO: Rename/consolidate when we move entirely to managed syncs
 export type User = BaseCrmModel & CoreUser;
 
-export type UserV2 = BaseCrmModelV2 & CoreUser;
-
 export type RemoteUserTypes = {
-  object: UserV2;
+  object: User;
   createParams: never;
   updateParams: never;
 };

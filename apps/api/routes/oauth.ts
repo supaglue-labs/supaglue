@@ -8,7 +8,7 @@ import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supag
 import { Request, Response, Router } from 'express';
 import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
 
-const { providerService, integrationService, connectionAndSyncService, applicationService } = getDependencyContainer();
+const { providerService, connectionAndSyncService, applicationService } = getDependencyContainer();
 
 const SERVER_URL = process.env.SUPAGLUE_SERVER_URL ?? 'http://localhost:8080';
 const REDIRECT_URI = `${SERVER_URL}/oauth/callback`;
@@ -43,7 +43,7 @@ export default function init(app: Router): void {
         throw new BadRequestError('Missing returnUrl');
       }
 
-      if (version !== 'v1' && version !== 'v2') {
+      if (version !== 'v2') {
         throw new BadRequestError('Invalid version');
       }
 
@@ -127,7 +127,6 @@ export default function init(app: Router): void {
         customerId,
         applicationId,
         loginUrl,
-        version,
       }: {
         returnUrl: string;
         scope?: string;
@@ -135,7 +134,6 @@ export default function init(app: Router): void {
         providerName?: ProviderName;
         customerId?: string;
         loginUrl?: string;
-        version?: string;
       } = JSON.parse(decodeURIComponent(state));
 
       if (!applicationId) {
@@ -161,8 +159,6 @@ export default function init(app: Router): void {
       }
 
       const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
-
-      const integration = await integrationService.getByProviderNameAndApplicationId(providerName, applicationId);
 
       const { oauthClientId, oauthClientSecret } = provider.config.oauth.credentials;
 
@@ -222,7 +218,6 @@ export default function init(app: Router): void {
         applicationId,
         customerId,
         // TODO: Delete
-        integrationId: integration.id,
         providerId: provider.id,
         credentials: {
           type: 'oauth2' as const,
@@ -247,7 +242,7 @@ export default function init(app: Router): void {
           : { ...basePayload, providerName };
 
       try {
-        await connectionAndSyncService.create(version === 'v1' ? 'v1' : 'v2', payload as ConnectionCreateParamsAny);
+        await connectionAndSyncService.create(payload as ConnectionCreateParamsAny);
       } catch (e: any) {
         if (e.code === 'P2002') {
           await connectionAndSyncService.upsert(payload as ConnectionUpsertParamsAny);

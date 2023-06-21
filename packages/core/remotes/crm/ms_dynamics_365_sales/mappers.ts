@@ -1,4 +1,4 @@
-import { AccountV2, ContactV2, LeadV2, OpportunityV2, UserV2 } from '@supaglue/types/crm';
+import { Account, Contact, Lead, Opportunity, User } from '@supaglue/types/crm';
 import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 
 type DynamicsAccount = {
@@ -31,7 +31,7 @@ type DynamicsAccount = {
   modifiedon: string;
 };
 
-export const fromDynamicsAccountToRemoteAccount = (dynamicsAccount: DynamicsAccount): AccountV2 => {
+export const fromDynamicsAccountToRemoteAccount = (dynamicsAccount: DynamicsAccount): Account => {
   const addresses: Address[] = [];
 
   if (
@@ -278,7 +278,7 @@ type DynamicsContact = {
   _parentcustomerid_value: string | null;
 };
 
-export const fromDynamicsContactToRemoteContact = (dynamicsContact: DynamicsContact): ContactV2 => {
+export const fromDynamicsContactToRemoteContact = (dynamicsContact: DynamicsContact): Contact => {
   const addresses: Address[] = [];
 
   if (
@@ -421,7 +421,7 @@ type DynamicsOpportunity = {
   'opportunity_leadtoopportunitysalesprocess@odata.nextLink': string;
 };
 
-export const fromDynamicsOpportunityToRemoteOpportunity = (dynamicsOpportunity: DynamicsOpportunity): OpportunityV2 => {
+export const fromDynamicsOpportunityToRemoteOpportunity = (dynamicsOpportunity: DynamicsOpportunity): Opportunity => {
   const {
     opportunity_leadtoopportunitysalesprocess,
     ['opportunity_leadtoopportunitysalesprocess@odata.nextLink']: _,
@@ -430,7 +430,7 @@ export const fromDynamicsOpportunityToRemoteOpportunity = (dynamicsOpportunity: 
     ...rawData
   } = dynamicsOpportunity;
 
-  let status: OpportunityV2['status'] = null;
+  let status: Opportunity['status'] = null;
   switch (dynamicsOpportunity.statuscode) {
     case 1: // In Progress
     case 2: // On Hold
@@ -508,7 +508,7 @@ type DynamicsLead = {
   _contactid_value: string | null;
 };
 
-export const fromDynamicsLeadToRemoteLead = (dynamicsLead: DynamicsLead): LeadV2 => {
+export const fromDynamicsLeadToRemoteLead = (dynamicsLead: DynamicsLead): Lead => {
   const leadSource = null;
 
   const addresses: Address[] = [];
@@ -647,7 +647,7 @@ type DynamicsUser = {
   isdisabled: boolean;
 };
 
-export const fromDynamicsUserToRemoteUser = (dynamicsUser: DynamicsUser): UserV2 => {
+export const fromDynamicsUserToRemoteUser = (dynamicsUser: DynamicsUser): User => {
   return {
     id: dynamicsUser.systemuserid,
     name: dynamicsUser.fullname,

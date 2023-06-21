@@ -5,16 +5,16 @@ import {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import {
+  Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  ContactV2,
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
-  MailboxV2,
+  Mailbox,
+  Sequence,
+  SequenceState,
   SequenceStateCreateParams,
-  SequenceStateV2,
-  SequenceV2,
-  UserV2,
+  User,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
@@ -30,11 +30,11 @@ import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../
 import { paginator } from '../../utils/paginator';
 import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import {
-  fromOutreachMailboxToMailboxV2,
-  fromOutreachProspectToContactV2,
-  fromOutreachSequenceStateToSequenceStateV2,
-  fromOutreachSequenceToSequenceV2,
-  fromOutreachUserToUserV2,
+  fromOutreachMailboxToMailbox,
+  fromOutreachProspectToContact,
+  fromOutreachSequenceStateToSequenceState,
+  fromOutreachSequenceToSequence,
+  fromOutreachUserToUser,
   toOutreachProspectCreateParams,
   toOutreachProspectUpdateParams,
   toOutreachSequenceStateCreateParams,
@@ -106,39 +106,39 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  async getContact(id: string): Promise<ContactV2> {
+  async getContact(id: string): Promise<Contact> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/prospects/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachProspectToContactV2(response.data.data);
+    return fromOutreachProspectToContact(response.data.data);
   }
 
-  async getUser(id: string): Promise<UserV2> {
+  async getUser(id: string): Promise<User> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/users/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachUserToUserV2(response.data.data);
+    return fromOutreachUserToUser(response.data.data);
   }
 
-  async getSequence(id: string): Promise<SequenceV2> {
+  async getSequence(id: string): Promise<Sequence> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequences/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachSequenceToSequenceV2(response.data.data);
+    return fromOutreachSequenceToSequence(response.data.data);
   }
 
-  async getMailbox(id: string): Promise<MailboxV2> {
+  async getMailbox(id: string): Promise<Mailbox> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/mailboxes/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachMailboxToMailboxV2(response.data.data);
+    return fromOutreachMailboxToMailbox(response.data.data);
   }
 
-  async getSequenceState(id: string): Promise<SequenceStateV2> {
+  async getSequenceState(id: string): Promise<SequenceState> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequence_states/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachSequenceStateToSequenceStateV2(response.data.data);
+    return fromOutreachSequenceStateToSequenceState(response.data.data);
   }
 
   public override async listCommonObjectRecords(
@@ -216,7 +216,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              record: fromOutreachProspectToContactV2(result),
+              record: fromOutreachProspectToContact(result),
               emittedAt,
             }))
           );
@@ -235,7 +235,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              record: fromOutreachUserToUserV2(result),
+              record: fromOutreachUserToUser(result),
               emittedAt,
             }))
           );
@@ -254,7 +254,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              record: fromOutreachSequenceToSequenceV2(result),
+              record: fromOutreachSequenceToSequence(result),
               emittedAt,
             }))
           );
@@ -273,7 +273,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              record: fromOutreachMailboxToMailboxV2(result),
+              record: fromOutreachMailboxToMailbox(result),
               emittedAt,
             }))
           );
@@ -292,7 +292,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              record: fromOutreachSequenceStateToSequenceStateV2(result),
+              record: fromOutreachSequenceStateToSequenceState(result),
               emittedAt,
             }))
           );

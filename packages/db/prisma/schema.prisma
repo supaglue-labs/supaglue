@@ -109,14 +109,6 @@ model SyncConfig {
   @@map("sync_configs")
 }
 
-model IntegrationChange {
-  id            String   @id @default(uuid())
-  integrationId String   @map("integration_id")
-  createdAt     DateTime @default(now()) @map("created_at")
-
-  @@map("integration_changes")
-}
-
 model SyncConfigChange {
   id           String   @id @default(uuid())
   syncConfigId String   @map("sync_config_id")
@@ -126,25 +118,23 @@ model SyncConfigChange {
 }
 
 model Connection {
-  id            String     @id @default(uuid())
-  integrationId String     @map("integration_id")
+  id           String     @id @default(uuid())
   // CRM, HRIS, etc.
-  category      String
+  category     String
   // Salesforce, Hubspot, etc.
-  providerName  String     @map("provider_name")
-  status        String // available | added | authorized | callable
-  credentials   Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
-  customer      Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId    String     @map("customer_id")
-  instanceUrl   String     @default("") @map("instance_url")
-  createdAt     DateTime   @default(now()) @map("created_at")
-  updatedAt     DateTime   @updatedAt @map("updated_at")
-  sync          Sync?
-  replayIds     ReplayId[]
-  provider      Provider   @relation(fields: [providerId], references: [id])
-  providerId    String     @map("provider_id")
+  providerName String     @map("provider_name")
+  status       String // available | added | authorized | callable
+  credentials  Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
+  customer     Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId   String     @map("customer_id")
+  instanceUrl  String     @default("") @map("instance_url")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  sync         Sync?
+  replayIds    ReplayId[]
+  provider     Provider   @relation(fields: [providerId], references: [id])
+  providerId   String     @map("provider_id")
 
-  @@unique([customerId, integrationId])
   @@unique([customerId, providerId])
   @@map("connections")
 }

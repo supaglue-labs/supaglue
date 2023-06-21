@@ -134,25 +134,6 @@ export class SyncConfigService {
     return fromSyncConfigModel(upsertedSyncConfig);
   }
 
-  public async backfillSyncConfigIds(integrationIdToSyncConfigIdMapping: Record<string, string>): Promise<void> {
-    const integrationIds = Object.keys(integrationIdToSyncConfigIdMapping);
-    await Promise.all(
-      integrationIds.map(async (integrationId) => {
-        const syncConfigId = integrationIdToSyncConfigIdMapping[integrationId];
-        await this.#prisma.sync.updateMany({
-          where: {
-            connection: {
-              integrationId,
-            },
-          },
-          data: {
-            syncConfigId,
-          },
-        });
-      })
-    );
-  }
-
   public async delete(id: string, applicationId: string): Promise<void> {
     await this.#prisma.syncConfig.deleteMany({
       where: { id, applicationId },
