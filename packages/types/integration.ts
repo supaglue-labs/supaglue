@@ -26,12 +26,14 @@ export type IntegrationConfigDecrypted = {
   providerAppId: string;
   oauth: OAuthConfigDecrypted;
   sync: IntegrationSyncConfig;
+  useManagedOauth?: boolean;
 };
 
 export type IntegrationConfigEncrypted = {
   providerAppId: string;
   oauth: OAuthConfigEncrypted;
   sync: IntegrationSyncConfig;
+  useManagedOauth?: boolean;
 };
 
 // TODO: Update params should not contain applicationId even if create params does.
@@ -42,5 +44,10 @@ export type EngagementIntegrationCreateParams = Omit<EngagementIntegration, 'id'
 export type EngagementIntegrationUpdateParams = Omit<EngagementIntegration, 'id'>;
 
 export type Integration = CRMIntegration | EngagementIntegration;
+
 export type IntegrationCreateParams = CRMIntegrationCreateParams | EngagementIntegrationCreateParams;
 export type IntegrationUpdateParams = CRMIntegrationUpdateParams | EngagementIntegrationUpdateParams;
+
+export type IntegrationConfigMapperArgs = {
+  managedOauthConfig: OAuthConfigDecrypted;
+};

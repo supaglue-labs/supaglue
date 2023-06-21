@@ -23,7 +23,7 @@ export class IntegrationService {
     const integrations = await this.#prisma.integration.findMany({
       where: { id: { in: ids } },
     });
-    return Promise.all(integrations.map(fromIntegrationModel));
+    return Promise.all(integrations.map((integration) => fromIntegrationModel(integration)));
   }
 
   public async getById(id: string): Promise<Integration> {
@@ -64,7 +64,7 @@ export class IntegrationService {
   // TODO: paginate
   public async list(applicationId: string): Promise<Integration[]> {
     const integrations = await this.#prisma.integration.findMany({ where: { applicationId } });
-    return Promise.all(integrations.map(fromIntegrationModel));
+    return Promise.all(integrations.map((integration) => fromIntegrationModel(integration)));
   }
 
   public async create(integration: IntegrationCreateParams): Promise<Integration> {
@@ -188,6 +188,7 @@ const toProviderCreateParams = (integration: IntegrationCreateParams): ProviderC
     name: integration.providerName,
     config: {
       providerAppId: integration.config.providerAppId,
+      useManagedOauth: integration.config.useManagedOauth,
       oauth: integration.config.oauth,
     },
   } as ProviderCreateParams;

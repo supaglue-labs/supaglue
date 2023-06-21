@@ -12,3 +12,8 @@ export type OAuthCredentials = {
   oauthClientId: string;
   oauthClientSecret: string;
 };
+
+export type ManagedOauthArgs = {
+  managedOauthConfig: OAuthConfigDecrypted;
+  hideOauthConfig: boolean;
+};

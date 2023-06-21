@@ -14,7 +14,7 @@ export class ProviderService {
     const providers = await this.#prisma.provider.findMany({
       where: { id: { in: ids } },
     });
-    return Promise.all(providers.map(fromProviderModel));
+    return Promise.all(providers.map((provider) => fromProviderModel(provider)));
   }
 
   public async getById(id: string): Promise<Provider> {
@@ -34,6 +34,7 @@ export class ProviderService {
     if (!provider || provider.applicationId !== applicationId) {
       throw new NotFoundError(`Can't find provider with id: ${id}`);
     }
+
     return fromProviderModel(provider);
   }
 
@@ -54,7 +55,7 @@ export class ProviderService {
 
   public async list(applicationId: string): Promise<Provider[]> {
     const providers = await this.#prisma.provider.findMany({ where: { applicationId } });
-    return Promise.all(providers.map(fromProviderModel));
+    return Promise.all(providers.map((provider) => fromProviderModel(provider)));
   }
 
   public async create(provider: ProviderCreateParams): Promise<Provider> {

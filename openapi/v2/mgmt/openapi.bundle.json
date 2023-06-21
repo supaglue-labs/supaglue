@@ -483,7 +483,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_provider"
+                "$ref": "#/components/schemas/create_provider"
               }
             }
           }
@@ -567,7 +567,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_provider"
+                "$ref": "#/components/schemas/update_provider"
               }
             }
           }
@@ -2042,7 +2042,7 @@
             "$ref": "#/components/schemas/provider_name"
           },
           "config": {
-            "$ref": "#/components/schemas/provider_config"
+            "$ref": "#/components/schemas/create_provider_config"
           }
         },
         "required": [
@@ -2254,6 +2254,11 @@
             "type": "string",
             "example": "my_app_id"
           },
+          "use_managed_oauth": {
+            "type": "boolean",
+            "description": "True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials.",
+            "example": false
+          },
           "oauth": {
             "type": "object",
             "properties": {
@@ -2313,6 +2318,7 @@
         ],
         "example": {
           "provider_app_id": "my_app_id",
+          "is_managed_auth_app": false,
           "oauth": {
             "oauth_scopes": [
               "crm.objects.contacts.read",
@@ -2448,7 +2454,77 @@
           }
         }
       },
-      "provider_config": {
+      "create_provider_config": {
+        "type": "object",
+        "properties": {
+          "provider_app_id": {
+            "type": "string",
+            "example": "my_app_id"
+          },
+          "use_managed_oauth": {
+            "type": "boolean",
+            "description": "True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials.",
+            "example": false
+          },
+          "oauth": {
+            "type": "object",
+            "properties": {
+              "oauth_scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "crm.objects.contacts.read"
+                }
+              },
+              "credentials": {
+                "type": "object",
+                "properties": {
+                  "oauth_client_id": {
+                    "type": "string",
+                    "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                  },
+                  "oauth_client_secret": {
+                    "type": "string",
+                    "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                  }
+                },
+                "required": [
+                  "oauth_client_id",
+                  "oauth_client_secret"
+                ]
+              }
+            },
+            "required": [
+              "oauth_scopes",
+              "credentials"
+            ]
+          }
+        },
+        "required": [
+          "provider_app_id",
+          "oauth"
+        ],
+        "example": {
+          "provider_app_id": "my_app_id",
+          "use_managed_oauth": true,
+          "oauth": {
+            "oauth_scopes": [
+              "crm.objects.contacts.read",
+              "crm.objects.companies.read",
+              "crm.objects.deals.read",
+              "crm.objects.owners.read",
+              "crm.objects.contacts.write",
+              "crm.objects.companies.write",
+              "crm.objects.deals.write"
+            ],
+            "credentials": {
+              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+            }
+          }
+        }
+      },
+      "update_provider_config": {
         "type": "object",
         "properties": {
           "provider_app_id": {
@@ -2631,7 +2707,7 @@
           }
         ]
       },
-      "create_update_provider": {
+      "create_provider": {
         "allOf": [
           {
             "type": "object",
@@ -2643,7 +2719,7 @@
                 ]
               },
               "config": {
-                "$ref": "#/components/schemas/provider_config"
+                "$ref": "#/components/schemas/create_provider_config"
               },
               "destination_id": {
                 "type": "string",
@@ -2659,7 +2735,6 @@
             "oneOf": [
               {
                 "type": "object",
-                "title": "crm",
                 "properties": {
                   "category": {
                     "type": "string",
@@ -2678,7 +2753,72 @@
               },
               {
                 "type": "object",
-                "title": "engagement",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "engagement"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_engagement"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "update_provider": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "oauth2"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/update_provider_config"
+              },
+              "destination_id": {
+                "type": "string",
+                "nullable": true
+              }
+            },
+            "required": [
+              "auth_type",
+              "config"
+            ]
+          },
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "crm"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_crm"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
+              },
+              {
+                "type": "object",
                 "properties": {
                   "category": {
                     "type": "string",

@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { hideManagedOauthConfig } from '@supaglue/core/mappers/provider';
 import {
   CreateProviderPathParams,
   CreateProviderRequest,
@@ -33,7 +34,7 @@ export default function init(app: Router): void {
       res: Response<GetProvidersResponse>
     ) => {
       const providers = await providerService.list(req.supaglueApplication.id);
-      return res.status(200).send(providers.map(snakecaseKeys));
+      return res.status(200).send(providers.map((provider) => snakecaseKeys(hideManagedOauthConfig(provider))));
     }
   );
 
@@ -47,7 +48,7 @@ export default function init(app: Router): void {
         applicationId: req.supaglueApplication.id,
         ...camelcaseKeys(req.body),
       });
-      return res.status(201).send(snakecaseKeys(provider));
+      return res.status(201).send(snakecaseKeys(hideManagedOauthConfig(provider)));
     }
   );
 
@@ -85,7 +86,7 @@ export default function init(app: Router): void {
         req.params.provider_id,
         req.supaglueApplication.id
       );
-      return res.status(200).send(snakecaseKeys(provider));
+      return res.status(200).send(snakecaseKeys(hideManagedOauthConfig(provider)));
     }
   );
 
@@ -99,7 +100,7 @@ export default function init(app: Router): void {
         applicationId: req.supaglueApplication.id,
         ...camelcaseKeys(req.body),
       });
-      return res.status(200).send(snakecaseKeys(provider));
+      return res.status(200).send(snakecaseKeys(hideManagedOauthConfig(provider)));
     }
   );
 

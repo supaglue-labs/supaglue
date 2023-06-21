@@ -8,9 +8,9 @@ import getIcon from '@/utils/companyToIcon';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
-import { IconButton, Stack } from '@mui/material';
-import Link from '@mui/material/Link';
+import { Breadcrumbs, IconButton, Stack, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import Link from 'next/link';
 
 export default function SyncConfigListPanel() {
   const { syncConfigs = [], isLoading } = useSyncConfigs();
@@ -32,8 +32,9 @@ export default function SyncConfigListPanel() {
           <Link
             href={`/applications/${applicationId}/configuration/sync_configs/${params.id}`}
             className="flex flex-row gap-2 items-center w-full h-full"
-            sx={{
-              textDecoration: 'none',
+            style={{
+              color: 'inherit',
+              textDecoration: 'inherit',
             }}
           >
             {params.id}
@@ -74,8 +75,9 @@ export default function SyncConfigListPanel() {
         return (
           <Link
             href={`/applications/${applicationId}/configuration/destinations/${destination.id}`}
-            sx={{
-              textDecoration: 'none',
+            style={{
+              color: 'inherit',
+              textDecoration: 'inherit',
             }}
             className="flex flex-row gap-2 items-center w-full h-full"
           >
@@ -97,6 +99,12 @@ export default function SyncConfigListPanel() {
 
   return (
     <div className="flex flex-col gap-4">
+      <Breadcrumbs>
+        <Link color="inherit" href={`/applications/${applicationId}`}>
+          Home
+        </Link>
+        <Typography color="text.primary">Syncs</Typography>
+      </Breadcrumbs>
       <MetricCard
         className="max-w-2xl"
         icon={<PeopleAltOutlined />}
@@ -109,7 +117,8 @@ export default function SyncConfigListPanel() {
               <Link
                 href={`/applications/${applicationId}/configuration/sync_configs/new`}
                 className="flex flex-row gap-2 items-center w-full h-full"
-                sx={{
+                style={{
+                  textDecoration: 'inherit',
                   color: 'rgba(0, 0, 0, 0.54);',
                 }}
               >

@@ -1611,6 +1611,11 @@
             "type": "string",
             "example": "my_app_id"
           },
+          "use_managed_oauth": {
+            "type": "boolean",
+            "description": "True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials.",
+            "example": false
+          },
           "oauth": {
             "type": "object",
             "properties": {
@@ -1670,6 +1675,7 @@
         ],
         "example": {
           "provider_app_id": "my_app_id",
+          "is_managed_auth_app": false,
           "oauth": {
             "oauth_scopes": [
               "crm.objects.contacts.read",
