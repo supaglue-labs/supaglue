@@ -14,13 +14,6 @@ import type {
 } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
-export type ClientResponse<T> = {
-  ok: boolean;
-  status: number;
-  statusText: string;
-  result: T;
-};
-
 export async function createRemoteApiKey(applicationId: string): Promise<{ api_key: string }> {
   const result = await fetch(`/api/internal/api_keys/create`, {
     method: 'POST',
