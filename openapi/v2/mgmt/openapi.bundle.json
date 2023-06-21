@@ -2801,7 +2801,6 @@
             "oneOf": [
               {
                 "type": "object",
-                "title": "crm",
                 "properties": {
                   "category": {
                     "type": "string",
@@ -2820,7 +2819,6 @@
               },
               {
                 "type": "object",
-                "title": "engagement",
                 "properties": {
                   "category": {
                     "type": "string",
