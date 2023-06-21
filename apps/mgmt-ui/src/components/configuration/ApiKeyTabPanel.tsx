@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { createRemoteApiKey, deleteRemoteApiKey } from '@/client';
+import { createRemoteApiKey } from '@/client';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Box, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
 import { RegenerateApiKey } from './RegenerateApiKey';
-import { RevokeApiKey } from './RevokeApiKey';
 
 export default function ApiKeyTabPanel() {
   const activeApplicationId = useActiveApplicationId();
@@ -36,14 +35,7 @@ export default function ApiKeyTabPanel() {
           />
         </Stack>
 
-        <Stack direction="row" className="gap-2 justify-between">
-          <RevokeApiKey
-            disabled={false}
-            onDelete={() => {
-              deleteRemoteApiKey(activeApplicationId);
-              setApiKey('');
-            }}
-          />
+        <Stack direction="row" className="gap-2 justify-end">
           <RegenerateApiKey
             disabled={false}
             onConfirm={async () => {

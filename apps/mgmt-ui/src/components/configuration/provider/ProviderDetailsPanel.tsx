@@ -5,7 +5,7 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useProviders } from '@/hooks/useProviders';
 import providerToIcon from '@/utils/providerToIcon';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControlLabel, FormHelperText, Stack, Switch, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import { Provider, ProviderCategory, ProviderCreateParams, ProviderName } from '@supaglue/types';
 import { useRouter } from 'next/router';
@@ -19,6 +19,7 @@ export type ProviderDetailsPanelProps = {
 };
 
 export default function ProviderDetailsPanel({ providerName, category, isLoading }: ProviderDetailsPanelProps) {
+  const shouldAllowManagedOauth = ['salesforce', 'hubspot'].includes(providerName);
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
   const [friendlyProviderId, setFriendlyProviderId] = useState<string>('--');
@@ -26,6 +27,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [useManagedOauth, setUseManagedOauth] = useState<boolean>(true);
   const router = useRouter();
 
   const { providers: existingProviders = [], mutate } = useProviders();
@@ -42,6 +44,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     setClientSecret(provider?.config?.oauth?.credentials?.oauthClientSecret ?? '');
 
     setOauthScopes(provider?.config?.oauth?.oauthScopes?.join(',') ?? '');
+    setUseManagedOauth(
+      provider?.id ? Boolean(provider?.config?.useManagedOauth) && shouldAllowManagedOauth : shouldAllowManagedOauth
+    );
   }, [provider?.id]);
 
   const createOrUpdateProvider = async (): Promise<Provider> => {
@@ -49,10 +54,10 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
       const newProvider: Provider = {
         ...provider,
         config: {
-          ...provider?.config,
+          ...provider.config,
           providerAppId: '', // TODO: add input field for this
           oauth: {
-            ...provider?.config?.oauth,
+            ...provider.config?.oauth,
             credentials: {
               oauthClientId: clientId,
               oauthClientSecret: clientSecret,
@@ -66,11 +71,11 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     return await createRemoteProvider(activeApplicationId, {
       applicationId: activeApplicationId,
       authType: 'oauth2',
-      // TODO: Support creating engagement providers
-      category: category,
+      category,
       name: providerName as ProviderName,
       config: {
         providerAppId: '', // TODO: add input field for this
+        useManagedOauth,
         oauth: {
           credentials: {
             oauthClientId: clientId,
@@ -100,15 +105,31 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
             <Typography fontSize={12}>{providerCardInfo.category.toUpperCase()}</Typography>
           </Stack>
         </Stack>
-
         <Stack className="gap-2">
           <Typography variant="subtitle1">Provider Metadata</Typography>
           <TextField value={friendlyProviderId} size="small" label="ID" variant="outlined" disabled />
         </Stack>
-
+        {shouldAllowManagedOauth && (
+          <Box className="pb-4">
+            <FormControlLabel
+              control={
+                <Switch
+                  disabled={provider?.id ? true : false}
+                  checked={useManagedOauth}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    setUseManagedOauth(event.target.checked);
+                  }}
+                />
+              }
+              label="Use Supaglue's OAuth2 app"
+            />
+            <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>This cannot be changed once saved</FormHelperText>
+          </Box>
+        )}
         <Stack className="gap-2">
           <Typography variant="subtitle1">Credentials</Typography>
           <TextField
+            disabled={useManagedOauth}
             value={clientId}
             size="small"
             label="Client ID"
@@ -118,6 +139,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
             }}
           />
           <TextField
+            disabled={useManagedOauth}
             value={clientSecret}
             size="small"
             label="Client Secret"
@@ -127,22 +149,18 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
               setClientSecret(event.target.value);
             }}
           />
+          <TextField
+            disabled={useManagedOauth || providerName === 'ms_dynamics_365_sales'}
+            value={oauthScopes}
+            size="small"
+            label="OAuth2 scopes"
+            variant="outlined"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setOauthScopes(event.target.value);
+            }}
+            helperText="Comma separated values (without spaces)"
+          />
         </Stack>
-
-        {providerName === 'ms_dynamics_365_sales' ? null : (
-          <Stack className="gap-2">
-            <Typography variant="subtitle1">Scopes</Typography>
-            <TextField
-              value={oauthScopes}
-              size="small"
-              label="OAuth scopes (comma separated)"
-              variant="outlined"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setOauthScopes(event.target.value);
-              }}
-            />
-          </Stack>
-        )}
 
         <Stack direction="row" className="gap-2 justify-between">
           <Button
