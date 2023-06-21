@@ -250,7 +250,7 @@ export interface components {
       /** @example my-customer-1 */
       customer_id: string;
       /** @example 677fcfca-cf89-4387-a189-71c885be67bc */
-      provider_id?: string;
+      provider_id: string;
       provider_name: components["schemas"]["provider_name"];
       category: components["schemas"]["category"];
       /**

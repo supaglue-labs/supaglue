@@ -33,7 +33,7 @@ required:
   - status
   - application_id
   - customer_id
-  - provi_id
+  - provider_id
   - provider_name
   - category
   - instance_url
