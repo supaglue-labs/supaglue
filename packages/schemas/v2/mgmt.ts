@@ -43,33 +43,6 @@ export type UpdateDestinationRequest =
 export type UpdateDestinationResponse =
   operations['updateDestination']['responses'][keyof operations['updateDestination']['responses']]['content']['application/json'];
 
-export type GetIntegrationsPathParams = never;
-export type GetIntegrationsQueryParams = never;
-export type GetIntegrationsRequest = never;
-export type GetIntegrationsResponse =
-  operations['getIntegrations']['responses'][keyof operations['getIntegrations']['responses']]['content']['application/json'];
-
-export type CreateIntegrationPathParams = never;
-export type CreateIntegrationRequest = operations['createIntegration']['requestBody']['content']['application/json'];
-export type CreateIntegrationResponse =
-  operations['createIntegration']['responses'][keyof operations['createIntegration']['responses']]['content']['application/json'];
-
-export type GetIntegrationPathParams = paths[`/integrations/{integration_id}`]['parameters']['path'];
-export type GetIntegrationRequest = never;
-export type GetIntegrationResponse =
-  operations['getIntegration']['responses'][keyof operations['getIntegration']['responses']]['content']['application/json'];
-
-export type UpdateIntegrationPathParams = paths[`/integrations/{integration_id}`]['parameters']['path'];
-export type UpdateIntegrationRequest =
-  operations['updateIntegration']['requestBody'][keyof operations['updateIntegration']['requestBody']]['application/json'];
-export type UpdateIntegrationResponse =
-  operations['updateIntegration']['responses'][keyof operations['updateIntegration']['responses']]['content']['application/json'];
-
-export type DeleteIntegrationPathParams = paths[`/integrations/{integration_id}`]['parameters']['path'];
-export type DeleteIntegrationRequest = never;
-export type DeleteIntegrationResponse =
-  operations['deleteIntegration']['responses'][keyof operations['deleteIntegration']['responses']]['content']['application/json'];
-
 export type GetProvidersPathParams = never;
 export type GetProvidersQueryParams = never;
 export type GetProvidersRequest = never;

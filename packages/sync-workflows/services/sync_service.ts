@@ -8,7 +8,6 @@ import {
   getRunManagedSyncWorkflowId,
   runManagedSync,
 } from '@supaglue/sync-workflows/workflows/run_managed_sync';
-import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '@supaglue/sync-workflows/workflows/run_sync';
 import { ConnectionSafeAny, Sync, SyncState, SyncType } from '@supaglue/types';
 import {
   Client,
@@ -159,9 +158,7 @@ export class SyncService {
     const syncIdsToUpsert = syncsToUpsert.map((sync) => sync.id);
 
     // Delete syncs
-    // We don't know which one was deleted, so we delete both.
-    await this.#deleteTemporalSyncsV1(syncIdsToDelete);
-    await this.#deleteTemporalSyncsV2(syncIdsToDelete);
+    await this.#deleteTemporalSyncs(syncIdsToDelete);
 
     // Upsert syncs
 
@@ -182,17 +179,12 @@ export class SyncService {
         throw new Error('Unexpected error: connection not found');
       }
 
-      if (sync.version === 'v1') {
-        const integration = await this.#integrationService.getById(connection.integrationId);
-        await this.#deleteTemporalSyncsV2([sync.id]);
-        await this.upsertTemporalSyncV1(sync.id, connection, integration.config.sync.periodMs ?? FIFTEEN_MINUTES_MS);
-      } else if (sync.version === 'v2') {
+      if (sync.version === 'v2') {
         const syncConfig = syncConfigs.find((syncConfig) => syncConfig.id === sync.syncConfigId);
         if (!syncConfig) {
           throw new Error('Unexpected error: syncConfig not found');
         }
 
-        await this.#deleteTemporalSyncsV1([sync.id]);
         await this.upsertTemporalSyncV2(
           sync.id,
           connection,
@@ -223,46 +215,7 @@ export class SyncService {
     ]);
   }
 
-  async #deleteTemporalSyncsV1(syncIds: string[]): Promise<void> {
-    // TODO: When we stop using temporalite locally, we should just use
-    // advanced visibility to search by custom attributes and find the workflows to kill.
-    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
-    // in Postgres and without an external ES cluster.
-    //
-    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
-    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
-
-    // Get the sync schedule handles
-    const syncScheduleHandles = syncIds.map((syncId) =>
-      this.#temporalClient.schedule.getHandle(getRunSyncScheduleId(syncId))
-    );
-
-    try {
-      // Pause the sync schedules
-      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
-
-      // Kill the associated workflows
-      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
-      const workflowIds = scheduleDescriptions.flatMap((description) =>
-        description.info.runningActions.map((action) => action.workflow.workflowId)
-      );
-      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
-      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
-
-      // Kill the sync schedules
-      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
-    } catch (err: unknown) {
-      if (err instanceof ScheduleNotFoundError) {
-        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
-      } else if (err instanceof WorkflowNotFoundError) {
-        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
-      } else {
-        throw err;
-      }
-    }
-  }
-
-  async #deleteTemporalSyncsV2(syncIds: string[]): Promise<void> {
+  async #deleteTemporalSyncs(syncIds: string[]): Promise<void> {
     // TODO: When we stop using temporalite locally, we should just use
     // advanced visibility to search by custom attributes and find the workflows to kill.
     // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
@@ -301,83 +254,6 @@ export class SyncService {
     }
   }
 
-  async upsertTemporalSyncV1(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
-    const sync = await this.getSyncById(syncId);
-    const scheduleId = getRunSyncScheduleId(syncId);
-    const interval: IntervalSpec = {
-      every: syncPeriodMs,
-      // so that not everybody is refreshing and hammering the DB at the same time
-      offset: Math.random() * syncPeriodMs,
-    };
-    const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
-      type: 'startWorkflow' as const,
-      workflowType: runSync,
-      workflowId: getRunSyncWorkflowId(syncId),
-      taskQueue: SYNC_TASK_QUEUE,
-      args: [
-        {
-          syncId,
-          connectionId: connection.id,
-          category: connection.category,
-          context: {
-            [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
-            [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
-            [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
-            [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
-            [TEMPORAL_CONTEXT_ARGS.SYNC_CONFIG_ID]: sync.syncConfigId,
-            [TEMPORAL_CONTEXT_ARGS.CONNECTION_ID]: sync.connectionId,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
-          },
-        },
-      ],
-      searchAttributes: {
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_CONFIG_ID]: [sync.syncConfigId ?? ''],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
-      },
-    };
-
-    try {
-      await this.#temporalClient.schedule.create({
-        scheduleId,
-        spec: {
-          intervals: [interval],
-        },
-        action,
-        state: {
-          triggerImmediately: true,
-        },
-      });
-    } catch (err: unknown) {
-      if (err instanceof ScheduleAlreadyRunning) {
-        const handle = this.#temporalClient.schedule.getHandle(scheduleId);
-        await handle.update((prev) => {
-          const newInterval = prev.spec.intervals?.[0]?.every === syncPeriodMs ? prev.spec.intervals[0] : interval;
-
-          return {
-            ...prev,
-            spec: {
-              intervals: [newInterval],
-            },
-            action,
-          };
-        });
-
-        return;
-      }
-
-      throw err;
-    }
-  }
-
   async upsertTemporalSyncV2(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
     const sync = await this.getSyncById(syncId);
     const scheduleId = getRunManagedSyncScheduleId(syncId);
@@ -400,7 +276,6 @@ export class SyncService {
             [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
             [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
             [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
-            [TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID]: connection.integrationId,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
             [TEMPORAL_CONTEXT_ARGS.SYNC_CONFIG_ID]: sync.syncConfigId,
             [TEMPORAL_CONTEXT_ARGS.CONNECTION_ID]: sync.connectionId,
@@ -413,7 +288,6 @@ export class SyncService {
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.INTEGRATION_ID]: [connection.integrationId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_CONFIG_ID]: [sync.syncConfigId ?? ''],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],

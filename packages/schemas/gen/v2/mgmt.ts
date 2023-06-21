@@ -94,28 +94,6 @@ export interface paths {
       };
     };
   };
-  "/integrations": {
-    /**
-     * List integrations 
-     * @description Get a list of integrations
-     */
-    get: operations["getIntegrations"];
-    /** Create integration */
-    post: operations["createIntegration"];
-  };
-  "/integrations/{integration_id}": {
-    /** Get integration */
-    get: operations["getIntegration"];
-    /** Update integration */
-    put: operations["updateIntegration"];
-    /** Delete integration */
-    delete: operations["deleteIntegration"];
-    parameters: {
-      path: {
-        integration_id: string;
-      };
-    };
-  };
   "/customers/{customer_id}/connections": {
     /**
      * List connections 
@@ -210,19 +188,6 @@ export interface components {
       email: string;
       connections?: (components["schemas"]["connection"])[];
     };
-    integration: {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-      application_id: string;
-      /** @example 0a292508-d254-4929-98d3-dc23416efff8 */
-      destination_id: string | null;
-      category: components["schemas"]["category"];
-      /** @enum {string} */
-      auth_type: "oauth2";
-      provider_name: components["schemas"]["provider_name"];
-      config?: components["schemas"]["integration_config"];
-    };
     provider: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -298,57 +263,6 @@ export interface components {
     };
     /** @enum {string} */
     category: "crm" | "engagement";
-    /**
-     * @example {
-     *   "provider_app_id": "my_app_id",
-     *   "is_managed_auth_app": false,
-     *   "oauth": {
-     *     "oauth_scopes": [
-     *       "crm.objects.contacts.read",
-     *       "crm.objects.companies.read",
-     *       "crm.objects.deals.read",
-     *       "crm.objects.owners.read",
-     *       "crm.objects.contacts.write",
-     *       "crm.objects.companies.write",
-     *       "crm.objects.deals.write"
-     *     ],
-     *     "credentials": {
-     *       "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-     *       "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-     *     }
-     *   },
-     *   "sync": {
-     *     "period_ms": 60000
-     *   }
-     * }
-     */
-    integration_config: {
-      /** @example my_app_id */
-      provider_app_id: string;
-      /**
-       * @description True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials. 
-       * @example false
-       */
-      use_managed_oauth?: boolean;
-      oauth: {
-        oauth_scopes: (string)[];
-        credentials: {
-          /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
-          oauth_client_id: string;
-          /** @example 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a */
-          oauth_client_secret: string;
-        };
-      };
-      sync: {
-        /** @example 60000 */
-        period_ms: number;
-        /**
-         * @default false 
-         * @example false
-         */
-        sync_all_fields?: boolean;
-      };
-    };
     sync_config: {
       /** @example 465fdcb7-26b4-4090-894c-67cab41022bb */
       id: string;
@@ -488,20 +402,6 @@ export interface components {
       /** @example contact@mycompany.com */
       email: string;
     };
-    create_update_integration: ({
-      /** @enum {string} */
-      auth_type: "oauth2";
-      config: components["schemas"]["integration_config"];
-      destination_id?: string | null;
-    }) & OneOf<[{
-      /** @enum {string} */
-      category: "crm";
-      provider_name: components["schemas"]["provider_name_crm"];
-    }, {
-      /** @enum {string} */
-      category: "engagement";
-      provider_name: components["schemas"]["provider_name_engagement"];
-    }]>;
     create_provider: ({
       /** @enum {string} */
       auth_type: "oauth2";
@@ -913,74 +813,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["sync_config"];
-        };
-      };
-    };
-  };
-  getIntegrations: {
-    /**
-     * List integrations 
-     * @description Get a list of integrations
-     */
-    responses: {
-      /** @description Integrations */
-      200: {
-        content: {
-          "application/json": (components["schemas"]["integration"])[];
-        };
-      };
-    };
-  };
-  createIntegration: {
-    /** Create integration */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["create_update_integration"];
-      };
-    };
-    responses: {
-      /** @description Integration created */
-      201: {
-        content: {
-          "application/json": components["schemas"]["integration"];
-        };
-      };
-    };
-  };
-  getIntegration: {
-    /** Get integration */
-    responses: {
-      /** @description Integration */
-      200: {
-        content: {
-          "application/json": components["schemas"]["integration"];
-        };
-      };
-    };
-  };
-  updateIntegration: {
-    /** Update integration */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["create_update_integration"];
-      };
-    };
-    responses: {
-      /** @description Integration */
-      200: {
-        content: {
-          "application/json": components["schemas"]["integration"];
-        };
-      };
-    };
-  };
-  deleteIntegration: {
-    /** Delete integration */
-    responses: {
-      /** @description Integration */
-      200: {
-        content: {
-          "application/json": components["schemas"]["integration"];
         };
       };
     };

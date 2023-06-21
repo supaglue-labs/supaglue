@@ -43,7 +43,7 @@ export default function init(app: Router): void {
         throw new BadRequestError('Missing returnUrl');
       }
 
-      if (version !== 'v1' && version !== 'v2') {
+      if (version !== 'v2') {
         throw new BadRequestError('Invalid version');
       }
 
@@ -127,7 +127,6 @@ export default function init(app: Router): void {
         customerId,
         applicationId,
         loginUrl,
-        version,
       }: {
         returnUrl: string;
         scope?: string;
@@ -135,7 +134,6 @@ export default function init(app: Router): void {
         providerName?: ProviderName;
         customerId?: string;
         loginUrl?: string;
-        version?: string;
       } = JSON.parse(decodeURIComponent(state));
 
       if (!applicationId) {
@@ -247,7 +245,7 @@ export default function init(app: Router): void {
           : { ...basePayload, providerName };
 
       try {
-        await connectionAndSyncService.create(version === 'v1' ? 'v1' : 'v2', payload as ConnectionCreateParamsAny);
+        await connectionAndSyncService.create(payload as ConnectionCreateParamsAny);
       } catch (e: any) {
         if (e.code === 'P2002') {
           await connectionAndSyncService.upsert(payload as ConnectionUpsertParamsAny);

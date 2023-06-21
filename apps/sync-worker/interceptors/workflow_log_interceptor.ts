@@ -36,12 +36,6 @@ class WorkflowLogInterceptor implements WorkflowOutboundCallsInterceptor, Workfl
       this.contextHeaders[`sg-${TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID}`] = defaultPayloadConverter.toPayload(customerId);
     }
 
-    const integrationId = contextArgs[TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID];
-    if (integrationId) {
-      this.contextHeaders[`sg-${TEMPORAL_CONTEXT_ARGS.INTEGRATION_ID}`] =
-        defaultPayloadConverter.toPayload(integrationId);
-    }
-
     const connectionId = contextArgs[TEMPORAL_CONTEXT_ARGS.CONNECTION_ID];
     if (connectionId) {
       this.contextHeaders[`sg-${TEMPORAL_CONTEXT_ARGS.CONNECTION_ID}`] =
