@@ -681,6 +681,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'INVALID_ID_FIELD':
       case 'INVALID_LOCATOR':
       case 'ERROR_HTTP_404':
+      case 'NOT_FOUND':
         return new NotFoundError(error.message);
       case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
       case 'INSUFFICIENT_ACCESS':
