@@ -67,6 +67,9 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
     setMobileOpen(!mobileOpen);
   };
 
+  // Allow users to navigate manually via URL, but show the tab for specific application IDs
+  const CDCWebhookApplicationWhitelist: string[] = [];
+
   return (
     <>
       <Head>
@@ -97,7 +100,9 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
               />
               <Tab label="Webhook" />
               <Tab label="API Key" />
-              {svixDashboardUrl ? <Tab label="CDC Webhooks" /> : null}
+              {svixDashboardUrl && CDCWebhookApplicationWhitelist.includes(activeApplicationId) ? (
+                <Tab label="CDC Webhooks" />
+              ) : null}
             </Tabs>
           }
           title="Configuration"
