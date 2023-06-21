@@ -3,7 +3,7 @@ import * as OpenApiValidator from 'express-openapi-validator';
 import fs from 'fs';
 import path from 'path';
 
-export const openapiMiddleware = (specDir: string, version = 'v1') => {
+export const openapiMiddleware = (specDir: string, version = 'v2') => {
   let apiSpec = path.join(process.cwd(), `openapi/${version}/${specDir}/openapi.bundle.json`);
 
   if (process.env.NODE_ENV === 'development') {

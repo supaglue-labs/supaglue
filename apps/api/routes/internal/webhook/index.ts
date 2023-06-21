@@ -10,7 +10,7 @@ import type {
   GetWebhookPathParams,
   GetWebhookRequest,
   GetWebhookResponse,
-} from '@supaglue/schemas/v1/mgmt';
+} from '@supaglue/schemas/v2/mgmt';
 import { camelcaseKeysSansHeaders } from '@supaglue/utils/camelcase';
 import { snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
