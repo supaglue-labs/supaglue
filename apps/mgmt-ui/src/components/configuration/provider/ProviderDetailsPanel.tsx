@@ -110,7 +110,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
           <TextField value={friendlyProviderId} size="small" label="ID" variant="outlined" disabled />
         </Stack>
         {shouldAllowManagedOauth && (
-          <Box className="pb-4">
+          <Box className="">
             <FormControlLabel
               control={
                 <Switch
@@ -121,9 +121,11 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
                   }}
                 />
               }
-              label="Use Supaglue's OAuth2 app"
+              label="Managed OAuth2 App"
             />
-            <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>This cannot be changed once saved</FormHelperText>
+            <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>
+              Use Supaglue's credentials. This cannot be changed once saved.
+            </FormHelperText>
           </Box>
         )}
         <Stack className="gap-2">
@@ -158,7 +160,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setOauthScopes(event.target.value);
             }}
-            helperText="Comma separated values (without spaces)"
+            helperText="Comma separated values (without spaces)."
           />
         </Stack>
 

@@ -1,7 +1,6 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
 import CDCWebhookTabPanel from '@/components/configuration/CDCWebhookTabPanel';
 import DestinationTabPanelContainer from '@/components/configuration/destination/DestinationTabPanelContainer';
-import IntegrationTabPanelContainer from '@/components/configuration/integration/IntegrationTabPanelContainer';
 import ProviderTabPanelContainer from '@/components/configuration/provider/ProviderTabPanelContainer';
 import SyncConfigTabPanelContainer from '@/components/configuration/syncConfig/SyncConfigTabPanelContainer';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
@@ -9,7 +8,7 @@ import { TabPanel } from '@/components/TabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Divider, Tab, Tabs } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -84,7 +83,18 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
               <Tab label="Providers" />
               <Tab label="Destinations" />
               <Tab label="Syncs" />
-              <Tab label="Integrations (deprecated)" />
+              <Tab
+                label=""
+                icon={
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{ color: 'gray', width: '3px', height: '60%' }}
+                  />
+                }
+                disabled
+              />
               <Tab label="Webhook" />
               <Tab label="API Key" />
               {svixDashboardUrl ? <Tab label="CDC Webhooks" /> : null}
@@ -102,9 +112,6 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
           </TabPanel>
           <TabPanel value={value} index={2} className="w-full">
             <SyncConfigTabPanelContainer />
-          </TabPanel>
-          <TabPanel value={value} index={3} className="w-full">
-            <IntegrationTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={4} className="w-full">
             <WebhookTabPanel />
