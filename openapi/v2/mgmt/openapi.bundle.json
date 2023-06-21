@@ -2387,6 +2387,9 @@
                   "full then incremental",
                   "full only"
                 ]
+              },
+              "start_sync_on_connection_creation": {
+                "type": "boolean"
               }
             },
             "required": [
@@ -2421,6 +2424,60 @@
                 "object": {
                   "type": "string",
                   "example": "contacts"
+                },
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "defined"
+                          ]
+                        },
+                        "fields": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "mapped_name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name"
+                            ]
+                          }
+                        },
+                        "allow_additional_field_mappings": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "fields",
+                        "allow_additional_field_mappings"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "inherited"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ]
+                    }
+                  ]
                 }
               },
               "required": [
