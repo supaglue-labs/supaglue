@@ -1,12 +1,12 @@
 import { CustomFields } from '.';
 import { SnakecasedKeys } from '../snakecased_keys';
-import { BaseEngagementModelV2, SnakecasedEngagementTenantFields } from './base';
+import { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
 import { Address } from './common/address';
 import { EmailAddress } from './common/email_address';
 import { PhoneNumber } from './common/phone_number';
 
-export type SnakecasedKeysEngagementContactV2 = SnakecasedKeys<ContactV2>;
-export type SnakecasedKeysEngagementContactV2WithTenant = SnakecasedKeysEngagementContactV2 &
+export type SnakecasedKeysEngagementContact = SnakecasedKeys<Contact>;
+export type SnakecasedKeysEngagementContactWithTenant = SnakecasedKeysEngagementContact &
   SnakecasedEngagementTenantFields;
 
 type CoreContact = {
@@ -23,7 +23,7 @@ type CoreContact = {
   ownerId: string | null;
 };
 
-export type ContactV2 = BaseEngagementModelV2 & CoreContact;
+export type Contact = BaseEngagementModel & CoreContact;
 
 export type ContactCreateParams = Omit<
   Partial<CoreContact>,
@@ -37,7 +37,7 @@ export type ContactUpdateParams = ContactCreateParams & {
 };
 
 export type RemoteContactTypes = {
-  object: ContactV2;
+  object: Contact;
   createParams: ContactCreateParams;
   updateParams: ContactUpdateParams;
 };

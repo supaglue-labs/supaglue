@@ -16,17 +16,17 @@ import { from as copyFrom } from 'pg-copy-streams';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import {
-  keysOfSnakecasedCrmAccountV2WithTenant,
-  keysOfSnakecasedCrmContactV2WithTenant,
-  keysOfSnakecasedCrmUserV2WithTenant,
-  keysOfSnakecasedLeadV2WithTenant,
-  keysOfSnakecasedOpportunityV2WithTenant,
+  keysOfSnakecasedCrmAccountWithTenant,
+  keysOfSnakecasedCrmContactWithTenant,
+  keysOfSnakecasedCrmUserWithTenant,
+  keysOfSnakecasedLeadWithTenant,
+  keysOfSnakecasedOpportunityWithTenant,
 } from '../keys/crm';
-import { keysOfSnakecasedEngagementContactV2WithTenant } from '../keys/engagement/contact';
-import { keysOfSnakecasedMailboxV2WithTenant } from '../keys/engagement/mailbox';
-import { keysOfSnakecasedSequenceV2WithTenant } from '../keys/engagement/sequence';
-import { keysOfSnakecasedSequenceStateV2WithTenant } from '../keys/engagement/sequence_state';
-import { keysOfSnakecasedEngagementUserV2WithTenant } from '../keys/engagement/user';
+import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/contact';
+import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
+import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
+import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
+import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteRawRecordsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
@@ -416,18 +416,18 @@ const columnsByCommonModelType: {
   engagement: Record<EngagementCommonModelType, string[]>;
 } = {
   crm: {
-    account: keysOfSnakecasedCrmAccountV2WithTenant,
-    contact: keysOfSnakecasedCrmContactV2WithTenant,
-    lead: keysOfSnakecasedLeadV2WithTenant,
-    opportunity: keysOfSnakecasedOpportunityV2WithTenant,
-    user: keysOfSnakecasedCrmUserV2WithTenant,
+    account: keysOfSnakecasedCrmAccountWithTenant,
+    contact: keysOfSnakecasedCrmContactWithTenant,
+    lead: keysOfSnakecasedLeadWithTenant,
+    opportunity: keysOfSnakecasedOpportunityWithTenant,
+    user: keysOfSnakecasedCrmUserWithTenant,
   },
   engagement: {
-    contact: keysOfSnakecasedEngagementContactV2WithTenant,
-    sequence_state: keysOfSnakecasedSequenceStateV2WithTenant,
-    user: keysOfSnakecasedEngagementUserV2WithTenant,
-    sequence: keysOfSnakecasedSequenceV2WithTenant,
-    mailbox: keysOfSnakecasedMailboxV2WithTenant,
+    contact: keysOfSnakecasedEngagementContactWithTenant,
+    sequence_state: keysOfSnakecasedSequenceStateWithTenant,
+    user: keysOfSnakecasedEngagementUserWithTenant,
+    sequence: keysOfSnakecasedSequenceWithTenant,
+    mailbox: keysOfSnakecasedMailboxWithTenant,
   },
 };
 

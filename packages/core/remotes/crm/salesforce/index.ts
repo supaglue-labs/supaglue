@@ -3,21 +3,21 @@
 /// <reference lib="dom" />
 
 import {
+  Account,
   AccountCreateParams,
   AccountUpdateParams,
-  AccountV2,
+  Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
+  Lead,
   LeadCreateParams,
   LeadUpdateParams,
-  LeadV2,
+  Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
-  OpportunityV2,
-  UserV2,
+  User,
 } from '@supaglue/types/crm';
 
 import {
@@ -572,7 +572,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       .map((field: { name: string; type: string }) => field.name);
   }
 
-  public async getAccount(id: string): Promise<AccountV2> {
+  public async getAccount(id: string): Promise<Account> {
     const account = await this.#client.retrieve('Account', id);
     return fromSalesforceAccountToAccountV2(account);
   }
@@ -593,7 +593,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getContact(id: string): Promise<ContactV2> {
+  public async getContact(id: string): Promise<Contact> {
     const contact = await this.#client.retrieve('Contact', id);
     return fromSalesforceContactToContactV2(contact);
   }
@@ -614,7 +614,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getOpportunity(id: string): Promise<OpportunityV2> {
+  public async getOpportunity(id: string): Promise<Opportunity> {
     const contact = await this.#client.retrieve('Opportunity', id);
     return fromSalesforceOpportunityToOpportunityV2(contact);
   }
@@ -635,7 +635,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getLead(id: string): Promise<LeadV2> {
+  public async getLead(id: string): Promise<Lead> {
     const contact = await this.#client.retrieve('Lead', id);
     return fromSalesforceLeadToLeadV2(contact);
   }
@@ -656,7 +656,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getUser(id: string): Promise<UserV2> {
+  public async getUser(id: string): Promise<User> {
     const user = await this.#client.retrieve('User', id);
     return fromSalesforceUserToUserV2(user);
   }

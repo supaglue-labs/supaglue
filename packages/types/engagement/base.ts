@@ -5,7 +5,7 @@ export type SnakecasedEngagementTenantFields = {
   _supaglue_emitted_at: Date;
 };
 
-export type BaseEngagementModelV2 = {
+export type BaseEngagementModel = {
   id: string;
   createdAt: Date | null;
   updatedAt: Date | null;

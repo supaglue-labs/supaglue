@@ -1,20 +1,20 @@
 import type {
+  Account,
   AccountCreateParams,
   AccountUpdateParams,
-  AccountV2,
+  Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
+  Lead,
   LeadCreateParams,
   LeadUpdateParams,
-  LeadV2,
+  Opportunity,
   OpportunityCreateParams,
   OpportunityStatus,
   OpportunityUpdateParams,
-  OpportunityV2,
-  UserV2,
+  User,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 
@@ -37,7 +37,7 @@ export function getMapperForCommonModelType<T extends CRMCommonModelType>(
   }
 }
 
-export const fromSalesforceUserToUserV2 = (record: Record<string, any>): UserV2 => {
+export const fromSalesforceUserToUserV2 = (record: Record<string, any>): User => {
   return {
     id: record.Id,
     name: record.Name,
@@ -52,7 +52,7 @@ export const fromSalesforceUserToUserV2 = (record: Record<string, any>): UserV2 
   };
 };
 
-export const fromSalesforceAccountToAccountV2 = (record: Record<string, any>): AccountV2 => {
+export const fromSalesforceAccountToAccountV2 = (record: Record<string, any>): Account => {
   const billingAddress: Address | null =
     record.BillingCity ||
     record.BillingCountry ||
@@ -146,7 +146,7 @@ export const toSalesforceAccountUpdateParams = (params: AccountUpdateParams) => 
   };
 };
 
-export const fromSalesforceContactToContactV2 = (record: Record<string, any>): ContactV2 => {
+export const fromSalesforceContactToContactV2 = (record: Record<string, any>): Contact => {
   const mailingAddress: Address | null =
     record.MailingCity ||
     record.MailingCountry ||
@@ -243,7 +243,7 @@ export const toSalesforceContactUpdateParams = (params: ContactUpdateParams) => 
 export const fromSalesforceLeadToLeadV2 = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   record: Record<string, any>
-): LeadV2 => {
+): Lead => {
   return {
     id: record.Id,
     firstName: record.FirstName ?? null,
@@ -307,7 +307,7 @@ export const toSalesforceLeadUpdateParams = (params: LeadUpdateParams) => {
 export const fromSalesforceOpportunityToOpportunityV2 = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   record: Record<string, any>
-): OpportunityV2 => {
+): Opportunity => {
   let status: OpportunityStatus = 'OPEN';
   if (record.IsWon === 'true') {
     status = 'WON';

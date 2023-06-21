@@ -1,6 +1,6 @@
-import type { SnakecasedKeysCrmUserV2, UserV2 } from '@supaglue/types/crm';
+import type { SnakecasedKeysCrmUser, User } from '@supaglue/types/crm';
 
-export const toSnakecasedKeysCrmUserV2 = (user: UserV2): SnakecasedKeysCrmUserV2 => {
+export const toSnakecasedKeysCrmUserV2 = (user: User): SnakecasedKeysCrmUser => {
   return {
     last_modified_at: user.lastModifiedAt,
     id: user.id,

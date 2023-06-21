@@ -5,16 +5,16 @@ import {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import {
+  Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  ContactV2,
   EngagementCommonModelType,
   EngagementCommonModelTypeMap,
   MailboxV2,
+  Sequence,
+  SequenceState,
   SequenceStateCreateParams,
-  SequenceStateV2,
-  SequenceV2,
-  UserV2,
+  User,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
@@ -106,21 +106,21 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  async getContact(id: string): Promise<ContactV2> {
+  async getContact(id: string): Promise<Contact> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/prospects/${id}`, {
       headers: this.#headers,
     });
     return fromOutreachProspectToContactV2(response.data.data);
   }
 
-  async getUser(id: string): Promise<UserV2> {
+  async getUser(id: string): Promise<User> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/users/${id}`, {
       headers: this.#headers,
     });
     return fromOutreachUserToUserV2(response.data.data);
   }
 
-  async getSequence(id: string): Promise<SequenceV2> {
+  async getSequence(id: string): Promise<Sequence> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequences/${id}`, {
       headers: this.#headers,
     });
@@ -134,7 +134,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return fromOutreachMailboxToMailboxV2(response.data.data);
   }
 
-  async getSequenceState(id: string): Promise<SequenceStateV2> {
+  async getSequenceState(id: string): Promise<SequenceState> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequence_states/${id}`, {
       headers: this.#headers,
     });

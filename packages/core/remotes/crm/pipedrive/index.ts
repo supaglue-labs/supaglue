@@ -5,21 +5,21 @@ import {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import {
+  Account,
   AccountCreateParams,
   AccountUpdateParams,
-  AccountV2,
+  Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
+  Lead,
   LeadCreateParams,
   LeadUpdateParams,
-  LeadV2,
+  Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
-  OpportunityV2,
-  UserV2,
+  User,
 } from '@supaglue/types/crm';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -330,7 +330,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  async getContact(id: string): Promise<ContactV2> {
+  async getContact(id: string): Promise<Contact> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/persons/${id}`, {
       headers: this.#headers,
@@ -338,7 +338,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return fromPipedrivePersonToContactV2(response.data.data);
   }
 
-  async getLead(id: string): Promise<LeadV2> {
+  async getLead(id: string): Promise<Lead> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/leads/${id}`, {
       headers: this.#headers,
@@ -346,7 +346,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return fromPipedriveLeadToLeadV2(response.data.data);
   }
 
-  async getOpportunity(id: string): Promise<OpportunityV2> {
+  async getOpportunity(id: string): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/deals/${id}`, {
       headers: this.#headers,
@@ -355,7 +355,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return fromPipedriveDealToOpportunityV2(response.data.data, pipelineStageMapping);
   }
 
-  async getAccount(id: string): Promise<AccountV2> {
+  async getAccount(id: string): Promise<Account> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/organizations/${id}`, {
       headers: this.#headers,
@@ -363,7 +363,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return fromPipedriveOrganizationToAccountV2(response.data.data);
   }
 
-  async getUser(id: string): Promise<UserV2> {
+  async getUser(id: string): Promise<User> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/users/${id}`, {
       headers: this.#headers,

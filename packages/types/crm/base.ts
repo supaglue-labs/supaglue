@@ -5,7 +5,7 @@ export type SnakecasedCrmTenantFields = {
   _supaglue_emitted_at: Date;
 };
 
-export type BaseCrmModelV2 = {
+export type BaseCrmModel = {
   id: string;
   createdAt: Date | null;
   updatedAt: Date | null;

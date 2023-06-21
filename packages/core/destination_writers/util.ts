@@ -12,8 +12,8 @@ import {
   toSnakecasedKeysEngagementContactV2,
   toSnakecasedKeysEngagementUserV2,
   toSnakecasedKeysMailboxV2,
+  toSnakecasedKeysSequence,
   toSnakecasedKeysSequenceStateV2,
-  toSnakecasedKeysSequenceV2,
 } from '../mappers/engagement';
 
 export const getSnakecasedKeysMapper = (category: ProviderCategory, commonModelType: CommonModelType) => {
@@ -37,7 +37,7 @@ const snakecasedKeysMapperByCommonModelType: {
   engagement: {
     contact: toSnakecasedKeysEngagementContactV2,
     mailbox: toSnakecasedKeysMailboxV2,
-    sequence: toSnakecasedKeysSequenceV2,
+    sequence: toSnakecasedKeysSequence,
     sequence_state: toSnakecasedKeysSequenceStateV2,
     user: toSnakecasedKeysEngagementUserV2,
   },

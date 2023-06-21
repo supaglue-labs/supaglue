@@ -20,21 +20,21 @@ import {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import {
+  Account,
   AccountCreateParams,
   AccountUpdateParams,
-  AccountV2,
+  Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  ContactV2,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
+  Lead,
   LeadCreateParams,
   LeadUpdateParams,
-  LeadV2,
+  Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
-  OpportunityV2,
-  UserV2,
+  User,
 } from '@supaglue/types/crm';
 import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
 import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
@@ -951,7 +951,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public async getAccount(id: string): Promise<AccountV2> {
+  public async getAccount(id: string): Promise<Account> {
     const properties = await this.getCommonModelPropertiesToFetch('company');
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(id, properties);
@@ -1123,7 +1123,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public async getOpportunity(id: string, pipelineStageMapping?: PipelineStageMapping): Promise<OpportunityV2> {
+  public async getOpportunity(id: string, pipelineStageMapping?: PipelineStageMapping): Promise<Opportunity> {
     if (!pipelineStageMapping) {
       pipelineStageMapping = await this.#getPipelineStageMapping();
     }
@@ -1291,7 +1291,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public async getContact(id: string): Promise<ContactV2> {
+  public async getContact(id: string): Promise<Contact> {
     const properties = await this.getCommonModelPropertiesToFetch('contact');
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
@@ -1339,15 +1339,15 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return Readable.from([]);
   }
 
-  public async createLead(params: LeadCreateParams): Promise<LeadV2> {
+  public async createLead(params: LeadCreateParams): Promise<Lead> {
     throw new Error('Not supported');
   }
 
-  public async updateLead(params: LeadUpdateParams): Promise<LeadV2> {
+  public async updateLead(params: LeadUpdateParams): Promise<Lead> {
     throw new Error('Not supported');
   }
 
-  public async getUser(id: string): Promise<UserV2> {
+  public async getUser(id: string): Promise<User> {
     const owner = await this.#client.crm.owners.ownersApi.getById(parseInt(id));
     return fromHubspotOwnerToUserV2(owner);
   }

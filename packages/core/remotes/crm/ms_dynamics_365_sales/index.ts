@@ -4,13 +4,13 @@
 
 import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
 import {
-  AccountV2,
-  ContactV2,
+  Account,
+  Contact,
   CRMCommonModelType,
   CRMCommonModelTypeMap,
-  LeadV2,
-  OpportunityV2,
-  UserV2,
+  Lead,
+  Opportunity,
+  User,
 } from '@supaglue/types/crm';
 import { o, OHandler } from 'odata';
 import { plural } from 'pluralize';
@@ -198,33 +198,33 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  private async getAccount(id: string): Promise<AccountV2> {
+  private async getAccount(id: string): Promise<Account> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsAccountToRemoteAccount(
       await this.#odata.get('accounts').query({ $filter: `accountid eq '${id}'` })
     );
   }
 
-  private async getContact(id: string): Promise<ContactV2> {
+  private async getContact(id: string): Promise<Contact> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsContactToRemoteContact(
       await this.#odata.get('contacts').query({ $filter: `contactid eq '${id}'` })
     );
   }
 
-  private async getLead(id: string): Promise<LeadV2> {
+  private async getLead(id: string): Promise<Lead> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsLeadToRemoteLead(await this.#odata.get('leads').query({ $filter: `leadid eq '${id}'` }));
   }
 
-  private async getOpportunity(id: string): Promise<OpportunityV2> {
+  private async getOpportunity(id: string): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsOpportunityToRemoteOpportunity(
       await this.#odata.get('opportunities').query({ $filter: `opportunityid eq '${id}'` })
     );
   }
 
-  private async getUser(id: string): Promise<UserV2> {
+  private async getUser(id: string): Promise<User> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsUserToRemoteUser(
       await this.#odata.get('systemusers').query({ $filter: `systemuserid eq '${id}'` })

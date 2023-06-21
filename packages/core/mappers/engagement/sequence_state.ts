@@ -1,6 +1,6 @@
-import type { SequenceStateV2, SnakecasedKeysSequenceStateV2 } from '@supaglue/types/engagement';
+import type { SequenceState, SnakecasedKeysSequenceState } from '@supaglue/types/engagement';
 
-export const toSnakecasedKeysSequenceStateV2 = (sequenceState: SequenceStateV2): SnakecasedKeysSequenceStateV2 => {
+export const toSnakecasedKeysSequenceStateV2 = (sequenceState: SequenceState): SnakecasedKeysSequenceState => {
   return {
     contact_id: sequenceState.contactId,
     sequence_id: sequenceState.sequenceId,

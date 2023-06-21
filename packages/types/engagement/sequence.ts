@@ -1,8 +1,8 @@
 import { SnakecasedKeys } from '../snakecased_keys';
-import { BaseEngagementModelV2, SnakecasedEngagementTenantFields } from './base';
+import { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
 
-export type SnakecasedKeysSequenceV2 = SnakecasedKeys<SequenceV2>;
-export type SnakecasedKeysSequenceV2WithTenant = SnakecasedKeysSequenceV2 & SnakecasedEngagementTenantFields;
+export type SnakecasedKeysSequence = SnakecasedKeys<Sequence>;
+export type SnakecasedKeysSequenceWithTenant = SnakecasedKeysSequence & SnakecasedEngagementTenantFields;
 
 type CoreSequence = {
   isEnabled: boolean;
@@ -17,10 +17,10 @@ type CoreSequence = {
   ownerId: string | null;
 };
 
-export type SequenceV2 = BaseEngagementModelV2 & CoreSequence;
+export type Sequence = BaseEngagementModel & CoreSequence;
 
 export type RemoteSequenceTypes = {
-  object: SequenceV2;
+  object: Sequence;
   createParams: never;
   updateParams: never;
 };

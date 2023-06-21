@@ -1,7 +1,7 @@
-import type { ContactV2, SnakecasedKeysEngagementContactV2 } from '@supaglue/types/engagement';
+import type { Contact, SnakecasedKeysEngagementContact } from '@supaglue/types/engagement';
 import { toSnakecasedKeysAddress, toSnakecasedKeysEmailAddress, toSnakecasedKeysPhoneNumber } from '.';
 
-export const toSnakecasedKeysEngagementContactV2 = (contact: ContactV2): SnakecasedKeysEngagementContactV2 => {
+export const toSnakecasedKeysEngagementContactV2 = (contact: Contact): SnakecasedKeysEngagementContact => {
   return {
     owner_id: contact.ownerId,
     last_modified_at: contact.lastModifiedAt,

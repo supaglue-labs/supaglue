@@ -1,8 +1,8 @@
-import type { AccountV2, SnakecasedKeysCrmAccountV2 } from '@supaglue/types/crm';
+import type { Account, SnakecasedKeysCrmAccount } from '@supaglue/types/crm';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
 
-export const toSnakecasedKeysCrmAccountV2 = (account: AccountV2): SnakecasedKeysCrmAccountV2 => {
+export const toSnakecasedKeysCrmAccountV2 = (account: Account): SnakecasedKeysCrmAccount => {
   return {
     owner_id: account.ownerId,
     last_modified_at: account.lastModifiedAt,

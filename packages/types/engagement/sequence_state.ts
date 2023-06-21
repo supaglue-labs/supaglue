@@ -1,8 +1,8 @@
 import { SnakecasedKeys } from '../snakecased_keys';
-import { BaseEngagementModelV2, SnakecasedEngagementTenantFields } from './base';
+import { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
 
-export type SnakecasedKeysSequenceStateV2 = SnakecasedKeys<SequenceStateV2>;
-export type SnakecasedKeysSequenceStateV2WithTenant = SnakecasedKeysSequenceStateV2 & SnakecasedEngagementTenantFields;
+export type SnakecasedKeysSequenceState = SnakecasedKeys<SequenceState>;
+export type SnakecasedKeysSequenceStateWithTenant = SnakecasedKeysSequenceState & SnakecasedEngagementTenantFields;
 
 type CoreSequenceState = {
   state: string | null;
@@ -11,7 +11,7 @@ type CoreSequenceState = {
   mailboxId: string | null;
 };
 
-export type SequenceStateV2 = BaseEngagementModelV2 & CoreSequenceState;
+export type SequenceState = BaseEngagementModel & CoreSequenceState;
 
 export type SequenceStateCreateParams = {
   contactId: string;
@@ -20,7 +20,7 @@ export type SequenceStateCreateParams = {
 };
 
 export type RemoteSequenceStateTypes = {
-  object: SequenceStateV2;
+  object: SequenceState;
   createParams: SequenceStateCreateParams;
   updateParams: never;
 };

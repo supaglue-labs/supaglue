@@ -1,20 +1,20 @@
 import {
   Address,
+  Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  ContactV2,
   EmailAddress,
   MailboxV2,
   PhoneNumber,
+  Sequence,
+  SequenceState,
   SequenceStateCreateParams,
-  SequenceStateV2,
-  SequenceV2,
-  UserV2,
+  User,
 } from '@supaglue/types/engagement';
 import { OutreachRecord } from '.';
 import { removeUndefinedValues } from '../../../lib';
 
-export const fromOutreachUserToUserV2 = (record: OutreachRecord): UserV2 => {
+export const fromOutreachUserToUserV2 = (record: OutreachRecord): User => {
   const { id, attributes } = record;
   return {
     id: id.toString(),
@@ -29,7 +29,7 @@ export const fromOutreachUserToUserV2 = (record: OutreachRecord): UserV2 => {
   };
 };
 
-export const fromOutreachSequenceToSequenceV2 = (record: OutreachRecord): SequenceV2 => {
+export const fromOutreachSequenceToSequenceV2 = (record: OutreachRecord): Sequence => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),
@@ -65,7 +65,7 @@ export const fromOutreachMailboxToMailboxV2 = (record: OutreachRecord): MailboxV
   };
 };
 
-export const fromOutreachSequenceStateToSequenceStateV2 = (record: OutreachRecord): SequenceStateV2 => {
+export const fromOutreachSequenceStateToSequenceStateV2 = (record: OutreachRecord): SequenceState => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),
@@ -81,7 +81,7 @@ export const fromOutreachSequenceStateToSequenceStateV2 = (record: OutreachRecor
   };
 };
 
-export const fromOutreachProspectToContactV2 = (record: OutreachRecord): ContactV2 => {
+export const fromOutreachProspectToContactV2 = (record: OutreachRecord): Contact => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),

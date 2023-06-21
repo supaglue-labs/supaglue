@@ -1,15 +1,15 @@
 import { SnakecasedKeys } from '../snakecased_keys';
-import { BaseEngagementModelV2, SnakecasedEngagementTenantFields } from './base';
+import { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
 
 export type SnakecasedKeysMailboxV2 = SnakecasedKeys<MailboxV2>;
-export type SnakecasedKeysMailboxV2WithTenant = SnakecasedKeysMailboxV2 & SnakecasedEngagementTenantFields;
+export type SnakecasedKeysMailboxWithTenant = SnakecasedKeysMailboxV2 & SnakecasedEngagementTenantFields;
 
 type CoreMailbox = {
   email: string | null;
   userId: string | null;
 };
 
-export type MailboxV2 = BaseEngagementModelV2 & CoreMailbox;
+export type MailboxV2 = BaseEngagementModel & CoreMailbox;
 
 export type RemoteMailboxTypes = {
   object: MailboxV2;

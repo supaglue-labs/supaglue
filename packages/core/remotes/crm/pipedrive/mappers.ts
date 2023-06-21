@@ -1,14 +1,14 @@
 import type {
+  Account,
   AccountCreateParams,
-  AccountV2,
+  Contact,
   ContactCreateParams,
-  ContactV2,
+  Lead,
   LeadCreateParams,
-  LeadV2,
+  Opportunity,
   OpportunityCreateParams,
   OpportunityStatus,
-  OpportunityV2,
-  UserV2,
+  User,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { PipedriveRecord, PipelineStageMapping } from '.';
@@ -16,7 +16,7 @@ import { BadRequestError } from '../../../errors';
 import { maxDate } from '../../../lib';
 import { getFullName } from '../../utils/name';
 
-export const fromPipedrivePersonToContactV2 = (person: PipedriveRecord): ContactV2 => {
+export const fromPipedrivePersonToContactV2 = (person: PipedriveRecord): Contact => {
   return {
     id: person.id.toString(),
     firstName: person.first_name ?? null,
@@ -39,7 +39,7 @@ export const fromPipedrivePersonToContactV2 = (person: PipedriveRecord): Contact
   };
 };
 
-export const fromPipedriveLeadToLeadV2 = (lead: PipedriveRecord): LeadV2 => {
+export const fromPipedriveLeadToLeadV2 = (lead: PipedriveRecord): Lead => {
   return {
     id: lead.id.toString(),
     leadSource: lead.source_name ?? null,
@@ -66,7 +66,7 @@ export const fromPipedriveLeadToLeadV2 = (lead: PipedriveRecord): LeadV2 => {
 export const fromPipedriveDealToOpportunityV2 = (
   deal: PipedriveRecord,
   pipelineStageMapping: PipelineStageMapping
-): OpportunityV2 => {
+): Opportunity => {
   let pipeline = deal.pipeline_id?.toString() ?? null;
   let stage = deal.stage_id?.toString() ?? null;
 
@@ -100,7 +100,7 @@ export const fromPipedriveDealToOpportunityV2 = (
   };
 };
 
-export const fromPipedriveOrganizationToAccountV2 = (organization: PipedriveRecord): AccountV2 => {
+export const fromPipedriveOrganizationToAccountV2 = (organization: PipedriveRecord): Account => {
   return {
     id: organization.id.toString(),
     name: organization.name ?? null,
@@ -124,7 +124,7 @@ export const fromPipedriveOrganizationToAccountV2 = (organization: PipedriveReco
   };
 };
 
-export const fromPipedriveUserToUserV2 = (user: PipedriveRecord): UserV2 => {
+export const fromPipedriveUserToUserV2 = (user: PipedriveRecord): User => {
   return {
     id: user.id.toString(),
     name: user.name ?? null,
