@@ -81,7 +81,6 @@ export class ConnectionAndSyncService {
         providerName: params.providerName,
         customerId,
         // TODO: Delete
-        integrationId: integration.id,
         providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
@@ -90,7 +89,6 @@ export class ConnectionAndSyncService {
         category: params.category,
         providerName: params.providerName,
         customerId,
-        integrationId: integration.id,
         providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
@@ -139,7 +137,6 @@ export class ConnectionAndSyncService {
             providerName: params.providerName,
             customerId: getCustomerIdPk(params.applicationId, params.customerId),
             // TODO: Delete
-            integrationId: integration.id,
             providerId: provider.id,
             status,
             instanceUrl: params.instanceUrl,
