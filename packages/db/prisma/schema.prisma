@@ -18,6 +18,7 @@ model Application {
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
   orgId       String        @map("org_id")
+  environment String        @default("production")
   Customer    Customer[]
   Destination Destination[]
   Provider    Provider[]

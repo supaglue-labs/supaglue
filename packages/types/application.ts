@@ -2,6 +2,7 @@ import { WebhookConfig } from './webhook';
 
 type BaseApplication = {
   name: string;
+  environment: string;
   config: ApplicationConfig;
 };
 

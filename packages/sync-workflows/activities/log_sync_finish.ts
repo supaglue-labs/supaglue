@@ -32,14 +32,21 @@ export function createLogSyncFinish({
     numRecordsSynced: number | null;
   }) {
     await syncHistoryService.logFinish({ historyId, status, errorMessage, numRecordsSynced });
-    if (status === 'FAILURE') {
-      const error = new Error(errorMessage);
-      error.stack = errorStack;
-      logger.error(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
-    }
 
     const connection = await connectionService.getSafeById(connectionId);
     const application = await applicationService.getById(connection.applicationId);
+
+    if (status === 'FAILURE') {
+      const error = new Error(errorMessage);
+      error.stack = errorStack;
+
+      if (application.environment === 'development') {
+        logger.warn(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
+      } else {
+        logger.error(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
+      }
+    }
+
     posthogClient.capture({
       distinctId: distinctId ?? application.orgId,
       event: `Completed Sync`,
