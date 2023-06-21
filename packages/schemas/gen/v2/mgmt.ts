@@ -249,8 +249,6 @@ export interface components {
       application_id: string;
       /** @example my-customer-1 */
       customer_id: string;
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-      integration_id: string;
       /** @example 677fcfca-cf89-4387-a189-71c885be67bc */
       provider_id?: string;
       provider_name: components["schemas"]["provider_name"];
@@ -541,7 +539,7 @@ export interface components {
         /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
         customer_id: string;
         /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
-        integration_id: string;
+        provider_id: string;
         /** @enum {string} */
         category: "crm";
         /**

@@ -1021,7 +1021,7 @@
                         "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
                         "customer_id": "my-customer-1",
                         "status": "available",
-                        "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                        "provider_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
                         "provider_name": "salesforce",
                         "category": "crm",
                         "instance_url": "https://mycompany-dev-ed.develop.my.salesforce.com"
@@ -1119,7 +1119,7 @@
                       "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
                       "customer_id": "my-customer-1",
                       "status": "available",
-                      "integration_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                      "provider_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
                       "provider_name": "salesforce",
                       "category": "crm",
                       "instance_url": "https://supaglue-dev-ed.develop.my.salesforce.com"
@@ -1857,10 +1857,6 @@
             "type": "string",
             "example": "my-customer-1"
           },
-          "integration_id": {
-            "type": "string",
-            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
-          },
           "provider_id": {
             "type": "string",
             "example": "677fcfca-cf89-4387-a189-71c885be67bc"
@@ -1882,7 +1878,7 @@
           "status",
           "application_id",
           "customer_id",
-          "integration_id",
+          "provi_id",
           "provider_name",
           "category",
           "instance_url"
@@ -2751,7 +2747,7 @@
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
                   },
-                  "integration_id": {
+                  "provider_id": {
                     "type": "string",
                     "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
                   },
@@ -2772,7 +2768,7 @@
                 },
                 "required": [
                   "customer_id",
-                  "integration_id",
+                  "provider_id",
                   "category",
                   "provider_name"
                 ]

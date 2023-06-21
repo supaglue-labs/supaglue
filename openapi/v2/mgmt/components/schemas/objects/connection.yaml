@@ -17,10 +17,6 @@ properties:
   customer_id:
     type: string
     example: my-customer-1
-  integration_id:
-    type: string
-    example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
-  # TODO: Make this required
   provider_id:
     type: string
     example: 677fcfca-cf89-4387-a189-71c885be67bc
@@ -37,7 +33,7 @@ required:
   - status
   - application_id
   - customer_id
-  - integration_id
+  - provi_id
   - provider_name
   - category
   - instance_url
