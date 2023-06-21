@@ -4,7 +4,6 @@ import { Pool } from 'pg';
 import {
   ConnectionService,
   CustomerService,
-  IntegrationService,
   ProviderService,
   RemoteService,
   SgUserService,
@@ -41,7 +40,6 @@ export type CoreDependencyContainer = {
   applicationService: ApplicationService;
   sgUserService: SgUserService;
   connectionService: ConnectionService;
-  integrationService: IntegrationService;
   providerService: ProviderService;
   syncConfigService: SyncConfigService;
   customerService: CustomerService;
@@ -106,7 +104,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   // mgmt
   const applicationService = new ApplicationService(prisma);
   const sgUserService = new SgUserService();
-  const integrationService = new IntegrationService(prisma);
   const providerService = new ProviderService(prisma);
   const syncConfigService = new SyncConfigService(prisma);
   const connectionService = new ConnectionService(prisma, providerService);
@@ -144,7 +141,6 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     sgUserService,
     connectionService,
     customerService,
-    integrationService,
     providerService,
     syncConfigService,
     remoteService,

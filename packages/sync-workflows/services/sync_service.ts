@@ -1,5 +1,5 @@
 import { logger } from '@supaglue/core/lib';
-import { ConnectionService, IntegrationService, SyncConfigService } from '@supaglue/core/services';
+import { ConnectionService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
@@ -42,20 +42,17 @@ export class SyncService {
   #temporalClient: Client;
   #connectionService: ConnectionService;
   #syncConfigService: SyncConfigService;
-  #integrationService: IntegrationService;
 
   public constructor(
     prisma: PrismaClient,
     temporalClient: Client,
     connectionService: ConnectionService,
-    syncConfigService: SyncConfigService,
-    integrationService: IntegrationService
+    syncConfigService: SyncConfigService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#connectionService = connectionService;
     this.#syncConfigService = syncConfigService;
-    this.#integrationService = integrationService;
   }
 
   public async getSyncById(id: string): Promise<Sync> {
