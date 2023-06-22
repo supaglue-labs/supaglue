@@ -14,8 +14,6 @@ import type {
 } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
-// TODO: use Supaglue TS client
-
 export async function createRemoteApiKey(applicationId: string): Promise<{ api_key: string }> {
   const result = await fetch(`/api/internal/api_keys/create`, {
     method: 'POST',
@@ -94,6 +92,18 @@ export async function updateRemoteProvider(applicationId: string, data: Provider
   return r;
 }
 
+export async function deleteProvider(applicationId: string, providerId: string) {
+  const result = await fetch(`/api/internal/providers/${providerId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+  });
+  const r = await result.json();
+  return r;
+}
+
 export async function createSyncConfig(applicationId: string, data: SyncConfigCreateParams): Promise<SyncConfig> {
   const result = await fetch(`/api/internal/sync-configs/create`, {
     method: 'POST',
@@ -120,6 +130,16 @@ export async function updateSyncConfig(applicationId: string, data: SyncConfig):
 
   const r = await result.json();
   return r;
+}
+
+export async function deleteSyncConfig(applicationId: string, syncConfigId: string): Promise<void> {
+  await fetch(`/api/internal/sync-configs/${syncConfigId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+  });
 }
 
 export async function createDestination(data: DestinationCreateParams): Promise<Destination> {

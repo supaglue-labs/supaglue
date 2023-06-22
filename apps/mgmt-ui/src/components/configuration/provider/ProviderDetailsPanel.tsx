@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { createRemoteProvider, updateRemoteProvider } from '@/client';
+import { createRemoteProvider, deleteProvider, updateRemoteProvider } from '@/client';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
@@ -10,6 +10,7 @@ import Card from '@mui/material/Card';
 import { Provider, ProviderCategory, ProviderCreateParams, ProviderName } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { DeleteProviderButton } from './DeleteProviderButton';
 import { providerCardsInfo } from './ProviderTabPanelContainer';
 
 export type ProviderDetailsPanelProps = {
@@ -174,27 +175,44 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
           >
             Back
           </Button>
-          <Button
-            variant="contained"
-            disabled={isSaving || isLoading}
-            onClick={async () => {
-              setIsSaving(true);
-              const newProvider = await createOrUpdateProvider();
-              const latestProviders = [
-                ...existingProviders.filter((provider) => provider.id !== newProvider.id),
-                newProvider,
-              ];
-              addNotification({ message: 'Successfully updated provider', severity: 'success' });
-              await mutate(latestProviders, {
-                optimisticData: latestProviders,
-                revalidate: false,
-                populateCache: false,
-              });
-              setIsSaving(false);
-            }}
-          >
-            Save
-          </Button>
+          <Stack direction="row" className="gap-2">
+            {provider && (
+              <DeleteProviderButton
+                providerName={providerName}
+                onDelete={async () => {
+                  await deleteProvider(activeApplicationId, provider.id);
+                  const filtered = existingProviders.filter((p) => p.id !== provider.id);
+                  await mutate(filtered, {
+                    optimisticData: filtered,
+                    revalidate: false,
+                    populateCache: false,
+                  });
+                  router.back();
+                }}
+              />
+            )}
+            <Button
+              variant="contained"
+              disabled={isSaving || isLoading}
+              onClick={async () => {
+                setIsSaving(true);
+                const newProvider = await createOrUpdateProvider();
+                const latestProviders = [
+                  ...existingProviders.filter((provider) => provider.id !== newProvider.id),
+                  newProvider,
+                ];
+                addNotification({ message: 'Successfully updated provider', severity: 'success' });
+                await mutate(latestProviders, {
+                  optimisticData: latestProviders,
+                  revalidate: false,
+                  populateCache: false,
+                });
+                setIsSaving(false);
+              }}
+            >
+              Save
+            </Button>
+          </Stack>
         </Stack>
       </Stack>
     </Card>

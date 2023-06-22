@@ -1,9 +1,10 @@
+import { deleteSyncConfig } from '@/client';
 import MetricCard from '@/components/MetricCard';
 import Spinner from '@/components/Spinner';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useProviders } from '@/hooks/useProviders';
-import { useSyncConfigs } from '@/hooks/useSyncConfigs';
+import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import getIcon from '@/utils/companyToIcon';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
@@ -11,9 +12,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { Breadcrumbs, IconButton, Stack, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Link from 'next/link';
+import { DeleteSyncConfig } from './DeleteSyncConfig';
 
 export default function SyncConfigListPanel() {
-  const { syncConfigs = [], isLoading } = useSyncConfigs();
+  const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations = [], isLoading: isLoadingDestinations } = useDestinations();
   const applicationId = useActiveApplicationId();
@@ -88,6 +90,22 @@ export default function SyncConfigListPanel() {
       },
     },
     { field: 'frequency', headerName: 'Frequency', width: 250 },
+    {
+      field: '_',
+      headerName: 'Admin',
+      width: 100,
+      renderCell: (params) => {
+        return (
+          <DeleteSyncConfig
+            syncConfigId={params.row.id}
+            onDelete={async () => {
+              await deleteSyncConfig(applicationId, params.row.id);
+              await mutate(toGetSyncConfigsResponse(syncConfigs.filter((s) => s.id !== params.row.id)), false);
+            }}
+          />
+        );
+      },
+    },
   ];
 
   const rows = syncConfigs.map((syncConfig) => ({
