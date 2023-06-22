@@ -3,7 +3,7 @@ import { GetSyncConfigsResponse } from '@supaglue/schemas/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSyncConfigsResponse | object>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSyncConfigsResponse | null>) {
   switch (req.method) {
     case 'GET': {
       const result = await fetch(`${API_HOST}/internal/sync_configs/${req.query.syncConfigId}`, {
@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const r = await result.json();
         return res.status(result.status).json(r);
       }
-      return res.status(204).json({});
+      return res.status(204).json(null);
     }
   }
 }
