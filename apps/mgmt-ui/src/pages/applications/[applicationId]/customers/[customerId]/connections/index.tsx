@@ -1,6 +1,7 @@
 import { deleteConnection } from '@/client';
 import { DeleteConnection } from '@/components/connections/DeleteConnection';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useActiveCustomerId } from '@/hooks/useActiveCustomerId';
 import { useConnections } from '@/hooks/useConnections';
@@ -19,6 +20,7 @@ export default function Home() {
   const activeCustomerId = useActiveCustomerId();
   const { connections = [], isLoading, mutate } = useConnections(activeCustomerId);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { addNotification } = useNotification();
 
   const applicationId = useActiveApplicationId();
 
@@ -46,7 +48,11 @@ export default function Home() {
             customerId={activeCustomerId}
             providerName={params.row.providerName}
             onDelete={async () => {
-              await deleteConnection(applicationId, activeCustomerId, params.row.id);
+              const response = await deleteConnection(applicationId, activeCustomerId, params.row.id);
+              if (!response.ok) {
+                addNotification({ message: response.errorMessage, severity: 'error' });
+                return;
+              }
               await mutate(
                 connections.filter((c) => c.id !== params.row.id),
                 false

@@ -110,7 +110,12 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
           rawCustomObjects: customObjects.map((object) => ({ object })),
         },
       };
-      return await updateSyncConfig(activeApplicationId, newSyncConfig);
+      const response = await updateSyncConfig(activeApplicationId, newSyncConfig);
+      if (!response.ok) {
+        addNotification({ message: response.errorMessage, severity: 'error' });
+        return;
+      }
+      return response.data;
     }
 
     const provider = providers?.find((p) => p.id === providerId);
@@ -133,7 +138,12 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
         rawCustomObjects: customObjects.map((object) => ({ object })),
       },
     };
-    return await createSyncConfig(activeApplicationId, newSyncConfig);
+    const response = await createSyncConfig(activeApplicationId, newSyncConfig);
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
+    return response.data;
   };
 
   const selectedProvider = providers.find((p) => p.id === providerId);

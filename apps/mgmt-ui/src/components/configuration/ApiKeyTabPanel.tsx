@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createRemoteApiKey } from '@/client';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Box, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
@@ -9,6 +10,7 @@ export default function ApiKeyTabPanel() {
   const activeApplicationId = useActiveApplicationId();
   const [apiKey, setApiKey] = useState(Array(88).fill('-').join(''));
   const [didRegenerate, setDidRegenerate] = useState<boolean>(false);
+  const { addNotification } = useNotification();
 
   return (
     <Box
@@ -39,9 +41,12 @@ export default function ApiKeyTabPanel() {
           <RegenerateApiKey
             disabled={false}
             onConfirm={async () => {
-              const { api_key: newApiKey } = await createRemoteApiKey(activeApplicationId);
+              const response = await createRemoteApiKey(activeApplicationId);
+              if (!response.ok) {
+                return addNotification({ message: response.errorMessage, severity: 'error' });
+              }
               setDidRegenerate(true);
-              setApiKey(newApiKey);
+              setApiKey(response.data.api_key);
             }}
           />
         </Stack>

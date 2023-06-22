@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { Provider, ProviderCreateParams, ProviderUpdateParams } from '@supaglue/types';
-import { NotFoundError } from '../errors';
+import { BadRequestError, NotFoundError } from '../errors';
 import { fromProviderModel, toProviderModel } from '../mappers';
 
 export class ProviderService {
@@ -88,6 +88,19 @@ export class ProviderService {
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
+    const syncConfigs = await this.#prisma.syncConfig.findMany({
+      where: { providerId: id },
+    });
+    if (syncConfigs.length) {
+      throw new BadRequestError(`Can't delete provider with id: ${id} as it has syncConfigs`);
+    }
+    const connections = await this.#prisma.connection.findMany({
+      where: { providerId: id },
+    });
+    if (connections.length) {
+      throw new BadRequestError(`Can't delete provider with active connections`);
+    }
+
     await this.#prisma.provider.deleteMany({
       where: { id, applicationId },
     });

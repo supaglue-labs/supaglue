@@ -10,8 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   });
 
   if (!result.ok) {
-    return res.status(500).json(null);
+    const r = await result.json();
+    return res.status(result.status).json(r);
   }
-
-  return res.status(200).json(null);
+  return res.status(204).json(null);
 }

@@ -29,7 +29,11 @@ export default function Home() {
   const applicationId = useActiveApplicationId();
 
   const onCreateCustomer = async (customerId: string, name: string, email: string) => {
-    await createCustomer(applicationId, customerId, name, email);
+    const response = await createCustomer(applicationId, customerId, name, email);
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
     await mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
   };
 
@@ -94,7 +98,11 @@ export default function Home() {
             disabled={params.row.connections.length > 0}
             customerId={params.row.id}
             onDelete={async () => {
-              await deleteCustomer(applicationId, params.row.id);
+              const response = await deleteCustomer(applicationId, params.row.id);
+              if (!response.ok) {
+                addNotification({ message: response.errorMessage, severity: 'error' });
+                return;
+              }
               await mutate(
                 customers.filter((customer) => customer.customerId !== params.row.id),
                 false

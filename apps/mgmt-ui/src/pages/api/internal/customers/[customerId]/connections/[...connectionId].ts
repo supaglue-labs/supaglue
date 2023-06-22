@@ -1,9 +1,8 @@
 import { getApplicationIdScopedHeaders } from '@/utils/headers';
-import { Application } from '@supaglue/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../../../..';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Application | null>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'DELETE': {
       const result = await fetch(
@@ -15,10 +14,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       );
 
       if (!result.ok) {
-        return res.status(500).json(null);
+        const r = await result.json();
+        return res.status(result.status).json(r);
       }
-
-      return res.status(204).send(null);
+      return res.status(204).json({});
     }
   }
 }
