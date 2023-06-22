@@ -174,7 +174,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
 
   const selectedProvider = providers.find((p) => p.name === providerName);
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
-  const supportsCustomObjects = ['hubspot', 'salesforce'];
+  const supportsCustomObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
 
   const commonObjectsSupported = selectedProvider?.category !== 'no_category';
 

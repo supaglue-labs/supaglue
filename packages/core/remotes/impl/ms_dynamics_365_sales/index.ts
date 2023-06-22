@@ -151,9 +151,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     heartbeat?: () => void
   ): Promise<Readable> {
     const idkey = `${object}id`;
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity(plural(object), updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity(plural(object), fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -168,6 +169,40 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
               };
               return ret;
             })
+          );
+        },
+        getNextCursorFromPage: (response) => response['@odata.nextLink'],
+      },
+    ]);
+  }
+
+  public override async listCustomObjectRecords(
+    object: string,
+    fieldsToFetch: FieldsToFetch,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
+    const idkey = `new_${object}id`;
+    return paginator([
+      {
+        pageFetcher: this.getListFetcherForEntity(
+          `new_${plural(object)}`,
+          fieldsToFetch,
+          modifiedAfter,
+          undefined,
+          heartbeat
+        ),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.value.map((result: any) => ({
+              id: result[idkey],
+              rawData: result,
+              rawProperties: result,
+              isDeleted: false,
+              lastModifiedAt: new Date(result.modifiedon),
+              emittedAt,
+            }))
           );
         },
         getNextCursorFromPage: (response) => response['@odata.nextLink'],
@@ -344,6 +379,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   private getListFetcherForEntity(
     entity: string,
+    fieldsToFetch: FieldsToFetch,
     updatedAfter?: Date,
     expand?: string,
     heartbeat?: () => void
@@ -357,6 +393,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
             this.getUrlForEntityAndParams(entity, {
               $filter: updatedAfter ? `modifiedon gt ${updatedAfter?.toISOString()}` : undefined,
               $expand: expand,
+              $select: fieldsToFetch?.type === 'defined' ? fieldsToFetch.fields.join(',') : undefined,
             }),
           { headers: this.#headers }
         );
@@ -373,14 +410,36 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     };
   }
 
+  private getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig: FieldMappingConfig): FieldsToFetch {
+    if (fieldMappingConfig.type === 'defined') {
+      const fields = Array.from(
+        new Set([
+          ...fieldMappingConfig.coreFieldMappings.map((v) => v.schemaField),
+          ...fieldMappingConfig.additionalFieldMappings.map((v) => v.schemaField),
+        ])
+      );
+
+      return {
+        type: 'defined',
+        fields,
+      };
+    }
+
+    return {
+      type: 'inherit_all_fields',
+    };
+  }
+
   private async listAccounts(
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('accounts', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('accounts', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -400,9 +459,11 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('contacts', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('contacts', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -422,10 +483,13 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity(
           'opportunities',
+          fieldsToFetch,
           updatedAfter,
           'stageid_processstage($select=stagename),opportunity_leadtoopportunitysalesprocess($select=name)',
           heartbeat
@@ -449,9 +513,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('leads', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('leads', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -471,9 +536,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('systemusers', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('systemusers', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
