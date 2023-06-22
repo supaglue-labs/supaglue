@@ -5,7 +5,7 @@ export function createFieldMappingConfig(
   schema?: RawObjectSchema,
   customerFieldMappings?: SchemaMappingsConfigStandardObjectFieldMapping[]
 ): FieldMappingConfig {
-  if (!schema || schema.type === 'inherit_all_fields') {
+  if (!schema) {
     return { type: 'inherit_all_fields' };
   }
 

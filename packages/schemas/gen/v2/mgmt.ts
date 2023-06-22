@@ -308,18 +308,13 @@ export interface components {
       standard_objects?: ({
           /** @example contacts */
           object: string;
-          schema?: OneOf<[{
-            /** @enum {string} */
-            type: "defined";
+          schema?: {
             fields: ({
                 name: string;
                 mapped_name?: string;
               })[];
             allow_additional_field_mappings: boolean;
-          }, {
-            /** @enum {string} */
-            type: "inherit_all_fields";
-          }]>;
+          };
         })[];
       custom_objects?: ({
           /** @example contacts */

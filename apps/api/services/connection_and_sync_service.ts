@@ -126,7 +126,7 @@ export class ConnectionAndSyncService {
         });
         if (
           syncConfig &&
-          // TODO: when we migrate startSyncOnConnectionCreation to required, we can simplify this check
+          // TODO: when we migrate enableSyncOnConnectionCreation to be a required field, we can simplify this check
           (syncConfig.config.defaultConfig.enableSyncOnConnectionCreation === undefined ||
             syncConfig.config.defaultConfig.enableSyncOnConnectionCreation)
         ) {

@@ -37,17 +37,10 @@ export type RawObjectConfig = {
   schema?: RawObjectSchema;
 };
 
-export type RawObjectInheritedSchema = {
-  type: 'inherit_all_fields';
-};
-
-export type RawObjectDefinedSchema = {
-  type: 'defined';
+export type RawObjectSchema = {
   fields: RawObjectSchemaField[];
   allowAdditionalFieldMappings: boolean;
 };
-
-export type RawObjectSchema = RawObjectInheritedSchema | RawObjectDefinedSchema;
 
 export type RawObjectSchemaField = {
   name: string; // my_first_column
