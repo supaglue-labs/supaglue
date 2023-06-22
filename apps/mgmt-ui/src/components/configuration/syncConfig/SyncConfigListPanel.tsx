@@ -123,7 +123,6 @@ export default function SyncConfigListPanel() {
     frequency: `every ${millisToHumanReadable(syncConfig.config.defaultConfig.periodMs)}`,
     objects: getObjectsString(syncConfig),
   }));
-  console.log(`rows: `, rows);
 
   return (
     <div className="flex flex-col gap-4">
@@ -208,7 +207,6 @@ function millisToHumanReadable(millis: number): string {
 }
 
 function getObjectsString(syncConfig: SyncConfig): string {
-  console.log(`syncConfig: `, syncConfig);
   const objectsList = [];
   if (syncConfig.config.commonObjects?.length) {
     objectsList.push(...syncConfig.config.commonObjects.map((object) => object.object));
@@ -219,7 +217,6 @@ function getObjectsString(syncConfig: SyncConfig): string {
   if (syncConfig.config.customObjects?.length) {
     objectsList.push(...syncConfig.config.customObjects.map((object) => object.object));
   }
-  console.log(`objectsList:`, objectsList);
   if (objectsList.length > 6) {
     return `${objectsList.slice(0, 6).join(', ')}...`;
   }
