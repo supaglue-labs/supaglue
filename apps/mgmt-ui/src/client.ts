@@ -143,7 +143,7 @@ export async function deleteProvider(applicationId: string, providerId: string):
       'x-application-id': applicationId,
     },
   });
-  return await toClientResponse(result);
+  return await toClientEmptyResponse(result);
 }
 
 export async function createSyncConfig(
