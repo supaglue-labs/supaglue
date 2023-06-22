@@ -493,7 +493,7 @@ async function doFullThenIncrementalSync({
       ])
     ) as Record<string, number>;
     const numCustomObjectRecordsSyncedMap = Object.fromEntries(
-      standardObjects.map(({ object }) => [
+      customObjects.map(({ object }) => [
         object,
         syncCustomObjectRecordsToDestinationResultList[object].numRecordsSynced,
       ])
@@ -646,7 +646,7 @@ async function doFullThenIncrementalSync({
               connectionId: sync.connectionId,
               object,
               isCustom: true,
-              modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForStandardObjects()[object],
+              modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForCustomObjects()[object],
             }),
           ];
           return entry;
