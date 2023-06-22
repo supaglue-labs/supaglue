@@ -125,12 +125,7 @@ export class ConnectionAndSyncService {
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         });
-        if (
-          syncConfig &&
-          // TODO: when we migrate enableSyncOnConnectionCreation to be a required field, we can simplify this check
-          (syncConfig.config.defaultConfig.enableSyncOnConnectionCreation === undefined ||
-            syncConfig.config.defaultConfig.enableSyncOnConnectionCreation)
-        ) {
+        if (syncConfig && syncConfig.config.defaultConfig.enableSyncOnConnectionCreation) {
           await tx.sync.create({
             data: {
               id: syncId,

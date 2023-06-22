@@ -12,11 +12,12 @@ properties:
         enum:
           - full then incremental
           - full only
-      start_sync_on_connection_creation:
+      enable_sync_on_connection_creation:
         type: boolean
     required:
       - period_ms
       - strategy
+      - enable_sync_on_connection_creation
   common_objects:
     type: array
     items:
