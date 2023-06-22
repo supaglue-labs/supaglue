@@ -70,7 +70,7 @@ export default function Home() {
         }
 
         return (
-          <Link href={`/applications/${applicationId}/customers/${params.id}/connections`}>
+          <Link href={`/applications/${applicationId}/customers/${encodeURIComponent(params.id)}/connections`}>
             {params.value.map((connection: ConnectionSafeAny) => providerToIcon(connection.providerName))}
           </Link>
         );
