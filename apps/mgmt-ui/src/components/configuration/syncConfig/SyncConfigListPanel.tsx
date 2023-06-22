@@ -127,15 +127,15 @@ export default function SyncConfigListPanel() {
         <Link color="inherit" href={`/applications/${applicationId}`}>
           Home
         </Link>
-        <Typography color="text.primary">Syncs</Typography>
+        <Typography color="text.primary">Sync Configs</Typography>
       </Breadcrumbs>
       <MetricCard
         className="max-w-2xl"
         icon={<PeopleAltOutlined />}
         value={
-          <Stack direction="row" className="align-center justify-center justify-between">
+          <Stack direction="row" className="align-center justify-between">
             <div>
-              {syncConfigs.length} Sync {syncConfigs.length === 1 ? 'Configuration' : 'Configurations'}
+              {syncConfigs.length} Sync {syncConfigs.length === 1 ? 'Config' : 'Configs'}
             </div>
             <IconButton className="p-1" size="small">
               <Link

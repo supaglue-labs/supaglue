@@ -155,7 +155,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
           Home
         </Link>
         <Link color="inherit" href={`/applications/${activeApplicationId}/configuration/sync_configs`}>
-          <Typography color="text.primary">Syncs</Typography>
+          <Typography color="text.primary">Sync Configs</Typography>
         </Link>
         <Typography color="text.primary">Details</Typography>
       </Breadcrumbs>
