@@ -10,7 +10,7 @@ import { useSyncConfig } from '@/hooks/useSyncConfig';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { CommonModelType, CommonObjectConfig, SyncConfig, SyncType } from '@supaglue/types';
+import { CommonModelType, CommonObjectConfig, SyncConfig, SyncConfigCreateParams, SyncType } from '@supaglue/types';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
 import Link from 'next/link';
@@ -123,7 +123,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
       throw new Error('Could not get provider');
     }
     // create path
-    const newSyncConfig: Omit<SyncConfig, 'id'> = {
+    const newSyncConfig: SyncConfigCreateParams = {
       applicationId: activeApplicationId,
       destinationId,
       providerId,
