@@ -16,42 +16,21 @@ export function useSyncConfig(syncConfigId: string) {
   };
 }
 
-// TODO: Delete once we've migrated types
 export const toSyncConfig = (response: GetSyncConfigResponse): SyncConfig => {
   const camelcased = camelcaseKeys(response);
   return {
     ...camelcased,
     config: {
-      defaultConfig: camelcased.config.defaultConfig,
+      ...camelcased.config,
       commonObjects: camelcased.config.commonObjects as CommonObjectConfig[],
-      standardObjects: camelcased.config.standardObjects,
-      customObjects: camelcased.config.customObjects,
     },
   };
 };
 
 export const toCreateSyncConfigRequest = (syncConfig: Omit<SyncConfig, 'id'>): CreateSyncConfigRequest => {
-  const snakecased = snakecaseKeys(syncConfig);
-  return {
-    ...snakecased,
-    config: {
-      default_config: snakecased.config.default_config,
-      common_objects: snakecased.config.common_objects,
-      standard_objects: snakecased.config.standard_objects,
-      custom_objects: snakecased.config.custom_objects,
-    },
-  };
+  return snakecaseKeys(syncConfig);
 };
 
 export const toUpdateSyncConfigRequest = (syncConfig: SyncConfig): UpdateSyncConfigRequest => {
-  const snakecased = snakecaseKeys(syncConfig);
-  return {
-    ...snakecased,
-    config: {
-      default_config: snakecased.config.default_config,
-      common_objects: snakecased.config.common_objects,
-      standard_objects: snakecased.config.raw_objects,
-      custom_objects: snakecased.config.raw_custom_objects,
-    },
-  };
+  return snakecaseKeys(syncConfig);
 };
