@@ -12,16 +12,16 @@ datasource db {
 }
 
 model Application {
-  id          String        @id @default(uuid())
-  name        String
-  config      Json
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
-  orgId       String        @map("org_id")
-  environment String        @default("production")
-  Customer    Customer[]
-  Destination Destination[]
-  Provider    Provider[]
+  id           String        @id @default(uuid())
+  name         String
+  config       Json
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  orgId        String        @map("org_id")
+  environment  String        @default("production")
+  customers    Customer[]
+  destinations Destination[]
+  providers    Provider[]
 
   @@unique([orgId, name])
   @@map("applications")

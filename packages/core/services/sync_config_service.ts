@@ -168,18 +168,18 @@ export const getDefaultCommonObjects = (
 const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
   // Check that there are no duplicates
   const commonObjects = params.config.commonObjects?.map((object) => object.object) ?? [];
-  const allRawObjects = [
-    ...(params.config.rawObjects?.map((object) => object.object) ?? []),
-    ...(params.config.rawCustomObjects?.map((object) => object.object) ?? []),
+  const allObjects = [
+    ...(params.config.standardObjects?.map((object) => object.object) ?? []),
+    ...(params.config.customObjects?.map((object) => object.object) ?? []),
   ];
 
   const commonObjectDuplicates = commonObjects.filter((object, index) => commonObjects.indexOf(object) !== index);
-  const allRawObjectDuplicates = allRawObjects.filter((object, index) => allRawObjects.indexOf(object) !== index);
+  const allObjectDuplicates = allObjects.filter((object, index) => allObjects.indexOf(object) !== index);
 
   if (commonObjectDuplicates.length > 0) {
     throw new BadRequestError(`Duplicate common objects found: ${commonObjectDuplicates.join(', ')}`);
   }
-  if (allRawObjectDuplicates.length > 0) {
-    throw new BadRequestError(`Duplicate standard/custom objects found: ${allRawObjectDuplicates.join(', ')}`);
+  if (allObjectDuplicates.length > 0) {
+    throw new BadRequestError(`Duplicate standard/custom objects found: ${allObjectDuplicates.join(', ')}`);
   }
 };

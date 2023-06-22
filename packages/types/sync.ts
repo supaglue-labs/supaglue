@@ -52,7 +52,8 @@ export type EngagementNumCommonRecordsSyncedMap = {
   [K in EngagementCommonModelType]?: number;
 };
 export type NumCommonRecordsSyncedMap = CRMNumCommonRecordsSyncedMap | EngagementNumCommonRecordsSyncedMap;
-export type NumRawRecordsSyncedMap = Record<string, number>;
+export type NumStandardObjectRecordsSyncedMap = Record<string, number>;
+export type NumCustomObjectRecordsSyncedMap = Record<string, number>;
 
 export type FullOnlySyncStateCreatedPhase = {
   phase: 'created';
@@ -73,7 +74,8 @@ export type FullThenIncrementalSyncStateLivePhase = {
   status: 'in progress' | 'done';
   // for common models
   maxLastModifiedAtMsMap: NumCommonRecordsSyncedMap;
-  maxLastModifedAtMsMapForRawObjects?: Record<string, number>;
+  maxLastModifiedAtMsMapForStandardObjects?: Record<string, number>;
+  maxLastModifiedAtMsMapForCustomObjects?: Record<string, number>;
 };
 export type FullThenIncrementalSyncState =
   | FullThenIncrementalSyncStateCreatedPhase

@@ -510,7 +510,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return { standardObjectTypes, customObjectSchemas };
   }
 
-  public override async listRawCustomObjectRecords(
+  public override async listCustomObjectRecords(
     object: string,
     modifiedAfter?: Date,
     heartbeat?: () => void

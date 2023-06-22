@@ -10,7 +10,7 @@ import { useSyncConfig } from '@/hooks/useSyncConfig';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { CommonModelType, CommonObjectConfig, SyncConfig, SyncType } from '@supaglue/types';
+import { CommonModelType, CommonObjectConfig, SyncConfig, SyncConfigCreateParams, SyncType } from '@supaglue/types';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
 import Link from 'next/link';
@@ -68,8 +68,8 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
     );
     setStrategy(syncConfig?.config?.defaultConfig?.strategy ?? 'full then incremental');
     setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
-    setStandardObjects(syncConfig?.config?.rawObjects?.map((o) => o.object) ?? []);
-    setCustomObjects(syncConfig?.config?.rawCustomObjects?.map((o) => o.object) ?? []);
+    setStandardObjects(syncConfig?.config?.standardObjects?.map((o) => o.object) ?? []);
+    setCustomObjects(syncConfig?.config?.customObjects?.map((o) => o.object) ?? []);
   }, [syncConfig?.id]);
 
   if (isLoading || isLoadingProviders || isLoadingDestinations) {
@@ -106,8 +106,8 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
             strategy,
           },
           commonObjects: commonObjects.map((object) => ({ object, fetchAllFieldsIntoRaw: true } as CommonObjectConfig)),
-          rawObjects: standardObjects.map((object) => ({ object })),
-          rawCustomObjects: customObjects.map((object) => ({ object })),
+          standardObjects: standardObjects.map((object) => ({ object })),
+          customObjects: customObjects.map((object) => ({ object })),
         },
       };
       const response = await updateSyncConfig(activeApplicationId, newSyncConfig);
@@ -123,7 +123,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
       throw new Error('Could not get provider');
     }
     // create path
-    const newSyncConfig: Omit<SyncConfig, 'id'> = {
+    const newSyncConfig: SyncConfigCreateParams = {
       applicationId: activeApplicationId,
       destinationId,
       providerId,
@@ -134,8 +134,8 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
           enableSyncOnConnectionCreation: true,
         },
         commonObjects: commonObjects.map((object) => ({ object, fetchAllFieldsIntoRaw: true } as CommonObjectConfig)),
-        rawObjects: standardObjects.map((object) => ({ object })),
-        rawCustomObjects: customObjects.map((object) => ({ object })),
+        standardObjects: standardObjects.map((object) => ({ object })),
+        customObjects: customObjects.map((object) => ({ object })),
       },
     };
     const response = await createSyncConfig(activeApplicationId, newSyncConfig);
