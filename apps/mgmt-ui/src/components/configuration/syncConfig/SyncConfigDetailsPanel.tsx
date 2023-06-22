@@ -6,7 +6,6 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useProviders } from '@/hooks/useProviders';
-import { useSyncConfig } from '@/hooks/useSyncConfig';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -27,23 +26,21 @@ const isSyncPeriodSecsValid = (syncPeriodSecs: number | undefined) => {
 };
 
 export function SyncConfigDetailsPanel({ syncConfigId }: { syncConfigId: string }) {
-  const { syncConfig, isLoading } = useSyncConfig(syncConfigId);
-  return <SyncConfigDetailsPanelImpl syncConfig={syncConfig} isLoading={isLoading} />;
+  return <SyncConfigDetailsPanelImpl syncConfigId={syncConfigId} />;
 }
 
 export function NewSyncConfigPanel() {
-  return <SyncConfigDetailsPanelImpl isLoading={false} />;
+  return <SyncConfigDetailsPanelImpl />;
 }
 
 type SyncConfigDetailsPanelImplProps = {
-  syncConfig?: SyncConfig;
-  isLoading: boolean;
+  syncConfigId?: string;
 };
 
-function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetailsPanelImplProps) {
+function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImplProps) {
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
-  const { syncConfigs = [], mutate } = useSyncConfigs();
+  const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations, isLoading: isLoadingDestinations } = useDestinations();
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
@@ -57,6 +54,8 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
   const router = useRouter();
 
   const isFormValid = destinationId && providerId && isSyncPeriodSecsValid(syncPeriodSecs);
+
+  const syncConfig = syncConfigs.find((s) => s.id === syncConfigId);
 
   useEffect(() => {
     setDestinationId(syncConfig?.destinationId ?? undefined);
@@ -295,7 +294,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
                     />
                   )}
                   onChange={(event: any, value: string[]) => {
-                    setStandardObjects(value);
+                    setCustomObjects(value);
                   }}
                 />
               </Stack>
