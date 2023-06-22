@@ -5565,7 +5565,6 @@ __metadata:
     "@types/pg": ^8
     "@types/pg-copy-streams": ^1.2.2
     "@types/pluralize": ^0.0.29
-    "@types/simple-oauth2": ^5
     "@types/uuid": ^9.0.1
     async-retry: ^1.3.3
     axios: ^1.3.4
@@ -5582,10 +5581,11 @@ __metadata:
     pino-sentry: ^0.14.0
     pluralize: ^8.0.0
     posthog-node: ^3.1.1
-    simple-oauth2: ^5.0.0
     svix: ^0.84.1
     typescript: ^4.9.5
     uuid: ^9.0.0
+  peerDependencies:
+    simple-oauth2: ^5.0.0
   languageName: unknown
   linkType: soft
 
@@ -17648,10 +17648,12 @@ __metadata:
     "@bufbuild/connect-node": ^0.8.6
     "@bufbuild/protobuf": ^1.2.0
     "@supaglue/core": "workspace:*"
+    "@types/simple-oauth2": ^5
     avsc: ^5.7.7
     bigint-conversion: ^2.4.1
     jsforce: ^2.0.0-beta.20
     lru-cache: ^9.1.1
+    simple-oauth2: ^5.0.0
     tsx: ^3.12.6
     typescript: ^4.9.5
   languageName: unknown
@@ -18963,7 +18965,9 @@ __metadata:
     "@temporalio/worker": ^1.6.0
     "@temporalio/workflow": ^1.6.0
     "@tsconfig/node18": ^1.0.1
+    "@types/simple-oauth2": ^5
     async-local-storage: ^2.3.1
+    simple-oauth2: ^5.0.0
     tsx: ^3.12.3
     typescript: ^4.9.5
   languageName: unknown

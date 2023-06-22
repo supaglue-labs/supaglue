@@ -1,10 +1,10 @@
-FROM node:18-slim AS builder
+FROM node:18-bullseye-slim AS builder
 WORKDIR /app
 COPY . .
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo prune --scope=salesforce-pub-sub --docker
 
 # Add lockfile and package.json's of isolated subworkspace
-FROM node:18-slim AS installer
+FROM node:18-bullseye-slim AS installer
 WORKDIR /app
 
 # First install dependencies (as they change less often)
@@ -26,7 +26,7 @@ RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace @supaglu
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo run build --filter=salesforce-pub-sub...
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus --production salesforce-pub-sub
 
-FROM node:18-slim AS runner
+FROM node:18-bullseye-slim AS runner
 RUN apt-get update && apt-get install -y openssl libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/* && apt-get clean
 WORKDIR /app
 
@@ -40,6 +40,7 @@ COPY --from=installer /app/packages/core/dist ./node_modules/@supaglue/core
 COPY --from=installer /app/packages/utils/dist ./node_modules/@supaglue/utils
 COPY --from=installer /app/packages/db/dist ./node_modules/@supaglue/db
 COPY --from=installer /app/packages/db/node_modules ./node_modules/@supaglue/db/node_modules
+COPY --from=installer /app/packages/types/dist ./node_modules/@supaglue/types
 COPY --from=installer /app/packages/db/prisma ./prisma
 
 CMD node ./index.js

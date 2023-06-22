@@ -11,7 +11,8 @@
     "avsc": "^5.7.7",
     "bigint-conversion": "^2.4.1",
     "jsforce": "^2.0.0-beta.20",
-    "lru-cache": "^9.1.1"
+    "lru-cache": "^9.1.1",
+    "simple-oauth2": "^5.0.0"
   },
   "scripts": {
     "generate": "buf generate https://github.com/supaglue-labs/salesforce-pub-sub-api.git",
@@ -21,6 +22,7 @@
     "lint": "run -T eslint"
   },
   "devDependencies": {
+    "@types/simple-oauth2": "^5",
     "tsx": "^3.12.6",
     "typescript": "^4.9.5"
   }

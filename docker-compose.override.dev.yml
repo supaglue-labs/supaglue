@@ -10,7 +10,7 @@ x-common-env:
 
 services:
   api:
-    image: node:18
+    image: node:18-bullseye
     environment:
       <<: *common-env
     volumes:
@@ -19,7 +19,7 @@ services:
     command: /bin/sh -c "./apps/api/scripts/start_dev.sh"
 
   sync-worker:
-    image: node:18
+    image: node:18-bullseye
     environment:
       <<: *common-env
     volumes:
@@ -28,7 +28,7 @@ services:
     command: /bin/sh -c "./apps/sync-worker/scripts/start_dev.sh"
 
   salesforce-pub-sub:
-    image: node:18
+    image: node:18-bullseye
     environment:
       <<: *common-env
     volumes:
@@ -41,7 +41,7 @@ services:
       - donotstart
 
   init:
-    image: node:18
+    image: node:18-bullseye
     environment:
       <<: *common-env
       DO_SEED: "0"
