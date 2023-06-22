@@ -19,6 +19,6 @@ When you regenerate an API key, the previous key is invalidated.
 Pass in the API key in requests to the Supaglue API as a header:
 
 ```curl
-curl http://localhost:8080/crm/v1/contacts \ 
+curl http://localhost:8080/crm/v2/contacts \ 
    -H 'x-api-key: ...'
 ```

@@ -28,7 +28,7 @@ For example, you can update an Salesforce Account record and HubSpot Company rec
 
 ```shell
 
-curl --location --request POST 'https://api.supaglue.io/crm/v1/contacts' \
+curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 --header 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
 --header 'x-provider-name: hubspot' \
 --header 'x-api-key: {{apiKey}}' \
@@ -47,7 +47,7 @@ curl --location --request POST 'https://api.supaglue.io/crm/v1/contacts' \
 
 ```shell
 
-curl --location --request POST 'https://api.supaglue.io/crm/v1/contacts' \
+curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 --header 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
 --header 'x-provider-name: salesforce' \
 --header 'x-api-key: {{apiKey}}' \
