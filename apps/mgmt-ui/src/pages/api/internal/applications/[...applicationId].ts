@@ -4,7 +4,7 @@ import { Application } from '@supaglue/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Application | null>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Application | object>) {
   switch (req.method) {
     case 'GET': {
       const result = await fetch(`${API_HOST}/internal/applications/${req.query.applicationId}`, {
@@ -42,12 +42,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       });
 
-      const r = await result.json();
       if (!result.ok) {
+        const r = await result.json();
         return res.status(result.status).json(r);
       }
-
-      return res.status(204).json(r);
+      return res.status(204).json({});
     }
   }
 }

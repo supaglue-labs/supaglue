@@ -9,10 +9,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     headers: getApplicationIdScopedHeaders(req),
   });
 
-  const r = await result.json();
   if (!result.ok) {
+    const r = await result.json();
     return res.status(result.status).json(r);
   }
-
-  return res.status(200).json(r);
+  return res.status(204).json({});
 }

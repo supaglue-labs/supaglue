@@ -3,7 +3,7 @@ import { UpsertCustomerResponse } from '@supaglue/schemas/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<UpsertCustomerResponse | null>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<UpsertCustomerResponse | object>) {
   switch (req.method) {
     case 'PUT': {
       const result = await fetch(`${API_HOST}/internal/customers`, {
@@ -26,12 +26,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         headers: getApplicationIdScopedHeaders(req),
       });
 
-      const r = await result.json();
       if (!result.ok) {
+        const r = await result.json();
         return res.status(result.status).json(r);
       }
-
-      return res.status(204).json(r);
+      return res.status(204).json({});
     }
   }
 }

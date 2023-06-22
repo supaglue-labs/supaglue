@@ -28,6 +28,13 @@ export type ClientSuccessResponse<T> = {
 
 export type ClientResponse<T> = ClientErrorResponse | ClientSuccessResponse<T>;
 
+export type ClientSuccessEmptyResponse = {
+  ok: true;
+  status: number;
+};
+
+export type ClientEmptyResponse = ClientErrorResponse | ClientSuccessEmptyResponse;
+
 async function toClientResponse<T>(response: Response): Promise<ClientResponse<T>> {
   const { ok, status } = response;
   const data = await response.json();
@@ -39,6 +46,20 @@ async function toClientResponse<T>(response: Response): Promise<ClientResponse<T
     };
   }
   return { ok: true, status, data };
+}
+
+// We need this because for 204s, response.json() will throw an error.
+async function toClientEmptyResponse(response: Response): Promise<ClientEmptyResponse> {
+  const { ok, status } = response;
+  if (!ok) {
+    const data = await response.json();
+    return {
+      ok,
+      status,
+      errorMessage: getErrorMessage(data) ?? 'Encountered an error.',
+    };
+  }
+  return { ok: true, status };
 }
 
 function getErrorMessage(data: any): string {
@@ -73,7 +94,7 @@ export async function createOrUpdateWebhook(
   return await toClientResponse(result);
 }
 
-export async function deleteWebhook(applicationId: string): Promise<ClientResponse<void>> {
+export async function deleteWebhook(applicationId: string): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/webhook/delete`, {
     method: 'DELETE',
     headers: {
@@ -82,7 +103,7 @@ export async function deleteWebhook(applicationId: string): Promise<ClientRespon
     },
   });
 
-  return await toClientResponse(result);
+  return await toClientEmptyResponse(result);
 }
 
 export async function createRemoteProvider(
@@ -114,7 +135,7 @@ export async function updateRemoteProvider(applicationId: string, data: Provider
   return await toClientResponse(result);
 }
 
-export async function deleteProvider(applicationId: string, providerId: string): Promise<ClientResponse<void>> {
+export async function deleteProvider(applicationId: string, providerId: string): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/providers/${providerId}`, {
     method: 'DELETE',
     headers: {
@@ -154,7 +175,7 @@ export async function updateSyncConfig(applicationId: string, data: SyncConfig):
   return await toClientResponse(result);
 }
 
-export async function deleteSyncConfig(applicationId: string, syncConfigId: string): Promise<ClientResponse<void>> {
+export async function deleteSyncConfig(applicationId: string, syncConfigId: string): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/sync-configs/${syncConfigId}`, {
     method: 'DELETE',
     headers: {
@@ -162,7 +183,7 @@ export async function deleteSyncConfig(applicationId: string, syncConfigId: stri
       'x-application-id': applicationId,
     },
   });
-  return await toClientResponse(result);
+  return await toClientEmptyResponse(result);
 }
 
 export async function createDestination(data: DestinationCreateParams): Promise<ClientResponse<Destination>> {
@@ -228,11 +249,11 @@ export async function updateApplicationName(id: string, name: string): Promise<C
   return await toClientResponse(result);
 }
 
-export async function deleteApplication(id: string): Promise<ClientResponse<void>> {
+export async function deleteApplication(id: string): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/applications/${id}`, {
     method: 'DELETE',
   });
-  return await toClientResponse(result);
+  return await toClientEmptyResponse(result);
 }
 
 export async function createCustomer(
@@ -253,7 +274,7 @@ export async function createCustomer(
   return await toClientResponse(result);
 }
 
-export async function deleteCustomer(applicationId: string, customerId: string): Promise<ClientResponse<void>> {
+export async function deleteCustomer(applicationId: string, customerId: string): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/customers/${customerId}`, {
     method: 'DELETE',
     headers: {
@@ -261,14 +282,14 @@ export async function deleteCustomer(applicationId: string, customerId: string):
       'x-application-id': applicationId,
     },
   });
-  return await toClientResponse(result);
+  return await toClientEmptyResponse(result);
 }
 
 export async function deleteConnection(
   applicationId: string,
   customerId: string,
   connectionId: string
-): Promise<ClientResponse<void>> {
+): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/customers/${customerId}/connections/${connectionId}`, {
     method: 'DELETE',
     headers: {
@@ -276,5 +297,5 @@ export async function deleteConnection(
       'x-application-id': applicationId,
     },
   });
-  return await toClientResponse(result);
+  return await toClientEmptyResponse(result);
 }
