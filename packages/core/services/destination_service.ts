@@ -86,19 +86,21 @@ export class DestinationService {
   public async testDestination(params: DestinationTestParams): Promise<DestinationTestResult> {
     let success = false;
     let message: string | null = null;
-    const nameAlreadyExists = await this.#prisma.destination.findUnique({
-      where: {
-        applicationId_name: {
-          applicationId: params.applicationId,
-          name: params.name,
+    if (!params.id) {
+      const nameAlreadyExists = await this.#prisma.destination.findUnique({
+        where: {
+          applicationId_name: {
+            applicationId: params.applicationId,
+            name: params.name,
+          },
         },
-      },
-    });
-    if (nameAlreadyExists) {
-      return {
-        success,
-        message: 'Destination with name already exists',
-      };
+      });
+      if (nameAlreadyExists) {
+        return {
+          success,
+          message: 'Destination with name already exists',
+        };
+      }
     }
 
     switch (params.type) {

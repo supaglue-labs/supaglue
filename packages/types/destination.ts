@@ -4,7 +4,6 @@ type BaseDestinationCreateParams = {
 };
 type BaseDestination = BaseDestinationCreateParams & {
   id: string;
-  name: string;
 };
 type BaseDestinationUpdateParams = BaseDestination;
 
@@ -56,7 +55,9 @@ export type PostgresConfig = {
 
 export type Destination = S3Destination | PostgresDestination;
 export type DestinationCreateParams = S3DestinationCreateParams | PostgresDestinationCreateParams;
-export type DestinationTestParams = DestinationCreateParams;
+export type DestinationTestParams = DestinationCreateParams & {
+  id?: string;
+};
 export type DestinationUpdateParams = S3DestinationUpdateParams | PostgresDestinationUpdateParams;
 
 export type DestinationTestResult = { success: boolean; message: string | null };
