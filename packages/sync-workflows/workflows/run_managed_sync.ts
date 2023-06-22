@@ -64,7 +64,8 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
 
   // What are we syncing?
   const { syncConfig } = await getSyncConfigBySyncId({ syncId });
-  const { commonObjects = [], rawObjects = [] } = syncConfig.config;
+  const { commonObjects = [], standardObjects = [], customObjects = [] } = syncConfig.config;
+  const objects = [...standardObjects, ...customObjects];
 
   // What is the sync type?
   const { sync } = await getSync({ syncId });
@@ -76,9 +77,9 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       return entry;
     })
   );
-  const rawObjectHistoryIdsMap = Object.fromEntries(
-    rawObjects.map((rawObject) => {
-      const entry: [string, string] = [rawObject.object, uuid4()];
+  const objectHistoryIdsMap = Object.fromEntries(
+    objects.map((object) => {
+      const entry: [string, string] = [object.object, uuid4()];
       return entry;
     })
   );
@@ -94,11 +95,11 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
     })
   );
   await Promise.all(
-    rawObjects.map(async (rawObject) => {
+    objects.map(async (object) => {
       await logSyncStart({
         syncId,
-        historyId: rawObjectHistoryIdsMap[rawObject.object],
-        rawObject: rawObject.object,
+        historyId: objectHistoryIdsMap[object.object],
+        rawObject: object.object,
       });
     })
   );
@@ -148,18 +149,18 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
     );
 
     await Promise.all(
-      rawObjects.map(async ({ object }) => {
+      objects.map(async ({ object }) => {
         await logSyncFinish({
           syncId,
           connectionId,
-          historyId: rawObjectHistoryIdsMap[object],
+          historyId: objectHistoryIdsMap[object],
           status: 'FAILURE',
           errorMessage,
           errorStack,
           numRecordsSynced: null,
         });
         await maybeSendSyncFinishWebhook({
-          historyId: rawObjectHistoryIdsMap[object],
+          historyId: objectHistoryIdsMap[object],
           status: 'SYNC_ERROR',
           connectionId,
           // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
@@ -205,7 +206,7 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
   );
 
   await Promise.all(
-    rawObjects.map(async ({ object }) => {
+    objects.map(async ({ object }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore `numRawRecordsSyncedMap` is indeed defined here
       const numRecordsSynced = numRawRecordsSyncedMap[object];
@@ -213,12 +214,12 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       await logSyncFinish({
         syncId,
         connectionId,
-        historyId: rawObjectHistoryIdsMap[object],
+        historyId: objectHistoryIdsMap[object],
         status: 'SUCCESS',
         numRecordsSynced,
       });
       await maybeSendSyncFinishWebhook({
-        historyId: rawObjectHistoryIdsMap[object],
+        historyId: objectHistoryIdsMap[object],
         status: 'SYNC_SUCCESS',
         connectionId,
         numRecordsSynced,
@@ -231,7 +232,7 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
 async function doFullOnlySync({
   sync,
   syncConfig: {
-    config: { commonObjects = [], rawObjects = [], rawCustomObjects = [] },
+    config: { commonObjects = [], standardObjects = [], customObjects = [] },
   },
   category,
 }: {
@@ -261,7 +262,7 @@ async function doFullOnlySync({
 
   const syncRawRecordsToDestinationResultList = Object.fromEntries(
     await Promise.all([
-      ...rawObjects.map(async ({ object }) => {
+      ...standardObjects.map(async ({ object }) => {
         const entry: [string, SyncRawRecordsToDestinationResult] = [
           object,
           await syncRawRecordsToDestination({
@@ -273,7 +274,7 @@ async function doFullOnlySync({
         ];
         return entry;
       }),
-      ...rawCustomObjects.map(async ({ object }) => {
+      ...customObjects.map(async ({ object }) => {
         const entry: [string, SyncRawRecordsToDestinationResult] = [
           object,
           await syncRawRecordsToDestination({
@@ -303,7 +304,7 @@ async function doFullOnlySync({
     ])
   ) as NumCommonRecordsSyncedMap; // TODO: better types
   const numRawRecordsSyncedMap = Object.fromEntries(
-    rawObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
+    standardObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
   ) as Record<string, number>;
 
   return {
@@ -315,7 +316,7 @@ async function doFullOnlySync({
 async function doFullThenIncrementalSync({
   sync,
   syncConfig: {
-    config: { commonObjects = [], rawObjects = [], rawCustomObjects = [] },
+    config: { commonObjects = [], standardObjects = [], customObjects = [] },
   },
   category,
 }: {
@@ -355,7 +356,7 @@ async function doFullThenIncrementalSync({
     // Raw objects
     const syncRawRecordsToDestinationResultList = Object.fromEntries(
       await Promise.all([
-        ...rawObjects.map(async ({ object }) => {
+        ...standardObjects.map(async ({ object }) => {
           const entry: [string, SyncRawRecordsToDestinationResult] = [
             object,
             await syncRawRecordsToDestination({
@@ -367,7 +368,7 @@ async function doFullThenIncrementalSync({
           ];
           return entry;
         }),
-        ...rawCustomObjects.map(async ({ object }) => {
+        ...customObjects.map(async ({ object }) => {
           const entry: [string, SyncRawRecordsToDestinationResult] = [
             object,
             await syncRawRecordsToDestination({
@@ -389,7 +390,7 @@ async function doFullThenIncrementalSync({
       ])
     );
 
-    const newMaxLastModifiedAtMsMapForRawObjects = Object.fromEntries(
+    const newMaxLastModifiedAtMsMapForObjects = Object.fromEntries(
       Object.entries(syncRawRecordsToDestinationResultList).map(([object, { maxLastModifiedAtMs }]) => [
         object,
         maxLastModifiedAtMs,
@@ -404,7 +405,7 @@ async function doFullThenIncrementalSync({
         phase: 'full',
         status: 'done',
         maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
-        maxLastModifedAtMsMapForRawObjects: newMaxLastModifiedAtMsMapForRawObjects,
+        maxLastModifedAtMsMapForRawObjects: newMaxLastModifiedAtMsMapForObjects,
       },
     });
 
@@ -415,7 +416,7 @@ async function doFullThenIncrementalSync({
       ])
     ) as NumCommonRecordsSyncedMap; // TODO: better types
     const numRawRecordsSyncedMap = Object.fromEntries(
-      rawObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
+      standardObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
     ) as Record<string, number>;
 
     return {
@@ -457,7 +458,7 @@ async function doFullThenIncrementalSync({
       ) as NumCommonRecordsSyncedMap;
     }
 
-    function getOriginalMaxLastModifiedAtMsMapForRawObjects(): NumRawRecordsSyncedMap {
+    function getOriginalMaxLastModifiedAtMsMapForObjects(): NumRawRecordsSyncedMap {
       // we shouldn't need to do this, since it's not possible to
       // start the incremental phase if the full phase hasn't been completed.
       if (sync.state.phase === 'created') {
@@ -467,10 +468,10 @@ async function doFullThenIncrementalSync({
       return sync.state.maxLastModifedAtMsMapForRawObjects ?? {};
     }
 
-    function computeUpdatedMaxLastModifiedAtMsMapForRawObjects(
+    function computeUpdatedMaxLastModifiedAtMsMapForObjects(
       syncRawRecordsToDestinationResultList: Record<string, SyncRawRecordsToDestinationResult>
     ): NumRawRecordsSyncedMap {
-      const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMapForRawObjects();
+      const originalMaxLastModifiedAtMsMap = getOriginalMaxLastModifiedAtMsMapForObjects();
 
       return Object.fromEntries(
         Object.entries(syncRawRecordsToDestinationResultList).map(([object, { maxLastModifiedAtMs }]) => [
@@ -486,7 +487,7 @@ async function doFullThenIncrementalSync({
         phase: 'incremental',
         status: 'in progress',
         maxLastModifiedAtMsMap: getOriginalMaxLastModifiedAtMsMap(),
-        maxLastModifedAtMsMapForRawObjects: getOriginalMaxLastModifiedAtMsMapForRawObjects(),
+        maxLastModifedAtMsMapForRawObjects: getOriginalMaxLastModifiedAtMsMapForObjects(),
       },
     });
 
@@ -513,7 +514,7 @@ async function doFullThenIncrementalSync({
     // Sync raw objects
     const syncRawRecordsToDestinationResultList = Object.fromEntries(
       await Promise.all([
-        ...rawObjects.map(async ({ object }) => {
+        ...standardObjects.map(async ({ object }) => {
           const entry: [string, SyncRawRecordsToDestinationResult] = [
             object,
             await syncRawRecordsToDestination({
@@ -521,12 +522,12 @@ async function doFullThenIncrementalSync({
               connectionId: sync.connectionId,
               object,
               isCustom: false,
-              modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForRawObjects()[object],
+              modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForObjects()[object],
             }),
           ];
           return entry;
         }),
-        ...rawCustomObjects.map(async ({ object }) => {
+        ...customObjects.map(async ({ object }) => {
           const entry: [string, SyncRawRecordsToDestinationResult] = [
             object,
             await syncRawRecordsToDestination({
@@ -534,7 +535,7 @@ async function doFullThenIncrementalSync({
               connectionId: sync.connectionId,
               object,
               isCustom: true,
-              modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForRawObjects()[object],
+              modifiedAfterMs: getOriginalMaxLastModifiedAtMsMapForObjects()[object],
             }),
           ];
           return entry;
@@ -542,7 +543,7 @@ async function doFullThenIncrementalSync({
       ])
     );
 
-    const newMaxLastModifiedAtMsMapForRawObjects = computeUpdatedMaxLastModifiedAtMsMapForRawObjects(
+    const newMaxLastModifiedAtMsMapForObjects = computeUpdatedMaxLastModifiedAtMsMapForObjects(
       syncRawRecordsToDestinationResultList
     );
 
@@ -552,7 +553,7 @@ async function doFullThenIncrementalSync({
         phase: 'incremental',
         status: 'done',
         maxLastModifiedAtMsMap: newMaxLastModifiedAtMsMap,
-        maxLastModifedAtMsMapForRawObjects: newMaxLastModifiedAtMsMapForRawObjects,
+        maxLastModifedAtMsMapForRawObjects: newMaxLastModifiedAtMsMapForObjects,
       },
     });
 
@@ -563,7 +564,7 @@ async function doFullThenIncrementalSync({
       ])
     ) as NumCommonRecordsSyncedMap; // TODO: better types
     const numRawRecordsSyncedMap = Object.fromEntries(
-      rawObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
+      standardObjects.map(({ object }) => [object, syncRawRecordsToDestinationResultList[object].numRecordsSynced])
     ) as Record<string, number>;
 
     return {

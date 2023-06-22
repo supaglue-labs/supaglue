@@ -68,8 +68,8 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
     );
     setStrategy(syncConfig?.config?.defaultConfig?.strategy ?? 'full then incremental');
     setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
-    setStandardObjects(syncConfig?.config?.rawObjects?.map((o) => o.object) ?? []);
-    setCustomObjects(syncConfig?.config?.rawCustomObjects?.map((o) => o.object) ?? []);
+    setStandardObjects(syncConfig?.config?.standardObjects?.map((o) => o.object) ?? []);
+    setCustomObjects(syncConfig?.config?.customObjects?.map((o) => o.object) ?? []);
   }, [syncConfig?.id]);
 
   if (isLoading || isLoadingProviders || isLoadingDestinations) {
@@ -106,8 +106,8 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
             strategy,
           },
           commonObjects: commonObjects.map((object) => ({ object, fetchAllFieldsIntoRaw: true } as CommonObjectConfig)),
-          rawObjects: standardObjects.map((object) => ({ object })),
-          rawCustomObjects: customObjects.map((object) => ({ object })),
+          standardObjects: standardObjects.map((object) => ({ object })),
+          customObjects: customObjects.map((object) => ({ object })),
         },
       };
       const response = await updateSyncConfig(activeApplicationId, newSyncConfig);
@@ -134,8 +134,8 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
           enableSyncOnConnectionCreation: true,
         },
         commonObjects: commonObjects.map((object) => ({ object, fetchAllFieldsIntoRaw: true } as CommonObjectConfig)),
-        rawObjects: standardObjects.map((object) => ({ object })),
-        rawCustomObjects: customObjects.map((object) => ({ object })),
+        standardObjects: standardObjects.map((object) => ({ object })),
+        customObjects: customObjects.map((object) => ({ object })),
       },
     };
     const response = await createSyncConfig(activeApplicationId, newSyncConfig);

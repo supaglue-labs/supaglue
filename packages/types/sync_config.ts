@@ -14,8 +14,8 @@ export type SyncConfigUpdateParams = SyncConfigCreateParams;
 export type SyncConfigData = {
   defaultConfig: SyncStrategyConfig;
   commonObjects?: CommonObjectConfig[];
-  rawObjects?: RawObjectConfig[];
-  rawCustomObjects?: RawCustomObjectConfig[];
+  standardObjects?: StandardObjectConfig[];
+  customObjects?: CustomObjectConfig[];
 };
 
 export type SyncStrategyConfig = {
@@ -32,21 +32,21 @@ export type CommonObjectConfig = {
   fetchAllFieldsIntoRaw: boolean;
 };
 
-export type RawObjectConfig = {
+export type StandardObjectConfig = {
   object: string;
-  schema?: RawObjectSchema;
+  schema?: StandardObjectSchema;
 };
 
-export type RawObjectSchema = {
-  fields: RawObjectSchemaField[];
+export type StandardObjectSchema = {
+  fields: StandardObjectSchemaField[];
   allowAdditionalFieldMappings: boolean;
 };
 
-export type RawObjectSchemaField = {
+export type StandardObjectSchemaField = {
   name: string; // my_first_column
   mappedName?: string; // salesforce_first_column
 };
 
-export type RawCustomObjectConfig = {
+export type CustomObjectConfig = {
   object: string;
 };

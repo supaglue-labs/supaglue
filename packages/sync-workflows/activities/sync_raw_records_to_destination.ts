@@ -64,12 +64,12 @@ export function createSyncRawRecordsToDestination(
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
         const stream = isCustom
-          ? await (client as CrmRemoteClient).listRawCustomObjectRecords(object, modifiedAfter, heartbeat)
+          ? await (client as CrmRemoteClient).listCustomObjectRecords(object, modifiedAfter, heartbeat)
           : await (async function () {
               // Find schema / field mapping information
               const sync = await syncService.getSyncById(syncId);
               const syncConfig = await syncConfigService.getBySyncId(syncId);
-              const schema = syncConfig?.config?.rawObjects?.find((o) => o.object === object)?.schema;
+              const schema = syncConfig?.config?.standardObjects?.find((o) => o.object === object)?.schema;
               const customerFieldMapping = sync.schemaMappingsConfig?.standardObjects?.find(
                 (o) => o.object === object
               )?.fieldMappings;
@@ -81,7 +81,7 @@ export function createSyncRawRecordsToDestination(
                 heartbeat
               );
             })();
-        return await writer.writeRawRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
+        return await writer.writeObjectRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
       } else {
         throw ApplicationFailure.nonRetryable('Syncing standard and custom objects only supported for crm category');
       }

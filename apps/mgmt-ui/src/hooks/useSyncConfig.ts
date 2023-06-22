@@ -24,8 +24,8 @@ export const toSyncConfig = (response: GetSyncConfigResponse): SyncConfig => {
     config: {
       defaultConfig: camelcased.config.defaultConfig,
       commonObjects: camelcased.config.commonObjects as CommonObjectConfig[],
-      rawObjects: camelcased.config.standardObjects,
-      rawCustomObjects: camelcased.config.customObjects,
+      standardObjects: camelcased.config.standardObjects,
+      customObjects: camelcased.config.customObjects,
     },
   };
 };
@@ -37,8 +37,8 @@ export const toCreateSyncConfigRequest = (syncConfig: Omit<SyncConfig, 'id'>): C
     config: {
       default_config: snakecased.config.default_config,
       common_objects: snakecased.config.common_objects,
-      standard_objects: snakecased.config.raw_objects,
-      custom_objects: snakecased.config.raw_custom_objects,
+      standard_objects: snakecased.config.standard_objects,
+      custom_objects: snakecased.config.custom_objects,
     },
   };
 };
