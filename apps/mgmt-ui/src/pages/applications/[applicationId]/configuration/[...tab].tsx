@@ -8,7 +8,7 @@ import { TabPanel } from '@/components/TabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
-import { Box, Divider, Tab, Tabs } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -59,12 +59,6 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
     setValue(tabIndex);
   }, [tab]);
 
-  const handleChange = async (event: React.SyntheticEvent, newValue: number) => {
-    const tab = configurationHeaderTabs[newValue].value;
-
-    await router.push(`/applications/${activeApplicationId}/configuration/${tab}`);
-  };
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -81,25 +75,45 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header
           tabs={
-            <Tabs value={value} textColor="inherit" onChange={handleChange}>
-              <Tab label="Providers" />
-              <Tab label="Destinations" />
-              <Tab label="Sync Configs" />
+            <Tabs value={value} textColor="inherit">
               <Tab
-                label=""
-                icon={
-                  <Divider
-                    orientation="vertical"
-                    variant="middle"
-                    flexItem
-                    sx={{ color: 'gray', width: '3px', height: '60%' }}
-                  />
-                }
-                disabled
+                label="Providers"
+                onClick={async (e) => {
+                  await router.push(`/applications/${activeApplicationId}/configuration/providers`);
+                }}
               />
-              <Tab label="Webhook" />
-              <Tab label="API Key" />
-              {svixDashboardUrl ? <Tab label="Realtime Events" /> : null}
+              <Tab
+                label="Destinations"
+                onClick={async (e) => {
+                  await router.push(`/applications/${activeApplicationId}/configuration/destinations`);
+                }}
+              />
+              <Tab
+                label="Sync Configs"
+                onClick={async (e) => {
+                  await router.push(`/applications/${activeApplicationId}/configuration/sync_configs`);
+                }}
+              />
+              <Tab
+                label="Webhook"
+                onClick={async (e) => {
+                  await router.push(`/applications/${activeApplicationId}/configuration/webhook`);
+                }}
+              />
+              <Tab
+                label="API Key"
+                onClick={async (e) => {
+                  await router.push(`/applications/${activeApplicationId}/configuration/api_keys`);
+                }}
+              />
+              {svixDashboardUrl ? (
+                <Tab
+                  label="Realtime Events"
+                  onClick={async (e) => {
+                    await router.push(`/applications/${activeApplicationId}/configuration/realtime_events`);
+                  }}
+                />
+              ) : null}
             </Tabs>
           }
           title="Configuration"
@@ -115,14 +129,14 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
           <TabPanel value={value} index={2} className="w-full">
             <SyncConfigTabPanelContainer />
           </TabPanel>
-          <TabPanel value={value} index={4} className="w-full">
+          <TabPanel value={value} index={3} className="w-full">
             <WebhookTabPanel />
           </TabPanel>
-          <TabPanel value={value} index={5} className="w-full">
+          <TabPanel value={value} index={4} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
           {svixDashboardUrl ? (
-            <TabPanel value={value} index={6} className="w-full">
+            <TabPanel value={value} index={5} className="w-full">
               <CDCWebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
             </TabPanel>
           ) : null}
