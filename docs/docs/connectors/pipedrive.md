@@ -11,14 +11,14 @@ description: ''
 
 Supaglue interfaces with the Pipedrive V1 API.
 
-| Feature                    | Available |
-| -------------------------- | --------- |
-| Auth                       | Yes       |
-| Managed syncs              | Yes       |
-| Point reads                | Yes       |
-| Creates                    | Yes       |
-| Updates                    | Yes       |
-| Real-time events           | No        |
+| Feature                        | Available |
+| ------------------------------ | --------- |
+| Auth                           | Yes       |
+| Managed syncs (common objects) | Yes       |
+| Point reads                    | Yes       |
+| Creates                        | Yes       |
+| Updates                        | Yes       |
+| Real-time events               | No        |
 
 Supported object types:
 

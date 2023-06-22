@@ -6,11 +6,14 @@ description: ''
 
 ## Overview
 
-| Feature                    | Available |
-| -------------------------- | --------- |
-| Reads: Full refresh        | Yes       |
-| Reads: Incremental refresh | Yes       |
-| Cache invalidation on write| Yes       |
+| Feature                              | Available |
+| ------------------------------------ | --------- |
+| Reads: Full refresh                  | Yes       |
+| Reads: Incremental refresh           | Yes       |
+| Cache invalidation on write          | Yes       |
+| Common objects (unified by Supaglue) | Yes       |
+| Standard objects (per provider)      | Yes       |
+| Custom objects (per provider)        | Yes       |
 
 ## Setup
 
