@@ -15,10 +15,12 @@
     "@temporalio/client": "^1.6.0",
     "@temporalio/worker": "^1.6.0",
     "@temporalio/workflow": "^1.6.0",
-    "async-local-storage": "^2.3.1"
+    "async-local-storage": "^2.3.1",
+    "simple-oauth2": "^5.0.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
+    "@types/simple-oauth2": "^5",
     "tsx": "^3.12.3",
     "typescript": "^4.9.5"
   },

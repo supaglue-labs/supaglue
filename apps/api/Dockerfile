@@ -1,10 +1,10 @@
-FROM node:18-slim AS builder
+FROM node:18-bullseye-slim AS builder
 WORKDIR /app
 COPY . .
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo prune --scope=api --docker
 
 # Add lockfile and package.json's of isolated subworkspace
-FROM node:18-slim AS installer
+FROM node:18-bullseye-slim AS installer
 WORKDIR /app
 
 # First install dependencies (as they change less often)
@@ -27,7 +27,7 @@ RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace api dlx 
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo run build --filter=api...
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus --production api
 
-FROM node:18-slim AS runner
+FROM node:18-bullseye-slim AS runner
 RUN apt-get update && apt-get install -y openssl libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/* && apt-get clean
 WORKDIR /app
 
