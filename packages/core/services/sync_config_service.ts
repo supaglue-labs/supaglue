@@ -141,7 +141,7 @@ export class SyncConfigService {
       },
     });
     if (syncs.length) {
-      throw new BadRequestError('Cannot delete sync config with active syncs');
+      throw new BadRequestError('Cannot delete sync config with active connections');
     }
     await this.#prisma.syncConfig.deleteMany({
       where: { id, applicationId },
