@@ -1,4 +1,5 @@
 import { addApplication, deleteApplication, updateApplicationName } from '@/client';
+import { useNotification } from '@/context/notification';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { useApplications } from '@/hooks/useApplications';
 import { MoreVert } from '@mui/icons-material';
@@ -23,6 +24,7 @@ export default function ApplicationMenu() {
   const router = useRouter();
   const { applications = [], mutate } = useApplications();
   const { activeApplication, isLoading, mutate: mutateActiveApplication } = useActiveApplication();
+  const { addNotification } = useNotification();
 
   // Top-level menu
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -36,14 +38,24 @@ export default function ApplicationMenu() {
 
   const onAddApplication = async (name: string) => {
     handleClose();
-    const newApplication = await addApplication(name);
+    const response = await addApplication(name);
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
+    const newApplication = response.data;
     await mutate([...applications, newApplication]);
     await router.push(`/applications/${newApplication.id}`);
   };
 
   const onUpdateApplicationName = async (id: string, name: string) => {
     handleClose();
-    const newApplication = await updateApplicationName(id, name);
+    const response = await updateApplicationName(id, name);
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
+    const newApplication = response.data;
     await mutate(applications.map((application) => (application.id === id ? newApplication : application)));
     if (id === activeApplication?.id) {
       await mutateActiveApplication(newApplication);
@@ -52,7 +64,11 @@ export default function ApplicationMenu() {
 
   const onDeleteApplication = async (id: string) => {
     handleClose();
-    await deleteApplication(id);
+    const response = await deleteApplication(id);
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
     await mutate(applications.filter((application) => application.id !== id));
     if (activeApplication?.id === id) {
       await router.replace('/');

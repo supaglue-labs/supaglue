@@ -12,11 +12,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         headers: getHeaders(req),
       });
 
-      if (!result.ok) {
-        return res.status(500).json(null);
-      }
-
       const r = await result.json();
+      if (!result.ok) {
+        return res.status(result.status).json(r);
+      }
 
       return res.status(200).json(r);
     }
@@ -27,11 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         body: JSON.stringify(req.body),
       });
 
-      if (!result.ok) {
-        return res.status(500).json(null);
-      }
-
       const r = await result.json();
+      if (!result.ok) {
+        return res.status(result.status).json(r);
+      }
 
       return res.status(200).json(r);
     }
@@ -44,11 +42,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         },
       });
 
+      const r = await result.json();
       if (!result.ok) {
-        return res.status(500).json(null);
+        return res.status(result.status).json(r);
       }
 
-      return res.status(204).send(null);
+      return res.status(204).json(r);
     }
   }
 }

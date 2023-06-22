@@ -58,9 +58,9 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
     setPassword(destination.config.password);
   }, [destination?.id]);
 
-  const createOrUpdateDestination = async (): Promise<Destination> => {
+  const createOrUpdateDestination = async (): Promise<Destination | undefined> => {
     if (destination) {
-      return await updateDestination({
+      const response = await updateDestination({
         ...destination,
         type: 'postgres',
         name,
@@ -73,8 +73,13 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           password,
         },
       });
+      if (!response.ok) {
+        addNotification({ message: response.errorMessage, severity: 'error' });
+        return;
+      }
+      return response.data;
     }
-    return await createDestination({
+    const response = await createDestination({
       applicationId: activeApplicationId,
       type: 'postgres',
       name,
@@ -87,6 +92,11 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
         password,
       },
     });
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
+    return response.data;
   };
 
   const SaveButton = () => {
@@ -96,6 +106,9 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
         variant="contained"
         onClick={async () => {
           const newDestination = await createOrUpdateDestination();
+          if (!newDestination) {
+            return;
+          }
           addNotification({ message: 'Successfully updated destination', severity: 'success' });
           const latestDestinations = [
             ...existingDestinations.filter(({ id }) => id !== newDestination.id),
@@ -135,11 +148,16 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             },
           });
           setIsTesting(false);
-          if (response && response.success) {
+          if (!response.ok) {
+            addNotification({ message: response.errorMessage, severity: 'error' });
+            setIsTestSuccessful(false);
+            return;
+          }
+          if (response.data && response.data.success) {
             addNotification({ message: 'Successfully tested destination', severity: 'success' });
             setIsTestSuccessful(true);
           } else {
-            addNotification({ message: `Failed testing destination: ${response.message}`, severity: 'error' });
+            addNotification({ message: `Failed testing destination: ${response.data.message}`, severity: 'error' });
             setIsTestSuccessful(false);
           }
         }}

@@ -93,12 +93,16 @@ export default function WebhookTabPanel() {
         <Stack direction="row" className="gap-2 justify-between">
           <DeleteWebhook
             disabled={isLoading || isSaving || !activeApplication}
-            onDelete={() => {
+            onDelete={async () => {
               if (!activeApplication) {
                 return;
               }
               setIsSaving(true);
-              deleteWebhook(activeApplication.id);
+              const response = await deleteWebhook(activeApplication.id);
+              if (!response.ok) {
+                setIsSaving(false);
+                return addNotification({ message: response.errorMessage, severity: 'error' });
+              }
               mutate({ ...activeApplication, config: { ...activeApplication.config, webhook: null } }, false);
               addNotification({ message: 'Successfully deleted webhook', severity: 'success' });
               setIsSaving(false);
@@ -123,7 +127,11 @@ export default function WebhookTabPanel() {
                   'Content-Type': 'application/json',
                 },
               };
-              await createOrUpdateWebhook(activeApplication.id, webhook);
+              const response = await createOrUpdateWebhook(activeApplication.id, webhook);
+              if (!response.ok) {
+                setIsSaving(false);
+                return addNotification({ message: response.errorMessage, severity: 'error' });
+              }
               mutate({ ...activeApplication, config: { ...activeApplication.config, webhook } }, false);
               addNotification({ message: 'Successfully updated webhook', severity: 'success' });
               setIsSaving(false);
