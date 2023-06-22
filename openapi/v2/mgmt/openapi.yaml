@@ -57,10 +57,6 @@ paths:
     $ref: paths/sync_info.yaml
   '/force-sync':
     $ref: paths/force_sync.yaml
-  '/sync-migration/_get_connections':
-    $ref: paths/sync_migration_get_connections.yaml
-  '/sync-migration/_migrate_connection':
-    $ref: paths/sync_migration_migrate_connection.yaml
 tags: []
 components:
   securitySchemes:

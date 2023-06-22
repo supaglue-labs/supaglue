@@ -22,7 +22,7 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl, loginUrl, version = 'v2', scope } = req.query;
+      const { applicationId, customerId, providerName, returnUrl, loginUrl, scope } = req.query;
 
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
@@ -41,10 +41,6 @@ export default function init(app: Router): void {
 
       if (!returnUrl) {
         throw new BadRequestError('Missing returnUrl');
-      }
-
-      if (version !== 'v2') {
-        throw new BadRequestError('Invalid version');
       }
 
       const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
@@ -98,7 +94,6 @@ export default function init(app: Router): void {
           providerName,
           scope: oauthScopes, // TODO: this should be in a session
           loginUrl,
-          version,
         }),
         ...additionalAuthParams,
       });

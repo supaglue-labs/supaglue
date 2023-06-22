@@ -142,7 +142,6 @@ export class ConnectionAndSyncService {
               state: {
                 phase: 'created',
               },
-              version: 'v2',
             },
           });
           await tx.syncChange.create({
@@ -199,7 +198,6 @@ export class ConnectionAndSyncService {
           state: {
             phase: 'created',
           },
-          version: 'v2',
           schemaMappingsConfig: params.schemaMappingsConfig,
         },
       }),
@@ -627,7 +625,6 @@ function fromSyncModel(model: SyncModel): Sync {
     id: model.id,
     connectionId: model.connectionId,
     type,
-    version: model.version,
     ...otherStrategyProps,
     state: model.state as SyncState,
     paused: model.paused,

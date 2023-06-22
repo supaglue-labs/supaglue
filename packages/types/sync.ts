@@ -7,7 +7,6 @@ type BaseSync = {
   // TODO: This should be required
   syncConfigId?: string;
   forceSyncFlag: boolean; // flag: whether to transition a sync to the phase "created"
-  version: 'v1' | 'v2';
   paused: boolean;
   schemaMappingsConfig?: SchemaMappingsConfig;
 };

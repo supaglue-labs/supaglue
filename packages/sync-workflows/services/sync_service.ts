@@ -141,7 +141,6 @@ export class SyncService {
         id: true,
         connectionId: true,
         syncConfigId: true,
-        version: true,
       },
     });
 
@@ -178,20 +177,16 @@ export class SyncService {
         throw new Error('Unexpected error: connection not found');
       }
 
-      if (sync.version === 'v2') {
-        const syncConfig = syncConfigs.find((syncConfig) => syncConfig.id === sync.syncConfigId);
-        if (!syncConfig) {
-          throw new Error('Unexpected error: syncConfig not found');
-        }
-
-        await this.upsertTemporalSync(
-          sync.id,
-          connection,
-          syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
-        );
-      } else {
-        throw new Error(`Unexpected error: sync version not valid: ${sync.version}`);
+      const syncConfig = syncConfigs.find((syncConfig) => syncConfig.id === sync.syncConfigId);
+      if (!syncConfig) {
+        throw new Error('Unexpected error: syncConfig not found');
       }
+
+      await this.upsertTemporalSync(
+        sync.id,
+        connection,
+        syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
+      );
     }
 
     await Promise.all([
