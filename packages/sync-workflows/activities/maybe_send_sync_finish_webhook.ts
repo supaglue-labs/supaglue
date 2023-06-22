@@ -14,7 +14,10 @@ export type MaybeSendSyncFinishWebhookArgs = {
       commonModel: CommonModelType;
     }
   | {
-      rawObject: string;
+      standardObject: string;
+    }
+  | {
+      customObject: string;
     }
 );
 

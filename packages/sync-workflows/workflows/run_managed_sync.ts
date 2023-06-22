@@ -78,9 +78,15 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       return entry;
     })
   );
-  const objectHistoryIdsMap = Object.fromEntries(
-    objects.map((object) => {
-      const entry: [string, string] = [object.object, uuid4()];
+  const standardObjectHistoryIdsMap = Object.fromEntries(
+    standardObjects.map((standardObject) => {
+      const entry: [string, string] = [standardObject.object, uuid4()];
+      return entry;
+    })
+  );
+  const customObjectHistoryIdsMap = Object.fromEntries(
+    customObjects.map((customObject) => {
+      const entry: [string, string] = [customObject.object, uuid4()];
       return entry;
     })
   );
@@ -96,11 +102,20 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
     })
   );
   await Promise.all(
-    objects.map(async (object) => {
+    standardObjects.map(async (standardObject) => {
       await logSyncStart({
         syncId,
-        historyId: objectHistoryIdsMap[object.object],
-        rawObject: object.object,
+        historyId: standardObjectHistoryIdsMap[standardObject.object],
+        standardObject: standardObject.object,
+      });
+    })
+  );
+  await Promise.all(
+    customObjects.map(async (object) => {
+      await logSyncStart({
+        syncId,
+        historyId: customObjectHistoryIdsMap[object.object],
+        customObject: object.object,
       });
     })
   );
@@ -157,23 +172,46 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
     );
 
     await Promise.all(
-      objects.map(async ({ object }) => {
+      standardObjects.map(async ({ object }) => {
         await logSyncFinish({
           syncId,
           connectionId,
-          historyId: objectHistoryIdsMap[object],
+          historyId: standardObjectHistoryIdsMap[object],
           status: 'FAILURE',
           errorMessage,
           errorStack,
           numRecordsSynced: null,
         });
         await maybeSendSyncFinishWebhook({
-          historyId: objectHistoryIdsMap[object],
+          historyId: standardObjectHistoryIdsMap[object],
           status: 'SYNC_ERROR',
           connectionId,
           // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
           numRecordsSynced: 0,
-          rawObject: object,
+          standardObject: object,
+          errorMessage,
+        });
+      })
+    );
+
+    await Promise.all(
+      customObjects.map(async ({ object }) => {
+        await logSyncFinish({
+          syncId,
+          connectionId,
+          historyId: customObjectHistoryIdsMap[object],
+          status: 'FAILURE',
+          errorMessage,
+          errorStack,
+          numRecordsSynced: null,
+        });
+        await maybeSendSyncFinishWebhook({
+          historyId: customObjectHistoryIdsMap[object],
+          status: 'SYNC_ERROR',
+          connectionId,
+          // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
+          numRecordsSynced: 0,
+          customObject: object,
           errorMessage,
         });
       })
@@ -218,7 +256,7 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
   );
 
   await Promise.all(
-    objects.map(async ({ object }) => {
+    standardObjects.map(async ({ object }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore `numStandardObjectRecordsSyncedMap` is indeed defined here
       const numRecordsSynced = numStandardObjectRecordsSyncedMap[object];
@@ -226,22 +264,22 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       await logSyncFinish({
         syncId,
         connectionId,
-        historyId: objectHistoryIdsMap[object],
+        historyId: standardObjectHistoryIdsMap[object],
         status: 'SUCCESS',
         numRecordsSynced,
       });
       await maybeSendSyncFinishWebhook({
-        historyId: objectHistoryIdsMap[object],
+        historyId: standardObjectHistoryIdsMap[object],
         status: 'SYNC_SUCCESS',
         connectionId,
         numRecordsSynced,
-        rawObject: object,
+        standardObject: object,
       });
     })
   );
 
   await Promise.all(
-    objects.map(async ({ object }) => {
+    customObjects.map(async ({ object }) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore `numCustomObjectRecordsSyncedMap` is indeed defined here
       const numRecordsSynced = numCustomObjectRecordsSyncedMap[object];
@@ -249,16 +287,16 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
       await logSyncFinish({
         syncId,
         connectionId,
-        historyId: objectHistoryIdsMap[object],
+        historyId: customObjectHistoryIdsMap[object],
         status: 'SUCCESS',
         numRecordsSynced,
       });
       await maybeSendSyncFinishWebhook({
-        historyId: objectHistoryIdsMap[object],
+        historyId: customObjectHistoryIdsMap[object],
         status: 'SYNC_SUCCESS',
         connectionId,
         numRecordsSynced,
-        rawObject: object,
+        customObject: object,
       });
     })
   );

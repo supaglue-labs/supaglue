@@ -2765,13 +2765,25 @@
               {
                 "type": "object",
                 "properties": {
-                  "raw_object": {
+                  "standard_object": {
                     "type": "string",
                     "example": "account"
                   }
                 },
                 "required": [
-                  "raw_object"
+                  "standard_object"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "custom_object": {
+                    "type": "string",
+                    "example": "account"
+                  }
+                },
+                "required": [
+                  "custom_object"
                 ]
               }
             ]
