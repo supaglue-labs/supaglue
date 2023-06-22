@@ -26,8 +26,10 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
     label: 'Destinations',
     value: 'destinations',
   },
-  { label: 'Sync Configs', value: 'sync_configs' },
-  { label: 'Integrations (deprecated)', value: 'integrations' },
+  {
+    label: 'Sync Configs',
+    value: 'sync_configs',
+  },
   {
     label: 'Webhook',
     value: 'webhook',
@@ -37,8 +39,8 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
     value: 'api_keys',
   },
   {
-    label: 'CDC Webhooks',
-    value: 'cdc_webhooks',
+    label: 'Realtime Events',
+    value: 'realtime_events',
   },
 ];
 
@@ -82,7 +84,7 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
             <Tabs value={value} textColor="inherit" onChange={handleChange}>
               <Tab label="Providers" />
               <Tab label="Destinations" />
-              <Tab label="Syncs" />
+              <Tab label="Sync Configs" />
               <Tab
                 label=""
                 icon={
@@ -97,7 +99,7 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
               />
               <Tab label="Webhook" />
               <Tab label="API Key" />
-              {svixDashboardUrl ? <Tab label="CDC Webhooks" /> : null}
+              {svixDashboardUrl ? <Tab label="Realtime Events" /> : null}
             </Tabs>
           }
           title="Configuration"
