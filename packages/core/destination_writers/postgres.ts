@@ -28,7 +28,7 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
-import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteRawRecordsResult } from './base';
+import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteObjectRecordsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
@@ -240,7 +240,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     object: string,
     inputStream: Readable,
     heartbeat: () => void
-  ): Promise<WriteRawRecordsResult> {
+  ): Promise<WriteObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, object });
 
     const { schema } = this.#destination.config;

@@ -12,7 +12,7 @@ export type WriteCommonModelRecordsResult = {
   numRecords: number;
 };
 
-export type WriteRawRecordsResult = {
+export type WriteObjectRecordsResult = {
   maxLastModifiedAt: Date | null;
   numRecords: number;
 };
@@ -36,7 +36,7 @@ export interface DestinationWriter {
     object: string,
     stream: Readable,
     heartbeat: () => void
-  ): Promise<WriteRawRecordsResult>;
+  ): Promise<WriteObjectRecordsResult>;
 }
 
 export abstract class BaseDestinationWriter implements DestinationWriter {
@@ -67,5 +67,5 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     object: string,
     stream: Readable,
     heartbeat: () => void
-  ): Promise<WriteRawRecordsResult>;
+  ): Promise<WriteObjectRecordsResult>;
 }

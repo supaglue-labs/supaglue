@@ -16,7 +16,7 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 export interface CrmRemoteClient extends RemoteClient {
   category(): ProviderCategory;
 
-  listRawStandardObjectRecords(
+  listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
     modifiedAfter?: Date,
@@ -70,7 +70,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     return err;
   }
 
-  public async listRawStandardObjectRecords(
+  public async listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
     modifiedAfter?: Date,
