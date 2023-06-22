@@ -83,7 +83,7 @@ export function createSyncRawRecordsToDestination(
             })();
         return await writer.writeRawRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
       } else {
-        throw ApplicationFailure.nonRetryable(`Unsupported category: ${client.category()}`);
+        throw ApplicationFailure.nonRetryable('Syncing standard and custom objects only supported for crm category');
       }
     })(writer);
 

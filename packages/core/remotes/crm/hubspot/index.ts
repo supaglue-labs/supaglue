@@ -390,18 +390,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       modifiedAfter
     );
 
-    // Create map from mappedField -> schemaField
-    const mappedFieldToSchemaField =
-      fieldMappingConfig.type === 'inherit_all_fields'
-        ? null
-        : fieldMappingConfig.fieldMappings.reduce<Record<string, string>>((acc, fieldMapping) => {
-            acc[fieldMapping.mappedField] = fieldMapping.schemaField;
-            return acc;
-          }, {});
+    // mapper
     function toMappedRecords(
       records: NormalizedRawRecord<RecordWithFlattenedAssociations>[]
     ): NormalizedRawRecord<RecordWithFlattenedAssociations>[] {
-      if (!mappedFieldToSchemaField) {
+      if (fieldMappingConfig.type === 'inherit_all_fields') {
         return records;
       }
 
@@ -410,9 +403,9 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         rawData: {
           ...record.rawData,
           properties: Object.fromEntries(
-            Object.entries(record.rawData.properties).map(([mappedField, value]) => [
-              mappedFieldToSchemaField[mappedField] ?? mappedField, // hubspot will return `id` even if not asked for
-              value,
+            fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [
+              schemaField,
+              record.rawData.properties[mappedField],
             ])
           ),
         },
