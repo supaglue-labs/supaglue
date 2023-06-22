@@ -27,11 +27,12 @@ export default function CDCWebhookTabPanel({ svixDashboardUrl }: { svixDashboard
         ) : (
           <Stack>
             <Box>
-              <Typography variant="h5">Real-time CDC Webhook Events</Typography>
+              <Typography variant="h5">Real-time events</Typography>
             </Box>
             <Box>
               <Typography variant="body1">
-                Real-time events lets you subscribe to a webhook and consume change events from your customer's CRM.
+                Real-time Events lets you subscribe to a webhook and consume change data capture (CDC) events from your
+                customers' CRMs.
               </Typography>
             </Box>
 
