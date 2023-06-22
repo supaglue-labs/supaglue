@@ -235,7 +235,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     }
   }
 
-  public override async writeRawRecords(
+  public override async writeObjectRecords(
     { id: connectionId, providerName, customerId, applicationId }: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
@@ -244,7 +244,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     const childLogger = logger.child({ connectionId, providerName, customerId, object });
 
     const { schema } = this.#destination.config;
-    const table = getRawObjectTableName(providerName, object);
+    const table = getObjectTableName(providerName, object);
     const qualifiedTable = `"${schema}"."${table}"`;
     const tempTable = `temp_${table}`;
 
@@ -253,7 +253,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(getRawObjectSchemaSetupSql(providerName, object, schema));
+      await client.query(getObjectSchemaSetupSql(providerName, object, schema));
 
       // Create a temporary table
       // TODO: on the first run, we should be able to directly write into the table and skip the temp table
@@ -373,7 +373,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const getRawObjectTableName = (providerName: ProviderName, object: string) => {
+const getObjectTableName = (providerName: ProviderName, object: string) => {
   return `${providerName}_${object}`;
 };
 
@@ -431,8 +431,8 @@ const columnsByCommonModelType: {
   },
 };
 
-const getRawObjectSchemaSetupSql = (providerName: ProviderName, object: string, schema: string) => {
-  const tableName = getRawObjectTableName(providerName, object);
+const getObjectSchemaSetupSql = (providerName: ProviderName, object: string, schema: string) => {
+  const tableName = getObjectTableName(providerName, object);
 
   return `-- CreateTable
 CREATE TABLE IF NOT EXISTS "${schema}"."${tableName}" (

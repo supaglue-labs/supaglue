@@ -22,7 +22,7 @@ export interface CrmRemoteClient extends RemoteClient {
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
-  listRawCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
+  listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
   listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date,
@@ -79,7 +79,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
-  public async listRawCustomObjectRecords(
+  public async listCustomObjectRecords(
     object: string,
     modifiedAfter?: Date,
     heartbeat?: () => void
