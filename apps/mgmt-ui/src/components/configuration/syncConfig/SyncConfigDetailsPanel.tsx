@@ -330,6 +330,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
                   });
                 }
                 setIsSaving(false);
+                router.back();
               }}
             >
               Save

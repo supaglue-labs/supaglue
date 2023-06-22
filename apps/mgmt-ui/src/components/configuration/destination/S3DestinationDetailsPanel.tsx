@@ -31,6 +31,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
   const [secretAccessKey, setSecretAccessKey] = useState<string>('');
   const [isTesting, setIsTesting] = useState<boolean>(false);
   const [isTestSuccessful, setIsTestSuccessful] = useState<boolean>(false);
+  const [isDirty, setIsDirty] = useState<boolean>(false);
   const router = useRouter();
 
   const isNew = !destination?.id;
@@ -94,7 +95,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
   const SaveButton = () => {
     return (
       <Button
-        disabled={!isTestSuccessful || name === ''}
+        disabled={!isTestSuccessful || name === '' || !isDirty}
         variant="contained"
         onClick={async () => {
           const newDestination = await createOrUpdateDestination();
@@ -111,6 +112,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
             revalidate: false,
             populateCache: false,
           });
+          setIsDirty(false);
         }}
       >
         Save
@@ -121,12 +123,13 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
   const TestButton = () => {
     return (
       <Button
-        disabled={isTesting}
+        disabled={isTesting || !isDirty}
         variant="contained"
         color="secondary"
         onClick={async () => {
           setIsTesting(true);
           const response = await testDestination({
+            id: destination?.id,
             applicationId: activeApplicationId,
             type: 's3',
             name,
@@ -184,6 +187,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
             variant="outlined"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setName(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -200,6 +204,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
             variant="outlined"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setAccessKeyId(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -213,6 +218,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
             type="password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setSecretAccessKey(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -229,6 +235,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
             variant="outlined"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setRegion(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -246,6 +253,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
             helperText='Bucket name without "s3://" prefix or trailing slash.'
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setBucket(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />

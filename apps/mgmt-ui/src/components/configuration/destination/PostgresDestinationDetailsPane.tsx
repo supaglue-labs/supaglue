@@ -33,6 +33,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const [password, setPassword] = useState<string>('');
   const [isTestSuccessful, setIsTestSuccessful] = useState<boolean>(false);
   const [isTesting, setIsTesting] = useState<boolean>(false);
+  const [isDirty, setIsDirty] = useState<boolean>(false);
   const router = useRouter();
 
   const isNew = !destination?.id;
@@ -102,7 +103,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const SaveButton = () => {
     return (
       <Button
-        disabled={!isTestSuccessful || name === ''}
+        disabled={!isTestSuccessful || name === '' || !isDirty}
         variant="contained"
         onClick={async () => {
           const newDestination = await createOrUpdateDestination();
@@ -119,6 +120,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             revalidate: false,
             populateCache: false,
           });
+          setIsDirty(false);
         }}
       >
         Save
@@ -129,12 +131,13 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const TestButton = () => {
     return (
       <Button
-        disabled={isTesting}
+        disabled={isTesting || !isDirty}
         variant="contained"
         color="secondary"
         onClick={async () => {
           setIsTesting(true);
           const response = await testDestination({
+            id: destination?.id,
             applicationId: activeApplicationId,
             type: 'postgres',
             name,
@@ -194,6 +197,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             variant="outlined"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setName(event.target.value);
+              setIsDirty(true);
             }}
           />
         </Stack>
@@ -210,6 +214,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             helperText={`Ensure that the host is accessible from the Supaglue servers (CIDR range found in Destination docs).`}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setHost(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -228,6 +233,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               const portNum = parseInt(event.target.value, 10);
               setPort(portNum);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -244,6 +250,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             variant="outlined"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDatabase(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -261,6 +268,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             helperText="This is where tables will be written into (it must already exist)."
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setSchema(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -277,6 +285,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             variant="outlined"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setUser(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
@@ -290,6 +299,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             type="password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setPassword(event.target.value);
+              setIsDirty(true);
               setIsTestSuccessful(false);
             }}
           />
