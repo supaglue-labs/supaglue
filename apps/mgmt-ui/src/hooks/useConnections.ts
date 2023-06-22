@@ -4,7 +4,7 @@ import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useConnections(customerId: string) {
   const { data, ...rest } = useSWRWithApplication<ConnectionSafeAny[]>(
-    `/api/internal/customers/${customerId}/connections`
+    `/api/internal/customers/${encodeURIComponent(customerId)}/connections`
   );
 
   return {
