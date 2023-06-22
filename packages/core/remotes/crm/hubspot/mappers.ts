@@ -32,7 +32,7 @@ export const fromObjectToHubspotObjectType = (object: SGObject): string => {
     case 'opportunity':
       return 'deal';
     default:
-      throw new Error(`Unknown COMMON_MODEL object: ${object.id}`);
+      throw new Error(`Unknown COMMON_OBJECT object: ${object.id}`);
   }
 };
 

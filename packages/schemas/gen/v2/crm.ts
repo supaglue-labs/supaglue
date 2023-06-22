@@ -663,7 +663,7 @@ export interface components {
       origin_type: components["schemas"]["object_type"];
     };
     /** @enum {string} */
-    object_type: "CUSTOM_OBJECT" | "COMMON_MODEL";
+    object_type: "CUSTOM_OBJECT" | "COMMON_OBJECT";
     /** @enum {string} */
     association_type_cardinality: "ONE_TO_MANY";
     /** @enum {string} */
