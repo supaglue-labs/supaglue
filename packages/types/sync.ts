@@ -4,8 +4,7 @@ import { EngagementCommonModelType } from './engagement';
 type BaseSync = {
   id: string;
   connectionId: string;
-  // TODO: This should be required
-  syncConfigId?: string;
+  syncConfigId: string;
   forceSyncFlag: boolean; // flag: whether to transition a sync to the phase "created"
   paused: boolean;
   schemaMappingsConfig?: SchemaMappingsConfig;

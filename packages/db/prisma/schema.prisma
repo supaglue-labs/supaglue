@@ -132,9 +132,8 @@ model Sync {
   updatedAt            DateTime      @updatedAt @map("updated_at")
   paused               Boolean       @default(false)
   schemaMappingsConfig Json?         @map("schema_mappings_config")
-  syncConfigId         String?       @map("sync_config_id")
-  // TODO: Eventually make this required
-  syncConfig           SyncConfig?   @relation(fields: [syncConfigId], references: [id])
+  syncConfigId         String        @map("sync_config_id")
+  syncConfig           SyncConfig    @relation(fields: [syncConfigId], references: [id])
   syncHistoryList      SyncHistory[]
 
   @@map("syncs")
