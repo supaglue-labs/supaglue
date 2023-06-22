@@ -30,7 +30,7 @@ export const maybeSendWebhookPayload = async (
     });
   } catch (e) {
     // TODO: Don't swallow this error.
-    logger.error(e, 'Failed to send webhook');
+    logger.warn(e, 'Failed to send webhook');
   }
 };
 
