@@ -130,7 +130,6 @@ model Sync {
   connection           Connection    @relation(fields: [connectionId], references: [id])
   createdAt            DateTime      @default(now()) @map("created_at")
   updatedAt            DateTime      @updatedAt @map("updated_at")
-  version              String        @default("v1")
   paused               Boolean       @default(false)
   schemaMappingsConfig Json?         @map("schema_mappings_config")
   syncConfigId         String?       @map("sync_config_id")
