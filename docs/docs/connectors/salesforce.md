@@ -14,19 +14,21 @@ Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 | Feature                                          | Available |
 | ------------------------------------------------ | --------- |
 | Auth                                             | Yes       |
-| Managed syncs (common, standard, custom objects) | Yes       |
+| Managed syncs (common, standard objects)         | Yes       |
 | Point reads                                      | Yes       |
 | Creates                                          | Yes       |
 | Updates                                          | Yes       |
 | Real-time events                                 | Yes       |
 
-Supported object types:
+Supported common object types:
 
 - Account
 - Contact
 - Lead
 - Opportunity
 - User
+
+Supported standard object types: use singular Pascal casing when specifying [Salesforce Standard Objects](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm).
 
 ## Provider setup
 

@@ -27,6 +27,8 @@ Supported common object types:
 - Deal
 - User
 
+Supported standard object types: `company`, `contact`, `deal`, `line_item`, `product`, `ticket`, `quote`, `call`, `communication`, `email`, `meeting`, `note`, `postal_mail`, `task`.
+
 ## Provider setup
 
 import BrowserWindow from '@site/src/components/BrowserWindow';
