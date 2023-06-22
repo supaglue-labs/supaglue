@@ -9,10 +9,10 @@ import type {
   Provider,
   ProviderCreateParams,
   SyncConfig,
-  SyncConfigCreateParams,
   WebhookConfig,
 } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
+import { toCreateSyncConfigRequest } from './hooks/useSyncConfig';
 
 export type ClientErrorResponse = {
   ok: false;
@@ -125,17 +125,14 @@ export async function deleteProvider(applicationId: string, providerId: string):
   return await toClientResponse(result);
 }
 
-export async function createSyncConfig(
-  applicationId: string,
-  data: SyncConfigCreateParams
-): Promise<ClientResponse<SyncConfig>> {
+export async function createSyncConfig(applicationId: string, data: SyncConfig): Promise<ClientResponse<SyncConfig>> {
   const result = await fetch(`/api/internal/sync-configs/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
     },
-    body: JSON.stringify(snakecaseKeys(data)),
+    body: JSON.stringify(toCreateSyncConfigRequest(data)),
   });
 
   return await toClientResponse(result);
@@ -148,7 +145,7 @@ export async function updateSyncConfig(applicationId: string, data: SyncConfig):
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
     },
-    body: JSON.stringify(snakecaseKeys(data)),
+    body: JSON.stringify(toCreateSyncConfigRequest(data)),
   });
 
   return await toClientResponse(result);
