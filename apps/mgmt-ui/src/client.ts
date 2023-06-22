@@ -14,7 +14,59 @@ import type {
 } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
-export async function createRemoteApiKey(applicationId: string): Promise<{ api_key: string }> {
+export type ClientErrorResponse = {
+  ok: false;
+  status: number;
+  errorMessage: string;
+};
+
+export type ClientSuccessResponse<T> = {
+  ok: true;
+  status: number;
+  data: T;
+};
+
+export type ClientResponse<T> = ClientErrorResponse | ClientSuccessResponse<T>;
+
+export type ClientSuccessEmptyResponse = {
+  ok: true;
+  status: number;
+};
+
+export type ClientEmptyResponse = ClientErrorResponse | ClientSuccessEmptyResponse;
+
+async function toClientResponse<T>(response: Response): Promise<ClientResponse<T>> {
+  const { ok, status } = response;
+  const data = await response.json();
+  if (!ok) {
+    return {
+      ok,
+      status,
+      errorMessage: getErrorMessage(data) ?? 'Encountered an error.',
+    };
+  }
+  return { ok: true, status, data };
+}
+
+// We need this because for 204s, response.json() will throw an error.
+async function toClientEmptyResponse(response: Response): Promise<ClientEmptyResponse> {
+  const { ok, status } = response;
+  if (!ok) {
+    const data = await response.json();
+    return {
+      ok,
+      status,
+      errorMessage: getErrorMessage(data) ?? 'Encountered an error.',
+    };
+  }
+  return { ok: true, status };
+}
+
+function getErrorMessage(data: any): string {
+  return data.errors?.map((error: any) => error.title).join('\n');
+}
+
+export async function createRemoteApiKey(applicationId: string): Promise<ClientResponse<{ api_key: string }>> {
   const result = await fetch(`/api/internal/api_keys/create`, {
     method: 'POST',
     headers: {
@@ -23,24 +75,13 @@ export async function createRemoteApiKey(applicationId: string): Promise<{ api_k
     },
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function deleteRemoteApiKey(applicationId: string): Promise<{ api_key: null }> {
-  const result = await fetch(`/api/internal/api_keys/delete`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-application-id': applicationId,
-    },
-  });
-
-  const r = await result.json();
-  return r;
-}
-
-export async function createOrUpdateWebhook(applicationId: string, data: WebhookConfig): Promise<WebhookConfig> {
+export async function createOrUpdateWebhook(
+  applicationId: string,
+  data: WebhookConfig
+): Promise<ClientResponse<WebhookConfig>> {
   const result = await fetch(`/api/internal/webhook/create`, {
     method: 'POST',
     headers: {
@@ -50,21 +91,25 @@ export async function createOrUpdateWebhook(applicationId: string, data: Webhook
     body: JSON.stringify(snakecaseKeysSansHeaders(data)),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function deleteWebhook(applicationId: string): Promise<void> {
-  await fetch(`/api/internal/webhook/delete`, {
+export async function deleteWebhook(applicationId: string): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/webhook/delete`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
     },
   });
+
+  return await toClientEmptyResponse(result);
 }
 
-export async function createRemoteProvider(applicationId: string, data: ProviderCreateParams): Promise<Provider> {
+export async function createRemoteProvider(
+  applicationId: string,
+  data: ProviderCreateParams
+): Promise<ClientResponse<Provider>> {
   const result = await fetch(`/api/internal/providers/create`, {
     method: 'POST',
     headers: {
@@ -74,11 +119,10 @@ export async function createRemoteProvider(applicationId: string, data: Provider
     body: JSON.stringify(snakecaseKeys(data)),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function updateRemoteProvider(applicationId: string, data: Provider): Promise<Provider> {
+export async function updateRemoteProvider(applicationId: string, data: Provider): Promise<ClientResponse<Provider>> {
   const result = await fetch(`/api/internal/providers/update`, {
     method: 'PUT',
     headers: {
@@ -88,11 +132,10 @@ export async function updateRemoteProvider(applicationId: string, data: Provider
     body: JSON.stringify(snakecaseKeys(data)),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function deleteProvider(applicationId: string, providerId: string) {
+export async function deleteProvider(applicationId: string, providerId: string): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/providers/${providerId}`, {
     method: 'DELETE',
     headers: {
@@ -100,11 +143,13 @@ export async function deleteProvider(applicationId: string, providerId: string) 
       'x-application-id': applicationId,
     },
   });
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function createSyncConfig(applicationId: string, data: SyncConfigCreateParams): Promise<SyncConfig> {
+export async function createSyncConfig(
+  applicationId: string,
+  data: SyncConfigCreateParams
+): Promise<ClientResponse<SyncConfig>> {
   const result = await fetch(`/api/internal/sync-configs/create`, {
     method: 'POST',
     headers: {
@@ -114,11 +159,10 @@ export async function createSyncConfig(applicationId: string, data: SyncConfigCr
     body: JSON.stringify(snakecaseKeys(data)),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function updateSyncConfig(applicationId: string, data: SyncConfig): Promise<SyncConfig> {
+export async function updateSyncConfig(applicationId: string, data: SyncConfig): Promise<ClientResponse<SyncConfig>> {
   const result = await fetch(`/api/internal/sync-configs/update`, {
     method: 'PUT',
     headers: {
@@ -128,21 +172,21 @@ export async function updateSyncConfig(applicationId: string, data: SyncConfig):
     body: JSON.stringify(snakecaseKeys(data)),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function deleteSyncConfig(applicationId: string, syncConfigId: string): Promise<void> {
-  await fetch(`/api/internal/sync-configs/${syncConfigId}`, {
+export async function deleteSyncConfig(applicationId: string, syncConfigId: string): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/sync-configs/${syncConfigId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
     },
   });
+  return await toClientEmptyResponse(result);
 }
 
-export async function createDestination(data: DestinationCreateParams): Promise<Destination> {
+export async function createDestination(data: DestinationCreateParams): Promise<ClientResponse<Destination>> {
   const result = await fetch(`/api/internal/destinations/create`, {
     method: 'POST',
     headers: {
@@ -152,11 +196,10 @@ export async function createDestination(data: DestinationCreateParams): Promise<
     body: JSON.stringify(snakecaseKeys(data)),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function testDestination(data: DestinationTestParams): Promise<DestinationTestResult> {
+export async function testDestination(data: DestinationTestParams): Promise<ClientResponse<DestinationTestResult>> {
   const result = await fetch(`/api/internal/destinations/_test`, {
     method: 'POST',
     headers: {
@@ -166,11 +209,10 @@ export async function testDestination(data: DestinationTestParams): Promise<Dest
     body: JSON.stringify(snakecaseKeys(data)),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function updateDestination(data: DestinationUpdateParams): Promise<Destination> {
+export async function updateDestination(data: DestinationUpdateParams): Promise<ClientResponse<Destination>> {
   const result = await fetch(`/api/internal/destinations/update`, {
     method: 'PUT',
     headers: {
@@ -180,11 +222,10 @@ export async function updateDestination(data: DestinationUpdateParams): Promise<
     body: JSON.stringify(snakecaseKeys(data)),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function addApplication(name: string): Promise<Application> {
+export async function addApplication(name: string): Promise<ClientResponse<Application>> {
   const result = await fetch(`/api/internal/applications`, {
     method: 'PUT',
     headers: {
@@ -193,11 +234,10 @@ export async function addApplication(name: string): Promise<Application> {
     body: JSON.stringify({ name }),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function updateApplicationName(id: string, name: string): Promise<Application> {
+export async function updateApplicationName(id: string, name: string): Promise<ClientResponse<Application>> {
   const result = await fetch(`/api/internal/applications/${id}`, {
     method: 'PATCH',
     headers: {
@@ -206,14 +246,14 @@ export async function updateApplicationName(id: string, name: string): Promise<A
     body: JSON.stringify({ name }),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function deleteApplication(id: string): Promise<void> {
-  await fetch(`/api/internal/applications/${id}`, {
+export async function deleteApplication(id: string): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/applications/${id}`, {
     method: 'DELETE',
   });
+  return await toClientEmptyResponse(result);
 }
 
 export async function createCustomer(
@@ -221,7 +261,7 @@ export async function createCustomer(
   customerId: string,
   name: string,
   email: string
-): Promise<Customer> {
+): Promise<ClientResponse<Customer>> {
   const result = await fetch(`/api/internal/customers/create`, {
     method: 'PUT',
     headers: {
@@ -231,26 +271,31 @@ export async function createCustomer(
     body: JSON.stringify({ customerId, name, email }),
   });
 
-  const r = await result.json();
-  return r;
+  return await toClientResponse(result);
 }
 
-export async function deleteCustomer(applicationId: string, customerId: string): Promise<void> {
-  await fetch(`/api/internal/customers/${customerId}`, {
+export async function deleteCustomer(applicationId: string, customerId: string): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/customers/${customerId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
     },
   });
+  return await toClientEmptyResponse(result);
 }
 
-export async function deleteConnection(applicationId: string, customerId: string, connectionId: string): Promise<void> {
-  await fetch(`/api/internal/customers/${customerId}/connections/${connectionId}`, {
+export async function deleteConnection(
+  applicationId: string,
+  customerId: string,
+  connectionId: string
+): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/customers/${customerId}/connections/${connectionId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
     },
   });
+  return await toClientEmptyResponse(result);
 }

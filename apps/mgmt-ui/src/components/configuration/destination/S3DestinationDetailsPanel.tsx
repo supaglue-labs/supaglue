@@ -54,9 +54,9 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
     setSecretAccessKey(destination?.config?.secretAccessKey);
   }, [destination?.id]);
 
-  const createOrUpdateDestination = async (): Promise<Destination> => {
+  const createOrUpdateDestination = async (): Promise<Destination | undefined> => {
     if (destination) {
-      return await updateDestination({
+      const response = await updateDestination({
         ...destination,
         name,
         type: 's3',
@@ -67,8 +67,13 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           secretAccessKey,
         },
       });
+      if (!response.ok) {
+        addNotification({ message: response.errorMessage, severity: 'error' });
+        return;
+      }
+      return response.data;
     }
-    return await createDestination({
+    const response = await createDestination({
       applicationId: activeApplicationId,
       type: 's3',
       name,
@@ -79,6 +84,11 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
         secretAccessKey,
       },
     });
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
+    return response.data;
   };
 
   const SaveButton = () => {
@@ -88,6 +98,9 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
         variant="contained"
         onClick={async () => {
           const newDestination = await createOrUpdateDestination();
+          if (!newDestination) {
+            return;
+          }
           addNotification({ message: 'Successfully updated destination', severity: 'success' });
           const latestDestinations = [
             ...existingDestinations.filter(({ id }) => id !== newDestination.id),
@@ -125,11 +138,16 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
             },
           });
           setIsTesting(false);
-          if (response && response.success) {
+          if (!response.ok) {
+            addNotification({ message: response.errorMessage, severity: 'error' });
+            setIsTestSuccessful(false);
+            return;
+          }
+          if (response.data && response.data.success) {
             addNotification({ message: 'Successfully tested destination', severity: 'success' });
             setIsTestSuccessful(true);
           } else {
-            addNotification({ message: `Failed testing destination: ${response.message}`, severity: 'error' });
+            addNotification({ message: `Failed testing destination: ${response.data.message}`, severity: 'error' });
             setIsTestSuccessful(false);
           }
         }}

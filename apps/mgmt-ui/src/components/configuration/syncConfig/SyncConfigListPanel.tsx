@@ -1,6 +1,7 @@
 import { deleteSyncConfig } from '@/client';
 import MetricCard from '@/components/MetricCard';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useProviders } from '@/hooks/useProviders';
@@ -19,6 +20,7 @@ export default function SyncConfigListPanel() {
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations = [], isLoading: isLoadingDestinations } = useDestinations();
   const applicationId = useActiveApplicationId();
+  const { addNotification } = useNotification();
 
   if (isLoading || isLoadingProviders || isLoadingDestinations) {
     return <Spinner />;
@@ -99,7 +101,11 @@ export default function SyncConfigListPanel() {
           <DeleteSyncConfig
             syncConfigId={params.row.id}
             onDelete={async () => {
-              await deleteSyncConfig(applicationId, params.row.id);
+              const response = await deleteSyncConfig(applicationId, params.row.id);
+              if (!response.ok) {
+                addNotification({ message: response.errorMessage, severity: 'error' });
+                return;
+              }
               await mutate(toGetSyncConfigsResponse(syncConfigs.filter((s) => s.id !== params.row.id)), false);
             }}
           />

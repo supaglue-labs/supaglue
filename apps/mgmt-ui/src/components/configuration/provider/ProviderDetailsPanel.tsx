@@ -50,7 +50,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     );
   }, [provider?.id]);
 
-  const createOrUpdateProvider = async (): Promise<Provider> => {
+  const createOrUpdateProvider = async (): Promise<Provider | undefined> => {
     if (provider) {
       const newProvider: Provider = {
         ...provider,
@@ -67,9 +67,14 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
           },
         },
       };
-      return await updateRemoteProvider(activeApplicationId, newProvider);
+      const response = await updateRemoteProvider(activeApplicationId, newProvider);
+      if (!response.ok) {
+        addNotification({ message: response.errorMessage, severity: 'error' });
+        return;
+      }
+      return response.data;
     }
-    return await createRemoteProvider(activeApplicationId, {
+    const response = await createRemoteProvider(activeApplicationId, {
       applicationId: activeApplicationId,
       authType: 'oauth2',
       category,
@@ -86,6 +91,11 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
         },
       },
     } as ProviderCreateParams);
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
+    return response.data;
   };
 
   if (!providerCardInfo) {
@@ -180,7 +190,12 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
               <DeleteProviderButton
                 providerName={providerName}
                 onDelete={async () => {
-                  await deleteProvider(activeApplicationId, provider.id);
+                  const response = await deleteProvider(activeApplicationId, provider.id);
+                  if (!response.ok) {
+                    addNotification({ message: response.errorMessage, severity: 'error' });
+                    return;
+                  }
+                  addNotification({ message: `Successfully removed ${providerName} provider`, severity: 'success' });
                   const filtered = existingProviders.filter((p) => p.id !== provider.id);
                   await mutate(filtered, {
                     optimisticData: filtered,
@@ -197,6 +212,10 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
               onClick={async () => {
                 setIsSaving(true);
                 const newProvider = await createOrUpdateProvider();
+                if (!newProvider) {
+                  setIsSaving(false);
+                  return;
+                }
                 const latestProviders = [
                   ...existingProviders.filter((provider) => provider.id !== newProvider.id),
                   newProvider,
