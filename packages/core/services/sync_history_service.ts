@@ -106,7 +106,10 @@ export class SyncHistoryService {
           commonModel: string;
         }
       | {
-          rawObject: string;
+          standardObject: string;
+        }
+      | {
+          customObject: string;
         }
     )
   ): Promise<string> {
@@ -123,7 +126,12 @@ export class SyncHistoryService {
       createParams:
         'commonModel' in args
           ? { ...baseParams, model: args.commonModel }
-          : { ...baseParams, rawObject: args.rawObject },
+          : 'standardObject' in args
+          ? { ...baseParams, standardObject: args.standardObject }
+          : {
+              ...baseParams,
+              customObject: args.customObject,
+            },
     });
     return args.historyId;
   }
@@ -142,7 +150,8 @@ export class SyncHistoryService {
           connectionId: { in: connectionIds },
         },
         model: 'model' in args ? args.model : undefined,
-        rawObject: 'rawObject' in args ? args.rawObject : undefined,
+        standardObject: 'standardObject' in args ? args.standardObject : undefined,
+        customObject: 'customObject' in args ? args.customObject : undefined,
       },
       include: {
         sync: {
@@ -162,7 +171,8 @@ export class SyncHistoryService {
           connectionId: { in: connectionIds },
         },
         model: 'model' in args ? args.model : undefined,
-        rawObject: 'rawObject' in args ? args.rawObject : undefined,
+        standardObject: 'standardObject' in args ? args.standardObject : undefined,
+        customObject: 'customObject' in args ? args.customObject : undefined,
       },
     });
 

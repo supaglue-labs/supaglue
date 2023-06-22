@@ -29,7 +29,10 @@ export type SyncWebhookPayload = {
       commonModel: CommonModelType;
     }
   | {
-      rawObject: string;
+      standardObject: string;
+    }
+  | {
+      customObject: string;
     }
 );
 

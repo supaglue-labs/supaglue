@@ -8,7 +8,10 @@ export type LogSyncStartArgs = {
       commonModel: string;
     }
   | {
-      rawObject: string;
+      standardObject: string;
+    }
+  | {
+      customObject: string;
     }
 );
 

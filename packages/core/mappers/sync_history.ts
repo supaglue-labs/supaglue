@@ -25,9 +25,14 @@ export const fromSyncHistoryModelAndSync = (args: SyncHistoryModelExpanded): Syn
     return { ...base, modelName: args.model };
   }
 
-  if (args.rawObject) {
-    return { ...base, rawObject: args.rawObject };
+  if (args.standardObject) {
+    return { ...base, standardObject: args.standardObject };
   }
 
-  throw new Error('SyncHistoryModelExpanded must have either model or rawObject');
+  if (args.customObject) {
+    return { ...base, customObject: args.customObject };
+  }
+
+  // TODO: this should be an error, but we would need to do some DB cleanup
+  return { ...base, modelName: '' };
 };

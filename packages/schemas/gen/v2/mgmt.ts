@@ -520,7 +520,10 @@ export interface components {
       model_name: string;
     }, {
       /** @example account */
-      raw_object: string;
+      standard_object: string;
+    }, {
+      /** @example account */
+      custom_object: string;
     }]>;
     force_sync: {
       /** @example true */

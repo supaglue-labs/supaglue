@@ -21,7 +21,10 @@ export type SyncHistory = {
       modelName: string;
     }
   | {
-      rawObject: string;
+      standardObject: string;
+    }
+  | {
+      customObject: string;
     }
 );
 
@@ -36,7 +39,10 @@ export type SyncHistoryUpsertParams = {
       model: string;
     }
   | {
-      rawObject: string;
+      standardObject: string;
+    }
+  | {
+      customObject: string;
     }
 );
 
@@ -47,6 +53,9 @@ export type SyncHistoryFilter = SyncInfoFilter & {
         model?: string;
       }
     | {
-        rawObject?: string;
+        standardObject?: string;
+      }
+    | {
+        customObject?: string;
       }
   );
