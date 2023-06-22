@@ -308,7 +308,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
                     />
                   )}
                   onChange={(event: any, value: string[]) => {
-                    setStandardObjects(value);
+                    setCustomObjects(value);
                   }}
                 />
               </Stack>
