@@ -180,7 +180,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     }
   }
 
-  public override async writeRawRecords(
+  public override async writeObjectRecords(
     connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,

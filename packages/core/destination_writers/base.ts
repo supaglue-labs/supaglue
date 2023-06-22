@@ -31,7 +31,7 @@ export interface DestinationWriter {
     heartbeat: () => void
   ): Promise<WriteCommonModelRecordsResult>;
 
-  writeRawRecords(
+  writeObjectRecords(
     connection: ConnectionSafeAny,
     object: string,
     stream: Readable,
@@ -62,7 +62,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     heartbeat: () => void
   ): Promise<WriteCommonModelRecordsResult>;
 
-  abstract writeRawRecords(
+  abstract writeObjectRecords(
     connection: ConnectionSafeAny,
     object: string,
     stream: Readable,
