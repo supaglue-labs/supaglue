@@ -359,7 +359,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async listRawStandardObjectRecords(
+  public override async listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
     modifiedAfter?: Date,

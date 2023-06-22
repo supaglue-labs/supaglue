@@ -257,7 +257,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async listRawStandardObjectRecords(
+  public override async listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
     modifiedAfter?: Date,

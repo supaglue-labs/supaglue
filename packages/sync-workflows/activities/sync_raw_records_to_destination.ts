@@ -74,7 +74,7 @@ export function createSyncRawRecordsToDestination(
                 (o) => o.object === object
               )?.fieldMappings;
               const fieldMappingConfig = createFieldMappingConfig(schema, customerFieldMapping);
-              return await (client as CrmRemoteClient).listRawStandardObjectRecords(
+              return await (client as CrmRemoteClient).listStandardObjectRecords(
                 object,
                 fieldMappingConfig,
                 modifiedAfter,

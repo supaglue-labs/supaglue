@@ -118,7 +118,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     return this.#headers;
   }
 
-  public override async listRawStandardObjectRecords(
+  public override async listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
