@@ -39,6 +39,10 @@ export type FullOnlySync = BaseSync & {
 export type SyncType = 'full then incremental' | 'full only';
 export type Sync = FullThenIncrementalSync | FullOnlySync;
 
+export type SyncCreateParams = {
+  schemaMappingsConfig?: SchemaMappingsConfig;
+};
+
 export type SyncUpdateParams = {
   schemaMappingsConfig?: SchemaMappingsConfig | null;
 };

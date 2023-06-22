@@ -123,6 +123,10 @@ export interface paths {
   "/customers/{customer_id}/connections/{connection_id}/sync": {
     /** Get sync */
     get: operations["getSync"];
+    /** Enable sync */
+    post: operations["enableSync"];
+    /** Disable sync */
+    delete: operations["disableSync"];
     /** Update sync */
     patch: operations["updateSync"];
     parameters: {
@@ -902,6 +906,31 @@ export interface operations {
           "application/json": components["schemas"]["sync"];
         };
       };
+    };
+  };
+  enableSync: {
+    /** Enable sync */
+    requestBody: {
+      content: {
+        "application/json": {
+          schema_mappings_config?: components["schemas"]["sync"]["schema_mappings_config"];
+        };
+      };
+    };
+    responses: {
+      /** @description Sync enabled */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync"];
+        };
+      };
+    };
+  };
+  disableSync: {
+    /** Disable sync */
+    responses: {
+      /** @description Sync */
+      204: never;
     };
   };
   updateSync: {

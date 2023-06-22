@@ -1,5 +1,9 @@
 import { getDependencyContainer } from '@/dependency_container';
 import {
+  DisableSyncPathParams,
+  EnableSyncPathParams,
+  EnableSyncRequest,
+  EnableSyncResponse,
   GetSyncPathParams,
   GetSyncRequest,
   GetSyncResponse,
@@ -19,11 +23,26 @@ export default function init(app: Router): void {
   syncRouter.get(
     '/',
     async (req: Request<GetSyncPathParams, GetSyncResponse, GetSyncRequest>, res: Response<GetSyncResponse>) => {
-      throw new Error('Not implemented');
+      const sync = await connectionAndSyncService.getSyncByConnectionId(req.params.connection_id);
+      return res.status(200).send(snakecaseKeys(sync));
     }
   );
 
   // TODO: implement the version for `/:sync_id`
+
+  syncRouter.post(
+    '/',
+    async (
+      req: Request<EnableSyncPathParams, EnableSyncResponse, EnableSyncRequest>,
+      res: Response<EnableSyncResponse>
+    ) => {
+      const sync = await connectionAndSyncService.enableSyncByConnectionId(
+        req.params.connection_id,
+        camelcaseKeys(req.body)
+      );
+      return res.status(200).send(snakecaseKeys(sync));
+    }
+  );
 
   syncRouter.patch(
     '/',
@@ -38,6 +57,11 @@ export default function init(app: Router): void {
       return res.status(200).send(snakecaseKeys(sync));
     }
   );
+
+  syncRouter.delete('/', async (req: Request<DisableSyncPathParams>, res: Response) => {
+    await connectionAndSyncService.disableSyncByConnectionId(req.params.connection_id);
+    return res.status(204).send();
+  });
 
   app.use('/sync', syncRouter);
 }

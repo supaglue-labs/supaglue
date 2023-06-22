@@ -1194,6 +1194,46 @@
           }
         }
       },
+      "post": {
+        "operationId": "enableSync",
+        "summary": "Enable sync",
+        "tags": [
+          "Syncs"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schema_mappings_config": {
+                    "$ref": "#/components/schemas/sync/properties/schema_mappings_config"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sync enabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
       "patch": {
         "operationId": "updateSync",
         "summary": "Update sync",
@@ -1262,6 +1302,23 @@
                 }
               }
             }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "disableSync",
+        "summary": "Disable sync",
+        "tags": [
+          "Syncs"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sync"
           }
         }
       },

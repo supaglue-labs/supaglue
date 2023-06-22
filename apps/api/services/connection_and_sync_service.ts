@@ -1,4 +1,4 @@
-import { NotFoundError } from '@supaglue/core/errors';
+import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
 import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
@@ -17,6 +17,7 @@ import type {
   ProviderName,
   SchemaMappingsConfig,
   Sync,
+  SyncCreateParams,
   SyncIdentifier,
   SyncState,
   SyncType,
@@ -174,6 +175,62 @@ export class ConnectionAndSyncService {
         );
       }
     }
+  }
+
+  public async enableSyncByConnectionId(connectionId: string, params: SyncCreateParams): Promise<Sync> {
+    const connection = await this.#connectionService.getSafeById(connectionId);
+    const syncConfig = await this.#syncConfigService.findByProviderId(connection.providerId);
+
+    if (!syncConfig) {
+      throw new BadRequestError(`No sync config found for provider ${connection.providerName}`);
+    }
+
+    const syncId = uuidv4();
+
+    const [sync] = await this.#prisma.$transaction([
+      this.#prisma.sync.create({
+        data: {
+          id: syncId,
+          connectionId,
+          syncConfigId: syncConfig.id,
+          strategy: {
+            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
+          version: 'v2',
+          schemaMappingsConfig: params.schemaMappingsConfig,
+        },
+      }),
+      this.#prisma.syncChange.create({
+        data: {
+          syncId,
+        },
+      }),
+    ]);
+    return fromSyncModel(sync);
+  }
+
+  public async disableSyncByConnectionId(connectionId: string): Promise<void> {
+    const sync = await this.#prisma.sync.findUniqueOrThrow({
+      where: {
+        connectionId,
+      },
+    });
+
+    await this.#prisma.$transaction([
+      this.#prisma.sync.delete({
+        where: {
+          id: sync.id,
+        },
+      }),
+      this.#prisma.syncChange.create({
+        data: {
+          syncId: sync.id,
+        },
+      }),
+    ]);
   }
 
   public async updateSyncByConnectionId(connectionId: string, params: SyncUpdateParams): Promise<Sync> {
