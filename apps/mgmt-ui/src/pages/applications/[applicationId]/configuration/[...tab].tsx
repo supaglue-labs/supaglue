@@ -31,10 +31,6 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
     value: 'sync_configs',
   },
   {
-    label: '',
-    value: '',
-  },
-  {
     label: 'Webhook',
     value: 'webhook',
   },
