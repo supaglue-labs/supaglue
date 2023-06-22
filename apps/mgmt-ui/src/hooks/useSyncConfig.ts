@@ -1,4 +1,4 @@
-import { CreateSyncConfigRequest, GetSyncConfigResponse } from '@supaglue/schemas/v2/mgmt';
+import { CreateSyncConfigRequest, GetSyncConfigResponse, UpdateSyncConfigRequest } from '@supaglue/schemas/v2/mgmt';
 import { CommonObjectConfig, SyncConfig } from '@supaglue/types';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';
@@ -30,7 +30,20 @@ export const toSyncConfig = (response: GetSyncConfigResponse): SyncConfig => {
   };
 };
 
-export const toCreateSyncConfigRequest = (syncConfig: SyncConfig): CreateSyncConfigRequest => {
+export const toCreateSyncConfigRequest = (syncConfig: Omit<SyncConfig, 'id'>): CreateSyncConfigRequest => {
+  const snakecased = snakecaseKeys(syncConfig);
+  return {
+    ...snakecased,
+    config: {
+      default_config: snakecased.config.default_config,
+      common_objects: snakecased.config.common_objects,
+      standard_objects: snakecased.config.raw_objects,
+      custom_objects: snakecased.config.raw_custom_objects,
+    },
+  };
+};
+
+export const toUpdateSyncConfigRequest = (syncConfig: SyncConfig): UpdateSyncConfigRequest => {
   const snakecased = snakecaseKeys(syncConfig);
   return {
     ...snakecased,

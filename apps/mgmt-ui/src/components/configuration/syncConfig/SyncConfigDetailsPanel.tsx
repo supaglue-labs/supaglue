@@ -123,7 +123,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
       throw new Error('Could not get provider');
     }
     // create path
-    const newSyncConfig: SyncConfig = {
+    const newSyncConfig: Omit<SyncConfig, 'id'> = {
       applicationId: activeApplicationId,
       destinationId,
       providerId,
