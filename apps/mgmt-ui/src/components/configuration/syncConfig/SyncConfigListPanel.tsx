@@ -12,6 +12,7 @@ import { PeopleAltOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Breadcrumbs, IconButton, Stack, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { SyncConfig } from '@supaglue/types';
 import Link from 'next/link';
 import { DeleteSyncConfig } from './DeleteSyncConfig';
 
@@ -91,7 +92,8 @@ export default function SyncConfigListPanel() {
         );
       },
     },
-    { field: 'frequency', headerName: 'Frequency', width: 250 },
+    { field: 'frequency', headerName: 'Frequency', width: 150 },
+    { field: 'objects', headerName: 'Objects', width: 350 },
     {
       field: '_',
       headerName: 'Admin',
@@ -119,7 +121,9 @@ export default function SyncConfigListPanel() {
     provider: syncConfig.providerId,
     destination: syncConfig.destinationId,
     frequency: `every ${millisToHumanReadable(syncConfig.config.defaultConfig.periodMs)}`,
+    objects: getObjectsString(syncConfig),
   }));
+  console.log(`rows: `, rows);
 
   return (
     <div className="flex flex-col gap-4">
@@ -130,7 +134,6 @@ export default function SyncConfigListPanel() {
         <Typography color="text.primary">Syncs</Typography>
       </Breadcrumbs>
       <MetricCard
-        className="max-w-2xl"
         icon={<PeopleAltOutlined />}
         value={
           <Stack direction="row" className="align-center justify-center justify-between">
@@ -143,7 +146,7 @@ export default function SyncConfigListPanel() {
                 className="flex flex-row gap-2 items-center w-full h-full"
                 style={{
                   textDecoration: 'inherit',
-                  color: 'rgba(0, 0, 0, 0.54);',
+                  color: 'rgba(0, 0, 0, 0.54)',
                 }}
               >
                 <AddIcon />
@@ -202,4 +205,23 @@ function millisToHumanReadable(millis: number): string {
   }
 
   return humanReadable;
+}
+
+function getObjectsString(syncConfig: SyncConfig): string {
+  console.log(`syncConfig: `, syncConfig);
+  const objectsList = [];
+  if (syncConfig.config.commonObjects?.length) {
+    objectsList.push(...syncConfig.config.commonObjects.map((object) => object.object));
+  }
+  if (syncConfig.config.standardObjects?.length) {
+    objectsList.push(...syncConfig.config.standardObjects.map((object) => object.object));
+  }
+  if (syncConfig.config.customObjects?.length) {
+    objectsList.push(...syncConfig.config.customObjects.map((object) => object.object));
+  }
+  console.log(`objectsList:`, objectsList);
+  if (objectsList.length > 6) {
+    return `${objectsList.slice(0, 6).join(', ')}...`;
+  }
+  return objectsList.join(', ');
 }
