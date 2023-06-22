@@ -1,12 +1,13 @@
 import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
+import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
-import { ConnectionService, RemoteService } from '@supaglue/core/services';
+import { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
-import { ApplicationService } from '../services';
+import { ApplicationService, SyncService } from '../services';
 
 export type SyncRawRecordsToDestinationArgs = {
   syncId: string;
@@ -28,7 +29,9 @@ export function createSyncRawRecordsToDestination(
   connectionService: ConnectionService,
   remoteService: RemoteService,
   destinationService: DestinationService,
-  applicationService: ApplicationService
+  applicationService: ApplicationService,
+  syncService: SyncService,
+  syncConfigService: SyncConfigService
 ) {
   return async function syncRawRecordsToDestination({
     syncId,
@@ -38,18 +41,6 @@ export function createSyncRawRecordsToDestination(
     modifiedAfterMs,
   }: SyncRawRecordsToDestinationArgs): Promise<SyncRawRecordsToDestinationResult> {
     const modifiedAfter = modifiedAfterMs ? new Date(modifiedAfterMs) : undefined;
-
-    async function writeRecords(writer: DestinationWriter) {
-      // TODO: Have better type-safety
-      if (client.category() === 'crm') {
-        const stream = isCustom
-          ? await (client as CrmRemoteClient).listRawCustomObjectRecords(object, modifiedAfter, heartbeat)
-          : await (client as CrmRemoteClient).listRawStandardObjectRecords(object, modifiedAfter, heartbeat);
-        return await writer.writeRawRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
-      } else {
-        throw ApplicationFailure.nonRetryable(`Unsupported category: ${client.category()}`);
-      }
-    }
 
     const connection = await connectionService.getSafeById(connectionId);
     const application = await applicationService.getById(connection.applicationId);
@@ -62,14 +53,39 @@ export function createSyncRawRecordsToDestination(
       modelName: object,
     });
 
+    // Get writer
     const client = await remoteService.getRemoteClient(connectionId);
-
     const writer = await destinationService.getWriterByProviderId(connection.providerId);
     if (!writer) {
       throw ApplicationFailure.nonRetryable(`No destination found for provider ${connection.providerId}`);
     }
 
-    const result = await writeRecords(writer);
+    const result = await (async function (writer: DestinationWriter) {
+      // TODO: Have better type-safety
+      if (client.category() === 'crm') {
+        const stream = isCustom
+          ? await (client as CrmRemoteClient).listRawCustomObjectRecords(object, modifiedAfter, heartbeat)
+          : await (async function () {
+              // Find schema / field mapping information
+              const sync = await syncService.getSyncById(syncId);
+              const syncConfig = await syncConfigService.getBySyncId(syncId);
+              const schema = syncConfig?.config?.rawObjects?.find((o) => o.object === object)?.schema;
+              const customerFieldMapping = sync.schemaMappingsConfig?.standardObjects?.find(
+                (o) => o.object === object
+              )?.fieldMappings;
+              const fieldMappingConfig = createFieldMappingConfig(schema, customerFieldMapping);
+              return await (client as CrmRemoteClient).listRawStandardObjectRecords(
+                object,
+                fieldMappingConfig,
+                modifiedAfter,
+                heartbeat
+              );
+            })();
+        return await writer.writeRawRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
+      } else {
+        throw ApplicationFailure.nonRetryable(`Unsupported category: ${client.category()}`);
+      }
+    })(writer);
 
     logEvent({
       distinctId: distinctId ?? application.orgId,

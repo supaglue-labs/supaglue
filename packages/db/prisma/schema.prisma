@@ -122,20 +122,21 @@ model Connection {
 }
 
 model Sync {
-  id              String        @id @default(uuid())
-  state           Json
-  forceSyncFlag   Boolean       @default(false) @map("force_sync_flag")
-  strategy        Json
-  connectionId    String        @unique @map("connection_id")
-  connection      Connection    @relation(fields: [connectionId], references: [id])
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
-  version         String        @default("v1")
-  paused          Boolean       @default(false)
-  syncConfigId    String?       @map("sync_config_id")
+  id                   String        @id @default(uuid())
+  state                Json
+  forceSyncFlag        Boolean       @default(false) @map("force_sync_flag")
+  strategy             Json
+  connectionId         String        @unique @map("connection_id")
+  connection           Connection    @relation(fields: [connectionId], references: [id])
+  createdAt            DateTime      @default(now()) @map("created_at")
+  updatedAt            DateTime      @updatedAt @map("updated_at")
+  version              String        @default("v1")
+  paused               Boolean       @default(false)
+  schemaMappingsConfig Json?         @map("schema_mappings_config")
+  syncConfigId         String?       @map("sync_config_id")
   // TODO: Eventually make this required
-  syncConfig      SyncConfig?   @relation(fields: [syncConfigId], references: [id])
-  syncHistoryList SyncHistory[]
+  syncConfig           SyncConfig?   @relation(fields: [syncConfigId], references: [id])
+  syncHistoryList      SyncHistory[]
 
   @@map("syncs")
 }

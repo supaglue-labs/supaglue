@@ -23,7 +23,7 @@ export type SyncStrategyConfig = {
   strategy: SyncType;
   // When this is undefined, we treat it as "true" to be backwards compatible.
   // TODO: When we have time, migrate this to be a required field.
-  startSyncOnConnectionCreation?: boolean;
+  enableSyncOnConnectionCreation?: boolean;
 };
 
 export type CommonObjectConfig = {
@@ -37,17 +37,10 @@ export type RawObjectConfig = {
   schema?: RawObjectSchema;
 };
 
-export type RawObjectInheritedSchema = {
-  type: 'inherited';
-};
-
-export type RawObjectDefinedSchema = {
-  type: 'defined';
+export type RawObjectSchema = {
   fields: RawObjectSchemaField[];
   allowAdditionalFieldMappings: boolean;
 };
-
-export type RawObjectSchema = RawObjectInheritedSchema | RawObjectDefinedSchema;
 
 export type RawObjectSchemaField = {
   name: string; // my_first_column

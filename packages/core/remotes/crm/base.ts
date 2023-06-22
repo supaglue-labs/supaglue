@@ -8,6 +8,7 @@ import {
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
+import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { EventEmitter } from 'events';
 import { Readable } from 'stream';
 import { AbstractRemoteClient, RemoteClient } from '../base';
@@ -15,7 +16,12 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 export interface CrmRemoteClient extends RemoteClient {
   category(): ProviderCategory;
 
-  listRawStandardObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
+  listRawStandardObjectRecords(
+    object: string,
+    fieldMappingConfig: FieldMappingConfig,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable>;
   listRawCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
   listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
@@ -66,6 +72,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
 
   public async listRawStandardObjectRecords(
     object: string,
+    fieldMappingConfig: FieldMappingConfig,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {

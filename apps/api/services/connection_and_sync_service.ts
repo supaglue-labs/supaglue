@@ -1,11 +1,11 @@
-import { NotFoundError } from '@supaglue/core/errors';
+import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
 import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
+import { Prisma, PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
   processSyncChanges,
@@ -13,7 +13,16 @@ import {
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
 import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
-import type { ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
+import type {
+  ProviderName,
+  SchemaMappingsConfig,
+  Sync,
+  SyncCreateParams,
+  SyncIdentifier,
+  SyncState,
+  SyncType,
+  SyncUpdateParams,
+} from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
   ConnectionStatus,
@@ -116,14 +125,19 @@ export class ConnectionAndSyncService {
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         });
-        if (syncConfig) {
+        if (
+          syncConfig &&
+          // TODO: when we migrate enableSyncOnConnectionCreation to be a required field, we can simplify this check
+          (syncConfig.config.defaultConfig.enableSyncOnConnectionCreation === undefined ||
+            syncConfig.config.defaultConfig.enableSyncOnConnectionCreation)
+        ) {
           await tx.sync.create({
             data: {
               id: syncId,
               connectionId,
-              syncConfigId: syncConfig?.id,
+              syncConfigId: syncConfig.id,
               strategy: {
-                type: syncConfig?.config.defaultConfig.strategy ?? 'full then incremental',
+                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
               },
               state: {
                 phase: 'created',
@@ -161,6 +175,74 @@ export class ConnectionAndSyncService {
         );
       }
     }
+  }
+
+  public async enableSyncByConnectionId(connectionId: string, params: SyncCreateParams): Promise<Sync> {
+    const connection = await this.#connectionService.getSafeById(connectionId);
+    const syncConfig = await this.#syncConfigService.findByProviderId(connection.providerId);
+
+    if (!syncConfig) {
+      throw new BadRequestError(`No sync config found for provider ${connection.providerName}`);
+    }
+
+    const syncId = uuidv4();
+
+    const [sync] = await this.#prisma.$transaction([
+      this.#prisma.sync.create({
+        data: {
+          id: syncId,
+          connectionId,
+          syncConfigId: syncConfig.id,
+          strategy: {
+            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
+          version: 'v2',
+          schemaMappingsConfig: params.schemaMappingsConfig,
+        },
+      }),
+      this.#prisma.syncChange.create({
+        data: {
+          syncId,
+        },
+      }),
+    ]);
+    return fromSyncModel(sync);
+  }
+
+  public async disableSyncByConnectionId(connectionId: string): Promise<void> {
+    const sync = await this.#prisma.sync.findUniqueOrThrow({
+      where: {
+        connectionId,
+      },
+    });
+
+    await this.#prisma.$transaction([
+      this.#prisma.sync.delete({
+        where: {
+          id: sync.id,
+        },
+      }),
+      this.#prisma.syncChange.create({
+        data: {
+          syncId: sync.id,
+        },
+      }),
+    ]);
+  }
+
+  public async updateSyncByConnectionId(connectionId: string, params: SyncUpdateParams): Promise<Sync> {
+    const sync = await this.#prisma.sync.update({
+      where: {
+        connectionId,
+      },
+      data: {
+        schemaMappingsConfig: params.schemaMappingsConfig === null ? Prisma.DbNull : params.schemaMappingsConfig,
+      },
+    });
+    return fromSyncModel(sync);
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
@@ -548,5 +630,7 @@ function fromSyncModel(model: SyncModel): Sync {
     version: model.version,
     ...otherStrategyProps,
     state: model.state as SyncState,
+    paused: model.paused,
+    schemaMappingsConfig: model.schemaMappingsConfig as SchemaMappingsConfig | undefined,
   } as Sync;
 }

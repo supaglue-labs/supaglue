@@ -115,6 +115,32 @@ export type DeleteConnectionRequest = never;
 export type DeleteConnectionResponse =
   operations['deleteConnection']['responses'][keyof operations['deleteConnection']['responses']]['content']['application/json'];
 
+export type GetSyncPathParams =
+  paths['/customers/{customer_id}/connections/{connection_id}/sync']['parameters']['path'];
+export type GetSyncRequest = never;
+export type GetSyncResponse =
+  operations['getSync']['responses'][keyof operations['getSync']['responses']]['content']['application/json'];
+
+export type EnableSyncPathParams =
+  paths['/customers/{customer_id}/connections/{connection_id}/sync']['parameters']['path'];
+export type EnableSyncRequest =
+  operations['enableSync']['requestBody'][keyof operations['enableSync']['requestBody']]['application/json'];
+export type EnableSyncResponse =
+  operations['enableSync']['responses'][keyof operations['enableSync']['responses']]['content']['application/json'];
+
+export type UpdateSyncPathParams =
+  paths['/customers/{customer_id}/connections/{connection_id}/sync']['parameters']['path'];
+export type UpdateSyncRequest =
+  operations['updateSync']['requestBody'][keyof operations['updateSync']['requestBody']]['application/json'];
+export type UpdateSyncResponse =
+  operations['updateSync']['responses'][keyof operations['updateSync']['responses']]['content']['application/json'];
+
+export type DisableSyncPathParams =
+  paths['/customers/{customer_id}/connections/{connection_id}/sync']['parameters']['path'];
+export type DisableSyncRequest = never;
+export type DisableSyncResponse =
+  operations['disableSync']['responses'][keyof operations['disableSync']['responses']]['content']['application/json'];
+
 export type CreateWebhookPathParams = never;
 export type CreateWebhookRequest = operations['createWebhook']['requestBody']['content']['application/json'];
 export type CreateWebhookResponse =

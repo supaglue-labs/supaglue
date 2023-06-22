@@ -34,6 +34,8 @@ function fromSyncModel(model: SyncModel): Sync {
     ...otherStrategyProps,
     state: model.state as SyncState,
     forceSyncFlag: model.forceSyncFlag,
+    paused: model.paused,
+    schemaMappingsConfig: model.schemaMappingsConfig,
   } as Sync;
 }
 

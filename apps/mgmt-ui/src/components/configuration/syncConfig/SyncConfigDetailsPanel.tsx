@@ -131,7 +131,7 @@ function SyncConfigDetailsPanelImpl({ syncConfig, isLoading }: SyncConfigDetails
         defaultConfig: {
           periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
           strategy,
-          startSyncOnConnectionCreation: true,
+          enableSyncOnConnectionCreation: true,
         },
         commonObjects: commonObjects.map((object) => ({ object, fetchAllFieldsIntoRaw: true } as CommonObjectConfig)),
         rawObjects: standardObjects.map((object) => ({ object })),

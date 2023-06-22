@@ -47,6 +47,8 @@ paths:
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/{connection_id}':
     $ref: paths/connections@{connection_id}.yaml
+  '/customers/{customer_id}/connections/{connection_id}/sync':
+    $ref: paths/connections@{connection_id}@sync.yaml
   '/webhook':
     $ref: paths/webhook.yaml
   '/sync-history':
@@ -93,6 +95,8 @@ components:
       $ref: ./components/schemas/objects/provider_name_crm.yaml
     provider_name_engagement:
       $ref: ./components/schemas/objects/provider_name_engagement.yaml
+    sync:
+      $ref: ./components/schemas/objects/sync.yaml
     create_update_customer:
       $ref: ./components/schemas/create_update_customer.yaml
     create_provider:

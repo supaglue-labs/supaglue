@@ -8,18 +8,22 @@ type BaseSync = {
   syncConfigId?: string;
   forceSyncFlag: boolean; // flag: whether to transition a sync to the phase "created"
   version: 'v1' | 'v2';
-  // If this is undefined, we treat it as "false" to be backwards compatible.
-  // TODO: This should be required
-  paused?: boolean;
-  schemaMappingsConfig?: {
-    standardObjects?: {
-      object: string;
-      fieldMappings: {
-        schemaField: string; // my_first_column
-        mappedField: string; // blah_1
-      }[];
-    }[];
-  };
+  paused: boolean;
+  schemaMappingsConfig?: SchemaMappingsConfig;
+};
+
+export type SchemaMappingsConfig = {
+  standardObjects?: SchemaMappingsConfigStandardObject[];
+};
+
+export type SchemaMappingsConfigStandardObject = {
+  object: string;
+  fieldMappings: SchemaMappingsConfigStandardObjectFieldMapping[];
+};
+
+export type SchemaMappingsConfigStandardObjectFieldMapping = {
+  schemaField: string; // my_first_column
+  mappedField: string; // blah_1
 };
 
 export type FullThenIncrementalSync = BaseSync & {
@@ -34,6 +38,14 @@ export type FullOnlySync = BaseSync & {
 
 export type SyncType = 'full then incremental' | 'full only';
 export type Sync = FullThenIncrementalSync | FullOnlySync;
+
+export type SyncCreateParams = {
+  schemaMappingsConfig?: SchemaMappingsConfig;
+};
+
+export type SyncUpdateParams = {
+  schemaMappingsConfig?: SchemaMappingsConfig | null;
+};
 
 export type CRMNumCommonRecordsSyncedMap = {
   [K in CRMCommonModelType]?: number;
