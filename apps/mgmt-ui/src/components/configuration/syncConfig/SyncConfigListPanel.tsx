@@ -38,8 +38,7 @@ export default function SyncConfigListPanel() {
             href={`/applications/${applicationId}/configuration/sync_configs/${params.id}`}
             className="flex flex-row gap-2 items-center w-full h-full"
             style={{
-              color: 'inherit',
-              textDecoration: 'inherit',
+              textDecoration: 'none',
             }}
           >
             {params.id}
