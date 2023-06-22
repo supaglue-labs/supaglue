@@ -120,6 +120,18 @@ export interface paths {
       };
     };
   };
+  "/customers/{customer_id}/connections/{connection_id}/sync": {
+    /** Get sync */
+    get: operations["getSync"];
+    /** Update sync */
+    patch: operations["updateSync"];
+    parameters: {
+      path: {
+        customer_id: string;
+        connection_id: string;
+      };
+    };
+  };
   "/webhook": {
     /**
      * Get webhook 
@@ -306,7 +318,7 @@ export interface components {
             allow_additional_field_mappings: boolean;
           }, {
             /** @enum {string} */
-            type: "inherited";
+            type: "inherit_all_fields";
           }]>;
         })[];
       custom_objects?: ({
@@ -392,6 +404,27 @@ export interface components {
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
     provider_name_engagement: "outreach";
+    sync: {
+      /** @example 7a34a7bb-193a-4cca-ac16-63ef739995e1 */
+      id: string;
+      /** @example 0a292508-d254-4929-98d3-dc23416efff8 */
+      connection_id: string;
+      /** @example ee2b63fa-edec-4875-b2f5-921d3b13ca83 */
+      sync_config_id?: string;
+      /** @example false */
+      force_sync_flag: boolean;
+      /** @example false */
+      paused: boolean;
+      schema_mappings_config?: {
+        standard_objects?: ({
+            object: string;
+            field_mappings: ({
+                schema_field: string;
+                mapped_field: string;
+              })[];
+          })[];
+      };
+    };
     create_update_customer: {
       /** @example your-customers-unique-application-id */
       customer_id: string;
@@ -863,6 +896,43 @@ export interface operations {
     responses: {
       /** @description Connection */
       204: never;
+    };
+  };
+  getSync: {
+    /** Get sync */
+    responses: {
+      /** @description Sync */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync"];
+        };
+      };
+    };
+  };
+  updateSync: {
+    /** Update sync */
+    requestBody: {
+      content: {
+        "application/json": {
+          schema_mappings_config?: {
+            standard_objects?: ({
+                object: string;
+                field_mappings: ({
+                    schema_field: string;
+                    mapped_field: string;
+                  })[];
+              })[];
+          } | null;
+        };
+      };
+    };
+    responses: {
+      /** @description Sync */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync"];
+        };
+      };
     };
   };
   getWebhook: {

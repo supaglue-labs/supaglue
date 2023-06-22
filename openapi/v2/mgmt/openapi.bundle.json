@@ -1169,6 +1169,123 @@
         }
       ]
     },
+    "/customers/{customer_id}/connections/{connection_id}/sync": {
+      "get": {
+        "operationId": "getSync",
+        "summary": "Get sync",
+        "tags": [
+          "Syncs"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateSync",
+        "summary": "Update sync",
+        "tags": [
+          "Syncs"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schema_mappings_config": {
+                    "type": "object",
+                    "properties": {
+                      "standard_objects": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "object": {
+                              "type": "string"
+                            },
+                            "field_mappings": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "schema_field": {
+                                    "type": "string"
+                                  },
+                                  "mapped_field": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "schema_field",
+                                  "mapped_field"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "object",
+                            "field_mappings"
+                          ]
+                        }
+                      }
+                    },
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sync",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        },
+        {
+          "name": "connection_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/webhook": {
       "get": {
         "operationId": "getWebhook",
@@ -2021,7 +2138,7 @@
                         "type": {
                           "type": "string",
                           "enum": [
-                            "inherited"
+                            "inherit_all_fields"
                           ]
                         }
                       },
@@ -2226,6 +2343,75 @@
         "type": "string",
         "enum": [
           "outreach"
+        ]
+      },
+      "sync": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "7a34a7bb-193a-4cca-ac16-63ef739995e1"
+          },
+          "connection_id": {
+            "type": "string",
+            "example": "0a292508-d254-4929-98d3-dc23416efff8"
+          },
+          "sync_config_id": {
+            "type": "string",
+            "example": "ee2b63fa-edec-4875-b2f5-921d3b13ca83"
+          },
+          "force_sync_flag": {
+            "type": "boolean",
+            "example": false
+          },
+          "paused": {
+            "type": "boolean",
+            "example": false
+          },
+          "schema_mappings_config": {
+            "type": "object",
+            "properties": {
+              "standard_objects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string"
+                    },
+                    "field_mappings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "schema_field": {
+                            "type": "string"
+                          },
+                          "mapped_field": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "schema_field",
+                          "mapped_field"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "field_mappings"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "connection_id",
+          "force_sync_flag",
+          "paused"
         ]
       },
       "create_update_customer": {

@@ -68,7 +68,7 @@ properties:
                 type:
                   type: string
                   enum:
-                    - inherited
+                    - inherit_all_fields
               required:
                 - type
       required:

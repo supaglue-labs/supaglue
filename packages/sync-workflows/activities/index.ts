@@ -56,7 +56,9 @@ export const createActivities = ({
       connectionService,
       remoteService,
       destinationService,
-      applicationService
+      applicationService,
+      syncService,
+      syncConfigService
     ),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
     logSyncFinish: createLogSyncFinish({ syncHistoryService, applicationService, connectionService }),

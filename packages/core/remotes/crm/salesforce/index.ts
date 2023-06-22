@@ -27,6 +27,7 @@ import {
   SendPassthroughRequestResponse,
   SyncConfig,
 } from '@supaglue/types';
+import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
@@ -258,6 +259,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override async listRawStandardObjectRecords(
     object: string,
+    fieldMappingConfig: FieldMappingConfig,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {

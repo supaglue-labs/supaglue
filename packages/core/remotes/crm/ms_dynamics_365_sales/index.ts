@@ -12,6 +12,7 @@ import {
   Opportunity,
   User,
 } from '@supaglue/types/crm';
+import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { o, OHandler } from 'odata';
 import { plural } from 'pluralize';
 import querystring from 'querystring';
@@ -119,6 +120,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   public override async listRawStandardObjectRecords(
     object: string,
+    fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {

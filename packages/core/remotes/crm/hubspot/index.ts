@@ -49,6 +49,7 @@ import {
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
+import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import retry from 'async-retry';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -360,11 +361,15 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async listRawStandardObjectRecords(
     object: string,
+    fieldMappingConfig: FieldMappingConfig,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
     const standardObjectType = toStandardObjectType(object);
-    const propertiesToFetch = await this.getObjectTypeProperties(standardObjectType);
+    const propertiesToFetch =
+      fieldMappingConfig.type === 'inherit_all_fields'
+        ? await this.getObjectTypeProperties(standardObjectType)
+        : fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField);
     const associatedStandardObjectTypes = hubspotStandardObjectTypeToAssociatedStandardObjectTypes[standardObjectType];
 
     const normalPageFetcher = await this.#getListRecordsFetcher(
@@ -385,10 +390,39 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       modifiedAfter
     );
 
+    // Create map from mappedField -> schemaField
+    const mappedFieldToSchemaField =
+      fieldMappingConfig.type === 'inherit_all_fields'
+        ? null
+        : fieldMappingConfig.fieldMappings.reduce<Record<string, string>>((acc, fieldMapping) => {
+            acc[fieldMapping.mappedField] = fieldMapping.schemaField;
+            return acc;
+          }, {});
+    function toMappedRecords(
+      records: NormalizedRawRecord<RecordWithFlattenedAssociations>[]
+    ): NormalizedRawRecord<RecordWithFlattenedAssociations>[] {
+      if (!mappedFieldToSchemaField) {
+        return records;
+      }
+
+      return records.map((record) => ({
+        ...record,
+        rawData: {
+          ...record.rawData,
+          properties: Object.fromEntries(
+            Object.entries(record.rawData.properties).map(([mappedField, value]) => [
+              mappedFieldToSchemaField[mappedField] ?? mappedField, // hubspot will return `id` even if not asked for
+              value,
+            ])
+          ),
+        },
+      }));
+    }
+
     const normalFetcherAndHandler = {
       pageFetcher: normalPageFetcher,
       createStreamFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
-        Readable.from(response.results),
+        Readable.from(toMappedRecords(response.results)),
       getNextCursorFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
         response.paging?.next?.after,
     };
@@ -402,7 +436,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       normalFetcherAndHandler,
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results),
+        createStreamFromPage: (response) => Readable.from(toMappedRecords(response.results)),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);

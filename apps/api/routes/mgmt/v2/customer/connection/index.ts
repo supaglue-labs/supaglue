@@ -13,6 +13,7 @@ import {
 } from '@supaglue/schemas/v2/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
+import sync from './sync';
 
 const { connectionService, connectionAndSyncService } = getDependencyContainer();
 
@@ -60,4 +61,9 @@ export default function init(app: Router): void {
   );
 
   app.use('/connections', connectionRouter);
+
+  const perConnectionRouter = Router({ mergeParams: true });
+
+  sync(perConnectionRouter);
+  connectionRouter.use('/:connection_id', perConnectionRouter);
 }
