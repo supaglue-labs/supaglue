@@ -11,7 +11,7 @@ import {
 } from '@supaglue/types';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteRawRecordsResult } from './base';
+import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteObjectRecordsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 const CHUNK_SIZE = 1000;
@@ -185,7 +185,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     object: string,
     inputStream: Readable,
     heartbeat: () => void
-  ): Promise<WriteRawRecordsResult> {
+  ): Promise<WriteObjectRecordsResult> {
     await this.dropExistingRawRecordsIfNecessary(
       connection.applicationId,
       object,

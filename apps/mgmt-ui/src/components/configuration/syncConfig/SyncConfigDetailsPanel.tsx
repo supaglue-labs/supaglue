@@ -146,6 +146,11 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   };
 
   const selectedProvider = providers.find((p) => p.id === providerId);
+  const selectedDestination = destinations?.find((d) => d.id === destinationId);
+  const supportedStandardDestinations = ['postgres'];
+  const supportedCustomDestinations = ['postgres'];
+  const supportedStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
+  const supportedCustomObjects = ['hubspot', 'ms_dynamics_365_sales'];
 
   return (
     <div className="flex flex-col gap-4">
@@ -247,6 +252,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               <Stack className="gap-2">
                 <Typography variant="subtitle1">Standard objects</Typography>
                 <Autocomplete
+                  disabled={
+                    !supportedStandardObjects.includes(String(selectedProvider?.name)) ||
+                    !supportedStandardDestinations.includes(String(selectedDestination?.type))
+                  }
                   size="small"
                   key={providerId}
                   multiple
@@ -274,6 +283,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               <Stack className="gap-2">
                 <Typography variant="subtitle1">Custom objects</Typography>
                 <Autocomplete
+                  disabled={
+                    !supportedCustomObjects.includes(String(selectedProvider?.name)) ||
+                    !supportedCustomDestinations.includes(String(selectedDestination?.type))
+                  }
                   size="small"
                   key={providerId}
                   multiple

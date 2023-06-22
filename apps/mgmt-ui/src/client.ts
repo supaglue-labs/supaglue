@@ -275,7 +275,7 @@ export async function createCustomer(
 }
 
 export async function deleteCustomer(applicationId: string, customerId: string): Promise<ClientEmptyResponse> {
-  const result = await fetch(`/api/internal/customers/${customerId}`, {
+  const result = await fetch(`/api/internal/customers/${encodeURIComponent(customerId)}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -290,7 +290,7 @@ export async function deleteConnection(
   customerId: string,
   connectionId: string
 ): Promise<ClientEmptyResponse> {
-  const result = await fetch(`/api/internal/customers/${customerId}/connections/${connectionId}`, {
+  const result = await fetch(`/api/internal/customers/${encodeURIComponent(customerId)}/connections/${connectionId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
