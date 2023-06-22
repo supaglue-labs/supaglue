@@ -195,6 +195,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
                     addNotification({ message: response.errorMessage, severity: 'error' });
                     return;
                   }
+                  addNotification({ message: `Successfully removed ${providerName} provider`, severity: 'success' });
                   const filtered = existingProviders.filter((p) => p.id !== provider.id);
                   await mutate(filtered, {
                     optimisticData: filtered,

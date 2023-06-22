@@ -29,17 +29,20 @@ export type ClientSuccessResponse<T> = {
 export type ClientResponse<T> = ClientErrorResponse | ClientSuccessResponse<T>;
 
 async function toClientResponse<T>(response: Response): Promise<ClientResponse<T>> {
-  const { ok } = response;
-  const { status } = response;
+  const { ok, status } = response;
   const data = await response.json();
   if (!ok) {
     return {
       ok,
       status,
-      errorMessage: data.errors.title ?? 'Encountered an error.',
+      errorMessage: getErrorMessage(data) ?? 'Encountered an error.',
     };
   }
   return { ok: true, status, data };
+}
+
+function getErrorMessage(data: any): string {
+  return data.errors?.map((error: any) => error.title).join('\n');
 }
 
 export async function createRemoteApiKey(applicationId: string): Promise<ClientResponse<{ api_key: string }>> {

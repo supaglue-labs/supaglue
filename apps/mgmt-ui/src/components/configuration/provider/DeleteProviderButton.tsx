@@ -41,7 +41,6 @@ export function DeleteProviderButton({ providerName, onDelete }: DeleteProviderB
             color="error"
             onClick={() => {
               onDelete();
-              addNotification({ message: `Successfully removed ${providerName} provider`, severity: 'success' });
               handleClose();
             }}
           >
