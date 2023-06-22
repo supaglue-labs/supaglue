@@ -78,67 +78,80 @@ The first sync will sync all historical data, irrespective of the sync strategy 
   "id": 1,
   "name": "my salesforce sync",
   "destination_id": 1,
-  "provider_id": 2
-  "config": {
+  "provider_id": 2,
+  "default_config": {
     "period_ms": 3600,
     "strategy": "full refresh",
+    "enable_sync_on_connection_creation": true
   },
-  "objects": [{
-      "object": "Contact",
-      "supaglue_common_schema": false,  // default: true
-      "raw_fields": false,               // default: true
-      "custom_schema": {                 // optional: developer-defined schema for customers to map
-        "version": 1,
-        "fields": ["FirstName", "LastName"]
-      }
-    }, {
-      "object": "Account",
-      "supaglue_common_schema": false,
-      "raw_fields": false,
-      "custom_schema": {
-        "version": 1,
-        "fields": ["Name", "Description"]
-      }
-    }, {
+  "common_objects": [
+    {
+      "object": "contact",
+      "fetch_all_fields_into_raw": false
+    },
+    {
+      "object": "account",
+      "fetch_all_fields_into_raw": true
+    },
+  ],
+  "standard_objects": [
+    {
       "object": "Opportunity",
-      "custom_schema": {
-        "version": 1,
-        "fields": ["Name", "Amount", "CloseDate"]
+      "schema": {
+        "fields": [
+          {
+            "name": "the_description",
+            "mapped_name": "Description"
+          },
+          {
+            "name": "revenue",
+          }
+        ],
+        "allow_additional_field_mappings": false
       }
-    }, {
-      "object": "EmailMessage" // default: writes supaglue's common schema (if available) and all raw fields
-    }, {
-      "object": "EmailTemplate"
-    }, {
-      "object": "Employee"
-    }]
-  }
+    },
+  ],
+  "custom_objects": [
+    {
+      "object": "MyCustomObject__c"
+    },
+  ]
 }
 ```
 
 ### Customer-specific field mappings
 
-Sometimes, your customers may store data in non-standard fields (e.g. custom fields). Supaglue allows you optionally specify a `custom_schema` object in the sync configuration that each of your customers can map their source schema to:
+Sometimes, your customers may store data in non-standard fields (e.g. custom fields). Supaglue allows you optionally specify a `schema` object in the sync configuration that each of your customers can map their source schema to:
 
 ```json
 ...
 
-"custom_schema": {
-  "version": 1,
-  "fields": ["Revenue"]
+"schema": {
+  "fields": [
+    {
+      "name": "the_description",
+      "mapped_name": "Description"
+    },
+    {
+      "name": "revenue",
+    }
+  ],
+  "allow_additional_field_mappings": false
 }
 ...
 ```
 
-In this example, you want to sync revenue for each of your customers. Each of your customers can then map the appropriate revenue field to your "Revenue" field. At runtime, Supaglue will apply each customer's mapping and land the appropriate data into the revenue column in your destination.
-
+In this example, you want to map your customer's `Description` field to `the_description`, and you also want to map one of your customer's custom field to `revenue`. Each of your customers can then map the appropriate revenue field to your `revenue` field. At runtime, Supaglue will apply each customer's mapping and land the appropriate data into the `revenue` column in your destination.
 
 ## Destination schema
 
+### Common objects
+
 The destination schema consists of the following components:
+
 * **Supaglue metadata fields**: these specify the application, customer, provider, and timestamps associated with the managed sync.
 * **Common model fields**: when `supaglue_common_schema: true` is set in the sync configuration, the common model fields associated with the synced object and the connector category are returned.
-* **Raw data**: when `raw_fields: true` is set in the sync configuration, the raw source data is returned in a JSON blob.
+* **Raw data**: the raw source data is returned in a JSON blob.
 
 This is an example of a destination schema associated with a managed sync for a CRM Contact object:
 
@@ -148,6 +161,7 @@ This is an example of a destination schema associated with a managed sync for a 
 | _supaglue_customer_id    | String    |
 | _supaglue_provider_name  | String    |
 | _supaglue_emitted_at     | Timestamp |
+| _supaglue_is_deleted     | Boolean   |
 | account_id               | String    |
 | addresses                | json      |
 | created_at               | Timestamp |
@@ -163,6 +177,24 @@ This is an example of a destination schema associated with a managed sync for a 
 | phone_numbers            | json      |
 | raw_data                 | json      |
 | updated_at               | Timestamp |
+
+### Standard and Custom Objects
+
+The destination schema consists of the following components:
+
+* **Supaglue metadata fields**: these specify the application, customer, provider, and timestamps associated with the managed sync.
+* **Raw data**: the raw source data is returned in a JSON blob.
+
+This is an example of a destination schema associated with a managed sync for a CRM Contact object:
+
+| Field Name               | Data Type |
+| ------------------------ | --------- |
+| _supaglue_application_id | String    |
+| _supaglue_customer_id    | String    |
+| _supaglue_provider_name  | String    |
+| _supaglue_emitted_at     | Timestamp |
+| _supaglue_is_deleted     | Boolean   |
+| _supaglue_raw_data       | json      |
 
 ## Notification webhooks
 
