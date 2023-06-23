@@ -11,7 +11,10 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/sync.yaml
+            type: object
+            properties:
+              sync:
+                $ref: ../components/schemas/objects/sync.yaml
 post:
   operationId: enableSync
   summary: Enable sync

@@ -1187,7 +1187,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/sync"
+                  "type": "object",
+                  "properties": {
+                    "sync": {
+                      "$ref": "#/components/schemas/sync"
+                    }
+                  }
                 }
               }
             }
@@ -2024,13 +2029,14 @@
                   "full only"
                 ]
               },
-              "start_sync_on_connection_creation": {
+              "enable_sync_on_connection_creation": {
                 "type": "boolean"
               }
             },
             "required": [
               "period_ms",
-              "strategy"
+              "strategy",
+              "enable_sync_on_connection_creation"
             ]
           },
           "common_objects": {
