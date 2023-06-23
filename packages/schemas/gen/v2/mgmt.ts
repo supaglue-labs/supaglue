@@ -892,7 +892,9 @@ export interface operations {
       /** @description Sync */
       200: {
         content: {
-          "application/json": components["schemas"]["sync"];
+          "application/json": {
+            sync?: components["schemas"]["sync"];
+          };
         };
       };
     };

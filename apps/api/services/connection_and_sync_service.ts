@@ -515,6 +515,15 @@ export class ConnectionAndSyncService {
     return fromSyncModel(model);
   }
 
+  public async getSyncIfExistByConnectionId(connectionId: string): Promise<Sync | null> {
+    const model = await this.#prisma.sync.findUnique({
+      where: {
+        connectionId,
+      },
+    });
+    return model ? fromSyncModel(model) : null;
+  }
+
   public async getSyncsByConnectionIds(connectionIds: string[]): Promise<Sync[]> {
     const models = await this.#prisma.sync.findMany({
       where: {
