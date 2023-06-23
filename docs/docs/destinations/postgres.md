@@ -28,7 +28,7 @@ Note that the postgres user will need write access to the schema you choose.
 
 ![postgres-config](/img/postgres_form.png)
 
-We recommend creating a separate Supaglue role, user, and schema:
+We recommend creating a separate Postgres role, user, and schema for Supaglue. Using the new Postgres user to run the following:
 
 ```sql
 create schema supaglue;
@@ -41,6 +41,10 @@ alter default privileges in schema supaglue grant all privileges on tables to su
 grant supaglue_role to supaglue_user;
 
 ```
+
+## Schema Evolution
+
+Supaglue may evolve the destination table schemas from time-to-time. To evolve schemas, drop your destination tables and Supaglue will recreate the tables with the new schemas. Please reach out to ([support@supaglue.com](mailto:support@supaglue.com)) if you need support for backwards-compatible strategies.
 
 ## IP Whitelist
 
