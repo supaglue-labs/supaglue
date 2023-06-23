@@ -11,7 +11,15 @@ import ThemedImage from '@theme/ThemedImage';
 
 This guide will show you how to integrate Supaglue with your application in less than 10 minutes. By the end, you will have synced data from a sample customer's CRM to your Postgres database and queried it.
 
-<iframe width="640" height="356" src="https://www.loom.com/embed/579b97dc576b4aa3bcd69b0cfa50d613?sid=2417ae3a-4fe1-43a4-b84d-8067216fabaf&hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<iframe
+  width="640"
+  height="356"
+  src="https://www.loom.com/embed/579b97dc576b4aa3bcd69b0cfa50d613?sid=2417ae3a-4fe1-43a4-b84d-8067216fabaf&hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
+  frameborder="0"
+  webkitallowfullscreen
+  mozallowfullscreen
+  allowfullscreen
+></iframe>
 
 ## 1. Create your Supaglue account
 
@@ -58,10 +66,11 @@ Supaglue-hosted providers are only available for HubSpot and Salesforce at this 
 
 Navigate to the "Destinations" tab to configure where you'll sync your customers' CRM data. Select Postgres.
 
-Fill out the connection form and run the following grants:
+Fill out the connection form and run the following grants (using a user you've created for Supaglue):
 
-```
+```sql
 create schema supaglue;
+
 create role supaglue_role;
 grant connect on database <your db name> to supaglue_role;
 grant all privileges on schema supaglue to supaglue_role;
@@ -69,10 +78,6 @@ grant all privileges on all tables in schema supaglue to supaglue_role;
 alter default privileges in schema supaglue grant all privileges on tables to supaglue_role;
 grant supaglue_role to supaglue_user;
 ```
-
-:::info
-Note: your Postgres schema should be read-only. We recommend creating a separate Supaglue role, user, and schema:
-:::
 
 <BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/destinations/postgres">
 
