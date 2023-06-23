@@ -16,11 +16,10 @@ Supaglue interfaces with the Pipedrive V1 API.
 | Auth                           | Yes       |
 | Managed syncs (common objects) | Yes       |
 | Point reads                    | Yes       |
-| Creates                        | Yes       |
-| Updates                        | Yes       |
+| Action API (common objects)    | Yes       |
 | Real-time events               | No        |
 
-Supported object types:
+Supported common object types:
 
 - Account
 - Contact
