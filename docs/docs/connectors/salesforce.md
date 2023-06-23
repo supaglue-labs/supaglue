@@ -11,14 +11,14 @@ description: ''
 
 Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 
-| Feature                                          | Available |
-| ------------------------------------------------ | --------- |
-| Auth                                             | Yes       |
-| Managed syncs (common, standard objects)         | Yes       |
-| Managed syncs: incremental deletes               | Yes       |
-| Point reads                                      | Yes       |
-| Action API (common objects)                      | Yes       |
-| Real-time events                                 | Yes       |
+| Feature                                                  | Available |
+| -------------------------------------------------------- | --------- |
+| Auth                                                     | Yes       |
+| Managed syncs (common, standard objects, custom objects) | Yes       |
+| Managed syncs: incremental deletes                       | Yes       |
+| Point reads                                              | Yes       |
+| Action API (common objects)                              | Yes       |
+| Real-time events                                         | Yes       |
 
 Supported common object types:
 

@@ -66,7 +66,6 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
   // What are we syncing?
   const { syncConfig } = await getSyncConfigBySyncId({ syncId });
   const { commonObjects = [], standardObjects = [], customObjects = [] } = syncConfig.config;
-  const objects = [...standardObjects, ...customObjects];
 
   // What is the sync type?
   const { sync } = await getSync({ syncId });

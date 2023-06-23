@@ -150,7 +150,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const supportedStandardDestinations = ['postgres'];
   const supportedCustomDestinations = ['postgres'];
   const supportedStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
-  const supportedCustomObjects = ['hubspot'];
+  const supportedCustomObjects = ['hubspot', 'salesforce'];
 
   return (
     <div className="flex flex-col gap-4">
