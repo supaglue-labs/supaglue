@@ -43,7 +43,6 @@ if [ "${WORKSPACE_NAME}" == "mgmt-ui" ]; then
       mv "${WORKSPACE_PATH}/.env.user-bak" "${WORKSPACE_PATH}/.env"
       echo "Restored your previous apps/mgmt-ui/.env"
     fi
-    exit 1
   }
 
   trap clean_up EXIT
