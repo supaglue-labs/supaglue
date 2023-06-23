@@ -68,22 +68,20 @@ const config = {
       {
         // Plugin Options for loading OpenAPI files
         specs: [
-          ...versions.flatMap((version) =>
-            [
-              {
-                spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
-                route: `/${version}/api/v2/crm`,
-              },
-              {
-                spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
-                route: `/${version}/api/v2/engagement`,
-              },
-              {
-                spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
-                route: `/${version}/api/v2/mgmt`,
-              },
-            ].filter((obj) => !!obj)
-          ),
+          ...versions.flatMap((version) => [
+            {
+              spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
+              route: `/${version}/api/v2/crm`,
+            },
+            {
+              spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
+              route: `/${version}/api/v2/engagement`,
+            },
+            {
+              spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
+              route: `/${version}/api/v2/mgmt`,
+            },
+          ]),
           {
             spec: '../openapi/v2/crm/openapi.bundle.json',
             route: '/api/v2/crm',

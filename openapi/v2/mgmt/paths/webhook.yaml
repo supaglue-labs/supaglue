@@ -1,7 +1,7 @@
 get:
   operationId: getWebhook
   tags:
-    - Webhook
+    - Webhooks
   summary: Get webhook
   description: >-
     Get webhook details
@@ -26,7 +26,7 @@ post:
   operationId: createWebhook
   summary: Create webhook
   tags:
-    - Webhook
+    - Webhooks
   parameters: []
   requestBody:
     required: true
@@ -47,7 +47,7 @@ delete:
   operationId: deleteWebhook
   summary: Delete webhook
   tags:
-    - Webhook
+    - Webhooks
   parameters: []
   security:
     - ApiKeyAuth: []

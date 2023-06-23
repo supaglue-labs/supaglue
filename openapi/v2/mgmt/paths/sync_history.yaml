@@ -1,7 +1,7 @@
 get:
   operationId: getSyncHistory
   tags:
-    - Sync
+    - Sync Runs
   security:
     - ApiKeyAuth: []
   summary: Get Sync History
