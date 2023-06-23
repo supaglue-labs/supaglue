@@ -2,7 +2,7 @@ post:
   operationId: webhook
   summary: Webhook
   tags:
-    - Webhook
+    - Webhooks
   requestBody:
     content:
       application/json:

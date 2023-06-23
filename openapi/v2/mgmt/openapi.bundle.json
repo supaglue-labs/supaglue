@@ -1352,7 +1352,7 @@
       "get": {
         "operationId": "getWebhook",
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
         "summary": "Get webhook",
         "description": "Get webhook details",
@@ -1389,7 +1389,7 @@
         "operationId": "createWebhook",
         "summary": "Create webhook",
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
         "parameters": [],
         "requestBody": {
@@ -1424,7 +1424,7 @@
         "operationId": "deleteWebhook",
         "summary": "Delete webhook",
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
         "parameters": [],
         "security": [
@@ -1443,7 +1443,7 @@
       "get": {
         "operationId": "getSyncHistory",
         "tags": [
-          "Sync"
+          "Sync Runs"
         ],
         "security": [
           {
@@ -1580,7 +1580,7 @@
       "get": {
         "operationId": "getSyncInfos",
         "tags": [
-          "Sync"
+          "Sync Runs"
         ],
         "security": [
           {
@@ -1658,7 +1658,7 @@
       "post": {
         "operationId": "createForceSync",
         "tags": [
-          "Sync"
+          "Syncs"
         ],
         "security": [
           {
@@ -1711,7 +1711,40 @@
       }
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "name": "Customers",
+      "description": "A `Customer` represents one of your customers."
+    },
+    {
+      "name": "Connections",
+      "description": "A `Connection` represents a Customer's connection to a Provider."
+    },
+    {
+      "name": "Destinations",
+      "description": "A `Destination` is a place where to which data can be written."
+    },
+    {
+      "name": "Providers",
+      "description": "A `Provider` is a CRM or other system that we can connect to."
+    },
+    {
+      "name": "SyncConfigs",
+      "description": "A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule."
+    },
+    {
+      "name": "Syncs",
+      "description": "A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule."
+    },
+    {
+      "name": "Sync Runs",
+      "description": "A `Sync Run` is a single execution of a Sync at a point in time."
+    },
+    {
+      "name": "Webhooks",
+      "description": "A `Webhook` is a way for Supaglue to notify you when events have happened."
+    }
+  ],
   "components": {
     "securitySchemes": {
       "ApiKeyAuth": {
@@ -2973,7 +3006,7 @@
         "operationId": "webhook",
         "summary": "Webhook",
         "tags": [
-          "Webhook"
+          "Webhooks"
         ],
         "requestBody": {
           "content": {

@@ -1,7 +1,7 @@
 get:
   operationId: getSyncInfos
   tags:
-    - Sync
+    - Sync Runs
   security:
     - ApiKeyAuth: []
   summary: Get Sync Info

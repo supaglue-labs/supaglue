@@ -1,7 +1,7 @@
 post:
   operationId: createForceSync
   tags:
-    - Sync
+    - Syncs
   security:
     - ApiKeyAuth: []
   summary: Force a full sync
