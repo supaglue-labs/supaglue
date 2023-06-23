@@ -577,9 +577,10 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' 
   "name" TEXT,
   "email" TEXT,
   "is_active" BOOLEAN,
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  -- Duplicates can exist for Users (e.g. Hubspot)
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
   },
   engagement: {
