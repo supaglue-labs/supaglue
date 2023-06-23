@@ -16,11 +16,10 @@ Supaglue uses the Salesloft v2 API.
 | Auth                       | Yes       |
 | Managed syncs              | Yes       |
 | Point reads                | Yes       |
-| Creates                    | Yes       |
-| Updates                    | Yes       |
+| Action API                 | Yes       |
 | Real-time events           | No        |
 
-Supported object types:
+Supported common object types:
 
 - Users
 - Accounts

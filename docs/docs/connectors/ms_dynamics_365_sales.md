@@ -15,9 +15,9 @@ Supaglue interfaces with the Microsoft Dynamics 365 V9 API.
 | ---------------------------------------- | --------- |
 | Auth                                     | Yes       |
 | Managed syncs (common, standard objects) | Yes       |
+| Managed syncs: incremental deletes       | Yes       |
 | Point reads                              | Yes       |
-| Creates                                  | No        |
-| Updates                                  | No        |
+| Action API                               | No        |
 | Real-time events                         | No        |
 
 Supported common object types:

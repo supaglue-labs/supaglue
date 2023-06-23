@@ -11,16 +11,15 @@ description: ''
 
 Supaglue uses the Outreach v2 API.
 
-| Feature                    | Available |
-| -------------------------- | --------- |
-| Auth                       | Yes       |
-| Managed syncs              | Yes       |
-| Point reads                | Yes       |
-| Creates                    | Yes       |
-| Updates                    | Yes       |
-| Real-time events           | No        |
+| Feature                        | Available |
+| ------------------------------ | --------- |
+| Auth                           | Yes       |
+| Managed syncs (common objects) | Yes       |
+| Point reads                    | Yes       |
+| Action API (common objects)    | Yes       |
+| Real-time events               | No        |
 
-Supported object types:
+Supported common object types:
 
 - Users
 - Accounts

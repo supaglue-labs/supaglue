@@ -8,8 +8,9 @@ description: ''
 
 | Feature                              | Available |
 | ------------------------------------ | --------- |
-| Reads: Full refresh                  | Yes       |
-| Reads: Incremental refresh           | Yes       |
+| Syncs: Full refresh                  | Yes       |
+| Syncs: Incremental refresh           | Yes       |
+| Syncs: Supports incremental deletes  | Yes       |
 | Cache invalidation on write          | Yes       |
 | Common objects (unified by Supaglue) | Yes       |
 | Standard objects (per provider)      | Yes       |

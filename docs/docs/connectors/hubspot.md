@@ -15,9 +15,9 @@ Supaglue interfaces with the HubSpot V3 API.
 | ------------------------------------------------ | --------- |
 | Auth                                             | Yes       |
 | Managed syncs (common, standard, custom objects) | Yes       |
+| Managed syncs: incremental deletes               | Yes       |
 | Point reads                                      | Yes       |
-| Creates                                          | Yes       |
-| Updates                                          | Yes       |
+| Action API (common, custom objects)              | Yes       |
 | Real-time events                                 | No        |
 
 Supported common object types:

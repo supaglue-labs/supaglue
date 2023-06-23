@@ -16,8 +16,7 @@ Supaglue interfaces with the Gong V2 API.
 | Auth                       | No        |
 | Managed syncs              | No        |
 | Point reads                | No        |
-| Creates                    | No        |
-| Updates                    | No        |
+| Action API                 | No        |
 | Real-time events           | No        |
 
-Supported object types: -
+Supported common object types: -
