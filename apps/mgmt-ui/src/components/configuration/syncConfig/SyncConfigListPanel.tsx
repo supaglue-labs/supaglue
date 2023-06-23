@@ -31,7 +31,7 @@ export default function SyncConfigListPanel() {
     {
       field: 'id',
       headerName: 'ID',
-      width: 300,
+      width: 275,
       renderCell: (params) => {
         return (
           <Link
@@ -49,7 +49,7 @@ export default function SyncConfigListPanel() {
     {
       field: 'provider',
       headerName: 'Provider',
-      width: 100,
+      width: 75,
       sortable: false,
       renderCell: (params) => {
         const provider = providers.find((provider) => provider.id === params.row.provider);
@@ -91,12 +91,12 @@ export default function SyncConfigListPanel() {
         );
       },
     },
-    { field: 'frequency', headerName: 'Frequency', width: 150 },
-    { field: 'objects', headerName: 'Objects', width: 350 },
+    { field: 'frequency', headerName: 'Frequency', width: 100 },
+    { field: 'objects', headerName: 'Objects', width: 250 },
     {
       field: '_',
       headerName: 'Admin',
-      width: 100,
+      width: 75,
       renderCell: (params) => {
         return (
           <DeleteSyncConfig
@@ -133,6 +133,7 @@ export default function SyncConfigListPanel() {
       </Breadcrumbs>
       <MetricCard
         icon={<PeopleAltOutlined />}
+        className="w-[calc(100vw-26rem)]"
         value={
           <Stack direction="row" className="align-center justify-between">
             <div>
