@@ -4,9 +4,9 @@ slug: /
 sidebar_label: Introduction
 ---
 
-# Supaglue: open source user-facing integrations platform
+# Supaglue: open source product integrations platform
 
-Supaglue is an open source platform that helps you integrate with their customers' CRM and sales tools. It provides a set of API endpoints and developer tools that lets you sync data into your application database or data warehouse, write directly to your customers' SaaS tools, and subscribe to change events in real-time.
+Supaglue is an open source platform that helps you build native product integrations with your customers' CRM and sales tools. It provides a suite of developer tools and APIs that lets you sync data into your application database or data warehouse, write directly to your customers' SaaS tools, and subscribe to change events in real-time.
 
 Supaglue comes out-of-the-box with managed authentication, monitoring and logging tools, and a growing library of extensible SaaS connectors.
 
@@ -32,8 +32,8 @@ Supaglue comes out-of-the-box with managed authentication, monitoring and loggin
 
 You can [integrate Supaglue with your application](quickstart) in about 5 minutes:
 
-1. Create a Supaglue Cloud account or spin up Supaglue locally, and get your API key.
-2. Configure your integration scopes and OAuth credentials, or use our hosted app.
+1. Create a Supaglue Cloud account or spin up Supaglue locally.
+2. Configure your integration scopes and OAuth credentials, or use one of our managed OAuth apps.
 3. Create a Supaglue customer.
 4. Connect an external CRM account to your app through a Supaglue-provided embedded link.
 5. Access customer data using one of three [integration patterns](category/integration-patterns): managed syncs, actions API, or real-time events.
@@ -43,7 +43,7 @@ You can [integrate Supaglue with your application](quickstart) in about 5 minute
 <details>
   <summary>Who should use Supaglue?</summary>
   <div>
-    Supaglue is built for developers at B2B SaaS companies who need to build user-facing CRM and Sales engagement integrations into their product. Some common use cases for Supaglue are lead scoring, CRM enrichment, and sales enablement software.
+    Supaglue is aimed at developers at B2B SaaS companies that provide integrations with their customers' CRM and sales engagement tools as part of their own products.
   </div>
 </details>
 
@@ -64,21 +64,21 @@ You can [integrate Supaglue with your application](quickstart) in about 5 minute
 <details>
   <summary>Is there a hosted version of Supaglue?</summary>
   <div>
-    Yes! We've opened up Supaglue Cloud for early access. Please <a href="https://form.typeform.com/to/jv9ucMZR">sign up</a> for our waitlist, and our team will reach out to you.
+    Yes! You can start a free trial of Supaglue Cloud <a href="https://app.supaglue.io">here</a>!
   </div>
 </details>
 
 <details>
   <summary>Can I self-host Supaglue?</summary>
   <div>
-    Yes! Please reach out to us in Slack or at <a href="mailto:hello@supaglue.com">hello@supaglue.com</a>, and we can help you get set up.
+    Yes, please reach out to us in Slack or at <a href="mailto:hello@supaglue.com">hello@supaglue.com</a> so we can better understand your environment and help you get set up.
   </div>
 </details>
 
 <details>
   <summary>Are you planning to support X connector?</summary>
   <div>
-    We support the following <a href="./connectors">connectors</a> today and have many more on our roadmap. If there's a specific one you're looking for, let us know and we may be able to prioritize.
+    We support the following <a href="./connectors">connectors</a> today and have many more on our roadmap. If there's a specific connector that's not on the list, let us know and we will try to prioritize!
   </div>
 </details>
 
@@ -92,7 +92,7 @@ You can [integrate Supaglue with your application](quickstart) in about 5 minute
 <details>
   <summary>What kind of tracking/analytics do you collect?</summary>
   <div>
-    We use PostHog to anonymized, session-level event data in our API to help us improve the developer experience. We use Sentry for error reporting. You can opt out of tracking by setting `SUPAGLUE_DISABLE_ERROR_REPORTING=1` and `SUPAGLUE_DISABLE_ANALYTICS=1` in your `.env` file.
+    We use PostHog to log anonymized, session-level event data in our API and Sentry for error reporting. This helps us improve the product experience! You can opt out of tracking in the open source version by setting `SUPAGLUE_DISABLE_ERROR_REPORTING=1` and `SUPAGLUE_DISABLE_ANALYTICS=1` in your `.env` file.
   </div>
 </details>
 

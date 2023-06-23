@@ -4,20 +4,21 @@ description: ''
 
 # Managed syncs
 
-Managed Syncs helps you sync data from your customers’ CRM directly into your own application database and data warehouse.
+Managed Syncs lets you sync data from your customers’ CRM directly into your own application database or data warehouse.
 ![managed_syncs_diagram](/img/managed-syncs-diagram.png 'managed syncs diagram')
 
 ## How it works
+You can set up a managed sync in about 5 minutes.
 
-1. Developer defines the parameters of the sync via the Supaglue management API – including the providers, destination, and integration (frequency, objects, sync strategy, etc).
-2. When a customer connects their CRM account via an OAuth flow, a connection config is created that optionally contains customer-specific field mappings.
-3. Supaglue sync workers execute workflows that fetch data from your customers’ source and land them in your destination (e.g. Postgres).
-
-You can set up a managed sync in 5 minutes.
+1. You configure the parameters of the sync (providers, destination, sync configuration). This can be done via UI in the management portal, or programmatically via the management API.
+2. Your customer creates a connection via our managed authentication flow, and optionally defines field mappings specific to their source.
+3. Supaglue starts fetching data from your customers’ source and landing them in your destination (e.g. Postgres).
 
 ## Configuration
+You can configure a managed sync through a UI in the management portal, or programmatically via the management API.
 
 ### Provider configuration
+The provider configuration defines which providers to sync from (e.g. Salesforce), and allows your customers to connect securely through Supaglue's management authentication.
 
 ```json
 {
@@ -36,12 +37,18 @@ You can set up a managed sync in 5 minutes.
 }
 ```
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 ### Destination configuration
 
-Before Supaglue begins syncing data, we generate the destination tables and columns in your database if they do not exist.
+The destination configuration defines where we sync to. This is usually a data store hosted in your cloud.
+
+<Tabs>
+
+<TabItem value="postgres-provider-config" label="Postgres" default>
 
 ```json
-// destination config (postgres)
 {
   "id": 2,
   "name": "my production postgres",
@@ -54,8 +61,12 @@ Before Supaglue begins syncing data, we generate the destination tables and colu
     "user": "admin",
     "password": "admin"
   }
-}
-// destination config (s3)
+```
+</TabItem>
+
+<TabItem value="s3-provider-config" label="S3">
+
+```json
 {
   "id": 3,
   "name": "my production s3",
@@ -69,9 +80,18 @@ Before Supaglue begins syncing data, we generate the destination tables and colu
 }
 ```
 
+</TabItem>
+
+</Tabs>
+
+:::info
+Before syncing data, Supaglue generates the destination tables and columns in your database if they do not already exist.
+
+:::
+
 ### Sync configuration
 
-The first sync will sync all historical data, irrespective of the sync strategy specified.
+The sync configuration references the provider and destination configurations, and defines how the managed sync works (frequency, objects, strategy, etc).
 
 ```json
 {
@@ -119,9 +139,17 @@ The first sync will sync all historical data, irrespective of the sync strategy 
 }
 ```
 
-### Customer-specific field mappings
 
-Sometimes, your customers may store data in non-standard fields (e.g. custom fields). Supaglue allows you optionally specify a `schema` object in the sync configuration that each of your customers can map their source schema to:
+
+The above sync configuration defines a managed sync that does the following:
+- Fetch the Contact and Account objects from Salesforce, and normalize the response into a Supaglue-defined CRM schema.
+- Fetch the Opportunity object from Salesforce where the "description" and "revenue" fields can be mapped by each customer to a specific field on the Opportunity object.
+- Fetch the `MyCustomObject__c` custom object from Salesforce.
+
+
+### Field mappings
+
+Sometimes, your customers may store data in non-standard fields (e.g. custom fields). You can optionally specify a `schema` object in the sync configuration so that each of your customers can map their specific source schema to your product's data model:
 
 ```json
 ...
@@ -141,19 +169,25 @@ Sometimes, your customers may store data in non-standard fields (e.g. custom fie
 ...
 ```
 
-In this example, you want to map your customer's `Description` field to `the_description`, and you also want to map one of your customer's custom field to `revenue`. Each of your customers can then map the appropriate revenue field to your `revenue` field. At runtime, Supaglue will apply each customer's mapping and land the appropriate data into the `revenue` column in your destination.
+In this example, you want to map your customer's `Description` field to `the_description`, and you also want to map one of your customer's custom field to `revenue`. Through the [Update Sync endpoint](/api/v2/mgmt#tag/Syncs/operation/updateSync), each of your customers can then map the appropriate revenue field to your `revenue` field. At runtime, Supaglue will apply each customer's mapping and land the appropriate data into the `revenue` column in your destination.
+
+The `allow_additional_field_mappings` flag is a way for individual customers to provide optional supplemental data not explicitly required by your schema, but that may be useful for your product. For example, extra attributes for filtering or features for ML models.
+
+:::info
+We recommend embedding a field mapping UI component in your application that communicates with the SyncConfig and UpdateSync endpoints, to enable a self-serve experience for your customers.
+:::
 
 ## Destination schema
 
 ### Common objects
 
-The destination schema consists of the following components:
+Supaglue syncs common objects across multiple providers and transforms them into a category-specific (e.g. CRM) normalized schema. There are three types of columns:
 
 * **Supaglue metadata fields**: these specify the application, customer, provider, and timestamps associated with the managed sync.
-* **Common model fields**: when `supaglue_common_schema: true` is set in the sync configuration, the common model fields associated with the synced object and the connector category are returned.
+* **Common model fields**: the normalized fields associated with the synced object and the connector category.
 * **Raw data**: the raw source data is returned in a JSON blob.
 
-This is an example of a destination schema associated with a managed sync for a CRM Contact object:
+Here's an example of a destination schema associated with a managed sync for a CRM Contact object:
 
 | Field Name               | Data Type |
 | ------------------------ | --------- |
@@ -180,12 +214,12 @@ This is an example of a destination schema associated with a managed sync for a 
 
 ### Standard and Custom Objects
 
-The destination schema consists of the following components:
+Supaglue lands standard and custom objects in provider-specific tables, consisting of the following components:
 
 * **Supaglue metadata fields**: these specify the application, customer, provider, and timestamps associated with the managed sync.
 * **Raw data**: the raw source data is returned in a JSON blob.
 
-This is an example of a destination schema associated with a managed sync for a CRM Contact object:
+Here's an example of a destination schema associated with a managed sync for a standard object:
 
 | Field Name               | Data Type |
 | ------------------------ | --------- |
@@ -198,6 +232,6 @@ This is an example of a destination schema associated with a managed sync for a 
 
 ## Notification webhooks
 
-You can optionally configure a webhook so that Supaglue notifies you each time a sync completes. This can be done via the management portal, or via the [management API](http://docs.supaglue.com/api/v2/mgmt#tag/Webhook).
+You can optionally set up a webhook so that Supaglue notifies you each time a sync completes. This can be configured via the management portal, or via the [management API](http://docs.supaglue.com/api/v2/mgmt#tag/Webhook).
 
 ![webhook-config](/img/webhook_config.png)

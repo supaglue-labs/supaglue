@@ -6,8 +6,8 @@ description: ''
 
 Supaglue applies a common model to normalize core objects and fields across connectors within a single category. This common model abstracts away dealing with provider-specific schemas:
 
-- `supaglue_common_schema` is an optional parameter when configuring managed syncs. When set to true, Supaglue normalizes and lands data across multiple providers into the same destination table/columns.
-- Common schema fields are used in both request and response signatures in the actions API. Supaglue applies the common schema mappings against each provider when sending requests and returning responses.
+- When defining a managed sync, the `common_model_objects` key in the sync configuration lets you specify which objects you'd like to fetch in normalized format into the same destination table.
+- Common schema fields are also used in both request and response signatures in the actions API. Supaglue applies the common schema mappings against each provider when sending requests and returning responses.
 
 ## Common model mappings
 
