@@ -102,7 +102,7 @@ The sync configuration references the provider and destination configurations, a
   "default_config": {
     "period_ms": 3600,
     "strategy": "full refresh",
-    "enable_sync_on_connection_creation": true
+    "start_sync_on_connection_creation": true
   },
   "common_objects": [
     {
