@@ -125,7 +125,7 @@ export class ConnectionAndSyncService {
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         });
-        if (syncConfig && syncConfig.config.defaultConfig.enableSyncOnConnectionCreation) {
+        if (syncConfig && syncConfig.config.defaultConfig.startSyncOnConnectionCreation) {
           await tx.sync.create({
             data: {
               id: syncId,
