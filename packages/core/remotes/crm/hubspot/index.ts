@@ -940,6 +940,23 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         undefined,
         archived
       );
+
+      // temp debug logging
+      companies.results.forEach((company) => {
+        const propertiesString = JSON.stringify(company.properties);
+
+        const containsNullChar = propertiesString.includes('\0');
+
+        if (containsNullChar) {
+          logger.error(
+            {
+              company: company.id,
+            },
+            'null char in hubspot full account response'
+          );
+        }
+      });
+
       return companies;
     });
   }
@@ -974,6 +991,23 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         limit,
         after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
       });
+
+      // temp debug logging
+      companies.results.forEach((company) => {
+        const propertiesString = JSON.stringify(company.properties);
+
+        const containsNullChar = propertiesString.includes('\0');
+
+        if (containsNullChar) {
+          logger.error(
+            {
+              company: company.id,
+            },
+            'null char in hubspot incremental account response'
+          );
+        }
+      });
+
       return companies;
     });
   }
@@ -1256,6 +1290,23 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         /* associations */ ['company'],
         archived
       );
+
+      // temp debug logging
+      contacts.results.forEach((contact) => {
+        const propertiesString = JSON.stringify(contact.properties);
+
+        const containsNullChar = propertiesString.includes('\0');
+
+        if (containsNullChar) {
+          logger.error(
+            {
+              contact: contact.id,
+            },
+            'null char in hubspot contact full response'
+          );
+        }
+      });
+
       return contacts;
     });
   }
@@ -1294,6 +1345,22 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       });
 
       const contactIds = response.results.map((contact) => contact.id);
+
+      // temp debug logging
+      response.results.forEach((contact) => {
+        const propertiesString = JSON.stringify(contact.properties);
+
+        const containsNullChar = propertiesString.includes('\0');
+
+        if (containsNullChar) {
+          logger.error(
+            {
+              contact: contact.id,
+            },
+            'null char in hubspot contact incremental response'
+          );
+        }
+      });
 
       // Get associations
       const contactToCompaniesMap = await this.#listAssociations(
