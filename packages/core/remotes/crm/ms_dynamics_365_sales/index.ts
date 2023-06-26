@@ -34,6 +34,14 @@ import {
   fromDynamicsLeadToRemoteLead,
   fromDynamicsOpportunityToRemoteOpportunity,
   fromDynamicsUserToRemoteUser,
+  toDynamicsAccountCreateParams,
+  toDynamicsAccountUpdateParams,
+  toDynamicsContactCreateParams,
+  toDynamicsContactUpdateParams,
+  toDynamicsLeadCreateParams,
+  toDynamicsLeadUpdateParams,
+  toDynamicsOpportunityCreateParams,
+  toDynamicsOpportunityUpdateParams,
 } from './mappers';
 
 const MAX_PAGE_SIZE = 1000;
@@ -62,7 +70,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     super(`${credentials.instanceUrl}api/data/v9.2/`);
     this.#credentials = credentials;
     this.#headers.Authorization = `Bearer ${this.#credentials.accessToken}`;
-    this.#odata = o(this.baseUrl, { headers: this.#headers });
+    this.#odata = o(this.baseUrl, { headers: this.#headers, referrer: undefined });
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {
@@ -92,6 +100,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       this.#credentials.expiresAt = newExpiresAt;
 
       this.#headers.Authorization = `Bearer ${newAccessToken}`;
+      this.#odata = o(this.baseUrl, { headers: this.#headers, referrer: undefined });
 
       this.emit('token_refreshed', newAccessToken, newExpiresAt);
     }
@@ -190,46 +199,94 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['createParams']
   ): Promise<string> {
-    throw new Error('Not implemented');
+    await this.maybeRefreshAccessToken();
+    switch (commonModelType) {
+      case 'account': {
+        const response = await this.#odata.post('accounts', toDynamicsAccountCreateParams(params)).query();
+        const id = response.headers.get('location')?.split('(')[1].split(')')[0];
+        return id;
+      }
+      case 'contact': {
+        const response = await this.#odata.post('contacts', toDynamicsContactCreateParams(params)).query();
+        const id = response.headers.get('location')?.split('(')[1].split(')')[0];
+        return id;
+      }
+      case 'lead': {
+        const response = await this.#odata.post('leads', toDynamicsLeadCreateParams(params)).query();
+        const id = response.headers.get('location')?.split('(')[1].split(')')[0];
+        return id;
+      }
+      case 'opportunity': {
+        const response = await this.#odata.post('opportunities', toDynamicsOpportunityCreateParams(params)).query();
+        const id = response.headers.get('location')?.split('(')[1].split(')')[0];
+        return id;
+      }
+      case 'user':
+        throw new Error('Cannot create users in MS Dynamics 365');
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
   }
 
   public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
     params: CRMCommonModelTypeMap<T>['updateParams']
   ): Promise<string> {
-    throw new Error('Not implemented');
+    await this.maybeRefreshAccessToken();
+    switch (commonModelType) {
+      case 'account': {
+        await this.#odata.patch(`accounts(${params.id})`, toDynamicsAccountUpdateParams(params)).query();
+        return params.id;
+      }
+      case 'contact': {
+        await this.#odata.patch(`contacts(${params.id})`, toDynamicsContactUpdateParams(params)).query();
+        return params.id;
+      }
+      case 'lead': {
+        await this.#odata.patch(`leads(${params.id})`, toDynamicsLeadUpdateParams(params)).query();
+        return params.id;
+      }
+      case 'opportunity': {
+        await this.#odata.patch(`opportunities(${params.id})`, toDynamicsOpportunityUpdateParams(params)).query();
+        return params.id;
+      }
+      case 'user':
+        throw new Error('Cannot update users in MS Dynamics 365');
+      default:
+        throw new Error(`Unsupported common model type: ${commonModelType}`);
+    }
   }
 
   private async getAccount(id: string): Promise<Account> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsAccountToRemoteAccount(
-      await this.#odata.get('accounts').query({ $filter: `accountid eq '${id}'` })
+      (await this.#odata.get('accounts').query({ $filter: `accountid eq '${id}'` }))[0]
     );
   }
 
   private async getContact(id: string): Promise<Contact> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsContactToRemoteContact(
-      await this.#odata.get('contacts').query({ $filter: `contactid eq '${id}'` })
+      (await this.#odata.get('contacts').query({ $filter: `contactid eq '${id}'` }))[0]
     );
   }
 
   private async getLead(id: string): Promise<Lead> {
     await this.maybeRefreshAccessToken();
-    return fromDynamicsLeadToRemoteLead(await this.#odata.get('leads').query({ $filter: `leadid eq '${id}'` }));
+    return fromDynamicsLeadToRemoteLead((await this.#odata.get('leads').query({ $filter: `leadid eq '${id}'` }))[0]);
   }
 
   private async getOpportunity(id: string): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsOpportunityToRemoteOpportunity(
-      await this.#odata.get('opportunities').query({ $filter: `opportunityid eq '${id}'` })
+      (await this.#odata.get('opportunities').query({ $filter: `opportunityid eq '${id}'` }))[0]
     );
   }
 
   private async getUser(id: string): Promise<User> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsUserToRemoteUser(
-      await this.#odata.get('systemusers').query({ $filter: `systemuserid eq '${id}'` })
+      (await this.#odata.get('systemusers').query({ $filter: `systemuserid eq '${id}'` }))[0]
     );
   }
 
