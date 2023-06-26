@@ -20,6 +20,7 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
       'crm.objects.deals.read',
       'crm.objects.deals.write',
       'crm.objects.owners.read',
+      'oauth',
     ],
     credentials: {
       oauthClientId: process.env.HUBSPOT_CLIENT_ID || '',
