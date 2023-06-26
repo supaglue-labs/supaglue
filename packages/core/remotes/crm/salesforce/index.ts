@@ -702,6 +702,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
       case 'INSUFFICIENT_ACCESS':
       case 'ERROR_HTTP_403':
+      case 'API_DISABLED_FOR_ORG':
         return new ForbiddenError(error.message);
       case 'ERROR_HTTP_401':
         return new UnauthorizedError(error.message);
