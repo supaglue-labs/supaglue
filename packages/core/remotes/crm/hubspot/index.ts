@@ -715,7 +715,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           ],
           sorts: [
             {
-              propertyName: lastModifiedAtPropertyName,
+              propertyName: 'id',
               direction: 'ASCENDING',
             },
           ],
@@ -966,7 +966,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         ],
         sorts: [
           {
-            propertyName: 'hs_lastmodifieddate',
+            propertyName: 'id',
             direction: 'ASCENDING',
           } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
         ],
@@ -1120,7 +1120,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         ],
         sorts: [
           {
-            propertyName: 'hs_lastmodifieddate',
+            propertyName: 'id',
             direction: 'ASCENDING',
           } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
         ],
@@ -1284,7 +1284,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         ],
         sorts: [
           {
-            propertyName: 'lastmodifieddate',
+            propertyName: 'id',
             direction: 'ASCENDING',
           } as unknown as string, // hubspot sdk has wrong types
         ],
