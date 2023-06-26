@@ -481,9 +481,10 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_account
   "last_activity_at" TIMESTAMP(3),
   "lifecycle_stage" TEXT,
   "owner_id" TEXT,
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  -- Duplicates can exist for Accounts (e.g. Hubspot)
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
     contact: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_contacts' : `"${schema}".crm_contacts`} (
@@ -505,9 +506,10 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_contact
   "account_id" TEXT,
   "owner_id" TEXT,
   "last_activity_at" TIMESTAMP(3),
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  -- Duplicates can exist for Users (e.g. Hubspot)
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
     lead: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_leads' : `"${schema}".crm_leads`} (
@@ -532,9 +534,10 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_leads' 
   "converted_contact_id" TEXT,
   "converted_account_id" TEXT,
   "owner_id" TEXT,
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  -- Duplicates can exist for Leads (e.g. Hubspot)
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
     opportunity: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
@@ -559,9 +562,10 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "account_id" TEXT,
   "owner_id" TEXT,
   "last_activity_at" TIMESTAMP(3),
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  -- Duplicates can exist for Opportunities (e.g. Hubspot)
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
     user: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' : `"${schema}".crm_users`} (
