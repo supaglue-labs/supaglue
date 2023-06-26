@@ -126,4 +126,4 @@ jobs:
         run: |
           ${{ steps.kubectl.outputs.kubectl-path }} rollout restart deployment -n supaglue supaglue-${{ inputs.workspace }}
           ${{ steps.kubectl.outputs.kubectl-path }} rollout status deployment -n supaglue supaglue-${{ inputs.workspace }}
-          ${{ steps.kubectl.outputs.kubectl-path }} exec deploy/supaglue-api -n supaglue -- sh -c "npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js"
+          ${{ steps.kubectl.outputs.kubectl-path }} exec deploy/supaglue-api -n supaglue -- sh -c "npx prisma@4.12.0 migrate deploy && node node_modules/@supaglue/db/prisma/seed.js"

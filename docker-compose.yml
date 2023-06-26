@@ -16,6 +16,7 @@ x-common-env:
   HUBSPOT_CLIENT_ID:
   HUBSPOT_CLIENT_SECRET:
 
+
 x-fe-api-common-env:
   &fe-api-common-env
   SUPAGLUE_INTERNAL_TOKEN: some-internal-token
@@ -117,7 +118,7 @@ services:
         condition: service_started
     volumes:
       - .env:/app/.env
-    command: sh -c 'npx prisma migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js'
+    command: sh -c 'npx prisma@4.12.0 migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js'
 
 volumes:
   pgdata:
