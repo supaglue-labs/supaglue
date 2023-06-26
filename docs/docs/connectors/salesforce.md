@@ -20,6 +20,8 @@ Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 | Action API (common objects)                              | Yes       |
 | Real-time events                                         | Yes       |
 
+Note: When listing the custom objects you'd like to sync, omit the `__c` suffix.
+
 Supported common object types:
 
 - Account
