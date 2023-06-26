@@ -23,6 +23,7 @@ import {
 import {
   ConnectionUnsafe,
   CRMProvider,
+  NormalizedRawRecord,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   SyncConfig,
@@ -273,15 +274,17 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         transform: (chunk, encoding, callback) => {
           // TODO: types
           const { record, emittedAt } = chunk;
+          // not declaring this in-line so we have the opportunity to do type checking
+          const emittedRecord: NormalizedRawRecord = {
+            id: record.Id,
+            rawData: record,
+            isDeleted: record.IsDeleted === 'true',
+            lastModifiedAt: new Date(record.SystemModstamp),
+            emittedAt: emittedAt,
+          };
           try {
             // TODO: types
-            callback(null, {
-              id: record.Id,
-              rawData: record,
-              isDeleted: record.IsDeleted === 'true',
-              lastModifiedAt: new Date(record.SystemModstamp),
-              emittedAt: emittedAt,
-            });
+            callback(null, emittedRecord);
           } catch (e: any) {
             return callback(e);
           }
