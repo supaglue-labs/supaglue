@@ -17,6 +17,7 @@ properties:
     required:
       - period_ms
       - strategy
+      - start_sync_on_connection_creation
   common_objects:
     type: array
     items:

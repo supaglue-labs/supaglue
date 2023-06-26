@@ -2,6 +2,7 @@ import type { PrismaClient } from '@supaglue/db';
 import type {
   ConnectionCredentialsDecryptedAny,
   ConnectionSafeAny,
+  ConnectionSafeAnyWithIsSyncEnabled,
   ConnectionUnsafe,
   ConnectionUnsafeAny,
   ProviderName,
@@ -10,7 +11,11 @@ import type { CRMProviderName } from '@supaglue/types/crm';
 import { ProviderService } from '.';
 import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
-import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
+import {
+  fromConnectionModelToConnectionSafe,
+  fromConnectionModelToConnectionUnsafe,
+  fromConnectionModelWithSyncToConnectionSafeWithIsSyncEnabled,
+} from '../mappers';
 
 export class ConnectionService {
   #prisma: PrismaClient;
@@ -75,6 +80,26 @@ export class ConnectionService {
       where: { providerId: { in: providerIds }, customerId, providerName },
     });
     return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
+  public async listSafeWithIsSyncEnabled(
+    applicationId: string,
+    customerId?: string,
+    providerName?: string
+  ): Promise<ConnectionSafeAnyWithIsSyncEnabled[]> {
+    const providers = await this.#providerService.list(applicationId);
+    const providerIds = providers.map(({ id }) => id);
+    const connectionsWithSyncs = await this.#prisma.connection.findMany({
+      where: { providerId: { in: providerIds }, customerId, providerName },
+      include: {
+        sync: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    return connectionsWithSyncs.map(fromConnectionModelWithSyncToConnectionSafeWithIsSyncEnabled);
   }
 
   public async listUnsafe(

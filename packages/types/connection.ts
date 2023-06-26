@@ -52,6 +52,10 @@ export type ConnectionSafe<T extends ProviderName> = Omit<ConnectionCreateParams
 
 export type ConnectionSafeAny = ConnectionSafe<ProviderName>;
 
+export type ConnectionSafeAnyWithIsSyncEnabled = ConnectionSafeAny & {
+  isSyncEnabled: boolean;
+};
+
 export type ConnectionUnsafe<T extends ProviderName> = ConnectionCreateParams<T> & {
   id: string;
   status: ConnectionStatus;

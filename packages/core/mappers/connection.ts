@@ -2,6 +2,7 @@ import type { Connection as ConnectionModel } from '@supaglue/db';
 import {
   CategoryOfProviderName,
   ConnectionSafeAny,
+  ConnectionSafeAnyWithIsSyncEnabled,
   ConnectionStatus,
   ConnectionUnsafe,
   ProviderName,
@@ -53,5 +54,16 @@ export function fromConnectionModelToConnectionSafe({
     status: status as ConnectionStatus,
     providerName: providerName as CRMProviderName,
     instanceUrl,
+  };
+}
+
+export function fromConnectionModelWithSyncToConnectionSafeWithIsSyncEnabled(
+  params: ConnectionModel & {
+    sync: object | null;
+  }
+): ConnectionSafeAnyWithIsSyncEnabled {
+  return {
+    ...fromConnectionModelToConnectionSafe(params),
+    isSyncEnabled: !!params.sync,
   };
 }
