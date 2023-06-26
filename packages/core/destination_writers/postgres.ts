@@ -118,6 +118,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const table = getCommonModelTableName(category, commonModelType);
     const qualifiedTable = `"${schema}"."${table}"`;
     const tempTable = `temp_${table}`;
+    const dedupedTempTable = `deduped_temp_${table}`;
 
     const client = await this.#getClient();
 
@@ -127,12 +128,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema));
 
       // Create a temporary table
-      // TODO: on the first run, we should be able to directly write into the table and skip the temp table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
-      await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema, true));
-      await client.query(
-        `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)`
-      );
+      await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema, /* temp */ true));
+      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, last_modified_at DESC)`);
 
       const columns = getColumnsForCommonModel(category, commonModelType);
       const columnsToUpdate = columns.filter(
@@ -200,31 +198,47 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       );
       childLogger.info('Importing common model objects into temp table [COMPLETED]');
 
-      // Copy from temp table
-      childLogger.info({ offset: null }, 'Copying from temp table to main table [IN PROGRESS]');
+      // Dedupe the temp table
+      // Since all common models have `lastModifiedAt`, we can sort by that to avoid dupes.
+      // We need to do the sorting before applying OFFSET / LIMIT because otherwise, if a record
+      // appears as the last record of a page and also the first record of the next page, we will
+      // overwrite the newer record with the older record in the main table.
+      childLogger.info('Writing deduped temp table records into deduped temp table [IN PROGRESS]');
+      await client.query(
+        `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY id ASC, last_modified_at DESC`
+      );
+      childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
+
+      // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM reaper.
+      childLogger.info('Dropping temp table [IN PROGRESS]');
+      await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
+      childLogger.info('Dropping temp table [COMPLETED]');
+
+      // Copy from deduped temp table
+      childLogger.info({ offset: null }, 'Copying from deduped temp table to main table [IN PROGRESS]');
       const columnsToUpdateStr = columnsToUpdate.join(',');
       const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
 
       // Paginate
       const batchSize = 10000;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
-        childLogger.info({ offset }, 'Copying from temp table to main table [IN PROGRESS]');
+        childLogger.info({ offset }, 'Copying from deduped temp table to main table [IN PROGRESS]');
         // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
         // For example, hubspot will return the same record twice when querying for `archived: true` if
         // the record was archived, restored, and archived again.
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
-SELECT DISTINCT ON (id) * FROM (SELECT ${columns.join(
-          ','
-        )} FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
+SELECT DISTINCT ON (id) ${columns.join(',')} FROM ${dedupedTempTable} OFFSET ${offset} LIMIT ${batchSize}
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
-        childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
+        childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
         heartbeat();
       }
 
-      childLogger.info('Copying from temp table to main table [COMPLETED]');
+      childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+
+      // We don't drop deduped temp table here because we're closing the connection here anyway.
 
       return {
         maxLastModifiedAt,
@@ -247,6 +261,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     const table = getObjectTableName(providerName, object);
     const qualifiedTable = `"${schema}"."${table}"`;
     const tempTable = `temp_${table}`;
+    const dedupedTempTable = `deduped_temp_${table}`;
 
     const client = await this.#getClient();
 
@@ -256,12 +271,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       await client.query(getObjectSchemaSetupSql(providerName, object, schema));
 
       // Create a temporary table
-      // TODO: on the first run, we should be able to directly write into the table and skip the temp table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
-      await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${qualifiedTable})`);
-      await client.query(
-        `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)`
-      );
+      await client.query(getObjectSchemaSetupSql(providerName, object, schema, /* temp */ true));
+      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, _supaglue_last_modified_at DESC)`);
 
       // TODO: Make this type-safe
       const columns = [
@@ -280,15 +292,18 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
           c !== '_supaglue_customer_id' &&
           c !== 'id'
       );
+      const columnsWithLastModifiedAt = [...columns, '_supaglue_last_modified_at'];
 
       // Output
       const stream = client.query(
-        copyFrom(`COPY ${tempTable} (${columns.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`)
+        copyFrom(
+          `COPY ${tempTable} (${columnsWithLastModifiedAt.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`
+        )
       );
 
       // Input
       const stringifier = stringify({
-        columns,
+        columns: columnsWithLastModifiedAt,
         cast: {
           boolean: (value: boolean) => value.toString(),
           object: (value: object) => JSON.stringify(value),
@@ -316,6 +331,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
                 _supaglue_is_deleted: record.isDeleted,
                 _supaglue_raw_data: record.rawData,
                 id: record.id,
+                // We're only writing this to the temp table so that we can deduplicate.
+                _supaglue_last_modified_at: record.lastModifiedAt,
               };
 
               ++tempTableRowCount;
@@ -337,31 +354,47 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       );
       childLogger.info('Importing raw records into temp table [COMPLETED]');
 
-      // Copy from temp table
-      childLogger.info({ offset: null }, 'Copying from temp table to main table [IN PROGRESS]');
+      // Dedupe the temp table
+      // Since all records have `lastModifiedAt`, we can sort by that to avoid dupes.
+      // We need to do the sorting before applying OFFSET / LIMIT because otherwise, if a record
+      // appears as the last record of a page and also the first record of the next page, we will
+      // overwrite the newer record with the older record in the main table.
+      childLogger.info('Writing deduped temp table records into deduped temp table [IN PROGRESS]');
+      await client.query(
+        `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY id ASC, _supaglue_last_modified_at DESC`
+      );
+      childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
+
+      // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM repear.
+      childLogger.info('Dropping temp table [IN PROGRESS]');
+      await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
+      childLogger.info('Dropping temp table [COMPLETED]');
+
+      // Copy from deduped temp table
+      childLogger.info({ offset: null }, 'Copying from deduped temp table to main table [IN PROGRESS]');
       const columnsToUpdateStr = columnsToUpdate.join(',');
       const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
 
       // Paginate
       const batchSize = 10000;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
-        childLogger.info({ offset }, 'Copying from temp table to main table [IN PROGRESS]');
+        childLogger.info({ offset }, 'Copying from deduped temp table to main table [IN PROGRESS]');
         // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
         // For example, hubspot will return the same record twice when querying for `archived: true` if
         // the record was archived, restored, and archived again.
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
-SELECT DISTINCT ON (id) * FROM (SELECT ${columns.join(
-          ','
-        )} FROM ${tempTable} ORDER BY id OFFSET ${offset} limit ${batchSize}) AS batch
+SELECT DISTINCT ON (id) ${columns.join(',')} FROM ${dedupedTempTable} OFFSET ${offset} limit ${batchSize}
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
-        childLogger.info({ offset }, 'Copying from temp table to main table [COMPLETED]');
+        childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
         heartbeat();
       }
 
-      childLogger.info('Copying from temp table to main table [COMPLETED]');
+      childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+
+      // We don't drop deduped temp table here because we're closing the connection here anyway.
 
       return {
         maxLastModifiedAt,
@@ -373,8 +406,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const getObjectTableName = (providerName: ProviderName, object: string) => {
-  return `${providerName}_${object}`;
+const getObjectTableName = (providerName: ProviderName, object: string, temp?: boolean) => {
+  return `${temp ? 'temp_' : ''}${providerName}_${object}`;
 };
 
 const getCommonModelTableName = (category: ProviderCategory, commonModelType: CommonModelType) => {
@@ -431,11 +464,11 @@ const columnsByCommonModelType: {
   },
 };
 
-const getObjectSchemaSetupSql = (providerName: ProviderName, object: string, schema: string) => {
-  const tableName = getObjectTableName(providerName, object);
+const getObjectSchemaSetupSql = (providerName: ProviderName, object: string, schema: string, temp?: boolean) => {
+  const tableName = getObjectTableName(providerName, object, temp);
 
   return `-- CreateTable
-CREATE TABLE IF NOT EXISTS "${schema}"."${tableName}" (
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `"${tableName}"` : `"${schema}"."${tableName}"`} (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
@@ -444,7 +477,11 @@ CREATE TABLE IF NOT EXISTS "${schema}"."${tableName}" (
   "_supaglue_raw_data" JSONB NOT NULL,
   "id" TEXT NOT NULL,
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  ${
+    temp
+      ? '"_supaglue_last_modified_at" TIMESTAMP(3) NOT NULL'
+      : 'PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'
+  }
 );`;
 };
 
@@ -483,7 +520,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_account
   "owner_id" TEXT,
   "raw_data" JSONB
 
-  -- Duplicates can exist for Accounts (e.g. Hubspot)
+  -- Duplicates can exist for accounts (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
     contact: (schema: string, temp?: boolean) => `-- CreateTable
@@ -508,7 +545,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_contact
   "last_activity_at" TIMESTAMP(3),
   "raw_data" JSONB
 
-  -- Duplicates can exist for Users (e.g. Hubspot)
+  -- Duplicates can exist for contacts (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
     lead: (schema: string, temp?: boolean) => `-- CreateTable
@@ -536,7 +573,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_leads' 
   "owner_id" TEXT,
   "raw_data" JSONB
 
-  -- Duplicates can exist for Leads (e.g. Hubspot)
+  -- Duplicates can exist for leads (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
     opportunity: (schema: string, temp?: boolean) => `-- CreateTable
@@ -564,7 +601,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "last_activity_at" TIMESTAMP(3),
   "raw_data" JSONB
 
-  -- Duplicates can exist for Opportunities (e.g. Hubspot)
+  -- Duplicates can exist for opportunities (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
     user: (schema: string, temp?: boolean) => `-- CreateTable
@@ -583,7 +620,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' 
   "is_active" BOOLEAN,
   "raw_data" JSONB
 
-  -- Duplicates can exist for Users (e.g. Hubspot)
+  -- Duplicates can exist for users (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
 );`,
   },
