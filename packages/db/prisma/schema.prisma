@@ -21,6 +21,7 @@ model Application {
   customers    Customer[]
   destinations Destination[]
   providers    Provider[]
+  schemas      Schema[]
 
   @@unique([orgId, name])
   @@map("applications")
@@ -175,4 +176,17 @@ model ReplayId {
 
   @@unique([connectionId, eventType])
   @@map("replay_ids")
+}
+
+model Schema {
+  id            String      @id @default(uuid())
+  name          String
+  applicationId String      @map("application_id")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  config        Json
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@unique([applicationId, name])
+  @@map("schemas")
 }
