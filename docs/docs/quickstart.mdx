@@ -199,3 +199,29 @@ In production, this step would be performed by your customer and your developer 
 Once syncs have completed, you can start querying your customer's CRM data directly from your Postgres.
 
 ![image](/img/postgres-sql.png)
+
+## 9. Use the [Action API](https://docs.supaglue.com/api) to create a Contact
+
+```
+curl --location 'https://api.supaglue.io/crm/v2/contacts/{CONTACT_ID}' \
+--header 'x-customer-id: {CUSTOMER_ID}' \
+--header 'x-provider-name: {PROVIDER_NAME}' \
+--header 'x-api-key: {API_KEY}' \
+--data-raw '{
+    "model": {
+        "first_name": "Supa",
+        "last_name": "Glue",
+        "email_addresses": [
+            {
+                "email_address": "team@supaglue.io",
+                "email_address_type": "primary"
+            }
+        ]
+    }
+}'
+```
+
+- `{CONTACT_ID}` - a contact ID in your customer's CRM
+- `{CUSTOMER_ID}` - your customer's ID, e.g. `1234` from step 5
+- `{PROVIDER_NAME}` - {`salesforce`|`hubspot`|`pipedrive`|...}
+- `{API_KEY}` - your API key obtained from the management portal
