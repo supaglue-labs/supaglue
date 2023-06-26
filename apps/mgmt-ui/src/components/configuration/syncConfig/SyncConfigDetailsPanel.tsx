@@ -147,10 +147,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
 
   const selectedProvider = providers.find((p) => p.id === providerId);
   const selectedDestination = destinations?.find((d) => d.id === destinationId);
-  const supportedStandardDestinations = ['postgres'];
-  const supportedCustomDestinations = ['postgres'];
-  const supportedStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
-  const supportedCustomObjects = ['hubspot'];
+  const supportsStandardDestinations = ['postgres'];
+  const supportsCustomDestinations = ['postgres'];
+  const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
+  const supportsCustomObjects = ['hubspot', 'salesforce'];
 
   return (
     <div className="flex flex-col gap-4">
@@ -253,8 +253,8 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 <Typography variant="subtitle1">Standard objects</Typography>
                 <Autocomplete
                   disabled={
-                    !supportedStandardObjects.includes(String(selectedProvider?.name)) ||
-                    !supportedStandardDestinations.includes(String(selectedDestination?.type))
+                    !supportsStandardObjects.includes(String(selectedProvider?.name)) ||
+                    !supportsStandardDestinations.includes(String(selectedDestination?.type))
                   }
                   size="small"
                   key={providerId}
@@ -284,8 +284,8 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 <Typography variant="subtitle1">Custom objects</Typography>
                 <Autocomplete
                   disabled={
-                    !supportedCustomObjects.includes(String(selectedProvider?.name)) ||
-                    !supportedCustomDestinations.includes(String(selectedDestination?.type))
+                    !supportsCustomObjects.includes(String(selectedProvider?.name)) ||
+                    !supportsCustomDestinations.includes(String(selectedDestination?.type))
                   }
                   size="small"
                   key={providerId}

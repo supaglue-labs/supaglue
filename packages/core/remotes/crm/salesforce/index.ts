@@ -292,6 +292,20 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
+  public override async listCustomObjectRecords(
+    object: string,
+    modifiedAfter?: Date | undefined,
+    heartbeat?: (() => void) | undefined
+  ): Promise<Readable> {
+    return await this.listStandardObjectRecords(
+      `${object}__c`,
+      // TODO: Support customer field mappings for custom objects.
+      { type: 'inherit_all_fields' },
+      modifiedAfter,
+      heartbeat
+    );
+  }
+
   public override async listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
     updatedAfter?: Date | undefined,
