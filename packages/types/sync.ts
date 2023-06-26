@@ -11,15 +11,16 @@ type BaseSync = {
 };
 
 export type SchemaMappingsConfig = {
-  standardObjects?: SchemaMappingsConfigStandardObject[];
+  commonObjects?: SchemaMappingsConfigForObject[];
+  standardObjects?: SchemaMappingsConfigForObject[];
 };
 
-export type SchemaMappingsConfigStandardObject = {
+export type SchemaMappingsConfigForObject = {
   object: string;
-  fieldMappings: SchemaMappingsConfigStandardObjectFieldMapping[];
+  fieldMappings: SchemaMappingsConfigForObjectFieldMapping[];
 };
 
-export type SchemaMappingsConfigStandardObjectFieldMapping = {
+export type SchemaMappingsConfigForObjectFieldMapping = {
   schemaField: string; // my_first_column
   mappedField: string; // blah_1
 };

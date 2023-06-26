@@ -21,6 +21,7 @@ import {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
+import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
@@ -123,6 +124,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   public override async listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
+    fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date
   ): Promise<Readable> {
     switch (commonModelType) {

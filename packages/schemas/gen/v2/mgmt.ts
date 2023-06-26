@@ -294,22 +294,25 @@ export interface components {
           /** @example contacts */
           object: string;
           fetch_all_fields_into_raw: boolean;
+          /** @description If set, will sync these fields in addition to the common model. */
+          schema?: components["schemas"]["object_schema"];
         })[];
       standard_objects?: ({
           /** @example contacts */
           object: string;
-          schema?: {
-            fields: ({
-                name: string;
-                mapped_name?: string;
-              })[];
-            allow_additional_field_mappings: boolean;
-          };
+          schema?: components["schemas"]["object_schema"];
         })[];
       custom_objects?: ({
           /** @example contacts */
           object: string;
         })[];
+    };
+    object_schema: {
+      fields: ({
+          name: string;
+          mapped_name?: string;
+        })[];
+      allow_additional_field_mappings: boolean;
     };
     /**
      * @example {

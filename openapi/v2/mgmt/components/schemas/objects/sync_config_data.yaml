@@ -28,6 +28,9 @@ properties:
           example: contacts
         fetch_all_fields_into_raw:
           type: boolean
+        schema:
+          $ref: ./object_schema.yaml
+          description: If set, will sync these fields in addition to the common model.
       required:
         - object
         - fetch_all_fields_into_raw
@@ -40,24 +43,7 @@ properties:
           type: string
           example: contacts
         schema:
-          type: object
-          properties:
-            fields:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                  mapped_name:
-                    type: string
-                required:
-                  - name
-            allow_additional_field_mappings:
-              type: boolean
-          required:
-            - fields
-            - allow_additional_field_mappings
+          $ref: ./object_schema.yaml
       required:
         - object
   custom_objects:

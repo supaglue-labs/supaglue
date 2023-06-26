@@ -16,7 +16,7 @@ import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
 import { createSetForceSyncFlag } from './set_force_sync_flag';
 import { createSyncRawRecordsToDestination } from './sync_raw_records_to_destination';
-import { createSyncRecordsToDestination } from './sync_records_to_destination';
+import { createSyncCommonRecordsToDestination } from './sync_records_to_destination';
 import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
@@ -45,12 +45,13 @@ export const createActivities = ({
     doProcessSyncChanges: createDoProcessSyncChanges(syncService),
     setForceSyncFlag: createSetForceSyncFlag(syncService),
     updateSyncState: createUpdateSyncState(syncService),
-    syncRecordsToDestination: createSyncRecordsToDestination(
+    syncCommonRecordsToDestination: createSyncCommonRecordsToDestination(
       connectionService,
       remoteService,
       destinationService,
       syncConfigService,
-      applicationService
+      applicationService,
+      syncService
     ),
     syncRawRecordsToDestination: createSyncRawRecordsToDestination(
       connectionService,

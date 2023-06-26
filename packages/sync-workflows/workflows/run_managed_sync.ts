@@ -15,7 +15,9 @@ import type { createActivities } from '../activities/index';
 import { SyncRawRecordsToDestinationResult } from '../activities/sync_raw_records_to_destination';
 import { SyncRecordsToDestinationResult } from '../activities/sync_records_to_destination';
 
-const { syncRecordsToDestination, syncRawRecordsToDestination } = proxyActivities<ReturnType<typeof createActivities>>({
+const { syncCommonRecordsToDestination: syncRecordsToDestination, syncRawRecordsToDestination } = proxyActivities<
+  ReturnType<typeof createActivities>
+>({
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '15 minute',
   retry: {

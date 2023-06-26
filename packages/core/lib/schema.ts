@@ -1,19 +1,15 @@
-import {
-  SchemaMappingsConfigStandardObjectFieldMapping,
-  StandardObjectSchema,
-  StandardObjectSchemaField,
-} from '@supaglue/types';
+import { ObjectSchema, ObjectSchemaField, SchemaMappingsConfigForObjectFieldMapping } from '@supaglue/types';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 
 export function createFieldMappingConfig(
-  schema?: StandardObjectSchema,
-  customerFieldMappings?: SchemaMappingsConfigStandardObjectFieldMapping[]
+  schema?: ObjectSchema,
+  customerFieldMappings?: SchemaMappingsConfigForObjectFieldMapping[]
 ): FieldMappingConfig {
   if (!schema) {
     return { type: 'inherit_all_fields' };
   }
 
-  const unmappedSchemaFields: StandardObjectSchemaField[] = [];
+  const unmappedSchemaFields: ObjectSchemaField[] = [];
   const mappedSchemaFields: { name: string; mappedName: string }[] = [];
 
   for (const field of schema.fields) {

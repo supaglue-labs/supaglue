@@ -147,6 +147,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   public override async listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
+    fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
