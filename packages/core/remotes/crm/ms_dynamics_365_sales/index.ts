@@ -203,22 +203,22 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     switch (commonModelType) {
       case 'account': {
         const response = await this.#odata.post('accounts', toDynamicsAccountCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')[1].split(')')[0];
+        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
         return id;
       }
       case 'contact': {
         const response = await this.#odata.post('contacts', toDynamicsContactCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')[1].split(')')[0];
+        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
         return id;
       }
       case 'lead': {
         const response = await this.#odata.post('leads', toDynamicsLeadCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')[1].split(')')[0];
+        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
         return id;
       }
       case 'opportunity': {
         const response = await this.#odata.post('opportunities', toDynamicsOpportunityCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')[1].split(')')[0];
+        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
         return id;
       }
       case 'user':
