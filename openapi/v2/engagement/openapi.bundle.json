@@ -4,11 +4,9 @@
     "version": "0.11.1",
     "title": "Supaglue Engagement API",
     "contact": {
-      "name": "Supaglue",
-      "email": "docs@supaglue.com",
-      "url": "https://supaglue.com"
+      "name": "Supaglue"
     },
-    "description": "# Introduction\n\nWelcome to the Supaglue Actions API (Engagement) documentation. You can use this API to read and write data from and to third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)\n\n### Base API URL\n\n```\nhttps://api.supaglue.io/engagement/v2\n```\n"
+    "description": "#### Introduction\nWelcome to the Supaglue Actions API (Engagement) documentation. You can use this API to write to third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)\n\n#### Reading data\nTo read data from third-party providers, refer to Supaglue's [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/engagement/v2\n```\n"
   },
   "servers": [
     {

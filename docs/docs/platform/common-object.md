@@ -2,18 +2,18 @@
 description: ''
 ---
 
-# Common schema
+# Common object
 
 Supaglue applies a common model to normalize core objects and fields across connectors within a single category. This common model abstracts away dealing with provider-specific schemas:
 
 - When defining a managed sync, the `common_model_objects` key in the sync configuration lets you specify which objects you'd like to fetch in normalized format into the same destination table.
-- Common schema fields are also used in both request and response signatures in the actions API. Supaglue applies the common schema mappings against each provider when sending requests and returning responses.
+- Common object fields are also used in both request and response signatures in the actions API. Supaglue applies the common object mappings against each provider when sending requests and returning responses.
 
 ## Common model mappings
 
 ### Users
 
-| Supaglue Common Schema | Salesforce Field       | HubSpot Field          |
+| Supaglue Common Object | Salesforce Field       | HubSpot Field          |
 |------------------------|------------------------|------------------------|
 | `remoteId`               | `Id`                     | `id`                     |
 | `name`                   | `Name`                   | `(firstName, lastName)`  |
@@ -27,7 +27,7 @@ Supaglue applies a common model to normalize core objects and fields across conn
 
 ### Leads
 
-| Supaglue Common Schema | Salesforce Field       | HubSpot Field          |
+| Supaglue Common Object | Salesforce Field       | HubSpot Field          |
 |------------------------|------------------------|------------------------|
 | `remoteId`               | `Id`                     |                        |
 | `remoteOwnerId`          | `OwnerId`                |                        |
@@ -49,7 +49,7 @@ Supaglue applies a common model to normalize core objects and fields across conn
 
 ### Contacts
 
-| Supaglue Common Schema | Salesforce Field       | HubSpot Field          |
+| Supaglue Common Object | Salesforce Field       | HubSpot Field          |
 |------------------------|-----------------------|-----------------------|
 | `remoteId`               | `Id`                    | `id`                    |
 | `remoteAccountId`        | `AccountId`             | (from associations)   |
@@ -74,7 +74,7 @@ Supaglue applies a common model to normalize core objects and fields across conn
 
 ### Accounts
 
-| Supaglue Common Schema | Salesforce Field       | HubSpot Field          |
+| Supaglue Common Object | Salesforce Field       | HubSpot Field          |
 |------------------------|-----------------------|-----------------------|
 | `remoteId`               | `Id`                    | `id`                    |
 | `name`                   | `Name`                  | `name`                  |
@@ -98,7 +98,7 @@ Supaglue applies a common model to normalize core objects and fields across conn
 
 ### Opportunities
 
-| Supaglue Common Schema | Salesforce Field       | HubSpot Field          |
+| Supaglue Common Object | Salesforce Field       | HubSpot Field          |
 |------------------------|-----------------------|-----------------------|
 | `remoteId`               | `Id`                    | `id`                    |
 | `remoteOwnerId`          | `OwnerId`               | `hubspot_owner_id`      |

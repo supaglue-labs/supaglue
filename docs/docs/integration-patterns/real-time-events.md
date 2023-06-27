@@ -2,13 +2,13 @@
 description: ''
 ---
 
-# Real-time events (beta)
+# Real-time events
 
-Real-time events lets you subscribe to a webhook and consume change events from your customer's CRM.
+Real-time events lets you subscribe to a webhook and consume change events from your customer's CRM. This can be used for real-time notifications or real-time updates.
 
 :::info
 
-This feature is in private beta in Supaglue Cloud. Please reach out to our team if you'd like early access.
+This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) you'd like early access.
 :::
 
 ## How it works

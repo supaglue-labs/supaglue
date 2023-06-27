@@ -5,7 +5,7 @@ sidebar_position: 7
 
 # API Reference
 
-Supaglue supports 3 APIs. The Management API is used to create customers, connections, and configure managed syncs. The Actions API consists of two unified APIs, one for CRM connectors and one for sales engagement connectors.
+Supaglue supports three APIs. The Management API is used to create customers, connections, and configure managed syncs. The Actions API consists of two unified APIs, one for CRM connectors and one for sales engagement connectors.
 
 - [Management API V2](api/v2/mgmt) can be used to manage customer integrations and connections. 
 - Actions API

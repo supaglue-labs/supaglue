@@ -5,7 +5,7 @@ description: ''
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Actions API
+# Actions API (writes)
 
 The Actions API lets you perform common operations on your customers' SaaS tools.
 ![actions_api_diagram](/img/actions-api-diagram.png 'actions API diagram')
@@ -67,7 +67,7 @@ curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 
 :::info
 
-Besides unifying the API endpoints, the actions API also applies the Supaglue common model, which normalizes the request and response schemas across different providers in the same category. See [Common schema](../platform/common-schema) to learn more.
+Besides unifying the API endpoints, the actions API also applies the Supaglue common model, which normalizes the request and response schemas across different providers in the same category. See [Common schema](../platform/common-object) to learn more.
 
 :::
 
