@@ -2491,9 +2491,9 @@
                 "fetch_all_fields_into_raw": {
                   "type": "boolean"
                 },
-                "schema": {
-                  "$ref": "#/components/schemas/object_schema",
-                  "description": "If set, will sync these fields in addition to the common model."
+                "schema_id": {
+                  "type": "string",
+                  "description": "If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is."
                 }
               },
               "required": [
@@ -2511,8 +2511,8 @@
                   "type": "string",
                   "example": "contacts"
                 },
-                "schema": {
-                  "$ref": "#/components/schemas/object_schema"
+                "schema_id": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -2545,35 +2545,6 @@
             "strategy": "full then incremental"
           }
         }
-      },
-      "object_schema": {
-        "type": "object",
-        "properties": {
-          "fields": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "mapped_name": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "name"
-              ]
-            }
-          },
-          "allow_additional_field_mappings": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "fields",
-          "allow_additional_field_mappings"
-        ]
       },
       "create_provider_config": {
         "type": "object",
