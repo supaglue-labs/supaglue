@@ -60,7 +60,6 @@ export const createActivities = ({
       remoteService,
       destinationService,
       applicationService,
-      syncService,
       syncConfigService,
       schemaService
     ),

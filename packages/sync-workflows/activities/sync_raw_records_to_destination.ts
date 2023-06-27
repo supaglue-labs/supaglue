@@ -7,7 +7,7 @@ import { DestinationService } from '@supaglue/core/services/destination_service'
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
-import { ApplicationService, SyncService } from '../services';
+import { ApplicationService } from '../services';
 
 export type SyncRawRecordsToDestinationArgs = {
   syncId: string;
@@ -30,7 +30,6 @@ export function createSyncRawRecordsToDestination(
   remoteService: RemoteService,
   destinationService: DestinationService,
   applicationService: ApplicationService,
-  syncService: SyncService,
   syncConfigService: SyncConfigService,
   schemaService: SchemaService
 ) {
@@ -68,11 +67,10 @@ export function createSyncRawRecordsToDestination(
           ? await (client as CrmRemoteClient).listCustomObjectRecords(object, modifiedAfter, heartbeat)
           : await (async function () {
               // Find schema / field mapping information
-              const sync = await syncService.getSyncById(syncId);
               const syncConfig = await syncConfigService.getBySyncId(syncId);
               const schemaId = syncConfig?.config?.standardObjects?.find((o) => o.object === object)?.schemaId;
               const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
-              const customerFieldMapping = sync.schemaMappingsConfig?.standardObjects?.find(
+              const customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
                 (o) => o.object === object
               )?.fieldMappings;
               const fieldMappingConfig = createFieldMappingConfig(schema?.config, customerFieldMapping);

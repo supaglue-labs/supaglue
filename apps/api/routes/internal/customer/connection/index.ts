@@ -7,7 +7,11 @@ import {
   GetConnectionPathParams,
   GetConnectionRequest,
   GetConnectionResponse,
+  UpdateConnectionPathParams,
+  UpdateConnectionRequest,
+  UpdateConnectionResponse,
 } from '@supaglue/schemas/v2/mgmt';
+import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 import sync from './sync';
@@ -40,7 +44,16 @@ export default function init(app: Router): void {
     }
   );
 
-  // NOTE: There is no PUT /connections/:connection_id since updating a connection is done upon a successful oauth flow
+  connectionRouter.patch(
+    '/:connection_id',
+    async (
+      req: Request<UpdateConnectionPathParams, UpdateConnectionResponse, UpdateConnectionRequest>,
+      res: Response<UpdateConnectionResponse>
+    ) => {
+      const connection = await connectionService.updateConnection(req.params.connection_id, camelcaseKeys(req.body));
+      return res.status(200).send(snakecaseKeys(connection));
+    }
+  );
 
   connectionRouter.delete(
     '/:connection_id',

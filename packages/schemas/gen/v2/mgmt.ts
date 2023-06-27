@@ -135,6 +135,8 @@ export interface paths {
     get: operations["getConnection"];
     /** Delete connection */
     delete: operations["deleteConnection"];
+    /** Update connection */
+    patch: operations["updateConnection"];
     parameters: {
       path: {
         customer_id: string;
@@ -149,8 +151,6 @@ export interface paths {
     post: operations["enableSync"];
     /** Disable sync */
     delete: operations["disableSync"];
-    /** Update sync */
-    patch: operations["updateSync"];
     parameters: {
       path: {
         customer_id: string;
@@ -298,6 +298,15 @@ export interface components {
        * @example https://app.hubspot.com/contacts/123456
        */
       instance_url: string;
+      schema_mappings_config?: {
+        standard_objects?: ({
+            object: string;
+            field_mappings: ({
+                schema_field: string;
+                mapped_field: string;
+              })[];
+          })[];
+      };
     };
     /** @enum {string} */
     category: "crm" | "engagement";
@@ -438,15 +447,6 @@ export interface components {
       force_sync_flag: boolean;
       /** @example false */
       paused: boolean;
-      schema_mappings_config?: {
-        standard_objects?: ({
-            object: string;
-            field_mappings: ({
-                schema_field: string;
-                mapped_field: string;
-              })[];
-          })[];
-      };
     };
     create_update_customer: {
       /** @example your-customers-unique-application-id */
@@ -997,46 +997,8 @@ export interface operations {
       204: never;
     };
   };
-  getSync: {
-    /** Get sync */
-    responses: {
-      /** @description Sync */
-      200: {
-        content: {
-          "application/json": {
-            sync?: components["schemas"]["sync"];
-          };
-        };
-      };
-    };
-  };
-  enableSync: {
-    /** Enable sync */
-    requestBody: {
-      content: {
-        "application/json": {
-          schema_mappings_config?: components["schemas"]["sync"]["schema_mappings_config"];
-        };
-      };
-    };
-    responses: {
-      /** @description Sync enabled */
-      200: {
-        content: {
-          "application/json": components["schemas"]["sync"];
-        };
-      };
-    };
-  };
-  disableSync: {
-    /** Disable sync */
-    responses: {
-      /** @description Sync */
-      204: never;
-    };
-  };
-  updateSync: {
-    /** Update sync */
+  updateConnection: {
+    /** Update connection */
     requestBody: {
       content: {
         "application/json": {
@@ -1053,12 +1015,43 @@ export interface operations {
       };
     };
     responses: {
+      /** @description Connection */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection"];
+        };
+      };
+    };
+  };
+  getSync: {
+    /** Get sync */
+    responses: {
       /** @description Sync */
+      200: {
+        content: {
+          "application/json": {
+            sync?: components["schemas"]["sync"];
+          };
+        };
+      };
+    };
+  };
+  enableSync: {
+    /** Enable sync */
+    responses: {
+      /** @description Sync enabled */
       200: {
         content: {
           "application/json": components["schemas"]["sync"];
         };
       };
+    };
+  };
+  disableSync: {
+    /** Disable sync */
+    responses: {
+      /** @description Sync */
+      204: never;
     };
   };
   getWebhook: {

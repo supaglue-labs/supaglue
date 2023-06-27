@@ -5,7 +5,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { Prisma, PrismaClient, Sync as SyncModel } from '@supaglue/db';
+import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
   processSyncChanges,
@@ -13,16 +13,7 @@ import {
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
 import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
-import type {
-  ProviderName,
-  SchemaMappingsConfig,
-  Sync,
-  SyncCreateParams,
-  SyncIdentifier,
-  SyncState,
-  SyncType,
-  SyncUpdateParams,
-} from '@supaglue/types';
+import type { ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
   ConnectionStatus,
@@ -171,7 +162,7 @@ export class ConnectionAndSyncService {
     }
   }
 
-  public async enableSyncByConnectionId(connectionId: string, params: SyncCreateParams): Promise<Sync> {
+  public async enableSyncByConnectionId(connectionId: string): Promise<Sync> {
     const connection = await this.#connectionService.getSafeById(connectionId);
     const syncConfig = await this.#syncConfigService.findByProviderId(connection.providerId);
 
@@ -193,7 +184,6 @@ export class ConnectionAndSyncService {
           state: {
             phase: 'created',
           },
-          schemaMappingsConfig: params.schemaMappingsConfig,
         },
       }),
       this.#prisma.syncChange.create({
@@ -224,18 +214,6 @@ export class ConnectionAndSyncService {
         },
       }),
     ]);
-  }
-
-  public async updateSyncByConnectionId(connectionId: string, params: SyncUpdateParams): Promise<Sync> {
-    const sync = await this.#prisma.sync.update({
-      where: {
-        connectionId,
-      },
-      data: {
-        schemaMappingsConfig: params.schemaMappingsConfig === null ? Prisma.DbNull : params.schemaMappingsConfig,
-      },
-    });
-    return fromSyncModel(sync);
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
@@ -632,6 +610,5 @@ function fromSyncModel(model: SyncModel): Sync {
     ...otherStrategyProps,
     state: model.state as SyncState,
     paused: model.paused,
-    schemaMappingsConfig: model.schemaMappingsConfig as SchemaMappingsConfig | undefined,
   } as Sync;
 }
