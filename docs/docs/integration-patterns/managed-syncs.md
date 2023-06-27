@@ -107,11 +107,9 @@ The sync configuration references the provider and destination configurations, a
   "common_objects": [
     {
       "object": "contact",
-      "fetch_all_fields_into_raw": false
     },
     {
       "object": "account",
-      "fetch_all_fields_into_raw": true
     },
   ],
   "standard_objects": [

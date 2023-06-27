@@ -26,14 +26,11 @@ properties:
         object:
           type: string
           example: contacts
-        fetch_all_fields_into_raw:
-          type: boolean
         schema_id:
           type: string
           description: If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is.
       required:
         - object
-        - fetch_all_fields_into_raw
   standard_objects:
     type: array
     items:

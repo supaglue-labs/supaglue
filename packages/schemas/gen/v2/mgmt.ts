@@ -347,7 +347,6 @@ export interface components {
       common_objects?: ({
           /** @example contacts */
           object: string;
-          fetch_all_fields_into_raw: boolean;
           /** @description If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is. */
           schema_id?: string;
         })[];

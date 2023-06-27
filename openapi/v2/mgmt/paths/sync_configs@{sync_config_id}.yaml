@@ -24,9 +24,7 @@ get:
                     strategy: full then incremental
                   common_objects:
                     - object: contacts
-                      fetch_all_fields_into_raw: false
                     - object: accounts
-                      fetch_all_fields_into_raw: false
                   standard_objects:
                     - object: emails
                     - object: tasks
@@ -61,9 +59,7 @@ put:
                     strategy: full then incremental
                   common_objects:
                     - object: contacts
-                      fetch_all_fields_into_raw: false
                     - object: accounts
-                      fetch_all_fields_into_raw: false
                   standard_objects:
                     - object: emails
                     - object: tasks
@@ -93,9 +89,7 @@ delete:
                     strategy: full then incremental
                   common_objects:
                     - object: contacts
-                      fetch_all_fields_into_raw: false
                     - object: accounts
-                      fetch_all_fields_into_raw: false
                   standard_objects:
                     - object: emails
                     - object: tasks

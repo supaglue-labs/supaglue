@@ -1,13 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
-import type {
-  CommonObjectConfig,
-  ProviderCategory,
-  SyncConfig,
-  SyncConfigCreateParams,
-  SyncConfigUpdateParams,
-} from '@supaglue/types';
-import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
-import { ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
+import type { SyncConfig, SyncConfigCreateParams, SyncConfigUpdateParams } from '@supaglue/types';
 import { BadRequestError, NotFoundError } from '../errors';
 import { fromSyncConfigModel, toSyncConfigModel } from '../mappers';
 
@@ -148,22 +140,6 @@ export class SyncConfigService {
     });
   }
 }
-
-export const getDefaultCommonObjects = (
-  category: ProviderCategory,
-  fetchAllFieldsIntoRaw: boolean
-): CommonObjectConfig[] => {
-  if (category === 'engagement') {
-    return ENGAGEMENT_COMMON_MODEL_TYPES.map((object) => ({
-      object,
-      fetchAllFieldsIntoRaw,
-    }));
-  }
-  return CRM_COMMON_MODEL_TYPES.map((object) => ({
-    object,
-    fetchAllFieldsIntoRaw,
-  }));
-};
 
 const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
   // Check that there are no duplicates
