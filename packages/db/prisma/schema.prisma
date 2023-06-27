@@ -100,22 +100,23 @@ model SyncConfigChange {
 }
 
 model Connection {
-  id           String     @id @default(uuid())
+  id                   String     @id @default(uuid())
   // CRM, HRIS, etc.
-  category     String
+  category             String
   // Salesforce, Hubspot, etc.
-  providerName String     @map("provider_name")
-  status       String // available | added | authorized | callable
-  credentials  Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
-  customer     Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId   String     @map("customer_id")
-  instanceUrl  String     @default("") @map("instance_url")
-  createdAt    DateTime   @default(now()) @map("created_at")
-  updatedAt    DateTime   @updatedAt @map("updated_at")
-  sync         Sync?
-  replayIds    ReplayId[]
-  provider     Provider   @relation(fields: [providerId], references: [id])
-  providerId   String     @map("provider_id")
+  providerName         String     @map("provider_name")
+  status               String // available | added | authorized | callable
+  credentials          Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
+  customer             Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId           String     @map("customer_id")
+  instanceUrl          String     @default("") @map("instance_url")
+  createdAt            DateTime   @default(now()) @map("created_at")
+  updatedAt            DateTime   @updatedAt @map("updated_at")
+  sync                 Sync?
+  replayIds            ReplayId[]
+  provider             Provider   @relation(fields: [providerId], references: [id])
+  providerId           String     @map("provider_id")
+  schemaMappingsConfig Json?      @map("schema_mappings_config")
 
   @@unique([customerId, providerId])
   @@map("connections")
@@ -131,6 +132,7 @@ model Sync {
   createdAt            DateTime      @default(now()) @map("created_at")
   updatedAt            DateTime      @updatedAt @map("updated_at")
   paused               Boolean       @default(false)
+  /// DEPRECATED: Use Connection.schemaMappingConfig instead.
   schemaMappingsConfig Json?         @map("schema_mappings_config")
   syncConfigId         String        @map("sync_config_id")
   syncConfig           SyncConfig    @relation(fields: [syncConfigId], references: [id])
