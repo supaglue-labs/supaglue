@@ -6,6 +6,7 @@ import {
   CustomerService,
   ProviderService,
   RemoteService,
+  SchemaService,
   SgUserService,
   SyncConfigService,
   SyncHistoryService,
@@ -33,6 +34,7 @@ export type CoreDependencyContainer = {
   syncHistoryService: SyncHistoryService;
   webhookService: WebhookService;
   destinationService: DestinationService;
+  schemaService: SchemaService;
 
   crmCommonModelService: CrmCommonModelService;
   engagementCommonModelService: EngagementCommonModelService;
@@ -79,6 +81,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const remoteService = new RemoteService(connectionService, providerService);
   const webhookService = new WebhookService({ prisma });
   const destinationService = new DestinationService(prisma);
+  const schemaService = new SchemaService(prisma);
 
   const crmCommonModelService = new CrmCommonModelService(remoteService, destinationService);
   const engagementCommonModelService = new EngagementCommonModelService(remoteService, destinationService);
@@ -101,6 +104,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     remoteService,
     webhookService,
     destinationService,
+    schemaService,
     syncHistoryService,
     crmCommonModelService,
     engagementCommonModelService,

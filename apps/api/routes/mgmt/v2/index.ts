@@ -5,6 +5,7 @@ import customer from './customer';
 import destination from './destination';
 import forceSync from './force_sync';
 import provider from './provider';
+import schema from './schema';
 import syncConfig from './sync_config';
 import syncHistory from './sync_history';
 import syncInfo from './sync_info';
@@ -19,6 +20,7 @@ export default function init(app: Router): void {
   customer(v2Router);
   destination(v2Router);
   provider(v2Router);
+  schema(v2Router);
   webhook(v2Router);
   syncConfig(v2Router);
   syncInfo(v2Router);

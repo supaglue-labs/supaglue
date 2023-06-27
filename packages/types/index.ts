@@ -13,6 +13,7 @@ export * from './oauth';
 export * from './passthrough';
 export * from './provider';
 export * from './raw_record';
+export * from './schema';
 export * from './sg_user';
 export * from './sync';
 export * from './sync_config';

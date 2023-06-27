@@ -50,6 +50,28 @@ export interface paths {
       };
     };
   };
+  "/schemas": {
+    /**
+     * List schemas 
+     * @description Get a list of schemas
+     */
+    get: operations["getSchemas"];
+    /** Create schema */
+    post: operations["createSchema"];
+  };
+  "/schemas/{schema_id}": {
+    /** Get schema */
+    get: operations["getSchema"];
+    /** Update schema */
+    put: operations["updateSchema"];
+    /** Delete schema */
+    delete: operations["deleteSchema"];
+    parameters: {
+      path: {
+        schema_id: string;
+      };
+    };
+  };
   "/providers": {
     /**
      * List providers 
@@ -239,6 +261,22 @@ export interface components {
       /** @example password */
       password: string;
     };
+    schema: {
+      /** @example 649b1e49-2722-46a3-a7e7-10caae78a43f */
+      id: string;
+      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+      application_id: string;
+      /** @example my-schema */
+      name: string;
+      config: {
+        fields: ({
+            name: string;
+            mapped_name?: string;
+          })[];
+        allow_additional_field_mappings: boolean;
+      };
+    };
+    schema_config: components["schemas"]["schema"];
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -446,6 +484,11 @@ export interface components {
       category: "engagement";
       name: components["schemas"]["provider_name_engagement"];
     }]>;
+    create_update_schema: {
+      /** @example my-schema */
+      name: string;
+      config: components["schemas"]["schema"]["config"];
+    };
     create_update_destination: {
       /** @example My Destination */
       name: string;
@@ -696,6 +739,74 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["destination"];
+        };
+      };
+    };
+  };
+  getSchemas: {
+    /**
+     * List schemas 
+     * @description Get a list of schemas
+     */
+    responses: {
+      /** @description Schemas */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["schema"])[];
+        };
+      };
+    };
+  };
+  createSchema: {
+    /** Create schema */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_schema"];
+      };
+    };
+    responses: {
+      /** @description Schema created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["schema"];
+        };
+      };
+    };
+  };
+  getSchema: {
+    /** Get schema */
+    responses: {
+      /** @description Schema */
+      200: {
+        content: {
+          "application/json": components["schemas"]["schema"];
+        };
+      };
+    };
+  };
+  updateSchema: {
+    /** Update schema */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_schema"];
+      };
+    };
+    responses: {
+      /** @description Schema */
+      200: {
+        content: {
+          "application/json": components["schemas"]["schema"];
+        };
+      };
+    };
+  };
+  deleteSchema: {
+    /** Delete schema */
+    responses: {
+      /** @description Schema */
+      204: {
+        content: {
+          "application/json": components["schemas"]["schema"];
         };
       };
     };

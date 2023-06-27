@@ -4,6 +4,7 @@ export * from './connection_service';
 export * from './customer_service';
 export * from './provider_service';
 export * from './remote_service';
+export * from './schema_service';
 export * from './sg_user_service';
 export * from './sync_config_service';
 export * from './sync_history_service';
