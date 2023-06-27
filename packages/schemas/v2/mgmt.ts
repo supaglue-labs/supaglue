@@ -43,6 +43,33 @@ export type UpdateDestinationRequest =
 export type UpdateDestinationResponse =
   operations['updateDestination']['responses'][keyof operations['updateDestination']['responses']]['content']['application/json'];
 
+export type GetSchemasPathParams = never;
+export type GetSchemasQueryParams = never;
+export type GetSchemasRequest = never;
+export type GetSchemasResponse =
+  operations['getSchemas']['responses'][keyof operations['getSchemas']['responses']]['content']['application/json'];
+
+export type CreateSchemaPathParams = never;
+export type CreateSchemaRequest = operations['createSchema']['requestBody']['content']['application/json'];
+export type CreateSchemaResponse =
+  operations['createSchema']['responses'][keyof operations['createSchema']['responses']]['content']['application/json'];
+
+export type GetSchemaPathParams = paths[`/schemas/{schema_id}`]['parameters']['path'];
+export type GetSchemaRequest = never;
+export type GetSchemaResponse =
+  operations['getSchema']['responses'][keyof operations['getSchema']['responses']]['content']['application/json'];
+
+export type UpdateSchemaPathParams = paths[`/schemas/{schema_id}`]['parameters']['path'];
+export type UpdateSchemaRequest =
+  operations['updateSchema']['requestBody'][keyof operations['updateSchema']['requestBody']]['application/json'];
+export type UpdateSchemaResponse =
+  operations['updateSchema']['responses'][keyof operations['updateSchema']['responses']]['content']['application/json'];
+
+export type DeleteSchemaPathParams = paths[`/schemas/{schema_id}`]['parameters']['path'];
+export type DeleteSchemaRequest = never;
+export type DeleteSchemaResponse =
+  operations['deleteSchema']['responses'][keyof operations['deleteSchema']['responses']]['content']['application/json'];
+
 export type GetProvidersPathParams = never;
 export type GetProvidersQueryParams = never;
 export type GetProvidersRequest = never;

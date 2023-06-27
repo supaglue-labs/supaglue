@@ -35,6 +35,10 @@ paths:
     $ref: paths/destinations.yaml
   '/destinations/{destination_id}':
     $ref: paths/destinations@{destination_id}.yaml
+  '/schemas':
+    $ref: paths/schemas.yaml
+  '/schemas/{schema_id}':
+    $ref: paths/schemas@{schema_id}.yaml
   '/providers':
     $ref: paths/providers.yaml
   '/providers/{provider_id}':
@@ -66,6 +70,8 @@ tags:
     description: A `Destination` is a place where to which data can be written.
   - name: Providers
     description: A `Provider` is a CRM or other system that we can connect to.
+  - name: Schema
+    description: A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API.
   - name: SyncConfigs
     description: A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule.
   - name: Syncs
@@ -89,6 +95,10 @@ components:
       $ref: ./components/schemas/objects/s3_config.yaml
     postgres_config:
       $ref: ./components/schemas/objects/postgres_config.yaml
+    schema:
+      $ref: ./components/schemas/objects/schema.yaml
+    schema_config:
+      $ref: ./components/schemas/objects/schema.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
     category:
@@ -115,6 +125,8 @@ components:
       $ref: ./components/schemas/create_provider.yaml
     update_provider:
       $ref: ./components/schemas/update_provider.yaml
+    create_update_schema:
+      $ref: ./components/schemas/create_update_schema.yaml
     create_update_destination:
       $ref: ./components/schemas/create_update_destination.yaml
     create_update_sync_config:
