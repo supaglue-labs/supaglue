@@ -32,17 +32,7 @@ export type CommonObjectConfig = {
 
 export type StandardObjectConfig = {
   object: string;
-  schema?: StandardObjectSchema;
-};
-
-export type StandardObjectSchema = {
-  fields: StandardObjectSchemaField[];
-  allowAdditionalFieldMappings: boolean;
-};
-
-export type StandardObjectSchemaField = {
-  name: string; // my_first_column
-  mappedName?: string; // salesforce_first_column
+  schemaId?: string;
 };
 
 export type CustomObjectConfig = {

@@ -2,7 +2,7 @@ import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
-import { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
+import { ConnectionService, RemoteService, SchemaService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
@@ -31,7 +31,8 @@ export function createSyncRawRecordsToDestination(
   destinationService: DestinationService,
   applicationService: ApplicationService,
   syncService: SyncService,
-  syncConfigService: SyncConfigService
+  syncConfigService: SyncConfigService,
+  schemaService: SchemaService
 ) {
   return async function syncRawRecordsToDestination({
     syncId,
@@ -69,11 +70,12 @@ export function createSyncRawRecordsToDestination(
               // Find schema / field mapping information
               const sync = await syncService.getSyncById(syncId);
               const syncConfig = await syncConfigService.getBySyncId(syncId);
-              const schema = syncConfig?.config?.standardObjects?.find((o) => o.object === object)?.schema;
+              const schemaId = syncConfig?.config?.standardObjects?.find((o) => o.object === object)?.schemaId;
+              const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
               const customerFieldMapping = sync.schemaMappingsConfig?.standardObjects?.find(
                 (o) => o.object === object
               )?.fieldMappings;
-              const fieldMappingConfig = createFieldMappingConfig(schema, customerFieldMapping);
+              const fieldMappingConfig = createFieldMappingConfig(schema?.config, customerFieldMapping);
               return await (client as CrmRemoteClient).listStandardObjectRecords(
                 object,
                 fieldMappingConfig,
