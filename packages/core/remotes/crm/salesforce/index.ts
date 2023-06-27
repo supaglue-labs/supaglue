@@ -23,6 +23,7 @@ import {
 import {
   ConnectionUnsafe,
   CRMProvider,
+  NormalizedRawRecord,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -272,15 +273,17 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         transform: (chunk, encoding, callback) => {
           // TODO: types
           const { record, emittedAt } = chunk;
+          // not declaring this in-line so we have the opportunity to do type checking
+          const emittedRecord: NormalizedRawRecord = {
+            id: record.Id,
+            rawData: toMappedProperties(record, fieldMappingConfig),
+            isDeleted: record.IsDeleted === 'true',
+            lastModifiedAt: new Date(record.SystemModstamp),
+            emittedAt: emittedAt,
+          };
           try {
             // TODO: types
-            callback(null, {
-              id: record.Id,
-              rawData: toMappedProperties(record, fieldMappingConfig),
-              isDeleted: record.IsDeleted === 'true',
-              lastModifiedAt: new Date(record.SystemModstamp),
-              emittedAt: emittedAt,
-            });
+            callback(null, emittedRecord);
           } catch (e: any) {
             return callback(e);
           }
@@ -715,6 +718,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
       case 'INSUFFICIENT_ACCESS':
       case 'ERROR_HTTP_403':
+      case 'API_DISABLED_FOR_ORG':
         return new ForbiddenError(error.message);
       case 'ERROR_HTTP_401':
         return new UnauthorizedError(error.message);

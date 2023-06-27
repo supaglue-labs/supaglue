@@ -9,7 +9,6 @@ properties:
   config:
     $ref: ./objects/sync_config_data.yaml
 required:
-  - application_id
   - destination_id
   - provider_id
   - config

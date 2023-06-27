@@ -8,6 +8,7 @@ import auth from './auth';
 import customer from './customer';
 import destination from './destination';
 import provider from './provider';
+import schema from './schema';
 import syncConfig from './sync_config';
 import syncHistory from './sync_history';
 import syncInfo from './sync_info';
@@ -34,6 +35,7 @@ export default function init(app: Router): void {
   customer(internalRouter);
   destination(internalRouter);
   provider(internalRouter);
+  schema(internalRouter);
   webhook(internalRouter);
   syncConfig(internalRouter);
   syncInfo(internalRouter);

@@ -34,7 +34,24 @@ export type ConnectionCreateParams<T extends ProviderName> = {
   category: CategoryOfProviderName<T>;
   providerName: T;
   credentials: ConnectionCredentialsDecrypted<T>;
+  schemaMappingsConfig?: SchemaMappingsConfig;
   instanceUrl: string;
+};
+
+export type SchemaMappingsConfig = {
+  // TODO: Support custom objects.
+  commonObjects?: SchemaMappingsConfigForObject[];
+  standardObjects?: SchemaMappingsConfigForObject[];
+};
+
+export type SchemaMappingsConfigForObject = {
+  object: string;
+  fieldMappings: SchemaMappingsConfigObjectFieldMapping[];
+};
+
+export type SchemaMappingsConfigObjectFieldMapping = {
+  schemaField: string; // my_first_column
+  mappedField: string; // blah_1
 };
 
 export type ConnectionCreateParamsAny = ConnectionCreateParams<ProviderName>;
@@ -42,6 +59,10 @@ export type ConnectionCreateParamsAny = ConnectionCreateParams<ProviderName>;
 export type ConnectionUpsertParams<T extends ProviderName> = ConnectionCreateParams<T>;
 
 export type ConnectionUpsertParamsAny = ConnectionUpsertParams<ProviderName>;
+
+export type ConnectionUpdateParams = {
+  schemaMappingsConfig?: SchemaMappingsConfig | null;
+};
 
 export type ConnectionSafe<T extends ProviderName> = Omit<ConnectionCreateParams<T>, 'credentials'> & {
   id: string;

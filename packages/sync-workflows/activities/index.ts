@@ -2,6 +2,7 @@ import {
   ConnectionService,
   ProviderService,
   RemoteService,
+  SchemaService,
   SyncConfigService,
   SyncHistoryService,
 } from '@supaglue/core/services';
@@ -16,7 +17,7 @@ import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
 import { createSetForceSyncFlag } from './set_force_sync_flag';
 import { createSyncRawRecordsToDestination } from './sync_raw_records_to_destination';
-import { createSyncCommonRecordsToDestination } from './sync_records_to_destination';
+import { createSyncRecordsToDestination } from './sync_records_to_destination';
 import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
@@ -28,6 +29,7 @@ export const createActivities = ({
   syncConfigService,
   applicationService,
   destinationService,
+  schemaService,
 }: {
   connectionService: ConnectionService;
   remoteService: RemoteService;
@@ -37,6 +39,7 @@ export const createActivities = ({
   providerService: ProviderService;
   applicationService: ApplicationService;
   destinationService: DestinationService;
+  schemaService: SchemaService;
 }) => {
   return {
     getSync: createGetSync(syncService),
@@ -45,21 +48,21 @@ export const createActivities = ({
     doProcessSyncChanges: createDoProcessSyncChanges(syncService),
     setForceSyncFlag: createSetForceSyncFlag(syncService),
     updateSyncState: createUpdateSyncState(syncService),
-    syncCommonRecordsToDestination: createSyncCommonRecordsToDestination(
+    syncRecordsToDestination: createSyncRecordsToDestination(
       connectionService,
       remoteService,
       destinationService,
       syncConfigService,
       applicationService,
-      syncService
+      schemaService
     ),
     syncRawRecordsToDestination: createSyncRawRecordsToDestination(
       connectionService,
       remoteService,
       destinationService,
       applicationService,
-      syncService,
-      syncConfigService
+      syncConfigService,
+      schemaService
     ),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
     logSyncFinish: createLogSyncFinish({ syncHistoryService, applicationService, connectionService }),

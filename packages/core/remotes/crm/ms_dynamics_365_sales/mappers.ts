@@ -1,5 +1,60 @@
-import { Account, Contact, Lead, Opportunity, User } from '@supaglue/types/crm';
+import {
+  Account,
+  AccountCreateParams,
+  AccountUpdateParams,
+  Contact,
+  ContactCreateParams,
+  ContactUpdateParams,
+  Lead,
+  LeadCreateParams,
+  LeadUpdateParams,
+  Opportunity,
+  OpportunityCreateParams,
+  OpportunityUpdateParams,
+  User,
+} from '@supaglue/types/crm';
 import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
+
+const industryCodeToName = {
+  1: 'Accounting',
+  2: 'Agriculture and Non-petrol Natural Resource Extraction',
+  3: 'Broadcasting Printing and Publishing',
+  4: 'Brokers',
+  5: 'Building Supply Retail',
+  6: 'Business Services',
+  7: 'Consulting',
+  8: 'Consumer Services',
+  9: 'Design, Direction and Creative Management',
+  10: 'Distributors, Dispatchers and Processors',
+  11: "Doctor's Offices and Clinics",
+  12: 'Durable Manufacturing',
+  13: 'Eating and Drinking Places',
+  14: 'Entertainment Retail',
+  15: 'Equipment Rental and Leasing',
+  16: 'Financial',
+  17: 'Food and Tobacco Processing',
+  18: 'Inbound Capital Intensive Processing',
+  19: 'Inbound Repair and Services',
+  20: 'Insurance',
+  21: 'Legal Services',
+  22: 'Non-Durable Merchandise Retail',
+  23: 'Outbound Consumer Service',
+  24: 'Petrochemical Extraction and Distribution',
+  25: 'Service Retail',
+  26: 'SIG Affiliations',
+  27: 'Social Services',
+  28: 'Special Outbound Trade Contractors',
+  29: 'Specialty Realty',
+  30: 'Transportation',
+  31: 'Utility Creation and Distribution',
+  32: 'Vehicle Retail',
+  33: 'Wholesale',
+};
+
+const industryNameToCode = Object.entries(industryCodeToName).reduce(
+  (acc, [code, name]) => ({ ...acc, [name]: parseInt(code) }),
+  {}
+) as { [key: string]: number };
 
 type DynamicsAccount = {
   accountid: string;
@@ -111,111 +166,10 @@ export const fromDynamicsAccountToRemoteAccount = (dynamicsAccount: DynamicsAcco
     });
   }
 
-  let industry: string | null = null;
+  const industryCodeString = dynamicsAccount.industrycode?.toString() as unknown as keyof typeof industryCodeToName;
 
-  switch (dynamicsAccount.industrycode) {
-    case 1:
-      industry = 'Accounting';
-      break;
-    case 2:
-      industry = 'Agriculture and Non-petrol Natural Resource Extraction';
-      break;
-    case 3:
-      industry = 'Broadcasting Printing and Publishing';
-      break;
-    case 4:
-      industry = 'Brokers';
-      break;
-    case 5:
-      industry = 'Building Supply Retail';
-      break;
-    case 6:
-      industry = 'Business Services';
-      break;
-    case 7:
-      industry = 'Consulting';
-      break;
-    case 8:
-      industry = 'Consumer Services';
-      break;
-    case 9:
-      industry = 'Design, Direction and Creative Management';
-      break;
-    case 10:
-      industry = 'Distributors, Dispatchers and Processors';
-      break;
-    case 11:
-      industry = "Doctor's Offices and Clinics";
-      break;
-    case 12:
-      industry = 'Durable Manufacturing';
-      break;
-    case 13:
-      industry = 'Eating and Drinking Places';
-      break;
-    case 14:
-      industry = 'Entertainment Retail';
-      break;
-    case 15:
-      industry = 'Equipment Rental and Leasing';
-      break;
-    case 16:
-      industry = 'Financial';
-      break;
-    case 17:
-      industry = 'Food and Tobacco Processing';
-      break;
-    case 18:
-      industry = 'Inbound Capital Intensive Processing';
-      break;
-    case 19:
-      industry = 'Inbound Repair and Services';
-      break;
-    case 20:
-      industry = 'Insurance';
-      break;
-    case 21:
-      industry = 'Legal Services';
-      break;
-    case 22:
-      industry = 'Non-Durable Merchandise Retail';
-      break;
-    case 23:
-      industry = 'Outbound Consumer Service';
-      break;
-    case 24:
-      industry = 'Petrochemical Extraction and Distribution';
-      break;
-    case 25:
-      industry = 'Service Retail';
-      break;
-    case 26:
-      industry = 'SIG Affiliations';
-      break;
-    case 27:
-      industry = 'Social Services';
-      break;
-    case 28:
-      industry = 'Special Outbound Trade Contractors';
-      break;
-    case 29:
-      industry = 'Specialty Realty';
-      break;
-    case 30:
-      industry = 'Transportation';
-      break;
-    case 31:
-      industry = 'Utility Creation and Distribution';
-      break;
-    case 32:
-      industry = 'Vehicle Retail';
-      break;
-    case 33:
-      industry = 'Wholesale';
-      break;
-    default:
-      industry = null;
-  }
+  const industry =
+    industryCodeString && industryCodeString in industryCodeToName ? industryCodeToName[industryCodeString] : null;
 
   return {
     id: dynamicsAccount.accountid,
@@ -407,7 +361,7 @@ type DynamicsOpportunity = {
   name: string | null;
   description: string | null;
   statuscode: number | null;
-  totalamount: number | null;
+  actualvalue: number | null;
   actualclosedate: string | null;
   stepname: string | null;
   overriddencreatedon: string | null;
@@ -456,7 +410,7 @@ export const fromDynamicsOpportunityToRemoteOpportunity = (dynamicsOpportunity: 
     status,
     pipeline: opportunity_leadtoopportunitysalesprocess?.name ?? null,
     accountId: dynamicsOpportunity._parentaccountid_value,
-    amount: dynamicsOpportunity.totalamount,
+    amount: dynamicsOpportunity.actualvalue,
     closeDate: dynamicsOpportunity.actualclosedate ? new Date(dynamicsOpportunity.actualclosedate) : null,
     stage: stageid_processstage?.stagename ?? dynamicsOpportunity.stepname,
     createdAt: dynamicsOpportunity.overriddencreatedon
@@ -661,4 +615,179 @@ export const fromDynamicsUserToRemoteUser = (dynamicsUser: DynamicsUser): User =
     lastModifiedAt: new Date(dynamicsUser.modifiedon),
     rawData: dynamicsUser,
   };
+};
+
+export const toDynamicsContactCreateParams = (contact: ContactCreateParams): Record<string, unknown> => {
+  return {
+    firstname: contact.firstName,
+    lastname: contact.lastName,
+    'parentcustomerid@odata.bind': contact.accountId ? `/accounts(${contact.accountId})` : undefined,
+    'ownerid@odata.bind': contact.ownerId ? `/systemusers(${contact.ownerId})` : undefined,
+    ...toDynamicsAddresses(contact.addresses, 3),
+    ...toDynamicsEmailAddresses(contact.emailAddresses),
+    ...toDynamicsPhoneNumbers(contact.phoneNumbers),
+    ...contact.customFields,
+  };
+};
+
+export const toDynamicsContactUpdateParams = (contact: ContactUpdateParams): Record<string, unknown> => {
+  return toDynamicsContactCreateParams(contact);
+};
+
+export const toDynamicsOpportunityCreateParams = (opportunity: OpportunityCreateParams): Record<string, unknown> => {
+  return {
+    name: opportunity.name,
+    description: opportunity.description,
+    actualvalue: opportunity.amount,
+    stepname: opportunity.stage,
+    actualclosedate: opportunity.closeDate?.toISOString().split('T')[0],
+    'parentaccountid@odata.bind': opportunity.accountId ? `/accounts(${opportunity.accountId})` : undefined,
+    'ownerid@odata.bind': opportunity.ownerId ? `/systemusers(${opportunity.ownerId})` : undefined,
+    statuscode:
+      opportunity.status == 'OPEN' ? 1 : opportunity.status == 'WON' ? 3 : opportunity.status == 'LOST' ? 5 : undefined,
+    ...opportunity.customFields,
+  };
+};
+
+export const toDynamicsOpportunityUpdateParams = (opportunity: OpportunityUpdateParams): Record<string, unknown> => {
+  return toDynamicsOpportunityCreateParams(opportunity);
+};
+
+const leadSourceNameToCode: Record<string, number> = {
+  Advertisement: 1,
+  'Employee Referral': 2,
+  'External Referral': 3,
+  Partner: 4,
+  'Public Relations': 5,
+  Seminar: 6,
+  'Trade Show': 7,
+  Web: 8,
+  'Word of Mouth': 9,
+};
+
+export const toDynamicsLeadCreateParams = (lead: LeadCreateParams): Record<string, unknown> => {
+  return {
+    firstname: lead.firstName,
+    lastname: lead.lastName,
+    jobtitle: lead.title,
+    companyname: lead.company,
+    ...toDynamicsAddresses(lead.addresses, 2),
+    ...toDynamicsEmailAddresses(lead.emailAddresses),
+    ...toDynamicsPhoneNumbers(lead.phoneNumbers),
+    'ownerid@odata.bind': lead.ownerId ? `/systemusers(${lead.ownerId})` : undefined,
+    leadsourcecode:
+      lead.leadSource && lead.leadSource in leadSourceNameToCode
+        ? leadSourceNameToCode[lead.leadSource]
+        : 10 /* Other */,
+    ...lead.customFields,
+  };
+};
+
+export const toDynamicsLeadUpdateParams = (lead: LeadUpdateParams): Record<string, unknown> => {
+  return toDynamicsLeadCreateParams(lead);
+};
+
+export const toDynamicsAccountCreateParams = (account: AccountCreateParams): Record<string, unknown> => {
+  return {
+    name: account.name,
+    description: account.description,
+    industrycode:
+      account.industry && account.industry in industryNameToCode ? industryNameToCode[account.industry] : undefined,
+    websiteurl: account.website,
+    'ownerid@odata.bind': account.ownerId ? `/systemusers(${account.ownerId})` : undefined,
+    numberofemployees: account.numberOfEmployees,
+    ...account.customFields,
+  };
+};
+
+export const toDynamicsAccountUpdateParams = (account: AccountUpdateParams): Record<string, unknown> => {
+  return toDynamicsAccountCreateParams(account);
+};
+
+const toDynamicsAddresses = (addresses: Address[] | undefined, count: number): Record<string, string | null> => {
+  if (!addresses) {
+    return {};
+  }
+  // make sure primary address is first
+  addresses.sort((a, b) => {
+    if (a.addressType === 'primary') {
+      return -1;
+    }
+    if (b.addressType === 'primary') {
+      return 1;
+    }
+    return 0;
+  });
+
+  if (count < 2 || count > 3) {
+    throw new Error('Dynamics only supports 2 or 3 addresses, depending on type');
+  }
+
+  return addresses.slice(0, count).reduce((acc, address, index) => {
+    const addressType =
+      address.addressType === 'billing'
+        ? '1'
+        : address.addressType === 'shipping'
+        ? '2'
+        : address.addressType === 'primary'
+        ? '3'
+        : null;
+    return {
+      ...acc,
+      [`address${index + 1}_line1`]: address.street1,
+      [`address${index + 1}_line2`]: address.street2,
+      [`address${index + 1}_city`]: address.city,
+      [`address${index + 1}_stateorprovince`]: address.state,
+      [`address${index + 1}_postalcode`]: address.postalCode,
+      [`address${index + 1}_country`]: address.country,
+      [`address${index + 1}_addresstypecode`]: addressType,
+    };
+  }, {});
+};
+
+const toDynamicsEmailAddresses = (emailAddresses: EmailAddress[] | undefined): Record<string, string | null> => {
+  if (!emailAddresses) {
+    return {};
+  }
+  // make sure emailAddressType === 'primary' is first
+  emailAddresses.sort((a, b) => {
+    if (a.emailAddressType === 'primary') {
+      return -1;
+    }
+    if (b.emailAddressType === 'primary') {
+      return 1;
+    }
+    return 0;
+  });
+  // only the first 3 email addresses are supported
+  return emailAddresses.slice(0, 3).reduce((acc, emailAddress, index) => {
+    return {
+      ...acc,
+      [`emailaddress${index + 1}`]: emailAddress.emailAddress,
+    };
+  }, {});
+};
+
+const toDynamicsPhoneNumbers = (phoneNumbers: PhoneNumber[] | undefined): Record<string, string | null> => {
+  if (!phoneNumbers) {
+    return {};
+  }
+
+  // make sure phoneNumberType === 'primary' is first
+  phoneNumbers.sort((a, b) => {
+    if (a.phoneNumberType === 'primary') {
+      return -1;
+    }
+    if (b.phoneNumberType === 'primary') {
+      return 1;
+    }
+    return 0;
+  });
+  // only the first 3 phone numbers are supported
+  return phoneNumbers.slice(0, 3).reduce((acc, phoneNumber, index) => {
+    return {
+      ...acc,
+      [`telephone${index + 1}`]: phoneNumber.phoneNumber,
+    };
+  }, {});
 };

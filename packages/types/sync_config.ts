@@ -26,25 +26,16 @@ export type SyncStrategyConfig = {
 
 export type CommonObjectConfig = {
   object: CommonModelType;
+  // DEPRECATED: Use schemaId Instead.
   // If true, all fields will be fetched into the raw object and not just the ones needed for the common model.
   fetchAllFieldsIntoRaw: boolean;
-  // If set, will sync these fields in addition to the common model.
-  schema?: ObjectSchema;
+  // If set, will sync only these fields in addition to the common model. If unset, will sync all fields into the `rawData` column.
+  schemaId?: string;
 };
 
 export type StandardObjectConfig = {
   object: string;
-  schema?: ObjectSchema;
-};
-
-export type ObjectSchema = {
-  fields: ObjectSchemaField[];
-  allowAdditionalFieldMappings: boolean;
-};
-
-export type ObjectSchemaField = {
-  name: string; // my_first_column
-  mappedName?: string; // salesforce_first_column
+  schemaId?: string;
 };
 
 export type CustomObjectConfig = {

@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.11.0",
+    "version": "0.11.1",
     "title": "Supaglue Management API",
     "contact": {
       "name": "Supaglue",
@@ -377,6 +377,265 @@
           "schema": {
             "type": "string",
             "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/schemas": {
+      "get": {
+        "operationId": "getSchemas",
+        "tags": [
+          "Schemas"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List schemas",
+        "description": "Get a list of schemas",
+        "responses": {
+          "200": {
+            "description": "Schemas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/schema"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "649b1e49-2722-46a3-a7e7-10caae78a43f",
+                        "name": "my-schema",
+                        "config": {
+                          "fields": [
+                            {
+                              "name": "field1",
+                              "mappedName": "fieldA"
+                            },
+                            {
+                              "name": "field2",
+                              "mappedName": "fieldB"
+                            }
+                          ],
+                          "allow_additional_field_mappings": false
+                        }
+                      },
+                      {
+                        "id": "84b84f5b-cfa0-4ef5-ab41-6362f8cdd414",
+                        "name": "my-schema2",
+                        "config": {
+                          "fields": [
+                            {
+                              "name": "field1",
+                              "mappedName": "fieldA"
+                            },
+                            {
+                              "name": "field2",
+                              "mappedName": "fieldB"
+                            }
+                          ],
+                          "allow_additional_field_mappings": false
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createSchema",
+        "summary": "Create schema",
+        "tags": [
+          "Schemas"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_schema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Schema created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schemas/{schema_id}": {
+      "get": {
+        "operationId": "getSchema",
+        "summary": "Get schema",
+        "tags": [
+          "Schemas"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "0218d76c-b2e1-4c34-ac7d-22b8df065004",
+                      "name": "my-schema",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateSchema",
+        "summary": "Update schema",
+        "tags": [
+          "Schemas"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_schema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "959fd65f-850a-4c53-bc06-9f46facd4444",
+                      "name": "my-schema",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteSchema",
+        "summary": "Delete schema",
+        "tags": [
+          "Schemas"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Schema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "b2b0e394-541c-4e5b-b6b5-9eefd412bf8d",
+                      "name": "my-schema",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "schema_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "a821d59d-8b4c-4ad9-aeec-1292d2e28701"
           }
         }
       ]
@@ -1131,6 +1390,110 @@
           }
         }
       },
+      "patch": {
+        "operationId": "updateConnection",
+        "summary": "Update connection",
+        "tags": [
+          "Connection"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schema_mappings_config": {
+                    "type": "object",
+                    "properties": {
+                      "common_objects": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "object": {
+                              "type": "string"
+                            },
+                            "field_mappings": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "schema_field": {
+                                    "type": "string"
+                                  },
+                                  "mapped_field": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "schema_field",
+                                  "mapped_field"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "object",
+                            "field_mappings"
+                          ]
+                        }
+                      },
+                      "standard_objects": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "object": {
+                              "type": "string"
+                            },
+                            "field_mappings": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "schema_field": {
+                                    "type": "string"
+                                  },
+                                  "mapped_field": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "schema_field",
+                                  "mapped_field"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "object",
+                            "field_mappings"
+                          ]
+                        }
+                      }
+                    },
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "operationId": "deleteConnection",
         "summary": "Delete connection",
@@ -1211,95 +1574,9 @@
             "ApiKeyAuth": []
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "schema_mappings_config": {
-                    "$ref": "#/components/schemas/sync/properties/schema_mappings_config"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Sync enabled",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/sync"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "operationId": "updateSync",
-        "summary": "Update sync",
-        "tags": [
-          "Syncs"
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "schema_mappings_config": {
-                    "type": "object",
-                    "properties": {
-                      "standard_objects": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "object": {
-                              "type": "string"
-                            },
-                            "field_mappings": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "schema_field": {
-                                    "type": "string"
-                                  },
-                                  "mapped_field": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "schema_field",
-                                  "mapped_field"
-                                ]
-                              }
-                            }
-                          },
-                          "required": [
-                            "object",
-                            "field_mappings"
-                          ]
-                        }
-                      }
-                    },
-                    "nullable": true
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Sync",
             "content": {
               "application/json": {
                 "schema": {
@@ -1729,6 +2006,10 @@
       "description": "A `Provider` is a CRM or other system that we can connect to."
     },
     {
+      "name": "Schema",
+      "description": "A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API."
+    },
+    {
       "name": "SyncConfigs",
       "description": "A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule."
     },
@@ -1954,6 +2235,61 @@
           "password"
         ]
       },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "649b1e49-2722-46a3-a7e7-10caae78a43f"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "name": {
+            "type": "string",
+            "example": "my-schema"
+          },
+          "config": {
+            "$ref": "#/components/schemas/schema_config"
+          }
+        },
+        "required": [
+          "id",
+          "application_id",
+          "name",
+          "config"
+        ]
+      },
+      "schema_config": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "mapped_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "allow_additional_field_mappings": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fields",
+          "allow_additional_field_mappings"
+        ]
+      },
       "connection": {
         "type": "object",
         "properties": {
@@ -1993,6 +2329,77 @@
             "type": "string",
             "description": "Instance URL for the connected customer.",
             "example": "https://app.hubspot.com/contacts/123456"
+          },
+          "schema_mappings_config": {
+            "type": "object",
+            "properties": {
+              "common_objects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string"
+                    },
+                    "field_mappings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "schema_field": {
+                            "type": "string"
+                          },
+                          "mapped_field": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "schema_field",
+                          "mapped_field"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "field_mappings"
+                  ]
+                }
+              },
+              "standard_objects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string"
+                    },
+                    "field_mappings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "schema_field": {
+                            "type": "string"
+                          },
+                          "mapped_field": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "schema_field",
+                          "mapped_field"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "field_mappings"
+                  ]
+                }
+              }
+            }
           }
         },
         "required": [
@@ -2355,44 +2762,6 @@
           "paused": {
             "type": "boolean",
             "example": false
-          },
-          "schema_mappings_config": {
-            "type": "object",
-            "properties": {
-              "standard_objects": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "object": {
-                      "type": "string"
-                    },
-                    "field_mappings": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "schema_field": {
-                            "type": "string"
-                          },
-                          "mapped_field": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "schema_field",
-                          "mapped_field"
-                        ]
-                      }
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "field_mappings"
-                  ]
-                }
-              }
-            }
           }
         },
         "required": [
@@ -2556,6 +2925,22 @@
           }
         ]
       },
+      "create_update_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "my-schema"
+          },
+          "config": {
+            "$ref": "#/components/schemas/schema_config"
+          }
+        },
+        "required": [
+          "name",
+          "config"
+        ]
+      },
       "create_update_destination": {
         "allOf": [
           {
@@ -2630,7 +3015,6 @@
           }
         },
         "required": [
-          "application_id",
           "destination_id",
           "provider_id",
           "config"

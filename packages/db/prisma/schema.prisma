@@ -21,6 +21,7 @@ model Application {
   customers    Customer[]
   destinations Destination[]
   providers    Provider[]
+  schemas      Schema[]
 
   @@unique([orgId, name])
   @@map("applications")
@@ -74,16 +75,17 @@ model Provider {
 }
 
 model SyncConfig {
-  id            String      @id @default(uuid())
-  applicationId String      @map("application_id")
-  providerId    String      @map("provider_id")
-  provider      Provider    @relation(fields: [providerId], references: [id])
-  destinationId String      @map("destination_id")
-  destination   Destination @relation(fields: [destinationId], references: [id])
+  id            String       @id @default(uuid())
+  applicationId String       @map("application_id")
+  providerId    String       @map("provider_id")
+  provider      Provider     @relation(fields: [providerId], references: [id])
+  destinationId String       @map("destination_id")
+  destination   Destination  @relation(fields: [destinationId], references: [id])
   config        Json
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
   syncs         Sync[]
+  objectSyncs   ObjectSync[]
 
   // TODO: Eventually allow multiple destinations
   @@unique([providerId])
@@ -99,25 +101,70 @@ model SyncConfigChange {
 }
 
 model Connection {
-  id           String     @id @default(uuid())
+  id                   String       @id @default(uuid())
   // CRM, HRIS, etc.
-  category     String
+  category             String
   // Salesforce, Hubspot, etc.
-  providerName String     @map("provider_name")
-  status       String // available | added | authorized | callable
-  credentials  Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
-  customer     Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId   String     @map("customer_id")
-  instanceUrl  String     @default("") @map("instance_url")
-  createdAt    DateTime   @default(now()) @map("created_at")
-  updatedAt    DateTime   @updatedAt @map("updated_at")
-  sync         Sync?
-  replayIds    ReplayId[]
-  provider     Provider   @relation(fields: [providerId], references: [id])
-  providerId   String     @map("provider_id")
+  providerName         String       @map("provider_name")
+  status               String // available | added | authorized | callable
+  credentials          Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
+  customer             Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId           String       @map("customer_id")
+  instanceUrl          String       @default("") @map("instance_url")
+  createdAt            DateTime     @default(now()) @map("created_at")
+  updatedAt            DateTime     @updatedAt @map("updated_at")
+  sync                 Sync?
+  replayIds            ReplayId[]
+  provider             Provider     @relation(fields: [providerId], references: [id])
+  providerId           String       @map("provider_id")
+  schemaMappingsConfig Json?        @map("schema_mappings_config")
+  objectSyncs          ObjectSync[]
 
   @@unique([customerId, providerId])
   @@map("connections")
+}
+
+model ObjectSync {
+  id             String          @id @default(uuid())
+  // exactly one of [commonObject, standardObject, customObject] should be set
+  commonObject   String?         @map("common_object")
+  standardObject String?         @map("standard_object")
+  customObject   String?         @map("custom_object")
+  state          Json
+  forceSyncFlag  Boolean         @default(false) @map("force_sync_flag")
+  strategy       Json
+  connectionId   String          @unique @map("connection_id")
+  connection     Connection      @relation(fields: [connectionId], references: [id])
+  paused         Boolean         @default(false)
+  syncConfigId   String          @map("sync_config_id")
+  syncConfig     SyncConfig      @relation(fields: [syncConfigId], references: [id])
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  runs           ObjectSyncRun[]
+
+  @@map("object_syncs")
+}
+
+model ObjectSyncChange {
+  id           String   @id @default(uuid())
+  objectSyncId String   @map("object_sync_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("object_sync_changes")
+}
+
+model ObjectSyncRun {
+  id               String     @id @default(uuid())
+  objectSyncId     String     @map("object_sync_id")
+  objectSync       ObjectSync @relation(fields: [objectSyncId], references: [id], onDelete: Cascade)
+  // SUCCESS | ERROR | IN_PROGRESS
+  status           String
+  errorMessage     String?    @map("error_message")
+  startTimestamp   DateTime   @map("start_timestamp")
+  endTimestamp     DateTime?  @map("end_timestamp")
+  numRecordsSynced Int?       @map("num_records_synced")
+
+  @@map("object_sync_runs")
 }
 
 model Sync {
@@ -130,6 +177,7 @@ model Sync {
   createdAt            DateTime      @default(now()) @map("created_at")
   updatedAt            DateTime      @updatedAt @map("updated_at")
   paused               Boolean       @default(false)
+  /// DEPRECATED: Use Connection.schemaMappingConfig instead.
   schemaMappingsConfig Json?         @map("schema_mappings_config")
   syncConfigId         String        @map("sync_config_id")
   syncConfig           SyncConfig    @relation(fields: [syncConfigId], references: [id])
@@ -175,4 +223,17 @@ model ReplayId {
 
   @@unique([connectionId, eventType])
   @@map("replay_ids")
+}
+
+model Schema {
+  id            String      @id @default(uuid())
+  name          String
+  applicationId String      @map("application_id")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  config        Json
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@unique([applicationId, name])
+  @@map("schemas")
 }

@@ -2,12 +2,12 @@ import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
-import { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
+import { ConnectionService, RemoteService, SchemaService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
-import { ApplicationService, SyncService } from '../services';
+import { ApplicationService } from '../services';
 
 export type SyncRawRecordsToDestinationArgs = {
   syncId: string;
@@ -30,8 +30,8 @@ export function createSyncRawRecordsToDestination(
   remoteService: RemoteService,
   destinationService: DestinationService,
   applicationService: ApplicationService,
-  syncService: SyncService,
-  syncConfigService: SyncConfigService
+  syncConfigService: SyncConfigService,
+  schemaService: SchemaService
 ) {
   return async function syncRawRecordsToDestination({
     syncId,
@@ -67,13 +67,13 @@ export function createSyncRawRecordsToDestination(
           ? await (client as CrmRemoteClient).listCustomObjectRecords(object, modifiedAfter, heartbeat)
           : await (async function () {
               // Find schema / field mapping information
-              const sync = await syncService.getSyncById(syncId);
               const syncConfig = await syncConfigService.getBySyncId(syncId);
-              const schema = syncConfig?.config?.standardObjects?.find((o) => o.object === object)?.schema;
-              const customerFieldMapping = sync.schemaMappingsConfig?.standardObjects?.find(
+              const schemaId = syncConfig?.config?.standardObjects?.find((o) => o.object === object)?.schemaId;
+              const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
+              const customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
                 (o) => o.object === object
               )?.fieldMappings;
-              const fieldMappingConfig = createFieldMappingConfig(schema, customerFieldMapping);
+              const fieldMappingConfig = createFieldMappingConfig(schema?.config, customerFieldMapping);
               return await (client as CrmRemoteClient).listStandardObjectRecords(
                 object,
                 fieldMappingConfig,

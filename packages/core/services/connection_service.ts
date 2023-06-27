@@ -1,10 +1,11 @@
-import type { PrismaClient } from '@supaglue/db';
+import { Prisma, type PrismaClient } from '@supaglue/db';
 import type {
   ConnectionCredentialsDecryptedAny,
   ConnectionSafeAny,
   ConnectionSafeAnyWithIsSyncEnabled,
   ConnectionUnsafe,
   ConnectionUnsafeAny,
+  ConnectionUpdateParams,
   ProviderName,
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
@@ -172,6 +173,18 @@ export class ConnectionService {
     if (!connection) {
       throw new NotFoundError(`Connection not found for customer: ${customerId} and provider: ${providerId}`);
     }
+    return fromConnectionModelToConnectionSafe(connection);
+  }
+
+  public async updateConnection(id: string, params: ConnectionUpdateParams): Promise<ConnectionSafeAny> {
+    const connection = await this.#prisma.connection.update({
+      where: {
+        id,
+      },
+      data: {
+        schemaMappingsConfig: params.schemaMappingsConfig === null ? Prisma.DbNull : params.schemaMappingsConfig,
+      },
+    });
     return fromConnectionModelToConnectionSafe(connection);
   }
 
