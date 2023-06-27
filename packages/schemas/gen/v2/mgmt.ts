@@ -268,15 +268,15 @@ export interface components {
       application_id: string;
       /** @example my-schema */
       name: string;
-      config: {
-        fields: ({
-            name: string;
-            mapped_name?: string;
-          })[];
-        allow_additional_field_mappings: boolean;
-      };
+      config: components["schemas"]["schema_config"];
     };
-    schema_config: components["schemas"]["schema"];
+    schema_config: {
+      fields: ({
+          name: string;
+          mapped_name?: string;
+        })[];
+      allow_additional_field_mappings: boolean;
+    };
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -487,7 +487,7 @@ export interface components {
     create_update_schema: {
       /** @example my-schema */
       name: string;
-      config: components["schemas"]["schema"]["config"];
+      config: components["schemas"]["schema_config"];
     };
     create_update_destination: {
       /** @example My Destination */

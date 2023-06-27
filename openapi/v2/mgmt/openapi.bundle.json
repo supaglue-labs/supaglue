@@ -2218,33 +2218,7 @@
             "example": "my-schema"
           },
           "config": {
-            "type": "object",
-            "properties": {
-              "fields": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "mapped_name": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "name"
-                  ]
-                }
-              },
-              "allow_additional_field_mappings": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "fields",
-              "allow_additional_field_mappings"
-            ]
+            "$ref": "#/components/schemas/schema_config"
           }
         },
         "required": [
@@ -2255,7 +2229,33 @@
         ]
       },
       "schema_config": {
-        "$ref": "#/components/schemas/schema"
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "mapped_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "allow_additional_field_mappings": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fields",
+          "allow_additional_field_mappings"
+        ]
       },
       "connection": {
         "type": "object",
@@ -2860,7 +2860,7 @@
             "example": "my-schema"
           },
           "config": {
-            "$ref": "#/components/schemas/schema/properties/config"
+            "$ref": "#/components/schemas/schema_config"
           }
         },
         "required": [
