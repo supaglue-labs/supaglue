@@ -39,7 +39,8 @@ export type ConnectionCreateParams<T extends ProviderName> = {
 };
 
 export type SchemaMappingsConfig = {
-  // TODO: Support common and custom objects.
+  // TODO: Support custom objects.
+  commonObjects?: SchemaMappingsConfigForObject[];
   standardObjects?: SchemaMappingsConfigForObject[];
 };
 

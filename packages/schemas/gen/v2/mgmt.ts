@@ -299,6 +299,13 @@ export interface components {
        */
       instance_url: string;
       schema_mappings_config?: {
+        common_objects?: ({
+            object: string;
+            field_mappings: ({
+                schema_field: string;
+                mapped_field: string;
+              })[];
+          })[];
         standard_objects?: ({
             object: string;
             field_mappings: ({
@@ -340,18 +347,13 @@ export interface components {
       common_objects?: ({
           /** @example contacts */
           object: string;
-          fetch_all_fields_into_raw: boolean;
+          /** @description If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is. */
+          schema_id?: string;
         })[];
       standard_objects?: ({
           /** @example contacts */
           object: string;
-          schema?: {
-            fields: ({
-                name: string;
-                mapped_name?: string;
-              })[];
-            allow_additional_field_mappings: boolean;
-          };
+          schema_id?: string;
         })[];
       custom_objects?: ({
           /** @example contacts */
@@ -1003,6 +1005,13 @@ export interface operations {
       content: {
         "application/json": {
           schema_mappings_config?: {
+            common_objects?: ({
+                object: string;
+                field_mappings: ({
+                    schema_field: string;
+                    mapped_field: string;
+                  })[];
+              })[];
             standard_objects?: ({
                 object: string;
                 field_mappings: ({

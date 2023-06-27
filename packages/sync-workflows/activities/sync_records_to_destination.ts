@@ -1,8 +1,9 @@
 import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
+import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
-import { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
+import { ConnectionService, RemoteService, SchemaService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { CommonModelType } from '@supaglue/types';
 import { CRMCommonModelType } from '@supaglue/types/crm';
@@ -32,7 +33,8 @@ export function createSyncRecordsToDestination(
   remoteService: RemoteService,
   destinationService: DestinationService,
   syncConfigService: SyncConfigService,
-  applicationService: ApplicationService
+  applicationService: ApplicationService,
+  schemaService: SchemaService
 ) {
   return async function syncRecordsToDestination({
     syncId,
@@ -41,17 +43,22 @@ export function createSyncRecordsToDestination(
     updatedAfterMs,
   }: SyncRecordsToDestinationArgs): Promise<SyncRecordsToDestinationResult> {
     const syncConfig = await syncConfigService.getBySyncId(syncId);
-    const fetchAllFields = syncConfig?.config.commonObjects?.find(
-      (obj) => obj.object === commonModel
-    )?.fetchAllFieldsIntoRaw;
     async function writeObjects(writer: DestinationWriter) {
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
+        const connection = await connectionService.getSafeById(connectionId);
+        const schemaId = syncConfig?.config?.commonObjects?.find((o) => o.object === commonModel)?.schemaId;
+        const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
+        const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
+          (o) => o.object === commonModel
+        )?.fieldMappings;
+        const fieldMappingConfig = createFieldMappingConfig(schema?.config, customerFieldMapping);
+
         const readable = await (client as CrmRemoteClient).listCommonObjectRecords(
           commonModel as CRMCommonModelType,
+          fieldMappingConfig,
           updatedAfter,
-          heartbeat,
-          fetchAllFields
+          heartbeat
         );
         return await writer.writeCommonModelRecords(
           connection,

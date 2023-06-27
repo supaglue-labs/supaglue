@@ -26,8 +26,8 @@ export type SyncStrategyConfig = {
 
 export type CommonObjectConfig = {
   object: CommonModelType;
-  // If true, all fields will be fetched into the raw object and not just the ones needed for the common model.
-  fetchAllFieldsIntoRaw: boolean;
+  // If set, will sync only these fields in addition to the common model. If unset, will sync all fields into the `rawData` column.
+  schemaId?: string;
 };
 
 export type StandardObjectConfig = {

@@ -26,7 +26,6 @@ import {
   NormalizedRawRecord,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
-  SyncConfig,
 } from '@supaglue/types';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import retry from 'async-retry';
@@ -277,7 +276,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
           // not declaring this in-line so we have the opportunity to do type checking
           const emittedRecord: NormalizedRawRecord = {
             id: record.Id,
-            rawData: record,
+            rawData: toMappedProperties(record, fieldMappingConfig),
             isDeleted: record.IsDeleted === 'true',
             lastModifiedAt: new Date(record.SystemModstamp),
             emittedAt: emittedAt,
@@ -309,21 +308,35 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
+  async getPropertiesToFetch(
+    commonModelType: CRMCommonModelType,
+    fieldMappingConfig?: FieldMappingConfig
+  ): Promise<string[]> {
+    const sobject = capitalizeString(commonModelType);
+    const allProperties = await this.getSObjectProperties(sobject);
+    if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
+      return allProperties;
+    }
+    return intersection(allProperties, [
+      ...propertiesForCommonModel[commonModelType],
+      ...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+    ]);
+  }
+
   public override async listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
+    fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date | undefined,
-    heartbeat?: () => void,
-    fetchAllFields = false
+    heartbeat?: () => void
   ): Promise<Readable> {
     const sobject = capitalizeString(commonModelType);
-
-    const allProperties = await this.getSObjectProperties(sobject);
-    const propertiesToFetch = fetchAllFields
-      ? allProperties
-      : intersection(allProperties, propertiesForCommonModel[commonModelType]);
+    const propertiesToFetch = await this.getPropertiesToFetch(commonModelType, fieldMappingConfig);
 
     const stream = await this.#listObjectsHelper(sobject, propertiesToFetch, updatedAfter, heartbeat);
-    const mapper = getMapperForCommonModelType(commonModelType);
+    const mapper = (record: Record<string, unknown>) => ({
+      ...getMapperForCommonModelType(commonModelType)(record),
+      rawData: toMappedProperties(record, fieldMappingConfig),
+    });
 
     return pipeline(
       stream,
@@ -718,11 +731,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 }
 
-export function newClient(
-  connection: ConnectionUnsafe<'salesforce'>,
-  provider: CRMProvider,
-  syncConfig?: SyncConfig
-): SalesforceClient {
+export function newClient(connection: ConnectionUnsafe<'salesforce'>, provider: CRMProvider): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,
@@ -745,4 +754,17 @@ function capitalizeString(str: string): string {
     return str;
   }
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function toMappedProperties(
+  properties: Record<string, any>,
+  fieldMappingConfig: FieldMappingConfig
+): Record<string, any> {
+  if (fieldMappingConfig.type === 'inherit_all_fields') {
+    return properties;
+  }
+
+  return Object.fromEntries(
+    fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
+  );
 }

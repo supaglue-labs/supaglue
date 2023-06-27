@@ -28,9 +28,7 @@ get:
                       strategy: full then incremental
                     common_objects:
                       - object: contacts
-                        fetch_all_fields_into_raw: false
                       - object: accounts
-                        fetch_all_fields_into_raw: false
                     standard_objects:
                       - object: emails
                       - object: tasks
@@ -43,7 +41,6 @@ get:
                       strategy: full then incremental
                     common_objects:
                       - object: accounts
-                        fetch_all_fields_into_raw: false
                     standard_objects:
                       - object: tasks
 post:

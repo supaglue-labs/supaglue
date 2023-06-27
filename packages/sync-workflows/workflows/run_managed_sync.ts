@@ -440,7 +440,11 @@ async function doFullThenIncrementalSync({
         commonObjects.map(async ({ object }) => {
           const entry: [CommonModelType, SyncRecordsToDestinationResult] = [
             object,
-            await syncRecordsToDestination({ syncId: sync.id, connectionId: sync.connectionId, commonModel: object }),
+            await syncRecordsToDestination({
+              syncId: sync.id,
+              connectionId: sync.connectionId,
+              commonModel: object,
+            }),
           ];
           return entry;
         })

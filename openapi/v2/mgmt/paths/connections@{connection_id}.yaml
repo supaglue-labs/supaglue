@@ -43,6 +43,28 @@ patch:
               # https://github.com/ajv-validator/ajv/issues/1882
               type: object
               properties:
+                common_objects:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      object:
+                        type: string
+                      field_mappings:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            schema_field:
+                              type: string
+                            mapped_field:
+                              type: string
+                          required:
+                            - schema_field
+                            - mapped_field
+                    required:
+                      - object
+                      - field_mappings
                 standard_objects:
                   type: array
                   items:

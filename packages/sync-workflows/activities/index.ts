@@ -53,7 +53,8 @@ export const createActivities = ({
       remoteService,
       destinationService,
       syncConfigService,
-      applicationService
+      applicationService,
+      schemaService
     ),
     syncRawRecordsToDestination: createSyncRawRecordsToDestination(
       connectionService,

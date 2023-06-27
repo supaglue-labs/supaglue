@@ -390,32 +390,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       modifiedAfter
     );
 
-    // mapper
-    function toMappedRecords(
-      records: NormalizedRawRecord<RecordWithFlattenedAssociations>[]
-    ): NormalizedRawRecord<RecordWithFlattenedAssociations>[] {
-      if (fieldMappingConfig.type === 'inherit_all_fields') {
-        return records;
-      }
-
-      return records.map((record) => ({
-        ...record,
-        rawData: {
-          ...record.rawData,
-          properties: Object.fromEntries(
-            fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [
-              schemaField,
-              record.rawData.properties[mappedField],
-            ])
-          ),
-        },
-      }));
-    }
-
     const normalFetcherAndHandler = {
       pageFetcher: normalPageFetcher,
       createStreamFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
-        Readable.from(toMappedRecords(response.results)),
+        Readable.from(toMappedRecords(response.results, fieldMappingConfig)),
       getNextCursorFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
         response.paging?.next?.after,
     };
@@ -429,7 +407,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       normalFetcherAndHandler,
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(toMappedRecords(response.results)),
+        createStreamFromPage: (response) => Readable.from(toMappedRecords(response.results, fieldMappingConfig)),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -775,21 +753,21 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
+    fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date | undefined,
-    heartbeat?: () => void,
-    fetchAllFields?: boolean
+    heartbeat?: () => void
   ): Promise<Readable> {
     switch (commonModelType) {
       case 'account':
-        return this.listAccounts(updatedAfter, fetchAllFields);
+        return this.listAccounts(fieldMappingConfig, updatedAfter);
       case 'contact':
-        return this.listContacts(updatedAfter, fetchAllFields);
+        return this.listContacts(fieldMappingConfig, updatedAfter);
       case 'lead':
-        return this.listLeads(updatedAfter, fetchAllFields);
+        return this.listLeads(fieldMappingConfig, updatedAfter);
       case 'opportunity':
-        return this.listOpportunities(updatedAfter, fetchAllFields);
+        return this.listOpportunities(fieldMappingConfig, updatedAfter);
       case 'user':
-        return this.listUsers();
+        return this.listUsers(fieldMappingConfig);
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -863,16 +841,23 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  private async getCommonModelPropertiesToFetch(objectType: HubSpotCommonModelObjectType, fetchAllFields = false) {
+  private async getCommonModelPropertiesToFetch(
+    objectType: HubSpotCommonModelObjectType,
+    fieldMappingConfig?: FieldMappingConfig
+  ) {
     const availableProperties = await this.getObjectTypeProperties(objectType);
-    if (fetchAllFields) {
+    if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
       return availableProperties;
     }
-    return intersection(availableProperties, propertiesToFetch[objectType]);
+    const properties = [...propertiesToFetch[objectType]];
+    if (fieldMappingConfig?.type === 'defined') {
+      properties.push(...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField));
+    }
+    return intersection(availableProperties, properties);
   }
 
-  public async listAccounts(updatedAfter?: Date, fetchAllFields = false): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('company', fetchAllFields);
+  public async listAccounts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
+    const properties = await this.getCommonModelPropertiesToFetch('company', fieldMappingConfig);
     const normalPageFetcher = await this.#getListNormalAccountsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listAccountsFull(properties, /* archived */ true, after);
@@ -886,7 +871,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((result) => ({
-              record: fromHubSpotCompanyToAccount(result),
+              record: {
+                ...fromHubSpotCompanyToAccount(result),
+                rawData: toMappedProperties(result.properties, fieldMappingConfig),
+              },
               emittedAt,
             }))
           );
@@ -899,7 +887,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((result) => ({
-              record: fromHubSpotCompanyToAccount(result),
+              record: {
+                ...fromHubSpotCompanyToAccount(result),
+                rawData: toMappedProperties(result.properties, fieldMappingConfig),
+              },
               emittedAt,
             }))
           );
@@ -1020,8 +1011,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public async listOpportunities(updatedAfter?: Date, fetchAllFields?: boolean): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('deal', fetchAllFields);
+  public async listOpportunities(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
+    const properties = await this.getCommonModelPropertiesToFetch('deal', fieldMappingConfig);
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
@@ -1036,7 +1027,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((deal) => ({
-              record: fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
+              record: {
+                ...fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
+                rawData: toMappedProperties(deal.properties, fieldMappingConfig),
+              },
               emittedAt,
             }))
           );
@@ -1049,7 +1043,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((deal) => ({
-              record: fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
+              record: {
+                ...fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
+                rawData: toMappedProperties(deal.properties, fieldMappingConfig),
+              },
               emittedAt,
             }))
           );
@@ -1193,8 +1190,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return deal.id;
   }
 
-  public async listContacts(updatedAfter?: Date, fetchAllFields?: boolean): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('contact', fetchAllFields);
+  public async listContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
+    const properties = await this.getCommonModelPropertiesToFetch('contact', fieldMappingConfig);
     const normalPageFetcher = await this.#getListNormalContactsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listContactsFull(properties, /* archived */ true, after);
@@ -1207,7 +1204,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.results.map((result) => ({ record: fromHubSpotContactToContact(result), emittedAt }))
+            response.results.map((result) => ({
+              record: {
+                ...fromHubSpotContactToContact(result),
+                rawData: toMappedProperties(result.properties, fieldMappingConfig),
+              },
+              emittedAt,
+            }))
           );
         },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
@@ -1217,7 +1220,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.results.map((result) => ({ record: fromHubSpotContactToContact(result), emittedAt }))
+            response.results.map((result) => ({
+              record: {
+                ...fromHubSpotContactToContact(result),
+                rawData: toMappedProperties(result.properties, fieldMappingConfig),
+              },
+              emittedAt,
+            }))
           );
         },
         getNextCursorFromPage: (response) => response.paging?.next?.after,
@@ -1362,7 +1371,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return contact.id;
   }
 
-  public async listLeads(updatedAfter?: Date, fetchAllFields?: boolean): Promise<Readable> {
+  public async listLeads(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     return Readable.from([]);
   }
 
@@ -1379,7 +1388,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return fromHubspotOwnerToUser(owner);
   }
 
-  public async listUsers(updatedAfter?: Date): Promise<Readable> {
+  public async listUsers(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = async (after?: string) => {
       const response = await this.#listUsersFull(/* archived */ false, after);
       return filterForUpdatedAfter(response, updatedAfter);
@@ -1396,7 +1405,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.results.map((result) => ({
-              record: fromHubspotOwnerToUser(result),
+              record: {
+                ...fromHubspotOwnerToUser(result),
+                rawData: toMappedProperties(fromHubspotOwnerToUser(result).rawData, fieldMappingConfig),
+              },
               emittedAt,
             }))
           );
@@ -1826,4 +1838,35 @@ function normalizeResponse(
     })),
     paging: response.paging,
   };
+}
+
+// mapper
+function toMappedRecords(
+  records: NormalizedRawRecord<RecordWithFlattenedAssociations>[],
+  fieldMappingConfig: FieldMappingConfig
+): NormalizedRawRecord<RecordWithFlattenedAssociations>[] {
+  if (fieldMappingConfig.type === 'inherit_all_fields') {
+    return records;
+  }
+
+  return records.map((record) => ({
+    ...record,
+    rawData: {
+      ...record.rawData,
+      properties: toMappedProperties(record.rawData.properties, fieldMappingConfig),
+    },
+  }));
+}
+
+function toMappedProperties(
+  properties: Record<string, any>,
+  fieldMappingConfig: FieldMappingConfig
+): Record<string, any> {
+  if (fieldMappingConfig.type === 'inherit_all_fields') {
+    return properties;
+  }
+
+  return Object.fromEntries(
+    fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
+  );
 }

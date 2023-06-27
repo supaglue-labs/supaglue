@@ -25,9 +25,9 @@ export interface CrmRemoteClient extends RemoteClient {
   listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
   listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
+    fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
-    heartbeat?: () => void,
-    fetchAllFields?: boolean
+    heartbeat?: () => void
   ): Promise<Readable>;
 
   getCommonObjectRecord<T extends CRMCommonModelType>(
@@ -89,9 +89,9 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
 
   abstract listCommonObjectRecords(
     commonModelType: CRMCommonModelType,
+    fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
-    heartbeat?: () => void,
-    fetchAllFields?: boolean
+    heartbeat?: () => void
   ): Promise<Readable>;
   abstract getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,

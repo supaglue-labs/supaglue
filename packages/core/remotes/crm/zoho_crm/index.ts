@@ -1,5 +1,6 @@
 import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
+import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 
@@ -13,7 +14,11 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
     throw new Error('Not implemented');
   }
 
-  public override listCommonObjectRecords(commonModelType: CRMCommonModelType, updatedAfter?: Date): Promise<Readable> {
+  public override listCommonObjectRecords(
+    commonModelType: CRMCommonModelType,
+    fieldMappingConfig: FieldMappingConfig,
+    updatedAfter?: Date
+  ): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
