@@ -145,6 +145,14 @@ model ObjectSync {
   @@map("object_syncs")
 }
 
+model ObjectSyncChange {
+  id           String   @id @default(uuid())
+  objectSyncId String   @map("object_sync_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("object_sync_changes")
+}
+
 model ObjectSyncRun {
   id               String     @id @default(uuid())
   objectSyncId     String     @map("object_sync_id")

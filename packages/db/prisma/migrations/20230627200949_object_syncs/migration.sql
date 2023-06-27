@@ -17,6 +17,15 @@ CREATE TABLE "object_syncs" (
 );
 
 -- CreateTable
+CREATE TABLE "object_sync_changes" (
+    "id" TEXT NOT NULL,
+    "object_sync_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "object_sync_changes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "object_sync_runs" (
     "id" TEXT NOT NULL,
     "object_sync_id" TEXT NOT NULL,
