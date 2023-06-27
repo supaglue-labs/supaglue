@@ -65,10 +65,10 @@ export class SchemaService {
     return fromSchemaModel(createdSchema);
   }
 
-  public async update(id: string, schema: SchemaUpdateParams): Promise<Schema> {
+  public async update(id: string, applicationId: string, schema: SchemaUpdateParams): Promise<Schema> {
     const updatedSchema = await this.#prisma.schema.update({
       where: { id },
-      data: await toSchemaModel(schema),
+      data: await toSchemaModel({ ...schema, applicationId }),
     });
     return fromSchemaModel(updatedSchema);
   }

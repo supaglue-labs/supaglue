@@ -63,7 +63,7 @@ delete:
   security:
     - ApiKeyAuth: []
   responses:
-    200:
+    204:
       description: Schema
       content:
         application/json:
