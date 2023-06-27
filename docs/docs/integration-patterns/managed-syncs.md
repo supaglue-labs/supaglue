@@ -2,7 +2,7 @@
 description: ''
 ---
 
-# Managed syncs
+# Managed syncs (reads)
 
 Managed Syncs lets you sync data from your customers’ CRM directly into your own application database or data warehouse.
 ![managed_syncs_diagram](/img/managed-syncs-diagram.png 'managed syncs diagram')
