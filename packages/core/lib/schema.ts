@@ -1,9 +1,9 @@
-import { SchemaConfig, SchemaField, SchemaMappingsConfigStandardObjectFieldMapping } from '@supaglue/types';
+import { SchemaConfig, SchemaField, SchemaMappingsConfigObjectFieldMapping } from '@supaglue/types';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 
 export function createFieldMappingConfig(
   schema?: SchemaConfig,
-  customerFieldMappings?: SchemaMappingsConfigStandardObjectFieldMapping[]
+  customerFieldMappings?: SchemaMappingsConfigObjectFieldMapping[]
 ): FieldMappingConfig {
   if (!schema) {
     return { type: 'inherit_all_fields' };

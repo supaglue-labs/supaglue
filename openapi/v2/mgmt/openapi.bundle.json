@@ -1390,6 +1390,77 @@
           }
         }
       },
+      "patch": {
+        "operationId": "updateConnection",
+        "summary": "Update connection",
+        "tags": [
+          "Connection"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "schema_mappings_config": {
+                    "type": "object",
+                    "properties": {
+                      "standard_objects": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "object": {
+                              "type": "string"
+                            },
+                            "field_mappings": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "schema_field": {
+                                    "type": "string"
+                                  },
+                                  "mapped_field": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "schema_field",
+                                  "mapped_field"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "object",
+                            "field_mappings"
+                          ]
+                        }
+                      }
+                    },
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection"
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "operationId": "deleteConnection",
         "summary": "Delete connection",
@@ -1470,95 +1541,9 @@
             "ApiKeyAuth": []
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "schema_mappings_config": {
-                    "$ref": "#/components/schemas/sync/properties/schema_mappings_config"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Sync enabled",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/sync"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "operationId": "updateSync",
-        "summary": "Update sync",
-        "tags": [
-          "Syncs"
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "schema_mappings_config": {
-                    "type": "object",
-                    "properties": {
-                      "standard_objects": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "object": {
-                              "type": "string"
-                            },
-                            "field_mappings": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "schema_field": {
-                                    "type": "string"
-                                  },
-                                  "mapped_field": {
-                                    "type": "string"
-                                  }
-                                },
-                                "required": [
-                                  "schema_field",
-                                  "mapped_field"
-                                ]
-                              }
-                            }
-                          },
-                          "required": [
-                            "object",
-                            "field_mappings"
-                          ]
-                        }
-                      }
-                    },
-                    "nullable": true
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Sync",
             "content": {
               "application/json": {
                 "schema": {
@@ -2233,33 +2218,7 @@
             "example": "my-schema"
           },
           "config": {
-            "type": "object",
-            "properties": {
-              "fields": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "mapped_name": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "name"
-                  ]
-                }
-              },
-              "allow_additional_field_mappings": {
-                "type": "boolean"
-              }
-            },
-            "required": [
-              "fields",
-              "allow_additional_field_mappings"
-            ]
+            "$ref": "#/components/schemas/schema_config"
           }
         },
         "required": [
@@ -2270,7 +2229,33 @@
         ]
       },
       "schema_config": {
-        "$ref": "#/components/schemas/schema"
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "mapped_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "allow_additional_field_mappings": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fields",
+          "allow_additional_field_mappings"
+        ]
       },
       "connection": {
         "type": "object",
@@ -2311,6 +2296,44 @@
             "type": "string",
             "description": "Instance URL for the connected customer.",
             "example": "https://app.hubspot.com/contacts/123456"
+          },
+          "schema_mappings_config": {
+            "type": "object",
+            "properties": {
+              "standard_objects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string"
+                    },
+                    "field_mappings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "schema_field": {
+                            "type": "string"
+                          },
+                          "mapped_field": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "schema_field",
+                          "mapped_field"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "field_mappings"
+                  ]
+                }
+              }
+            }
           }
         },
         "required": [
@@ -2666,44 +2689,6 @@
           "paused": {
             "type": "boolean",
             "example": false
-          },
-          "schema_mappings_config": {
-            "type": "object",
-            "properties": {
-              "standard_objects": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "object": {
-                      "type": "string"
-                    },
-                    "field_mappings": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "schema_field": {
-                            "type": "string"
-                          },
-                          "mapped_field": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "schema_field",
-                          "mapped_field"
-                        ]
-                      }
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "field_mappings"
-                  ]
-                }
-              }
-            }
           }
         },
         "required": [
@@ -2875,7 +2860,7 @@
             "example": "my-schema"
           },
           "config": {
-            "$ref": "#/components/schemas/schema/properties/config"
+            "$ref": "#/components/schemas/schema_config"
           }
         },
         "required": [

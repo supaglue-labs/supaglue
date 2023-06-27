@@ -6,6 +6,7 @@ import {
   ConnectionStatus,
   ConnectionUnsafe,
   ProviderName,
+  SchemaMappingsConfig,
 } from '@supaglue/types';
 import { CRMProviderName } from '@supaglue/types/crm';
 import { decrypt } from '../lib/crypt';
@@ -19,6 +20,7 @@ export async function fromConnectionModelToConnectionUnsafe<T extends ProviderNa
   providerName,
   status,
   credentials,
+  schemaMappingsConfig,
   instanceUrl,
 }: ConnectionModel): Promise<ConnectionUnsafe<T>> {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
@@ -31,6 +33,7 @@ export async function fromConnectionModelToConnectionUnsafe<T extends ProviderNa
     status: status as ConnectionStatus,
     providerName: providerName as T,
     credentials: JSON.parse(await decrypt(credentials)),
+    schemaMappingsConfig: schemaMappingsConfig as SchemaMappingsConfig | undefined,
     instanceUrl,
   };
 }
@@ -42,6 +45,7 @@ export function fromConnectionModelToConnectionSafe({
   providerId,
   providerName,
   status,
+  schemaMappingsConfig,
   instanceUrl,
 }: ConnectionModel): ConnectionSafeAny {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
@@ -53,6 +57,7 @@ export function fromConnectionModelToConnectionSafe({
     category: category as 'crm',
     status: status as ConnectionStatus,
     providerName: providerName as CRMProviderName,
+    schemaMappingsConfig: schemaMappingsConfig as SchemaMappingsConfig | undefined,
     instanceUrl,
   };
 }

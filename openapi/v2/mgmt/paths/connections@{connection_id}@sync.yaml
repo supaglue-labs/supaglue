@@ -23,68 +23,9 @@ post:
   parameters: []
   security:
     - ApiKeyAuth: []
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            schema_mappings_config:
-              $ref: ../components/schemas/objects/schema_mappings_config.yaml
   responses:
     '200':
       description: Sync enabled
-      content:
-        application/json:
-          schema:
-            $ref: ../components/schemas/objects/sync.yaml
-patch:
-  operationId: updateSync
-  summary: Update sync
-  tags:
-    - Syncs
-  parameters: []
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            schema_mappings_config:
-              # there is some issue with the openapi validator when using refs with nullable,
-              # so re-define the schema_mappings_config here instead of using ../components/schemas/objects/schema_mappings_config.yaml
-              # https://github.com/cdimascio/express-openapi-validator/issues/839
-              # https://github.com/ajv-validator/ajv/issues/1882
-              type: object
-              properties:
-                standard_objects:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      object:
-                        type: string
-                      field_mappings:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            schema_field:
-                              type: string
-                            mapped_field:
-                              type: string
-                          required:
-                            - schema_field
-                            - mapped_field
-                    required:
-                      - object
-                      - field_mappings
-              nullable: true
-  responses:
-    200:
-      description: Sync
       content:
         application/json:
           schema:

@@ -15,8 +15,6 @@ properties:
   paused:
     type: boolean
     example: false
-  schema_mappings_config:
-    $ref: ./schema_mappings_config.yaml
 required:
   - id
   - connection_id
