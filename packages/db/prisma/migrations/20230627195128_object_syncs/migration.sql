@@ -1,12 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `schema_mappings_config` on the `connections` table. All the data in the column will be lost.
-
-*/
--- AlterTable
-ALTER TABLE "connections" DROP COLUMN "schema_mappings_config";
-
 -- CreateTable
 CREATE TABLE "object_syncs" (
     "id" TEXT NOT NULL,
@@ -26,7 +17,7 @@ CREATE TABLE "object_syncs" (
 );
 
 -- CreateTable
-CREATE TABLE "ObjectSyncRun" (
+CREATE TABLE "object_sync_runs" (
     "id" TEXT NOT NULL,
     "object_sync_id" TEXT NOT NULL,
     "status" TEXT NOT NULL,
@@ -35,7 +26,7 @@ CREATE TABLE "ObjectSyncRun" (
     "end_timestamp" TIMESTAMP(3),
     "num_records_synced" INTEGER,
 
-    CONSTRAINT "ObjectSyncRun_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "object_sync_runs_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -48,4 +39,4 @@ ALTER TABLE "object_syncs" ADD CONSTRAINT "object_syncs_connection_id_fkey" FORE
 ALTER TABLE "object_syncs" ADD CONSTRAINT "object_syncs_sync_config_id_fkey" FOREIGN KEY ("sync_config_id") REFERENCES "sync_configs"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ObjectSyncRun" ADD CONSTRAINT "ObjectSyncRun_object_sync_id_fkey" FOREIGN KEY ("object_sync_id") REFERENCES "object_syncs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "object_sync_runs" ADD CONSTRAINT "object_sync_runs_object_sync_id_fkey" FOREIGN KEY ("object_sync_id") REFERENCES "object_syncs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
