@@ -125,23 +125,23 @@ model Connection {
 }
 
 model ObjectSync {
-  id             String          @id @default(uuid())
-  // exactly one of [commonObject, standardObject, customObject] should be set
-  commonObject   String?         @map("common_object")
-  standardObject String?         @map("standard_object")
-  customObject   String?         @map("custom_object")
-  state          Json
-  forceSyncFlag  Boolean         @default(false) @map("force_sync_flag")
-  strategy       Json
-  connectionId   String          @unique @map("connection_id")
-  connection     Connection      @relation(fields: [connectionId], references: [id])
-  paused         Boolean         @default(false)
-  syncConfigId   String          @map("sync_config_id")
-  syncConfig     SyncConfig      @relation(fields: [syncConfigId], references: [id])
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
-  runs           ObjectSyncRun[]
+  id            String          @id @default(uuid())
+  // common, standard, custom
+  objectType    String          @map("object_type")
+  object        String
+  state         Json
+  forceSyncFlag Boolean         @default(false) @map("force_sync_flag")
+  strategy      Json
+  connectionId  String          @unique @map("connection_id")
+  connection    Connection      @relation(fields: [connectionId], references: [id])
+  paused        Boolean         @default(false)
+  syncConfigId  String          @map("sync_config_id")
+  syncConfig    SyncConfig      @relation(fields: [syncConfigId], references: [id])
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  runs          ObjectSyncRun[]
 
+  @@unique([connectionId, object])
   @@map("object_syncs")
 }
 
