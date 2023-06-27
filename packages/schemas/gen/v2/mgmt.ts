@@ -804,7 +804,7 @@ export interface operations {
     /** Delete schema */
     responses: {
       /** @description Schema */
-      200: {
+      204: {
         content: {
           "application/json": components["schemas"]["schema"];
         };

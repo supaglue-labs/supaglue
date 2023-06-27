@@ -16,4 +16,4 @@ export type SchemaField = {
 };
 
 export type SchemaCreateParams = Omit<Schema, 'id'>;
-export type SchemaUpdateParams = SchemaCreateParams;
+export type SchemaUpdateParams = Omit<SchemaCreateParams, 'applicationId'>;
