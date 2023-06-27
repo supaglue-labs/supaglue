@@ -65,6 +65,8 @@ model Provider {
   category      String
   name          String
   config        Json // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
+  // TODO: Make this required
+  objects       Json?
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
   connections   Connection[]
