@@ -128,8 +128,10 @@ export class SyncService {
 
     // Find out all the syncs that may have changed (for now, it's just created; syncs aren't updated).
     const uniqueSyncIds = [
-      ...new Set(syncsForSyncConfigs.map((sync) => sync.id)),
-      ...new Set(syncChanges.map((syncChange) => syncChange.syncId)),
+      ...new Set([
+        ...syncsForSyncConfigs.map((sync) => sync.id),
+        ...syncChanges.map((syncChange) => syncChange.syncId),
+      ]),
     ];
     const syncs = await this.#prisma.sync.findMany({
       where: {
