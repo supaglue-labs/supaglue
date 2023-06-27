@@ -67,8 +67,7 @@ export default function init(app: Router): void {
       req: Request<UpdateSchemaPathParams, UpdateSchemaResponse, UpdateSchemaRequest>,
       res: Response<UpdateSchemaResponse>
     ) => {
-      const schema = await schemaService.update(req.params.schema_id, {
-        applicationId: req.supaglueApplication.id,
+      const schema = await schemaService.update(req.params.schema_id, req.supaglueApplication.id, {
         ...camelcaseKeys(req.body),
       });
       return res.status(200).send(snakecaseKeys(schema));
