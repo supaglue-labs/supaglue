@@ -95,13 +95,12 @@ app.use(
     customErrorMessage: function (req) {
       return `${req.method} ${(req as Request).originalUrl}`;
     },
-    serializers: {
-      req: (req) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { cookie, authorization, ['x-api-key']: apiKey, ...headers } = req.headers;
-        return { ...req, headers };
-      },
-    },
+    redact: [
+      'req.headers.authorization',
+      'req.headers.cookie',
+      'req.headers.x-api-key',
+      'err.config.headers.Authorization', // axios errors
+    ],
     genReqId: () => uuidv4(),
     quietReqLogger: true, // only log the reqId from req.log.*, not the whole request
   })
