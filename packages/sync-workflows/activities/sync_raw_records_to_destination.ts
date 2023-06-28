@@ -69,7 +69,7 @@ export function createSyncRawRecordsToDestination(
           : await (async function () {
               // Find schema / field mapping information
               const provider = await providerService.getById(connection.providerId);
-              const schemaId = (provider as CRMProvider).objects.standard.find((o) => o.name === object)?.schemaId;
+              const schemaId = (provider as CRMProvider).objects?.standard.find((o) => o.name === object)?.schemaId;
               const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
               const customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
                 (o) => o.object === object

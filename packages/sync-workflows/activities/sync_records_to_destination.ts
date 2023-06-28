@@ -48,7 +48,7 @@ export function createSyncRecordsToDestination(
         const crmCommonModel = commonModel as CRMCommonModelType;
         const connection = await connectionService.getSafeById(connectionId);
         const provider = await providerService.getById(connection.providerId);
-        const schemaId = (provider as CRMProvider).objects.common.find((o) => o.name === crmCommonModel)?.schemaId;
+        const schemaId = (provider as CRMProvider).objects?.common.find((o) => o.name === crmCommonModel)?.schemaId;
         const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
         const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
           (o) => o.object === crmCommonModel
