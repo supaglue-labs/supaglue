@@ -164,7 +164,8 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
           connectionId,
           // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
           numRecordsSynced: 0,
-          commonModel,
+          objectType: 'common',
+          object: commonModel,
           errorMessage,
         });
       })
@@ -187,7 +188,8 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
           connectionId,
           // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
           numRecordsSynced: 0,
-          standardObject: object,
+          objectType: 'standard',
+          object,
           errorMessage,
         });
       })
@@ -210,7 +212,8 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
           connectionId,
           // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
           numRecordsSynced: 0,
-          customObject: object,
+          objectType: 'custom',
+          object,
           errorMessage,
         });
       })
@@ -249,7 +252,8 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
         status: 'SYNC_SUCCESS',
         connectionId,
         numRecordsSynced,
-        commonModel,
+        objectType: 'common',
+        object: commonModel,
       });
     })
   );
@@ -272,7 +276,8 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
         status: 'SYNC_SUCCESS',
         connectionId,
         numRecordsSynced,
-        standardObject: object,
+        objectType: 'standard',
+        object,
       });
     })
   );
@@ -295,7 +300,8 @@ export async function runManagedSync({ syncId, connectionId, category }: RunMana
         status: 'SYNC_SUCCESS',
         connectionId,
         numRecordsSynced,
-        customObject: object,
+        objectType: 'custom',
+        object,
       });
     })
   );

@@ -17,6 +17,7 @@ import { CrmCommonModelService } from './services/common_models/crm/common_model
 import { CrmCustomObjectService } from './services/common_models/crm/custom_object_service';
 import { EngagementCommonModelService } from './services/common_models/engagement/common_model_service';
 import { DestinationService } from './services/destination_service';
+import { ObjectSyncRunService } from './services/object_sync_run_service';
 import { WebhookService } from './services/webhook_service';
 
 export type CoreDependencyContainer = {
@@ -35,6 +36,7 @@ export type CoreDependencyContainer = {
   webhookService: WebhookService;
   destinationService: DestinationService;
   schemaService: SchemaService;
+  objectSyncRunService: ObjectSyncRunService;
 
   crmCommonModelService: CrmCommonModelService;
   engagementCommonModelService: EngagementCommonModelService;
@@ -90,6 +92,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const crmAssociationService = new CrmAssociationService(remoteService);
 
   const syncHistoryService = new SyncHistoryService(prisma, connectionService);
+  const objectSyncRunService = new ObjectSyncRunService(prisma, connectionService);
 
   return {
     pgPool,
@@ -110,6 +113,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     engagementCommonModelService,
     crmCustomObjectService,
     crmAssociationService,
+    objectSyncRunService,
   };
 }
 

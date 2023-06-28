@@ -1,6 +1,6 @@
 import { maybeSendWebhookPayload } from '@supaglue/core/lib/webhook';
 import { ConnectionService, ProviderService } from '@supaglue/core/services';
-import { CommonModelType } from '@supaglue/types/common';
+import { ObjectType } from '@supaglue/types/object_sync';
 import { ApplicationService } from '../services';
 
 export type MaybeSendSyncFinishWebhookArgs = {
@@ -9,17 +9,9 @@ export type MaybeSendSyncFinishWebhookArgs = {
   status: 'SYNC_SUCCESS' | 'SYNC_ERROR';
   numRecordsSynced: number;
   errorMessage?: string;
-} & (
-  | {
-      commonModel: CommonModelType;
-    }
-  | {
-      standardObject: string;
-    }
-  | {
-      customObject: string;
-    }
-);
+  objectType: ObjectType;
+  object: string;
+};
 
 export function createMaybeSendSyncFinishWebhook({
   connectionService,
