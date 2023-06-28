@@ -7,6 +7,7 @@ const path = require('path');
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
+const LATEST_VERSION = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8')).version;
 const versions = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
 
 /** @type {import('@docusaurus/types').Config} */
@@ -43,7 +44,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          lastVersion: 'current',
+          lastVersion: LATEST_VERSION,
 
           sidebarCollapsed: false,
           sidebarPath: require.resolve('./sidebars.js'),
@@ -71,28 +72,28 @@ const config = {
           ...versions.flatMap((version) => [
             {
               spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
-              route: `/${version}/api/v2/crm`,
+              route: version === LATEST_VERSION ? '/api/v2/crm' : `/${version}/api/v2/crm`,
             },
             {
               spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
-              route: `/${version}/api/v2/engagement`,
+              route: version === LATEST_VERSION ? '/api/v2/engagement' : `/${version}/api/v2/engagement`,
             },
             {
               spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
-              route: `/${version}/api/v2/mgmt`,
+              route: version === LATEST_VERSION ? '/api/v2/mgmt' : `/${version}/api/v2/mgmt`,
             },
           ]),
           {
             spec: '../openapi/v2/crm/openapi.bundle.json',
-            route: '/api/v2/crm',
+            route: '/next/api/v2/crm',
           },
           {
             spec: '../openapi/v2/engagement/openapi.bundle.json',
-            route: '/api/v2/engagement',
+            route: '/next/api/v2/engagement',
           },
           {
             spec: '../openapi/v2/mgmt/openapi.bundle.json',
-            route: '/api/v2/mgmt',
+            route: '/next/api/v2/mgmt',
           },
         ],
         // Theme Options for modifying how redoc renders them

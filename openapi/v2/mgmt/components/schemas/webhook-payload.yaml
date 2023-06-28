@@ -27,14 +27,14 @@ oneOf:
           num_records_synced:
             type: integer
             example: 100
-          common_model:
+          object_type:
             type: string
             enum:
-              - opportunity
-              - contact
-              - account
-              - lead
-              - user
+              - common
+              - standard
+              - custom
+          object:
+            type: string
             example: contact
           error_message:
             type: string
@@ -43,7 +43,8 @@ oneOf:
           - customer_id
           - history_id
           - num_records_synced
-          - common_model
+          - object_type
+          - object
     required:
       - type
       - payload
