@@ -132,7 +132,7 @@ model ObjectSync {
   state         Json
   forceSyncFlag Boolean         @default(false) @map("force_sync_flag")
   strategy      Json
-  connectionId  String          @unique @map("connection_id")
+  connectionId  String          @map("connection_id")
   connection    Connection      @relation(fields: [connectionId], references: [id])
   paused        Boolean         @default(false)
   syncConfigId  String          @map("sync_config_id")
