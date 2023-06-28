@@ -27,7 +27,7 @@ patch:
   operationId: updateConnection
   summary: Update connection
   tags:
-    - Connection
+    - Connections
   parameters: []
   requestBody:
     required: true

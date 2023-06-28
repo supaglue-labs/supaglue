@@ -1385,7 +1385,7 @@
         "operationId": "updateConnection",
         "summary": "Update connection",
         "tags": [
-          "Connection"
+          "Connections"
         ],
         "parameters": [],
         "requestBody": {
@@ -1997,7 +1997,7 @@
       "description": "A `Provider` is a CRM or other system that we can connect to."
     },
     {
-      "name": "Schema",
+      "name": "Schemas",
       "description": "A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API."
     },
     {
