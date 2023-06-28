@@ -8,6 +8,7 @@ import {
   SyncHistoryService,
 } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
+import { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
 import type { PrismaClient } from '@supaglue/db';
 import { ApplicationService, SyncService } from '@supaglue/sync-workflows/services';
 import { Client, Connection } from '@temporalio/client';
@@ -21,6 +22,7 @@ type DependencyContainer = {
   syncService: SyncService;
   syncConfigService: SyncConfigService;
   syncHistoryService: SyncHistoryService;
+  objectSyncRunService: ObjectSyncRunService;
   providerService: ProviderService;
   applicationService: ApplicationService;
   destinationService: DestinationService;
@@ -64,6 +66,7 @@ function createDependencyContainer(): DependencyContainer {
   });
 
   const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService);
+  const objectSyncRunService = new ObjectSyncRunService(prisma, connectionService);
   const applicationService = new ApplicationService(prisma);
   const destinationService = new DestinationService(prisma);
 
@@ -74,6 +77,7 @@ function createDependencyContainer(): DependencyContainer {
     connectionService,
     remoteService,
     syncService,
+    objectSyncRunService,
     syncConfigService,
     syncHistoryService,
     providerService,
