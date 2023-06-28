@@ -37,6 +37,7 @@ export const fromProviderModel = async ({
   category,
   name,
   config,
+  objects,
 }: ProviderModel): Promise<Provider> => {
   return {
     id,
@@ -47,6 +48,7 @@ export const fromProviderModel = async ({
     config: await fromProviderConfigModel(config, {
       managedOauthConfig: managedOAuthConfigs[name],
     }),
+    objects,
   } as Provider; // TODO: better type;
 };
 

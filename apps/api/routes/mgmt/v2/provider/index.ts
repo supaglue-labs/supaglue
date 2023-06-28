@@ -17,7 +17,7 @@ import type {
   UpdateProviderRequest,
   UpdateProviderResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import type { ProviderCreateParams } from '@supaglue/types';
+import type { ProviderCreateParams, ProviderUpdateParams } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
@@ -74,7 +74,7 @@ export default function init(app: Router): void {
     ) => {
       const provider = await providerService.update(req.params.provider_id, req.supaglueApplication.id, {
         ...camelcaseKeys(req.body),
-      });
+      } as ProviderUpdateParams);
       return res.status(200).send(snakecaseKeys(provider));
     }
   );
