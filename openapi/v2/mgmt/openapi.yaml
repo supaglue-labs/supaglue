@@ -70,7 +70,7 @@ tags:
     description: A `Destination` is a place where to which data can be written.
   - name: Providers
     description: A `Provider` is a CRM or other system that we can connect to.
-  - name: Schema
+  - name: Schemas
     description: A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API.
   - name: SyncConfigs
     description: A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule.
