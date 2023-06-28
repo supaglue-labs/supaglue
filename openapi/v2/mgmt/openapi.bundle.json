@@ -960,7 +960,7 @@
         },
         "responses": {
           "200": {
-            "description": "Add object to privder",
+            "description": "Add object to provider with schema.",
             "content": {
               "application/json": {
                 "schema": {

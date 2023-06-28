@@ -924,7 +924,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Add object to privder */
+      /** @description Add object to provider with schema. */
       200: {
         content: {
           "application/json": components["schemas"]["provider"];
