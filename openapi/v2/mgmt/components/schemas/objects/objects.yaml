@@ -37,7 +37,3 @@ properties:
           type: string
       required:
         - name
-required:
-  - common
-  - standard
-  - custom

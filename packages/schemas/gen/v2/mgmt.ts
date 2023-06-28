@@ -94,6 +94,15 @@ export interface paths {
       };
     };
   };
+  "/providers/{provider_id}/add_object": {
+    /** Add object to provider */
+    post: operations["addObject"];
+    parameters: {
+      path: {
+        provider_id: string;
+      };
+    };
+  };
   "/sync_configs": {
     /**
      * List Sync Configs 
@@ -279,23 +288,34 @@ export interface components {
       allow_additional_field_mappings: boolean;
     };
     objects: {
-      common: ({
+      common?: ({
           /** @example common_object_name */
           name: string;
           /** @description If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is. */
           schema_id?: string;
         })[];
-      standard: ({
+      standard?: ({
           /** @example standard_object_name */
           name: string;
           schema_id?: string;
         })[];
-      custom: ({
+      custom?: ({
           /** @example custom_object_name */
           name: string;
           schema_id?: string;
         })[];
     };
+    add_object: ({
+      /** @example object_name */
+      name: string;
+      /** @enum {string} */
+      type: "common" | "standard" | "custom";
+      enable_sync?: boolean;
+    }) & OneOf<[{
+      schema_id?: string;
+    }, {
+      schema?: components["schemas"]["create_update_schema"];
+    }]>;
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -889,6 +909,22 @@ export interface operations {
     /** Delete provider */
     responses: {
       /** @description Provider */
+      200: {
+        content: {
+          "application/json": components["schemas"]["provider"];
+        };
+      };
+    };
+  };
+  addObject: {
+    /** Add object to provider */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["add_object"];
+      };
+    };
+    responses: {
+      /** @description Add object to privder */
       200: {
         content: {
           "application/json": components["schemas"]["provider"];

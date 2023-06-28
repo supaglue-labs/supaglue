@@ -14,7 +14,7 @@ export class SyncConfigService {
     const syncConfigs = await this.#prisma.syncConfig.findMany({
       where: { id: { in: ids } },
     });
-    return Promise.all(syncConfigs.map(fromSyncConfigModel));
+    return syncConfigs.map(fromSyncConfigModel);
   }
 
   public async getById(id: string): Promise<SyncConfig> {
@@ -72,19 +72,19 @@ export class SyncConfigService {
 
   public async list(applicationId: string): Promise<SyncConfig[]> {
     const syncConfigs = await this.#prisma.syncConfig.findMany({ where: { applicationId } });
-    return Promise.all(syncConfigs.map(fromSyncConfigModel));
+    return syncConfigs.map(fromSyncConfigModel);
   }
 
   public async listByIds(ids: string[]): Promise<SyncConfig[]> {
     const syncConfigs = await this.#prisma.syncConfig.findMany({ where: { id: { in: ids } } });
-    return Promise.all(syncConfigs.map(fromSyncConfigModel));
+    return syncConfigs.map(fromSyncConfigModel);
   }
 
   public async create(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     validateSyncConfigParams(syncConfig);
     // TODO:(SUP1-350): Backfill sync schedules for connections
     const createdSyncConfig = await this.#prisma.syncConfig.create({
-      data: await toSyncConfigModel(syncConfig),
+      data: toSyncConfigModel(syncConfig),
     });
     return fromSyncConfigModel(createdSyncConfig);
   }

@@ -43,6 +43,8 @@ paths:
     $ref: paths/providers.yaml
   '/providers/{provider_id}':
     $ref: paths/providers@{provider_id}.yaml
+  '/providers/{provider_id}/add_object':
+    $ref: paths/providers@{provider_id}@add_object.yaml
   '/sync_configs':
     $ref: paths/sync_configs.yaml
   '/sync_configs/{sync_config_id}':
@@ -101,6 +103,8 @@ components:
       $ref: ./components/schemas/objects/schema_config.yaml
     objects:
       $ref: ./components/schemas/objects/objects.yaml
+    add_object:
+      $ref: ./components/schemas/add_object.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
     category:

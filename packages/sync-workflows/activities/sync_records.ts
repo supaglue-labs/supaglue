@@ -63,7 +63,7 @@ export function createSyncRecords(
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
         if (objectType === 'common') {
-          const schemaId = (provider as CRMProvider).objects?.common.find((o) => o.name === object)?.schemaId;
+          const schemaId = (provider as CRMProvider).objects?.common?.find((o) => o.name === object)?.schemaId;
           const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
           const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
             (o) => o.object === object
@@ -84,7 +84,7 @@ export function createSyncRecords(
           );
         } else if (objectType === 'standard') {
           // Find schema / field mapping information
-          const schemaId = (provider as CRMProvider).objects?.standard.find((o) => o.name === object)?.schemaId;
+          const schemaId = (provider as CRMProvider).objects?.standard?.find((o) => o.name === object)?.schemaId;
           const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
           const customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
             (o) => o.object === object
