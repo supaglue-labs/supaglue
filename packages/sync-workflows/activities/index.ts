@@ -65,7 +65,8 @@ export const createActivities = ({
       syncService,
       syncConfigService,
       applicationService,
-      schemaService
+      schemaService,
+      providerService
     ),
     syncRecordsToDestination: createSyncRecordsToDestination(
       connectionService,

@@ -3,8 +3,15 @@ import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
 import type { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import type { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
-import { ConnectionService, RemoteService, SchemaService, SyncConfigService } from '@supaglue/core/services';
+import {
+  ConnectionService,
+  ProviderService,
+  RemoteService,
+  SchemaService,
+  SyncConfigService,
+} from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
+import { CRMProvider } from '@supaglue/types';
 import type { CRMCommonModelType } from '@supaglue/types/crm';
 import type { EngagementCommonModelType } from '@supaglue/types/engagement';
 import type { ObjectType } from '@supaglue/types/object_sync';
@@ -37,7 +44,8 @@ export function createSyncRecords(
   syncService: SyncService,
   syncConfigService: SyncConfigService,
   applicationService: ApplicationService,
-  schemaService: SchemaService
+  schemaService: SchemaService,
+  providerService: ProviderService
 ) {
   return async function syncRecords({
     objectSyncId,
@@ -48,13 +56,14 @@ export function createSyncRecords(
   }: SyncRecordsArgs): Promise<SyncRecordsResult> {
     const objectSync = await syncService.getObjectSyncById(objectSyncId);
     const syncConfig = await syncConfigService.getById(objectSync.syncConfigId);
+    const connection = await connectionService.getSafeById(connectionId);
+    const provider = await providerService.getById(connection.providerId);
 
     async function writeObjects(writer: DestinationWriter) {
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
         if (objectType === 'common') {
-          const connection = await connectionService.getSafeById(connectionId);
-          const schemaId = syncConfig?.config?.commonObjects?.find((o) => o.object === object)?.schemaId;
+          const schemaId = (provider as CRMProvider).objects?.common.find((o) => o.name === object)?.schemaId;
           const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
           const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
             (o) => o.object === object
@@ -75,7 +84,7 @@ export function createSyncRecords(
           );
         } else if (objectType === 'standard') {
           // Find schema / field mapping information
-          const schemaId = syncConfig?.config?.standardObjects?.find((o) => o.object === object)?.schemaId;
+          const schemaId = (provider as CRMProvider).objects?.standard.find((o) => o.name === object)?.schemaId;
           const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
           const customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
             (o) => o.object === object
@@ -110,7 +119,6 @@ export function createSyncRecords(
       }
     }
 
-    const connection = await connectionService.getSafeById(connectionId);
     const application = await applicationService.getById(connection.applicationId);
 
     logEvent({
