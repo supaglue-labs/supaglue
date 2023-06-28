@@ -37,6 +37,7 @@ export const fromProviderModel = async ({
   category,
   name,
   config,
+  objects,
 }: ProviderModel): Promise<Provider> => {
   return {
     id,
@@ -47,6 +48,7 @@ export const fromProviderModel = async ({
     config: await fromProviderConfigModel(config, {
       managedOauthConfig: managedOAuthConfigs[name],
     }),
+    objects,
   } as Provider; // TODO: better type;
 };
 
@@ -75,7 +77,14 @@ const fromProviderConfigModel = async (
   return mappedProviderConfig;
 };
 
-export const toProviderModel = async ({ applicationId, category, authType, name, config }: ProviderCreateParams) => {
+export const toProviderModel = async ({
+  applicationId,
+  category,
+  authType,
+  name,
+  config,
+  objects,
+}: ProviderCreateParams) => {
   return {
     applicationId,
     category,
@@ -88,5 +97,6 @@ export const toProviderModel = async ({ applicationId, category, authType, name,
         credentials: await encryptAsString(JSON.stringify(config.oauth.credentials)),
       },
     },
+    objects,
   };
 };

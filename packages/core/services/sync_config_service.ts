@@ -89,7 +89,7 @@ export class SyncConfigService {
     return fromSyncConfigModel(createdSyncConfig);
   }
 
-  public async update(id: string, syncConfig: SyncConfigUpdateParams): Promise<SyncConfig> {
+  public async update(id: string, applicationId: string, syncConfig: SyncConfigUpdateParams): Promise<SyncConfig> {
     validateSyncConfigParams(syncConfig);
     // TODO(SUP1-328): Remove once we support updating destinations
     if (syncConfig.destinationId) {
@@ -102,7 +102,7 @@ export class SyncConfigService {
     const [updatedSyncConfig] = await this.#prisma.$transaction([
       this.#prisma.syncConfig.update({
         where: { id },
-        data: await toSyncConfigModel(syncConfig),
+        data: await toSyncConfigModel({ ...syncConfig, applicationId }),
       }),
       this.#prisma.syncConfigChange.create({
         data: {

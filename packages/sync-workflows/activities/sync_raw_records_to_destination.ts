@@ -2,8 +2,9 @@ import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
 import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
-import { ConnectionService, RemoteService, SchemaService, SyncConfigService } from '@supaglue/core/services';
+import { ConnectionService, ProviderService, RemoteService, SchemaService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
+import { CRMProvider } from '@supaglue/types';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
@@ -30,8 +31,8 @@ export function createSyncRawRecordsToDestination(
   remoteService: RemoteService,
   destinationService: DestinationService,
   applicationService: ApplicationService,
-  syncConfigService: SyncConfigService,
-  schemaService: SchemaService
+  schemaService: SchemaService,
+  providerService: ProviderService
 ) {
   return async function syncRawRecordsToDestination({
     syncId,
@@ -67,8 +68,8 @@ export function createSyncRawRecordsToDestination(
           ? await (client as CrmRemoteClient).listCustomObjectRecords(object, modifiedAfter, heartbeat)
           : await (async function () {
               // Find schema / field mapping information
-              const syncConfig = await syncConfigService.getBySyncId(syncId);
-              const schemaId = syncConfig?.config?.standardObjects?.find((o) => o.object === object)?.schemaId;
+              const provider = await providerService.getById(connection.providerId);
+              const schemaId = (provider as CRMProvider).objects?.standard.find((o) => o.name === object)?.schemaId;
               const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
               const customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
                 (o) => o.object === object

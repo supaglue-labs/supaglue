@@ -1,4 +1,4 @@
-import { OAuthConfigDecrypted, OAuthConfigEncrypted } from '.';
+import { CommonModelForCategory, OAuthConfigDecrypted, OAuthConfigEncrypted, ProviderCategory } from '.';
 import { CRMProviderName } from './crm';
 import { EngagementProviderName } from './engagement';
 
@@ -6,18 +6,35 @@ type BaseProvider = {
   id: string;
   applicationId: string;
   authType: 'oauth2';
+  config: ProviderConfigDecrypted;
 };
 
 export type CRMProvider = BaseProvider & {
   category: 'crm';
   name: CRMProviderName;
-  config: ProviderConfigDecrypted;
+  objects?: ProviderObjects<'crm'>;
 };
 
 export type EngagementProvider = BaseProvider & {
   category: 'engagement';
   name: EngagementProviderName;
-  config: ProviderConfigDecrypted;
+  objects?: ProviderObjects<'engagement'>;
+};
+
+export type ProviderObjects<T extends ProviderCategory> = {
+  common: ProviderCommonObject<T>[];
+  standard: ProviderObject[];
+  custom: ProviderObject[];
+};
+
+export type ProviderCommonObject<T extends ProviderCategory> = {
+  name: CommonModelForCategory<T>;
+  schemaId?: string;
+};
+
+export type ProviderObject = {
+  name: string;
+  schemaId?: string;
 };
 
 export type ProviderConfigDecrypted = {
@@ -32,12 +49,11 @@ export type ProviderConfigEncrypted = {
   useManagedOauth?: boolean;
 };
 
-// TODO: Update params should not contain applicationId even if create params does.
 export type CRMProviderCreateParams = Omit<CRMProvider, 'id'>;
-export type CRMProviderUpdateParams = Omit<CRMProvider, 'id'>;
+export type CRMProviderUpdateParams = Omit<CRMProvider, 'id' | 'applicationId'>;
 
 export type EngagementProviderCreateParams = Omit<EngagementProvider, 'id'>;
-export type EngagementProviderUpdateParams = Omit<EngagementProvider, 'id'>;
+export type EngagementProviderUpdateParams = Omit<EngagementProvider, 'id' | 'applicationId'>;
 
 export type Provider = CRMProvider | EngagementProvider;
 

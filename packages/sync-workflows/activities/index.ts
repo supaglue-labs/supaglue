@@ -65,23 +65,24 @@ export const createActivities = ({
       syncService,
       syncConfigService,
       applicationService,
-      schemaService
+      schemaService,
+      providerService
     ),
     syncRecordsToDestination: createSyncRecordsToDestination(
       connectionService,
       remoteService,
       destinationService,
-      syncConfigService,
       applicationService,
-      schemaService
+      schemaService,
+      providerService
     ),
     syncRawRecordsToDestination: createSyncRawRecordsToDestination(
       connectionService,
       remoteService,
       destinationService,
       applicationService,
-      syncConfigService,
-      schemaService
+      schemaService,
+      providerService
     ),
     logSyncStart: createLogSyncStart({ syncHistoryService }),
     logSyncFinish: createLogSyncFinish({ syncHistoryService, applicationService, connectionService }),

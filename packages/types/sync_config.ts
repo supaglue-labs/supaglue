@@ -9,7 +9,7 @@ export type SyncConfig = {
 };
 
 export type SyncConfigCreateParams = Omit<SyncConfig, 'id'>;
-export type SyncConfigUpdateParams = SyncConfigCreateParams;
+export type SyncConfigUpdateParams = Omit<SyncConfigCreateParams, 'applicationId'>;
 
 export type SyncConfigData = {
   defaultConfig: SyncStrategyConfig;
@@ -26,13 +26,10 @@ export type SyncStrategyConfig = {
 
 export type CommonObjectConfig = {
   object: CommonModelType;
-  // If set, will sync only these fields in addition to the common model. If unset, will sync all fields into the `rawData` column.
-  schemaId?: string;
 };
 
 export type StandardObjectConfig = {
   object: string;
-  schemaId?: string;
 };
 
 export type CustomObjectConfig = {

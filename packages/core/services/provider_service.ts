@@ -65,10 +65,13 @@ export class ProviderService {
     return fromProviderModel(createdProvider);
   }
 
-  public async update(id: string, provider: ProviderUpdateParams): Promise<Provider> {
+  public async update(id: string, applicationId: string, provider: ProviderUpdateParams): Promise<Provider> {
     const updatedProvider = await this.#prisma.provider.update({
       where: { id },
-      data: await toProviderModel(provider),
+      data: await toProviderModel({
+        ...provider,
+        applicationId,
+      }),
     });
     return fromProviderModel(updatedProvider);
   }

@@ -16,6 +16,8 @@ properties:
     $ref: ./provider_name.yaml
   config:
     $ref: ./create_provider_config.yaml # the whole provider_config
+  objects:
+    $ref: ./objects.yaml
 required:
   - id
   - application_id

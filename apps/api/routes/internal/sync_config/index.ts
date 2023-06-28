@@ -80,8 +80,7 @@ export default function init(app: Router): void {
       req: Request<UpdateSyncConfigPathParams, UpdateSyncConfigResponse, UpdateSyncConfigRequest>,
       res: Response<UpdateSyncConfigResponse>
     ) => {
-      const syncConfig = await syncConfigService.update(req.params.sync_config_id, {
-        applicationId: req.supaglueApplication.id,
+      const syncConfig = await syncConfigService.update(req.params.sync_config_id, req.supaglueApplication.id, {
         ...camelcaseKeys({
           ...req.body,
           config: {
