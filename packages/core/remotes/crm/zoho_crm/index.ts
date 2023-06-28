@@ -24,7 +24,8 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
 
   public override getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
-    id: string
+    id: string,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     throw new Error('Not implemented');
   }

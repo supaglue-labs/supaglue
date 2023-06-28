@@ -360,19 +360,20 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override async getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
-    id: string
+    id: string,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     switch (commonModelType) {
       case 'account':
-        return this.getAccount(id);
+        return this.getAccount(id, fieldMappingConfig);
       case 'contact':
-        return this.getContact(id);
+        return this.getContact(id, fieldMappingConfig);
       case 'lead':
-        return this.getLead(id);
+        return this.getLead(id, fieldMappingConfig);
       case 'opportunity':
-        return this.getOpportunity(id);
+        return this.getOpportunity(id, fieldMappingConfig);
       case 'user':
-        return this.getUser(id);
+        return this.getUser(id, fieldMappingConfig);
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -604,9 +605,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       .map((field: { name: string; type: string }) => field.name);
   }
 
-  public async getAccount(id: string): Promise<Account> {
+  public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
     const account = await this.#client.retrieve('Account', id);
-    return fromSalesforceAccountToAccount(account);
+    return { ...fromSalesforceAccountToAccount(account), rawData: toMappedProperties(account, fieldMappingConfig) };
   }
 
   public async createAccount(params: AccountCreateParams): Promise<string> {
@@ -625,9 +626,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getContact(id: string): Promise<Contact> {
+  public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     const contact = await this.#client.retrieve('Contact', id);
-    return fromSalesforceContactToContact(contact);
+    return { ...fromSalesforceContactToContact(contact), rawData: toMappedProperties(contact, fieldMappingConfig) };
   }
 
   public async createContact(params: ContactCreateParams): Promise<string> {
@@ -646,9 +647,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getOpportunity(id: string): Promise<Opportunity> {
+  public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     const contact = await this.#client.retrieve('Opportunity', id);
-    return fromSalesforceOpportunityToOpportunity(contact);
+    return {
+      ...fromSalesforceOpportunityToOpportunity(contact),
+      rawData: toMappedProperties(contact, fieldMappingConfig),
+    };
   }
 
   public async createOpportunity(params: OpportunityCreateParams): Promise<string> {
@@ -667,9 +671,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getLead(id: string): Promise<Lead> {
-    const contact = await this.#client.retrieve('Lead', id);
-    return fromSalesforceLeadToLead(contact);
+  public async getLead(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Lead> {
+    const lead = await this.#client.retrieve('Lead', id);
+    return { ...fromSalesforceLeadToLead(lead), rawData: toMappedProperties(lead, fieldMappingConfig) };
   }
 
   public async createLead(params: LeadCreateParams): Promise<string> {
@@ -688,9 +692,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getUser(id: string): Promise<User> {
+  public async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
     const user = await this.#client.retrieve('User', id);
-    return fromSalesforceUserToUser(user);
+    return { ...fromSalesforceUserToUser(user), rawData: toMappedProperties(user, fieldMappingConfig) };
   }
 
   public handleErr(err: unknown): unknown {

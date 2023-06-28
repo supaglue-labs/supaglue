@@ -775,19 +775,20 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
-    id: string
+    id: string,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     switch (commonModelType) {
       case 'account':
-        return this.getAccount(id);
+        return this.getAccount(id, fieldMappingConfig);
       case 'contact':
-        return this.getContact(id);
+        return this.getContact(id, fieldMappingConfig);
       case 'lead':
         throw new Error('Cannot get leads in HubSpot');
       case 'opportunity':
-        return this.getOpportunity(id);
+        return this.getOpportunity(id, fieldMappingConfig);
       case 'user':
-        return this.getUser(id);
+        return this.getUser(id, fieldMappingConfig);
       default:
         throw new Error(`Unsupported common model type: ${commonModelType}`);
     }
@@ -969,11 +970,14 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public async getAccount(id: string): Promise<Account> {
+  public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
     const properties = await this.getCommonModelPropertiesToFetch('company');
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(id, properties);
-    return fromHubSpotCompanyToAccount(company);
+    return {
+      ...fromHubSpotCompanyToAccount(company),
+      rawData: toMappedProperties(company.properties, fieldMappingConfig),
+    };
   }
 
   public async createAccount(params: AccountCreateParams): Promise<string> {
@@ -1147,10 +1151,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public async getOpportunity(id: string, pipelineStageMapping?: PipelineStageMapping): Promise<Opportunity> {
-    if (!pipelineStageMapping) {
-      pipelineStageMapping = await this.#getPipelineStageMapping();
-    }
+  public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
     const properties = await this.getCommonModelPropertiesToFetch('deal');
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
@@ -1159,7 +1161,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
     );
-    return fromHubSpotDealToOpportunity(deal, pipelineStageMapping);
+    return {
+      ...fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
+      rawData: toMappedProperties(deal.properties, fieldMappingConfig),
+    };
   }
 
   public async createOpportunity(params: OpportunityCreateParams): Promise<string> {
@@ -1327,7 +1332,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public async getContact(id: string): Promise<Contact> {
+  public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     const properties = await this.getCommonModelPropertiesToFetch('contact');
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
@@ -1336,7 +1341,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       /* propertiesWithHistory */ undefined,
       /* associations */ ['company']
     );
-    return fromHubSpotContactToContact(contact);
+    return {
+      ...fromHubSpotContactToContact(contact),
+      rawData: toMappedProperties(contact.properties, fieldMappingConfig),
+    };
   }
 
   public async createContact(params: ContactCreateParams): Promise<string> {
@@ -1383,9 +1391,9 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     throw new Error('Not supported');
   }
 
-  public async getUser(id: string): Promise<User> {
+  public async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
     const owner = await this.#client.crm.owners.ownersApi.getById(parseInt(id));
-    return fromHubspotOwnerToUser(owner);
+    return { ...fromHubspotOwnerToUser(owner), rawData: toMappedProperties(owner, fieldMappingConfig) };
   }
 
   public async listUsers(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {

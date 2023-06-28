@@ -178,7 +178,8 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   public override async getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
-    id: string
+    id: string,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     switch (commonModelType) {
       case 'account':
