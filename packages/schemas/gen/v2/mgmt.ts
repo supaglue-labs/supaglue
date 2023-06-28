@@ -222,6 +222,7 @@ export interface components {
       auth_type: "oauth2";
       name: components["schemas"]["provider_name"];
       config: components["schemas"]["create_provider_config"];
+      objects: components["schemas"]["objects"];
     };
     destination: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -276,6 +277,24 @@ export interface components {
           mapped_name?: string;
         })[];
       allow_additional_field_mappings: boolean;
+    };
+    objects: {
+      common: ({
+          /** @example common_object_name */
+          name?: string;
+          /** @description If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is. */
+          schema_id?: string;
+        })[];
+      standard: ({
+          /** @example standard_object_name */
+          name?: string;
+          schema_id?: string;
+        })[];
+      custom: ({
+          /** @example custom_object_name */
+          name?: string;
+          schema_id?: string;
+        })[];
     };
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -347,13 +366,10 @@ export interface components {
       common_objects?: ({
           /** @example contacts */
           object: string;
-          /** @description If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is. */
-          schema_id?: string;
         })[];
       standard_objects?: ({
           /** @example contacts */
           object: string;
-          schema_id?: string;
         })[];
       custom_objects?: ({
           /** @example contacts */
@@ -458,12 +474,12 @@ export interface components {
       /** @example contact@mycompany.com */
       email: string;
     };
-    create_provider: ({
+    create_provider: {
       /** @enum {string} */
       auth_type: "oauth2";
       config: components["schemas"]["create_provider_config"];
-      destination_id?: string | null;
-    }) & OneOf<[{
+      objects?: components["schemas"]["objects"];
+    } & OneOf<[{
       /** @enum {string} */
       category: "crm";
       name: components["schemas"]["provider_name_crm"];

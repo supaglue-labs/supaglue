@@ -17,6 +17,7 @@ import {
   UpdateProviderRequest,
   UpdateProviderResponse,
 } from '@supaglue/schemas/v2/mgmt';
+import { ProviderCreateParams } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
@@ -46,7 +47,7 @@ export default function init(app: Router): void {
       const provider = await providerService.create({
         applicationId: req.supaglueApplication.id,
         ...camelcaseKeys(req.body),
-      });
+      } as ProviderCreateParams);
       return res.status(201).send(snakecaseKeys(hideManagedOauthConfig(provider)));
     }
   );
@@ -71,8 +72,7 @@ export default function init(app: Router): void {
       req: Request<UpdateProviderPathParams, UpdateProviderResponse, UpdateProviderRequest>,
       res: Response<UpdateProviderResponse>
     ) => {
-      const provider = await providerService.update(req.params.provider_id, {
-        applicationId: req.supaglueApplication.id,
+      const provider = await providerService.update(req.params.provider_id, req.supaglueApplication.id, {
         ...camelcaseKeys(req.body),
       });
       return res.status(200).send(snakecaseKeys(hideManagedOauthConfig(provider)));

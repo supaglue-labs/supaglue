@@ -87,7 +87,7 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
-const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
+export const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
   contact: 'contacts',
   deal: 'deals',

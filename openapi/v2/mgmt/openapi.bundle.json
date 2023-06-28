@@ -2085,6 +2085,9 @@
           },
           "config": {
             "$ref": "#/components/schemas/create_provider_config"
+          },
+          "objects": {
+            "$ref": "#/components/schemas/objects"
           }
         },
         "required": [
@@ -2093,7 +2096,8 @@
           "category",
           "auth_type",
           "name",
-          "config"
+          "config",
+          "objects"
         ]
       },
       "destination": {
@@ -2279,6 +2283,65 @@
         "required": [
           "fields",
           "allow_additional_field_mappings"
+        ]
+      },
+      "objects": {
+        "type": "object",
+        "properties": {
+          "common": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "common_object_name"
+                },
+                "schema_id": {
+                  "type": "string",
+                  "description": "If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is."
+                }
+              },
+              "required": "name"
+            }
+          },
+          "standard": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "standard_object_name"
+                },
+                "schema_id": {
+                  "type": "string"
+                }
+              },
+              "required": "name"
+            }
+          },
+          "custom": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "custom_object_name"
+                },
+                "schema_id": {
+                  "type": "string"
+                }
+              },
+              "required": "name"
+            }
+          }
+        },
+        "required": [
+          "common",
+          "standard",
+          "custom"
         ]
       },
       "connection": {
@@ -2478,10 +2541,6 @@
                 "object": {
                   "type": "string",
                   "example": "contacts"
-                },
-                "schema_id": {
-                  "type": "string",
-                  "description": "If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is."
                 }
               },
               "required": [
@@ -2497,9 +2556,6 @@
                 "object": {
                   "type": "string",
                   "example": "contacts"
-                },
-                "schema_id": {
-                  "type": "string"
                 }
               },
               "required": [
@@ -2765,9 +2821,8 @@
               "config": {
                 "$ref": "#/components/schemas/create_provider_config"
               },
-              "destination_id": {
-                "type": "string",
-                "nullable": true
+              "objects": {
+                "$ref": "#/components/schemas/objects"
               }
             },
             "required": [

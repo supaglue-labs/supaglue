@@ -99,6 +99,8 @@ components:
       $ref: ./components/schemas/objects/schema.yaml
     schema_config:
       $ref: ./components/schemas/objects/schema_config.yaml
+    objects:
+      $ref: ./components/schemas/objects/objects.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
     category:
