@@ -8,13 +8,15 @@ import TabItem from '@theme/TabItem';
 # Actions API (writes)
 
 The Actions API lets you perform common operations on your customers' SaaS tools.
-![actions_api_diagram](/img/actions-api-diagram.png 'actions API diagram')
+![actions_api_diagram](/img/actions-api-diagram-2.png 'actions API diagram')
 
 ## How it works
 
 1. You call Supaglue’s Actions API with a request payload.
 2. Supaglue applies mappings and updates the data in Salesforce (or other remote provider). You can use Supaglue’s default unified mappings or your own.
 3. Optional: Supaglue updates your application DB for the corresponding record, before returning a 200 response (see cache invalidation).
+
+![actions_api_diagram](/img/actions-api-diagram.png 'actions API diagram')
 
 ## Unified API
 
