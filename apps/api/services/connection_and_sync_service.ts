@@ -116,111 +116,113 @@ export class ConnectionAndSyncService {
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         });
-        if (syncConfig && syncConfig.config.defaultConfig.startSyncOnConnectionCreation) {
-          // Old syncs
-          await tx.sync.create({
-            data: {
-              id: syncId,
-              connectionId,
-              syncConfigId: syncConfig.id,
-              strategy: {
-                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-              },
-              state: {
-                phase: 'created',
-              },
-            },
-          });
-          await tx.syncChange.create({
-            data: {
-              syncId,
-            },
-          });
 
-          // TODO: comment out the old syncs and uncomment these new syncs when we're ready to migrate to object syncs
-          //   // New syncs
-          //   const objectSyncIds: string[] = [];
+        // TODO: Bring back ability to start sync on connection creation
+        // if (syncConfig && syncConfig.config.defaultConfig.startSyncOnConnectionCreation) {
+        //   // // Old syncs
+        //   // await tx.sync.create({
+        //   //   data: {
+        //   //     id: syncId,
+        //   //     connectionId,
+        //   //     syncConfigId: syncConfig.id,
+        //   //     strategy: {
+        //   //       type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+        //   //     },
+        //   //     state: {
+        //   //       phase: 'created',
+        //   //     },
+        //   //   },
+        //   // });
+        //   // await tx.syncChange.create({
+        //   //   data: {
+        //   //     syncId,
+        //   //   },
+        //   // });
 
-          //   if (syncConfig.config.commonObjects?.length) {
-          //     const commonObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
-          //     for (const commonObject of syncConfig.config.commonObjects) {
-          //       const commonObjectSyncId = uuidv4();
-          //       objectSyncIds.push(commonObjectSyncId);
-          //       commonObjectSyncArgs.push({
-          //         id: commonObjectSyncId,
-          //         objectType: 'common',
-          //         object: commonObject.object,
-          //         connectionId,
-          //         syncConfigId: syncConfig.id,
-          //         strategy: {
-          //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          //         },
-          //         state: {
-          //           phase: 'created',
-          //         },
-          //       });
-          //     }
-          //     await tx.objectSync.createMany({
-          //       data: commonObjectSyncArgs,
-          //     });
-          //   }
+        //   // TODO: comment out the old syncs and uncomment these new syncs when we're ready to migrate to object syncs
+        //   // New syncs
+        //   const objectSyncIds: string[] = [];
 
-          //   if (syncConfig.config.standardObjects?.length) {
-          //     const standardObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
-          //     for (const standardObject of syncConfig.config.standardObjects) {
-          //       const standardObjectSyncId = uuidv4();
-          //       objectSyncIds.push(standardObjectSyncId);
-          //       standardObjectSyncArgs.push({
-          //         id: standardObjectSyncId,
-          //         objectType: 'standard',
-          //         object: standardObject.object,
-          //         connectionId,
-          //         syncConfigId: syncConfig.id,
-          //         strategy: {
-          //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          //         },
-          //         state: {
-          //           phase: 'created',
-          //         },
-          //       });
-          //     }
-          //     await tx.objectSync.createMany({
-          //       data: standardObjectSyncArgs,
-          //     });
-          //   }
+        //   if (syncConfig.config.commonObjects?.length) {
+        //     const commonObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+        //     for (const commonObject of syncConfig.config.commonObjects) {
+        //       const commonObjectSyncId = uuidv4();
+        //       objectSyncIds.push(commonObjectSyncId);
+        //       commonObjectSyncArgs.push({
+        //         id: commonObjectSyncId,
+        //         objectType: 'common',
+        //         object: commonObject.object,
+        //         connectionId,
+        //         syncConfigId: syncConfig.id,
+        //         strategy: {
+        //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+        //         },
+        //         state: {
+        //           phase: 'created',
+        //         },
+        //       });
+        //     }
+        //     await tx.objectSync.createMany({
+        //       data: commonObjectSyncArgs,
+        //     });
+        //   }
 
-          //   if (syncConfig.config.customObjects?.length) {
-          //     const customObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
-          //     for (const customObject of syncConfig.config.customObjects) {
-          //       const customObjectSyncId = uuidv4();
-          //       objectSyncIds.push(customObjectSyncId);
-          //       customObjectSyncArgs.push({
-          //         id: customObjectSyncId,
-          //         objectType: 'custom',
-          //         object: customObject.object,
-          //         connectionId,
-          //         syncConfigId: syncConfig.id,
-          //         strategy: {
-          //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          //         },
-          //         state: {
-          //           phase: 'created',
-          //         },
-          //       });
-          //     }
-          //     await tx.objectSync.createMany({
-          //       data: customObjectSyncArgs,
-          //     });
-          //   }
+        //   if (syncConfig.config.standardObjects?.length) {
+        //     const standardObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+        //     for (const standardObject of syncConfig.config.standardObjects) {
+        //       const standardObjectSyncId = uuidv4();
+        //       objectSyncIds.push(standardObjectSyncId);
+        //       standardObjectSyncArgs.push({
+        //         id: standardObjectSyncId,
+        //         objectType: 'standard',
+        //         object: standardObject.object,
+        //         connectionId,
+        //         syncConfigId: syncConfig.id,
+        //         strategy: {
+        //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+        //         },
+        //         state: {
+        //           phase: 'created',
+        //         },
+        //       });
+        //     }
+        //     await tx.objectSync.createMany({
+        //       data: standardObjectSyncArgs,
+        //     });
+        //   }
 
-          //   if (objectSyncIds.length) {
-          //     await tx.objectSyncChange.createMany({
-          //       data: objectSyncIds.map((objectSyncId) => ({
-          //         objectSyncId,
-          //       })),
-          //     });
-          //   }
-        }
+        //   if (syncConfig.config.customObjects?.length) {
+        //     const customObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+        //     for (const customObject of syncConfig.config.customObjects) {
+        //       const customObjectSyncId = uuidv4();
+        //       objectSyncIds.push(customObjectSyncId);
+        //       customObjectSyncArgs.push({
+        //         id: customObjectSyncId,
+        //         objectType: 'custom',
+        //         object: customObject.object,
+        //         connectionId,
+        //         syncConfigId: syncConfig.id,
+        //         strategy: {
+        //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+        //         },
+        //         state: {
+        //           phase: 'created',
+        //         },
+        //       });
+        //     }
+        //     await tx.objectSync.createMany({
+        //       data: customObjectSyncArgs,
+        //     });
+        //   }
+
+        //   if (objectSyncIds.length) {
+        //     await tx.objectSyncChange.createMany({
+        //       data: objectSyncIds.map((objectSyncId) => ({
+        //         objectSyncId,
+        //       })),
+        //     });
+        //   }
+        // }
         return connectionModel;
       });
 

@@ -1,8 +1,9 @@
 import { logger } from '@supaglue/core/lib';
+import { fromSyncConfigModel } from '@supaglue/core/mappers';
 import { ConnectionService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
-import type { ObjectSync as ObjectSyncModel, Sync as SyncModel } from '@supaglue/db';
-import { PrismaClient } from '@supaglue/db';
+import type { ObjectSync as ObjectSyncModel, Prisma, Sync as SyncModel } from '@supaglue/db';
+import { CONNECTIONS_TABLE, OBJECT_SYNCS_TABLE, OBJECT_SYNC_CHANGES_TABLE, PrismaClient } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
   getRunManagedSyncScheduleId,
@@ -138,6 +139,16 @@ export class SyncService {
   }
 
   public async processSyncChanges(): Promise<void> {
+    // This is broken into two parts
+    // Part 1 - Process all the SyncConfigChange events and see if we need to
+    //          create/update/delete any ObjectSyncs (and ObjectSyncChanges)
+    // Part 2 - Process all the ObjectSyncChange events and see if we need to
+    //          create/update/delete any Temporal schedules/workflows
+    await this.#processSyncConfigChanges();
+    await this.#processObjectSyncChanges();
+  }
+
+  async #processSyncConfigChanges(): Promise<void> {
     // Get all the SyncConfigChange objects
     const syncConfigChanges = await this.#prisma.syncConfigChange.findMany({
       select: {
@@ -145,82 +156,140 @@ export class SyncService {
         syncConfigId: true,
       },
     });
-    const syncConfigChangeIds = syncConfigChanges.map((syncConfigChange) => syncConfigChange.id);
-
-    // Find out all the sync_configs that may have changed
-    const uniqueSyncConfigIds = [
-      ...new Set(syncConfigChanges.map((syncConfigChange) => syncConfigChange.syncConfigId)),
-    ];
-
-    // Get all the associated syncs and generate sync changes so that we update the schedule intervals.
-    // TODO: Write a raw query instead of reading out all syncs and then writing sync changes.
-    const syncsForSyncConfigs = await this.#prisma.sync.findMany({
-      where: {
-        syncConfigId: {
-          in: uniqueSyncConfigIds,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const objectSyncsForSyncConfigs = await this.#prisma.objectSync.findMany({
-      where: {
-        syncConfigId: {
-          in: uniqueSyncConfigIds,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    // Get all the SyncChange objects
-    const syncChanges = await this.#prisma.syncChange.findMany();
-    const syncChangeIds = syncChanges.map((syncChange) => syncChange.id);
-
-    // Find out all the syncs that may have changed (for now, it's just created; syncs aren't updated).
-    const uniqueSyncIds = [
-      ...new Set([
-        ...syncsForSyncConfigs.map((sync) => sync.id),
-        ...syncChanges.map((syncChange) => syncChange.syncId),
-      ]),
-    ];
-    const syncs = await this.#prisma.sync.findMany({
+    const syncConfigChangeIds = syncConfigChanges.map(({ id }) => id);
+    const uniqueSyncConfigIds = [...new Set(syncConfigChanges.map(({ syncConfigId }) => syncConfigId))];
+    const syncConfigModels = await this.#prisma.syncConfig.findMany({
       where: {
         id: {
-          in: uniqueSyncIds,
+          in: uniqueSyncConfigIds,
         },
       },
-      select: {
-        id: true,
-        connectionId: true,
-        syncConfigId: true,
+    });
+
+    // Insert / delete ObjectSyncs
+    for (const syncConfigModel of syncConfigModels) {
+      const syncConfig = fromSyncConfigModel(syncConfigModel);
+      const relevantConnections = await this.#connectionService.getSafeByProviderId(syncConfig.providerId);
+
+      const objectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+      for (const connection of relevantConnections) {
+        if (syncConfig.config.commonObjects?.length) {
+          for (const commonObject of syncConfig.config.commonObjects) {
+            objectSyncArgs.push({
+              objectType: 'common',
+              object: commonObject.object,
+              connectionId: connection.id,
+              syncConfigId: syncConfig.id,
+              strategy: {
+                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+              },
+              state: {
+                phase: 'created',
+              },
+            });
+          }
+        }
+
+        if (syncConfig.config.standardObjects?.length) {
+          for (const standardObject of syncConfig.config.standardObjects) {
+            objectSyncArgs.push({
+              objectType: 'standard',
+              object: standardObject.object,
+              connectionId: connection.id,
+              syncConfigId: syncConfig.id,
+              strategy: {
+                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+              },
+              state: {
+                phase: 'created',
+              },
+            });
+          }
+        }
+
+        if (syncConfig.config.customObjects?.length) {
+          for (const customObject of syncConfig.config.customObjects) {
+            objectSyncArgs.push({
+              objectType: 'custom',
+              object: customObject.object,
+              connectionId: connection.id,
+              syncConfigId: syncConfig.id,
+              strategy: {
+                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+              },
+              state: {
+                phase: 'created',
+              },
+            });
+          }
+        }
+      }
+
+      await this.#prisma.$transaction(async (tx) => {
+        // Create ObjectSyncs and ignore duplicates
+        if (objectSyncArgs.length) {
+          await tx.objectSync.createMany({
+            data: objectSyncArgs,
+            skipDuplicates: true,
+          });
+        }
+
+        // Create ObjectSyncChanges
+        await tx.$executeRawUnsafe(`INSERT INTO ${OBJECT_SYNC_CHANGES_TABLE} (id, object_sync_id)
+SELECT gen_random_uuid(), s.id
+FROM ${OBJECT_SYNCS_TABLE} s
+JOIN ${CONNECTIONS_TABLE} c on s.connection_id = c.id
+WHERE c.provider_id = '${syncConfig.providerId}'`);
+
+        // Delete ObjectSyncs
+        await tx.objectSync.deleteMany({
+          where: {
+            NOT: {
+              OR: [
+                ...(syncConfig.config.commonObjects?.map((commonObject) => ({
+                  connection: {
+                    providerId: syncConfig.providerId,
+                  },
+                  objectType: 'common',
+                  object: commonObject.object,
+                })) ?? []),
+                ...(syncConfig.config.standardObjects?.map((standardObject) => ({
+                  connection: {
+                    providerId: syncConfig.providerId,
+                  },
+                  objectType: 'standard',
+                  object: standardObject.object,
+                })) ?? []),
+                ...(syncConfig.config.customObjects?.map((customObject) => ({
+                  connection: {
+                    providerId: syncConfig.providerId,
+                  },
+                  objectType: 'custom',
+                  object: customObject.object,
+                })) ?? []),
+              ],
+            },
+          },
+        });
+      });
+    }
+
+    // Delete the SyncConfigChange objects
+    await this.#prisma.syncConfigChange.deleteMany({
+      where: {
+        id: {
+          in: syncConfigChangeIds,
+        },
       },
     });
+  }
 
-    // Classify SyncChange into upserts and deletes
-    const syncIdsToDelete = uniqueSyncIds.filter((syncId) => !syncs.some((sync) => sync.id === syncId));
-    const syncsToUpsert = uniqueSyncIds.flatMap((syncId) => {
-      if (syncIdsToDelete.includes(syncId)) {
-        return [];
-      }
-      const sync = syncs.find((sync) => sync.id === syncId);
-      return sync ? [sync] : [];
-    });
-    const syncIdsToUpsert = syncsToUpsert.map((sync) => sync.id);
-
+  async #processObjectSyncChanges(): Promise<void> {
     // Get all the ObjectSyncChange objects
     const objectSyncChanges = await this.#prisma.objectSyncChange.findMany();
     const objectSyncChangeIds = objectSyncChanges.map((objectSyncChange) => objectSyncChange.id);
-
-    // Find out all the object syncs that may have changed (for now, it's just created; syncs aren't updated).
     const uniqueObjectSyncIds = [
-      ...new Set([
-        ...objectSyncsForSyncConfigs.map((objectSync) => objectSync.id),
-        ...objectSyncChanges.map((objectSyncChange) => objectSyncChange.objectSyncId),
-      ]),
+      ...new Set([...objectSyncChanges.map((objectSyncChange) => objectSyncChange.objectSyncId)]),
     ];
     const objectSyncs = await this.#prisma.objectSync.findMany({
       where: {
@@ -235,6 +304,12 @@ export class SyncService {
       },
     });
 
+    const connectionIds = objectSyncs.map(({ connectionId }) => connectionId);
+    const connections = await this.#connectionService.getSafeByIds(connectionIds);
+
+    const syncConfigIds = objectSyncs.map(({ syncConfigId }) => syncConfigId);
+    const syncConfigs = await this.#syncConfigService.getByIds(syncConfigIds);
+
     // Classify ObjectSyncChange into upserts and deletes
     const objectSyncIdsToDelete = uniqueObjectSyncIds.filter(
       (objectSyncId) => !objectSyncs.some((objectSync) => objectSync.id === objectSyncId)
@@ -246,56 +321,9 @@ export class SyncService {
       const objectSync = objectSyncs.find((objectSync) => objectSync.id === objectSyncId);
       return objectSync ? [objectSync] : [];
     });
-    const objectSyncIdsToUpsert = objectSyncsToUpsert.map((objectSync) => objectSync.id);
-
-    // Delete syncs
-    await this.#deleteTemporalSyncs(syncIdsToDelete);
-
-    // Upsert syncs
 
     // Delete object syncs
     await this.#deleteTemporalObjectSyncs(objectSyncIdsToDelete);
-
-    // Upsert object syncs
-
-    // Get the sync configs
-    const syncConfigIds: string[] = [
-      ...syncs
-        .filter((sync) => syncIdsToUpsert.includes(sync.id))
-        .flatMap((sync) => (sync.syncConfigId ? [sync.syncConfigId] : [])),
-      ...objectSyncs
-        .filter((objectSync) => objectSyncIdsToUpsert.includes(objectSync.id))
-        .flatMap((objectSync) => (objectSync.syncConfigId ? [objectSync.syncConfigId] : [])),
-    ];
-    const syncConfigs = await this.#syncConfigService.listByIds(syncConfigIds);
-
-    // Get the connections
-    const connectionIds = [
-      ...syncs.filter((sync) => syncIdsToUpsert.includes(sync.id)).map((sync) => sync.connectionId),
-      ...objectSyncs
-        .filter((objectSync) => objectSyncIdsToUpsert.includes(objectSync.id))
-        .map((objectSync) => objectSync.connectionId),
-    ];
-    const connections = await this.#connectionService.getSafeByIds(connectionIds);
-
-    // Upsert schedules for all the syncs
-    for (const sync of syncsToUpsert) {
-      const connection = connections.find((connection) => connection.id === sync.connectionId);
-      if (!connection) {
-        throw new Error('Unexpected error: connection not found');
-      }
-
-      const syncConfig = syncConfigs.find((syncConfig) => syncConfig.id === sync.syncConfigId);
-      if (!syncConfig) {
-        throw new Error('Unexpected error: syncConfig not found');
-      }
-
-      await this.upsertTemporalSync(
-        sync.id,
-        connection,
-        syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
-      );
-    }
 
     // Upsert schedules for all the object syncs
     for (const objectSync of objectSyncsToUpsert) {
@@ -316,32 +344,14 @@ export class SyncService {
       );
     }
 
-    await Promise.all([
-      // Delete the SyncConfigChange objects
-      this.#prisma.syncConfigChange.deleteMany({
-        where: {
-          id: {
-            in: syncConfigChangeIds,
-          },
+    // Delete the ObjectSyncChange objects
+    await this.#prisma.objectSyncChange.deleteMany({
+      where: {
+        id: {
+          in: objectSyncChangeIds,
         },
-      }),
-      // Delete the SyncChange objects
-      this.#prisma.syncChange.deleteMany({
-        where: {
-          id: {
-            in: syncChangeIds,
-          },
-        },
-      }),
-      // Delete the ObjectSyncChange objects
-      this.#prisma.objectSyncChange.deleteMany({
-        where: {
-          id: {
-            in: objectSyncChangeIds,
-          },
-        },
-      }),
-    ]);
+      },
+    });
   }
 
   async #deleteTemporalSyncs(syncIds: string[]): Promise<void> {
