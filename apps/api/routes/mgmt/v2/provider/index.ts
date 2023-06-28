@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { hideManagedOauthConfig } from '@supaglue/core/mappers/provider';
-import {
+import type {
   CreateProviderPathParams,
   CreateProviderRequest,
   CreateProviderResponse,
@@ -17,7 +17,7 @@ import {
   UpdateProviderRequest,
   UpdateProviderResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { ProviderCreateParams } from '@supaglue/types';
+import type { ProviderCreateParams } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
