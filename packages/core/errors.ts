@@ -63,6 +63,15 @@ export class ConflictError extends HTTPError {
   }
 }
 
+export class UnprocessableEntityError extends HTTPError {
+  code = 422;
+  problemType = 'UNPROCESSABLE_ENTITY_ERROR';
+
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
 export class TooManyRequestsError extends HTTPError {
   code = 429;
   problemType = 'TOO_MANY_REQUESTS_ERROR';
