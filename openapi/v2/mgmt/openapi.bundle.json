@@ -3288,15 +3288,16 @@
                     "type": "integer",
                     "example": 100
                   },
-                  "common_model": {
+                  "object_type": {
                     "type": "string",
                     "enum": [
-                      "opportunity",
-                      "contact",
-                      "account",
-                      "lead",
-                      "user"
-                    ],
+                      "common",
+                      "standard",
+                      "custom"
+                    ]
+                  },
+                  "object": {
+                    "type": "string",
                     "example": "contact"
                   },
                   "error_message": {
@@ -3308,7 +3309,8 @@
                   "customer_id",
                   "history_id",
                   "num_records_synced",
-                  "common_model"
+                  "object_type",
+                  "object"
                 ]
               }
             },

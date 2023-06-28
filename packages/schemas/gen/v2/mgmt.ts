@@ -607,11 +607,10 @@ export interface components {
         history_id: string;
         /** @example 100 */
         num_records_synced: number;
-        /**
-         * @example contact 
-         * @enum {string}
-         */
-        common_model: "opportunity" | "contact" | "account" | "lead" | "user";
+        /** @enum {string} */
+        object_type: "common" | "standard" | "custom";
+        /** @example contact */
+        object: string;
         error_message?: string;
       };
     }, {
