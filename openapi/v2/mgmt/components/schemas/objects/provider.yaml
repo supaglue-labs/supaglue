@@ -25,4 +25,3 @@ required:
   - auth_type
   - name
   - config
-  - objects

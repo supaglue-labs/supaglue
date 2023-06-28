@@ -2096,8 +2096,7 @@
           "category",
           "auth_type",
           "name",
-          "config",
-          "objects"
+          "config"
         ]
       },
       "destination": {

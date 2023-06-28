@@ -222,7 +222,7 @@ export interface components {
       auth_type: "oauth2";
       name: components["schemas"]["provider_name"];
       config: components["schemas"]["create_provider_config"];
-      objects: components["schemas"]["objects"];
+      objects?: components["schemas"]["objects"];
     };
     destination: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
