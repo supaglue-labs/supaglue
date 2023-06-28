@@ -3,7 +3,7 @@ import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import { ConnectionService } from '@supaglue/core/services';
 import { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
-import { SyncHistoryStatus } from '@supaglue/types/sync_history';
+import type { ObjectSyncRunStatus } from '@supaglue/types/object_sync_run';
 import { ApplicationService } from '../services';
 
 export function createLogObjectSyncFinish({
@@ -27,7 +27,7 @@ export function createLogObjectSyncFinish({
     objectSyncId: string;
     connectionId: string;
     runId: string;
-    status: SyncHistoryStatus;
+    status: ObjectSyncRunStatus;
     errorMessage?: string;
     errorStack?: string;
     numRecordsSynced: number | null;

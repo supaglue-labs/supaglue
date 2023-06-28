@@ -1,5 +1,5 @@
-import { ConnectionCreateParamsAny } from './connection';
-import { ObjectType } from './object_sync';
+import type { ConnectionCreateParamsAny } from './connection';
+import type { ObjectType } from './object_sync';
 
 export type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 

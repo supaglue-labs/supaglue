@@ -1,5 +1,5 @@
-import { PaginationInternalParams, SyncInfoFilter } from './';
-import { ObjectType } from './object_sync';
+import type { PaginationInternalParams, SyncInfoFilter } from './';
+import type { ObjectType } from './object_sync';
 
 export type ObjectSyncRunStatus = 'SUCCESS' | 'FAILURE' | 'IN_PROGRESS';
 

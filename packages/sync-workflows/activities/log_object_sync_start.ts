@@ -1,5 +1,5 @@
 import { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
-import { ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectType } from '@supaglue/types/object_sync';
 
 export type LogObjectSyncStartArgs = {
   objectSyncId: string;

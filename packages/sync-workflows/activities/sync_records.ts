@@ -1,13 +1,13 @@
 import { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
-import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
-import { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
+import type { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
+import type { EngagementRemoteClient } from '@supaglue/core/remotes/engagement/base';
 import { ConnectionService, RemoteService, SchemaService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
-import { CRMCommonModelType } from '@supaglue/types/crm';
-import { EngagementCommonModelType } from '@supaglue/types/engagement';
-import { ObjectType } from '@supaglue/types/object_sync';
+import type { CRMCommonModelType } from '@supaglue/types/crm';
+import type { EngagementCommonModelType } from '@supaglue/types/engagement';
+import type { ObjectType } from '@supaglue/types/object_sync';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';

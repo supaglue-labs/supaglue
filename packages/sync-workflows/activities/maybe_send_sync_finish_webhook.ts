@@ -1,6 +1,6 @@
 import { maybeSendWebhookPayload } from '@supaglue/core/lib/webhook';
 import { ConnectionService, ProviderService } from '@supaglue/core/services';
-import { ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectType } from '@supaglue/types/object_sync';
 import { ApplicationService } from '../services';
 
 export type MaybeSendSyncFinishWebhookArgs = {

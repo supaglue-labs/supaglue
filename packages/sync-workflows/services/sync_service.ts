@@ -1,15 +1,16 @@
 import { logger } from '@supaglue/core/lib';
 import { ConnectionService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
-import { ObjectSync as ObjectSyncModel, PrismaClient, Sync as SyncModel } from '@supaglue/db';
+import type { ObjectSync as ObjectSyncModel, Sync as SyncModel } from '@supaglue/db';
+import { PrismaClient } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
   getRunManagedSyncScheduleId,
   getRunManagedSyncWorkflowId,
   runManagedSync,
 } from '@supaglue/sync-workflows/workflows/run_managed_sync';
-import { ConnectionSafeAny, Sync, SyncState, SyncType } from '@supaglue/types';
-import { ObjectSync, ObjectSyncState, ObjectType } from '@supaglue/types/object_sync';
+import type { ConnectionSafeAny, Sync, SyncState, SyncType } from '@supaglue/types';
+import type { ObjectSync, ObjectSyncState, ObjectType } from '@supaglue/types/object_sync';
 import {
   Client,
   IntervalSpec,

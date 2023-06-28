@@ -1,7 +1,7 @@
-import { ObjectSyncRunModelExpanded } from '@supaglue/core/types/object_sync_run';
+import type { ObjectSyncRunModelExpanded } from '@supaglue/core/types/object_sync_run';
 import { PrismaClient } from '@supaglue/db';
-import { PaginatedResult } from '@supaglue/types/common';
-import {
+import type { PaginatedResult } from '@supaglue/types/common';
+import type {
   ObjectSyncRun,
   ObjectSyncRunFilter,
   ObjectSyncRunStatus,
