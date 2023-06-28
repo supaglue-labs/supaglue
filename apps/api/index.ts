@@ -98,7 +98,7 @@ app.use(
     redact: [
       'req.headers.authorization',
       'req.headers.cookie',
-      'req.headers.x-api-key',
+      'req.headers["x-api-key"]',
       'err.config.headers.Authorization', // axios errors
     ],
     genReqId: () => uuidv4(),
