@@ -25,6 +25,7 @@ import {
   NotFoundError,
   TooManyRequestsError,
   UnauthorizedError,
+  UnprocessableEntityError,
 } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import { paginator } from '../../utils/paginator';
@@ -380,19 +381,25 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       return err;
     }
 
+    const jsonError = err.response?.data?.errors?.[0];
+
     switch (err.response?.status) {
       case 400:
-        return new BadRequestError(err.message);
+        return new BadRequestError(jsonError?.detail ?? err.message);
       case 401:
-        return new UnauthorizedError(err.message);
+        return new UnauthorizedError(jsonError?.detail ?? err.message);
       case 403:
-        return new ForbiddenError(err.message);
+        return new ForbiddenError(jsonError?.detail ?? err.message);
       case 404:
-        return new NotFoundError(err.message);
+        return new NotFoundError(jsonError?.detail ?? err.message);
       case 409:
-        return new ConflictError(err.message);
+        return new ConflictError(jsonError?.detail ?? err.message);
+      case 422:
+        return new UnprocessableEntityError(
+          jsonError?.detail ? `${jsonError.detail} source ${JSON.stringify(jsonError.source)}` : err.message
+        );
       case 429:
-        return new TooManyRequestsError(err.message);
+        return new TooManyRequestsError(jsonError?.detail ?? err.message);
       default:
         return err;
     }
