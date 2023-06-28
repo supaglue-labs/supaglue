@@ -200,4 +200,17 @@ export class DestinationService {
         return new PostgresDestinationWriter(destination);
     }
   }
+
+  public async getWriterByDestinationId(destinationId: string): Promise<DestinationWriter | null> {
+    const destination = await this.getDestinationById(destinationId);
+    if (!destination) {
+      return null;
+    }
+    switch (destination.type) {
+      case 's3':
+        return new S3DestinationWriter(destination);
+      case 'postgres':
+        return new PostgresDestinationWriter(destination);
+    }
+  }
 }

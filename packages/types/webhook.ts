@@ -1,5 +1,5 @@
-import { CommonModelType } from './common';
-import { ConnectionCreateParamsAny } from './connection';
+import type { ConnectionCreateParamsAny } from './connection';
+import type { ObjectType } from './object_sync';
 
 export type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
@@ -24,16 +24,8 @@ export type SyncWebhookPayload = {
   historyId: string;
   numRecordsSynced: number;
   errorMessage?: string;
-} & (
-  | {
-      commonModel: CommonModelType;
-    }
-  | {
-      standardObject: string;
-    }
-  | {
-      customObject: string;
-    }
-);
+  objectType: ObjectType;
+  object: string;
+};
 
 export type WebhookPayload = ConnectionWebhookPayload | SyncWebhookPayload;
