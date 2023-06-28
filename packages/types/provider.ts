@@ -12,13 +12,13 @@ type BaseProvider = {
 export type CRMProvider = BaseProvider & {
   category: 'crm';
   name: CRMProviderName;
-  objects: ProviderObjects<'crm'>;
+  objects?: ProviderObjects<'crm'>;
 };
 
 export type EngagementProvider = BaseProvider & {
   category: 'engagement';
   name: EngagementProviderName;
-  objects: ProviderObjects<'engagement'>;
+  objects?: ProviderObjects<'engagement'>;
 };
 
 export type ProviderObjects<T extends ProviderCategory> = {
@@ -49,19 +49,11 @@ export type ProviderConfigEncrypted = {
   useManagedOauth?: boolean;
 };
 
-export type CRMProviderCreateParams = Omit<CRMProvider, 'id' | 'objects'> & {
-  objects?: ProviderObjects<'crm'>;
-};
-export type CRMProviderUpdateParams = Omit<CRMProvider, 'id' | 'applicationId' | 'objects'> & {
-  objects?: ProviderObjects<'crm'>;
-};
+export type CRMProviderCreateParams = Omit<CRMProvider, 'id'>;
+export type CRMProviderUpdateParams = Omit<CRMProvider, 'id' | 'applicationId'>;
 
-export type EngagementProviderCreateParams = Omit<EngagementProvider, 'id' | 'objects'> & {
-  objects?: ProviderObjects<'engagement'>;
-};
-export type EngagementProviderUpdateParams = Omit<EngagementProvider, 'id' | 'applicationId' | 'objects'> & {
-  objects?: ProviderObjects<'engagement'>;
-};
+export type EngagementProviderCreateParams = Omit<EngagementProvider, 'id'>;
+export type EngagementProviderUpdateParams = Omit<EngagementProvider, 'id' | 'applicationId'>;
 
 export type Provider = CRMProvider | EngagementProvider;
 
