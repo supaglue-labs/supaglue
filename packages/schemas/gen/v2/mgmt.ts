@@ -281,18 +281,18 @@ export interface components {
     objects: {
       common: ({
           /** @example common_object_name */
-          name?: string;
+          name: string;
           /** @description If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is. */
           schema_id?: string;
         })[];
       standard: ({
           /** @example standard_object_name */
-          name?: string;
+          name: string;
           schema_id?: string;
         })[];
       custom: ({
           /** @example custom_object_name */
-          name?: string;
+          name: string;
           schema_id?: string;
         })[];
     };
@@ -488,12 +488,12 @@ export interface components {
       category: "engagement";
       name: components["schemas"]["provider_name_engagement"];
     }]>;
-    update_provider: ({
+    update_provider: {
       /** @enum {string} */
       auth_type: "oauth2";
       config: components["schemas"]["update_provider_config"];
-      destination_id?: string | null;
-    }) & OneOf<[{
+      objects?: components["schemas"]["objects"];
+    } & OneOf<[{
       /** @enum {string} */
       category: "crm";
       name: components["schemas"]["provider_name_crm"];

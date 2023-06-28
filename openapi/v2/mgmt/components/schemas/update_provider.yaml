@@ -7,9 +7,8 @@ allOf:
           - oauth2
       config:
         $ref: ./objects/update_provider_config.yaml
-      destination_id:
-        type: string
-        nullable: true
+      objects:
+        $ref: ./objects/objects.yaml
     required:
       - auth_type
       - config

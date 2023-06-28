@@ -12,7 +12,7 @@ properties:
           type: string
           description: If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is.
       required:
-        name
+        - name
   standard:
     type: array
     items:
@@ -24,7 +24,7 @@ properties:
         schema_id:
           type: string
       required:
-        name
+        - name
   custom:
     type: array
     items:
@@ -36,7 +36,7 @@ properties:
         schema_id:
           type: string
       required:
-        name
+        - name
 required:
   - common
   - standard

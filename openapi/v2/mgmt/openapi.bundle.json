@@ -2301,7 +2301,9 @@
                   "description": "If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is."
                 }
               },
-              "required": "name"
+              "required": [
+                "name"
+              ]
             }
           },
           "standard": {
@@ -2317,7 +2319,9 @@
                   "type": "string"
                 }
               },
-              "required": "name"
+              "required": [
+                "name"
+              ]
             }
           },
           "custom": {
@@ -2333,7 +2337,9 @@
                   "type": "string"
                 }
               },
-              "required": "name"
+              "required": [
+                "name"
+              ]
             }
           }
         },
@@ -2885,9 +2891,8 @@
               "config": {
                 "$ref": "#/components/schemas/update_provider_config"
               },
-              "destination_id": {
-                "type": "string",
-                "nullable": true
+              "objects": {
+                "$ref": "#/components/schemas/objects"
               }
             },
             "required": [
