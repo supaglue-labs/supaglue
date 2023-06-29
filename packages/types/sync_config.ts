@@ -22,7 +22,6 @@ export type SyncConfigData = {
 export type SyncStrategyConfig = {
   periodMs: number;
   strategy: SyncType;
-  startSyncOnConnectionCreation: boolean;
 };
 
 export type CommonObjectConfig = {
