@@ -6,11 +6,12 @@ import type {
   ObjectSyncRunFilter,
   ObjectSyncRunStatus,
   ObjectSyncRunUpsertParams,
+  ObjectSyncRunWithObject,
 } from '@supaglue/types/object_sync_run';
 import { ConnectionService } from '.';
 import { getCustomerIdPk } from '../lib/customer_id';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { fromObjectSyncRunModelAndSync } from '../mappers/object_sync_run';
+import { fromObjectSyncRunModelAndSync, fromObjectSyncRunModelAndSyncWithObject } from '../mappers/object_sync_run';
 
 export class ObjectSyncRunService {
   #prisma: PrismaClient;
@@ -111,7 +112,7 @@ export class ObjectSyncRunService {
     });
   }
 
-  public async list(args: ObjectSyncRunFilter): Promise<PaginatedResult<ObjectSyncRun>> {
+  public async list(args: ObjectSyncRunFilter): Promise<PaginatedResult<ObjectSyncRunWithObject>> {
     // TODO: add prisma column
     const { applicationId, paginationParams, externalCustomerId, providerName } = args;
     const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
@@ -123,14 +124,16 @@ export class ObjectSyncRunService {
       where: {
         objectSync: {
           connectionId: { in: connectionIds },
-          objectType: args.objectType,
-          object: args.object,
+          objectType: 'objectType' in args ? args.objectType : undefined,
+          object: 'object' in args ? args.object : undefined,
         },
       },
       include: {
         objectSync: {
           select: {
             id: true,
+            objectType: true,
+            object: true,
             connection: true,
           },
         },
@@ -143,15 +146,15 @@ export class ObjectSyncRunService {
       where: {
         objectSync: {
           connectionId: { in: connectionIds },
-          objectType: args.objectType,
-          object: args.object,
+          objectType: 'objectType' in args ? args.objectType : undefined,
+          object: 'object' in args ? args.object : undefined,
         },
       },
     });
 
     const [models, count] = await Promise.all([modelsPromise, countPromise]);
 
-    const results = models.map(fromObjectSyncRunModelAndSync);
+    const results = models.map(fromObjectSyncRunModelAndSyncWithObject);
 
     return {
       ...getPaginationResult<string>(page_size, cursor, results),

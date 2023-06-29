@@ -53,12 +53,10 @@ paths:
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/{connection_id}':
     $ref: paths/connections@{connection_id}.yaml
-  '/customers/{customer_id}/connections/{connection_id}/sync':
-    $ref: paths/connections@{connection_id}@sync.yaml
   '/webhook':
     $ref: paths/webhook.yaml
-  '/sync-history':
-    $ref: paths/sync_history.yaml
+  '/sync-runs':
+    $ref: paths/sync_runs.yaml
   '/sync-info':
     $ref: paths/sync_info.yaml
   '/force-sync':
@@ -123,8 +121,6 @@ components:
       $ref: ./components/schemas/objects/provider_name_crm.yaml
     provider_name_engagement:
       $ref: ./components/schemas/objects/provider_name_engagement.yaml
-    sync:
-      $ref: ./components/schemas/objects/sync.yaml
     create_update_customer:
       $ref: ./components/schemas/create_update_customer.yaml
     create_provider:
@@ -139,10 +135,12 @@ components:
       $ref: ./components/schemas/create_update_sync_config.yaml
     webhook:
       $ref: ./components/schemas/objects/webhook.yaml
+    sync:
+      $ref: ./components/schemas/objects/sync.yaml
+    sync_run:
+      $ref: ./components/schemas/sync_run.yaml
     sync_info:
       $ref: ./components/schemas/sync_info.yaml
-    sync_history:
-      $ref: ./components/schemas/sync_history.yaml
     force_sync:
       $ref: ./components/schemas/force_sync.yaml
     webhook-payload:

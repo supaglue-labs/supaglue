@@ -13,19 +13,6 @@ if (schema) {
   schemaPrefix = `${schema}.`;
 }
 
-export const COMMON_MODEL_DB_TABLES = {
-  crm: {
-    contacts: `${schemaPrefix}crm_contacts`,
-    accounts: `${schemaPrefix}crm_accounts`,
-    leads: `${schemaPrefix}crm_leads`,
-    opportunities: `${schemaPrefix}crm_opportunities`,
-    users: `${schemaPrefix}crm_users`,
-  },
-  engagement: {
-    contacts: `${schemaPrefix}engagement_contacts`,
-    sequence_states: `${schemaPrefix}engagement_sequence_states`,
-    users: `${schemaPrefix}engagement_users`,
-    sequences: `${schemaPrefix}engagement_sequences`,
-    mailboxes: `${schemaPrefix}engagement_mailboxes`,
-  },
-};
+export const OBJECT_SYNC_CHANGES_TABLE = `${schemaPrefix}object_sync_changes`;
+export const OBJECT_SYNCS_TABLE = `${schemaPrefix}object_syncs`;
+export const CONNECTIONS_TABLE = `${schemaPrefix}connections`;

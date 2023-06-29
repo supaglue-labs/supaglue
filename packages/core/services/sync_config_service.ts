@@ -89,20 +89,20 @@ export class SyncConfigService {
     return fromSyncConfigModel(createdSyncConfig);
   }
 
-  public async update(id: string, applicationId: string, syncConfig: SyncConfigUpdateParams): Promise<SyncConfig> {
-    validateSyncConfigParams(syncConfig);
+  public async update(id: string, applicationId: string, params: SyncConfigUpdateParams): Promise<SyncConfig> {
+    validateSyncConfigParams(params);
     // TODO(SUP1-328): Remove once we support updating destinations
-    if (syncConfig.destinationId) {
+    if (params.destinationId) {
       const { destinationId } = await this.getById(id);
-      if (destinationId && destinationId !== syncConfig.destinationId) {
+      if (destinationId && destinationId !== params.destinationId) {
         throw new BadRequestError('Destination cannot be changed');
       }
     }
 
-    const [updatedSyncConfig] = await this.#prisma.$transaction([
+    const [updatedSyncConfigModel] = await this.#prisma.$transaction([
       this.#prisma.syncConfig.update({
         where: { id },
-        data: await toSyncConfigModel({ ...syncConfig, applicationId }),
+        data: await toSyncConfigModel({ ...params, applicationId }),
       }),
       this.#prisma.syncConfigChange.create({
         data: {
@@ -110,7 +110,7 @@ export class SyncConfigService {
         },
       }),
     ]);
-    return fromSyncConfigModel(updatedSyncConfig);
+    return fromSyncConfigModel(updatedSyncConfigModel);
   }
 
   // Only used for backfill

@@ -153,20 +153,6 @@ export interface paths {
       };
     };
   };
-  "/customers/{customer_id}/connections/{connection_id}/sync": {
-    /** Get sync */
-    get: operations["getSync"];
-    /** Enable sync */
-    post: operations["enableSync"];
-    /** Disable sync */
-    delete: operations["disableSync"];
-    parameters: {
-      path: {
-        customer_id: string;
-        connection_id: string;
-      };
-    };
-  };
   "/webhook": {
     /**
      * Get webhook 
@@ -178,12 +164,12 @@ export interface paths {
     /** Delete webhook */
     delete: operations["deleteWebhook"];
   };
-  "/sync-history": {
+  "/sync-runs": {
     /**
-     * Get Sync History 
-     * @description Get a list of Sync History objects.
+     * Get Sync Run 
+     * @description Get a list of Sync Run objects.
      */
-    get: operations["getSyncHistory"];
+    get: operations["getSyncRuns"];
   };
   "/sync-info": {
     /**
@@ -379,7 +365,6 @@ export interface components {
         period_ms: number;
         /** @enum {string} */
         strategy: "full then incremental" | "full only";
-        start_sync_on_connection_creation: boolean;
       };
       common_objects?: ({
           /** @example contacts */
@@ -472,18 +457,6 @@ export interface components {
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
     provider_name_engagement: "outreach";
-    sync: {
-      /** @example 7a34a7bb-193a-4cca-ac16-63ef739995e1 */
-      id: string;
-      /** @example 0a292508-d254-4929-98d3-dc23416efff8 */
-      connection_id: string;
-      /** @example ee2b63fa-edec-4875-b2f5-921d3b13ca83 */
-      sync_config_id?: string;
-      /** @example false */
-      force_sync_flag: boolean;
-      /** @example false */
-      paused: boolean;
-    };
     create_update_customer: {
       /** @example your-customers-unique-application-id */
       customer_id: string;
@@ -554,6 +527,42 @@ export interface components {
         [key: string]: unknown | undefined;
       };
     };
+    sync: {
+      /** @example 7a34a7bb-193a-4cca-ac16-63ef739995e1 */
+      id: string;
+      /** @example 0a292508-d254-4929-98d3-dc23416efff8 */
+      connection_id: string;
+      /** @example ee2b63fa-edec-4875-b2f5-921d3b13ca83 */
+      sync_config_id?: string;
+      /** @example false */
+      force_sync_flag: boolean;
+      /** @example false */
+      paused: boolean;
+    };
+    sync_run: {
+      error_message: string | null;
+      /** @example 2023-02-22T19:55:17.559Z */
+      start_timestamp: string;
+      /** @example 2023-02-22T20:55:17.559Z */
+      end_timestamp: string | null;
+      /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
+      application_id: string;
+      /** @example my-customer-1 */
+      customer_id: string;
+      /** @example hubspot */
+      provider_name: string;
+      /** @enum {string} */
+      category: "crm";
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @enum {string} */
+      status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
+      /** @example 100 */
+      num_records_synced?: number | null;
+      /** @enum {string} */
+      object_type: "common" | "standard" | "custom";
+      object: string;
+    };
     sync_info: {
       /** @example Account */
       model_name: string;
@@ -574,36 +583,6 @@ export interface components {
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
     };
-    sync_history: ({
-      error_message: string | null;
-      /** @example 2023-02-22T19:55:17.559Z */
-      start_timestamp: string;
-      /** @example 2023-02-22T20:55:17.559Z */
-      end_timestamp: string | null;
-      /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
-      application_id: string;
-      /** @example my-customer-1 */
-      customer_id: string;
-      /** @example hubspot */
-      provider_name: string;
-      /** @enum {string} */
-      category: "crm";
-      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
-      connection_id: string;
-      /** @enum {string} */
-      status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
-      /** @example 100 */
-      num_records_synced?: number | null;
-    }) & OneOf<[{
-      /** @example contact */
-      model_name: string;
-    }, {
-      /** @example account */
-      standard_object: string;
-    }, {
-      /** @example account */
-      custom_object: string;
-    }]>;
     force_sync: {
       /** @example true */
       success: boolean;
@@ -1081,37 +1060,6 @@ export interface operations {
       };
     };
   };
-  getSync: {
-    /** Get sync */
-    responses: {
-      /** @description Sync */
-      200: {
-        content: {
-          "application/json": {
-            sync?: components["schemas"]["sync"];
-          };
-        };
-      };
-    };
-  };
-  enableSync: {
-    /** Enable sync */
-    responses: {
-      /** @description Sync enabled */
-      200: {
-        content: {
-          "application/json": components["schemas"]["sync"];
-        };
-      };
-    };
-  };
-  disableSync: {
-    /** Disable sync */
-    responses: {
-      /** @description Sync */
-      204: never;
-    };
-  };
   getWebhook: {
     /**
      * Get webhook 
@@ -1149,27 +1097,29 @@ export interface operations {
       200: never;
     };
   };
-  getSyncHistory: {
+  getSyncRuns: {
     /**
-     * Get Sync History 
-     * @description Get a list of Sync History objects.
+     * Get Sync Run 
+     * @description Get a list of Sync Run objects.
      */
     parameters?: {
         /** @description The pagination cursor value */
         /** @description Number of results to return per page */
         /** @description The customer ID that uniquely identifies the customer in your application */
         /** @description The provider name */
-        /** @description The model name to filter by */
+        /** @description The object type to filter by */
+        /** @description The object to filter by */
       query?: {
         cursor?: string;
         page_size?: string;
         customer_id?: string;
         provider_name?: string;
-        model?: string;
+        object_type?: string;
+        object?: string;
       };
     };
     responses: {
-      /** @description Sync History */
+      /** @description Sync Run */
       200: {
         content: {
           "application/json": ({
@@ -1180,7 +1130,7 @@ export interface operations {
             /** @example 100 */
             total_count?: number;
           }) & {
-            results?: (components["schemas"]["sync_history"])[];
+            results?: (components["schemas"]["sync_run"])[];
           };
         };
       };

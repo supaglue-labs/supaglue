@@ -19,6 +19,11 @@ export type ObjectSyncRun = {
   numRecordsSynced: number | null;
 };
 
+export type ObjectSyncRunWithObject = ObjectSyncRun & {
+  objectType: ObjectType;
+  object: string;
+};
+
 export type ObjectSyncRunUpsertParams = {
   status: ObjectSyncRunStatus;
   errorMessage: string | null;
@@ -27,8 +32,14 @@ export type ObjectSyncRunUpsertParams = {
   numRecordsSynced: number | null;
 };
 
-export type ObjectSyncRunFilter = SyncInfoFilter & {
-  objectType: ObjectType;
-  object: string;
-  paginationParams: PaginationInternalParams;
-};
+export type ObjectSyncRunFilter = SyncInfoFilter &
+  (
+    | {
+        objectType: ObjectType;
+        object: string;
+        paginationParams: PaginationInternalParams;
+      }
+    | {
+        paginationParams: PaginationInternalParams;
+      }
+  );
