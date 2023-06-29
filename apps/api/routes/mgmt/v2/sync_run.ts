@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { BadRequestError } from '@supaglue/core/errors';
 import { toPaginationInternalParams } from '@supaglue/core/lib';
 import {
   GetSyncRunsPathParams,
@@ -27,7 +28,7 @@ export default function init(app: Router) {
         } else if (!req.query?.object_type && !req.query?.object) {
           return {};
         }
-        throw new Error('object_type and object must both be present or both be absent');
+        throw new BadRequestError('object_type and object must both be present or both be absent');
       }
 
       const { next, previous, results } = await objectSyncRunService.list({
