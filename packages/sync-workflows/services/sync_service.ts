@@ -12,6 +12,7 @@ import {
   Client,
   IntervalSpec,
   ScheduleAlreadyRunning,
+  ScheduleDescription,
   ScheduleNotFoundError,
   ScheduleOptionsAction,
   WorkflowNotFoundError,
@@ -405,27 +406,61 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       this.#temporalClient.schedule.getHandle(getRunManagedSyncScheduleId(syncId))
     );
 
-    try {
-      // Pause the sync schedules
-      await Promise.all(syncScheduleHandles.map((handle) => handle.pause()));
-
-      // Kill the associated workflows
-      const scheduleDescriptions = await Promise.all(syncScheduleHandles.map((handle) => handle.describe()));
-      const workflowIds = scheduleDescriptions.flatMap((description) =>
-        description.info.runningActions.map((action) => action.workflow.workflowId)
-      );
-      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
-      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
-
-      // Kill the sync schedules
-      await Promise.all(syncScheduleHandles.map((handle) => handle.delete()));
-    } catch (err: unknown) {
+    function errHandler(err: unknown) {
       if (err instanceof ScheduleNotFoundError) {
         logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
       } else if (err instanceof WorkflowNotFoundError) {
         logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
       } else {
         throw err;
+      }
+    }
+
+    // Pause the sync schedules
+    for (const handle of syncScheduleHandles) {
+      try {
+        await handle.pause();
+      } catch (err: unknown) {
+        errHandler(err);
+      }
+    }
+
+    // Kill the associated workflows
+    const scheduleDescriptions = (
+      await Promise.all(
+        syncScheduleHandles.map(async (handle) => {
+          let description: ScheduleDescription | undefined = undefined;
+
+          try {
+            description = await handle.describe();
+          } catch (err: unknown) {
+            errHandler(err);
+          }
+
+          return description;
+        })
+      )
+    ).filter<ScheduleDescription>((description): description is ScheduleDescription => !!description);
+
+    const workflowIds = scheduleDescriptions.flatMap((description) =>
+      description.info.runningActions.map((action) => action.workflow.workflowId)
+    );
+    const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
+
+    for (const handle of workflowHandles) {
+      try {
+        await handle.terminate();
+      } catch (err: unknown) {
+        errHandler(err);
+      }
+    }
+
+    // Kill the sync schedules
+    for (const handle of syncScheduleHandles) {
+      try {
+        await handle.delete();
+      } catch (err: unknown) {
+        errHandler(err);
       }
     }
   }
@@ -444,27 +479,61 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       this.#temporalClient.schedule.getHandle(getRunObjectSyncScheduleId(objectSyncId))
     );
 
-    try {
-      // Pause the sync schedules
-      await Promise.all(objectSyncScheduleHandles.map((handle) => handle.pause()));
-
-      // Kill the associated workflows
-      const scheduleDescriptions = await Promise.all(objectSyncScheduleHandles.map((handle) => handle.describe()));
-      const workflowIds = scheduleDescriptions.flatMap((description) =>
-        description.info.runningActions.map((action) => action.workflow.workflowId)
-      );
-      const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
-      await Promise.all(workflowHandles.map((handle) => handle.terminate()));
-
-      // Kill the sync schedules
-      await Promise.all(objectSyncScheduleHandles.map((handle) => handle.delete()));
-    } catch (err: unknown) {
+    function errHandler(err: unknown) {
       if (err instanceof ScheduleNotFoundError) {
         logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
       } else if (err instanceof WorkflowNotFoundError) {
         logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
       } else {
         throw err;
+      }
+    }
+
+    // Pause the sync schedules
+    for (const handle of objectSyncScheduleHandles) {
+      try {
+        await handle.pause();
+      } catch (err: unknown) {
+        errHandler(err);
+      }
+    }
+
+    // Kill the associated workflows
+    const scheduleDescriptions = (
+      await Promise.all(
+        objectSyncScheduleHandles.map(async (handle) => {
+          let description: ScheduleDescription | undefined = undefined;
+
+          try {
+            description = await handle.describe();
+          } catch (err: unknown) {
+            errHandler(err);
+          }
+
+          return description;
+        })
+      )
+    ).filter<ScheduleDescription>((description): description is ScheduleDescription => !!description);
+
+    const workflowIds = scheduleDescriptions.flatMap((description) =>
+      description.info.runningActions.map((action) => action.workflow.workflowId)
+    );
+    const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
+
+    for (const handle of workflowHandles) {
+      try {
+        await handle.terminate();
+      } catch (err: unknown) {
+        errHandler(err);
+      }
+    }
+
+    // Kill the sync schedules
+    for (const handle of objectSyncScheduleHandles) {
+      try {
+        await handle.delete();
+      } catch (err: unknown) {
+        errHandler(err);
       }
     }
   }

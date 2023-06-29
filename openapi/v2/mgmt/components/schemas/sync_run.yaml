@@ -53,5 +53,6 @@ required:
   - provider_name
   - category
   - connection_id
+  - num_records_synced
   - object_type
   - object
