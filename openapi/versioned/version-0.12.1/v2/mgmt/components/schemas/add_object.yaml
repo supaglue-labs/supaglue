@@ -1,0 +1,21 @@
+allOf:
+  - type: object
+    properties:
+      name:
+        type: string
+        example: object_name
+      type:
+        type: string
+        enum:
+          - common
+          - standard
+          - custom
+      enable_sync:
+        type: boolean
+      schema_id:
+        type: string
+      schema:
+        $ref: ./create_update_schema.yaml
+    required:
+      - name
+      - type

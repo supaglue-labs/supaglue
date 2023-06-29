@@ -1,0 +1,90 @@
+get:
+  operationId: getSchema
+  summary: Get schema
+  tags:
+    - Schemas
+  security:
+    - ApiKeyAuth: []
+  responses:
+    200:
+      description: Schema
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/schema.yaml
+          examples:
+            Example:
+              value:
+                id: 0218d76c-b2e1-4c34-ac7d-22b8df065004
+                name: my-schema
+                config:
+                  fields:
+                    - name: field1
+                      mappedName: fieldA
+                    - name: field2
+                      mappedName: fieldB
+                  allow_additional_field_mappings: false
+put:
+  operationId: updateSchema
+  summary: Update schema
+  tags:
+    - Schemas
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_update_schema.yaml
+  responses:
+    200:
+      description: Schema
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/schema.yaml
+          examples:
+            Example:
+              value:
+                id: 959fd65f-850a-4c53-bc06-9f46facd4444
+                name: my-schema
+                config:
+                  fields:
+                    - name: field1
+                      mappedName: fieldA
+                    - name: field2
+                      mappedName: fieldB
+                  allow_additional_field_mappings: false
+delete:
+  operationId: deleteSchema
+  summary: Delete schema
+  tags:
+    - Schemas
+  security:
+    - ApiKeyAuth: []
+  responses:
+    204:
+      description: Schema
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/schema.yaml
+          examples:
+            Example:
+              value:
+                id: b2b0e394-541c-4e5b-b6b5-9eefd412bf8d
+                name: my-schema
+                config:
+                  fields:
+                    - name: field1
+                      mappedName: fieldA
+                    - name: field2
+                      mappedName: fieldB
+                  allow_additional_field_mappings: false
+parameters:
+  - name: schema_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: a821d59d-8b4c-4ad9-aeec-1292d2e28701
