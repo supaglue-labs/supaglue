@@ -605,7 +605,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     ]);
   }
 
-  public override async listProperties(object: ObjectDef<'crm'>): Promise<string[]> {
+  public override async listProperties(object: ObjectDef): Promise<string[]> {
     const sobject = object.type === 'custom' ? capitalizeString(`${object.name}__c`) : capitalizeString(object.name);
     return await this.getSObjectProperties(sobject);
   }

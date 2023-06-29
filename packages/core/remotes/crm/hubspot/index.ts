@@ -841,7 +841,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async listProperties(object: ObjectDef<'crm'>): Promise<string[]> {
+  public override async listProperties(object: ObjectDef): Promise<string[]> {
     if (object.type === 'common') {
       switch (object.name) {
         case 'account':

@@ -527,17 +527,12 @@ export interface components {
       provider_id: string;
       config: components["schemas"]["sync_config_data"];
     };
-    list_properties: ({
+    list_properties: {
       /** @enum {string} */
-      type: "standard" | "custom";
+      type: "common" | "standard" | "custom";
       /** @example object_name */
       name: string;
-    }) | ({
-      /** @enum {string} */
-      type: "common";
-      /** @enum {string} */
-      name: "contact" | "account" | "opportunity" | "user" | "lead" | "sequence" | "mailbox" | "sequence_state";
-    });
+    };
     webhook: {
       url: string;
       notify_on_sync_success: boolean;

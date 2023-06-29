@@ -16,7 +16,7 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 export interface CrmRemoteClient extends RemoteClient {
   category(): ProviderCategory;
 
-  listProperties(object: ObjectDef<'crm'>): Promise<string[]>;
+  listProperties(object: ObjectDef): Promise<string[]>;
 
   listStandardObjectRecords(
     object: string,
@@ -73,7 +73,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     return err;
   }
 
-  listProperties(object: ObjectDef<'crm'>): Promise<string[]> {
+  listProperties(object: ObjectDef): Promise<string[]> {
     throw new Error('Not implemented');
   }
 

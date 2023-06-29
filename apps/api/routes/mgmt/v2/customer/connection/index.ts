@@ -19,7 +19,6 @@ import {
   UpdateConnectionRequest,
   UpdateConnectionResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { ObjectDef } from '@supaglue/types';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
@@ -60,7 +59,7 @@ export default function init(app: Router): void {
       if (type === 'common' && !(CRM_COMMON_MODEL_TYPES as unknown as string[]).includes(name)) {
         throw new BadRequestError(`${name} is not a valid common object type for the ${connection.category} category}`);
       }
-      const properties = await client.listProperties(req.body as ObjectDef<'crm'>);
+      const properties = await client.listProperties(req.body);
       return res.status(200).send({ properties });
     }
   );
