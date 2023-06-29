@@ -558,7 +558,7 @@ export interface components {
       /** @enum {string} */
       status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
       /** @example 100 */
-      num_records_synced?: number | null;
+      num_records_synced: number | null;
       /** @enum {string} */
       object_type: "common" | "standard" | "custom";
       object: string;

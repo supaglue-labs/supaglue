@@ -31,7 +31,7 @@ export default function init(app: Router) {
         throw new BadRequestError('object_type and object must both be present or both be absent');
       }
 
-      const { next, previous, results } = await objectSyncRunService.list({
+      const { next, previous, results, totalCount } = await objectSyncRunService.list({
         applicationId: req.supaglueApplication.id,
         paginationParams: toPaginationInternalParams({ page_size: req.query?.page_size, cursor: req.query?.cursor }),
         ...getObjectFilter(),
@@ -46,7 +46,7 @@ export default function init(app: Router) {
           endTimestamp: result.endTimestamp?.toISOString() ?? null,
         })
       );
-      return res.status(200).send({ next, previous, results: snakeCaseResults });
+      return res.status(200).send({ next, previous, results: snakeCaseResults, total_count: totalCount });
     }
   );
 }
