@@ -1,0 +1,37 @@
+allOf:
+  - type: object
+    properties:
+      auth_type:
+        type: string
+        enum:
+          - oauth2
+      config:
+        $ref: ./objects/create_provider_config.yaml
+      objects:
+        $ref: ./objects/objects.yaml
+    required:
+      - auth_type
+      - config
+  - oneOf:
+      - type: object
+        properties:
+          category:
+            type: string
+            enum:
+              - crm
+          name:
+            $ref: ./objects/provider_name_crm.yaml
+        required:
+          - category
+          - name
+      - type: object
+        properties:
+          category:
+            type: string
+            enum:
+              - engagement
+          name:
+            $ref: ./objects/provider_name_engagement.yaml
+        required:
+          - category
+          - name

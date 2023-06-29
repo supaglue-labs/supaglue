@@ -1,0 +1,66 @@
+get:
+  operationId: getSyncConfigs
+  tags:
+    - SyncConfigs
+  security:
+    - ApiKeyAuth: []
+  summary: List Sync Configs
+  description: >-
+    Get a list of Sync Configs
+  responses:
+    '200':
+      description: SyncConfigs
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/sync_config.yaml
+          examples:
+            Example:
+              value:
+                - id: 80fcb3be-4259-408e-a1f4-e6db7221caeb
+                  destination_id: 0a292508-d254-4929-98d3-dc23416efff8
+                  provider_id: ebd1e697-0e4d-4c01-8622-c8c03703ef68
+                  config:
+                    default_config:
+                      period_ms: 60000
+                      strategy: full then incremental
+                    common_objects:
+                      - object: contacts
+                      - object: accounts
+                    standard_objects:
+                      - object: emails
+                      - object: tasks
+                - id: 200080b0-374a-48bd-877f-d9cc5a0e3399
+                  destination_id: c0e47183-ff55-4b84-9132-1e6122f763ca
+                  provider_id: bdb14829-2a3f-40db-b13c-acc1b3cee216
+                  config:
+                    default_config:
+                      period_ms: 10000
+                      strategy: full then incremental
+                    common_objects:
+                      - object: accounts
+                    standard_objects:
+                      - object: tasks
+post:
+  operationId: createSyncConfig
+  summary: Create Sync Config
+  tags:
+    - SyncConfigs
+  security:
+    - ApiKeyAuth: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_update_sync_config.yaml
+  responses:
+    '201':
+      description: SyncConfig created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/sync_config.yaml
