@@ -10,8 +10,8 @@ import destination from './destination';
 import provider from './provider';
 import schema from './schema';
 import syncConfig from './sync_config';
-import syncHistory from './sync_history';
 import syncInfo from './sync_info';
+import syncRun from './sync_run';
 import webhook from './webhook';
 
 export default function init(app: Router): void {
@@ -39,7 +39,7 @@ export default function init(app: Router): void {
   webhook(internalRouter);
   syncConfig(internalRouter);
   syncInfo(internalRouter);
-  syncHistory(internalRouter);
+  syncRun(internalRouter);
 
   app.use('/internal', internalRouter);
 }

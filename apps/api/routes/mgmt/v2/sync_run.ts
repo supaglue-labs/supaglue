@@ -1,27 +1,39 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { toPaginationInternalParams } from '@supaglue/core/lib';
 import {
-  GetSyncHistoryPathParams,
-  GetSyncHistoryQueryParams,
-  GetSyncHistoryRequest,
-  GetSyncHistoryResponse,
+  GetSyncRunsPathParams,
+  GetSyncRunsQueryParams,
+  GetSyncRunsRequest,
+  GetSyncRunsResponse,
 } from '@supaglue/schemas/v2/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
-const { syncHistoryService } = getDependencyContainer();
+const { objectSyncRunService } = getDependencyContainer();
 
 export default function init(app: Router) {
   app.get(
-    '/sync-history',
+    '/sync-runs',
     async (
-      req: Request<GetSyncHistoryPathParams, GetSyncHistoryResponse, GetSyncHistoryRequest, GetSyncHistoryQueryParams>,
-      res: Response<GetSyncHistoryResponse>
+      req: Request<GetSyncRunsPathParams, GetSyncRunsResponse, GetSyncRunsRequest, GetSyncRunsQueryParams>,
+      res: Response<GetSyncRunsResponse>
     ) => {
-      const { next, previous, results } = await syncHistoryService.list({
+      function getObjectFilter() {
+        if (req.query?.object_type && req.query.object) {
+          return {
+            objectType: req.query.object_type,
+            object: req.query.object,
+          };
+        } else if (!req.query?.object_type && !req.query?.object) {
+          return {};
+        }
+        throw new Error('object_type and object must both be present or both be absent');
+      }
+
+      const { next, previous, results } = await objectSyncRunService.list({
         applicationId: req.supaglueApplication.id,
         paginationParams: toPaginationInternalParams({ page_size: req.query?.page_size, cursor: req.query?.cursor }),
-        model: req.query?.model,
+        ...getObjectFilter(),
         externalCustomerId: req.query?.customer_id,
         providerName: req.query?.provider_name,
       });

@@ -1,7 +1,8 @@
 import type { SyncHistoryStatus } from '@supaglue/types';
-import type { ObjectSyncRun } from '@supaglue/types/object_sync_run';
+import { ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectSyncRun, ObjectSyncRunWithObject } from '@supaglue/types/object_sync_run';
 import { parseCustomerIdPk } from '../lib/customer_id';
-import type { ObjectSyncRunModelExpanded } from '../types/object_sync_run';
+import type { ObjectSyncRunModelExpanded, ObjectSyncRunModelExpandedWithObject } from '../types/object_sync_run';
 
 export const fromObjectSyncRunModelAndSync = (args: ObjectSyncRunModelExpanded): ObjectSyncRun => {
   const { id, status, errorMessage, startTimestamp, endTimestamp, objectSync, numRecordsSynced } = args;
@@ -20,5 +21,15 @@ export const fromObjectSyncRunModelAndSync = (args: ObjectSyncRunModelExpanded):
     providerName: connection.providerName,
     category: connection.category as 'crm',
     numRecordsSynced,
+  };
+};
+
+export const fromObjectSyncRunModelAndSyncWithObject = (
+  args: ObjectSyncRunModelExpandedWithObject
+): ObjectSyncRunWithObject => {
+  return {
+    ...fromObjectSyncRunModelAndSync(args),
+    objectType: args.objectSync.objectType as ObjectType,
+    object: args.objectSync.object,
   };
 };

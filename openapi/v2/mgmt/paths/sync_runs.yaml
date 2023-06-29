@@ -1,12 +1,12 @@
 get:
-  operationId: getSyncHistory
+  operationId: getSyncRuns
   tags:
     - Sync Runs
   security:
     - ApiKeyAuth: []
-  summary: Get Sync History
+  summary: Get Sync Run
   description: >-
-    Get a list of Sync History objects.
+    Get a list of Sync Run objects.
   parameters:
     - name: cursor
       in: query
@@ -32,15 +32,21 @@ get:
         type: string
         example: salesforce
       description: The provider name
-    - name: model
+    - name: object_type
       in: query
       schema:
         type: string
-        example: 'contact'
-      description: The model name to filter by
+        example: common
+      description: The object type to filter by
+    - name: object
+      in: query
+      schema:
+        type: string
+        example: contact
+      description: The object to filter by
   responses:
     '200':
-      description: Sync History
+      description: Sync Run
       content:
         application/json:
           schema:
@@ -51,14 +57,15 @@ get:
                   results:
                     type: array
                     items:
-                      $ref: ../components/schemas/sync_history.yaml
+                      $ref: ../components/schemas/sync_run.yaml
           examples:
             Example:
               value:
                 next: sjkflwbajkbbkajwbcs
                 previous: null
                 results:
-                  - model_name: account
+                  - object_type: common
+                    object: account
                     start_timestamp: 2023-02-22T19:55:17.559537Z
                     status: IN_PROGRESS
                     application_id: 3217ea51-11c8-43c9-9547-6f197e02e5e4
@@ -66,7 +73,8 @@ get:
                     provider_name: hubspot
                     category: crm
                     connection_id: f723e58c-3034-4056-babf-a8871ac12480
-                  - model_name: contact
+                  - object_type: common
+                    object: contact
                     start_timestamp: 2023-02-22T19:50:17.559537Z
                     end_timestamp: 2023-02-22T20:50:17.559537Z
                     status: ERROR
