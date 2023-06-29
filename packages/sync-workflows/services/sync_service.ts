@@ -5,11 +5,7 @@ import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supag
 import type { ObjectSync as ObjectSyncModel, Prisma, Sync as SyncModel } from '@supaglue/db';
 import { CONNECTIONS_TABLE, OBJECT_SYNCS_TABLE, OBJECT_SYNC_CHANGES_TABLE, PrismaClient } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import {
-  getRunManagedSyncScheduleId,
-  getRunManagedSyncWorkflowId,
-  runManagedSync,
-} from '@supaglue/sync-workflows/workflows/run_managed_sync';
+import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
 import type { ConnectionSafeAny, Sync, SyncState, SyncType } from '@supaglue/types';
 import type { ObjectSync, ObjectSyncState, ObjectType } from '@supaglue/types/object_sync';
 import {
@@ -139,6 +135,9 @@ export class SyncService {
   }
 
   public async processSyncChanges(): Promise<void> {
+    // TODO: remove this when we're done migrating from Sync to ObjectSync
+    await this.#processSyncChanges();
+
     // This is broken into two parts
     // Part 1 - Process all the SyncConfigChange events and see if we need to
     //          create/update/delete any ObjectSyncs (and ObjectSyncChanges)
@@ -148,7 +147,43 @@ export class SyncService {
     await this.#processObjectSyncChanges();
   }
 
+  async #processSyncChanges(): Promise<void> {
+    // Do not create any new Syncs. Only delete if required.
+
+    // Get all the SyncChange objects
+    const syncChanges = await this.#prisma.syncChange.findMany();
+    const syncChangeIds = syncChanges.map((syncChange) => syncChange.id);
+    const uniqueSyncIds = [...new Set(syncChanges.map((syncChange) => syncChange.syncId))];
+    const syncs = await this.#prisma.sync.findMany({
+      where: {
+        id: {
+          in: uniqueSyncIds,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    // Get the deletes
+    const syncIdsToDelete = uniqueSyncIds.filter((syncId) => !syncs.some((sync) => sync.id === syncId));
+
+    // Delete the syncs
+    await this.#deleteTemporalSyncs(syncIdsToDelete);
+
+    // Delete the SyncChange objects
+    await this.#prisma.syncChange.deleteMany({
+      where: {
+        id: {
+          in: syncChangeIds,
+        },
+      },
+    });
+  }
+
   async #processSyncConfigChanges(): Promise<void> {
+    // TODO: Page over the SyncConfigChanges in case there are too many in one iteration.
+
     // Get all the SyncConfigChange objects
     const syncConfigChanges = await this.#prisma.syncConfigChange.findMany({
       select: {
@@ -244,31 +279,31 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
         // Delete ObjectSyncs
         await tx.objectSync.deleteMany({
           where: {
-            NOT: {
-              OR: [
-                ...(syncConfig.config.commonObjects?.map((commonObject) => ({
-                  connection: {
-                    providerId: syncConfig.providerId,
-                  },
-                  objectType: 'common',
-                  object: commonObject.object,
-                })) ?? []),
-                ...(syncConfig.config.standardObjects?.map((standardObject) => ({
-                  connection: {
-                    providerId: syncConfig.providerId,
-                  },
-                  objectType: 'standard',
-                  object: standardObject.object,
-                })) ?? []),
-                ...(syncConfig.config.customObjects?.map((customObject) => ({
-                  connection: {
-                    providerId: syncConfig.providerId,
-                  },
-                  objectType: 'custom',
-                  object: customObject.object,
-                })) ?? []),
-              ],
-            },
+            AND: [
+              {
+                connection: {
+                  providerId: syncConfig.providerId,
+                },
+              },
+              {
+                NOT: {
+                  OR: [
+                    ...(syncConfig.config.commonObjects?.map((commonObject) => ({
+                      objectType: 'common',
+                      object: commonObject.object,
+                    })) ?? []),
+                    ...(syncConfig.config.standardObjects?.map((standardObject) => ({
+                      objectType: 'standard',
+                      object: standardObject.object,
+                    })) ?? []),
+                    ...(syncConfig.config.customObjects?.map((customObject) => ({
+                      objectType: 'custom',
+                      object: customObject.object,
+                    })) ?? []),
+                  ],
+                },
+              },
+            ],
           },
         });
       });
@@ -285,6 +320,8 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
   }
 
   async #processObjectSyncChanges(): Promise<void> {
+    // TODO: Page over the ObjectSyncChanges in case there are too many in one iteration.
+
     // Get all the ObjectSyncChange objects
     const objectSyncChanges = await this.#prisma.objectSyncChange.findMany();
     const objectSyncChangeIds = objectSyncChanges.map((objectSyncChange) => objectSyncChange.id);
@@ -393,81 +430,6 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
     }
   }
 
-  async upsertTemporalSync(syncId: string, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
-    const sync = await this.getSyncById(syncId);
-    const scheduleId = getRunManagedSyncScheduleId(syncId);
-    const interval: IntervalSpec = {
-      every: syncPeriodMs,
-      // so that not everybody is refreshing and hammering the DB at the same time
-      offset: Math.random() * syncPeriodMs,
-    };
-    const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
-      type: 'startWorkflow' as const,
-      workflowType: runManagedSync,
-      workflowId: getRunManagedSyncWorkflowId(syncId),
-      taskQueue: SYNC_TASK_QUEUE,
-      args: [
-        {
-          syncId,
-          connectionId: connection.id,
-          category: connection.category,
-          context: {
-            [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: syncId,
-            [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
-            [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
-            [TEMPORAL_CONTEXT_ARGS.SYNC_CONFIG_ID]: sync.syncConfigId,
-            [TEMPORAL_CONTEXT_ARGS.CONNECTION_ID]: sync.connectionId,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
-          },
-        },
-      ],
-      searchAttributes: {
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [syncId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_CONFIG_ID]: [sync.syncConfigId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
-      },
-    };
-
-    try {
-      await this.#temporalClient.schedule.create({
-        scheduleId,
-        spec: {
-          intervals: [interval],
-        },
-        action,
-        state: {
-          triggerImmediately: true,
-        },
-      });
-    } catch (err: unknown) {
-      if (err instanceof ScheduleAlreadyRunning) {
-        const handle = this.#temporalClient.schedule.getHandle(scheduleId);
-        await handle.update((prev) => {
-          const newInterval = prev.spec.intervals?.[0]?.every === syncPeriodMs ? prev.spec.intervals[0] : interval;
-
-          return {
-            ...prev,
-            spec: {
-              intervals: [newInterval],
-            },
-            action,
-          };
-        });
-
-        return;
-      }
-
-      throw err;
-    }
-  }
-
   async #deleteTemporalObjectSyncs(objectSyncIds: string[]): Promise<void> {
     // TODO: When we stop using temporalite locally, we should just use
     // advanced visibility to search by custom attributes and find the workflows to kill.
@@ -517,8 +479,10 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
     const interval: IntervalSpec = {
       every: syncPeriodMs,
       // so that not everybody is refreshing and hammering the DB at the same time
-      offset: 0,
-      // offset: Math.random() * syncPeriodMs, // TODO: Let's make the offset the same per object?
+      // we want all ObjectSyncs for the same connection to have the same offset, and it should be deterministic,
+      // so that if we have ObjectSyncs 1 and 2 running, and then later 3 is created (due to SyncConfig having another
+      // object added), then 3 will have the same offset as 1 and 2
+      offset: stringToNumber(connection.id, syncPeriodMs),
     };
     const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
       type: 'startWorkflow' as const,
@@ -588,4 +552,20 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       throw err;
     }
   }
+}
+
+function stringToNumber(str: string, maxNumExclusive: number): number {
+  if (str.length === 0) {
+    return 0;
+  }
+
+  let hash = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    const chr = str.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // convert to 32bit integer
+  }
+
+  return Math.abs(hash) % maxNumExclusive;
 }
