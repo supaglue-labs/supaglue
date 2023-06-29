@@ -1,0 +1,43 @@
+post:
+  operationId: listProperties
+  summary: List properties
+  tags:
+    - Connections
+  parameters: []
+  security:
+    - ApiKeyAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/list_properties.yaml'
+          properties:
+
+  responses:
+    '200':
+      description: List of properties
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              properties:
+                type: array
+                items:
+                  type: string
+            required:
+              - properties
+parameters:
+  - name: customer_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
+  - name: connection_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

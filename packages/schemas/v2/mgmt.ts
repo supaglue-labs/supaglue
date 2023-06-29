@@ -154,6 +154,13 @@ export type DeleteConnectionRequest = never;
 export type DeleteConnectionResponse =
   operations['deleteConnection']['responses'][keyof operations['deleteConnection']['responses']]['content']['application/json'];
 
+export type ListPropertiesPathParams =
+  paths[`/customers/{customer_id}/connections/{connection_id}/_list_properties`]['parameters']['path'];
+export type ListPropertiesRequest =
+  operations['listProperties']['requestBody'][keyof operations['updateConnection']['requestBody']]['application/json'];
+export type ListPropertiesResponse =
+  operations['listProperties']['responses'][keyof operations['updateConnection']['responses']]['content']['application/json'];
+
 export type CreateWebhookPathParams = never;
 export type CreateWebhookRequest = operations['createWebhook']['requestBody']['content']['application/json'];
 export type CreateWebhookResponse =

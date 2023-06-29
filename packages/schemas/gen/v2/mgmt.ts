@@ -153,6 +153,16 @@ export interface paths {
       };
     };
   };
+  "/customers/{customer_id}/connections/{connection_id}/_list_properties": {
+    /** List properties */
+    post: operations["listProperties"];
+    parameters: {
+      path: {
+        customer_id: string;
+        connection_id: string;
+      };
+    };
+  };
   "/webhook": {
     /**
      * Get webhook 
@@ -517,6 +527,17 @@ export interface components {
       provider_id: string;
       config: components["schemas"]["sync_config_data"];
     };
+    list_properties: ({
+      /** @enum {string} */
+      type: "standard" | "custom";
+      /** @example object_name */
+      name: string;
+    }) | ({
+      /** @enum {string} */
+      type: "common";
+      /** @enum {string} */
+      name: "contact" | "account" | "opportunity" | "user" | "lead" | "sequence" | "mailbox" | "sequence_state";
+    });
     webhook: {
       url: string;
       notify_on_sync_success: boolean;
@@ -1056,6 +1077,24 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["connection"];
+        };
+      };
+    };
+  };
+  listProperties: {
+    /** List properties */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["list_properties"];
+      };
+    };
+    responses: {
+      /** @description List of properties */
+      200: {
+        content: {
+          "application/json": {
+            properties: (string)[];
+          };
         };
       };
     };

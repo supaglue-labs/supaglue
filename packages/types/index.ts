@@ -29,3 +29,20 @@ export type CategoryOfProviderName<T extends ProviderName> = T extends CRMProvid
 export type CommonModelForCategory<T extends ProviderCategory> = T extends 'crm'
   ? CRMCommonModelType
   : EngagementCommonModelType;
+
+export type ObjectDef<T extends ProviderCategory> = CommonObject<T> | StandardObject | CustomObject;
+
+type CommonObject<T extends ProviderCategory> = {
+  type: 'common';
+  name: CommonModelForCategory<T>;
+};
+
+type StandardObject = {
+  type: 'standard';
+  name: string;
+};
+
+type CustomObject = {
+  type: 'custom';
+  name: string;
+};

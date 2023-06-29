@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, CRMProvider, ProviderCategory } from '@supaglue/types';
+import { ConnectionUnsafe, CRMProvider, ObjectDef, ProviderCategory } from '@supaglue/types';
 import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
 import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
 import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
@@ -15,6 +15,8 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 
 export interface CrmRemoteClient extends RemoteClient {
   category(): ProviderCategory;
+
+  listProperties(object: ObjectDef<'crm'>): Promise<string[]>;
 
   listStandardObjectRecords(
     object: string,
@@ -69,6 +71,10 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
 
   public handleErr(err: unknown): unknown {
     return err;
+  }
+
+  listProperties(object: ObjectDef<'crm'>): Promise<string[]> {
+    throw new Error('Not implemented');
   }
 
   public async listStandardObjectRecords(
