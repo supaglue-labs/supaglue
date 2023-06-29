@@ -1,4 +1,10 @@
-import { CommonModelForCategory, OAuthConfigDecrypted, OAuthConfigEncrypted, ProviderCategory } from '.';
+import {
+  CommonModelForCategory,
+  OAuthConfigDecrypted,
+  OAuthConfigEncrypted,
+  ProviderCategory,
+  SchemaCreateParams,
+} from '.';
 import { CRMProviderName } from './crm';
 import { EngagementProviderName } from './engagement';
 
@@ -22,9 +28,9 @@ export type EngagementProvider = BaseProvider & {
 };
 
 export type ProviderObjects<T extends ProviderCategory> = {
-  common: ProviderCommonObject<T>[];
-  standard: ProviderObject[];
-  custom: ProviderObject[];
+  common?: ProviderCommonObject<T>[];
+  standard?: ProviderObject[];
+  custom?: ProviderObject[];
 };
 
 export type ProviderCommonObject<T extends ProviderCategory> = {
@@ -62,4 +68,12 @@ export type ProviderUpdateParams = CRMProviderUpdateParams | EngagementProviderU
 
 export type ProviderConfigMapperArgs = {
   managedOauthConfig: OAuthConfigDecrypted;
+};
+
+export type AddObjectToProviderParams = {
+  name: string;
+  type: 'common' | 'standard' | 'custom';
+  enableSync?: boolean;
+  schemaId?: string;
+  schema?: Omit<SchemaCreateParams, 'applicationId'>;
 };

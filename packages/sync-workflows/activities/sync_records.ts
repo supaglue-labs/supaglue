@@ -57,13 +57,13 @@ export function createSyncRecords(
     const objectSync = await syncService.getObjectSyncById(objectSyncId);
     const syncConfig = await syncConfigService.getById(objectSync.syncConfigId);
     const connection = await connectionService.getSafeById(connectionId);
-    const provider = await providerService.getById(connection.providerId);
 
     async function writeObjects(writer: DestinationWriter) {
       // TODO: Have better type-safety
       if (client.category() === 'crm') {
+        const provider = await providerService.getById<CRMProvider>(connection.providerId);
         if (objectType === 'common') {
-          const schemaId = (provider as CRMProvider).objects?.common.find((o) => o.name === object)?.schemaId;
+          const schemaId = provider.objects?.common?.find((o) => o.name === object)?.schemaId;
           const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
           const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
             (o) => o.object === object
@@ -84,7 +84,7 @@ export function createSyncRecords(
           );
         } else if (objectType === 'standard') {
           // Find schema / field mapping information
-          const schemaId = (provider as CRMProvider).objects?.standard.find((o) => o.name === object)?.schemaId;
+          const schemaId = provider.objects?.standard?.find((o) => o.name === object)?.schemaId;
           const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
           const customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
             (o) => o.object === object

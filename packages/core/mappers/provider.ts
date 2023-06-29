@@ -31,14 +31,14 @@ export const hideManagedOauthConfig = (providerConfig: Provider): Provider => {
   };
 };
 
-export const fromProviderModel = async ({
+export async function fromProviderModel<T extends Provider = Provider>({
   id,
   applicationId,
   category,
   name,
   config,
   objects,
-}: ProviderModel): Promise<Provider> => {
+}: ProviderModel): Promise<T> {
   return {
     id,
     applicationId,
@@ -48,9 +48,9 @@ export const fromProviderModel = async ({
     config: await fromProviderConfigModel(config, {
       managedOauthConfig: managedOAuthConfigs[name],
     }),
-    objects: objects ? objects : undefined,
-  } as Provider; // TODO: better type;
-};
+    objects: objects ?? undefined,
+  } as T;
+}
 
 const fromProviderConfigModel = async (
   config: Prisma.JsonValue,
