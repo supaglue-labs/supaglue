@@ -87,6 +87,9 @@ This feature is only supported for some destinations, not all.
 
 :::
 
+## Field mappings
+[Field mappings](../platform/field-mapping) can be used in the Actions API to reverse-map fields from your system to your customer's fields if you opted to use field mappings for Managed Syncs.
+
 ## Pass-through API
 
 For any action not directly supported by Supaglue's API, you can use our pass-through API. This lets you make any API call directly against the remote provider. See our [API reference](https://docs.supaglue.com/api) for more details.
