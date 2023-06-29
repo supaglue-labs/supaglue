@@ -305,17 +305,15 @@ export interface components {
           schema_id?: string;
         })[];
     };
-    add_object: ({
+    add_object: {
       /** @example object_name */
       name: string;
       /** @enum {string} */
       type: "common" | "standard" | "custom";
       enable_sync?: boolean;
-    }) & OneOf<[{
       schema_id?: string;
-    }, {
       schema?: components["schemas"]["create_update_schema"];
-    }]>;
+    };
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;

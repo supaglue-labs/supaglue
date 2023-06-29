@@ -21,7 +21,7 @@ post:
           examples:
             Example:
               value:
-                id: e252792a-de72-460a-ae42-c9115fe9321d
+                id: 9e121531-1185-4940-8ec4-b5af222bb637
                 category: crm
                 auth_type: oauth2
                 provider_name: hubspot

@@ -12,15 +12,10 @@ allOf:
           - custom
       enable_sync:
         type: boolean
+      schema_id:
+        type: string
+      schema:
+        $ref: ./create_update_schema.yaml
     required:
       - name
       - type
-  - oneOf:
-      - type: object
-        properties:
-          schema_id:
-            type: string
-      - type: object
-        properties:
-          schema:
-            $ref: ./create_update_schema.yaml

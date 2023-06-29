@@ -969,7 +969,7 @@
                 "examples": {
                   "Example": {
                     "value": {
-                      "id": "e252792a-de72-460a-ae42-c9115fe9321d",
+                      "id": "9e121531-1185-4940-8ec4-b5af222bb637",
                       "category": "crm",
                       "auth_type": "oauth2",
                       "provider_name": "hubspot",
@@ -2453,31 +2453,17 @@
               },
               "enable_sync": {
                 "type": "boolean"
+              },
+              "schema_id": {
+                "type": "string"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/create_update_schema"
               }
             },
             "required": [
               "name",
               "type"
-            ]
-          },
-          {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "schema_id": {
-                    "type": "string"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "schema": {
-                    "$ref": "#/components/schemas/create_update_schema"
-                  }
-                }
-              }
             ]
           }
         ]
