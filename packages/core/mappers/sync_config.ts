@@ -24,12 +24,7 @@ const fromSyncConfigDataModel = (config: Prisma.JsonValue): SyncConfigData => {
   return config as unknown as SyncConfigData;
 };
 
-export const toSyncConfigModel = async ({
-  applicationId,
-  destinationId,
-  providerId,
-  config,
-}: SyncConfigCreateParams) => {
+export const toSyncConfigModel = ({ applicationId, destinationId, providerId, config }: SyncConfigCreateParams) => {
   return {
     applicationId,
     destinationId,

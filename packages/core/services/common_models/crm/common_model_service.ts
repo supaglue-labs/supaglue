@@ -32,7 +32,7 @@ export class CrmCommonModelService {
   ): Promise<CRMCommonModelTypeMap<T>['object']> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
     const provider = await this.#providerService.getById(connection.providerId);
-    const schemaId = (provider as CRMProvider).objects?.common.find((o) => o.name === type)?.schemaId;
+    const schemaId = (provider as CRMProvider).objects?.common?.find((o) => o.name === type)?.schemaId;
     const schema = schemaId ? await this.#schemaService.getById(schemaId) : undefined;
     const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
       (o) => o.object === type

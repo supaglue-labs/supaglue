@@ -1,7 +1,17 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { Provider, ProviderCreateParams, ProviderUpdateParams } from '@supaglue/types';
+import type {
+  AddObjectToProviderParams,
+  CommonModelForCategory,
+  CommonModelType,
+  Provider,
+  ProviderCategory,
+  ProviderCreateParams,
+  ProviderObjects,
+  ProviderUpdateParams,
+  SyncConfig,
+} from '@supaglue/types';
 import { BadRequestError, NotFoundError } from '../errors';
-import { fromProviderModel, toProviderModel } from '../mappers';
+import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
 
 export class ProviderService {
   #prisma: PrismaClient;
@@ -65,6 +75,56 @@ export class ProviderService {
     return fromProviderModel(createdProvider);
   }
 
+  public async addObject(
+    providerId: string,
+    applicationId: string,
+    params: AddObjectToProviderParams
+  ): Promise<Provider> {
+    if (params.schemaId && params.schema) {
+      throw new BadRequestError('You can only provide a schemaId or a schema, not both');
+    }
+    const provider = await this.getByIdAndApplicationId(providerId, applicationId);
+    const model = await this.#prisma.$transaction(async (prisma) => {
+      let { schemaId } = params;
+      if (params.schema) {
+        const schema = await prisma.schema.create({
+          data: toSchemaModel({ applicationId, ...params.schema }),
+        });
+        schemaId = schema.id;
+      }
+      const objects = provider.objects || {};
+      const model = await prisma.provider.update({
+        where: { id: providerId },
+        data: {
+          objects: addObjectToProviderObjects(objects, params.name, params.type, schemaId),
+        },
+      });
+      if (params.enableSync) {
+        const syncConfigModel = await prisma.syncConfig.findUnique({
+          where: {
+            providerId,
+          },
+        });
+        if (!syncConfigModel) {
+          throw new BadRequestError(
+            `Can't enable sync for provider with id: ${providerId} because a sync config does not exist`
+          );
+        }
+        const syncConfig = fromSyncConfigModel(syncConfigModel);
+        await prisma.syncConfig.update({
+          where: {
+            id: syncConfig.id,
+          },
+          data: {
+            ...toSyncConfigModel(addObjectToSyncConfig(syncConfig, params.name, params.type)),
+          },
+        });
+      }
+      return model;
+    });
+    return fromProviderModel(model);
+  }
+
   public async update(id: string, applicationId: string, provider: ProviderUpdateParams): Promise<Provider> {
     const updatedProvider = await this.#prisma.provider.update({
       where: { id },
@@ -109,3 +169,70 @@ export class ProviderService {
     });
   }
 }
+
+const addObjectToProviderObjects = <T extends ProviderCategory>(
+  objects: ProviderObjects<T>,
+  name: string,
+  type: string,
+  schemaId?: string
+): ProviderObjects<T> => {
+  switch (type) {
+    case 'common':
+      if (objects.common?.find((object) => object.name === name)) {
+        throw new BadRequestError(`Common object with name: ${name} already exists in provider`);
+      }
+      return { ...objects, common: [...(objects.common ?? []), { name: name as CommonModelForCategory<T>, schemaId }] };
+    case 'standard':
+      if (objects.standard?.find((object) => object.name === name)) {
+        throw new BadRequestError(`Standard object with name: ${name} already exists in provider`);
+      }
+      return { ...objects, standard: [...(objects.standard ?? []), { name, schemaId }] };
+    case 'custom':
+      if (objects.custom?.find((object) => object.name === name)) {
+        throw new BadRequestError(`Custom object with name: ${name} already exists in provider`);
+      }
+      return { ...objects, custom: [...(objects.custom ?? []), { name, schemaId }] };
+    default:
+      throw new BadRequestError(`Invalid type: ${type}`);
+  }
+};
+
+const addObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: string): SyncConfig => {
+  switch (type) {
+    case 'common':
+      if (syncConfig.config.commonObjects?.find((object) => object.object === name)) {
+        throw new BadRequestError(`Common object with name: ${name} already exists in sync config`);
+      }
+      return {
+        ...syncConfig,
+        config: {
+          ...syncConfig.config,
+          commonObjects: [...(syncConfig.config.commonObjects ?? []), { object: name as CommonModelType }],
+        },
+      };
+    case 'standard':
+      if (syncConfig.config.standardObjects?.find((object) => object.object === name)) {
+        throw new BadRequestError(`Standard object with name: ${name} already exists in sync config`);
+      }
+      return {
+        ...syncConfig,
+        config: {
+          ...syncConfig.config,
+          standardObjects: [...(syncConfig.config.standardObjects ?? []), { object: name }],
+        },
+      };
+    case 'custom':
+      if (syncConfig.config.customObjects?.find((object) => object.object === name)) {
+        throw new BadRequestError(`Custom object with name: ${name} already exists in sync config`);
+      }
+      return {
+        ...syncConfig,
+        config: {
+          ...syncConfig.config,
+          customObjects: [...(syncConfig.config.customObjects ?? []), { object: name }],
+        },
+      };
+    default:
+      throw new BadRequestError(`Invalid type: ${type}`);
+  }
+};

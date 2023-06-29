@@ -48,7 +48,7 @@ export const fromProviderModel = async ({
     config: await fromProviderConfigModel(config, {
       managedOauthConfig: managedOAuthConfigs[name],
     }),
-    objects: objects ? objects : undefined,
+    objects: objects ?? undefined,
   } as Provider; // TODO: better type;
 };
 
