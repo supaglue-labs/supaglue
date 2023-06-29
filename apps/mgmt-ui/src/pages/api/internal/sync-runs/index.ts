@@ -1,14 +1,14 @@
 import { getApplicationIdScopedHeaders } from '@/utils/headers';
-import { GetSyncHistoryResponse } from '@supaglue/schemas/v2/mgmt';
+import { GetSyncRunsResponse } from '@supaglue/schemas/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSyncHistoryResponse | null>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSyncRunsResponse | null>) {
   const queryParams = new URLSearchParams();
   req.query?.page_size && queryParams.append('page_size', req.query.page_size as string);
   req.query?.cursor && queryParams.append('cursor', req.query.cursor as string);
 
-  const result = await fetch(`${API_HOST}/internal/sync-history?${queryParams}`, {
+  const result = await fetch(`${API_HOST}/internal/sync-runs?${queryParams}`, {
     method: 'GET',
     headers: getApplicationIdScopedHeaders(req),
   });

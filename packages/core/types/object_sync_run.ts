@@ -6,3 +6,10 @@ export type ObjectSyncRunModelExpanded = ObjectSyncRunModel & {
     connection: ConnectionModel;
   };
 };
+
+export type ObjectSyncRunModelExpandedWithObject = ObjectSyncRunModelExpanded & {
+  objectSync: {
+    objectType: string;
+    object: string;
+  };
+};

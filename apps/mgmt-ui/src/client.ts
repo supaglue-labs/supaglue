@@ -299,39 +299,3 @@ export async function deleteConnection(
   });
   return await toClientEmptyResponse(result);
 }
-
-export async function enableSyncForConnection(
-  applicationId: string,
-  customerId: string,
-  connectionId: string
-): Promise<ClientEmptyResponse> {
-  const result = await fetch(
-    `/api/internal/customers/${encodeURIComponent(customerId)}/connections/${connectionId}/sync`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-application-id': applicationId,
-      },
-    }
-  );
-  return await toClientEmptyResponse(result);
-}
-
-export async function disableSyncForConnection(
-  applicationId: string,
-  customerId: string,
-  connectionId: string
-): Promise<ClientEmptyResponse> {
-  const result = await fetch(
-    `/api/internal/customers/${encodeURIComponent(customerId)}/connections/${connectionId}/sync`,
-    {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-application-id': applicationId,
-      },
-    }
-  );
-  return await toClientEmptyResponse(result);
-}

@@ -1,4 +1,4 @@
-import { deleteConnection, disableSyncForConnection, enableSyncForConnection } from '@/client';
+import { deleteConnection } from '@/client';
 import { DeleteConnection } from '@/components/connections/DeleteConnection';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
@@ -8,7 +8,7 @@ import { useConnections } from '@/hooks/useConnections';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import providerToIcon from '@/utils/providerToIcon';
-import { Box, Breadcrumbs, Stack, Switch, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Stack, Typography } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -38,47 +38,6 @@ export default function Home() {
       renderCell: (params) => providerToIcon(params.value.providerName),
     },
     { field: 'customerId', headerName: 'Customer ID', width: 180 },
-    {
-      field: 'sync_enabled',
-      headerName: 'Sync Enabled?',
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <Switch
-            checked={params.row.isSyncEnabled}
-            onChange={async (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-              if (checked) {
-                const response = await enableSyncForConnection(applicationId, activeCustomerId, params.row.id);
-                if (!response.ok) {
-                  addNotification({ message: response.errorMessage, severity: 'error' });
-                  return;
-                }
-                await mutate(
-                  connections.map((c) => ({
-                    ...c,
-                    isSyncEnabled: c.id === params.row.id ? true : c.isSyncEnabled,
-                  })),
-                  false
-                );
-              } else {
-                const response = await disableSyncForConnection(applicationId, activeCustomerId, params.row.id);
-                if (!response.ok) {
-                  addNotification({ message: response.errorMessage, severity: 'error' });
-                  return;
-                }
-                await mutate(
-                  connections.map((c) => ({
-                    ...c,
-                    isSyncEnabled: c.id === params.row.id ? false : c.isSyncEnabled,
-                  })),
-                  false
-                );
-              }
-            }}
-          />
-        );
-      },
-    },
     {
       field: 'delete',
       headerName: 'Delete',

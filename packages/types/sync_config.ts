@@ -9,6 +9,7 @@ export type SyncConfig = {
 };
 
 export type SyncConfigCreateParams = Omit<SyncConfig, 'id'>;
+// TODO: only `config` should be updatable
 export type SyncConfigUpdateParams = Omit<SyncConfigCreateParams, 'applicationId'>;
 
 export type SyncConfigData = {
@@ -21,7 +22,6 @@ export type SyncConfigData = {
 export type SyncStrategyConfig = {
   periodMs: number;
   strategy: SyncType;
-  startSyncOnConnectionCreation: boolean;
 };
 
 export type CommonObjectConfig = {

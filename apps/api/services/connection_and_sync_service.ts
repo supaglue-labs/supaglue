@@ -1,11 +1,12 @@
-import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
+import { NotFoundError } from '@supaglue/core/errors';
 import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import { PrismaClient, Sync as SyncModel } from '@supaglue/db';
+import type { Prisma, Sync as SyncModel } from '@supaglue/db';
+import { PrismaClient } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
   processSyncChanges,
@@ -21,7 +22,7 @@ import type {
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
-import { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
+import type { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -47,6 +48,43 @@ export class ConnectionAndSyncService {
     this.#syncConfigService = syncConfigService;
     this.#applicationService = applicationService;
     this.#connectionService = connectionService;
+  }
+
+  public async moveToObjectSyncs(): Promise<void> {
+    // Delete all the current syncs
+    const syncs = await this.#prisma.sync.findMany({
+      select: {
+        id: true,
+      },
+    });
+    const syncIds = syncs.map((sync) => sync.id);
+    await this.#prisma.$transaction([
+      this.#prisma.sync.deleteMany({
+        where: {
+          id: {
+            in: syncIds,
+          },
+        },
+      }),
+      this.#prisma.syncChange.createMany({
+        data: syncIds.map((syncId) => ({
+          syncId,
+        })),
+      }),
+    ]);
+
+    // "Refresh" the SyncConfigs to trigger processSyncChanges to create new object syncs
+    const syncConfigs = await this.#prisma.syncConfig.findMany({
+      select: {
+        id: true,
+      },
+    });
+    const syncConfigIds = syncConfigs.map((syncConfig) => syncConfig.id);
+    await this.#prisma.syncConfigChange.createMany({
+      data: syncConfigIds.map((syncConfigId) => ({
+        syncConfigId,
+      })),
+    });
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
@@ -101,7 +139,6 @@ export class ConnectionAndSyncService {
       const status: ConnectionStatus = 'added';
 
       const connectionId = uuidv4();
-      const syncId = uuidv4();
 
       const connectionModel = await this.#prisma.$transaction(async (tx) => {
         const connectionModel = await tx.connection.create({
@@ -116,110 +153,90 @@ export class ConnectionAndSyncService {
             credentials: await encrypt(JSON.stringify(params.credentials)),
           },
         });
-        if (syncConfig && syncConfig.config.defaultConfig.startSyncOnConnectionCreation) {
-          // Old syncs
-          await tx.sync.create({
-            data: {
-              id: syncId,
-              connectionId,
-              syncConfigId: syncConfig.id,
-              strategy: {
-                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-              },
-              state: {
-                phase: 'created',
-              },
-            },
-          });
-          await tx.syncChange.create({
-            data: {
-              syncId,
-            },
-          });
 
-          // TODO: comment out the old syncs and uncomment these new syncs when we're ready to migrate to object syncs
-          //   // New syncs
-          //   const objectSyncIds: string[] = [];
+        if (syncConfig) {
+          // New syncs
+          const objectSyncIds: string[] = [];
 
-          //   if (syncConfig.config.commonObjects?.length) {
-          //     const commonObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
-          //     for (const commonObject of syncConfig.config.commonObjects) {
-          //       const commonObjectSyncId = uuidv4();
-          //       objectSyncIds.push(commonObjectSyncId);
-          //       commonObjectSyncArgs.push({
-          //         id: commonObjectSyncId,
-          //         objectType: 'common',
-          //         object: commonObject.object,
-          //         connectionId,
-          //         syncConfigId: syncConfig.id,
-          //         strategy: {
-          //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          //         },
-          //         state: {
-          //           phase: 'created',
-          //         },
-          //       });
-          //     }
-          //     await tx.objectSync.createMany({
-          //       data: commonObjectSyncArgs,
-          //     });
-          //   }
+          if (syncConfig.config.commonObjects?.length) {
+            const commonObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+            for (const commonObject of syncConfig.config.commonObjects) {
+              const commonObjectSyncId = uuidv4();
+              objectSyncIds.push(commonObjectSyncId);
+              commonObjectSyncArgs.push({
+                id: commonObjectSyncId,
+                objectType: 'common',
+                object: commonObject.object,
+                connectionId,
+                syncConfigId: syncConfig.id,
+                strategy: {
+                  type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+                },
+                state: {
+                  phase: 'created',
+                },
+              });
+            }
+            await tx.objectSync.createMany({
+              data: commonObjectSyncArgs,
+            });
+          }
 
-          //   if (syncConfig.config.standardObjects?.length) {
-          //     const standardObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
-          //     for (const standardObject of syncConfig.config.standardObjects) {
-          //       const standardObjectSyncId = uuidv4();
-          //       objectSyncIds.push(standardObjectSyncId);
-          //       standardObjectSyncArgs.push({
-          //         id: standardObjectSyncId,
-          //         objectType: 'standard',
-          //         object: standardObject.object,
-          //         connectionId,
-          //         syncConfigId: syncConfig.id,
-          //         strategy: {
-          //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          //         },
-          //         state: {
-          //           phase: 'created',
-          //         },
-          //       });
-          //     }
-          //     await tx.objectSync.createMany({
-          //       data: standardObjectSyncArgs,
-          //     });
-          //   }
+          if (syncConfig.config.standardObjects?.length) {
+            const standardObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+            for (const standardObject of syncConfig.config.standardObjects) {
+              const standardObjectSyncId = uuidv4();
+              objectSyncIds.push(standardObjectSyncId);
+              standardObjectSyncArgs.push({
+                id: standardObjectSyncId,
+                objectType: 'standard',
+                object: standardObject.object,
+                connectionId,
+                syncConfigId: syncConfig.id,
+                strategy: {
+                  type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+                },
+                state: {
+                  phase: 'created',
+                },
+              });
+            }
+            await tx.objectSync.createMany({
+              data: standardObjectSyncArgs,
+            });
+          }
 
-          //   if (syncConfig.config.customObjects?.length) {
-          //     const customObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
-          //     for (const customObject of syncConfig.config.customObjects) {
-          //       const customObjectSyncId = uuidv4();
-          //       objectSyncIds.push(customObjectSyncId);
-          //       customObjectSyncArgs.push({
-          //         id: customObjectSyncId,
-          //         objectType: 'custom',
-          //         object: customObject.object,
-          //         connectionId,
-          //         syncConfigId: syncConfig.id,
-          //         strategy: {
-          //           type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          //         },
-          //         state: {
-          //           phase: 'created',
-          //         },
-          //       });
-          //     }
-          //     await tx.objectSync.createMany({
-          //       data: customObjectSyncArgs,
-          //     });
-          //   }
+          if (syncConfig.config.customObjects?.length) {
+            const customObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+            for (const customObject of syncConfig.config.customObjects) {
+              const customObjectSyncId = uuidv4();
+              objectSyncIds.push(customObjectSyncId);
+              customObjectSyncArgs.push({
+                id: customObjectSyncId,
+                objectType: 'custom',
+                object: customObject.object,
+                connectionId,
+                syncConfigId: syncConfig.id,
+                strategy: {
+                  type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+                },
+                state: {
+                  phase: 'created',
+                },
+              });
+            }
+            await tx.objectSync.createMany({
+              data: customObjectSyncArgs,
+            });
+          }
 
-          //   if (objectSyncIds.length) {
-          //     await tx.objectSyncChange.createMany({
-          //       data: objectSyncIds.map((objectSyncId) => ({
-          //         objectSyncId,
-          //       })),
-          //     });
-          //   }
+          if (objectSyncIds.length) {
+            await tx.objectSyncChange.createMany({
+              data: objectSyncIds.map((objectSyncId) => ({
+                objectSyncId,
+              })),
+            });
+          }
         }
         return connectionModel;
       });
@@ -245,60 +262,6 @@ export class ConnectionAndSyncService {
         );
       }
     }
-  }
-
-  public async enableSyncByConnectionId(connectionId: string): Promise<Sync> {
-    const connection = await this.#connectionService.getSafeById(connectionId);
-    const syncConfig = await this.#syncConfigService.findByProviderId(connection.providerId);
-
-    if (!syncConfig) {
-      throw new BadRequestError(`No sync config found for provider ${connection.providerName}`);
-    }
-
-    const syncId = uuidv4();
-
-    const [sync] = await this.#prisma.$transaction([
-      this.#prisma.sync.create({
-        data: {
-          id: syncId,
-          connectionId,
-          syncConfigId: syncConfig.id,
-          strategy: {
-            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          },
-          state: {
-            phase: 'created',
-          },
-        },
-      }),
-      this.#prisma.syncChange.create({
-        data: {
-          syncId,
-        },
-      }),
-    ]);
-    return fromSyncModel(sync);
-  }
-
-  public async disableSyncByConnectionId(connectionId: string): Promise<void> {
-    const sync = await this.#prisma.sync.findUniqueOrThrow({
-      where: {
-        connectionId,
-      },
-    });
-
-    await this.#prisma.$transaction([
-      this.#prisma.sync.delete({
-        where: {
-          id: sync.id,
-        },
-      }),
-      this.#prisma.syncChange.create({
-        data: {
-          syncId: sync.id,
-        },
-      }),
-    ]);
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {

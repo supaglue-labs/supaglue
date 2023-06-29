@@ -1,3 +1,4 @@
+import { getDependencyContainer } from '@/dependency_container';
 import { internalMiddleware } from '@/middleware/internal';
 import { internalApplicationMiddleware } from '@/middleware/internal_application';
 import { orgHeaderMiddleware } from '@/middleware/org';
@@ -10,14 +11,23 @@ import destination from './destination';
 import provider from './provider';
 import schema from './schema';
 import syncConfig from './sync_config';
-import syncHistory from './sync_history';
 import syncInfo from './sync_info';
+import syncRun from './sync_run';
 import webhook from './webhook';
+
+const { connectionAndSyncService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   // application routes should not require application header
   const internalApplicationRouter = Router();
   internalApplicationRouter.use(internalMiddleware);
+
+  // TODO: Remove this when we have fully moved over to ObjectSyncs
+  internalApplicationRouter.post('/_move_to_object_syncs', async (req, res) => {
+    await connectionAndSyncService.moveToObjectSyncs();
+    res.status(200).send();
+  });
+
   internalApplicationRouter.use(orgHeaderMiddleware);
 
   application(internalApplicationRouter);
@@ -39,7 +49,7 @@ export default function init(app: Router): void {
   webhook(internalRouter);
   syncConfig(internalRouter);
   syncInfo(internalRouter);
-  syncHistory(internalRouter);
+  syncRun(internalRouter);
 
   app.use('/internal', internalRouter);
 }

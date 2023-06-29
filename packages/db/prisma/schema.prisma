@@ -168,6 +168,8 @@ model ObjectSyncRun {
   @@map("object_sync_runs")
 }
 
+// Deprecated
+// IMPORTANT: Don't delete. We may want the history of this table. Check with george.
 model Sync {
   id                   String        @id @default(uuid())
   state                Json
@@ -195,6 +197,8 @@ model SyncChange {
   @@map("sync_changes")
 }
 
+// Deprecated
+// IMPORTANT: Don't delete. We may want the history of this table. Check with george.
 model SyncHistory {
   id               String    @id @default(uuid())
   syncId           String    @map("sync_id")
