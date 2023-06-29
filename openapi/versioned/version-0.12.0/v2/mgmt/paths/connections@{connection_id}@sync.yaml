@@ -1,0 +1,55 @@
+get:
+  operationId: getSync
+  summary: Get sync
+  tags:
+    - Syncs
+  security:
+    - ApiKeyAuth: []
+  responses:
+    200:
+      description: Sync
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sync:
+                $ref: ../components/schemas/objects/sync.yaml
+post:
+  operationId: enableSync
+  summary: Enable sync
+  tags:
+    - Syncs
+  parameters: []
+  security:
+    - ApiKeyAuth: []
+  responses:
+    '200':
+      description: Sync enabled
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/sync.yaml
+delete:
+  operationId: disableSync
+  summary: Disable sync
+  tags:
+    - Syncs
+  security:
+    - ApiKeyAuth: []
+  responses:
+    204:
+      description: Sync
+parameters:
+  - name: customer_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
+  - name: connection_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

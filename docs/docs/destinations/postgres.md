@@ -23,12 +23,19 @@ description: ''
 3. Enter your Postgres credentials.
 
 :::info
-Note that the postgres user will need write access to the schema you choose.
+Note that the postgres user will need write access to the schema/database you choose.
 :::
 
 ![postgres-config](/img/postgres_form.png)
 
-We recommend creating a separate Postgres role, user, and schema for Supaglue. Using the new Postgres user to run the following:
+## Data isolation
+Supaglue lands tables into your Postgres. You can configure Supaglue to write to a separate physical/logical database or schema (see diagram below) by creating a user/role for Supaglue (see [Setup](./postgres.md#Setup)).
+
+![postgres-config](/img/db-isolation.png)
+
+In the steps below, we provide steps to create a separate Postgres role and schema for schema-level isolation between Supaglue and your application. Create a new Postgres user then run the following:
+
+## Grants
 
 ```sql
 create schema supaglue;
