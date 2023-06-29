@@ -6,7 +6,6 @@ type BaseObjectSync = {
   object: string;
   connectionId: string;
   syncConfigId: string;
-  forceSyncFlag: boolean; // flag: whether to transition a sync to the phase "created"
   paused: boolean;
 };
 

@@ -175,20 +175,8 @@ export type DeleteWebhookPathParams = never;
 export type DeleteWebhookRequest = never;
 export type DeleteWebhookResponse = never;
 
-export type GetSyncInfosPathParams = never;
-export type GetSyncInfosQueryParams = Required<operations['getSyncInfos']>['parameters']['query'];
-export type GetSyncInfosRequest = never;
-export type GetSyncInfosResponse =
-  operations['getSyncInfos']['responses'][keyof operations['getSyncInfos']['responses']]['content']['application/json'];
-
 export type GetSyncRunsPathParams = never;
 export type GetSyncRunsQueryParams = Required<operations['getSyncRuns']>['parameters']['query'];
 export type GetSyncRunsRequest = never;
 export type GetSyncRunsResponse =
   operations['getSyncRuns']['responses'][keyof operations['getSyncRuns']['responses']]['content']['application/json'];
-
-export type CreateForceSyncPathParams = never;
-export type CreateForceSyncQueryParams = Required<operations['createForceSync']>['parameters']['query'];
-export type CreateForceSyncRequest = never;
-export type CreateForceSyncResponse =
-  operations['createForceSync']['responses'][keyof operations['createForceSync']['responses']]['content']['application/json'];

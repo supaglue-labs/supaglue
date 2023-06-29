@@ -85,7 +85,6 @@ model SyncConfig {
   config        Json
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
-  syncs         Sync[]
   objectSyncs   ObjectSync[]
 
   // TODO: Eventually allow multiple destinations
@@ -114,7 +113,6 @@ model Connection {
   instanceUrl          String       @default("") @map("instance_url")
   createdAt            DateTime     @default(now()) @map("created_at")
   updatedAt            DateTime     @updatedAt @map("updated_at")
-  sync                 Sync?
   replayIds            ReplayId[]
   provider             Provider     @relation(fields: [providerId], references: [id])
   providerId           String       @map("provider_id")
@@ -131,7 +129,6 @@ model ObjectSync {
   objectType    String          @map("object_type")
   object        String
   state         Json
-  forceSyncFlag Boolean         @default(false) @map("force_sync_flag")
   strategy      Json
   connectionId  String          @map("connection_id")
   connection    Connection      @relation(fields: [connectionId], references: [id])
@@ -166,56 +163,6 @@ model ObjectSyncRun {
   numRecordsSynced Int?       @map("num_records_synced")
 
   @@map("object_sync_runs")
-}
-
-// Deprecated
-// IMPORTANT: Don't delete. We may want the history of this table. Check with george.
-model Sync {
-  id                   String        @id @default(uuid())
-  state                Json
-  forceSyncFlag        Boolean       @default(false) @map("force_sync_flag")
-  strategy             Json
-  connectionId         String        @unique @map("connection_id")
-  connection           Connection    @relation(fields: [connectionId], references: [id])
-  createdAt            DateTime      @default(now()) @map("created_at")
-  updatedAt            DateTime      @updatedAt @map("updated_at")
-  paused               Boolean       @default(false)
-  /// DEPRECATED: Use Connection.schemaMappingConfig instead.
-  schemaMappingsConfig Json?         @map("schema_mappings_config")
-  syncConfigId         String        @map("sync_config_id")
-  syncConfig           SyncConfig    @relation(fields: [syncConfigId], references: [id])
-  syncHistoryList      SyncHistory[]
-
-  @@map("syncs")
-}
-
-model SyncChange {
-  id        String   @id @default(uuid())
-  syncId    String   @map("sync_id")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("sync_changes")
-}
-
-// Deprecated
-// IMPORTANT: Don't delete. We may want the history of this table. Check with george.
-model SyncHistory {
-  id               String    @id @default(uuid())
-  syncId           String    @map("sync_id")
-  sync             Sync      @relation(fields: [syncId], references: [id], onDelete: Cascade)
-  // exactly one of [model, standardObject, customObject] should be set
-  // contact, lead, account, opportunity, etc.
-  model            String?
-  standardObject   String?   @map("standard_object")
-  customObject     String?   @map("custom_object")
-  // SUCCESS | ERROR | IN_PROGRESS
-  status           String
-  errorMessage     String?   @map("error_message")
-  startTimestamp   DateTime  @map("start_timestamp")
-  endTimestamp     DateTime? @map("end_timestamp")
-  numRecordsSynced Int?      @map("num_records_synced")
-
-  @@map("sync_history")
 }
 
 model ReplayId {

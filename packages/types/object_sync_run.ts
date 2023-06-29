@@ -1,4 +1,4 @@
-import type { PaginationInternalParams, SyncInfoFilter } from './';
+import type { PaginationInternalParams } from './';
 import type { ObjectType } from './object_sync';
 
 export type ObjectSyncRunStatus = 'SUCCESS' | 'FAILURE' | 'IN_PROGRESS';
@@ -32,14 +32,17 @@ export type ObjectSyncRunUpsertParams = {
   numRecordsSynced: number | null;
 };
 
-export type ObjectSyncRunFilter = SyncInfoFilter &
-  (
-    | {
-        objectType: ObjectType;
-        object: string;
-        paginationParams: PaginationInternalParams;
-      }
-    | {
-        paginationParams: PaginationInternalParams;
-      }
-  );
+export type ObjectSyncRunFilter = {
+  applicationId: string;
+  externalCustomerId?: string;
+  providerName?: string;
+} & (
+  | {
+      objectType: ObjectType;
+      object: string;
+      paginationParams: PaginationInternalParams;
+    }
+  | {
+      paginationParams: PaginationInternalParams;
+    }
+);

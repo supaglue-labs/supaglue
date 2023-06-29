@@ -59,10 +59,6 @@ paths:
     $ref: paths/webhook.yaml
   '/sync-runs':
     $ref: paths/sync_runs.yaml
-  '/sync-info':
-    $ref: paths/sync_info.yaml
-  '/force-sync':
-    $ref: paths/force_sync.yaml
 tags:
   - name: Customers
     description: A `Customer` represents one of your customers.
@@ -139,14 +135,8 @@ components:
       $ref: ./components/schemas/list_properties.yaml
     webhook:
       $ref: ./components/schemas/objects/webhook.yaml
-    sync:
-      $ref: ./components/schemas/objects/sync.yaml
     sync_run:
       $ref: ./components/schemas/sync_run.yaml
-    sync_info:
-      $ref: ./components/schemas/sync_info.yaml
-    force_sync:
-      $ref: ./components/schemas/force_sync.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
   parameters:

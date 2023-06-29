@@ -2,12 +2,11 @@ import { logger } from '@supaglue/core/lib';
 import { fromSyncConfigModel } from '@supaglue/core/mappers';
 import { ConnectionService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
-import type { ObjectSync as ObjectSyncModel, Prisma, Sync as SyncModel } from '@supaglue/db';
+import type { ObjectSync as ObjectSyncModel, Prisma } from '@supaglue/db';
 import { CONNECTIONS_TABLE, OBJECT_SYNCS_TABLE, OBJECT_SYNC_CHANGES_TABLE, PrismaClient } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
-import type { ConnectionSafeAny, Sync, SyncState, SyncType } from '@supaglue/types';
-import type { ObjectSync, ObjectSyncState, ObjectType } from '@supaglue/types/object_sync';
+import type { ConnectionSafeAny } from '@supaglue/types';
+import type { ObjectSync, ObjectSyncState, ObjectSyncType, ObjectType } from '@supaglue/types/object_sync';
 import {
   Client,
   IntervalSpec,
@@ -24,7 +23,7 @@ const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 function fromObjectSyncModel(model: ObjectSyncModel): ObjectSync {
   // `strategy` looks like { type: 'full then incremental', ...otherProps }
 
-  const { type, ...otherStrategyProps } = model.strategy as { type: SyncType } & Record<string, unknown>;
+  const { type, ...otherStrategyProps } = model.strategy as { type: ObjectSyncType } & Record<string, unknown>;
 
   // TODO: don't do type assertion
   return {
@@ -35,29 +34,9 @@ function fromObjectSyncModel(model: ObjectSyncModel): ObjectSync {
     type,
     syncConfigId: model.syncConfigId,
     ...otherStrategyProps,
-    state: model.state as SyncState,
-    forceSyncFlag: model.forceSyncFlag,
+    state: model.state as ObjectSyncState,
     paused: model.paused,
   } as ObjectSync;
-}
-
-function fromSyncModel(model: SyncModel): Sync {
-  // `strategy` looks like { type: 'full then incremental', ...otherProps }
-
-  const { type, ...otherStrategyProps } = model.strategy as { type: SyncType } & Record<string, unknown>;
-
-  // TODO: don't do type assertion
-  return {
-    id: model.id,
-    connectionId: model.connectionId,
-    type,
-    syncConfigId: model.syncConfigId,
-    ...otherStrategyProps,
-    state: model.state as SyncState,
-    forceSyncFlag: model.forceSyncFlag,
-    paused: model.paused,
-    schemaMappingsConfig: model.schemaMappingsConfig,
-  } as Sync;
 }
 
 export class SyncService {
@@ -100,45 +79,7 @@ export class SyncService {
     return fromObjectSyncModel(model);
   }
 
-  public async getSyncById(id: string): Promise<Sync> {
-    const model = await this.#prisma.sync.findUniqueOrThrow({
-      where: {
-        id,
-      },
-    });
-    return fromSyncModel(model);
-  }
-
-  public async setForceSyncFlag({ syncId }: { syncId: string }, flag: boolean): Promise<Sync> {
-    const model = await this.#prisma.sync.update({
-      data: {
-        forceSyncFlag: flag,
-      },
-      where: {
-        id: syncId,
-      },
-    });
-
-    return fromSyncModel(model);
-  }
-
-  public async updateSyncState(id: string, state: SyncState): Promise<Sync> {
-    // TODO: We should be doing type-checking
-    const model = await this.#prisma.sync.update({
-      where: {
-        id,
-      },
-      data: {
-        state,
-      },
-    });
-    return fromSyncModel(model);
-  }
-
   public async processSyncChanges(): Promise<void> {
-    // TODO: remove this when we're done migrating from Sync to ObjectSync
-    await this.#processSyncChanges();
-
     // This is broken into two parts
     // Part 1 - Process all the SyncConfigChange events and see if we need to
     //          create/update/delete any ObjectSyncs (and ObjectSyncChanges)
@@ -146,40 +87,6 @@ export class SyncService {
     //          create/update/delete any Temporal schedules/workflows
     await this.#processSyncConfigChanges();
     await this.#processObjectSyncChanges();
-  }
-
-  async #processSyncChanges(): Promise<void> {
-    // Do not create any new Syncs. Only delete if required.
-
-    // Get all the SyncChange objects
-    const syncChanges = await this.#prisma.syncChange.findMany();
-    const syncChangeIds = syncChanges.map((syncChange) => syncChange.id);
-    const uniqueSyncIds = [...new Set(syncChanges.map((syncChange) => syncChange.syncId))];
-    const syncs = await this.#prisma.sync.findMany({
-      where: {
-        id: {
-          in: uniqueSyncIds,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    // Get the deletes
-    const syncIdsToDelete = uniqueSyncIds.filter((syncId) => !syncs.some((sync) => sync.id === syncId));
-
-    // Delete the syncs
-    await this.#deleteTemporalSyncs(syncIdsToDelete);
-
-    // Delete the SyncChange objects
-    await this.#prisma.syncChange.deleteMany({
-      where: {
-        id: {
-          in: syncChangeIds,
-        },
-      },
-    });
   }
 
   async #processSyncConfigChanges(): Promise<void> {
@@ -390,79 +297,6 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
         },
       },
     });
-  }
-
-  async #deleteTemporalSyncs(syncIds: string[]): Promise<void> {
-    // TODO: When we stop using temporalite locally, we should just use
-    // advanced visibility to search by custom attributes and find the workflows to kill.
-    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
-    // in Postgres and without an external ES cluster.
-    //
-    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
-    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
-
-    // Get the sync schedule handles
-    const syncScheduleHandles = syncIds.map((syncId) =>
-      this.#temporalClient.schedule.getHandle(getRunManagedSyncScheduleId(syncId))
-    );
-
-    function errHandler(err: unknown) {
-      if (err instanceof ScheduleNotFoundError) {
-        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
-      } else if (err instanceof WorkflowNotFoundError) {
-        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
-      } else {
-        throw err;
-      }
-    }
-
-    // Pause the sync schedules
-    for (const handle of syncScheduleHandles) {
-      try {
-        await handle.pause();
-      } catch (err: unknown) {
-        errHandler(err);
-      }
-    }
-
-    // Kill the associated workflows
-    const scheduleDescriptions = (
-      await Promise.all(
-        syncScheduleHandles.map(async (handle) => {
-          let description: ScheduleDescription | undefined = undefined;
-
-          try {
-            description = await handle.describe();
-          } catch (err: unknown) {
-            errHandler(err);
-          }
-
-          return description;
-        })
-      )
-    ).filter<ScheduleDescription>((description): description is ScheduleDescription => !!description);
-
-    const workflowIds = scheduleDescriptions.flatMap((description) =>
-      description.info.runningActions.map((action) => action.workflow.workflowId)
-    );
-    const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
-
-    for (const handle of workflowHandles) {
-      try {
-        await handle.terminate();
-      } catch (err: unknown) {
-        errHandler(err);
-      }
-    }
-
-    // Kill the sync schedules
-    for (const handle of syncScheduleHandles) {
-      try {
-        await handle.delete();
-      } catch (err: unknown) {
-        errHandler(err);
-      }
-    }
   }
 
   async #deleteTemporalObjectSyncs(objectSyncIds: string[]): Promise<void> {

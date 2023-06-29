@@ -3,11 +3,9 @@ import { openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
 import customer from './customer';
 import destination from './destination';
-import forceSync from './force_sync';
 import provider from './provider';
 import schema from './schema';
 import syncConfig from './sync_config';
-import syncInfo from './sync_info';
 import syncRun from './sync_run';
 import webhook from './webhook';
 
@@ -23,9 +21,7 @@ export default function init(app: Router): void {
   schema(v2Router);
   webhook(v2Router);
   syncConfig(v2Router);
-  syncInfo(v2Router);
   syncRun(v2Router);
-  forceSync(v2Router);
 
   app.use('/v2', v2Router);
 }

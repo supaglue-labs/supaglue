@@ -5,7 +5,6 @@ import {
   RemoteService,
   SchemaService,
   SyncConfigService,
-  SyncHistoryService,
 } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
@@ -21,7 +20,6 @@ type DependencyContainer = {
   remoteService: RemoteService;
   syncService: SyncService;
   syncConfigService: SyncConfigService;
-  syncHistoryService: SyncHistoryService;
   objectSyncRunService: ObjectSyncRunService;
   providerService: ProviderService;
   applicationService: ApplicationService;
@@ -33,15 +31,8 @@ type DependencyContainer = {
 let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
-  const {
-    prisma,
-    connectionService,
-    remoteService,
-    syncHistoryService,
-    providerService,
-    syncConfigService,
-    schemaService,
-  } = getCoreDependencyContainer();
+  const { prisma, connectionService, remoteService, providerService, syncConfigService, schemaService } =
+    getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
     process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
@@ -79,7 +70,6 @@ function createDependencyContainer(): DependencyContainer {
     syncService,
     objectSyncRunService,
     syncConfigService,
-    syncHistoryService,
     providerService,
     destinationService,
     schemaService,

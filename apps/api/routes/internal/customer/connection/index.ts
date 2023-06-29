@@ -25,7 +25,7 @@ export default function init(app: Router): void {
     const unsafe = req.query.unsafe === 'true';
     const connections = unsafe
       ? await connectionService.listUnsafe(req.supaglueApplication.id, customerId)
-      : await connectionService.listSafeWithIsSyncEnabled(req.supaglueApplication.id, customerId);
+      : await connectionService.listSafe(req.supaglueApplication.id, customerId);
     return res.status(200).send(connections.map(snakecaseKeys));
   });
 

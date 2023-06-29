@@ -15,10 +15,7 @@ export * from './provider';
 export * from './raw_record';
 export * from './schema';
 export * from './sg_user';
-export * from './sync';
 export * from './sync_config';
-export * from './sync_history';
-export * from './sync_info';
 export * from './webhook';
 
 export type ProviderName = CRMProviderName | EngagementProviderName;
