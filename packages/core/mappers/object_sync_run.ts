@@ -1,6 +1,5 @@
-import type { SyncHistoryStatus } from '@supaglue/types';
 import { ObjectType } from '@supaglue/types/object_sync';
-import type { ObjectSyncRun, ObjectSyncRunWithObject } from '@supaglue/types/object_sync_run';
+import type { ObjectSyncRun, ObjectSyncRunStatus, ObjectSyncRunWithObject } from '@supaglue/types/object_sync_run';
 import { parseCustomerIdPk } from '../lib/customer_id';
 import type { ObjectSyncRunModelExpanded, ObjectSyncRunModelExpandedWithObject } from '../types/object_sync_run';
 
@@ -11,7 +10,7 @@ export const fromObjectSyncRunModelAndSync = (args: ObjectSyncRunModelExpanded):
   return {
     id,
     objectSyncId: objectSync.id,
-    status: status as SyncHistoryStatus,
+    status: status as ObjectSyncRunStatus,
     errorMessage,
     startTimestamp,
     endTimestamp,

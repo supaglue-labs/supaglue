@@ -1,4 +1,5 @@
-import { CommonModelType, SyncType } from '.';
+import { CommonModelType } from '.';
+import { ObjectSyncType } from './object_sync';
 
 export type SyncConfig = {
   id: string;
@@ -21,7 +22,7 @@ export type SyncConfigData = {
 
 export type SyncStrategyConfig = {
   periodMs: number;
-  strategy: SyncType;
+  strategy: ObjectSyncType;
 };
 
 export type CommonObjectConfig = {
