@@ -27,8 +27,11 @@ export default function init(app: Router): void {
       req: Request<GetOpportunityPathParams, GetOpportunityResponse, GetOpportunityRequest, GetOpportunityQueryParams>,
       res: Response<GetOpportunityResponse>
     ) => {
-      const { id: connectionId } = req.customerConnection;
-      const opportunity = await crmCommonModelService.get('opportunity', connectionId, req.params.opportunity_id);
+      const opportunity = await crmCommonModelService.get(
+        'opportunity',
+        req.customerConnection,
+        req.params.opportunity_id
+      );
       const snakecasedKeysOpportunity = toSnakecasedKeysCrmOpportunity(opportunity);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysOpportunity;

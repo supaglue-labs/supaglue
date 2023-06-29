@@ -26,8 +26,7 @@ export default function init(app: Router): void {
       req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest, GetAccountQueryParams>,
       res: Response<GetAccountResponse>
     ) => {
-      const { id: connectionId } = req.customerConnection;
-      const account = await crmCommonModelService.get('account', connectionId, req.params.account_id);
+      const account = await crmCommonModelService.get('account', req.customerConnection, req.params.account_id);
       const snakecasedKeysAccount = toSnakecasedKeysCrmAccount(account);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysAccount;

@@ -32,7 +32,8 @@ export interface CrmRemoteClient extends RemoteClient {
 
   getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
-    id: string
+    id: string,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<CRMCommonModelTypeMap<T>['object']>;
   createCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
@@ -95,7 +96,8 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   ): Promise<Readable>;
   abstract getCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
-    id: string
+    id: string,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<CRMCommonModelTypeMap<T>['object']>;
   abstract createCommonObjectRecord<T extends CRMCommonModelType>(
     commonModelType: T,
