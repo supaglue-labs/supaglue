@@ -5,7 +5,7 @@ description: ''
 # Managed syncs (reads)
 
 Managed Syncs lets you sync data from your customers’ CRM directly into your own application database or data warehouse.
-![managed_syncs_diagram](/img/managed-syncs-diagram.png 'managed syncs diagram')
+![managed_syncs_diagram](/img/managed-syncs-diagram-2.png 'managed syncs diagram')
 
 ## How it works
 You can set up a managed sync in about 5 minutes.
@@ -114,19 +114,7 @@ The sync configuration references the provider and destination configurations, a
   ],
   "standard_objects": [
     {
-      "object": "Opportunity",
-      "schema": {
-        "fields": [
-          {
-            "name": "the_description",
-            "mapped_name": "Description"
-          },
-          {
-            "name": "revenue",
-          }
-        ],
-        "allow_additional_field_mappings": false
-      }
+      "object": "Opportunity"
     },
   ],
   "custom_objects": [
@@ -137,43 +125,13 @@ The sync configuration references the provider and destination configurations, a
 }
 ```
 
-
-
 The above sync configuration defines a managed sync that does the following:
 - Fetch the Contact and Account objects from Salesforce, and normalize the response into a Supaglue-defined CRM schema.
 - Fetch the Opportunity object from Salesforce where the "description" and "revenue" fields can be mapped by each customer to a specific field on the Opportunity object.
 - Fetch the `MyCustomObject__c` custom object from Salesforce.
 
-
-### Field mappings
-
-Sometimes, your customers may store data in non-standard fields (e.g. custom fields). You can optionally specify a `schema` object in the sync configuration so that each of your customers can map their specific source schema to your product's data model:
-
-```json
-...
-
-"schema": {
-  "fields": [
-    {
-      "name": "the_description",
-      "mapped_name": "Description"
-    },
-    {
-      "name": "revenue",
-    }
-  ],
-  "allow_additional_field_mappings": false
-}
-...
-```
-
-In this example, you want to map your customer's `Description` field to `the_description`, and you also want to map one of your customer's custom field to `revenue`. Through the [Update Sync endpoint](/api/v2/mgmt#tag/Syncs/operation/updateSync), each of your customers can then map the appropriate revenue field to your `revenue` field. At runtime, Supaglue will apply each customer's mapping and land the appropriate data into the `revenue` column in your destination.
-
-The `allow_additional_field_mappings` flag is a way for individual customers to provide optional supplemental data not explicitly required by your schema, but that may be useful for your product. For example, extra attributes for filtering or features for ML models.
-
-:::info
-We recommend embedding a field mapping UI component in your application that communicates with the SyncConfig and UpdateSync endpoints, to enable a self-serve experience for your customers.
-:::
+## Field mappings
+[Field mappings](../platform/field-mapping) can be used for Managed Syncs to map fields from your customer's third-party tools to your Destinations. It will also be used to reverse-map the same fields if you make writes to their third-party tools using the Actions API.
 
 ## Destination schema
 
