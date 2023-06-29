@@ -12,13 +12,14 @@ const { syncRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   },
 });
 
-const { getObjectSync, updateObjectSyncState, logObjectSyncStart, logObjectSyncFinish, setForceSyncFlag } =
-  proxyActivities<ReturnType<typeof createActivities>>({
-    startToCloseTimeout: '10 second',
-    retry: {
-      maximumAttempts: 3,
-    },
-  });
+const { getObjectSync, updateObjectSyncState, logObjectSyncStart, logObjectSyncFinish } = proxyActivities<
+  ReturnType<typeof createActivities>
+>({
+  startToCloseTimeout: '10 second',
+  retry: {
+    maximumAttempts: 3,
+  },
+});
 
 const { maybeSendSyncFinishWebhook } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '6 minute',
@@ -194,13 +195,6 @@ async function doFullThenIncrementalSync(objectSync: FullThenIncrementalObjectSy
     });
 
     return numRecordsSynced;
-  }
-
-  // Short circuit normal state transitions if we're forcing a sync which will reset the state
-  if (objectSync.forceSyncFlag) {
-    const results = await doFullStage();
-    await setForceSyncFlag({ syncId: objectSync.id }, false);
-    return results;
   }
 
   // Sync state transitions

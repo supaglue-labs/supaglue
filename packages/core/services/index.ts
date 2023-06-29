@@ -7,5 +7,4 @@ export * from './remote_service';
 export * from './schema_service';
 export * from './sg_user_service';
 export * from './sync_config_service';
-export * from './sync_history_service';
 export * from './webhook_service';

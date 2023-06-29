@@ -171,20 +171,6 @@ export interface paths {
      */
     get: operations["getSyncRuns"];
   };
-  "/sync-info": {
-    /**
-     * Get Sync Info 
-     * @description Get a list of Sync Info
-     */
-    get: operations["getSyncInfos"];
-  };
-  "/force-sync": {
-    /**
-     * Force a full sync 
-     * @description Force a full sync
-     */
-    post: operations["createForceSync"];
-  };
 }
 
 export interface webhooks {
@@ -527,18 +513,6 @@ export interface components {
         [key: string]: unknown | undefined;
       };
     };
-    sync: {
-      /** @example 7a34a7bb-193a-4cca-ac16-63ef739995e1 */
-      id: string;
-      /** @example 0a292508-d254-4929-98d3-dc23416efff8 */
-      connection_id: string;
-      /** @example ee2b63fa-edec-4875-b2f5-921d3b13ca83 */
-      sync_config_id?: string;
-      /** @example false */
-      force_sync_flag: boolean;
-      /** @example false */
-      paused: boolean;
-    };
     sync_run: {
       error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
@@ -562,30 +536,6 @@ export interface components {
       /** @enum {string} */
       object_type: "common" | "standard" | "custom";
       object: string;
-    };
-    sync_info: {
-      /** @example Account */
-      model_name: string;
-      /** @example 2023-02-22T19:55:17.559Z */
-      last_sync_start: string | null;
-      /** @example 2023-02-22T20:55:17.559Z */
-      next_sync_start: string | null;
-      /** @enum {string|null} */
-      status: "SYNCING" | "DONE" | null;
-      /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
-      application_id: string;
-      /** @example my-customer-1 */
-      customer_id: string;
-      /** @example hubspot */
-      provider_name: string;
-      /** @enum {string} */
-      category: "crm" | "engagement";
-      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
-      connection_id: string;
-    };
-    force_sync: {
-      /** @example true */
-      success: boolean;
     };
     "webhook-payload": OneOf<[{
       /** @enum {unknown} */
@@ -1132,50 +1082,6 @@ export interface operations {
           }) & {
             results?: (components["schemas"]["sync_run"])[];
           };
-        };
-      };
-    };
-  };
-  getSyncInfos: {
-    /**
-     * Get Sync Info 
-     * @description Get a list of Sync Info
-     */
-    parameters?: {
-        /** @description The customer ID that uniquely identifies the customer in your application */
-        /** @description The provider name */
-      query?: {
-        customer_id?: string;
-        provider_name?: string;
-      };
-    };
-    responses: {
-      /** @description Sync Info List */
-      200: {
-        content: {
-          "application/json": (components["schemas"]["sync_info"])[];
-        };
-      };
-    };
-  };
-  createForceSync: {
-    /**
-     * Force a full sync 
-     * @description Force a full sync
-     */
-    parameters: {
-        /** @description The customer ID that uniquely identifies the customer in your application */
-        /** @description The provider name */
-      query: {
-        customer_id: string;
-        provider_name: string;
-      };
-    };
-    responses: {
-      /** @description Force a full sync */
-      200: {
-        content: {
-          "application/json": components["schemas"]["force_sync"];
         };
       };
     };

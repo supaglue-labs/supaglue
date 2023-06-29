@@ -5,7 +5,7 @@ import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
 import { ConnectionService } from '@supaglue/core/services/connection_service';
-import type { Prisma, Sync as SyncModel } from '@supaglue/db';
+import type { Prisma } from '@supaglue/db';
 import { PrismaClient } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
@@ -13,16 +13,13 @@ import {
   PROCESS_SYNC_CHANGES_SCHEDULE_ID,
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
-import { getRunManagedSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_managed_sync';
-import type { ProviderName, Sync, SyncIdentifier, SyncState, SyncType } from '@supaglue/types';
+import type { ProviderName } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
   ConnectionStatus,
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
-import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
-import type { SyncInfo, SyncInfoFilter, SyncStatus } from '@supaglue/types/sync_info';
 import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -48,43 +45,6 @@ export class ConnectionAndSyncService {
     this.#syncConfigService = syncConfigService;
     this.#applicationService = applicationService;
     this.#connectionService = connectionService;
-  }
-
-  public async moveToObjectSyncs(): Promise<void> {
-    // Delete all the current syncs
-    const syncs = await this.#prisma.sync.findMany({
-      select: {
-        id: true,
-      },
-    });
-    const syncIds = syncs.map((sync) => sync.id);
-    await this.#prisma.$transaction([
-      this.#prisma.sync.deleteMany({
-        where: {
-          id: {
-            in: syncIds,
-          },
-        },
-      }),
-      this.#prisma.syncChange.createMany({
-        data: syncIds.map((syncId) => ({
-          syncId,
-        })),
-      }),
-    ]);
-
-    // "Refresh" the SyncConfigs to trigger processSyncChanges to create new object syncs
-    const syncConfigs = await this.#prisma.syncConfig.findMany({
-      select: {
-        id: true,
-      },
-    });
-    const syncConfigIds = syncConfigs.map((syncConfig) => syncConfig.id);
-    await this.#prisma.syncConfigChange.createMany({
-      data: syncConfigIds.map((syncConfigId) => ({
-        syncConfigId,
-      })),
-    });
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
@@ -273,11 +233,6 @@ export class ConnectionAndSyncService {
         },
       },
       include: {
-        sync: {
-          select: {
-            id: true,
-          },
-        },
         objectSyncs: {
           select: {
             id: true,
@@ -291,21 +246,6 @@ export class ConnectionAndSyncService {
     }
 
     await this.#prisma.$transaction([
-      // Delete the sync, if it exists
-      ...(connection.sync?.id
-        ? [
-            this.#prisma.sync.delete({
-              where: {
-                id: connection.sync.id,
-              },
-            }),
-            this.#prisma.syncChange.create({
-              data: {
-                syncId: connection.sync.id,
-              },
-            }),
-          ]
-        : []),
       // Delete the object syncs, if they exist
       ...connection.objectSyncs.flatMap((objectSync) => [
         this.#prisma.objectSync.delete({
@@ -540,141 +480,4 @@ export class ConnectionAndSyncService {
 
   //   return true;
   // }
-
-  public async getSyncById(id: string): Promise<Sync> {
-    const model = await this.#prisma.sync.findUniqueOrThrow({
-      where: {
-        id,
-      },
-    });
-    return fromSyncModel(model);
-  }
-
-  public async getSyncByConnectionId(connectionId: string): Promise<Sync> {
-    const model = await this.#prisma.sync.findUniqueOrThrow({
-      where: {
-        connectionId,
-      },
-    });
-    return fromSyncModel(model);
-  }
-
-  public async getSyncIfExistByConnectionId(connectionId: string): Promise<Sync | null> {
-    const model = await this.#prisma.sync.findUnique({
-      where: {
-        connectionId,
-      },
-    });
-    return model ? fromSyncModel(model) : null;
-  }
-
-  public async getSyncsByConnectionIds(connectionIds: string[]): Promise<Sync[]> {
-    const models = await this.#prisma.sync.findMany({
-      where: {
-        connectionId: {
-          in: connectionIds,
-        },
-      },
-    });
-    return models.map(fromSyncModel);
-  }
-
-  public async setForceSyncFlag(
-    { applicationId, externalCustomerId, providerName }: SyncIdentifier,
-    flag: boolean
-  ): Promise<Sync> {
-    const customerId = getCustomerIdPk(applicationId, externalCustomerId);
-    const connection = await this.#connectionService.getSafeByCustomerIdAndApplicationIdAndProviderName({
-      applicationId,
-      customerId,
-      providerName,
-    });
-
-    const model = await this.#prisma.sync.update({
-      data: {
-        forceSyncFlag: flag,
-      },
-      where: {
-        connectionId: connection.id,
-      },
-    });
-
-    return fromSyncModel(model);
-  }
-
-  public async getSyncInfoList({
-    applicationId,
-    externalCustomerId,
-    providerName,
-  }: SyncInfoFilter): Promise<SyncInfo[]> {
-    const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
-    const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
-    const syncs = await this.getSyncsByConnectionIds(connections.map((connection) => connection.id));
-
-    const metadataList = await Promise.all(
-      syncs.map(async (sync) => ({
-        syncId: sync.id,
-        ...(await this.getMetadataFromSyncSchedule(sync.id)),
-      }))
-    );
-
-    return metadataList.flatMap(({ syncId, lastSyncStart, nextSyncStart, status }) => {
-      const connection = connections.find(
-        (connection) => connection.id === syncs.find((sync) => sync.id === syncId)?.connectionId
-      );
-      if (!connection) {
-        throw new Error('Unexpectedly could not find connection for sync');
-      }
-      const { id: connectionId, applicationId, customerId, category, providerName } = connection;
-      return CRM_COMMON_MODEL_TYPES.map((commonModel) => ({
-        modelName: commonModel,
-        lastSyncStart,
-        nextSyncStart,
-        status,
-        connectionId,
-        applicationId,
-        customerId,
-        category,
-        providerName,
-      }));
-    });
-  }
-
-  private async getMetadataFromSyncSchedule(syncId: string): Promise<{
-    lastSyncStart: Date | null;
-    nextSyncStart: Date | null;
-    status: SyncStatus | null;
-  }> {
-    const scheduleId = getRunManagedSyncScheduleId(syncId);
-    const handle = this.#temporalClient.schedule.getHandle(scheduleId);
-    const description = await handle.describe();
-
-    const lastSyncStart = description.info.recentActions.length
-      ? description.info.recentActions[description.info.recentActions.length - 1].takenAt
-      : null;
-    const nextSyncStart = description.info.nextActionTimes.length ? description.info.nextActionTimes[0] : null;
-    const status = lastSyncStart ? (description.info.runningActions.length ? 'SYNCING' : 'DONE') : null;
-
-    return {
-      lastSyncStart,
-      nextSyncStart,
-      status,
-    };
-  }
-}
-
-function fromSyncModel(model: SyncModel): Sync {
-  // `strategy` looks like { type: 'full then incremental', ...otherProps }
-
-  const { type, ...otherStrategyProps } = model.strategy as { type: SyncType } & Record<string, unknown>;
-
-  // TODO: don't do type assertion
-  return {
-    id: model.id,
-    connectionId: model.connectionId,
-    type,
-    ...otherStrategyProps,
-    state: model.state as SyncState,
-    paused: model.paused,
-  } as Sync;
 }

@@ -57,19 +57,6 @@ export class SyncConfigService {
     return fromSyncConfigModel(syncConfig);
   }
 
-  public async getBySyncId(syncId: string): Promise<SyncConfig | null> {
-    const sync = await this.#prisma.sync.findUnique({
-      where: { id: syncId },
-    });
-    if (!sync) {
-      throw new NotFoundError(`Can't find sync with id: ${syncId}`);
-    }
-    if (!sync.syncConfigId) {
-      return null;
-    }
-    return await this.getById(sync.syncConfigId);
-  }
-
   public async list(applicationId: string): Promise<SyncConfig[]> {
     const syncConfigs = await this.#prisma.syncConfig.findMany({ where: { applicationId } });
     return syncConfigs.map(fromSyncConfigModel);
@@ -120,19 +107,19 @@ export class SyncConfigService {
       where: {
         providerId: syncConfig.providerId,
       },
-      create: await toSyncConfigModel(syncConfig),
-      update: await toSyncConfigModel(syncConfig),
+      create: toSyncConfigModel(syncConfig),
+      update: toSyncConfigModel(syncConfig),
     });
     return fromSyncConfigModel(upsertedSyncConfig);
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
-    const syncs = await this.#prisma.sync.findMany({
+    const objectSyncs = await this.#prisma.objectSync.findMany({
       where: {
         syncConfigId: id,
       },
     });
-    if (syncs.length) {
+    if (objectSyncs.length) {
       throw new BadRequestError('Cannot delete sync config with active connections');
     }
     await this.#prisma.syncConfig.deleteMany({
