@@ -27,17 +27,17 @@ export class ProviderService {
     return Promise.all(providers.map((provider) => fromProviderModel(provider)));
   }
 
-  public async getById(id: string): Promise<Provider> {
+  public async getById<T extends Provider = Provider>(id: string): Promise<T> {
     const provider = await this.#prisma.provider.findUnique({
       where: { id },
     });
     if (!provider) {
       throw new NotFoundError(`Can't find provider with id: ${id}`);
     }
-    return fromProviderModel(provider);
+    return fromProviderModel<T>(provider);
   }
 
-  public async getByIdAndApplicationId(id: string, applicationId: string): Promise<Provider> {
+  public async getByIdAndApplicationId<T extends Provider = Provider>(id: string, applicationId: string): Promise<T> {
     const provider = await this.#prisma.provider.findUnique({
       where: { id },
     });
@@ -45,10 +45,13 @@ export class ProviderService {
       throw new NotFoundError(`Can't find provider with id: ${id}`);
     }
 
-    return fromProviderModel(provider);
+    return fromProviderModel<T>(provider);
   }
 
-  public async getByNameAndApplicationId(name: string, applicationId: string): Promise<Provider> {
+  public async getByNameAndApplicationId<T extends Provider = Provider>(
+    name: string,
+    applicationId: string
+  ): Promise<T> {
     const provider = await this.#prisma.provider.findUnique({
       where: {
         applicationId_name: {
@@ -60,7 +63,7 @@ export class ProviderService {
     if (!provider) {
       throw new NotFoundError(`Provider not found for name: ${name}`);
     }
-    return fromProviderModel(provider);
+    return fromProviderModel<T>(provider);
   }
 
   public async list(applicationId: string): Promise<Provider[]> {
@@ -68,11 +71,11 @@ export class ProviderService {
     return Promise.all(providers.map((provider) => fromProviderModel(provider)));
   }
 
-  public async create(provider: ProviderCreateParams): Promise<Provider> {
+  public async create<T extends Provider = Provider>(provider: ProviderCreateParams): Promise<T> {
     const createdProvider = await this.#prisma.provider.create({
       data: await toProviderModel(provider),
     });
-    return fromProviderModel(createdProvider);
+    return fromProviderModel<T>(createdProvider);
   }
 
   public async addObject(
