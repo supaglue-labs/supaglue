@@ -94,7 +94,7 @@ export interface paths {
       };
     };
   };
-  "/providers/{provider_id}/add_object": {
+  "/providers/{provider_id}/object": {
     /** Add object to provider */
     post: operations["addObject"];
     parameters: {

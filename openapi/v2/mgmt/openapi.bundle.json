@@ -936,7 +936,7 @@
         }
       ]
     },
-    "/providers/{provider_id}/add_object": {
+    "/providers/{provider_id}/object": {
       "post": {
         "operationId": "addObject",
         "summary": "Add object to provider",

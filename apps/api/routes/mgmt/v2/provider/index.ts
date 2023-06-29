@@ -56,7 +56,7 @@ export default function init(app: Router): void {
   );
 
   providerRouter.post(
-    '/:provider_id/add_object',
+    '/:provider_id/object',
     async (
       req: Request<AddObjectPathParams, AddObjectResponse, AddObjectRequest>,
       res: Response<AddObjectResponse>

@@ -43,8 +43,8 @@ paths:
     $ref: paths/providers.yaml
   '/providers/{provider_id}':
     $ref: paths/providers@{provider_id}.yaml
-  '/providers/{provider_id}/add_object':
-    $ref: paths/providers@{provider_id}@add_object.yaml
+  '/providers/{provider_id}/object':
+    $ref: paths/providers@{provider_id}@object.yaml
   '/sync_configs':
     $ref: paths/sync_configs.yaml
   '/sync_configs/{sync_config_id}':

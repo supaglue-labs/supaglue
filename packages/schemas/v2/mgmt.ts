@@ -81,7 +81,7 @@ export type CreateProviderRequest = operations['createProvider']['requestBody'][
 export type CreateProviderResponse =
   operations['createProvider']['responses'][keyof operations['createProvider']['responses']]['content']['application/json'];
 
-export type AddObjectPathParams = paths[`/providers/{provider_id}/add_object`]['parameters']['path'];
+export type AddObjectPathParams = paths[`/providers/{provider_id}/object`]['parameters']['path'];
 export type AddObjectRequest = operations['addObject']['requestBody']['content']['application/json'];
 export type AddObjectResponse =
   operations['addObject']['responses'][keyof operations['addObject']['responses']]['content']['application/json'];
