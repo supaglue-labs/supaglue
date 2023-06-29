@@ -257,14 +257,26 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
+  async getStandardPropertiesToFetch(object: string, fieldMappingConfig?: FieldMappingConfig): Promise<string[]> {
+    const sobject = capitalizeString(object);
+    const allProperties = await this.getSObjectProperties(sobject);
+    if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
+      return allProperties;
+    }
+    return intersection(
+      allProperties,
+      fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField)
+    );
+  }
+
   public override async listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    const allProperties = await this.getSObjectProperties(object);
-    const stream = await this.#listObjectsHelper(object, allProperties, modifiedAfter, heartbeat);
+    const propertiesToFetch = await this.getStandardPropertiesToFetch(object, fieldMappingConfig);
+    const stream = await this.#listObjectsHelper(object, propertiesToFetch, modifiedAfter, heartbeat);
 
     return pipeline(
       stream,
@@ -308,7 +320,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  async getPropertiesToFetch(
+  async getCommonPropertiesToFetch(
     commonModelType: CRMCommonModelType,
     fieldMappingConfig?: FieldMappingConfig
   ): Promise<string[]> {
@@ -330,7 +342,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     heartbeat?: () => void
   ): Promise<Readable> {
     const sobject = capitalizeString(commonModelType);
-    const propertiesToFetch = await this.getPropertiesToFetch(commonModelType, fieldMappingConfig);
+    const propertiesToFetch = await this.getCommonPropertiesToFetch(commonModelType, fieldMappingConfig);
 
     const stream = await this.#listObjectsHelper(sobject, propertiesToFetch, updatedAfter, heartbeat);
     const mapper = (record: Record<string, unknown>) => ({

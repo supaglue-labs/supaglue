@@ -359,6 +359,15 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
+  private async getStandardPropertiesToFetch(objectType: string, fieldMappingConfig?: FieldMappingConfig) {
+    const availableProperties = await this.getObjectTypeProperties(objectType);
+    if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
+      return availableProperties;
+    }
+    const properties = fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField);
+    return intersection(availableProperties, properties);
+  }
+
   public override async listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
@@ -366,10 +375,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     heartbeat?: () => void
   ): Promise<Readable> {
     const standardObjectType = toStandardObjectType(object);
-    const propertiesToFetch =
-      fieldMappingConfig.type === 'inherit_all_fields'
-        ? await this.getObjectTypeProperties(standardObjectType)
-        : fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField);
+    const propertiesToFetch = await this.getStandardPropertiesToFetch(object, fieldMappingConfig);
     const associatedStandardObjectTypes = hubspotStandardObjectTypeToAssociatedStandardObjectTypes[standardObjectType];
 
     const normalPageFetcher = await this.#getListRecordsFetcher(
