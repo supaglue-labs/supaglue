@@ -22,6 +22,7 @@ export default function init(app: Router): void {
   const internalApplicationRouter = Router();
   internalApplicationRouter.use(internalMiddleware);
 
+  // TODO: Remove this when we have fully moved over to ObjectSyncs
   internalApplicationRouter.post('/_move_to_object_syncs', async (req, res) => {
     await connectionAndSyncService.moveToObjectSyncs();
     res.status(200).send();
