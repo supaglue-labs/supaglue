@@ -2445,15 +2445,11 @@
                   "full then incremental",
                   "full only"
                 ]
-              },
-              "start_sync_on_connection_creation": {
-                "type": "boolean"
               }
             },
             "required": [
               "period_ms",
-              "strategy",
-              "start_sync_on_connection_creation"
+              "strategy"
             ]
           },
           "common_objects": {

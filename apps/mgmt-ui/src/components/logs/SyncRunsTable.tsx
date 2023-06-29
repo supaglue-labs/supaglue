@@ -7,7 +7,7 @@ const columns: GridColDef[] = [
   { field: 'customerId', headerName: 'Customer Id', width: 200, sortable: false },
   { field: 'providerName', headerName: 'Provider', width: 120, sortable: false },
   { field: 'objectType', headerName: 'Object Type', width: 120, sortable: false },
-  { field: 'object', headerName: 'Common Object', width: 120, sortable: false },
+  { field: 'object', headerName: 'Object', width: 120, sortable: false },
   { field: 'status', headerName: 'Status', width: 100, sortable: false },
   {
     field: 'startTimestamp',
