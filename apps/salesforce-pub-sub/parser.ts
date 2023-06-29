@@ -1,3 +1,6 @@
+// adapted from https://github.com/pozil/pub-sub-api-node-client/blob/main/src/eventParser.js
+// under the Creative Commons Zero v1.0 Universal license
+
 import * as avro from 'avsc';
 
 export function parseEvent(schema: string, eventPayload: Buffer) {
