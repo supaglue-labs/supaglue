@@ -88,8 +88,13 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         // pg doesn't seem to convert objects to JSON even though the docs say it does
         // https://node-postgres.com/features/queries
         if (value !== null && value !== undefined && typeof value === 'object') {
-          return JSON.stringify(value);
+          return JSON.stringify(value).replace(/\\u0000/g, '');
         }
+
+        if (typeof value === 'string') {
+          return value.replace(/\\u0000/g, '');
+        }
+
         return value;
       });
 
