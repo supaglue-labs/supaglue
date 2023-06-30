@@ -1,7 +1,7 @@
-import { useNotification } from '@/context/notification';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { useState } from 'react';
+import { DeleteResourceConfirmationModal } from '../modals';
 
 export type DeleteCustomerProps = {
   disabled: boolean;
@@ -10,7 +10,6 @@ export type DeleteCustomerProps = {
 };
 
 export function DeleteCustomer({ disabled, customerId, onDelete }: DeleteCustomerProps) {
-  const { addNotification } = useNotification();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -26,32 +25,13 @@ export function DeleteCustomer({ disabled, customerId, onDelete }: DeleteCustome
       <IconButton className="p-1" onClick={handleClickOpen} size="small" disabled={disabled}>
         <DeleteIcon />
       </IconButton>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete customer</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to delete customer{' '}
-            <Typography fontWeight="bold" display="inline">
-              {customerId}
-            </Typography>
-            ?
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between', padding: '16px 24px' }}>
-          <Button
-            variant="text"
-            color="error"
-            onClick={() => {
-              onDelete();
-              addNotification({ message: 'Successfully removed customer', severity: 'success' });
-              handleClose();
-            }}
-          >
-            Delete
-          </Button>
-          <Button onClick={handleClose}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteResourceConfirmationModal
+        open={open}
+        handleClose={handleClose}
+        onDelete={onDelete}
+        title="Delete customer"
+        resourceName={customerId}
+      />
     </>
   );
 }

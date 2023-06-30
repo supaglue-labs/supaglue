@@ -107,6 +107,7 @@ export default function SyncConfigListPanel() {
                 addNotification({ message: response.errorMessage, severity: 'error' });
                 return;
               }
+              addNotification({ message: 'Successfully removed Sync Config', severity: 'success' });
               await mutate(toGetSyncConfigsResponse(syncConfigs.filter((s) => s.id !== params.row.id)), false);
             }}
           />

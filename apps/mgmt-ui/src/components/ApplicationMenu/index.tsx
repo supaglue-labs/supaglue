@@ -226,7 +226,6 @@ function UpdateApplicationMenuItem({
           <Button
             onClick={() => {
               onUpdateApplicationName(application.id, applicationName);
-              // TODO: error state
               handleClose();
             }}
           >
@@ -298,7 +297,6 @@ function DeleteApplicationMenuItem({
             disabled={application.name !== applicationName}
             onClick={() => {
               onDeleteApplication(application.id);
-              // TODO: error state
               handleClose();
             }}
           >
@@ -354,8 +352,6 @@ function NewApplication({ onCreate }: { onCreate: (name: string) => void }) {
           <Button
             onClick={() => {
               onCreate(applicationName);
-              // TODO: error state
-              // TODO: Validate application name (e.g. empty)
               handleClose();
             }}
           >

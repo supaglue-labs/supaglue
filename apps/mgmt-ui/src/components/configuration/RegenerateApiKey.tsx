@@ -1,6 +1,6 @@
-import { useNotification } from '@/context/notification';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { useState } from 'react';
+import { ConfirmationModal } from '../modals';
 
 export type RegenerateApiKeyProps = {
   disabled: boolean;
@@ -8,7 +8,6 @@ export type RegenerateApiKeyProps = {
 };
 
 export function RegenerateApiKey({ disabled, onConfirm }: RegenerateApiKeyProps) {
-  const { addNotification } = useNotification();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -25,27 +24,18 @@ export function RegenerateApiKey({ disabled, onConfirm }: RegenerateApiKeyProps)
         Regenerate
       </Button>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Regenerate API Key</DialogTitle>
-        <DialogContent>
+      <ConfirmationModal
+        open={open}
+        title="Regenerate API Key"
+        handleClose={handleClose}
+        onConfirm={onConfirm}
+        cancelVariant="text"
+        confirmVariant="contained"
+        confirmColor="error"
+        content={
           <Typography>Are you sure you want to regenerate this API Key? This will revoke the existing key.</Typography>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between', padding: '16px 24px' }}>
-          <Button
-            variant="text"
-            onClick={() => {
-              onConfirm();
-              addNotification({ message: 'Successfully regenerated API Key', severity: 'success' });
-              handleClose();
-            }}
-          >
-            Confirm
-          </Button>
-          <Button variant="contained" onClick={handleClose}>
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
+        }
+      />
     </>
   );
 }

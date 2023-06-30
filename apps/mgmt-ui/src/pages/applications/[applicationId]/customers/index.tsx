@@ -34,6 +34,7 @@ export default function Home() {
       addNotification({ message: response.errorMessage, severity: 'error' });
       return;
     }
+    addNotification({ message: 'Successfully added customer', severity: 'success' });
     await mutate([...customers, { applicationId, customerId, name, email, connections: [] }], false);
   };
 
@@ -103,6 +104,7 @@ export default function Home() {
                 addNotification({ message: response.errorMessage, severity: 'error' });
                 return;
               }
+              addNotification({ message: 'Successfully removed customer', severity: 'success' });
               await mutate(
                 customers.filter((customer) => customer.customerId !== params.row.id),
                 false
