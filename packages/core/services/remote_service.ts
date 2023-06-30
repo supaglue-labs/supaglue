@@ -35,10 +35,6 @@ export class RemoteService {
       );
     }
 
-    if (!provider.config) {
-      throw new Error('provider must have config');
-    }
-
     const client = getCrmRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
     this.#persistRefreshedToken(connectionId, client);
     return client;
