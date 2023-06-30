@@ -8,7 +8,7 @@ const path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
 const LATEST_VERSION = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8')).version;
-const versions = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
+const VERSIONS = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -38,68 +38,42 @@ const config = {
     locales: ['en'],
   },
 
+  themes: ['docusaurus-theme-openapi-docs'], // Allows use of @theme/ApiItem and other components
+
   presets: [
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      {
         docs: {
           lastVersion: LATEST_VERSION,
-
+          versions: {
+            ...VERSIONS.reduce((acc, version) => ({ ...acc, [version]: { badge: false } }), {}),
+            current: { badge: false },
+          },
           sidebarCollapsed: false,
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/supaglue-labs/supaglue/tree/main/docs/',
           routeBasePath: '/',
+          docLayoutComponent: '@theme/DocPage',
+          docItemComponent: '@theme/ApiItem', // Derived from docusaurus-theme-openapi-docs
+          async sidebarItemsGenerator({ defaultSidebarItemsGenerator, ...args }) {
+            const items = await defaultSidebarItemsGenerator(args);
+            return (
+              items
+                // flatten the API to a single link in the sidebar
+                .map((item) =>
+                  item.type === 'category' && item.label === 'api'
+                    ? { type: 'doc', id: 'api/introduction', label: 'API Reference' }
+                    : item
+                )
+            );
+          },
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl: 'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        // },
         theme: {
           customCss: [require.resolve('./src/css/custom.css'), require.resolve('./src/css/supaglue.css')],
-        },
-      }),
-    ],
-    [
-      'redocusaurus',
-      {
-        // Plugin Options for loading OpenAPI files
-        specs: [
-          ...versions.flatMap((version) => [
-            {
-              spec: `../openapi/versioned/version-${version}/v2/crm/openapi.bundle.json`,
-              route: version === LATEST_VERSION ? '/api/v2/crm' : `/${version}/api/v2/crm`,
-            },
-            {
-              spec: `../openapi/versioned/version-${version}/v2/engagement/openapi.bundle.json`,
-              route: version === LATEST_VERSION ? '/api/v2/engagement' : `/${version}/api/v2/engagement`,
-            },
-            {
-              spec: `../openapi/versioned/version-${version}/v2/mgmt/openapi.bundle.json`,
-              route: version === LATEST_VERSION ? '/api/v2/mgmt' : `/${version}/api/v2/mgmt`,
-            },
-          ]),
-          {
-            spec: '../openapi/v2/crm/openapi.bundle.json',
-            route: '/next/api/v2/crm',
-          },
-          {
-            spec: '../openapi/v2/engagement/openapi.bundle.json',
-            route: '/next/api/v2/engagement',
-          },
-          {
-            spec: '../openapi/v2/mgmt/openapi.bundle.json',
-            route: '/next/api/v2/mgmt',
-          },
-        ],
-        // Theme Options for modifying how redoc renders them
-        theme: {
-          // Change with your site colors
-          primaryColor: '#1890ff',
         },
       },
     ],
@@ -138,7 +112,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'api',
+            docId: 'api/introduction',
             position: 'left',
             label: 'API Reference',
           },
@@ -169,7 +143,7 @@ const config = {
               },
               {
                 label: 'API Reference',
-                to: 'api',
+                to: 'api/introduction',
               },
             ],
           },
@@ -251,17 +225,15 @@ const config = {
       },
     }),
   plugins: [
-    async function myPlugin(context, options) {
-      return {
-        name: 'docusaurus-tailwindcss',
-        configurePostCss(postcssOptions) {
-          // Appends TailwindCSS and AutoPrefixer.
-          postcssOptions.plugins.push(require('tailwindcss'));
-          postcssOptions.plugins.push(require('autoprefixer'));
-          return postcssOptions;
-        },
-      };
-    },
+    () => ({
+      name: 'docusaurus-tailwindcss',
+      configurePostCss(postcssOptions) {
+        // Appends TailwindCSS and AutoPrefixer.
+        postcssOptions.plugins.push(require('tailwindcss'));
+        postcssOptions.plugins.push(require('autoprefixer'));
+        return postcssOptions;
+      },
+    }),
     [
       'posthog-docusaurus',
       {
@@ -311,6 +283,42 @@ const config = {
         };
       },
     }),
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'apiDocs',
+        docsPluginId: 'classic',
+        config: {
+          crm: {
+            specPath: '../openapi/v2/crm/openapi.bundle.json',
+            outputDir: 'docs/api/v2/crm', // Output directory for generated .mdx docs
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: true,
+            },
+          },
+          engagement: {
+            specPath: '../openapi/v2/engagement/openapi.bundle.json',
+            outputDir: 'docs/api/v2/engagement', // Output directory for generated .mdx docs
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: true,
+            },
+          },
+          mgmt: {
+            specPath: '../openapi/v2/mgmt/openapi.bundle.json',
+            outputDir: 'docs/api/v2/mgmt',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: true,
+            },
+          },
+        },
+      },
+    ],
   ],
 };
 

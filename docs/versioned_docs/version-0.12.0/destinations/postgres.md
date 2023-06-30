@@ -63,7 +63,7 @@ If you need to transform the data that Supaglue land, you can create Postgres vi
 If your transformations are too expensive at query time, you can use Postgres [Generated Columns](https://www.postgresql.org/docs/current/ddl-generated-columns.html) to improve query-time performance by pushing the transformation work to write time.
 
 ### Pattern #4 - Materialized Views/ETL pipeline
-If none of the above patterns solve your use cases, you can build your ETL pipeline transformations and optimize data for your application's read use cases. Use Supaglue's [webhook sync notifications](/api/v2/mgmt#tag/Webhooks) to trigger your pipelines.
+If none of the above patterns solve your use cases, you can build your ETL pipeline transformations and optimize data for your application's read use cases. Use Supaglue's [webhook sync notifications](/api/v2/mgmt/webhooks) to trigger your pipelines.
 
 ## Schema Evolution
 

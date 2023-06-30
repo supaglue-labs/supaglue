@@ -167,7 +167,7 @@ Sometimes, your customers may store data in non-standard fields (e.g. custom fie
 ...
 ```
 
-In this example, you want to map your customer's `Description` field to `the_description`, and you also want to map one of your customer's custom field to `revenue`. Through the [Update Sync endpoint](/api/v2/mgmt#tag/Syncs/operation/updateSync), each of your customers can then map the appropriate revenue field to your `revenue` field. At runtime, Supaglue will apply each customer's mapping and land the appropriate data into the `revenue` column in your destination.
+In this example, you want to map your customer's `Description` field to `the_description`, and you also want to map one of your customer's custom field to `revenue`. Through the [Update Sync endpoint](http://localhost:3001/api/v2/mgmt/update-sync-config), each of your customers can then map the appropriate revenue field to your `revenue` field. At runtime, Supaglue will apply each customer's mapping and land the appropriate data into the `revenue` column in your destination.
 
 The `allow_additional_field_mappings` flag is a way for individual customers to provide optional supplemental data not explicitly required by your schema, but that may be useful for your product. For example, extra attributes for filtering or features for ML models.
 
@@ -232,10 +232,10 @@ Supaglue adds a primary key database constraint on `{_supaglue_application_id, s
 
 ## Query patterns
 
-Refer to destination documentation for query patterns in each destination, e.g. [Postgres](/destinations/postgres#query-patterns).
+Refer to destination documentation for query patterns in each destination, e.g. [Postgres](../destinations/postgres#query-patterns).
 
 ## Notification webhooks
 
-You can optionally set up a webhook so that Supaglue notifies you each time a sync completes. This can be configured via the management portal, or via the [management API](/api/v2/mgmt#tag/Webhook).
+You can optionally set up a webhook so that Supaglue notifies you each time a sync completes. This can be configured via the management portal, or via the [management API](http://localhost:3001/api/v2/mgmt/webhooks).
 
 ![webhook-config](/img/webhook_config.png)

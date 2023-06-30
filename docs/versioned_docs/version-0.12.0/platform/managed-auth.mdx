@@ -46,7 +46,7 @@ http://localhost:8080/oauth/connect?applicationId={APPLICATION_ID}&customerId={C
 | `loginUrl`      | The Oauth2 hostname for authorize and token endpoints.<br/> This can be used for Salesforce sandbox accounts and should be `https://test.salesforce.com` for that use case.<br/> <b>NOTE:</b> this should be uriEncoded                                                | No       |
 | `scope`         | Required for Microsoft Dynamics 365 connections.<br/> This based on the customer's Dynamics 365 URL and should be in the form `<customer dynamics URL>.default` e.g.`scope=https://org8d6f84ed.crm.dynamics.com/.default`.<br/> <b>NOTE:</b> this should be uriEncoded | No       |
 
-To obtain a `providerName`, use the [Supaglue API](../api/v2/crm) or management UI to create new integrations for your customers to have available for them to connect to.
+To obtain a `providerName`, use the [Supaglue API](/api/v2/crm/supaglue-crm-api) or management UI to create new integrations for your customers to have available for them to connect to.
 
 Examples:
 
