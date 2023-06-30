@@ -1692,7 +1692,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return params;
   }
 
-  public handleErr(err: unknown): unknown {
+  public override handleErr(err: unknown): unknown {
     const error = err as any;
 
     switch (error.code) {
