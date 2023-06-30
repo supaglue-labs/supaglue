@@ -53,6 +53,8 @@ paths:
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/{connection_id}':
     $ref: paths/connections@{connection_id}.yaml
+  '/customers/{customer_id}/connections/{connection_id}/properties':
+    $ref: paths/connections@{connection_id}@properties.yaml
   '/webhook':
     $ref: paths/webhook.yaml
   '/sync-runs':
@@ -129,6 +131,8 @@ components:
       $ref: ./components/schemas/create_update_destination.yaml
     create_update_sync_config:
       $ref: ./components/schemas/create_update_sync_config.yaml
+    list_properties:
+      $ref: ./components/schemas/list_properties.yaml
     webhook:
       $ref: ./components/schemas/objects/webhook.yaml
     sync_run:

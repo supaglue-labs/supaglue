@@ -24,6 +24,7 @@ import {
   ConnectionUnsafe,
   CRMProvider,
   NormalizedRawRecord,
+  ObjectDef,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -602,6 +603,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         getNextCursorFromPage: getBulk2QueryJobNextLocatorFromResponse,
       },
     ]);
+  }
+
+  public override async listProperties(object: ObjectDef): Promise<string[]> {
+    const sobject = object.type === 'custom' ? capitalizeString(`${object.name}__c`) : capitalizeString(object.name);
+    return await this.getSObjectProperties(sobject);
   }
 
   private async getSObjectProperties(sobject: string): Promise<string[]> {
