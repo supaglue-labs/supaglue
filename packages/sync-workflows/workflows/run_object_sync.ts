@@ -6,7 +6,7 @@ import type { createActivities } from '../activities/index';
 
 const { syncRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
-  heartbeatTimeout: '15 minute',
+  heartbeatTimeout: '5 minute',
   retry: {
     maximumAttempts: 3,
   },
