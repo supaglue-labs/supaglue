@@ -1,14 +1,23 @@
-import { ProviderCategory, SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types';
+import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types';
+import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { EventEmitter } from 'events';
+import { Readable } from 'stream';
 
 interface RemoteClientEvents {
   token_refreshed: (accessToken: string, expiresAt: string | null) => void;
 }
 
 export interface RemoteClient {
-  category(): ProviderCategory;
   on<U extends keyof RemoteClientEvents>(event: U, listener: RemoteClientEvents[U]): this;
+
+  listStandardObjectRecords(
+    object: string,
+    fieldMappingConfig: FieldMappingConfig,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable>;
+  listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
 
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
 }
@@ -30,7 +39,22 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     return super.emit(event, ...args);
   }
 
-  public abstract category(): ProviderCategory;
+  public handleErr(err: unknown): unknown {
+    return err;
+  }
+
+  public listStandardObjectRecords(
+    object: string,
+    fieldMappingConfig: FieldMappingConfig,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+
+  public listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
 
   protected abstract getAuthHeadersForPassthroughRequest(): Record<string, string>;
 
@@ -60,3 +84,11 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     };
   }
 }
+
+export type ConnectorAuthConfig = {
+  tokenHost: string;
+  tokenPath: string;
+  authorizeHost: string;
+  authorizePath: string;
+  additionalScopes?: string[];
+};

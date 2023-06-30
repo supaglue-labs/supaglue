@@ -1,6 +1,6 @@
 import {
   ConnectionUnsafe,
-  CRMProvider,
+  Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -32,8 +32,9 @@ import {
   UnauthorizedError,
 } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromPipedriveDealToOpportunity,
   fromPipedriveLeadToLead,
@@ -553,7 +554,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'pipedrive'>, provider: CRMProvider): PipedriveClient {
+export function newClient(connection: ConnectionUnsafe<'pipedrive'>, provider: Provider): PipedriveClient {
   return new PipedriveClient({
     ...connection.credentials,
     instanceUrl: connection.instanceUrl,

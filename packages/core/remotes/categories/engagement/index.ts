@@ -1,7 +1,13 @@
-import { ConnectionUnsafe, EngagementProvider } from '@supaglue/types';
-import { EngagementProviderName } from '@supaglue/types/engagement';
-import { EngagementConnectorConfig, EngagementRemoteClient } from './base';
-import * as outreach from './outreach';
+import type { ConnectionUnsafe, EngagementProvider } from '@supaglue/types';
+import type { EngagementProviderName } from '@supaglue/types/engagement';
+import { ConnectorAuthConfig } from '../../base';
+import * as outreach from '../../impl/outreach';
+import { AbstractEngagementRemoteClient, EngagementRemoteClient } from './base';
+
+export type EngagementConnectorConfig<T extends EngagementProviderName> = {
+  authConfig: ConnectorAuthConfig;
+  newClient: (connection: ConnectionUnsafe<T>, provider: EngagementProvider) => AbstractEngagementRemoteClient;
+};
 
 export const engagementConnectorConfigMap: {
   [K in EngagementProviderName]: EngagementConnectorConfig<K>;

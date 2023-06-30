@@ -1,13 +1,19 @@
-import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
-import { CRMProviderName } from '@supaglue/types/crm';
-import { CrmConnectorConfig, CrmRemoteClient } from './base';
-import * as capsule from './capsule';
-import * as hubspot from './hubspot';
-import * as ms_dynamics_365_sales from './ms_dynamics_365_sales';
-import * as pipedrive from './pipedrive';
-import * as salesforce from './salesforce';
-import * as zendesk_sell from './zendesk_sell';
-import * as zoho_crm from './zoho_crm';
+import type { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
+import type { CRMProviderName } from '@supaglue/types/crm';
+import type { ConnectorAuthConfig } from '../../base';
+import * as capsule from '../../impl/capsule';
+import * as hubspot from '../../impl/hubspot';
+import * as ms_dynamics_365_sales from '../../impl/ms_dynamics_365_sales';
+import * as pipedrive from '../../impl/pipedrive';
+import * as salesforce from '../../impl/salesforce';
+import * as zendesk_sell from '../../impl/zendesk_sell';
+import * as zoho_crm from '../../impl/zoho_crm';
+import { AbstractCrmRemoteClient, CrmRemoteClient } from './base';
+
+type CrmConnectorConfig<T extends CRMProviderName> = {
+  authConfig: ConnectorAuthConfig;
+  newClient: (connection: ConnectionUnsafe<T>, provider: CRMProvider) => AbstractCrmRemoteClient;
+};
 
 export const crmConnectorConfigMap: {
   [K in CRMProviderName]: CrmConnectorConfig<K>;

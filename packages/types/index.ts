@@ -27,7 +27,12 @@ export type CommonObjectForCategory<T extends ProviderCategory> = T extends 'crm
   ? CRMCommonObjectType
   : EngagementCommonObjectType;
 
-export type ObjectDef = {
-  type: 'common' | 'standard' | 'custom';
+export type CommonObjectDef = {
+  type: 'common';
+  name: string;
+};
+
+export type StandardOrCustomObjectDef = {
+  type: 'standard' | 'custom';
   name: string;
 };

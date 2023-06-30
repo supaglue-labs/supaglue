@@ -1,15 +1,8 @@
-import { ConnectionUnsafe, EngagementProvider, ProviderCategory } from '@supaglue/types';
-import {
-  EngagementCommonObjectType,
-  EngagementCommonObjectTypeMap,
-  EngagementProviderName,
-} from '@supaglue/types/engagement';
-import { EventEmitter } from 'events';
+import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
-import { AbstractRemoteClient, RemoteClient } from '../base';
+import { AbstractRemoteClient, RemoteClient } from '../../base';
 
 export interface EngagementRemoteClient extends RemoteClient {
-  category(): ProviderCategory;
   listCommonObjectRecords(commonObjectType: EngagementCommonObjectType, updatedAfter?: Date): Promise<Readable>;
   getCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
@@ -30,43 +23,32 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     super(...args);
   }
 
-  public category(): ProviderCategory {
-    return 'engagement';
-  }
-
   public handleErr(err: unknown): unknown {
     return err;
   }
 
-  abstract listCommonObjectRecords(
+  public async listCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date
-  ): Promise<Readable>;
-  abstract getCommonObjectRecord<T extends EngagementCommonObjectType>(
+  ): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+  public async getCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     id: string
-  ): Promise<EngagementCommonObjectTypeMap<T>['object']>;
-  abstract createCommonObjectRecord<T extends EngagementCommonObjectType>(
+  ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
+    throw new Error('Not implemented');
+  }
+  public async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
-  ): Promise<string>;
-  abstract updateCommonObjectRecord<T extends EngagementCommonObjectType>(
+  ): Promise<string> {
+    throw new Error('Not implemented');
+  }
+  public async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
-  ): Promise<string>;
+  ): Promise<string> {
+    throw new Error('Not implemented');
+  }
 }
-
-export abstract class EngagementRemoteClientEventEmitter extends EventEmitter {}
-
-export type ConnectorAuthConfig = {
-  tokenHost: string;
-  tokenPath: string;
-  authorizeHost: string;
-  authorizePath: string;
-  additionalScopes?: string[];
-};
-
-export type EngagementConnectorConfig<T extends EngagementProviderName> = {
-  authConfig: ConnectorAuthConfig;
-  newClient: (connection: ConnectionUnsafe<T>, provider: EngagementProvider) => AbstractEngagementRemoteClient;
-};

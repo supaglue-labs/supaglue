@@ -1,37 +1,32 @@
-import { ConnectionUnsafe, CRMProvider, ObjectDef, ProviderCategory } from '@supaglue/types';
-import { CRMCommonObjectType, CRMCommonObjectTypeMap, CRMProviderName } from '@supaglue/types/crm';
-import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
-import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
-import { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/crm/custom_object';
-import {
+import type { CommonObjectDef, StandardOrCustomObjectDef } from '@supaglue/types';
+import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
+import type { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
+import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
+import type {
+  CustomObject,
+  CustomObjectCreateParams,
+  CustomObjectUpdateParams,
+} from '@supaglue/types/crm/custom_object';
+import type {
   CustomObjectRecord,
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
-import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import { EventEmitter } from 'events';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { Readable } from 'stream';
-import { AbstractRemoteClient, RemoteClient } from '../base';
+import type { RemoteClient } from '../../base';
+import { AbstractRemoteClient } from '../../base';
 
 export interface CrmRemoteClient extends RemoteClient {
-  category(): ProviderCategory;
+  listCommonProperties(object: CommonObjectDef): Promise<string[]>;
+  listProperties(object: StandardOrCustomObjectDef): Promise<string[]>;
 
-  listProperties(object: ObjectDef): Promise<string[]>;
-
-  listStandardObjectRecords(
-    object: string,
-    fieldMappingConfig: FieldMappingConfig,
-    modifiedAfter?: Date,
-    heartbeat?: () => void
-  ): Promise<Readable>;
-  listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
   listCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
-
   getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
@@ -65,15 +60,10 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     super(...args);
   }
 
-  public category(): ProviderCategory {
-    return 'crm';
+  public listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+    throw new Error('Not implemented');
   }
-
-  public handleErr(err: unknown): unknown {
-    return err;
-  }
-
-  listProperties(object: ObjectDef): Promise<string[]> {
+  public listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
     throw new Error('Not implemented');
   }
 
@@ -94,25 +84,33 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
-  abstract listCommonObjectRecords(
+  public async listCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
-  ): Promise<Readable>;
-  abstract getCommonObjectRecord<T extends CRMCommonObjectType>(
+  ): Promise<Readable> {
+    throw new Error('Not implemented');
+  }
+  public async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonObjectTypeMap<T>['object']>;
-  abstract createCommonObjectRecord<T extends CRMCommonObjectType>(
+  ): Promise<CRMCommonObjectTypeMap<T>['object']> {
+    throw new Error('Not implemented');
+  }
+  public async createCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['createParams']
-  ): Promise<string>;
-  abstract updateCommonObjectRecord<T extends CRMCommonObjectType>(
+  ): Promise<string> {
+    throw new Error('Not implemented');
+  }
+  public async updateCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['updateParams']
-  ): Promise<string>;
+  ): Promise<string> {
+    throw new Error('Not implemented');
+  }
 
   public async getCustomObject(id: string): Promise<CustomObject> {
     throw new Error('Not implemented');
@@ -145,17 +143,3 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 }
-export abstract class CrmRemoteClientEventEmitter extends EventEmitter {}
-
-export type ConnectorAuthConfig = {
-  tokenHost: string;
-  tokenPath: string;
-  authorizeHost: string;
-  authorizePath: string;
-  additionalScopes?: string[];
-};
-
-export type CrmConnectorConfig<T extends CRMProviderName> = {
-  authConfig: ConnectorAuthConfig;
-  newClient: (connection: ConnectionUnsafe<T>, provider: CRMProvider) => AbstractCrmRemoteClient;
-};

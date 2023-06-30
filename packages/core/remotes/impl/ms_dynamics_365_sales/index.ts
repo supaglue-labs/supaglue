@@ -2,7 +2,7 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
+import { ConnectionUnsafe, Provider } from '@supaglue/types';
 import {
   Account,
   Contact,
@@ -26,8 +26,9 @@ import {
   NotModifiedError,
   UnauthorizedError,
 } from '../../../errors';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromDynamicsAccountToRemoteAccount,
   fromDynamicsContactToRemoteContact,
@@ -428,7 +429,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
 export function newClient(
   connection: ConnectionUnsafe<'ms_dynamics_365_sales'>,
-  provider: CRMProvider
+  provider: Provider
 ): MsDynamics365Sales {
   return new MsDynamics365Sales({
     ...connection.credentials,

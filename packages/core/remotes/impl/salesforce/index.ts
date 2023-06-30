@@ -2,7 +2,16 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import {
+import type {
+  CommonObjectDef,
+  ConnectionUnsafe,
+  NormalizedRawRecord,
+  Provider,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+  StandardOrCustomObjectDef,
+} from '@supaglue/types';
+import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
@@ -19,15 +28,6 @@ import {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-
-import {
-  ConnectionUnsafe,
-  CRMProvider,
-  NormalizedRawRecord,
-  ObjectDef,
-  SendPassthroughRequestRequest,
-  SendPassthroughRequestResponse,
-} from '@supaglue/types';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
@@ -42,8 +42,9 @@ import {
   UnauthorizedError,
 } from '../../../errors';
 import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToAccount,
   fromSalesforceContactToContact,
@@ -605,7 +606,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     ]);
   }
 
-  public override async listProperties(object: ObjectDef): Promise<string[]> {
+  public override async listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+    const sobject = capitalizeString(object.name);
+    return await this.getSObjectProperties(sobject);
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
     const sobject = object.type === 'custom' ? capitalizeString(`${object.name}__c`) : capitalizeString(object.name);
     return await this.getSObjectProperties(sobject);
   }
@@ -753,7 +759,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'salesforce'>, provider: CRMProvider): SalesforceClient {
+export function newClient(connection: ConnectionUnsafe<'salesforce'>, provider: Provider): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,
