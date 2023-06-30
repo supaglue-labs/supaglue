@@ -16,6 +16,7 @@ import {
   ConnectionUnsafe,
   CRMProvider,
   NormalizedRawRecord,
+  ObjectDef,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -344,7 +345,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   private async getStandardPropertiesToFetch(objectType: string, fieldMappingConfig?: FieldMappingConfig) {
-    const availableProperties = await this.getObjectTypeProperties(objectType);
+    const availableProperties = await this.listPropertiesForRawObjectName(objectType);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
       return availableProperties;
     }
@@ -485,7 +486,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   ): Promise<Readable> {
     // Look up the objectTypeId given the object name
     const objectTypeId = await this.#getObjectTypeIdByCustomObjectName(object);
-    const propertiesToFetch = await this.getObjectTypeProperties(objectTypeId);
+    const propertiesToFetch = await this.listPropertiesForRawObjectName(objectTypeId);
 
     // Find the associated object types for the object
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
@@ -824,10 +825,26 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  private async getObjectTypeProperties(objectType: string) {
+  public override async listProperties(object: ObjectDef): Promise<string[]> {
+    if (object.type === 'common') {
+      switch (object.name) {
+        case 'account':
+          return await this.listPropertiesForRawObjectName('company');
+        case 'lead':
+          throw new Error('common object "lead" is not supported for hubspot');
+        case 'user':
+          return ['id', 'email', 'firstName', 'lastName', 'userId', 'createdAt', 'updatedAt', 'archived', 'teams'];
+        default:
+          return await this.listPropertiesForRawObjectName(object.name);
+      }
+    }
+    return await this.listPropertiesForRawObjectName(object.name);
+  }
+
+  public async listPropertiesForRawObjectName(objectName: string): Promise<string[]> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
-      const response = await this.#client.crm.properties.coreApi.getAll(objectType);
+      const response = await this.#client.crm.properties.coreApi.getAll(objectName);
       return response.results.map(({ name }) => name);
     });
   }
@@ -836,7 +853,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     objectType: HubSpotCommonModelObjectType,
     fieldMappingConfig?: FieldMappingConfig
   ) {
-    const availableProperties = await this.getObjectTypeProperties(objectType);
+    const availableProperties = await this.listPropertiesForRawObjectName(objectType);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
       return availableProperties;
     }

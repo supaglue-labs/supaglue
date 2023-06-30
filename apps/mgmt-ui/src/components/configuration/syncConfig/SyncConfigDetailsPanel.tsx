@@ -265,6 +265,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   id="standard-objects"
                   options={standardObjectsOptions}
                   defaultValue={standardObjects}
+                  autoSelect
                   freeSolo
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (
@@ -296,6 +297,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   id="custom-objects"
                   options={[]}
                   defaultValue={customObjects}
+                  autoSelect
                   freeSolo
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (

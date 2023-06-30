@@ -1,5 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { BadRequestError } from '@supaglue/core/errors';
 import { getCustomerIdPk } from '@supaglue/core/lib';
+import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import {
   DeleteConnectionPathParams,
   DeleteConnectionRequest,
@@ -10,15 +12,20 @@ import {
   GetConnectionsPathParams,
   GetConnectionsRequest,
   GetConnectionsResponse,
+  ListPropertiesPathParams,
+  ListPropertiesQueryParams,
+  ListPropertiesRequest,
+  ListPropertiesResponse,
   UpdateConnectionPathParams,
   UpdateConnectionRequest,
   UpdateConnectionResponse,
 } from '@supaglue/schemas/v2/mgmt';
+import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
 
-const { connectionService, connectionAndSyncService } = getDependencyContainer();
+const { connectionService, connectionAndSyncService, remoteService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const connectionRouter = Router({ mergeParams: true });
@@ -32,6 +39,29 @@ export default function init(app: Router): void {
       const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
       const connections = await connectionService.listSafe(req.supaglueApplication.id, customerId);
       return res.status(200).send(connections.map(snakecaseKeys));
+    }
+  );
+
+  connectionRouter.get(
+    '/:connection_id/properties',
+    async (
+      req: Request<ListPropertiesPathParams, ListPropertiesResponse, ListPropertiesRequest, ListPropertiesQueryParams>,
+      res: Response<ListPropertiesResponse>
+    ) => {
+      const connection = await connectionService.getSafeByIdAndApplicationId(
+        req.params.connection_id,
+        req.supaglueApplication.id
+      );
+      if (connection.category !== 'crm') {
+        throw new BadRequestError('Only CRM connections are supported for this operation');
+      }
+      const client = (await remoteService.getRemoteClient(req.params.connection_id)) as CrmRemoteClient;
+      const { type, name } = req.query;
+      if (type === 'common' && !(CRM_COMMON_MODEL_TYPES as unknown as string[]).includes(name)) {
+        throw new BadRequestError(`${name} is not a valid common object type for the ${connection.category} category}`);
+      }
+      const properties = await client.listProperties(req.query);
+      return res.status(200).send({ properties });
     }
   );
 
