@@ -11,8 +11,13 @@
     "@supaglue/schemas#build": {
       "dependsOn": ["@supaglue/schemas#generate"]
     },
-    "docs#build": {
+    "docs#generate": {
       "dependsOn": ["//#bundle-openapi"],
+      "inputs": ["../openapi/**/openapi.bundle.json"],
+      "outputs": ["docs/docs/api/**"]
+    },
+    "docs#build": {
+      "dependsOn": ["docs#generate"],
       "inputs": [
         "docs/**/*",
         "src/**/*",

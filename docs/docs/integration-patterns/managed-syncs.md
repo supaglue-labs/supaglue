@@ -130,7 +130,7 @@ The above sync configuration defines a managed sync that does the following:
 - Fetch the `MyCustomObject__c` custom object from Salesforce.
 
 ## Field mappings
-[Field mappings](../platform/field-mapping) can be used for Managed Syncs to map fields from your customer's third-party tools to your Destinations. It will also be used to reverse-map the same fields if you make writes to their third-party tools using the Actions API.
+[Field mappings](/platform/field-mapping) can be used for Managed Syncs to map fields from your customer's third-party tools to your Destinations. It will also be used to reverse-map the same fields if you make writes to their third-party tools using the Actions API.
 
 ## Destination schema
 
@@ -193,6 +193,6 @@ Refer to destination documentation for query patterns in each destination, e.g. 
 
 ## Notification webhooks
 
-You can optionally set up a webhook so that Supaglue notifies you each time a sync completes. This can be configured via the management portal, or via the [management API](/api/v2/mgmt#tag/Webhook).
+You can optionally set up a webhook so that Supaglue notifies you each time a sync completes. This can be configured via the management portal, or via the [management API](http://localhost:3001/api/v2/mgmt/webhooks).
 
 ![webhook-config](/img/webhook_config.png)

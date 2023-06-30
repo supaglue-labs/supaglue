@@ -37,9 +37,9 @@ curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 --header 'Content-Type: application/json' \
 --data '{
     "model": {
-        "first_name": "John", 
+        "first_name": "John",
         "last_name": "Doe"
-    }    
+    }
 }'
 ```
 
@@ -56,9 +56,9 @@ curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 --header 'Content-Type: application/json' \
 --data '{
     "model": {
-        "first_name": "John", 
+        "first_name": "John",
         "last_name": "Doe"
-    }    
+    }
 }'
 ```
 
@@ -88,7 +88,7 @@ This feature is only supported for some destinations, not all.
 :::
 
 ## Field mappings
-[Field mappings](../platform/field-mapping) can be used in the Actions API to reverse-map fields from your system to your customer's fields if you opted to use field mappings for Managed Syncs.
+[Field mappings](/platform/field-mapping) can be used in the Actions API to reverse-map fields from your system to your customer's fields if you opted to use field mappings for Managed Syncs.
 
 ## Pass-through API
 

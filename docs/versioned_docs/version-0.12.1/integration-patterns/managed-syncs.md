@@ -193,6 +193,6 @@ Refer to destination documentation for query patterns in each destination, e.g. 
 
 ## Notification webhooks
 
-You can optionally set up a webhook so that Supaglue notifies you each time a sync completes. This can be configured via the management portal, or via the [management API](/api/v2/mgmt#tag/Webhook).
+You can optionally set up a webhook so that Supaglue notifies you each time a sync completes. This can be configured via the management portal, or via the [management API](http://localhost:3001/api/v2/mgmt/webhooks).
 
 ![webhook-config](/img/webhook_config.png)
