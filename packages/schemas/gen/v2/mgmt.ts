@@ -153,9 +153,9 @@ export interface paths {
       };
     };
   };
-  "/customers/{customer_id}/connections/{connection_id}/_list_properties": {
+  "/customers/{customer_id}/connections/{connection_id}/properties": {
     /** List properties */
-    post: operations["listProperties"];
+    get: operations["listProperties"];
     parameters: {
       path: {
         customer_id: string;
@@ -1028,9 +1028,10 @@ export interface operations {
   };
   listProperties: {
     /** List properties */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["list_properties"];
+    parameters: {
+      query: {
+        type: "common" | "standard" | "custom";
+        name: string;
       };
     };
     responses: {

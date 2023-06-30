@@ -13,6 +13,7 @@ import {
   GetConnectionsRequest,
   GetConnectionsResponse,
   ListPropertiesPathParams,
+  ListPropertiesQueryParams,
   ListPropertiesRequest,
   ListPropertiesResponse,
   UpdateConnectionPathParams,
@@ -41,10 +42,10 @@ export default function init(app: Router): void {
     }
   );
 
-  connectionRouter.post(
-    '/:connection_id/_list_properties',
+  connectionRouter.get(
+    '/:connection_id/properties',
     async (
-      req: Request<ListPropertiesPathParams, ListPropertiesResponse, ListPropertiesRequest>,
+      req: Request<ListPropertiesPathParams, ListPropertiesResponse, ListPropertiesRequest, ListPropertiesQueryParams>,
       res: Response<ListPropertiesResponse>
     ) => {
       const connection = await connectionService.getSafeByIdAndApplicationId(
@@ -55,11 +56,11 @@ export default function init(app: Router): void {
         throw new BadRequestError('Only CRM connections are supported for this operation');
       }
       const client = (await remoteService.getRemoteClient(req.params.connection_id)) as CrmRemoteClient;
-      const { name, type } = req.body;
+      const { type, name } = req.query;
       if (type === 'common' && !(CRM_COMMON_MODEL_TYPES as unknown as string[]).includes(name)) {
         throw new BadRequestError(`${name} is not a valid common object type for the ${connection.category} category}`);
       }
-      const properties = await client.listProperties(req.body);
+      const properties = await client.listProperties(req.query);
       return res.status(200).send({ properties });
     }
   );

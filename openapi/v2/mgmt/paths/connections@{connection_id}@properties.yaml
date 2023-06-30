@@ -1,19 +1,26 @@
-post:
+get:
   operationId: listProperties
   summary: List properties
   tags:
     - Connections
-  parameters: []
   security:
     - ApiKeyAuth: []
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: '../components/schemas/list_properties.yaml'
-          properties:
-
+  parameters:
+    - name: type
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - common
+          - standard
+          - custom
+    - name: name
+      in: query
+      required: true
+      schema:
+        type: string
+        description: The name of the object for which you want to list properties.
   responses:
     '200':
       description: List of properties
