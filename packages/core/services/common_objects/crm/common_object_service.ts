@@ -3,7 +3,6 @@ import { ConnectionSafeAny } from '@supaglue/types/connection';
 import { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
 import { ProviderService, SchemaService } from '../..';
 import { createFieldMappingConfig } from '../../../lib/schema';
-import { CrmRemoteClient } from '../../../remotes/crm/base';
 import { DestinationService } from '../../destination_service';
 import { RemoteService } from '../../remote_service';
 
@@ -30,7 +29,7 @@ export class CrmCommonObjectService {
     connection: ConnectionSafeAny,
     id: string
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
-    const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
+    const remoteClient = await this.#remoteService.getCrmRemoteClient(connection.id);
     const provider = await this.#providerService.getById<CRMProvider>(connection.providerId);
     const schemaId = provider.objects?.common?.find((o) => o.name === type)?.schemaId;
     const schema = schemaId ? await this.#schemaService.getById(schemaId) : undefined;
@@ -47,7 +46,7 @@ export class CrmCommonObjectService {
     connection: ConnectionSafeAny,
     params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
+    const remoteClient = await this.#remoteService.getCrmRemoteClient(connection.id);
     const id = await remoteClient.createCommonObjectRecord(type, params);
 
     // If the associated provider has a destination, do cache invalidation
@@ -65,7 +64,7 @@ export class CrmCommonObjectService {
     connection: ConnectionSafeAny,
     params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<void> {
-    const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
+    const remoteClient = await this.#remoteService.getCrmRemoteClient(connection.id);
     await remoteClient.updateCommonObjectRecord(type, params);
 
     // If the associated provider has a destination, do cache invalidation

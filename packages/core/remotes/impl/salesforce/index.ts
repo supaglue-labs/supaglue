@@ -21,18 +21,20 @@ import {
 } from '@supaglue/types/crm';
 
 import {
+  CommonObjectDef,
   ConnectionUnsafe,
-  CRMProvider,
   NormalizedRawRecord,
-  ObjectDef,
+  Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { pipeline, Readable, Transform } from 'stream';
+import { ConnectorAuthConfig } from '../..';
 import {
   BadRequestError,
   ForbiddenError,
@@ -42,8 +44,8 @@ import {
   UnauthorizedError,
 } from '../../../errors';
 import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
+import { AbstractCrmRemoteClient } from '../../categories/crm';
 import { paginator } from '../../utils/paginator';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromSalesforceAccountToAccount,
   fromSalesforceContactToContact,
@@ -605,7 +607,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     ]);
   }
 
-  public override async listProperties(object: ObjectDef): Promise<string[]> {
+  public override async listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+    const sobject = capitalizeString(object.name);
+    return await this.getSObjectProperties(sobject);
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
     const sobject = object.type === 'custom' ? capitalizeString(`${object.name}__c`) : capitalizeString(object.name);
     return await this.getSObjectProperties(sobject);
   }
@@ -753,7 +760,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'salesforce'>, provider: CRMProvider): SalesforceClient {
+export function newClient(connection: ConnectionUnsafe<'salesforce'>, provider: Provider): SalesforceClient {
   return new SalesforceClient({
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,

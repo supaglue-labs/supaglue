@@ -1,6 +1,6 @@
 import {
   ConnectionUnsafe,
-  EngagementProvider,
+  Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -18,6 +18,7 @@ import {
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
+import { ConnectorAuthConfig } from '../..';
 import {
   BadRequestError,
   ConflictError,
@@ -28,8 +29,8 @@ import {
   UnprocessableEntityError,
 } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import { AbstractEngagementRemoteClient } from '../../categories/engagement';
 import { paginator } from '../../utils/paginator';
-import { AbstractEngagementRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromOutreachMailboxToMailbox,
   fromOutreachProspectToContact,
@@ -406,7 +407,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'outreach'>, provider: EngagementProvider): OutreachClient {
+export function newClient(connection: ConnectionUnsafe<'outreach'>, provider: Provider): OutreachClient {
   return new OutreachClient({
     ...connection.credentials,
     clientId: provider.config.oauth.credentials.oauthClientId,

@@ -13,12 +13,13 @@ import {
 } from '@hubspot/api-client/lib/codegen/crm/deals';
 import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import {
+  CommonObjectDef,
   ConnectionUnsafe,
-  CRMProvider,
   NormalizedRawRecord,
-  ObjectDef,
+  Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import {
   Account,
@@ -55,6 +56,7 @@ import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';
 import { Readable } from 'stream';
+import { ConnectorAuthConfig } from '../..';
 import {
   BadRequestError,
   ConflictError,
@@ -70,8 +72,8 @@ import {
   REFRESH_TOKEN_THRESHOLD_MS,
   retryWhenAxiosRateLimited,
 } from '../../../lib';
+import { AbstractCrmRemoteClient } from '../../categories/crm';
 import { paginator } from '../../utils/paginator';
-import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
 import {
   fromHubSpotCompanyToAccount,
   fromHubSpotContactToContact,
@@ -825,19 +827,20 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async listProperties(object: ObjectDef): Promise<string[]> {
-    if (object.type === 'common') {
-      switch (object.name) {
-        case 'account':
-          return await this.listPropertiesForRawObjectName('company');
-        case 'lead':
-          throw new Error('common object "lead" is not supported for hubspot');
-        case 'user':
-          return ['id', 'email', 'firstName', 'lastName', 'userId', 'createdAt', 'updatedAt', 'archived', 'teams'];
-        default:
-          return await this.listPropertiesForRawObjectName(object.name);
-      }
+  public override async listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+    switch (object.name) {
+      case 'account':
+        return await this.listPropertiesForRawObjectName('company');
+      case 'lead':
+        throw new Error('common object "lead" is not supported for hubspot');
+      case 'user':
+        return ['id', 'email', 'firstName', 'lastName', 'userId', 'createdAt', 'updatedAt', 'archived', 'teams'];
+      default:
+        return await this.listPropertiesForRawObjectName(object.name);
     }
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
     return await this.listPropertiesForRawObjectName(object.name);
   }
 
@@ -1714,7 +1717,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'hubspot'>, provider: CRMProvider): HubSpotClient {
+export function newClient(connection: ConnectionUnsafe<'hubspot'>, provider: Provider): HubSpotClient {
   return new HubSpotClient({
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,

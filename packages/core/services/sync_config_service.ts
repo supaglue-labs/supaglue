@@ -89,7 +89,7 @@ export class SyncConfigService {
     const [updatedSyncConfigModel] = await this.#prisma.$transaction([
       this.#prisma.syncConfig.update({
         where: { id },
-        data: await toSyncConfigModel({ ...params, applicationId }),
+        data: toSyncConfigModel({ ...params, applicationId }),
       }),
       this.#prisma.syncConfigChange.create({
         data: {
