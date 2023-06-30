@@ -268,7 +268,10 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           >
             Back
           </Button>
-          {isTestSuccessful ? <SaveButton /> : <TestButton />}
+          <Stack direction="row" className="gap-2">
+            <TestButton />
+            <SaveButton />
+          </Stack>
         </Stack>
       </Stack>
     </Card>
