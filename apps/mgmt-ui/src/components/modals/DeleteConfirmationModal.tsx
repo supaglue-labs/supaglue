@@ -22,8 +22,8 @@ export function DeleteConfirmationModal({
       handleClose={handleClose}
       onConfirm={onDelete}
       confirmText="Delete"
-      cancelVariant="contained"
-      confirmVariant="text"
+      cancelVariant="text"
+      confirmVariant="contained"
       confirmColor="error"
       title={title}
       content={

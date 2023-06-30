@@ -29,8 +29,9 @@ export function RegenerateApiKey({ disabled, onConfirm }: RegenerateApiKeyProps)
         title="Regenerate API Key"
         handleClose={handleClose}
         onConfirm={onConfirm}
-        cancelVariant="contained"
-        confirmVariant="text"
+        cancelVariant="text"
+        confirmVariant="contained"
+        confirmColor="error"
         content={
           <Typography>Are you sure you want to regenerate this API Key? This will revoke the existing key.</Typography>
         }
