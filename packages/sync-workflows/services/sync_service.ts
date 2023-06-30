@@ -16,6 +16,7 @@ import {
   ScheduleOptionsAction,
   WorkflowNotFoundError,
 } from '@temporalio/client';
+import { ApplicationService } from '.';
 import { getRunObjectSyncScheduleId, getRunObjectSyncWorkflowId, runObjectSync } from '../workflows/run_object_sync';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
@@ -44,17 +45,20 @@ export class SyncService {
   #temporalClient: Client;
   #connectionService: ConnectionService;
   #syncConfigService: SyncConfigService;
+  #applicationService: ApplicationService;
 
   public constructor(
     prisma: PrismaClient,
     temporalClient: Client,
     connectionService: ConnectionService,
-    syncConfigService: SyncConfigService
+    syncConfigService: SyncConfigService,
+    applicationService: ApplicationService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#connectionService = connectionService;
     this.#syncConfigService = syncConfigService;
+    this.#applicationService = applicationService;
   }
 
   public async getObjectSyncById(id: string): Promise<ObjectSync> {
@@ -378,6 +382,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
     syncPeriodMs: number
   ): Promise<void> {
     const objectSync = await this.getObjectSyncById(objectSyncId);
+    const application = await this.#applicationService.getById(connection.applicationId);
     const scheduleId = getRunObjectSyncScheduleId(objectSyncId);
     const interval: IntervalSpec = {
       every: syncPeriodMs,
@@ -398,9 +403,10 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
           connectionId: connection.id,
           category: connection.category,
           context: {
-            // TODO: should be OBJECT_SYNC_ID
             [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: objectSyncId,
+            [TEMPORAL_CONTEXT_ARGS.OBJECT_TYPE]: objectSync.objectType,
             [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
+            [TEMPORAL_CONTEXT_ARGS.APPLICATION_ENV]: application.environment,
             [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
             [TEMPORAL_CONTEXT_ARGS.SYNC_CONFIG_ID]: objectSync.syncConfigId,
@@ -411,9 +417,10 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
         },
       ],
       searchAttributes: {
-        // TODO: should be OBJECT_SYNC_ID
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [objectSyncId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_TYPE]: [objectSync.objectType],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ENV]: [application.environment],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_CONFIG_ID]: [objectSync.syncConfigId],
