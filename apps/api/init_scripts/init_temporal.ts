@@ -8,12 +8,16 @@ const TEMPORAL_ADDRESS =
     ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:7233`
     : 'temporal';
 
+const TEMPORAL_NAMESPACE = process.env.TEMPORAL_NAMESPACE ?? 'default';
+
 async function run() {
   const connection = await Connection.connect({
     address: TEMPORAL_ADDRESS,
   });
 
-  const response = await connection.operatorService.listSearchAttributes({});
+  const response = await connection.operatorService.listSearchAttributes({
+    namespace: TEMPORAL_NAMESPACE,
+  });
 
   const searchAttributesAndTypesToAdd = Object.fromEntries(
     Object.entries(TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES_AND_TYPES).filter(
@@ -28,6 +32,7 @@ async function run() {
   }
 
   await connection.operatorService.addSearchAttributes({
+    namespace: TEMPORAL_NAMESPACE,
     searchAttributes: searchAttributesAndTypesToAdd,
   });
 
