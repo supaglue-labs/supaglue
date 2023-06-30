@@ -2,7 +2,7 @@ import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError } from '@supaglue/core/errors';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes';
-import type { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, ProviderName } from '@supaglue/types';
+import type { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, Provider, ProviderName } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
 import { SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
 import type { EngagementProviderName } from '@supaglue/types/engagement';
@@ -47,7 +47,13 @@ export default function init(app: Router): void {
         throw new BadRequestError('Missing returnUrl');
       }
 
-      const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
+      let provider: Provider | null = null;
+
+      try {
+        provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
+      } catch (err) {
+        throw new BadRequestError(`Can't find provider with name: ${providerName}.`);
+      }
 
       const {
         oauthScopes,
@@ -243,7 +249,9 @@ export default function init(app: Router): void {
       try {
         await connectionAndSyncService.create(payload as ConnectionCreateParamsAny);
       } catch (e: any) {
-        if (e.code === 'P2002') {
+        if (e.code === 'P2003') {
+          throw new BadRequestError(`Can't find customer with id: ${customerId}. Ensure it is URI encoded if needed.`);
+        } else if (e.code === 'P2002') {
           await connectionAndSyncService.upsert(payload as ConnectionUpsertParamsAny);
         } else {
           throw e;
