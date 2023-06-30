@@ -87,4 +87,4 @@ This feature is only supported for some destinations, not all.
 
 ## Pass-through API
 
-For any action not directly supported by Supaglue's API, you can use our pass-through API. This lets you make any API call directly against the remote provider. See our [API reference](api/introduction) for more details.
+For any action not directly supported by Supaglue's API, you can use our pass-through API. This lets you make any API call directly against the remote provider. See our [API reference](../api/introduction) for more details.
