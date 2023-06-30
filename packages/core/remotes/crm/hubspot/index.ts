@@ -50,6 +50,7 @@ import {
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -87,7 +88,7 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
-export const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
+const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
   contact: 'contacts',
   deal: 'deals',
@@ -132,23 +133,6 @@ const archivedUnsupportedStandardObjectTypes: HubSpotStandardObjectType[] = [
   'call',
   'email',
 ];
-
-const HUBSPOT_STANDARD_OBJECT_TYPES = [
-  'company',
-  'contact',
-  'deal',
-  'line_item',
-  'product',
-  'ticket',
-  'quote',
-  'call',
-  'communication',
-  'email',
-  'meeting',
-  'note',
-  'postal_mail',
-  'task',
-] as const;
 
 const HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED = HUBSPOT_STANDARD_OBJECT_TYPES.map(
   (objectType) => hubspotStandardObjectTypeToPlural[objectType]

@@ -1,3 +1,20 @@
+export const HUBSPOT_STANDARD_OBJECT_TYPES = [
+  'company',
+  'contact',
+  'deal',
+  'line_item',
+  'product',
+  'ticket',
+  'quote',
+  'call',
+  'communication',
+  'email',
+  'meeting',
+  'note',
+  'postal_mail',
+  'task',
+] as const;
+
 export const SALESFORCE_OBJECTS = [
   [
     'AcceptedEventRelation',
@@ -1153,4 +1170,4 @@ export const SALESFORCE_OBJECTS = [
     'WorkTypeHistory',
     'WorkTypeShare',
   ],
-];
+] as const;

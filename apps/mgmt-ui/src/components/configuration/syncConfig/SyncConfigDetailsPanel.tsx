@@ -9,10 +9,11 @@ import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { CommonModelType, CommonObjectConfig, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
+import { CommonModelType, CommonObjectConfig, Provider, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
 import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
 import type { ObjectSyncType } from '@supaglue/types/object_sync';
+import { HUBSPOT_STANDARD_OBJECT_TYPES, SALESFORCE_OBJECTS } from '@supaglue/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -152,6 +153,8 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
   const supportsCustomObjects = ['hubspot', 'salesforce'];
 
+  const standardObjectsOptions = getStandardObjectOptions(selectedProvider);
+
   return (
     <div className="flex flex-col gap-4">
       <Breadcrumbs>
@@ -260,7 +263,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   key={providerId}
                   multiple
                   id="standard-objects"
-                  options={[]}
+                  options={standardObjectsOptions}
                   defaultValue={standardObjects}
                   freeSolo
                   renderTags={(value: readonly string[], getTagProps) =>
@@ -353,3 +356,16 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     </div>
   );
 }
+
+const getStandardObjectOptions = (provider: Provider | undefined): string[] => {
+  switch (provider?.name) {
+    case 'hubspot': {
+      return HUBSPOT_STANDARD_OBJECT_TYPES;
+    }
+    case 'salesforce': {
+      return SALESFORCE_OBJECTS;
+    }
+    default:
+      return [];
+  }
+};
