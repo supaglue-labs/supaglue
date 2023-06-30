@@ -92,7 +92,7 @@ Supaglue provides a redirect URL to send information to your app. To add the red
     - `crm.schemas.custom.write`
 
     :::info
-    Supaglue requires a set of minimum scopes to support reads and writes to common model objects.
+    Supaglue requires a set of minimum scopes to support reads and writes to common object objects.
     :::
 
 1. Click Save to update your changes.

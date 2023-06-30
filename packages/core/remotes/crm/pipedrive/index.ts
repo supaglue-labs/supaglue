@@ -11,8 +11,8 @@ import {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  CRMCommonModelType,
-  CRMCommonModelTypeMap,
+  CRMCommonObjectType,
+  CRMCommonObjectTypeMap,
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
@@ -123,11 +123,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   public override async listCommonObjectRecords(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date
   ): Promise<Readable> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'contact':
         return await this.listContacts(updatedAfter);
       case 'lead':
@@ -312,12 +312,12 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public override async getCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
+  public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
-    switch (commonModelType) {
+  ): Promise<CRMCommonObjectTypeMap<T>['object']> {
+    switch (commonObjectType) {
       case 'contact':
         return await this.getContact(id);
       case 'lead':
@@ -329,7 +329,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'user':
         return await this.getUser(id);
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -374,11 +374,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return fromPipedriveUserToUser(response.data.data);
   }
 
-  public override async createCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['createParams']
+  public override async createCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'contact':
         return await this.createContact(params);
       case 'lead':
@@ -390,7 +390,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'user':
         throw new Error('User creation is not supported');
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -443,11 +443,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return response.data.data.id.toString();
   }
 
-  public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+  public override async updateCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'contact':
         return await this.updateContact(params);
       case 'lead':
@@ -459,7 +459,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'user':
         throw new Error('User update is not supported');
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 

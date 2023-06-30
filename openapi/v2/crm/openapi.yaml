@@ -59,25 +59,25 @@ paths:
     $ref: paths/associations.yaml
 tags:
   - name: Accounts
-    description: The `Account` Common Model is used to represent a "company" in CRMs.
+    description: The `Account` Common Object is used to represent a "company" in CRMs.
   - name: Contacts
-    description: The `Contact` Common Model is used to represent a "contact" in CRMs.
+    description: The `Contact` Common Object is used to represent a "contact" in CRMs.
   - name: Leads
-    description: The `Lead` Common Model is used to represent a "potential customer" in CRMs.
+    description: The `Lead` Common Object is used to represent a "potential customer" in CRMs.
   - name: Opportunities
-    description: The `Opportunity` Common Model is used to represent a "deal opportunity" in CRMs.
+    description: The `Opportunity` Common Object is used to represent a "deal opportunity" in CRMs.
   - name: Users
-    description: The `User` Common Model is used to represent a "user" that can login to CRMs.
+    description: The `User` Common Object is used to represent a "user" that can login to CRMs.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
   - name: CustomObjects
-    description: The `Custom Objects` Common Model is used to represent a "custom object" in CRMs.
+    description: The `Custom Objects` Common Object is used to represent a "custom object" in CRMs.
   - name: CustomObjectRecords
-    description: The `Custom Object Record` Common Model is used to represent a "custom object record" in CRMs.
+    description: The `Custom Object Record` Common Object is used to represent a "custom object record" in CRMs.
   - name: AssociationTypes
-    description: The `Association Type` Common Model is used to represent an "association type" in CRMs.
+    description: The `Association Type` Common Object is used to represent an "association type" in CRMs.
   - name: Associations
-    description: The `Association` Common Model is used to represent an "association" in CRMs.
+    description: The `Association` Common Object is used to represent an "association" in CRMs.
 components:
   securitySchemes:
     ApiKeyAuth:

@@ -11,7 +11,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { engagementCommonModelService } = getDependencyContainer();
+const { engagementCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -23,7 +23,7 @@ export default function init(app: Router): void {
       res: Response<GetSequenceStateResponse>
     ) => {
       const { id: connectionId } = req.customerConnection;
-      const mailbox = await engagementCommonModelService.get(
+      const mailbox = await engagementCommonObjectService.get(
         'sequence_state',
         connectionId,
         req.params.sequence_state_id
@@ -41,7 +41,7 @@ export default function init(app: Router): void {
       req: Request<CreateSequenceStatePathParams, CreateSequenceStateResponse, CreateSequenceStateRequest>,
       res: Response<CreateSequenceStateResponse>
     ) => {
-      const id = await engagementCommonModelService.create(
+      const id = await engagementCommonObjectService.create(
         'sequence_state',
         req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.record)

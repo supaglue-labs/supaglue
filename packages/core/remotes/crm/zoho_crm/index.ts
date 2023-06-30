@@ -1,5 +1,5 @@
 import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
-import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
+import { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { Readable } from 'stream';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -15,31 +15,31 @@ class ZohoCrmClient extends AbstractCrmRemoteClient {
   }
 
   public override listCommonObjectRecords(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date
   ): Promise<Readable> {
     throw new Error('Not implemented');
   }
 
-  public override getCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
+  public override getCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+  ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     throw new Error('Not implemented');
   }
 
-  public override createCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['createParams']
+  public override createCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
     throw new Error('Not implemented');
   }
 
-  public override updateCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+  public override updateCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
     throw new Error('Not implemented');
   }

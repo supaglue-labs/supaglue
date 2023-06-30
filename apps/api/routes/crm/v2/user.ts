@@ -4,7 +4,7 @@ import { toSnakecasedKeysCrmUser } from '@supaglue/core/mappers/crm';
 import { GetUserPathParams, GetUserQueryParams, GetUserRequest, GetUserResponse } from '@supaglue/schemas/v2/crm';
 import { Request, Response, Router } from 'express';
 
-const { crmCommonModelService } = getDependencyContainer();
+const { crmCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -15,7 +15,7 @@ export default function init(app: Router): void {
       req: Request<GetUserPathParams, GetUserResponse, GetUserRequest, GetUserQueryParams>,
       res: Response<GetUserResponse>
     ) => {
-      const user = await crmCommonModelService.get('user', req.customerConnection, req.params.user_id);
+      const user = await crmCommonObjectService.get('user', req.customerConnection, req.params.user_id);
       const snakecasedKeysUser = toSnakecasedKeysCrmUser(user);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysUser;

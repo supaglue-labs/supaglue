@@ -16,7 +16,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { crmCommonModelService } = getDependencyContainer();
+const { crmCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -27,7 +27,7 @@ export default function init(app: Router): void {
       req: Request<GetOpportunityPathParams, GetOpportunityResponse, GetOpportunityRequest, GetOpportunityQueryParams>,
       res: Response<GetOpportunityResponse>
     ) => {
-      const opportunity = await crmCommonModelService.get(
+      const opportunity = await crmCommonObjectService.get(
         'opportunity',
         req.customerConnection,
         req.params.opportunity_id
@@ -45,7 +45,7 @@ export default function init(app: Router): void {
       req: Request<CreateOpportunityPathParams, CreateOpportunityResponse, CreateOpportunityRequest>,
       res: Response<CreateOpportunityResponse>
     ) => {
-      const id = await crmCommonModelService.create('opportunity', req.customerConnection, {
+      const id = await crmCommonObjectService.create('opportunity', req.customerConnection, {
         ...camelcaseKeysSansCustomFields(req.body.record),
         closeDate: stringOrNullOrUndefinedToDate(req.body.record.close_date),
       });
@@ -59,7 +59,7 @@ export default function init(app: Router): void {
       req: Request<UpdateOpportunityPathParams, UpdateOpportunityResponse, UpdateOpportunityRequest>,
       res: Response<UpdateOpportunityResponse>
     ) => {
-      await crmCommonModelService.update('opportunity', req.customerConnection, {
+      await crmCommonObjectService.update('opportunity', req.customerConnection, {
         id: req.params.opportunity_id,
         ...camelcaseKeysSansCustomFields(req.body.record),
         closeDate: stringOrNullOrUndefinedToDate(req.body.record.close_date),

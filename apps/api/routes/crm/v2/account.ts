@@ -15,7 +15,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { crmCommonModelService } = getDependencyContainer();
+const { crmCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -26,7 +26,7 @@ export default function init(app: Router): void {
       req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest, GetAccountQueryParams>,
       res: Response<GetAccountResponse>
     ) => {
-      const account = await crmCommonModelService.get('account', req.customerConnection, req.params.account_id);
+      const account = await crmCommonObjectService.get('account', req.customerConnection, req.params.account_id);
       const snakecasedKeysAccount = toSnakecasedKeysCrmAccount(account);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysAccount;
@@ -40,7 +40,7 @@ export default function init(app: Router): void {
       req: Request<CreateAccountPathParams, CreateAccountResponse, CreateAccountRequest>,
       res: Response<CreateAccountResponse>
     ) => {
-      const id = await crmCommonModelService.create(
+      const id = await crmCommonObjectService.create(
         'account',
         req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.record)
@@ -55,7 +55,7 @@ export default function init(app: Router): void {
       req: Request<UpdateAccountPathParams, UpdateAccountResponse, UpdateAccountRequest>,
       res: Response<UpdateAccountResponse>
     ) => {
-      await crmCommonModelService.update('account', req.customerConnection, {
+      await crmCommonObjectService.update('account', req.customerConnection, {
         id: req.params.account_id,
         ...camelcaseKeysSansCustomFields(req.body.record),
       });

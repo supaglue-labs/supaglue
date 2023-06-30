@@ -1,10 +1,10 @@
 import { ConnectionSafeAny } from '@supaglue/types';
-import { EngagementCommonModelType, EngagementCommonModelTypeMap } from '@supaglue/types/engagement';
+import { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
 import { EngagementRemoteClient } from '../../../remotes/engagement/base';
 import { DestinationService } from '../../destination_service';
 import { RemoteService } from '../../remote_service';
 
-export class EngagementCommonModelService {
+export class EngagementCommonObjectService {
   readonly #remoteService: RemoteService;
   readonly #destinationService: DestinationService;
 
@@ -13,19 +13,19 @@ export class EngagementCommonModelService {
     this.#destinationService = destinationService;
   }
 
-  public async get<T extends EngagementCommonModelType>(
+  public async get<T extends EngagementCommonObjectType>(
     type: T,
     connectionId: string,
     id: string
-  ): Promise<EngagementCommonModelTypeMap<T>['object']> {
+  ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connectionId)) as EngagementRemoteClient;
     return await remoteClient.getCommonObjectRecord(type, id);
   }
 
-  public async create<T extends EngagementCommonModelType>(
+  public async create<T extends EngagementCommonObjectType>(
     type: T,
     connection: ConnectionSafeAny,
-    params: EngagementCommonModelTypeMap<T>['createParams']
+    params: EngagementCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
     const id = await remoteClient.createCommonObjectRecord(type, params);
@@ -34,16 +34,16 @@ export class EngagementCommonModelService {
     const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await remoteClient.getCommonObjectRecord(type, id);
-      await writer.upsertCommonModelRecord<'engagement', T>(connection, type, object);
+      await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, object);
     }
 
     return id;
   }
 
-  public async update<T extends EngagementCommonModelType>(
+  public async update<T extends EngagementCommonObjectType>(
     type: T,
     connection: ConnectionSafeAny,
-    params: EngagementCommonModelTypeMap<T>['updateParams']
+    params: EngagementCommonObjectTypeMap<T>['updateParams']
   ): Promise<void> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as EngagementRemoteClient;
     await remoteClient.updateCommonObjectRecord(type, params);
@@ -52,7 +52,7 @@ export class EngagementCommonModelService {
     const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await remoteClient.getCommonObjectRecord(type, params.id);
-      await writer.upsertCommonModelRecord<'engagement', T>(connection, type, object);
+      await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, object);
     }
   }
 }

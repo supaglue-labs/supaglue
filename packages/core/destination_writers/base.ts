@@ -1,13 +1,13 @@
 import type {
-  CommonModelType,
-  CommonModelTypeForCategory,
-  CommonModelTypeMapForCategory,
+  CommonObjectType,
+  CommonObjectTypeForCategory,
+  CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   ProviderCategory,
 } from '@supaglue/types';
 import type { Readable } from 'stream';
 
-export type WriteCommonModelRecordsResult = {
+export type WriteCommonObjectRecordsResult = {
   maxLastModifiedAt: Date | null;
   numRecords: number;
 };
@@ -18,18 +18,18 @@ export type WriteObjectRecordsResult = {
 };
 
 export interface DestinationWriter {
-  upsertCommonModelRecord<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
-    commonModelType: T,
-    object: CommonModelTypeMapForCategory<P>['object']
+    commonObjectType: T,
+    object: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void>;
 
-  writeCommonModelRecords(
+  writeCommonObjectRecords(
     connection: ConnectionSafeAny,
-    commonModelType: CommonModelType,
+    commonObjectType: CommonObjectType,
     stream: Readable,
     heartbeat: () => void
-  ): Promise<WriteCommonModelRecordsResult>;
+  ): Promise<WriteCommonObjectRecordsResult>;
 
   writeObjectRecords(
     connection: ConnectionSafeAny,
@@ -46,21 +46,21 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
    *
    * TODO: Support engagement vertical as well
    */
-  abstract upsertCommonModelRecord<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  abstract upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
-    commonModelType: T,
-    object: CommonModelTypeMapForCategory<P>['object']
+    commonObjectType: T,
+    object: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void>;
 
   /**
    * This is the main method used to sync objects to a destination
    */
-  abstract writeCommonModelRecords(
+  abstract writeCommonObjectRecords(
     connection: ConnectionSafeAny,
-    commonModelType: CommonModelType,
+    commonObjectType: CommonObjectType,
     stream: Readable,
     heartbeat: () => void
-  ): Promise<WriteCommonModelRecordsResult>;
+  ): Promise<WriteCommonObjectRecordsResult>;
 
   abstract writeObjectRecords(
     connection: ConnectionSafeAny,

@@ -273,7 +273,7 @@ export interface components {
       common?: ({
           /** @example common_object_name */
           name: string;
-          /** @description If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is. */
+          /** @description If set, will sync these mapped fields into the raw_data column in addition to the common object. If not set, will fetch all fields as is. */
           schema_id?: string;
         })[];
       standard?: ({
