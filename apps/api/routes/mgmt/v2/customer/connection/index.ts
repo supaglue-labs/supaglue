@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { BadRequestError } from '@supaglue/core/errors';
 import { getCustomerIdPk } from '@supaglue/core/lib';
-import { CrmRemoteClient } from '@supaglue/core/remotes/crm/base';
 import {
   DeleteConnectionPathParams,
   DeleteConnectionRequest,
@@ -55,12 +54,21 @@ export default function init(app: Router): void {
       if (connection.category !== 'crm') {
         throw new BadRequestError('Only CRM connections are supported for this operation');
       }
-      const client = (await remoteService.getRemoteClient(req.params.connection_id)) as CrmRemoteClient;
+      const client = await remoteService.getCrmRemoteClient(req.params.connection_id);
       const { type, name } = req.query;
       if (type === 'common' && !(CRM_COMMON_OBJECT_TYPES as unknown as string[]).includes(name)) {
         throw new BadRequestError(`${name} is not a valid common object type for the ${connection.category} category}`);
       }
-      const properties = await client.listProperties(req.query);
+      const properties =
+        req.query.type === 'common'
+          ? await client.listCommonProperties({
+              type: 'common',
+              name: req.query.name,
+            })
+          : await client.listProperties({
+              type: req.query.type,
+              name: req.query.name,
+            });
       return res.status(200).send({ properties });
     }
   );
