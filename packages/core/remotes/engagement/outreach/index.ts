@@ -376,7 +376,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
-  public handleErr(err: unknown): unknown {
+  public override handleErr(err: unknown): unknown {
     if (!(err instanceof AxiosError)) {
       return err;
     }

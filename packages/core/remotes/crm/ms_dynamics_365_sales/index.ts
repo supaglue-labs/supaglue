@@ -405,7 +405,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public handleErr(err: unknown): unknown {
+  public override handleErr(err: unknown): unknown {
     if (err instanceof Response) {
       switch (err.status) {
         case 400:
