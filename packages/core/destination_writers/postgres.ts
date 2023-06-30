@@ -209,10 +209,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
+      heartbeat();
+
       // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM reaper.
       childLogger.info('Dropping temp table [IN PROGRESS]');
       await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
       childLogger.info('Dropping temp table [COMPLETED]');
+
+      heartbeat();
 
       // Copy from deduped temp table
       const columnsToUpdateStr = columnsToUpdate.join(',');
@@ -365,10 +369,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
+      heartbeat();
+
       // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM repear.
       childLogger.info('Dropping temp table [IN PROGRESS]');
       await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
       childLogger.info('Dropping temp table [COMPLETED]');
+
+      heartbeat();
 
       // Copy from deduped temp table
       const columnsToUpdateStr = columnsToUpdate.join(',');
