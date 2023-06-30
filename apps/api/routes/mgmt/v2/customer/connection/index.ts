@@ -20,7 +20,7 @@ import {
   UpdateConnectionRequest,
   UpdateConnectionResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
+import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
@@ -57,7 +57,7 @@ export default function init(app: Router): void {
       }
       const client = (await remoteService.getRemoteClient(req.params.connection_id)) as CrmRemoteClient;
       const { type, name } = req.query;
-      if (type === 'common' && !(CRM_COMMON_MODEL_TYPES as unknown as string[]).includes(name)) {
+      if (type === 'common' && !(CRM_COMMON_OBJECT_TYPES as unknown as string[]).includes(name)) {
         throw new BadRequestError(`${name} is not a valid common object type for the ${connection.category} category}`);
       }
       const properties = await client.listProperties(req.query);
