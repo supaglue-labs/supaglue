@@ -60,7 +60,9 @@ const config = {
               items
                 // flatten the API to a single link in the sidebar
                 .map((item) =>
-                  item.type === 'category' && item.label === 'API Reference' ? { type: 'doc', id: 'api/index' } : item
+                  item.type === 'category' && item.label === 'api'
+                    ? { type: 'doc', id: 'api/introduction', label: 'API Reference' }
+                    : item
                 )
             );
           },
@@ -105,7 +107,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'api/index',
+            docId: 'api/introduction',
             position: 'left',
             label: 'API Reference',
           },

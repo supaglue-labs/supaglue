@@ -2,7 +2,7 @@
 displayed_sidebar: api
 ---
 
-# API Reference
+# Introduction
 
 Supaglue supports three APIs. The Management API is used to create customers, connections, and configure managed syncs. The Actions API consists of two unified APIs, one for CRM connectors and one for sales engagement connectors.
 

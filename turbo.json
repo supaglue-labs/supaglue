@@ -13,7 +13,7 @@
     },
     "docs#generate": {
       "dependsOn": ["//#bundle-openapi"],
-      "inputs": ["../openapi/**/openapi.bundle.json"],
+      "inputs": ["../openapi/**/openapi.bundle.json", "package.json", "*.config.js"],
       "outputs": ["docs/docs/api/**"]
     },
     "docs#build": {
