@@ -67,7 +67,7 @@ app.use(express.urlencoded({ extended: true }));
 //cors
 app.use(
   cors({
-    origin: process.env.SUPAGLUE_CORS_ORIGIN,
+    origin: process.env.SUPAGLUE_CORS_ORIGIN?.split(','),
     credentials: true,
   })
 );
