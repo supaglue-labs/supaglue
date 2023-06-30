@@ -7,8 +7,8 @@ import { pipeline } from 'stream/promises';
 import { logger } from '../../lib';
 import { RemoteService } from '../remote_service';
 
-export abstract class CommonModelBaseService {
-  // TODO: Use just pg for common models?
+export abstract class CommonObjectBaseService {
+  // TODO: Use just pg for common objects?
   protected readonly pgPool: Pool;
   protected readonly prisma: PrismaClient;
   protected readonly remoteService: RemoteService;
@@ -25,20 +25,20 @@ export abstract class CommonModelBaseService {
     customerId: string,
     remoteRecordsReadable: Readable,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<UpsertRemoteCommonModelsResult>;
+  ): Promise<UpsertRemoteCommonObjectsResult>;
 
   // TODO: this needs to be cleaned up a bit. this may become more type-safe
   // when/if we introduce a prisma generator to generate the db types/mappers
-  protected async upsertRemoteCommonModels<T>(
+  protected async upsertRemoteCommonObjects<T>(
     connectionId: string,
     customerId: string,
-    remoteCommonModelReadable: Readable,
+    remoteCommonObjectReadable: Readable,
     table: string,
     tempTable: string,
     columnsWithoutId: string[],
-    mapper: (connectionId: string, customerId: string, remoteCommonModel: T) => Record<string, any>,
+    mapper: (connectionId: string, customerId: string, remoteCommonObject: T) => Record<string, any>,
     onUpsertBatchCompletion: (offset: number, numRecords: number) => void
-  ): Promise<UpsertRemoteCommonModelsResult> {
+  ): Promise<UpsertRemoteCommonObjectsResult> {
     const client = await this.pgPool.connect();
 
     // TODO: On the first run, we should be able to directly write into the table and skip the temp table
@@ -49,13 +49,13 @@ export abstract class CommonModelBaseService {
       // so that we can resume in the case of failure during the COPY stage.
       logger.info(
         { connectionId, customerId, table },
-        'Creating temp table for importing common model objects [IN PROGRESS]'
+        'Creating temp table for importing common object objects [IN PROGRESS]'
       );
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING DEFAULTS)`);
       await client.query(`CREATE INDEX IF NOT EXISTS ${tempTable}_remote_id_idx ON ${tempTable} (remote_id)`);
       logger.info(
         { connectionId, customerId, table },
-        'Creating temp table for importing common model objects [COMPLETED]'
+        'Creating temp table for importing common object objects [COMPLETED]'
       );
 
       const columns = ['id', ...columnsWithoutId];
@@ -78,9 +78,9 @@ export abstract class CommonModelBaseService {
       let tempTableRowCount = 0;
       let maxLastModifiedAt: Date | null = null;
 
-      logger.info({ connectionId, customerId, table }, 'Importing common model objects into temp table [IN PROGRESS]');
+      logger.info({ connectionId, customerId, table }, 'Importing common object objects into temp table [IN PROGRESS]');
       await pipeline(
-        remoteCommonModelReadable,
+        remoteCommonObjectReadable,
         new Transform({
           objectMode: true,
           transform: (chunk, encoding, callback) => {
@@ -106,7 +106,7 @@ export abstract class CommonModelBaseService {
         stringifier,
         stream
       );
-      logger.info({ connectionId, customerId, table }, 'Importing common model objects into temp table [COMPLETED]');
+      logger.info({ connectionId, customerId, table }, 'Importing common object objects into temp table [COMPLETED]');
 
       // Copy from temp table
       logger.info(
@@ -145,7 +145,7 @@ DO UPDATE SET (${columnsToUpdate}) = (${excludedColumnsToUpdate})`);
   }
 }
 
-export type UpsertRemoteCommonModelsResult = {
+export type UpsertRemoteCommonObjectsResult = {
   maxLastModifiedAt: Date | null;
   numRecords: number;
 };

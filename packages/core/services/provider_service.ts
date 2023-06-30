@@ -1,8 +1,8 @@
 import type { PrismaClient } from '@supaglue/db';
 import type {
   AddObjectToProviderParams,
-  CommonModelForCategory,
-  CommonModelType,
+  CommonObjectForCategory,
+  CommonObjectType,
   Provider,
   ProviderCategory,
   ProviderCreateParams,
@@ -184,7 +184,10 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
       if (objects.common?.find((object) => object.name === name)) {
         throw new BadRequestError(`Common object with name: ${name} already exists in provider`);
       }
-      return { ...objects, common: [...(objects.common ?? []), { name: name as CommonModelForCategory<T>, schemaId }] };
+      return {
+        ...objects,
+        common: [...(objects.common ?? []), { name: name as CommonObjectForCategory<T>, schemaId }],
+      };
     case 'standard':
       if (objects.standard?.find((object) => object.name === name)) {
         throw new BadRequestError(`Standard object with name: ${name} already exists in provider`);
@@ -210,7 +213,7 @@ const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: st
         ...syncConfig,
         config: {
           ...syncConfig.config,
-          commonObjects: [...(syncConfig.config.commonObjects ?? []), { object: name as CommonModelType }],
+          commonObjects: [...(syncConfig.config.commonObjects ?? []), { object: name as CommonObjectType }],
         },
       };
     case 'standard':

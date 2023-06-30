@@ -16,7 +16,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { crmCommonModelService } = getDependencyContainer();
+const { crmCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -27,7 +27,7 @@ export default function init(app: Router): void {
       req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, GetContactQueryParams>,
       res: Response<GetContactResponse>
     ) => {
-      const contact = await crmCommonModelService.get('contact', req.customerConnection, req.params.contact_id);
+      const contact = await crmCommonObjectService.get('contact', req.customerConnection, req.params.contact_id);
       const snakecasedKeysContact = toSnakecasedKeysCrmContact(contact);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysContact;
@@ -41,7 +41,7 @@ export default function init(app: Router): void {
       req: Request<CreateContactPathParams, CreateContactResponse, CreateContactRequest>,
       res: Response<CreateContactResponse>
     ) => {
-      const id = await crmCommonModelService.create(
+      const id = await crmCommonObjectService.create(
         'contact',
         req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.record)
@@ -56,7 +56,7 @@ export default function init(app: Router): void {
       req: Request<UpdateContactPathParams, UpdateContactResponse, UpdateContactRequest>,
       res: Response<UpdateContactResponse>
     ) => {
-      await crmCommonModelService.update('contact', req.customerConnection, {
+      await crmCommonObjectService.update('contact', req.customerConnection, {
         id: req.params.contact_id,
         ...camelcaseKeysSansCustomFields(req.body.record),
       });

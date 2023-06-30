@@ -1,5 +1,5 @@
 import {
-  CommonModelForCategory,
+  CommonObjectForCategory,
   OAuthConfigDecrypted,
   OAuthConfigEncrypted,
   ProviderCategory,
@@ -34,7 +34,7 @@ export type ProviderObjects<T extends ProviderCategory> = {
 };
 
 export type ProviderCommonObject<T extends ProviderCategory> = {
-  name: CommonModelForCategory<T>;
+  name: CommonObjectForCategory<T>;
   schemaId?: string;
 };
 

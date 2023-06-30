@@ -1,13 +1,13 @@
 import { CRMProvider } from '@supaglue/types';
 import { ConnectionSafeAny } from '@supaglue/types/connection';
-import { CRMCommonModelType, CRMCommonModelTypeMap } from '@supaglue/types/crm';
+import { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
 import { ProviderService, SchemaService } from '../..';
 import { createFieldMappingConfig } from '../../../lib/schema';
 import { CrmRemoteClient } from '../../../remotes/crm/base';
 import { DestinationService } from '../../destination_service';
 import { RemoteService } from '../../remote_service';
 
-export class CrmCommonModelService {
+export class CrmCommonObjectService {
   readonly #remoteService: RemoteService;
   readonly #destinationService: DestinationService;
   readonly #providerService: ProviderService;
@@ -25,11 +25,11 @@ export class CrmCommonModelService {
     this.#schemaService = schemaService;
   }
 
-  public async get<T extends CRMCommonModelType>(
+  public async get<T extends CRMCommonObjectType>(
     type: T,
     connection: ConnectionSafeAny,
     id: string
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
+  ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
     const provider = await this.#providerService.getById<CRMProvider>(connection.providerId);
     const schemaId = provider.objects?.common?.find((o) => o.name === type)?.schemaId;
@@ -42,10 +42,10 @@ export class CrmCommonModelService {
     return await remoteClient.getCommonObjectRecord(type, id, fieldMappingConfig);
   }
 
-  public async create<T extends CRMCommonModelType>(
+  public async create<T extends CRMCommonObjectType>(
     type: T,
     connection: ConnectionSafeAny,
-    params: CRMCommonModelTypeMap<T>['createParams']
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
     const id = await remoteClient.createCommonObjectRecord(type, params);
@@ -54,16 +54,16 @@ export class CrmCommonModelService {
     const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await this.get(type, connection, id);
-      await writer.upsertCommonModelRecord<'crm', T>(connection, type, object);
+      await writer.upsertCommonObjectRecord<'crm', T>(connection, type, object);
     }
 
     return id;
   }
 
-  public async update<T extends CRMCommonModelType>(
+  public async update<T extends CRMCommonObjectType>(
     type: T,
     connection: ConnectionSafeAny,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<void> {
     const remoteClient = (await this.#remoteService.getRemoteClient(connection.id)) as CrmRemoteClient;
     await remoteClient.updateCommonObjectRecord(type, params);
@@ -72,7 +72,7 @@ export class CrmCommonModelService {
     const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await this.get(type, connection, params.id);
-      await writer.upsertCommonModelRecord<'crm', T>(connection, type, object);
+      await writer.upsertCommonObjectRecord<'crm', T>(connection, type, object);
     }
   }
 }

@@ -9,9 +9,9 @@ import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { CommonModelType, CommonObjectConfig, Provider, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
-import { CRM_COMMON_MODEL_TYPES } from '@supaglue/types/crm';
-import { ENGAGEMENT_COMMON_MODEL_TYPES } from '@supaglue/types/engagement';
+import { CommonObjectConfig, CommonObjectType, Provider, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
+import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
+import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
 import type { ObjectSyncType } from '@supaglue/types/object_sync';
 import { HUBSPOT_STANDARD_OBJECT_TYPES, SALESFORCE_OBJECTS } from '@supaglue/utils';
 import Link from 'next/link';
@@ -50,7 +50,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [providerId, setProviderId] = useState<string | undefined>();
   const [destinationId, setDestinationId] = useState<string | undefined>();
   const [strategy, setStrategy] = useState<ObjectSyncType>('full then incremental');
-  const [commonObjects, setCommonObjects] = useState<CommonModelType[]>([]);
+  const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
   const [customObjects, setCustomObjects] = useState<string[]>([]);
   const router = useRouter();
@@ -186,7 +186,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 const provider = providers.find((p) => p.id === value);
                 setProviderId(value);
                 setCommonObjects(
-                  provider?.category === 'crm' ? [...CRM_COMMON_MODEL_TYPES] : [...ENGAGEMENT_COMMON_MODEL_TYPES]
+                  provider?.category === 'crm' ? [...CRM_COMMON_OBJECT_TYPES] : [...ENGAGEMENT_COMMON_OBJECT_TYPES]
                 );
                 setStandardObjects([]);
                 setCustomObjects([]);
@@ -233,7 +233,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   key={providerId}
                   multiple
                   id="common-objects"
-                  options={CRM_COMMON_MODEL_TYPES}
+                  options={CRM_COMMON_OBJECT_TYPES}
                   defaultValue={commonObjects}
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (
@@ -248,7 +248,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                     />
                   )}
                   onChange={(event: any, value: string[]) => {
-                    setCommonObjects(value as CommonModelType[]);
+                    setCommonObjects(value as CommonObjectType[]);
                   }}
                 />
               </Stack>

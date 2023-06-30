@@ -9,8 +9,8 @@ import {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  CRMCommonModelType,
-  CRMCommonModelTypeMap,
+  CRMCommonObjectType,
+  CRMCommonObjectTypeMap,
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
@@ -50,7 +50,7 @@ import {
   fromSalesforceLeadToLead,
   fromSalesforceOpportunityToOpportunity,
   fromSalesforceUserToUser,
-  getMapperForCommonModelType,
+  getMapperForCommonObjectType,
   toSalesforceAccountCreateParams,
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
@@ -65,7 +65,7 @@ const FETCH_TIMEOUT = 60 * 1000;
 
 const COMPOUND_TYPES = ['location', 'address'];
 
-const propertiesForCommonModel: Record<CRMCommonModelType, string[]> = {
+const propertiesForCommonObject: Record<CRMCommonObjectType, string[]> = {
   account: [
     'Id',
     'OwnerId',
@@ -74,13 +74,13 @@ const propertiesForCommonModel: Record<CRMCommonModelType, string[]> = {
     'Industry',
     'Website',
     'NumberOfEmployees',
-    // We may not need all of these fields in order to map to common model
+    // We may not need all of these fields in order to map to common object
     'BillingCity',
     'BillingCountry',
     'BillingPostalCode',
     'BillingState',
     'BillingStreet',
-    // We may not need all of these fields in order to map to common model
+    // We may not need all of these fields in order to map to common object
     'ShippingCity',
     'ShippingCountry',
     'ShippingPostalCode',
@@ -104,13 +104,13 @@ const propertiesForCommonModel: Record<CRMCommonModelType, string[]> = {
     'Fax',
     'MobilePhone',
     'LastActivityDate',
-    // We may not need all of these fields in order to map to common model
+    // We may not need all of these fields in order to map to common object
     'MailingCity',
     'MailingCountry',
     'MailingPostalCode',
     'MailingState',
     'MailingStreet',
-    // We may not need all of these fields in order to map to common model
+    // We may not need all of these fields in order to map to common object
     'OtherCity',
     'OtherCountry',
     'OtherPostalCode',
@@ -322,32 +322,32 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   async getCommonPropertiesToFetch(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig?: FieldMappingConfig
   ): Promise<string[]> {
-    const sobject = capitalizeString(commonModelType);
+    const sobject = capitalizeString(commonObjectType);
     const allProperties = await this.getSObjectProperties(sobject);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
       return allProperties;
     }
     return intersection(allProperties, [
-      ...propertiesForCommonModel[commonModelType],
+      ...propertiesForCommonObject[commonObjectType],
       ...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField),
     ]);
   }
 
   public override async listCommonObjectRecords(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date | undefined,
     heartbeat?: () => void
   ): Promise<Readable> {
-    const sobject = capitalizeString(commonModelType);
-    const propertiesToFetch = await this.getCommonPropertiesToFetch(commonModelType, fieldMappingConfig);
+    const sobject = capitalizeString(commonObjectType);
+    const propertiesToFetch = await this.getCommonPropertiesToFetch(commonObjectType, fieldMappingConfig);
 
     const stream = await this.#listObjectsHelper(sobject, propertiesToFetch, updatedAfter, heartbeat);
     const mapper = (record: Record<string, unknown>) => ({
-      ...getMapperForCommonModelType(commonModelType)(record),
+      ...getMapperForCommonObjectType(commonObjectType)(record),
       rawData: toMappedProperties(record, fieldMappingConfig),
     });
 
@@ -371,12 +371,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async getCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
+  public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
-    switch (commonModelType) {
+  ): Promise<CRMCommonObjectTypeMap<T>['object']> {
+    switch (commonObjectType) {
       case 'account':
         return this.getAccount(id, fieldMappingConfig);
       case 'contact':
@@ -388,15 +388,15 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'user':
         return this.getUser(id, fieldMappingConfig);
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  public override async createCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['createParams']
+  public override async createCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'account':
         return this.createAccount(params);
       case 'contact':
@@ -408,15 +408,15 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'user':
         throw new Error('Cannot create users in Salesforce');
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+  public override async updateCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'account':
         return this.updateAccount(params);
       case 'contact':
@@ -428,7 +428,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'user':
         throw new Error('Cannot update users in Salesforce');
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 

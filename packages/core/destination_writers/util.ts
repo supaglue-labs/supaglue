@@ -1,6 +1,6 @@
-import { CommonModelType, ProviderCategory } from '@supaglue/types';
-import { CRMCommonModelType } from '@supaglue/types/crm';
-import { EngagementCommonModelType } from '@supaglue/types/engagement';
+import { CommonObjectType, ProviderCategory } from '@supaglue/types';
+import { CRMCommonObjectType } from '@supaglue/types/crm';
+import { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import {
   toSnakecasedKeysCrmAccount,
   toSnakecasedKeysCrmContact,
@@ -16,16 +16,16 @@ import {
   toSnakecasedKeysSequenceState,
 } from '../mappers/engagement';
 
-export const getSnakecasedKeysMapper = (category: ProviderCategory, commonModelType: CommonModelType) => {
+export const getSnakecasedKeysMapper = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
   if (category === 'crm') {
-    return snakecasedKeysMapperByCommonModelType.crm[commonModelType as CRMCommonModelType];
+    return snakecasedKeysMapperByCommonObjectType.crm[commonObjectType as CRMCommonObjectType];
   }
-  return snakecasedKeysMapperByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
+  return snakecasedKeysMapperByCommonObjectType.engagement[commonObjectType as EngagementCommonObjectType];
 };
 
-const snakecasedKeysMapperByCommonModelType: {
-  crm: Record<CRMCommonModelType, (obj: any) => any>;
-  engagement: Record<EngagementCommonModelType, (obj: any) => any>;
+const snakecasedKeysMapperByCommonObjectType: {
+  crm: Record<CRMCommonObjectType, (obj: any) => any>;
+  engagement: Record<EngagementCommonObjectType, (obj: any) => any>;
 } = {
   crm: {
     account: toSnakecasedKeysCrmAccount,

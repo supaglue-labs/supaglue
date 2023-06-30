@@ -16,7 +16,7 @@ import {
   UpdateSyncConfigRequest,
   UpdateSyncConfigResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { CommonModelType } from '@supaglue/types';
+import { CommonObjectType } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Request, Response, Router } from 'express';
@@ -51,7 +51,7 @@ export default function init(app: Router): void {
             ...req.body.config,
             common_objects: req.body.config.common_objects?.map((commonObject) => ({
               ...commonObject,
-              object: commonObject.object as CommonModelType,
+              object: commonObject.object as CommonObjectType,
             })),
           },
         }),
@@ -87,7 +87,7 @@ export default function init(app: Router): void {
             ...req.body.config,
             common_objects: req.body.config.common_objects?.map((commonObject) => ({
               ...commonObject,
-              object: commonObject.object as CommonModelType,
+              object: commonObject.object as CommonObjectType,
             })),
           },
         }),

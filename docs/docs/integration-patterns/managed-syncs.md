@@ -139,7 +139,7 @@ The above sync configuration defines a managed sync that does the following:
 Supaglue syncs common objects across multiple providers and transforms them into a category-specific (e.g. CRM) normalized schema. There are three types of columns:
 
 * **Supaglue metadata fields**: these specify the application, customer, provider, and timestamps associated with the managed sync.
-* **Common model fields**: the normalized fields associated with the synced object and the connector category.
+* **Common object fields**: the normalized fields associated with the synced object and the connector category.
 * **Raw data**: the raw source data is returned in a JSON blob.
 
 Here's an example of a destination schema associated with a managed sync for a CRM Contact object:

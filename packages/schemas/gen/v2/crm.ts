@@ -575,7 +575,7 @@ export interface components {
       /** @example 100 */
       total_count?: number;
     };
-    /** @description Custom properties to be inserted that are not covered by the common model. Object keys must match exactly to the corresponding provider API. */
+    /** @description Custom properties to be inserted that are not covered by the common object. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {
       [key: string]: unknown | undefined;
     };

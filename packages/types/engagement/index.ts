@@ -9,10 +9,10 @@ export const SUPPORTED_ENGAGEMENT_CONNECTIONS = ['outreach'] as const;
 export type EngagementProviderName = (typeof SUPPORTED_ENGAGEMENT_CONNECTIONS)[number];
 export type EngagementProviderCategory = 'engagement';
 
-export const ENGAGEMENT_COMMON_MODEL_TYPES = ['contact', 'user', 'sequence', 'mailbox', 'sequence_state'] as const;
-export type EngagementCommonModelType = (typeof ENGAGEMENT_COMMON_MODEL_TYPES)[number];
+export const ENGAGEMENT_COMMON_OBJECT_TYPES = ['contact', 'user', 'sequence', 'mailbox', 'sequence_state'] as const;
+export type EngagementCommonObjectType = (typeof ENGAGEMENT_COMMON_OBJECT_TYPES)[number];
 
-export type EngagementCommonModelTypeMap<T extends EngagementCommonModelType> = {
+export type EngagementCommonObjectTypeMap<T extends EngagementCommonObjectType> = {
   contact: RemoteContactTypes;
   user: RemoteUserTypes;
   sequence: RemoteSequenceTypes;
