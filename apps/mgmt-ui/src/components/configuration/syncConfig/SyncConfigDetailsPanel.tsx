@@ -360,10 +360,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
 const getStandardObjectOptions = (provider: Provider | undefined): string[] => {
   switch (provider?.name) {
     case 'hubspot': {
-      return [...HUBSPOT_STANDARD_OBJECT_TYPES];
+      return HUBSPOT_STANDARD_OBJECT_TYPES as unknown as string[];
     }
     case 'salesforce': {
-      return [...SALESFORCE_OBJECTS];
+      return SALESFORCE_OBJECTS as unknown as string[];
     }
     default:
       return [];
