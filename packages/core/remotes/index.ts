@@ -1,5 +1,5 @@
-import { ConnectionUnsafe, Provider, ProviderCategory, ProviderName } from '@supaglue/types';
-import { AbstractRemoteClient, RemoteClient } from './base';
+import type { ConnectionUnsafe, Provider, ProviderCategory, ProviderName } from '@supaglue/types';
+import { AbstractRemoteClient, ConnectorAuthConfig, RemoteClient } from './base';
 import * as capsule from './impl/capsule';
 import * as hubspot from './impl/hubspot';
 import * as ms_dynamics_365_sales from './impl/ms_dynamics_365_sales';
@@ -8,14 +8,6 @@ import * as pipedrive from './impl/pipedrive';
 import * as salesforce from './impl/salesforce';
 import * as zendesk_sell from './impl/zendesk_sell';
 import * as zoho_crm from './impl/zoho_crm';
-
-export type ConnectorAuthConfig = {
-  tokenHost: string;
-  tokenPath: string;
-  authorizeHost: string;
-  authorizePath: string;
-  additionalScopes?: string[];
-};
 
 export type ConnectorConfig<T extends ProviderName> = {
   authConfig: ConnectorAuthConfig;

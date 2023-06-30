@@ -24,7 +24,6 @@ import {
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
-import { ConnectorAuthConfig } from '../..';
 import {
   BadRequestError,
   ForbiddenError,
@@ -33,7 +32,8 @@ import {
   UnauthorizedError,
 } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
-import { AbstractCrmRemoteClient } from '../../categories/crm';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import {
   fromPipedriveDealToOpportunity,

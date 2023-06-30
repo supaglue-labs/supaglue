@@ -18,7 +18,6 @@ import { plural } from 'pluralize';
 import querystring from 'querystring';
 import simpleOauth2 from 'simple-oauth2';
 import { Readable } from 'stream';
-import { ConnectorAuthConfig } from '../..';
 import {
   BadRequestError,
   ForbiddenError,
@@ -27,7 +26,8 @@ import {
   NotModifiedError,
   UnauthorizedError,
 } from '../../../errors';
-import { AbstractCrmRemoteClient } from '../../categories/crm';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import {
   fromDynamicsAccountToRemoteAccount,

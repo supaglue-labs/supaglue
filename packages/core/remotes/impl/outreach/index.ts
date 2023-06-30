@@ -18,7 +18,6 @@ import {
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
-import { ConnectorAuthConfig } from '../..';
 import {
   BadRequestError,
   ConflictError,
@@ -29,7 +28,8 @@ import {
   UnprocessableEntityError,
 } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
-import { AbstractEngagementRemoteClient } from '../../categories/engagement';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
 import {
   fromOutreachMailboxToMailbox,

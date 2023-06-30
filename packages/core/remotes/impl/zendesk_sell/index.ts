@@ -1,6 +1,6 @@
 import { ConnectionUnsafe, Provider } from '@supaglue/types';
-import { ConnectorAuthConfig } from '../..';
-import { AbstractCrmRemoteClient } from '../../categories/crm';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 
 class ZendeskSellClient extends AbstractCrmRemoteClient {
   public constructor() {

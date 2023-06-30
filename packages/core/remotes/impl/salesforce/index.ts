@@ -2,7 +2,16 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import {
+import type {
+  CommonObjectDef,
+  ConnectionUnsafe,
+  NormalizedRawRecord,
+  Provider,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+  StandardOrCustomObjectDef,
+} from '@supaglue/types';
+import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
@@ -19,22 +28,11 @@ import {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-
-import {
-  CommonObjectDef,
-  ConnectionUnsafe,
-  NormalizedRawRecord,
-  Provider,
-  SendPassthroughRequestRequest,
-  SendPassthroughRequestResponse,
-  StandardOrCustomObjectDef,
-} from '@supaglue/types';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { pipeline, Readable, Transform } from 'stream';
-import { ConnectorAuthConfig } from '../..';
 import {
   BadRequestError,
   ForbiddenError,
@@ -44,7 +42,8 @@ import {
   UnauthorizedError,
 } from '../../../errors';
 import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
-import { AbstractCrmRemoteClient } from '../../categories/crm';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import {
   fromSalesforceAccountToAccount,

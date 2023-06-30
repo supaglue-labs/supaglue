@@ -56,7 +56,6 @@ import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';
 import { Readable } from 'stream';
-import { ConnectorAuthConfig } from '../..';
 import {
   BadRequestError,
   ConflictError,
@@ -72,7 +71,8 @@ import {
   REFRESH_TOKEN_THRESHOLD_MS,
   retryWhenAxiosRateLimited,
 } from '../../../lib';
-import { AbstractCrmRemoteClient } from '../../categories/crm';
+import type { ConnectorAuthConfig } from '../../base';
+import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import {
   fromHubSpotCompanyToAccount,

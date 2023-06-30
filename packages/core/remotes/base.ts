@@ -84,3 +84,11 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     };
   }
 }
+
+export type ConnectorAuthConfig = {
+  tokenHost: string;
+  tokenPath: string;
+  authorizeHost: string;
+  authorizePath: string;
+  additionalScopes?: string[];
+};
