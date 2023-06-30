@@ -1,5 +1,5 @@
-import { useNotification } from '@/context/notification';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import { DeleteConfirmationModal } from '@/components/modals';
+import { Button } from '@mui/material';
 import { useState } from 'react';
 
 export type DeleteProviderButtonProps = {
@@ -8,7 +8,6 @@ export type DeleteProviderButtonProps = {
 };
 
 export function DeleteProviderButton({ providerName, onDelete }: DeleteProviderButtonProps) {
-  const { addNotification } = useNotification();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -24,31 +23,13 @@ export function DeleteProviderButton({ providerName, onDelete }: DeleteProviderB
       <Button variant="text" color="error" onClick={handleClickOpen} size="small">
         Delete
       </Button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Delete Provider</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to delete{' '}
-            <Typography fontWeight="bold" display="inline">
-              provider for {providerName}
-            </Typography>
-            ?
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'space-between', padding: '16px 24px' }}>
-          <Button
-            variant="text"
-            color="error"
-            onClick={() => {
-              onDelete();
-              handleClose();
-            }}
-          >
-            Delete
-          </Button>
-          <Button onClick={handleClose}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteConfirmationModal
+        open={open}
+        handleClose={handleClose}
+        onDelete={onDelete}
+        resourceName={`provider for ${providerName}`}
+        title="Delete Provider"
+      />
     </>
   );
 }

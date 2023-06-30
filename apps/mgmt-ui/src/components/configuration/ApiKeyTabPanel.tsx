@@ -45,6 +45,7 @@ export default function ApiKeyTabPanel() {
               if (!response.ok) {
                 return addNotification({ message: response.errorMessage, severity: 'error' });
               }
+              addNotification({ message: 'Successfully regenerated API Key', severity: 'success' });
               setDidRegenerate(true);
               setApiKey(response.data.api_key);
             }}

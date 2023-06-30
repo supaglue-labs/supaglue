@@ -53,6 +53,7 @@ export default function Home() {
                 addNotification({ message: response.errorMessage, severity: 'error' });
                 return;
               }
+              addNotification({ message: 'Successfully removed connection', severity: 'success' });
               await mutate(
                 connections.filter((c) => c.id !== params.row.id),
                 false
