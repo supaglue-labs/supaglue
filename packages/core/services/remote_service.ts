@@ -4,10 +4,10 @@ import { InternalServerError } from '../errors';
 import { logger } from '../lib';
 import { getRemoteClient } from '../remotes';
 import { RemoteClient } from '../remotes/base';
-import type { CrmRemoteClient } from '../remotes/categories/crm';
 import { getCrmRemoteClient } from '../remotes/categories/crm';
-import type { EngagementRemoteClient } from '../remotes/categories/engagement';
+import type { CrmRemoteClient } from '../remotes/categories/crm/base';
 import { getEngagementRemoteClient } from '../remotes/categories/engagement';
+import type { EngagementRemoteClient } from '../remotes/categories/engagement/base';
 import type { ConnectionService } from './connection_service';
 
 export class RemoteService {
