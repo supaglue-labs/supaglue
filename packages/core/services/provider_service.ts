@@ -119,7 +119,7 @@ export class ProviderService {
             id: syncConfig.id,
           },
           data: {
-            ...toSyncConfigModel(addObjectToSyncConfig(syncConfig, params.name, params.type)),
+            ...toSyncConfigModel(upsertObjectToSyncConfig(syncConfig, params.name, params.type)),
           },
         });
       }
@@ -200,11 +200,11 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
   }
 };
 
-const addObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: string): SyncConfig => {
+const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: string): SyncConfig => {
   switch (type) {
     case 'common':
       if (syncConfig.config.commonObjects?.find((object) => object.object === name)) {
-        throw new BadRequestError(`Common object with name: ${name} already exists in sync config`);
+        return syncConfig;
       }
       return {
         ...syncConfig,
@@ -215,7 +215,7 @@ const addObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: strin
       };
     case 'standard':
       if (syncConfig.config.standardObjects?.find((object) => object.object === name)) {
-        throw new BadRequestError(`Standard object with name: ${name} already exists in sync config`);
+        return syncConfig;
       }
       return {
         ...syncConfig,
@@ -226,7 +226,7 @@ const addObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: strin
       };
     case 'custom':
       if (syncConfig.config.customObjects?.find((object) => object.object === name)) {
-        throw new BadRequestError(`Custom object with name: ${name} already exists in sync config`);
+        return syncConfig;
       }
       return {
         ...syncConfig,
