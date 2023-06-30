@@ -405,6 +405,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
           context: {
             [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: objectSyncId,
             [TEMPORAL_CONTEXT_ARGS.OBJECT_TYPE]: objectSync.objectType,
+            [TEMPORAL_CONTEXT_ARGS.OBJECT_NAME]: objectSync.object,
             [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
             [TEMPORAL_CONTEXT_ARGS.APPLICATION_ENV]: application.environment,
             [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
@@ -419,6 +420,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       searchAttributes: {
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [objectSyncId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_TYPE]: [objectSync.objectType],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_NAME]: [objectSync.object],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ENV]: [application.environment],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
