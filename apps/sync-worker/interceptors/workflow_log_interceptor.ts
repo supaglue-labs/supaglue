@@ -20,7 +20,7 @@ class WorkflowLogInterceptor implements WorkflowOutboundCallsInterceptor, Workfl
   async execute(input: WorkflowExecuteInput, next: Next<WorkflowInboundCallsInterceptor, 'execute'>): Promise<unknown> {
     const contextArgs = (((input.args[0] ?? {}) as Record<string, unknown>).context ?? {}) as Record<string, unknown>;
 
-    Object.entries(TEMPORAL_CONTEXT_ARGS).forEach(([_, value]) => {
+    Object.values(TEMPORAL_CONTEXT_ARGS).forEach((value) => {
       const contextKey = `sg-${value}`;
       if (contextArgs[value]) {
         this.contextHeaders[contextKey] = defaultPayloadConverter.toPayload(contextArgs[value]);
