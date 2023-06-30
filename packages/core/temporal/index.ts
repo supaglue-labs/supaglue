@@ -5,6 +5,7 @@ const { IndexedValueType } = temporal.api.enums.v1;
 export const TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES = {
   SYNC_ID: 'SyncId',
   OBJECT_TYPE: 'ObjectType',
+  OBJECT_NAME: 'ObjectName',
   APPLICATION_ID: 'ApplicationId',
   APPLICATION_ENV: 'ApplicationEnv',
   CUSTOMER_ID: 'CustomerId',
@@ -18,8 +19,9 @@ export const TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES = {
 export const TEMPORAL_CONTEXT_ARGS = {
   SYNC_ID: 'syncId',
   OBJECT_TYPE: 'objectType',
+  OBJECT_NAME: 'objectName',
   APPLICATION_ID: 'applicationId',
-  APPLICATION_ENV: 'ApplicationEnv',
+  APPLICATION_ENV: 'applicationEnv',
   CUSTOMER_ID: 'customerId',
   PROVIDER_ID: 'providerId',
   SYNC_CONFIG_ID: 'syncConfigId',
