@@ -277,7 +277,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                     />
                   )}
                   onChange={(event: any, value: string[]) => {
-                    setStandardObjects(value);
+                    setStandardObjects(value.map((v) => v.trim()));
                   }}
                 />
               </Stack>
@@ -309,7 +309,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                     />
                   )}
                   onChange={(event: any, value: string[]) => {
-                    setCustomObjects(value);
+                    setCustomObjects(value.map((object) => object.trim()));
                   }}
                 />
               </Stack>
