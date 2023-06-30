@@ -22,8 +22,15 @@ import {
   User,
 } from '@supaglue/types/crm';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+  TooManyRequestsError,
+  UnauthorizedError,
+} from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -520,6 +527,29 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   ): Promise<SendPassthroughRequestResponse> {
     await this.maybeRefreshAccessToken();
     return await super.sendPassthroughRequest(request);
+  }
+
+  public handleErr(err: unknown): unknown {
+    if (!(err instanceof AxiosError)) {
+      return err;
+    }
+
+    const jsonErrorMessage = err.response?.data?.data?.message;
+
+    switch (err.response?.status) {
+      case 400:
+        return new BadRequestError(jsonErrorMessage ?? err.message);
+      case 401:
+        return new UnauthorizedError(jsonErrorMessage ?? err.message);
+      case 403:
+        return new ForbiddenError(jsonErrorMessage ?? err.message);
+      case 404:
+        return new NotFoundError(jsonErrorMessage ?? err.message);
+      case 429:
+        return new TooManyRequestsError(jsonErrorMessage ?? err.message);
+      default:
+        return err;
+    }
   }
 }
 
