@@ -8,7 +8,7 @@
   "api": [
     {
       "type": "doc",
-      "id": "api/introduction"
+      "id": "api"
     },
     {
       "type": "category",
