@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import { ConfirmationModal } from './ConfirmationModal';
 
-export type DeleteConfirmationModalProps = {
+export type DeleteResourceConfirmationModalProps = {
   title: string;
   resourceName: string;
   open: boolean;
@@ -9,13 +9,13 @@ export type DeleteConfirmationModalProps = {
   onDelete: () => void;
 };
 
-export function DeleteConfirmationModal({
+export function DeleteResourceConfirmationModal({
   title,
   resourceName,
   onDelete,
   handleClose,
   open,
-}: DeleteConfirmationModalProps) {
+}: DeleteResourceConfirmationModalProps) {
   return (
     <ConfirmationModal
       open={open}

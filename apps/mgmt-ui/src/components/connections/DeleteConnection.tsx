@@ -1,7 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
-import { DeleteConfirmationModal } from '../modals';
+import { DeleteResourceConfirmationModal } from '../modals';
 
 export type DeleteConnectionProps = {
   customerId: string;
@@ -25,7 +25,7 @@ export function DeleteConnection({ customerId, providerName, onDelete }: DeleteC
       <IconButton className="p-1" onClick={handleClickOpen} size="small">
         <DeleteIcon />
       </IconButton>
-      <DeleteConfirmationModal
+      <DeleteResourceConfirmationModal
         open={open}
         handleClose={handleClose}
         title="Delete connection"

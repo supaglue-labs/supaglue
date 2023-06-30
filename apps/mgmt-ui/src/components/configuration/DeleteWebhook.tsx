@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import { DeleteConfirmationModal } from '../modals';
+import { DeleteResourceConfirmationModal } from '../modals';
 
 export type DeleteWebhookProps = {
   disabled: boolean;
@@ -24,7 +24,7 @@ export function DeleteWebhook({ disabled, onDelete }: DeleteWebhookProps) {
         Delete
       </Button>
 
-      <DeleteConfirmationModal
+      <DeleteResourceConfirmationModal
         open={open}
         handleClose={handleClose}
         onDelete={onDelete}

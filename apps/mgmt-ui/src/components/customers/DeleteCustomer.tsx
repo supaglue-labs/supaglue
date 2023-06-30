@@ -1,7 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
-import { DeleteConfirmationModal } from '../modals';
+import { DeleteResourceConfirmationModal } from '../modals';
 
 export type DeleteCustomerProps = {
   disabled: boolean;
@@ -25,7 +25,7 @@ export function DeleteCustomer({ disabled, customerId, onDelete }: DeleteCustome
       <IconButton className="p-1" onClick={handleClickOpen} size="small" disabled={disabled}>
         <DeleteIcon />
       </IconButton>
-      <DeleteConfirmationModal
+      <DeleteResourceConfirmationModal
         open={open}
         handleClose={handleClose}
         onDelete={onDelete}

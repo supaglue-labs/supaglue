@@ -1,4 +1,4 @@
-import { DeleteConfirmationModal } from '@/components/modals';
+import { DeleteResourceConfirmationModal } from '@/components/modals';
 import { Button } from '@mui/material';
 import { useState } from 'react';
 
@@ -23,7 +23,7 @@ export function DeleteProviderButton({ providerName, onDelete }: DeleteProviderB
       <Button variant="text" color="error" onClick={handleClickOpen} size="small">
         Delete
       </Button>
-      <DeleteConfirmationModal
+      <DeleteResourceConfirmationModal
         open={open}
         handleClose={handleClose}
         onDelete={onDelete}

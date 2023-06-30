@@ -1,4 +1,4 @@
-import { DeleteConfirmationModal } from '@/components/modals';
+import { DeleteResourceConfirmationModal } from '@/components/modals';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
@@ -24,7 +24,7 @@ export function DeleteSyncConfig({ syncConfigId, onDelete }: DeleteSyncConfigPro
       <IconButton className="p-1" onClick={handleClickOpen} size="small">
         <DeleteIcon />
       </IconButton>
-      <DeleteConfirmationModal
+      <DeleteResourceConfirmationModal
         open={open}
         handleClose={handleClose}
         onDelete={onDelete}
