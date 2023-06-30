@@ -55,6 +55,7 @@ export default function ApplicationMenu() {
       addNotification({ message: response.errorMessage, severity: 'error' });
       return;
     }
+    addNotification({ message: 'Application name updated', severity: 'success' });
     const newApplication = response.data;
     await mutate(applications.map((application) => (application.id === id ? newApplication : application)));
     if (id === activeApplication?.id) {
@@ -117,6 +118,7 @@ export default function ApplicationMenu() {
             application={application}
             onUpdateApplicationName={onUpdateApplicationName}
             onDeleteApplication={onDeleteApplication}
+            handleClose={handleClose}
           />
         ))}
         <Divider />
@@ -130,10 +132,12 @@ function Application({
   application,
   onUpdateApplicationName,
   onDeleteApplication,
+  handleClose,
 }: {
   application: Application;
   onUpdateApplicationName: (id: string, name: string) => void;
   onDeleteApplication: (id: string) => void;
+  handleClose: () => void;
 }) {
   const { id, name } = application;
 
@@ -164,11 +168,22 @@ function Application({
         onClose={handleNestedMenuClose}
         anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
       >
+        <CopyApplicationIdMenuItem id={id} handleClose={handleClose} />
         <UpdateApplicationMenuItem application={application} onUpdateApplicationName={onUpdateApplicationName} />
         <DeleteApplicationMenuItem application={application} onDeleteApplication={onDeleteApplication} />
       </Menu>
     </>
   );
+}
+
+function CopyApplicationIdMenuItem({ id, handleClose }: { id: string; handleClose: () => void }) {
+  const { addNotification } = useNotification();
+  const handleClick = async () => {
+    await navigator.clipboard.writeText(id);
+    handleClose();
+    addNotification({ message: 'Copied to clipboard', severity: 'success' });
+  };
+  return <MenuItem onClick={handleClick}>Copy ID</MenuItem>;
 }
 
 function UpdateApplicationMenuItem({
