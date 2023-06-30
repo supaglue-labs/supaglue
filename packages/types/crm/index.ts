@@ -13,10 +13,10 @@ export const SUPPORTED_CRM_CONNECTIONS = [
 export type CRMProviderName = (typeof SUPPORTED_CRM_CONNECTIONS)[number];
 export type CRMProviderCategory = 'crm';
 
-export const CRM_COMMON_MODEL_TYPES = ['account', 'contact', 'lead', 'opportunity', 'user'] as const;
-export type CRMCommonModelType = (typeof CRM_COMMON_MODEL_TYPES)[number];
+export const CRM_COMMON_OBJECT_TYPES = ['account', 'contact', 'lead', 'opportunity', 'user'] as const;
+export type CRMCommonObjectType = (typeof CRM_COMMON_OBJECT_TYPES)[number];
 
-export type CRMCommonModelTypeMap<T extends CRMCommonModelType> = {
+export type CRMCommonObjectTypeMap<T extends CRMCommonObjectType> = {
   account: RemoteAccountTypes;
   contact: RemoteContactTypes;
   lead: RemoteLeadTypes;

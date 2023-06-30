@@ -1,5 +1,5 @@
 export * from './application_service';
-export * from './common_models';
+export * from './common_objects';
 export * from './connection_service';
 export * from './customer_service';
 export * from './provider_service';

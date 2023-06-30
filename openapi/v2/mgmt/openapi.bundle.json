@@ -1613,6 +1613,87 @@
         }
       ]
     },
+    "/customers/{customer_id}/connections/{connection_id}/properties": {
+      "get": {
+        "operationId": "listProperties",
+        "summary": "List properties",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The name of the object for which you want to list properties."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "properties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "properties"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        },
+        {
+          "name": "connection_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/webhook": {
       "get": {
         "operationId": "getWebhook",
@@ -2172,7 +2253,7 @@
                 },
                 "schema_id": {
                   "type": "string",
-                  "description": "If set, will sync these mapped fields into the raw_data column in addition to the common model. If not set, will fetch all fields as is."
+                  "description": "If set, will sync these mapped fields into the raw_data column in addition to the common object. If not set, will fetch all fields as is."
                 }
               },
               "required": [
@@ -2903,6 +2984,27 @@
           "destination_id",
           "provider_id",
           "config"
+        ]
+      },
+      "list_properties": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "example": "object_name"
+          }
+        },
+        "required": [
+          "type",
+          "name"
         ]
       },
       "webhook": {

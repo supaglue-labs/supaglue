@@ -15,7 +15,7 @@ import {
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import { Request, Response, Router } from 'express';
 
-const { crmCommonModelService } = getDependencyContainer();
+const { crmCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -26,7 +26,7 @@ export default function init(app: Router): void {
       req: Request<GetLeadPathParams, GetLeadResponse, GetLeadRequest, GetLeadQueryParams>,
       res: Response<GetLeadResponse>
     ) => {
-      const lead = await crmCommonModelService.get('lead', req.customerConnection, req.params.lead_id);
+      const lead = await crmCommonObjectService.get('lead', req.customerConnection, req.params.lead_id);
       const snakecasedKeysLead = toSnakecasedKeysCrmLead(lead);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysLead;
@@ -40,7 +40,7 @@ export default function init(app: Router): void {
       req: Request<CreateLeadPathParams, CreateLeadResponse, CreateLeadRequest>,
       res: Response<CreateLeadResponse>
     ) => {
-      const id = await crmCommonModelService.create(
+      const id = await crmCommonObjectService.create(
         'lead',
         req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.record)
@@ -55,7 +55,7 @@ export default function init(app: Router): void {
       req: Request<UpdateLeadPathParams, UpdateLeadResponse, UpdateLeadRequest>,
       res: Response<UpdateLeadResponse>
     ) => {
-      await crmCommonModelService.update('lead', req.customerConnection, {
+      await crmCommonObjectService.update('lead', req.customerConnection, {
         id: req.params.lead_id,
         ...camelcaseKeysSansCustomFields(req.body.record),
       });

@@ -16,6 +16,7 @@ import {
   ConnectionUnsafe,
   CRMProvider,
   NormalizedRawRecord,
+  ObjectDef,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -26,8 +27,8 @@ import {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  CRMCommonModelType,
-  CRMCommonModelTypeMap,
+  CRMCommonObjectType,
+  CRMCommonObjectTypeMap,
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
@@ -50,6 +51,7 @@ import {
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -87,7 +89,7 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
-export const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
+const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
   contact: 'contacts',
   deal: 'deals',
@@ -133,30 +135,13 @@ const archivedUnsupportedStandardObjectTypes: HubSpotStandardObjectType[] = [
   'email',
 ];
 
-const HUBSPOT_STANDARD_OBJECT_TYPES = [
-  'company',
-  'contact',
-  'deal',
-  'line_item',
-  'product',
-  'ticket',
-  'quote',
-  'call',
-  'communication',
-  'email',
-  'meeting',
-  'note',
-  'postal_mail',
-  'task',
-] as const;
-
 const HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED = HUBSPOT_STANDARD_OBJECT_TYPES.map(
   (objectType) => hubspotStandardObjectTypeToPlural[objectType]
 );
 
 type HubSpotStandardObjectType = (typeof HUBSPOT_STANDARD_OBJECT_TYPES)[number];
 
-type HubSpotCommonModelObjectType = 'company' | 'contact' | 'deal';
+type HubSpotCommonObjectObjectType = 'company' | 'contact' | 'deal';
 
 type HubSpotCustomSchema = {
   labels: {
@@ -360,7 +345,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   private async getStandardPropertiesToFetch(objectType: string, fieldMappingConfig?: FieldMappingConfig) {
-    const availableProperties = await this.getObjectTypeProperties(objectType);
+    const availableProperties = await this.listPropertiesForRawObjectName(objectType);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
       return availableProperties;
     }
@@ -501,7 +486,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   ): Promise<Readable> {
     // Look up the objectTypeId given the object name
     const objectTypeId = await this.#getObjectTypeIdByCustomObjectName(object);
-    const propertiesToFetch = await this.getObjectTypeProperties(objectTypeId);
+    const propertiesToFetch = await this.listPropertiesForRawObjectName(objectTypeId);
 
     // Find the associated object types for the object
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
@@ -758,12 +743,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public override async listCommonObjectRecords(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date | undefined,
     heartbeat?: () => void
   ): Promise<Readable> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'account':
         return this.listAccounts(fieldMappingConfig, updatedAfter);
       case 'contact':
@@ -775,16 +760,16 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       case 'user':
         return this.listUsers(fieldMappingConfig);
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  public override async getCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
+  public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
-    switch (commonModelType) {
+  ): Promise<CRMCommonObjectTypeMap<T>['object']> {
+    switch (commonObjectType) {
       case 'account':
         return this.getAccount(id, fieldMappingConfig);
       case 'contact':
@@ -796,15 +781,15 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       case 'user':
         return this.getUser(id, fieldMappingConfig);
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  public override async createCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['createParams']
+  public override async createCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'account':
         return this.createAccount(params);
       case 'contact':
@@ -816,15 +801,15 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       case 'user':
         throw new Error('Cannot create users in HubSpot');
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+  public override async updateCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'account':
         return this.updateAccount(params);
       case 'contact':
@@ -836,23 +821,39 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       case 'user':
         throw new Error('Cannot update users in HubSpot');
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  private async getObjectTypeProperties(objectType: string) {
+  public override async listProperties(object: ObjectDef): Promise<string[]> {
+    if (object.type === 'common') {
+      switch (object.name) {
+        case 'account':
+          return await this.listPropertiesForRawObjectName('company');
+        case 'lead':
+          throw new Error('common object "lead" is not supported for hubspot');
+        case 'user':
+          return ['id', 'email', 'firstName', 'lastName', 'userId', 'createdAt', 'updatedAt', 'archived', 'teams'];
+        default:
+          return await this.listPropertiesForRawObjectName(object.name);
+      }
+    }
+    return await this.listPropertiesForRawObjectName(object.name);
+  }
+
+  public async listPropertiesForRawObjectName(objectName: string): Promise<string[]> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
-      const response = await this.#client.crm.properties.coreApi.getAll(objectType);
+      const response = await this.#client.crm.properties.coreApi.getAll(objectName);
       return response.results.map(({ name }) => name);
     });
   }
 
-  private async getCommonModelPropertiesToFetch(
-    objectType: HubSpotCommonModelObjectType,
+  private async getCommonObjectPropertiesToFetch(
+    objectType: HubSpotCommonObjectObjectType,
     fieldMappingConfig?: FieldMappingConfig
   ) {
-    const availableProperties = await this.getObjectTypeProperties(objectType);
+    const availableProperties = await this.listPropertiesForRawObjectName(objectType);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
       return availableProperties;
     }
@@ -864,7 +865,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listAccounts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('company', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertiesToFetch('company', fieldMappingConfig);
     const normalPageFetcher = await this.#getListNormalAccountsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listAccountsFull(properties, /* archived */ true, after);
@@ -977,7 +978,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
-    const properties = await this.getCommonModelPropertiesToFetch('company');
+    const properties = await this.getCommonObjectPropertiesToFetch('company');
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(id, properties);
     return {
@@ -1022,7 +1023,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listOpportunities(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('deal', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertiesToFetch('deal', fieldMappingConfig);
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
@@ -1159,7 +1160,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const properties = await this.getCommonModelPropertiesToFetch('deal');
+    const properties = await this.getCommonObjectPropertiesToFetch('deal');
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
       id,
@@ -1202,7 +1203,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonModelPropertiesToFetch('contact', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertiesToFetch('contact', fieldMappingConfig);
     const normalPageFetcher = await this.#getListNormalContactsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listContactsFull(properties, /* archived */ true, after);
@@ -1339,7 +1340,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
-    const properties = await this.getCommonModelPropertiesToFetch('contact');
+    const properties = await this.getCommonObjectPropertiesToFetch('contact');
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
       id,
@@ -1691,7 +1692,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return params;
   }
 
-  public handleErr(err: unknown): unknown {
+  public override handleErr(err: unknown): unknown {
     const error = err as any;
 
     switch (error.code) {

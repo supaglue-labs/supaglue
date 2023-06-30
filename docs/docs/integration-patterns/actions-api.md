@@ -69,7 +69,7 @@ curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 
 :::info
 
-Besides unifying the API endpoints, the actions API also applies the Supaglue common model, which normalizes the request and response schemas across different providers in the same category. See [Common schema](platform/common-object) to learn more.
+Besides unifying the API endpoints, the actions API also applies the Supaglue common object, which normalizes the request and response schemas across different providers in the same category. See [Common schema](platform/common-object) to learn more.
 
 :::
 

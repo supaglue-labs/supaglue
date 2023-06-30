@@ -12,8 +12,8 @@ import {
 } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { CRMProvider } from '@supaglue/types';
-import type { CRMCommonModelType } from '@supaglue/types/crm';
-import type { EngagementCommonModelType } from '@supaglue/types/engagement';
+import type { CRMCommonObjectType } from '@supaglue/types/crm';
+import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import type { ObjectType } from '@supaglue/types/object_sync';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import { pipeline, Readable, Transform } from 'stream';
@@ -71,14 +71,14 @@ export function createSyncRecords(
           const fieldMappingConfig = createFieldMappingConfig(schema?.config, customerFieldMapping);
 
           const readable = await (client as CrmRemoteClient).listCommonObjectRecords(
-            object as CRMCommonModelType,
+            object as CRMCommonObjectType,
             fieldMappingConfig,
             updatedAfter,
             heartbeat
           );
-          return await writer.writeCommonModelRecords(
+          return await writer.writeCommonObjectRecords(
             connection,
-            object as CRMCommonModelType,
+            object as CRMCommonObjectType,
             toHeartbeatingReadable(readable),
             heartbeat
           );
@@ -104,12 +104,12 @@ export function createSyncRecords(
       } else {
         if (objectType === 'common') {
           const readable = await (client as EngagementRemoteClient).listCommonObjectRecords(
-            object as EngagementCommonModelType,
+            object as EngagementCommonObjectType,
             updatedAfter
           );
-          return await writer.writeCommonModelRecords(
+          return await writer.writeCommonObjectRecords(
             connection,
-            object as EngagementCommonModelType,
+            object as EngagementCommonObjectType,
             toHeartbeatingReadable(readable),
             heartbeat
           );

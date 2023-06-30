@@ -1,8 +1,8 @@
 import type { PrismaClient } from '@supaglue/db';
 import type {
   AddObjectToProviderParams,
-  CommonModelForCategory,
-  CommonModelType,
+  CommonObjectForCategory,
+  CommonObjectType,
   Provider,
   ProviderCategory,
   ProviderCreateParams,
@@ -119,7 +119,7 @@ export class ProviderService {
             id: syncConfig.id,
           },
           data: {
-            ...toSyncConfigModel(addObjectToSyncConfig(syncConfig, params.name, params.type)),
+            ...toSyncConfigModel(upsertObjectToSyncConfig(syncConfig, params.name, params.type)),
           },
         });
       }
@@ -184,7 +184,10 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
       if (objects.common?.find((object) => object.name === name)) {
         throw new BadRequestError(`Common object with name: ${name} already exists in provider`);
       }
-      return { ...objects, common: [...(objects.common ?? []), { name: name as CommonModelForCategory<T>, schemaId }] };
+      return {
+        ...objects,
+        common: [...(objects.common ?? []), { name: name as CommonObjectForCategory<T>, schemaId }],
+      };
     case 'standard':
       if (objects.standard?.find((object) => object.name === name)) {
         throw new BadRequestError(`Standard object with name: ${name} already exists in provider`);
@@ -200,22 +203,22 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
   }
 };
 
-const addObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: string): SyncConfig => {
+const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: string): SyncConfig => {
   switch (type) {
     case 'common':
       if (syncConfig.config.commonObjects?.find((object) => object.object === name)) {
-        throw new BadRequestError(`Common object with name: ${name} already exists in sync config`);
+        return syncConfig;
       }
       return {
         ...syncConfig,
         config: {
           ...syncConfig.config,
-          commonObjects: [...(syncConfig.config.commonObjects ?? []), { object: name as CommonModelType }],
+          commonObjects: [...(syncConfig.config.commonObjects ?? []), { object: name as CommonObjectType }],
         },
       };
     case 'standard':
       if (syncConfig.config.standardObjects?.find((object) => object.object === name)) {
-        throw new BadRequestError(`Standard object with name: ${name} already exists in sync config`);
+        return syncConfig;
       }
       return {
         ...syncConfig,
@@ -226,7 +229,7 @@ const addObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: strin
       };
     case 'custom':
       if (syncConfig.config.customObjects?.find((object) => object.object === name)) {
-        throw new BadRequestError(`Custom object with name: ${name} already exists in sync config`);
+        return syncConfig;
       }
       return {
         ...syncConfig,

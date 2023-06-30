@@ -6,8 +6,8 @@ import { ConnectionUnsafe, CRMProvider } from '@supaglue/types';
 import {
   Account,
   Contact,
-  CRMCommonModelType,
-  CRMCommonModelTypeMap,
+  CRMCommonObjectType,
+  CRMCommonObjectTypeMap,
   Lead,
   Opportunity,
   User,
@@ -155,12 +155,12 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   }
 
   public override async listCommonObjectRecords(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'account':
         return await this.listAccounts(updatedAfter, heartbeat);
       case 'contact':
@@ -172,16 +172,16 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       case 'user':
         return await this.listUsers(updatedAfter, heartbeat);
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  public override async getCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
+  public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
-    switch (commonModelType) {
+  ): Promise<CRMCommonObjectTypeMap<T>['object']> {
+    switch (commonObjectType) {
       case 'account':
         return this.getAccount(id);
       case 'contact':
@@ -193,16 +193,16 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       case 'user':
         return await this.getUser(id);
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  public override async createCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['createParams']
+  public override async createCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
     await this.maybeRefreshAccessToken();
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'account': {
         const response = await this.#odata.post('accounts', toDynamicsAccountCreateParams(params)).query();
         const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
@@ -226,16 +226,16 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       case 'user':
         throw new Error('Cannot create users in MS Dynamics 365');
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
-  public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+  public override async updateCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
     await this.maybeRefreshAccessToken();
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'account': {
         await this.#odata.patch(`accounts(${params.id})`, toDynamicsAccountUpdateParams(params)).query();
         return params.id;
@@ -255,7 +255,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       case 'user':
         throw new Error('Cannot update users in MS Dynamics 365');
       default:
-        throw new Error(`Unsupported common model type: ${commonModelType}`);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
@@ -405,7 +405,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public handleErr(err: unknown): unknown {
+  public override handleErr(err: unknown): unknown {
     if (err instanceof Response) {
       switch (err.status) {
         case 400:

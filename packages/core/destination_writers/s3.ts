@@ -1,8 +1,8 @@
 import { DeleteObjectsCommand, paginateListObjectsV2, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import {
-  CommonModelType,
-  CommonModelTypeForCategory,
-  CommonModelTypeMapForCategory,
+  CommonObjectType,
+  CommonObjectTypeForCategory,
+  CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   NormalizedRawRecord,
   ProviderCategory,
@@ -11,7 +11,7 @@ import {
 } from '@supaglue/types';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteObjectRecordsResult } from './base';
+import { BaseDestinationWriter, WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 const CHUNK_SIZE = 1000;
@@ -32,25 +32,25 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     });
   }
 
-  public override async upsertCommonModelRecord<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
-    commonModelType: T,
-    object: CommonModelTypeMapForCategory<P>['object']
+    commonObjectType: T,
+    object: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
     // Do nothing
     return;
   }
 
-  public override async writeCommonModelRecords(
+  public override async writeCommonObjectRecords(
     connection: ConnectionSafeAny,
-    commonModelType: CommonModelType,
+    commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void
-  ): Promise<WriteCommonModelRecordsResult> {
-    await this.dropExistingCommonModelRecordsIfNecessary(
+  ): Promise<WriteCommonObjectRecordsResult> {
+    await this.dropExistingCommonObjectRecordsIfNecessary(
       connection.applicationId,
       connection.category,
-      commonModelType,
+      commonObjectType,
       connection.customerId,
       connection.providerName
     );
@@ -58,7 +58,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     let numRecords = 0;
     let maxLastModifiedAt: Date | null = null;
     let data: Record<string, any>[] = [];
-    const mapper = getSnakecasedKeysMapper(category, commonModelType);
+    const mapper = getSnakecasedKeysMapper(category, commonObjectType);
     await pipeline(
       inputStream,
       new Transform({
@@ -83,7 +83,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
             }
 
             if (data.length === CHUNK_SIZE) {
-              await this.writeCommonModelRecord(commonModelType, connection, data);
+              await this.writeCommonObjectRecord(commonObjectType, connection, data);
               heartbeat();
               data = [];
             }
@@ -97,25 +97,25 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
     // Write any remaining data
     if (data.length) {
-      await this.writeCommonModelRecord(commonModelType, connection, data);
+      await this.writeCommonObjectRecord(commonObjectType, connection, data);
       heartbeat();
     }
 
     return { numRecords, maxLastModifiedAt };
   }
 
-  getCommonModelKeyPrefix(
+  getCommonObjectKeyPrefix(
     applicationId: string,
     category: ProviderCategory,
-    commonModelType: CommonModelType,
+    commonObjectType: CommonObjectType,
     customerId: string,
     providerName: ProviderName
   ) {
-    return `${applicationId}/${category}/${commonModelType}/${customerId}/${providerName}`;
+    return `${applicationId}/${category}/${commonObjectType}/${customerId}/${providerName}`;
   }
 
-  async writeCommonModelRecord(
-    commonModelType: CommonModelType,
+  async writeCommonObjectRecord(
+    commonObjectType: CommonObjectType,
     { providerName, customerId, category, applicationId }: ConnectionSafeAny,
     results: Record<string, any>[] // TODO: type this
   ): Promise<void> {
@@ -133,10 +133,10 @@ export class S3DestinationWriter extends BaseDestinationWriter {
 
       const command = new PutObjectCommand({
         Bucket: this.#destination.config.bucket,
-        Key: `${this.getCommonModelKeyPrefix(
+        Key: `${this.getCommonObjectKeyPrefix(
           applicationId,
           category,
-          commonModelType,
+          commonObjectType,
           customerId,
           providerName
         )}/${Date.now()}`,
@@ -147,10 +147,10 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     }
   }
 
-  async dropExistingCommonModelRecordsIfNecessary(
+  async dropExistingCommonObjectRecordsIfNecessary(
     applicationId: string,
     category: ProviderCategory,
-    commonModelType: CommonModelType,
+    commonObjectType: CommonObjectType,
     customerId: string,
     providerName: ProviderName
   ) {
@@ -161,7 +161,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
       },
       {
         Bucket: this.#destination.config.bucket,
-        Prefix: this.getCommonModelKeyPrefix(applicationId, category, commonModelType, customerId, providerName),
+        Prefix: this.getCommonObjectKeyPrefix(applicationId, category, commonObjectType, customerId, providerName),
       }
     );
 

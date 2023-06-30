@@ -4,7 +4,7 @@ import { toSnakecasedKeysEngagementUser } from '@supaglue/core/mappers/engagemen
 import { GetUserPathParams, GetUserRequest, GetUserResponse } from '@supaglue/schemas/v2/engagement';
 import { Request, Response, Router } from 'express';
 
-const { engagementCommonModelService } = getDependencyContainer();
+const { engagementCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -13,7 +13,7 @@ export default function init(app: Router): void {
     '/:user_id',
     async (req: Request<GetUserPathParams, GetUserResponse, GetUserRequest>, res: Response<GetUserResponse>) => {
       const { id: connectionId } = req.customerConnection;
-      const user = await engagementCommonModelService.get('user', connectionId, req.params.user_id);
+      const user = await engagementCommonObjectService.get('user', connectionId, req.params.user_id);
       const snakecasedKeysUser = toSnakecasedKeysEngagementUser(user);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysUser;

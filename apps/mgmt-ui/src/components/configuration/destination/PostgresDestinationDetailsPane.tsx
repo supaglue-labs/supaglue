@@ -314,7 +314,10 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           >
             Back
           </Button>
-          {isTestSuccessful ? <SaveButton /> : <TestButton />}
+          <Stack direction="row" className="gap-4">
+            <TestButton />
+            <SaveButton />
+          </Stack>
         </Stack>
       </Stack>
     </Card>

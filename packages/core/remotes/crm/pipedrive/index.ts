@@ -11,8 +11,8 @@ import {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  CRMCommonModelType,
-  CRMCommonModelTypeMap,
+  CRMCommonObjectType,
+  CRMCommonObjectTypeMap,
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
@@ -22,8 +22,15 @@ import {
   User,
 } from '@supaglue/types/crm';
 import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+  TooManyRequestsError,
+  UnauthorizedError,
+} from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import { paginator } from '../../utils/paginator';
 import { AbstractCrmRemoteClient, ConnectorAuthConfig } from '../base';
@@ -123,11 +130,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   public override async listCommonObjectRecords(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date
   ): Promise<Readable> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'contact':
         return await this.listContacts(updatedAfter);
       case 'lead':
@@ -312,12 +319,12 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public override async getCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
+  public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonModelTypeMap<T>['object']> {
-    switch (commonModelType) {
+  ): Promise<CRMCommonObjectTypeMap<T>['object']> {
+    switch (commonObjectType) {
       case 'contact':
         return await this.getContact(id);
       case 'lead':
@@ -329,7 +336,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'user':
         return await this.getUser(id);
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -374,11 +381,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return fromPipedriveUserToUser(response.data.data);
   }
 
-  public override async createCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['createParams']
+  public override async createCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'contact':
         return await this.createContact(params);
       case 'lead':
@@ -390,7 +397,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'user':
         throw new Error('User creation is not supported');
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -443,11 +450,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return response.data.data.id.toString();
   }
 
-  public override async updateCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+  public override async updateCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'contact':
         return await this.updateContact(params);
       case 'lead':
@@ -459,7 +466,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'user':
         throw new Error('User update is not supported');
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -520,6 +527,29 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   ): Promise<SendPassthroughRequestResponse> {
     await this.maybeRefreshAccessToken();
     return await super.sendPassthroughRequest(request);
+  }
+
+  public override handleErr(err: unknown): unknown {
+    if (!(err instanceof AxiosError)) {
+      return err;
+    }
+
+    const jsonErrorMessage = err.response?.data?.data?.message;
+
+    switch (err.response?.status) {
+      case 400:
+        return new BadRequestError(jsonErrorMessage ?? err.message);
+      case 401:
+        return new UnauthorizedError(jsonErrorMessage ?? err.message);
+      case 403:
+        return new ForbiddenError(jsonErrorMessage ?? err.message);
+      case 404:
+        return new NotFoundError(jsonErrorMessage ?? err.message);
+      case 429:
+        return new TooManyRequestsError(jsonErrorMessage ?? err.message);
+      default:
+        return err;
+    }
   }
 }
 

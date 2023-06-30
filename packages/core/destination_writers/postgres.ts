@@ -1,15 +1,15 @@
 import type {
-  CommonModelType,
-  CommonModelTypeForCategory,
-  CommonModelTypeMapForCategory,
+  CommonObjectType,
+  CommonObjectTypeForCategory,
+  CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   NormalizedRawRecord,
   PostgresDestination,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
-import { CRMCommonModelType } from '@supaglue/types/crm';
-import { EngagementCommonModelType } from '@supaglue/types/engagement';
+import { CRMCommonObjectType } from '@supaglue/types/crm';
+import { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import { stringify } from 'csv-stringify';
 import { Pool, PoolClient } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
@@ -28,7 +28,7 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
-import { BaseDestinationWriter, WriteCommonModelRecordsResult, WriteObjectRecordsResult } from './base';
+import { BaseDestinationWriter, WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
@@ -44,13 +44,13 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
-  public override async upsertCommonModelRecord<P extends ProviderCategory, T extends CommonModelTypeForCategory<P>>(
+  public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     { providerName, customerId, category, applicationId }: ConnectionSafeAny,
-    commonModelType: T,
-    object: CommonModelTypeMapForCategory<P>['object']
+    commonObjectType: T,
+    object: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
     const { schema } = this.#destination.config;
-    const table = getCommonModelTableName(category, commonModelType);
+    const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `${schema}.${table}`;
 
     const client = await this.#getClient();
@@ -58,9 +58,9 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema));
+      await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));
 
-      const columns = getColumnsForCommonModel(category, commonModelType);
+      const columns = getColumnsForCommonObject(category, commonObjectType);
       const columnsToUpdate = columns.filter(
         (c) =>
           c !== '_supaglue_application_id' &&
@@ -69,7 +69,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
           c !== 'id'
       );
 
-      const mapper = getSnakecasedKeysMapper(category, commonModelType);
+      const mapper = getSnakecasedKeysMapper(category, commonObjectType);
 
       const mappedRecord = {
         _supaglue_application_id: applicationId,
@@ -88,8 +88,13 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         // pg doesn't seem to convert objects to JSON even though the docs say it does
         // https://node-postgres.com/features/queries
         if (value !== null && value !== undefined && typeof value === 'object') {
-          return JSON.stringify(value);
+          return JSON.stringify(value).replace(/\\u0000/g, '');
         }
+
+        if (typeof value === 'string') {
+          return value.replace(/\\u0000/g, '');
+        }
+
         return value;
       });
 
@@ -106,16 +111,16 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     }
   }
 
-  public override async writeCommonModelRecords(
+  public override async writeCommonObjectRecords(
     { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
-    commonModelType: CommonModelType,
+    commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void
-  ): Promise<WriteCommonModelRecordsResult> {
-    const childLogger = logger.child({ connectionId, providerName, customerId, commonModelType });
+  ): Promise<WriteCommonObjectRecordsResult> {
+    const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
 
     const { schema } = this.#destination.config;
-    const table = getCommonModelTableName(category, commonModelType);
+    const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `${schema}.${table}`;
     const tempTable = `temp_${table}`;
     const dedupedTempTable = `deduped_temp_${table}`;
@@ -125,14 +130,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema));
+      await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
-      await client.query(getCommonModelSchemaSetupSql(category, commonModelType)(schema, /* temp */ true));
+      await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ true));
       await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, last_modified_at DESC)`);
 
-      const columns = getColumnsForCommonModel(category, commonModelType);
+      const columns = getColumnsForCommonObject(category, commonObjectType);
       const columnsToUpdate = columns.filter(
         (c) =>
           c !== '_supaglue_application_id' &&
@@ -151,19 +156,20 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         columns,
         cast: {
           boolean: (value: boolean) => value.toString(),
-          object: (value: object) => JSON.stringify(value),
+          object: (value: object) => JSON.stringify(value).replace(/\\u0000/g, ''),
           date: (value: Date) => value.toISOString(),
+          string: (value: string) => value.replace(/\\u0000/g, ''),
         },
         quoted: true,
       });
 
-      const mapper = getSnakecasedKeysMapper(category, commonModelType);
+      const mapper = getSnakecasedKeysMapper(category, commonObjectType);
 
       // Keep track of stuff
       let tempTableRowCount = 0;
       let maxLastModifiedAt: Date | null = null;
 
-      childLogger.info('Importing common model objects into temp table [IN PROGRESS]');
+      childLogger.info('Importing common object objects into temp table [IN PROGRESS]');
       await pipeline(
         inputStream,
         new Transform({
@@ -196,10 +202,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         stringifier,
         stream
       );
-      childLogger.info('Importing common model objects into temp table [COMPLETED]');
+      childLogger.info('Importing common object objects into temp table [COMPLETED]');
 
       // Dedupe the temp table
-      // Since all common models have `lastModifiedAt`, we can sort by that to avoid dupes.
+      // Since all common objects have `lastModifiedAt`, we can sort by that to avoid dupes.
       // We need to do the sorting before applying OFFSET / LIMIT because otherwise, if a record
       // appears as the last record of a page and also the first record of the next page, we will
       // overwrite the newer record with the older record in the main table.
@@ -209,10 +215,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
+      heartbeat();
+
       // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM reaper.
       childLogger.info('Dropping temp table [IN PROGRESS]');
       await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
       childLogger.info('Dropping temp table [COMPLETED]');
+
+      heartbeat();
 
       // Copy from deduped temp table
       const columnsToUpdateStr = columnsToUpdate.join(',');
@@ -365,10 +375,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
+      heartbeat();
+
       // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM repear.
       childLogger.info('Dropping temp table [IN PROGRESS]');
       await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
       childLogger.info('Dropping temp table [COMPLETED]');
+
+      heartbeat();
 
       // Copy from deduped temp table
       const columnsToUpdateStr = columnsToUpdate.join(',');
@@ -409,16 +423,16 @@ const getObjectTableName = (providerName: ProviderName, object: string, temp?: b
   return `${temp ? 'temp_' : ''}${providerName}_${object}`;
 };
 
-const getCommonModelTableName = (category: ProviderCategory, commonModelType: CommonModelType) => {
+const getCommonObjectTableName = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
   if (category === 'crm') {
-    return tableNamesByCommonModelType.crm[commonModelType as CRMCommonModelType];
+    return tableNamesByCommonObjectType.crm[commonObjectType as CRMCommonObjectType];
   }
-  return tableNamesByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
+  return tableNamesByCommonObjectType.engagement[commonObjectType as EngagementCommonObjectType];
 };
 
-const tableNamesByCommonModelType: {
-  crm: Record<CRMCommonModelType, string>;
-  engagement: Record<EngagementCommonModelType, string>;
+const tableNamesByCommonObjectType: {
+  crm: Record<CRMCommonObjectType, string>;
+  engagement: Record<EngagementCommonObjectType, string>;
 } = {
   crm: {
     account: 'crm_accounts',
@@ -436,16 +450,16 @@ const tableNamesByCommonModelType: {
   },
 };
 
-const getColumnsForCommonModel = (category: ProviderCategory, commonModelType: CommonModelType) => {
+const getColumnsForCommonObject = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
   if (category === 'crm') {
-    return columnsByCommonModelType.crm[commonModelType as CRMCommonModelType];
+    return columnsByCommonObjectType.crm[commonObjectType as CRMCommonObjectType];
   }
-  return columnsByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
+  return columnsByCommonObjectType.engagement[commonObjectType as EngagementCommonObjectType];
 };
 
-const columnsByCommonModelType: {
-  crm: Record<CRMCommonModelType, string[]>;
-  engagement: Record<EngagementCommonModelType, string[]>;
+const columnsByCommonObjectType: {
+  crm: Record<CRMCommonObjectType, string[]>;
+  engagement: Record<EngagementCommonObjectType, string[]>;
 } = {
   crm: {
     account: keysOfSnakecasedCrmAccountWithTenant,
@@ -484,16 +498,16 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? tableName : `${sc
 );`;
 };
 
-const getCommonModelSchemaSetupSql = (category: ProviderCategory, commonModelType: CommonModelType) => {
+const getCommonObjectSchemaSetupSql = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
   if (category === 'crm') {
-    return schemaSetupSqlByCommonModelType.crm[commonModelType as CRMCommonModelType];
+    return schemaSetupSqlByCommonObjectType.crm[commonObjectType as CRMCommonObjectType];
   }
-  return schemaSetupSqlByCommonModelType.engagement[commonModelType as EngagementCommonModelType];
+  return schemaSetupSqlByCommonObjectType.engagement[commonObjectType as EngagementCommonObjectType];
 };
 
-const schemaSetupSqlByCommonModelType: {
-  crm: Record<CRMCommonModelType, (schema: string, temp?: boolean) => string>;
-  engagement: Record<EngagementCommonModelType, (schema: string, temp?: boolean) => string>;
+const schemaSetupSqlByCommonObjectType: {
+  crm: Record<CRMCommonObjectType, (schema: string, temp?: boolean) => string>;
+  engagement: Record<EngagementCommonObjectType, (schema: string, temp?: boolean) => string>;
 } = {
   crm: {
     account: (schema: string, temp = false) => `-- CreateTable

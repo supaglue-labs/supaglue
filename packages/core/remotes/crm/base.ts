@@ -1,5 +1,5 @@
-import { ConnectionUnsafe, CRMProvider, ProviderCategory } from '@supaglue/types';
-import { CRMCommonModelType, CRMCommonModelTypeMap, CRMProviderName } from '@supaglue/types/crm';
+import { ConnectionUnsafe, CRMProvider, ObjectDef, ProviderCategory } from '@supaglue/types';
+import { CRMCommonObjectType, CRMCommonObjectTypeMap, CRMProviderName } from '@supaglue/types/crm';
 import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
 import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/crm/custom_object';
@@ -16,6 +16,8 @@ import { AbstractRemoteClient, RemoteClient } from '../base';
 export interface CrmRemoteClient extends RemoteClient {
   category(): ProviderCategory;
 
+  listProperties(object: ObjectDef): Promise<string[]>;
+
   listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
@@ -24,24 +26,24 @@ export interface CrmRemoteClient extends RemoteClient {
   ): Promise<Readable>;
   listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
   listCommonObjectRecords(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
 
-  getCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
+  getCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonModelTypeMap<T>['object']>;
-  createCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['createParams']
+  ): Promise<CRMCommonObjectTypeMap<T>['object']>;
+  createCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string>;
-  updateCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+  updateCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string>;
 
   getCustomObject(id: string): Promise<CustomObject>;
@@ -71,6 +73,10 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     return err;
   }
 
+  listProperties(object: ObjectDef): Promise<string[]> {
+    throw new Error('Not implemented');
+  }
+
   public async listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
@@ -89,23 +95,23 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   }
 
   abstract listCommonObjectRecords(
-    commonModelType: CRMCommonModelType,
+    commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
-  abstract getCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
+  abstract getCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<CRMCommonModelTypeMap<T>['object']>;
-  abstract createCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['createParams']
+  ): Promise<CRMCommonObjectTypeMap<T>['object']>;
+  abstract createCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string>;
-  abstract updateCommonObjectRecord<T extends CRMCommonModelType>(
-    commonModelType: T,
-    params: CRMCommonModelTypeMap<T>['updateParams']
+  abstract updateCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string>;
 
   public async getCustomObject(id: string): Promise<CustomObject> {

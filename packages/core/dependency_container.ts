@@ -11,10 +11,10 @@ import {
   SyncConfigService,
 } from './services';
 import { ApplicationService } from './services/application_service';
-import { CrmAssociationService } from './services/common_models/crm/association_service';
-import { CrmCommonModelService } from './services/common_models/crm/common_model_service';
-import { CrmCustomObjectService } from './services/common_models/crm/custom_object_service';
-import { EngagementCommonModelService } from './services/common_models/engagement/common_model_service';
+import { CrmAssociationService } from './services/common_objects/crm/association_service';
+import { CrmCommonObjectService } from './services/common_objects/crm/common_object_service';
+import { CrmCustomObjectService } from './services/common_objects/crm/custom_object_service';
+import { EngagementCommonObjectService } from './services/common_objects/engagement/common_object_service';
 import { DestinationService } from './services/destination_service';
 import { ObjectSyncRunService } from './services/object_sync_run_service';
 import { WebhookService } from './services/webhook_service';
@@ -36,8 +36,8 @@ export type CoreDependencyContainer = {
   schemaService: SchemaService;
   objectSyncRunService: ObjectSyncRunService;
 
-  crmCommonModelService: CrmCommonModelService;
-  engagementCommonModelService: EngagementCommonModelService;
+  crmCommonObjectService: CrmCommonObjectService;
+  engagementCommonObjectService: EngagementCommonObjectService;
 
   crmCustomObjectService: CrmCustomObjectService;
   crmAssociationService: CrmAssociationService;
@@ -83,13 +83,13 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const destinationService = new DestinationService(prisma);
   const schemaService = new SchemaService(prisma);
 
-  const crmCommonModelService = new CrmCommonModelService(
+  const crmCommonObjectService = new CrmCommonObjectService(
     remoteService,
     destinationService,
     providerService,
     schemaService
   );
-  const engagementCommonModelService = new EngagementCommonModelService(remoteService, destinationService);
+  const engagementCommonObjectService = new EngagementCommonObjectService(remoteService, destinationService);
 
   const crmCustomObjectService = new CrmCustomObjectService(remoteService);
   const crmAssociationService = new CrmAssociationService(remoteService);
@@ -110,8 +110,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     webhookService,
     destinationService,
     schemaService,
-    crmCommonModelService,
-    engagementCommonModelService,
+    crmCommonObjectService,
+    engagementCommonObjectService,
     crmCustomObjectService,
     crmAssociationService,
     objectSyncRunService,

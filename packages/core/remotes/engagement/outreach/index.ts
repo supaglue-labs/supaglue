@@ -8,8 +8,8 @@ import {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
-  EngagementCommonModelType,
-  EngagementCommonModelTypeMap,
+  EngagementCommonObjectType,
+  EngagementCommonObjectTypeMap,
   Mailbox,
   Sequence,
   SequenceState,
@@ -87,11 +87,11 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return this.#headers;
   }
 
-  public override async getCommonObjectRecord<T extends EngagementCommonModelType>(
-    commonModelType: T,
+  public override async getCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
     id: string
-  ): Promise<EngagementCommonModelTypeMap<T>['object']> {
-    switch (commonModelType) {
+  ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
+    switch (commonObjectType) {
       case 'contact':
         return await this.getContact(id);
       case 'user':
@@ -103,7 +103,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'sequence_state':
         return await this.getSequenceState(id);
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -143,10 +143,10 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   public override async listCommonObjectRecords(
-    commonModelType: EngagementCommonModelType,
+    commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date
   ): Promise<Readable> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'contact':
         return await this.listContacts(updatedAfter);
       case 'user':
@@ -158,7 +158,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'sequence_state':
         return await this.listSequenceStates(updatedAfter);
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -303,11 +303,11 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  public override async createCommonObjectRecord<T extends EngagementCommonModelType>(
-    commonModelType: T,
-    params: EngagementCommonModelTypeMap<T>['createParams']
+  public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'sequence_state':
         return await this.createSequenceState(params as SequenceStateCreateParams);
       case 'contact':
@@ -315,9 +315,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'sequence':
       case 'mailbox':
       case 'user':
-        throw new Error(`Create operation not supported for ${commonModelType} object`);
+        throw new Error(`Create operation not supported for ${commonObjectType} object`);
       default:
-        throw new Error(`Common model ${commonModelType} not supported`);
+        throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -345,15 +345,15 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
-  public override async updateCommonObjectRecord<T extends EngagementCommonModelType>(
-    commonModelType: T,
-    params: EngagementCommonModelTypeMap<T>['updateParams']
+  public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
-    switch (commonModelType) {
+    switch (commonObjectType) {
       case 'contact':
         return await this.updateContact(params as ContactUpdateParams);
       default:
-        throw new Error(`Update not supported for common model ${commonModelType}`);
+        throw new Error(`Update not supported for common object ${commonObjectType}`);
     }
   }
 
@@ -376,7 +376,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
-  public handleErr(err: unknown): unknown {
+  public override handleErr(err: unknown): unknown {
     if (!(err instanceof AxiosError)) {
       return err;
     }
