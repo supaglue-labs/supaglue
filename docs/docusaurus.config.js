@@ -8,6 +8,7 @@ const path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 
 const LATEST_VERSION = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8')).version;
+const VERSIONS = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'versions.json'), 'utf8'));
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -46,6 +47,10 @@ const config = {
       {
         docs: {
           lastVersion: LATEST_VERSION,
+          versions: {
+            ...VERSIONS.reduce((acc, version) => ({ ...acc, [version]: { badge: false } }), {}),
+            current: { badge: false },
+          },
           sidebarCollapsed: false,
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
