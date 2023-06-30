@@ -37,9 +37,9 @@ curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 --header 'Content-Type: application/json' \
 --data '{
     "model": {
-        "first_name": "John", 
+        "first_name": "John",
         "last_name": "Doe"
-    }    
+    }
 }'
 ```
 
@@ -56,9 +56,9 @@ curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 --header 'Content-Type: application/json' \
 --data '{
     "model": {
-        "first_name": "John", 
+        "first_name": "John",
         "last_name": "Doe"
-    }    
+    }
 }'
 ```
 
@@ -69,7 +69,7 @@ curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 
 :::info
 
-Besides unifying the API endpoints, the actions API also applies the Supaglue common model, which normalizes the request and response schemas across different providers in the same category. See [Common schema](../platform/common-object) to learn more.
+Besides unifying the API endpoints, the actions API also applies the Supaglue common model, which normalizes the request and response schemas across different providers in the same category. See [Common schema](platform/common-object) to learn more.
 
 :::
 
@@ -88,8 +88,8 @@ This feature is only supported for some destinations, not all.
 :::
 
 ## Field mappings
-[Field mappings](../platform/field-mapping) can be used in the Actions API to reverse-map fields from your system to your customer's fields if you opted to use field mappings for Managed Syncs.
+[Field mappings](platform/field-mapping) can be used in the Actions API to reverse-map fields from your system to your customer's fields if you opted to use field mappings for Managed Syncs.
 
 ## Pass-through API
 
-For any action not directly supported by Supaglue's API, you can use our pass-through API. This lets you make any API call directly against the remote provider. See our [API reference](https://docs.supaglue.com/api) for more details.
+For any action not directly supported by Supaglue's API, you can use our pass-through API. This lets you make any API call directly against the remote provider. See our [API reference](api/introduction) for more details.

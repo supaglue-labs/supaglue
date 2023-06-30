@@ -130,7 +130,7 @@ The above sync configuration defines a managed sync that does the following:
 - Fetch the `MyCustomObject__c` custom object from Salesforce.
 
 ## Field mappings
-[Field mappings](/platform/field-mapping) can be used for Managed Syncs to map fields from your customer's third-party tools to your Destinations. It will also be used to reverse-map the same fields if you make writes to their third-party tools using the Actions API.
+[Field mappings](platform/field-mapping) can be used for Managed Syncs to map fields from your customer's third-party tools to your Destinations. It will also be used to reverse-map the same fields if you make writes to their third-party tools using the Actions API.
 
 ## Destination schema
 
@@ -189,7 +189,7 @@ Supaglue adds a primary key database constraint on `{_supaglue_application_id, s
 
 ## Query patterns
 
-Refer to destination documentation for query patterns in each destination, e.g. [Postgres](/destinations/postgres#query-patterns).
+Refer to destination documentation for query patterns in each destination, e.g. [Postgres](destinations/postgres#query-patterns).
 
 ## Notification webhooks
 

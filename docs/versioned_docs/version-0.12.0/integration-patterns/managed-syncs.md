@@ -232,7 +232,7 @@ Supaglue adds a primary key database constraint on `{_supaglue_application_id, s
 
 ## Query patterns
 
-Refer to destination documentation for query patterns in each destination, e.g. [Postgres](/destinations/postgres#query-patterns).
+Refer to destination documentation for query patterns in each destination, e.g. [Postgres](destinations/postgres#query-patterns).
 
 ## Notification webhooks
 
