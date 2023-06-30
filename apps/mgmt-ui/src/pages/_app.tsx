@@ -192,11 +192,11 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
         <SessionProvider session={session}>
           <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
-              <InnerApp signedIn={signedIn}>
-                <NotificationManager>
+              <NotificationManager>
+                <InnerApp signedIn={signedIn}>
                   <Component {...pageProps} />
-                </NotificationManager>
-              </InnerApp>
+                </InnerApp>
+              </NotificationManager>
             </ThemeProvider>
           </StyledEngineProvider>
         </SessionProvider>
@@ -210,11 +210,11 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
         <PosthogClerkUserIdentifier>
           <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
-              <InnerApp signedIn={signedIn}>
-                <NotificationManager>
+              <NotificationManager>
+                <InnerApp signedIn={signedIn}>
                   <Component {...pageProps} />
-                </NotificationManager>
-              </InnerApp>
+                </InnerApp>
+              </NotificationManager>
             </ThemeProvider>
           </StyledEngineProvider>
         </PosthogClerkUserIdentifier>
