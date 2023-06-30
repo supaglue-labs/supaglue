@@ -151,8 +151,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         columns,
         cast: {
           boolean: (value: boolean) => value.toString(),
-          object: (value: object) => JSON.stringify(value),
+          object: (value: object) => JSON.stringify(value).replace(/\\u0000/g, ''),
           date: (value: Date) => value.toISOString(),
+          string: (value: string) => value.replace(/\\u0000/g, ''),
         },
         quoted: true,
       });
