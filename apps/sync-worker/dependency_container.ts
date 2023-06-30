@@ -56,9 +56,9 @@ function createDependencyContainer(): DependencyContainer {
     }),
   });
 
-  const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService);
   const objectSyncRunService = new ObjectSyncRunService(prisma, connectionService);
   const applicationService = new ApplicationService(prisma);
+  const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService, applicationService);
   const destinationService = new DestinationService(prisma);
 
   return {
