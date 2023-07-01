@@ -21,7 +21,7 @@ export default function ProviderCard({
   return (
     <Card
       classes={{
-        root: 'h-48 justify-between flex flex-col overflow-y-hidden',
+        root: 'min-h-48 justify-between flex flex-col overflow-y-hidden',
       }}
     >
       <Box>
