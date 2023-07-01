@@ -18,12 +18,16 @@ import { DataGrid } from '@mui/x-data-grid';
 import type { ConnectionSafeAny } from '@supaglue/types';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 export { getServerSideProps };
 
 export default function Home() {
   const { nextLambdaEnv } = useNextLambdaEnv();
+  const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
+  const router = useRouter();
+  const returnUrl = `${origin}${router.asPath}`;
   const { addNotification } = useNotification();
   const { customers = [], isLoading, mutate } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -54,7 +58,7 @@ export default function Home() {
     await navigator.clipboard.writeText(
       `${nextLambdaEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
         params.id
-      )}&providerName={{REPLACE_ME}}&returnUrl={{REPLACE_ME}}`
+      )}&returnUrl=${returnUrl}&providerName={{REPLACE_ME}}`
     );
   };
 
