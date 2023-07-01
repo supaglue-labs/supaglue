@@ -1,5 +1,5 @@
 import { SG_INTERNAL_TOKEN } from '@/pages/api';
-import { NextApiRequest } from 'next';
+import type { NextApiRequest } from 'next';
 import { getOrgId } from './org';
 
 export function getApplicationIdScopedHeaders(req: NextApiRequest) {

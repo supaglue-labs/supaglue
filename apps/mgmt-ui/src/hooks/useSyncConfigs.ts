@@ -1,5 +1,5 @@
-import { GetSyncConfigsResponse } from '@supaglue/schemas/v2/mgmt';
-import { SyncConfig } from '@supaglue/types';
+import type { GetSyncConfigsResponse } from '@supaglue/schemas/v2/mgmt';
+import type { SyncConfig } from '@supaglue/types';
 import { snakecaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';
 import { toSyncConfig } from './useSyncConfig';

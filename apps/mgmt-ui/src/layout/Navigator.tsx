@@ -6,11 +6,11 @@ import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PeopleIcon from '@mui/icons-material/People';
+import type { DrawerProps } from '@mui/material';
 import {
   Box,
   Divider,
   Drawer,
-  DrawerProps,
   Link as MUILink,
   List,
   ListItem,

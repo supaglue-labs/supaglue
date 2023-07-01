@@ -9,7 +9,8 @@ import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import posthog from 'posthog-js';
 import { PostHogProvider, usePostHog } from 'posthog-js/react';
-import { ReactNode, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { IS_CLOUD } from './api';
 
 // Check that PostHog is client-side (used to handle Next.js SSR)

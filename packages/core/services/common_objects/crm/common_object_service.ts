@@ -1,10 +1,10 @@
-import { CRMProvider } from '@supaglue/types';
-import { ConnectionSafeAny } from '@supaglue/types/connection';
-import { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
-import { ProviderService, SchemaService } from '../..';
+import type { CRMProvider } from '@supaglue/types';
+import type { ConnectionSafeAny } from '@supaglue/types/connection';
+import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
+import type { ProviderService, SchemaService } from '../..';
 import { createFieldMappingConfig } from '../../../lib/schema';
-import { DestinationService } from '../../destination_service';
-import { RemoteService } from '../../remote_service';
+import type { DestinationService } from '../../destination_service';
+import type { RemoteService } from '../../remote_service';
 
 export class CrmCommonObjectService {
   readonly #remoteService: RemoteService;

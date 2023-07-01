@@ -1,7 +1,8 @@
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getAuth } from '@clerk/nextjs/server';
 import { type GetServerSideProps } from 'next';
-import { getServerSession, Session } from 'next-auth';
+import type { Session } from 'next-auth';
+import { getServerSession } from 'next-auth';
 import { API_HOST, IS_CLOUD, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from './api';
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {

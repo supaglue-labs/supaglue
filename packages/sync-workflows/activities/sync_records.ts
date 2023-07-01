@@ -2,22 +2,23 @@ import type { DestinationWriter } from '@supaglue/core/destination_writers/base'
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
 import { getCategoryForProvider } from '@supaglue/core/remotes';
-import {
+import type {
   ConnectionService,
   ProviderService,
   RemoteService,
   SchemaService,
   SyncConfigService,
 } from '@supaglue/core/services';
-import { DestinationService } from '@supaglue/core/services/destination_service';
+import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { CRMProvider } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import type { ObjectType } from '@supaglue/types/object_sync';
 import { ApplicationFailure, Context } from '@temporalio/activity';
-import { pipeline, Readable, Transform } from 'stream';
+import type { Readable } from 'stream';
+import { pipeline, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
-import { ApplicationService, SyncService } from '../services';
+import type { ApplicationService, SyncService } from '../services';
 
 export type SyncRecordsArgs = {
   objectSyncId: string;

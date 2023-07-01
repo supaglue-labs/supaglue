@@ -1,4 +1,4 @@
-import { WebhookConfig } from './webhook';
+import type { WebhookConfig } from './webhook';
 
 type BaseApplication = {
   name: string;

@@ -1,5 +1,5 @@
 import type { Prisma, SyncConfig as SyncConfigModel } from '@supaglue/db';
-import { SyncConfig, SyncConfigCreateParams, SyncConfigData } from '@supaglue/types';
+import type { SyncConfig, SyncConfigCreateParams, SyncConfigData } from '@supaglue/types';
 
 export const fromSyncConfigModel = ({
   id,

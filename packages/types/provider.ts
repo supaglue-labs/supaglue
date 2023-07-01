@@ -1,12 +1,12 @@
-import {
+import type {
   CommonObjectForCategory,
   OAuthConfigDecrypted,
   OAuthConfigEncrypted,
   ProviderCategory,
   SchemaCreateParams,
 } from '.';
-import { CRMProviderName } from './crm';
-import { EngagementProviderName } from './engagement';
+import type { CRMProviderName } from './crm';
+import type { EngagementProviderName } from './engagement';
 
 type BaseProvider = {
   id: string;

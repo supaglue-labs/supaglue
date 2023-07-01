@@ -1,5 +1,5 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
-import {
+import type {
   ConnectionService,
   ProviderService,
   RemoteService,

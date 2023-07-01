@@ -1,4 +1,4 @@
-import { SnakecasedKeys } from '../../snakecased_keys';
+import type { SnakecasedKeys } from '../../snakecased_keys';
 
 export type SnakecasedKeysPhoneNumber = SnakecasedKeys<PhoneNumber>;
 

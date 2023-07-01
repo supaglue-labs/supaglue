@@ -1,8 +1,8 @@
-import { RemoteContactTypes } from './contact';
-import { RemoteMailboxTypes } from './mailbox';
-import { RemoteSequenceTypes } from './sequence';
-import { RemoteSequenceStateTypes } from './sequence_state';
-import { RemoteUserTypes } from './user';
+import type { RemoteContactTypes } from './contact';
+import type { RemoteMailboxTypes } from './mailbox';
+import type { RemoteSequenceTypes } from './sequence';
+import type { RemoteSequenceStateTypes } from './sequence_state';
+import type { RemoteUserTypes } from './user';
 
 export const SUPPORTED_ENGAGEMENT_CONNECTIONS = ['outreach'] as const;
 

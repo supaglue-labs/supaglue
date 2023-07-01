@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import {
+import type {
   CreateCustomObjectRecordPathParams,
   CreateCustomObjectRecordRequest,
   CreateCustomObjectRecordResponse,
@@ -12,7 +12,8 @@ import {
 } from '@supaglue/schemas/v2/crm';
 import { camelcaseKeysSansFields } from '@supaglue/utils/camelcase';
 import { snakecaseKeysSansFields } from '@supaglue/utils/snakecase';
-import { Request, Response, Router } from 'express';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { crmCustomObjectService } = getDependencyContainer();
 

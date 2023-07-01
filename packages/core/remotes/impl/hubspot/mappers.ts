@@ -1,8 +1,8 @@
-import { SimplePublicObjectWithAssociations as HubSpotCompany } from '@hubspot/api-client/lib/codegen/crm/companies';
-import { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/api-client/lib/codegen/crm/contacts';
-import { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
-import { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
-import {
+import type { SimplePublicObjectWithAssociations as HubSpotCompany } from '@hubspot/api-client/lib/codegen/crm/companies';
+import type { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/api-client/lib/codegen/crm/contacts';
+import type { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
+import type { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
+import type {
   Account,
   AccountCreateParams,
   Contact,
@@ -12,9 +12,9 @@ import {
   OpportunityStatus,
   User,
 } from '@supaglue/types/crm';
-import { SGObject } from '@supaglue/types/crm/association_type';
-import { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
-import { PipelineStageMapping } from '.';
+import type { SGObject } from '@supaglue/types/crm/association_type';
+import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
+import type { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate, removeUndefinedValues } from '../../../lib';
 import { getFullName } from '../../utils/name';

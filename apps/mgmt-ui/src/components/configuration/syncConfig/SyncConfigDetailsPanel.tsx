@@ -9,7 +9,13 @@ import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { CommonObjectConfig, CommonObjectType, Provider, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
+import type {
+  CommonObjectConfig,
+  CommonObjectType,
+  Provider,
+  SyncConfig,
+  SyncConfigCreateParams,
+} from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
 import type { ObjectSyncType } from '@supaglue/types/object_sync';

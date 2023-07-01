@@ -1,4 +1,5 @@
-import { CoreDependencyContainer, getCoreDependencyContainer } from '@supaglue/core';
+import type { CoreDependencyContainer } from '@supaglue/core';
+import { getCoreDependencyContainer } from '@supaglue/core';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';
 import { PassthroughService } from './services';

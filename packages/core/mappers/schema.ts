@@ -1,5 +1,5 @@
 import type { Prisma, Schema as SchemaModel } from '@supaglue/db';
-import { Schema, SchemaConfig, SchemaCreateParams } from '@supaglue/types';
+import type { Schema, SchemaConfig, SchemaCreateParams } from '@supaglue/types';
 
 export const fromSchemaModel = async ({ id, applicationId, name, config }: SchemaModel): Promise<Schema> => {
   return {

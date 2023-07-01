@@ -1,8 +1,8 @@
 import { configureScope, getCurrentHub } from '@sentry/node';
 import { addLogContext } from '@supaglue/core/lib';
-import { Context } from '@temporalio/activity';
+import type { Context } from '@temporalio/activity';
 import { defaultPayloadConverter } from '@temporalio/client';
-import { ActivityExecuteInput, ActivityInboundCallsInterceptor, Next } from '@temporalio/worker/lib/interceptors';
+import type { ActivityExecuteInput, ActivityInboundCallsInterceptor, Next } from '@temporalio/worker/lib/interceptors';
 import als from 'async-local-storage';
 
 export default class ActivityLogInterceptor implements ActivityInboundCallsInterceptor {

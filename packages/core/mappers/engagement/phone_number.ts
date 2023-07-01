@@ -1,4 +1,4 @@
-import { PhoneNumber, SnakecasedKeysPhoneNumber } from '@supaglue/types/engagement/common';
+import type { PhoneNumber, SnakecasedKeysPhoneNumber } from '@supaglue/types/engagement/common';
 
 export const toSnakecasedKeysPhoneNumber = (phoneNumber: PhoneNumber): SnakecasedKeysPhoneNumber => {
   return {

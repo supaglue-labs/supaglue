@@ -1,4 +1,4 @@
-import { Provider } from '@supaglue/types';
+import type { Provider } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 

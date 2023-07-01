@@ -7,7 +7,7 @@ import { useProviders } from '@/hooks/useProviders';
 import providerToIcon from '@/utils/providerToIcon';
 import { Box, Button, FormControlLabel, FormHelperText, Stack, Switch, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { Provider, ProviderCategory, ProviderCreateParams, ProviderName } from '@supaglue/types';
+import type { Provider, ProviderCategory, ProviderCreateParams, ProviderName } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { DeleteProviderButton } from './DeleteProviderButton';

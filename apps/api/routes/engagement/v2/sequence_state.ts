@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { toSnakecasedKeysSequenceState } from '@supaglue/core/mappers/engagement';
-import {
+import type {
   CreateSequenceStatePathParams,
   CreateSequenceStateRequest,
   CreateSequenceStateResponse,
@@ -9,7 +9,8 @@ import {
   GetSequenceStateResponse,
 } from '@supaglue/schemas/v2/engagement';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
-import { Request, Response, Router } from 'express';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { engagementCommonObjectService } = getDependencyContainer();
 

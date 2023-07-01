@@ -1,4 +1,4 @@
-import { SGObject } from './association_type';
+import type { SGObject } from './association_type';
 
 type BaseAssociation = {
   sourceRecord: AssociatedRecord;

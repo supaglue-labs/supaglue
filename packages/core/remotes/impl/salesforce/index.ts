@@ -28,7 +28,7 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';

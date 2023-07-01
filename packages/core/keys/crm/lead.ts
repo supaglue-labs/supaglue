@@ -1,4 +1,4 @@
-import { SnakecasedKeysCrmLeadWithTenant } from '@supaglue/types/crm';
+import type { SnakecasedKeysCrmLeadWithTenant } from '@supaglue/types/crm';
 import { arrayOfAllKeys } from '../util';
 
 export const keysOfSnakecasedLeadWithTenant = arrayOfAllKeys<SnakecasedKeysCrmLeadWithTenant>()([

@@ -1,5 +1,6 @@
-import { Prisma, PrismaClient } from '@supaglue/db';
-import { Customer, CustomerExpandedSafe, CustomerUpsertParams } from '@supaglue/types';
+import type { PrismaClient } from '@supaglue/db';
+import { Prisma } from '@supaglue/db';
+import type { Customer, CustomerExpandedSafe, CustomerUpsertParams } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { fromCustomerModel, fromCustomerModelExpandedUnsafe, toCustomerModelCreateParams } from '../mappers/customer';
 

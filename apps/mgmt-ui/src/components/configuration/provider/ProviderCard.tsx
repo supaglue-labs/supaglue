@@ -2,9 +2,9 @@
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { Provider } from '@supaglue/types';
+import type { Provider } from '@supaglue/types';
 import { useRouter } from 'next/router';
-import { ProviderCardInfo } from './ProviderTabPanelContainer';
+import type { ProviderCardInfo } from './ProviderTabPanelContainer';
 
 export default function ProviderCard({
   provider,

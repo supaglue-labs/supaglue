@@ -1,11 +1,12 @@
-import { PrismaClient } from '@supaglue/db';
+import type { PrismaClient } from '@supaglue/db';
 import { stringify } from 'csv-stringify';
-import { Pool } from 'pg';
+import type { Pool } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
-import { Readable, Transform } from 'stream';
+import type { Readable } from 'stream';
+import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import { logger } from '../../lib';
-import { RemoteService } from '../remote_service';
+import type { RemoteService } from '../remote_service';
 
 export abstract class CommonObjectBaseService {
   // TODO: Use just pg for common objects?

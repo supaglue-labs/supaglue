@@ -1,8 +1,8 @@
 import Spinner from '@/components/Spinner';
 import { Grid } from '@mui/material';
-import { Destination } from '@supaglue/types';
+import type { Destination } from '@supaglue/types';
 import DestinationCard from './DestinationCard';
-import { DestinationCardInfo } from './DestinationTabPanelContainer';
+import type { DestinationCardInfo } from './DestinationTabPanelContainer';
 
 export type DestinationsListPanelProps = {
   destinationCardsInfo: DestinationCardInfo[];

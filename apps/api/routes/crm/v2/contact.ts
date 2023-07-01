@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { toSnakecasedKeysCrmContact } from '@supaglue/core/mappers/crm';
-import {
+import type {
   CreateContactPathParams,
   CreateContactRequest,
   CreateContactResponse,
@@ -14,7 +14,8 @@ import {
   UpdateContactResponse,
 } from '@supaglue/schemas/v2/crm';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
-import { Request, Response, Router } from 'express';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { crmCommonObjectService } = getDependencyContainer();
 

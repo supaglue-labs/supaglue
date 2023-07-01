@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import {
+import type {
   CreateSyncConfigPathParams,
   CreateSyncConfigRequest,
   CreateSyncConfigResponse,
@@ -16,10 +16,11 @@ import {
   UpdateSyncConfigRequest,
   UpdateSyncConfigResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { CommonObjectType } from '@supaglue/types';
+import type { CommonObjectType } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
-import { Request, Response, Router } from 'express';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { syncConfigService } = getDependencyContainer();
 

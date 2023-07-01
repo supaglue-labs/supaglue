@@ -8,12 +8,14 @@ import type {
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
-import { CRMCommonObjectType } from '@supaglue/types/crm';
-import { EngagementCommonObjectType } from '@supaglue/types/engagement';
+import type { CRMCommonObjectType } from '@supaglue/types/crm';
+import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import { stringify } from 'csv-stringify';
-import { Pool, PoolClient } from 'pg';
+import type { PoolClient } from 'pg';
+import { Pool } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
-import { Readable, Transform } from 'stream';
+import type { Readable } from 'stream';
+import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
@@ -28,7 +30,8 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
-import { BaseDestinationWriter, WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
+import type { WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
+import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
