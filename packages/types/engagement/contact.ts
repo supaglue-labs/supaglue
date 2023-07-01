@@ -1,9 +1,9 @@
-import { CustomFields } from '.';
-import { SnakecasedKeys } from '../snakecased_keys';
-import { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
-import { Address } from './common/address';
-import { EmailAddress } from './common/email_address';
-import { PhoneNumber } from './common/phone_number';
+import type { CustomFields } from '.';
+import type { SnakecasedKeys } from '../snakecased_keys';
+import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
+import type { Address } from './common/address';
+import type { EmailAddress } from './common/email_address';
+import type { PhoneNumber } from './common/phone_number';
 
 export type SnakecasedKeysEngagementContact = SnakecasedKeys<Contact>;
 export type SnakecasedKeysEngagementContactWithTenant = SnakecasedKeysEngagementContact &

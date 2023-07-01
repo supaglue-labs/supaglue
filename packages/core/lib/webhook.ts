@@ -1,4 +1,4 @@
-import { WebhookConfig, WebhookPayload } from '@supaglue/types';
+import type { WebhookConfig, WebhookPayload } from '@supaglue/types';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import axios from 'axios';
 import { logger } from './logger';

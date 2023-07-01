@@ -1,10 +1,10 @@
-import {
+import type {
   ConnectionUnsafe,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
-import {
+import type {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,

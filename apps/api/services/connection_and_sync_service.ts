@@ -3,10 +3,9 @@ import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
-import { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
-import { ConnectionService } from '@supaglue/core/services/connection_service';
-import type { Prisma } from '@supaglue/db';
-import { PrismaClient } from '@supaglue/db';
+import type { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
+import type { ConnectionService } from '@supaglue/core/services/connection_service';
+import type { Prisma, PrismaClient } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import {
   processSyncChanges,
@@ -20,7 +19,8 @@ import type {
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
-import { Client, ScheduleAlreadyRunning } from '@temporalio/client';
+import type { Client } from '@temporalio/client';
+import { ScheduleAlreadyRunning } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
 export class ConnectionAndSyncService {

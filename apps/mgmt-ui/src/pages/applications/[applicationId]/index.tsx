@@ -3,7 +3,7 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getAuth } from '@clerk/nextjs/server';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { type GetServerSideProps } from 'next';
-import { Session } from 'next-auth';
+import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import Head from 'next/head';
 import { useState } from 'react';

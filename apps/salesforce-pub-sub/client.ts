@@ -1,9 +1,10 @@
-import { createPromiseClient, PromiseClient } from '@bufbuild/connect';
+import type { PromiseClient } from '@bufbuild/connect';
+import { createPromiseClient } from '@bufbuild/connect';
 // @ts-expect-error this is an ESM module, but we are only using the types
 import type { PartialMessage } from '@bufbuild/protobuf';
 import { LRUCache } from 'lru-cache';
 import { PubSub } from './gen/pubsub_api_connect';
-import { FetchRequest, ReplayPreset } from './gen/pubsub_api_pb';
+import type { FetchRequest, ReplayPreset } from './gen/pubsub_api_pb';
 import { parseEvent } from './parser';
 
 // Salesforce's keepalive mechanic delivers an empty event every 270 seconds,

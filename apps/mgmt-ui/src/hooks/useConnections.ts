@@ -1,4 +1,4 @@
-import { ConnectionSafeAny } from '@supaglue/types/connection';
+import type { ConnectionSafeAny } from '@supaglue/types/connection';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 

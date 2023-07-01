@@ -8,7 +8,7 @@ import type {
   ProviderName,
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
-import { ProviderService } from '.';
+import type { ProviderService } from '.';
 import { NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';

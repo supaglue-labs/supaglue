@@ -4,7 +4,7 @@ import { createOrUpdateWebhook, deleteWebhook } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
 import { Box, Button, Stack, Switch, TextField, Typography } from '@mui/material';
-import { WebhookConfig } from '@supaglue/types';
+import type { WebhookConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
 import { DeleteWebhook } from './DeleteWebhook';
 

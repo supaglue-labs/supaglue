@@ -1,7 +1,8 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { toSnakecasedKeysMailbox } from '@supaglue/core/mappers/engagement';
-import { GetMailboxPathParams, GetMailboxRequest, GetMailboxResponse } from '@supaglue/schemas/v2/engagement';
-import { Request, Response, Router } from 'express';
+import type { GetMailboxPathParams, GetMailboxRequest, GetMailboxResponse } from '@supaglue/schemas/v2/engagement';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { engagementCommonObjectService } = getDependencyContainer();
 

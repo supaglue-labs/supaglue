@@ -1,5 +1,5 @@
 import type { ObjectSync } from '@supaglue/types/object_sync';
-import { SyncService } from '../services/sync_service';
+import type { SyncService } from '../services/sync_service';
 
 export type GetObjectSyncArgs = {
   objectSyncId: string;

@@ -2,7 +2,7 @@ import { configureScope } from '@sentry/node';
 import { UnauthorizedError } from '@supaglue/core/errors';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { addLogContext } from '@supaglue/core/lib/logger';
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { getDependencyContainer } from '../dependency_container';
 
 const { connectionService } = getDependencyContainer();

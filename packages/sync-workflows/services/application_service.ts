@@ -1,7 +1,7 @@
 import { NotFoundError } from '@supaglue/core/errors';
 import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
-import { Application } from '@supaglue/types';
+import type { Application } from '@supaglue/types';
 
 export class ApplicationService {
   #prisma: PrismaClient;

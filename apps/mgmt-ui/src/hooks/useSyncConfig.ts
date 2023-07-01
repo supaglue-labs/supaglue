@@ -1,5 +1,9 @@
-import { CreateSyncConfigRequest, GetSyncConfigResponse, UpdateSyncConfigRequest } from '@supaglue/schemas/v2/mgmt';
-import { CommonObjectConfig, SyncConfig } from '@supaglue/types';
+import type {
+  CreateSyncConfigRequest,
+  GetSyncConfigResponse,
+  UpdateSyncConfigRequest,
+} from '@supaglue/schemas/v2/mgmt';
+import type { CommonObjectConfig, SyncConfig } from '@supaglue/types';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';
 

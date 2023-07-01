@@ -1,6 +1,6 @@
-import { ProviderCategory } from './common';
-import { CRMCommonObjectType, CRMProviderCategory, CRMProviderName } from './crm';
-import { EngagementCommonObjectType, EngagementProviderCategory, EngagementProviderName } from './engagement';
+import type { ProviderCategory } from './common';
+import type { CRMCommonObjectType, CRMProviderCategory, CRMProviderName } from './crm';
+import type { EngagementCommonObjectType, EngagementProviderCategory, EngagementProviderName } from './engagement';
 
 export * from './application';
 export * from './common';

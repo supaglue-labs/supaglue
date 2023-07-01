@@ -1,4 +1,4 @@
-import { CategoryOfProviderName, ProviderName } from '.';
+import type { CategoryOfProviderName, ProviderName } from '.';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 

@@ -1,6 +1,6 @@
-import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
-import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
-import { RemoteService } from '../../remote_service';
+import type { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
+import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
+import type { RemoteService } from '../../remote_service';
 
 export class CrmAssociationService {
   readonly #remoteService: RemoteService;

@@ -1,5 +1,5 @@
 import { DeleteObjectsCommand, paginateListObjectsV2, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import {
+import type {
   CommonObjectType,
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
@@ -9,9 +9,11 @@ import {
   ProviderName,
   S3Destination,
 } from '@supaglue/types';
-import { Readable, Transform } from 'stream';
+import type { Readable } from 'stream';
+import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { BaseDestinationWriter, WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
+import type { WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
+import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 const CHUNK_SIZE = 1000;

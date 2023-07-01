@@ -1,6 +1,6 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
 import { logger } from '@supaglue/core/lib/logger';
-import { CDCWebhookPayload } from '@supaglue/types/cdc';
+import type { CDCWebhookPayload } from '@supaglue/types/cdc';
 import * as jsforce from 'jsforce';
 import { createClient } from './client';
 import { ReplayPreset } from './gen/pubsub_api_pb';

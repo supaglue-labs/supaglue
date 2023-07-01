@@ -1,4 +1,4 @@
-import {
+import type {
   Address,
   Contact,
   ContactCreateParams,
@@ -11,7 +11,7 @@ import {
   SequenceStateCreateParams,
   User,
 } from '@supaglue/types/engagement';
-import { OutreachRecord } from '.';
+import type { OutreachRecord } from '.';
 import { removeUndefinedValues } from '../../../lib';
 
 export const fromOutreachUserToUser = (record: OutreachRecord): User => {

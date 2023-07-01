@@ -1,18 +1,18 @@
 import { Client } from '@hubspot/api-client';
-import {
+import type {
   CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedCompanies,
   CollectionResponseWithTotalSimplePublicObjectForwardPaging as HubspotPaginatedCompaniesWithTotal,
 } from '@hubspot/api-client/lib/codegen/crm/companies';
-import {
+import type {
   CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts,
   CollectionResponseWithTotalSimplePublicObjectForwardPaging as HubspotPaginatedContactsWithTotal,
 } from '@hubspot/api-client/lib/codegen/crm/contacts';
-import {
+import type {
   CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals,
   CollectionResponseWithTotalSimplePublicObjectForwardPaging as HubspotPaginatedDealsWithTotal,
 } from '@hubspot/api-client/lib/codegen/crm/deals';
-import { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
-import {
+import type { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
+import type {
   CommonObjectDef,
   ConnectionUnsafe,
   NormalizedRawRecord,
@@ -21,7 +21,7 @@ import {
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
-import {
+import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
@@ -38,20 +38,20 @@ import {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
-import { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
-import {
+import type { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
+import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
+import type {
   CustomObject,
   CustomObjectCreateParams,
   CustomObjectFieldType,
   CustomObjectUpdateParams,
 } from '@supaglue/types/crm/custom_object';
-import {
+import type {
   CustomObjectRecord,
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
-import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';

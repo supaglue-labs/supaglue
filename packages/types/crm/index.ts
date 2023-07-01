@@ -1,4 +1,10 @@
-import { RemoteAccountTypes, RemoteContactTypes, RemoteLeadTypes, RemoteOpportunityTypes, RemoteUserTypes } from '.';
+import type {
+  RemoteAccountTypes,
+  RemoteContactTypes,
+  RemoteLeadTypes,
+  RemoteOpportunityTypes,
+  RemoteUserTypes,
+} from '.';
 
 export const SUPPORTED_CRM_CONNECTIONS = [
   'salesforce',

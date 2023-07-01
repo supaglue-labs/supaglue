@@ -13,7 +13,7 @@ import type {
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import { Readable } from 'stream';
+import type { Readable } from 'stream';
 import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 

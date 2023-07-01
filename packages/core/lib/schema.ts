@@ -1,5 +1,5 @@
-import { SchemaConfig, SchemaField, SchemaMappingsConfigObjectFieldMapping } from '@supaglue/types';
-import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { SchemaConfig, SchemaField, SchemaMappingsConfigObjectFieldMapping } from '@supaglue/types';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 
 export function createFieldMappingConfig(
   schema?: SchemaConfig,

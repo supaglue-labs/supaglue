@@ -3,7 +3,7 @@ import { cryptoHash, generateApiKey } from '@supaglue/core/lib/crypt';
 import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
 import { Prisma } from '@supaglue/db';
-import { Application, ApplicationUpdateParams, ApplicationUpsertParams } from '@supaglue/types';
+import type { Application, ApplicationUpdateParams, ApplicationUpsertParams } from '@supaglue/types';
 
 export class ApplicationService {
   #prisma: PrismaClient;

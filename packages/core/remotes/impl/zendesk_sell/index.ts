@@ -1,4 +1,4 @@
-import { ConnectionUnsafe, Provider } from '@supaglue/types';
+import type { ConnectionUnsafe, Provider } from '@supaglue/types';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 

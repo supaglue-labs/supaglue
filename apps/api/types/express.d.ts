@@ -1,4 +1,4 @@
-import { Application as SupaglueApplication, ConnectionSafeAny } from '@supaglue/types';
+import type { Application as SupaglueApplication, ConnectionSafeAny } from '@supaglue/types';
 
 declare global {
   declare namespace Express {

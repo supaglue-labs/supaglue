@@ -1,13 +1,13 @@
 import { TEMPORAL_CONTEXT_ARGS } from '@supaglue/core/temporal';
 import type { Headers, Next } from '@temporalio/client';
-import {
+import type {
   ActivityInput,
-  defaultPayloadConverter,
   WorkflowExecuteInput,
   WorkflowInboundCallsInterceptor,
   WorkflowInterceptors,
   WorkflowOutboundCallsInterceptor,
 } from '@temporalio/workflow';
+import { defaultPayloadConverter } from '@temporalio/workflow';
 
 export function interceptors(): WorkflowInterceptors {
   const interceptor = new WorkflowLogInterceptor();

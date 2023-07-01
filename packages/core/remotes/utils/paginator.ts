@@ -1,4 +1,5 @@
-import { PassThrough, Readable } from 'stream';
+import type { Readable } from 'stream';
+import { PassThrough } from 'stream';
 
 type PaginatorImpl<T> = (cursor?: string) => Promise<T>;
 

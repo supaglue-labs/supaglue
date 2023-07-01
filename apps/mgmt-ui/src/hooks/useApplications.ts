@@ -1,4 +1,4 @@
-import { Application } from '@supaglue/types/application';
+import type { Application } from '@supaglue/types/application';
 import useSWR from 'swr';
 import { fetcher } from '.';
 

@@ -1,7 +1,7 @@
-import { ConnectionSafeAny } from '@supaglue/types';
-import { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
-import { DestinationService } from '../../destination_service';
-import { RemoteService } from '../../remote_service';
+import type { ConnectionSafeAny } from '@supaglue/types';
+import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
+import type { DestinationService } from '../../destination_service';
+import type { RemoteService } from '../../remote_service';
 
 export class EngagementCommonObjectService {
   readonly #remoteService: RemoteService;

@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { BadRequestError } from '@supaglue/core/errors';
 import { getCustomerIdPk } from '@supaglue/core/lib';
-import {
+import type {
   DeleteConnectionPathParams,
   DeleteConnectionRequest,
   DeleteConnectionResponse,
@@ -22,7 +22,8 @@ import {
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
-import { Request, Response, Router } from 'express';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { connectionService, connectionAndSyncService, remoteService } = getDependencyContainer();
 

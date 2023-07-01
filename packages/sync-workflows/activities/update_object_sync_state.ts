@@ -1,5 +1,5 @@
 import type { ObjectSync, ObjectSyncState } from '@supaglue/types/object_sync';
-import { SyncService } from '../services/sync_service';
+import type { SyncService } from '../services/sync_service';
 
 export type UpdateObjectSyncStateArgs = {
   objectSyncId: string;

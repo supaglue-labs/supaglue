@@ -1,6 +1,6 @@
 import { IS_CLOUD, ORGANIZATION_ID } from '@/pages/api';
 import { getAuth } from '@clerk/nextjs/server';
-import { NextApiRequest } from 'next';
+import type { NextApiRequest } from 'next';
 
 export const getOrgId = (req: NextApiRequest): string => {
   if (!IS_CLOUD) {

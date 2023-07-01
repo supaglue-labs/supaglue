@@ -1,5 +1,5 @@
 import type { Destination as DestinationModel } from '@supaglue/db';
-import { Destination } from '@supaglue/types';
+import type { Destination } from '@supaglue/types';
 
 export const fromDestinationModel = (model: DestinationModel): Destination => {
   return {

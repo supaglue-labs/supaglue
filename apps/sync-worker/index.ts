@@ -5,14 +5,8 @@ import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { posthogClient } from '@supaglue/core/lib/posthog';
 import { createActivities } from '@supaglue/sync-workflows';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import {
-  appendDefaultInterceptors,
-  LogLevel,
-  LogMetadata,
-  NativeConnection,
-  Runtime,
-  Worker,
-} from '@temporalio/worker';
+import type { LogLevel, LogMetadata } from '@temporalio/worker';
+import { appendDefaultInterceptors, NativeConnection, Runtime, Worker } from '@temporalio/worker';
 import fs from 'fs';
 import path from 'path';
 import { getDependencyContainer } from './dependency_container';

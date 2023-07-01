@@ -11,8 +11,9 @@ import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { Breadcrumbs, IconButton, Stack, Typography } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { SyncConfig } from '@supaglue/types';
+import type { GridColDef } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
+import type { SyncConfig } from '@supaglue/types';
 import Link from 'next/link';
 import { DeleteSyncConfig } from './DeleteSyncConfig';
 

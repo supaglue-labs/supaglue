@@ -2,11 +2,15 @@ import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError } from '@supaglue/core/errors';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes';
-import { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, ProviderName } from '@supaglue/types';
-import { CRMProviderName, SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
-import { EngagementProviderName, SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supaglue/types/engagement';
-import { Request, Response, Router } from 'express';
-import simpleOauth2, { AuthorizationMethod } from 'simple-oauth2';
+import type { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, ProviderName } from '@supaglue/types';
+import type { CRMProviderName } from '@supaglue/types/crm';
+import { SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
+import type { EngagementProviderName } from '@supaglue/types/engagement';
+import { SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supaglue/types/engagement';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
+import type { AuthorizationMethod } from 'simple-oauth2';
+import simpleOauth2 from 'simple-oauth2';
 
 const { providerService, connectionAndSyncService, applicationService } = getDependencyContainer();
 

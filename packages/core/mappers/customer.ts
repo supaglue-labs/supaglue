@@ -1,6 +1,6 @@
 import type { Customer as CustomerModel } from '@supaglue/db';
-import { Customer, CustomerExpandedSafe, CustomerUpsertParams } from '@supaglue/types';
-import { CustomerModelExpanded } from '../types/customer';
+import type { Customer, CustomerExpandedSafe, CustomerUpsertParams } from '@supaglue/types';
+import type { CustomerModelExpanded } from '../types/customer';
 import { fromConnectionModelToConnectionSafe } from './connection';
 
 export const fromCustomerModel = ({ id, applicationId, externalIdentifier, name, email }: CustomerModel): Customer => {

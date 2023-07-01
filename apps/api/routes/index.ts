@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import type { Router } from 'express';
 import crm from './crm';
 import engagement from './engagement';
 import internal from './internal';

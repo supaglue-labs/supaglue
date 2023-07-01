@@ -1,6 +1,6 @@
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
 function getProviderNameFromRequest(req: Request) {
   let { providerName } = req.query;

@@ -1,5 +1,5 @@
 import type { Prisma, Provider as ProviderModel } from '@supaglue/db';
-import {
+import type {
   Provider,
   ProviderCategory,
   ProviderConfigDecrypted,

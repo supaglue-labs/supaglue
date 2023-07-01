@@ -1,10 +1,10 @@
 import { logger } from '@supaglue/core/lib';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
-import { ConnectionService } from '@supaglue/core/services';
-import { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
+import type { ConnectionService } from '@supaglue/core/services';
+import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
 import type { ObjectSyncRunStatus } from '@supaglue/types/object_sync_run';
-import { ApplicationService } from '../services';
+import type { ApplicationService } from '../services';
 
 export function createLogObjectSyncFinish({
   objectSyncRunService,

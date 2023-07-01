@@ -1,4 +1,5 @@
-import prisma, { PrismaClient } from '@supaglue/db';
+import type { PrismaClient } from '@supaglue/db';
+import prisma from '@supaglue/db';
 import fs from 'fs';
 import { Pool } from 'pg';
 import {
