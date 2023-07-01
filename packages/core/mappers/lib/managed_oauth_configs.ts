@@ -1,4 +1,4 @@
-import { OAuthConfigDecrypted } from '@supaglue/types';
+import type { OAuthConfigDecrypted } from '@supaglue/types';
 
 // TODO: namespace the map by vertical
 export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {

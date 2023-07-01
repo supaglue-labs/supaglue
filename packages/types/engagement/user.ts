@@ -1,5 +1,5 @@
-import { BaseEngagementModel, SnakecasedEngagementTenantFields } from '.';
-import { SnakecasedKeys } from '../snakecased_keys';
+import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from '.';
+import type { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysEngagementUser = SnakecasedKeys<User>;
 export type SnakecasedKeysEngagementUserWithTenant = SnakecasedKeysEngagementUser & SnakecasedEngagementTenantFields;

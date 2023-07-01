@@ -9,7 +9,7 @@ import ZendeskSellIcon from '@/assets/connector_icons/zendesk_sell.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
 import S3Icon from '@/assets/destination_icons/s3.png';
 import Image from 'next/image';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export default function getIcon(name: string, size = 25): ReactNode {
   const companyToIconMap: Record<string, ReactNode> = {

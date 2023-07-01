@@ -1,10 +1,14 @@
-import { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/crm/custom_object';
-import {
+import type {
+  CustomObject,
+  CustomObjectCreateParams,
+  CustomObjectUpdateParams,
+} from '@supaglue/types/crm/custom_object';
+import type {
   CustomObjectRecord,
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
-import { RemoteService } from '../../remote_service';
+import type { RemoteService } from '../../remote_service';
 
 // TODO: Should not be casting when getting RemoteClient
 

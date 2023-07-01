@@ -1,5 +1,5 @@
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
-import { ProviderName } from '@supaglue/types';
+import type { ProviderName } from '@supaglue/types';
 
 export const logEvent = ({
   distinctId,

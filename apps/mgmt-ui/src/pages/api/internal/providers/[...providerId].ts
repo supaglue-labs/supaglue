@@ -1,5 +1,5 @@
 import { getApplicationIdScopedHeaders } from '@/utils/headers';
-import { DeleteProviderResponse, GetProvidersResponse } from '@supaglue/schemas/v2/mgmt';
+import type { DeleteProviderResponse, GetProvidersResponse } from '@supaglue/schemas/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 

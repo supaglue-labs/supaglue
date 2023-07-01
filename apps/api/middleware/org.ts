@@ -1,7 +1,7 @@
 import { configureScope } from '@sentry/node';
 import { UnauthorizedError } from '@supaglue/core/errors';
 import { addLogContext } from '@supaglue/core/lib/logger';
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
 export async function orgHeaderMiddleware(req: Request, res: Response, next: NextFunction) {
   const orgId = req.headers['x-org-id'] as string;

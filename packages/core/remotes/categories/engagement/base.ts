@@ -1,6 +1,7 @@
 import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
-import { Readable } from 'stream';
-import { AbstractRemoteClient, RemoteClient } from '../../base';
+import type { Readable } from 'stream';
+import type { RemoteClient } from '../../base';
+import { AbstractRemoteClient } from '../../base';
 
 export interface EngagementRemoteClient extends RemoteClient {
   listCommonObjectRecords(commonObjectType: EngagementCommonObjectType, updatedAfter?: Date): Promise<Readable>;

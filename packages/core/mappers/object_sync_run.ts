@@ -1,4 +1,4 @@
-import { ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectType } from '@supaglue/types/object_sync';
 import type { ObjectSyncRun, ObjectSyncRunStatus, ObjectSyncRunWithObject } from '@supaglue/types/object_sync_run';
 import { parseCustomerIdPk } from '../lib/customer_id';
 import type { ObjectSyncRunModelExpanded, ObjectSyncRunModelExpandedWithObject } from '../types/object_sync_run';

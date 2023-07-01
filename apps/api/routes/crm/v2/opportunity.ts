@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
 import { toSnakecasedKeysCrmOpportunity } from '@supaglue/core/mappers/crm';
-import {
+import type {
   CreateOpportunityPathParams,
   CreateOpportunityRequest,
   CreateOpportunityResponse,
@@ -14,7 +14,8 @@ import {
   UpdateOpportunityResponse,
 } from '@supaglue/schemas/v2/crm';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
-import { Request, Response, Router } from 'express';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { crmCommonObjectService } = getDependencyContainer();
 

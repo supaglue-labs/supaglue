@@ -1,6 +1,6 @@
-import { CommonObjectType, ProviderCategory } from '@supaglue/types';
-import { CRMCommonObjectType } from '@supaglue/types/crm';
-import { EngagementCommonObjectType } from '@supaglue/types/engagement';
+import type { CommonObjectType, ProviderCategory } from '@supaglue/types';
+import type { CRMCommonObjectType } from '@supaglue/types/crm';
+import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import {
   toSnakecasedKeysCrmAccount,
   toSnakecasedKeysCrmContact,

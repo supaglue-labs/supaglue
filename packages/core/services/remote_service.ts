@@ -1,9 +1,9 @@
-import { ConnectionUnsafe } from '@supaglue/types';
-import { ProviderService } from '.';
+import type { ConnectionUnsafe } from '@supaglue/types';
+import type { ProviderService } from '.';
 import { InternalServerError } from '../errors';
 import { logger } from '../lib';
 import { getRemoteClient } from '../remotes';
-import { RemoteClient } from '../remotes/base';
+import type { RemoteClient } from '../remotes/base';
 import { getCrmRemoteClient } from '../remotes/categories/crm';
 import type { CrmRemoteClient } from '../remotes/categories/crm/base';
 import { getEngagementRemoteClient } from '../remotes/categories/engagement';

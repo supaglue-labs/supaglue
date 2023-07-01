@@ -1,4 +1,4 @@
-import { Filter } from '@supaglue/types/filter';
+import type { Filter } from '@supaglue/types/filter';
 
 export const getWhereClauseForFilter = (filter: Filter | undefined) => {
   if (!filter) {

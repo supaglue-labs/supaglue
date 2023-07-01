@@ -1,4 +1,5 @@
-import pino, { Level, Logger } from 'pino';
+import type { Level, Logger } from 'pino';
+import pino from 'pino';
 // @ts-expect-error this package doesn't have types
 import { addContext, wrapLogger } from 'pino-context';
 import pretty from 'pino-pretty';

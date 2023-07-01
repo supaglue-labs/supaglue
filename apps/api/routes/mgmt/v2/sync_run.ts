@@ -1,14 +1,14 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { BadRequestError } from '@supaglue/core/errors';
 import { toPaginationInternalParams } from '@supaglue/core/lib';
-import {
+import type {
   GetSyncRunsPathParams,
   GetSyncRunsQueryParams,
   GetSyncRunsRequest,
   GetSyncRunsResponse,
 } from '@supaglue/schemas/v2/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
-import { Request, Response, Router } from 'express';
+import type { Request, Response, Router } from 'express';
 
 const { objectSyncRunService } = getDependencyContainer();
 

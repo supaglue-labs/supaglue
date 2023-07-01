@@ -8,7 +8,7 @@ import * as pipedrive from '../../impl/pipedrive';
 import * as salesforce from '../../impl/salesforce';
 import * as zendesk_sell from '../../impl/zendesk_sell';
 import * as zoho_crm from '../../impl/zoho_crm';
-import { AbstractCrmRemoteClient, CrmRemoteClient } from './base';
+import type { AbstractCrmRemoteClient, CrmRemoteClient } from './base';
 
 type CrmConnectorConfig<T extends CRMProviderName> = {
   authConfig: ConnectorAuthConfig;

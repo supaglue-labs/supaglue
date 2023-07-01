@@ -9,7 +9,7 @@ import type {
   DestinationUpdateParams,
 } from '@supaglue/types';
 import { Client } from 'pg';
-import { DestinationWriter } from '../destination_writers/base';
+import type { DestinationWriter } from '../destination_writers/base';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
 import { BadRequestError } from '../errors';

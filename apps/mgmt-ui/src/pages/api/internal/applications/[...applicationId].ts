@@ -1,6 +1,6 @@
 import { getHeaders } from '@/utils/headers';
 import { getOrgId } from '@/utils/org';
-import { Application } from '@supaglue/types';
+import type { Application } from '@supaglue/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
 

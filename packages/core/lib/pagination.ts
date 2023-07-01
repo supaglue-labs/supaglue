@@ -1,4 +1,4 @@
-import { PaginationInternalParams, PaginationParams } from '@supaglue/types';
+import type { PaginationInternalParams, PaginationParams } from '@supaglue/types';
 import { BadRequestError } from '../errors';
 
 export function getPaginationParams<T extends string | number = string>(

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import getIcon from './companyToIcon';
 
 export default function providerToIcon(providerName: string, size = 25): ReactNode {

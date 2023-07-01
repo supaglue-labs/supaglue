@@ -1,22 +1,15 @@
 import { logger } from '@supaglue/core/lib';
 import { fromSyncConfigModel } from '@supaglue/core/mappers';
-import { ConnectionService, SyncConfigService } from '@supaglue/core/services';
+import type { ConnectionService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
-import type { ObjectSync as ObjectSyncModel, Prisma } from '@supaglue/db';
-import { CONNECTIONS_TABLE, OBJECT_SYNCS_TABLE, OBJECT_SYNC_CHANGES_TABLE, PrismaClient } from '@supaglue/db';
+import type { ObjectSync as ObjectSyncModel, Prisma, PrismaClient } from '@supaglue/db';
+import { CONNECTIONS_TABLE, OBJECT_SYNCS_TABLE, OBJECT_SYNC_CHANGES_TABLE } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import type { ConnectionSafeAny } from '@supaglue/types';
 import type { ObjectSync, ObjectSyncState, ObjectSyncType, ObjectType } from '@supaglue/types/object_sync';
-import {
-  Client,
-  IntervalSpec,
-  ScheduleAlreadyRunning,
-  ScheduleDescription,
-  ScheduleNotFoundError,
-  ScheduleOptionsAction,
-  WorkflowNotFoundError,
-} from '@temporalio/client';
-import { ApplicationService } from '.';
+import type { Client, IntervalSpec, ScheduleDescription, ScheduleOptionsAction } from '@temporalio/client';
+import { ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
+import type { ApplicationService } from '.';
 import { getRunObjectSyncScheduleId, getRunObjectSyncWorkflowId, runObjectSync } from '../workflows/run_object_sync';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;

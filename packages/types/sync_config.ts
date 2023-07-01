@@ -1,5 +1,5 @@
-import { CommonObjectType } from '.';
-import { ObjectSyncType } from './object_sync';
+import type { CommonObjectType } from '.';
+import type { ObjectSyncType } from './object_sync';
 
 export type SyncConfig = {
   id: string;

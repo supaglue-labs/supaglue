@@ -1,5 +1,5 @@
-import { SnakecasedKeys } from '../snakecased_keys';
-import { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
+import type { SnakecasedKeys } from '../snakecased_keys';
+import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
 
 export type SnakecasedKeysSequenceState = SnakecasedKeys<SequenceState>;
 export type SnakecasedKeysSequenceStateWithTenant = SnakecasedKeysSequenceState & SnakecasedEngagementTenantFields;

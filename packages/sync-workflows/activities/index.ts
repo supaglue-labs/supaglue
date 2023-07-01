@@ -1,12 +1,12 @@
-import {
+import type {
   ConnectionService,
   ProviderService,
   RemoteService,
   SchemaService,
   SyncConfigService,
 } from '@supaglue/core/services';
-import { DestinationService } from '@supaglue/core/services/destination_service';
-import { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
+import type { DestinationService } from '@supaglue/core/services/destination_service';
+import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
 import type { ApplicationService, SyncService } from '../services';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetObjectSyncInfo as createGetObjectSync } from './get_object_sync';

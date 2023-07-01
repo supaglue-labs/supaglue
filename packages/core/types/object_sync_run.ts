@@ -1,4 +1,4 @@
-import { Connection as ConnectionModel, ObjectSyncRun as ObjectSyncRunModel } from '@supaglue/db';
+import type { Connection as ConnectionModel, ObjectSyncRun as ObjectSyncRunModel } from '@supaglue/db';
 
 export type ObjectSyncRunModelExpanded = ObjectSyncRunModel & {
   objectSync: {

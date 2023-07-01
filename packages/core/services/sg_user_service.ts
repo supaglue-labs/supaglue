@@ -1,4 +1,4 @@
-import { SgUser } from '@supaglue/types';
+import type { SgUser } from '@supaglue/types';
 import { NotFoundError } from '../errors';
 import { ADMIN_PASSWORD, SG_USER_ID } from '../lib/constants';
 

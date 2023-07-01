@@ -2,8 +2,8 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import { ConnectionUnsafe, Provider } from '@supaglue/types';
-import {
+import type { ConnectionUnsafe, Provider } from '@supaglue/types';
+import type {
   Account,
   Contact,
   CRMCommonObjectType,
@@ -12,8 +12,9 @@ import {
   Opportunity,
   User,
 } from '@supaglue/types/crm';
-import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import { o, OHandler } from 'odata';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { OHandler } from 'odata';
+import { o } from 'odata';
 import { plural } from 'pluralize';
 import querystring from 'querystring';
 import simpleOauth2 from 'simple-oauth2';

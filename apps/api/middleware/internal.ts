@@ -1,5 +1,5 @@
 import { UnauthorizedError } from '@supaglue/core/errors';
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
 const sgInternalToken = process.env.SUPAGLUE_INTERNAL_TOKEN;
 

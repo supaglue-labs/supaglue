@@ -1,8 +1,8 @@
-import { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types';
-import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { EventEmitter } from 'events';
-import { Readable } from 'stream';
+import type { Readable } from 'stream';
 
 interface RemoteClientEvents {
   token_refreshed: (accessToken: string, expiresAt: string | null) => void;

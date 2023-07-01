@@ -1,10 +1,10 @@
-import {
+import type {
   ConnectionUnsafe,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
-import {
+import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
@@ -21,7 +21,7 @@ import {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
 import {

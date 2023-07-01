@@ -1,5 +1,5 @@
 import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from './crm';
-import { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from './engagement';
+import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from './engagement';
 
 export type ListParams = GetParams &
   PaginationParams & {

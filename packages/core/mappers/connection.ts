@@ -1,5 +1,5 @@
 import type { Connection as ConnectionModel } from '@supaglue/db';
-import {
+import type {
   CategoryOfProviderName,
   ConnectionSafeAny,
   ConnectionStatus,
@@ -7,7 +7,7 @@ import {
   ProviderName,
   SchemaMappingsConfig,
 } from '@supaglue/types';
-import { CRMProviderName } from '@supaglue/types/crm';
+import type { CRMProviderName } from '@supaglue/types/crm';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 

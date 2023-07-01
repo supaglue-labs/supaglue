@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
-import { Application } from '@supaglue/types';
+import type { Application } from '@supaglue/types';
 import { Svix } from 'svix';
 
 /**

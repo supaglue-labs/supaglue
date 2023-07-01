@@ -1,5 +1,5 @@
 import type { ConnectionUnsafe, Provider, ProviderCategory, ProviderName } from '@supaglue/types';
-import { AbstractRemoteClient, ConnectorAuthConfig, RemoteClient } from './base';
+import type { AbstractRemoteClient, ConnectorAuthConfig, RemoteClient } from './base';
 import * as capsule from './impl/capsule';
 import * as hubspot from './impl/hubspot';
 import * as ms_dynamics_365_sales from './impl/ms_dynamics_365_sales';

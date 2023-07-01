@@ -1,8 +1,9 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { BadRequestError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmUser } from '@supaglue/core/mappers/crm';
-import { GetUserPathParams, GetUserQueryParams, GetUserRequest, GetUserResponse } from '@supaglue/schemas/v2/crm';
-import { Request, Response, Router } from 'express';
+import type { GetUserPathParams, GetUserQueryParams, GetUserRequest, GetUserResponse } from '@supaglue/schemas/v2/crm';
+import type { Request, Response } from 'express';
+import { Router } from 'express';
 
 const { crmCommonObjectService } = getDependencyContainer();
 

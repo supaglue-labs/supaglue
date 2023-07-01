@@ -1,4 +1,4 @@
-import {
+import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
@@ -13,7 +13,7 @@ import {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
+import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 
 const industryCodeToName = {
   1: 'Accounting',
