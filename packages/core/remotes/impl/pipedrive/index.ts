@@ -50,6 +50,7 @@ import {
   toPipedrivePersonCreateParams,
   toPipedrivePersonUpdateParams,
 } from './mappers';
+import type { PipedriveObjectField } from './types';
 
 const PIPEDRIVE_RECORD_LIMIT = 500;
 
@@ -57,6 +58,8 @@ const DEFAULT_LIST_PARAMS = {
   limit: PIPEDRIVE_RECORD_LIMIT,
   sort: 'id',
 };
+
+type PipedriveObjectSupportingCustomFields = 'person' | 'lead' | 'deal' | 'organization';
 
 export type PipedriveRecord = { [key: string]: any };
 
@@ -82,6 +85,19 @@ export type Credentials = {
   instanceUrl: string;
   clientId: string;
   clientSecret: string;
+};
+
+type PipedriveObjectFieldsResponse = {
+  success: true;
+  data: PipedriveObjectField[];
+  additional_data: {
+    pagination?: {
+      start: number;
+      limit: number;
+      more_items_in_collection: boolean;
+      next_start?: number;
+    };
+  };
 };
 
 class PipedriveClient extends AbstractCrmRemoteClient {
@@ -183,6 +199,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       `${this.#credentials.instanceUrl}/api/v1/persons`,
       updatedAfter
     );
+    const fields = await this.#getCustomFieldsForObject('person');
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -190,7 +207,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedrivePersonToContact(result),
+              record: fromPipedrivePersonToContact(result, fields),
               emittedAt,
             })) ?? []
           );
@@ -205,6 +222,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       `${this.#credentials.instanceUrl}/api/v1/leads`,
       updatedAfter
     );
+    const fields = await this.#getCustomFieldsForObject('lead');
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -212,7 +230,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedriveLeadToLead(result),
+              record: fromPipedriveLeadToLead(result, fields),
               emittedAt,
             })) ?? []
           );
@@ -259,6 +277,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       `${this.#credentials.instanceUrl}/api/v1/deals`,
       updatedAfter
     );
+    const fields = await this.#getCustomFieldsForObject('deal');
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -266,7 +285,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((record) => ({
-              record: fromPipedriveDealToOpportunity(record, pipelineStageMapping),
+              record: fromPipedriveDealToOpportunity(record, pipelineStageMapping, fields),
               emittedAt,
             })) ?? []
           );
@@ -281,6 +300,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       `${this.#credentials.instanceUrl}/api/v1/organizations`,
       updatedAfter
     );
+    const fields = await this.#getCustomFieldsForObject('organization');
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -288,7 +308,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedriveOrganizationToAccount(result),
+              record: fromPipedriveOrganizationToAccount(result, fields),
               emittedAt,
             })) ?? []
           );
@@ -343,35 +363,39 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   async getContact(id: string): Promise<Contact> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('person');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/persons/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedrivePersonToContact(response.data.data);
+    return fromPipedrivePersonToContact(response.data.data, fields);
   }
 
   async getLead(id: string): Promise<Lead> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('lead');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/leads/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedriveLeadToLead(response.data.data);
+    return fromPipedriveLeadToLead(response.data.data, fields);
   }
 
   async getOpportunity(id: string): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('deal');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/deals/${id}`, {
       headers: this.#headers,
     });
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    return fromPipedriveDealToOpportunity(response.data.data, pipelineStageMapping);
+    return fromPipedriveDealToOpportunity(response.data.data, pipelineStageMapping, fields);
   }
 
   async getAccount(id: string): Promise<Account> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('organization');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/organizations/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedriveOrganizationToAccount(response.data.data);
+    return fromPipedriveOrganizationToAccount(response.data.data, fields);
   }
 
   async getUser(id: string): Promise<User> {
@@ -402,11 +426,36 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
+  async #getCustomFieldsForObject(object: PipedriveObjectSupportingCustomFields): Promise<PipedriveObjectField[]> {
+    function getFieldsPrefix(): string {
+      switch (object) {
+        case 'person':
+        case 'organization':
+        case 'deal':
+          return object;
+        case 'lead':
+          return 'deal';
+      }
+    }
+
+    await this.maybeRefreshAccessToken();
+    // TODO: Handle pagination. We're assuming that by not passing in a limit param, we get all the fields.
+    // This may be an incorrect assumption
+    const response = await axios.get<PipedriveObjectFieldsResponse>(
+      `${this.#credentials.instanceUrl}/api/v1/${getFieldsPrefix()}Fields:(key,name,edit_flag,field_type,options)`,
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.data.filter((field) => field.edit_flag);
+  }
+
   async createContact(params: ContactCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('person');
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/persons`,
-      toPipedrivePersonCreateParams(params),
+      toPipedrivePersonCreateParams(params, fields),
       {
         headers: this.#headers,
       }
@@ -416,9 +465,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   async createLead(params: LeadCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('lead');
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/leads`,
-      toPipedriveLeadCreateParams(params),
+      toPipedriveLeadCreateParams(params, fields),
       {
         headers: this.#headers,
       }
@@ -428,9 +478,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   async createAccount(params: AccountCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('organization');
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/organizations`,
-      toPipedriveOrganizationCreateParams(params),
+      toPipedriveOrganizationCreateParams(params, fields),
       {
         headers: this.#headers,
       }
@@ -441,9 +492,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   async createOpportunity(params: OpportunityCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const pipelineStageMapping = await this.#getPipelineStageMapping();
+    const fields = await this.#getCustomFieldsForObject('deal');
     const response = await axios.post<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/deals`,
-      toPipedriveDealCreateParams(params, pipelineStageMapping),
+      toPipedriveDealCreateParams(params, pipelineStageMapping, fields),
       {
         headers: this.#headers,
       }
@@ -473,10 +525,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   async updateContact(params: ContactUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('person');
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/persons/${params.id}`,
-      toPipedrivePersonUpdateParams(params),
+      toPipedrivePersonUpdateParams(params, fields),
       {
         headers: this.#headers,
       }
@@ -486,9 +539,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   async updateLead(params: LeadUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('person');
     const response = await axios.patch<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/leads/${params.id}`,
-      toPipedriveLeadUpdateParams(params),
+      toPipedriveLeadUpdateParams(params, fields),
       {
         headers: this.#headers,
       }
@@ -498,10 +552,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   async updateAccount(params: AccountUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
+    const fields = await this.#getCustomFieldsForObject('person');
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/organizations/${params.id}`,
-      toPipedriveOrganizationUpdateParams(params),
+      toPipedriveOrganizationUpdateParams(params, fields),
       {
         headers: this.#headers,
       }
@@ -512,10 +567,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   async updateOpportunity(params: OpportunityUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const pipelineStageMapping = await this.#getPipelineStageMapping();
+    const fields = await this.#getCustomFieldsForObject('person');
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/deals/${params.id}`,
-      toPipedriveDealUpdateParams(params, pipelineStageMapping),
+      toPipedriveDealUpdateParams(params, pipelineStageMapping, fields),
       {
         headers: this.#headers,
       }
