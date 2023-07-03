@@ -22,15 +22,22 @@ async function run() {
     namespace: TEMPORAL_NAMESPACE,
   });
 
-  await connection.operatorService.removeSearchAttributes({
-    namespace: TEMPORAL_NAMESPACE,
-    searchAttributes: DEPRECATED_TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.filter(
-      (attribute) => attribute in response.customAttributes
-    ),
-  });
+  const searchAttributesToRemove = DEPRECATED_TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.filter(
+    (attribute) => attribute in response.customAttributes
+  );
 
-  // eslint-disable-next-line no-console
-  console.log('Removed deprecated Search Attributes from Temporal Server');
+  if (searchAttributesToRemove.length) {
+    await connection.operatorService.removeSearchAttributes({
+      namespace: TEMPORAL_NAMESPACE,
+      searchAttributes: searchAttributesToRemove,
+    });
+
+    // eslint-disable-next-line no-console
+    console.log('Removed deprecated Search Attributes from Temporal Server');
+  } else {
+    // eslint-disable-next-line no-console
+    console.log('No deprecated Search Attributes to remove from Temporal Server');
+  }
 
   const searchAttributesAndTypesToAdd = Object.fromEntries(
     Object.entries(TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES_AND_TYPES).filter(
