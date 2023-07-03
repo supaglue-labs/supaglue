@@ -1694,6 +1694,53 @@
         }
       ]
     },
+    "/customers/{customer_id}/connections/{connection_id}/objects": {
+      "get": {
+        "operationId": "listObjects",
+        "summary": "List objects",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of objects and their schemas and field mappings (if set)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/objects_expanded"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        },
+        {
+          "name": "connection_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/webhook": {
       "get": {
         "operationId": "getWebhook",
@@ -2299,6 +2346,86 @@
           }
         }
       },
+      "objects_expanded": {
+        "type": "object",
+        "properties": {
+          "common": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "common_object_name"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                },
+                "field_mappings": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/field_mapping"
+                  }
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "standard": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "standard_object_name"
+                },
+                "schema_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "custom": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "custom_object_name"
+                },
+                "schema_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        }
+      },
+      "field_mapping": {
+        "type": "object",
+        "properties": {
+          "schema_field": {
+            "type": "string"
+          },
+          "mapped_field": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_field",
+          "mapped_field"
+        ]
+      },
       "add_object": {
         "allOf": [
           {
@@ -2387,19 +2514,7 @@
                     "field_mappings": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "schema_field": {
-                            "type": "string"
-                          },
-                          "mapped_field": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "schema_field",
-                          "mapped_field"
-                        ]
+                        "$ref": "#/components/schemas/field_mapping"
                       }
                     }
                   },
@@ -2420,19 +2535,7 @@
                     "field_mappings": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "schema_field": {
-                            "type": "string"
-                          },
-                          "mapped_field": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "schema_field",
-                          "mapped_field"
-                        ]
+                        "$ref": "#/components/schemas/field_mapping"
                       }
                     }
                   },

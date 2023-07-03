@@ -10,15 +10,7 @@ properties:
         field_mappings:
           type: array
           items:
-            type: object
-            properties:
-              schema_field:
-                type: string
-              mapped_field:
-                type: string
-            required:
-              - schema_field
-              - mapped_field
+            $ref: ./field_mapping.yaml
       required:
         - object
         - field_mappings
@@ -32,15 +24,7 @@ properties:
         field_mappings:
           type: array
           items:
-            type: object
-            properties:
-              schema_field:
-                type: string
-              mapped_field:
-                type: string
-            required:
-              - schema_field
-              - mapped_field
+            $ref: ./field_mapping.yaml
       required:
         - object
         - field_mappings

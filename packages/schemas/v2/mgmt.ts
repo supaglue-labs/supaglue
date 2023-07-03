@@ -161,6 +161,12 @@ export type ListPropertiesQueryParams = Required<operations['listProperties']>['
 export type ListPropertiesResponse =
   operations['listProperties']['responses'][keyof operations['updateConnection']['responses']]['content']['application/json'];
 
+export type ListObjectsPathParams =
+  paths[`/customers/{customer_id}/connections/{connection_id}/objects`]['parameters']['path'];
+export type ListObjectsRequest = never;
+export type ListObjectsResponse =
+  operations['listObjects']['responses'][keyof operations['updateConnection']['responses']]['content']['application/json'];
+
 export type CreateWebhookPathParams = never;
 export type CreateWebhookRequest = operations['createWebhook']['requestBody']['content']['application/json'];
 export type CreateWebhookResponse =
