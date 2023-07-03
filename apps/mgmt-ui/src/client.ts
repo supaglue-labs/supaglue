@@ -8,11 +8,11 @@ import type {
   DestinationUpdateParams,
   Provider,
   ProviderCreateParams,
+  Schema,
   SyncConfig,
   WebhookConfig,
 } from '@supaglue/types';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
-import { toCreateSyncConfigRequest, toUpdateSyncConfigRequest } from './hooks/useSyncConfig';
 
 export type ClientErrorResponse = {
   ok: false;
@@ -156,7 +156,7 @@ export async function createSyncConfig(
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
     },
-    body: JSON.stringify(toCreateSyncConfigRequest(data)),
+    body: JSON.stringify(snakecaseKeys(data)),
   });
 
   return await toClientResponse(result);
@@ -169,7 +169,7 @@ export async function updateSyncConfig(applicationId: string, data: SyncConfig):
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
     },
-    body: JSON.stringify(toUpdateSyncConfigRequest(data)),
+    body: JSON.stringify(snakecaseKeys(data)),
   });
 
   return await toClientResponse(result);
@@ -177,6 +177,43 @@ export async function updateSyncConfig(applicationId: string, data: SyncConfig):
 
 export async function deleteSyncConfig(applicationId: string, syncConfigId: string): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/sync-configs/${syncConfigId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+  });
+  return await toClientEmptyResponse(result);
+}
+
+export async function createSchema(applicationId: string, data: Omit<Schema, 'id'>): Promise<ClientResponse<Schema>> {
+  const result = await fetch(`/api/internal/schemas/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  return await toClientResponse(result);
+}
+
+export async function updateSchema(applicationId: string, data: Schema): Promise<ClientResponse<Schema>> {
+  const result = await fetch(`/api/internal/schemas/update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  return await toClientResponse(result);
+}
+
+export async function deleteSchema(applicationId: string, syncConfigId: string): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/schemas/${syncConfigId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
