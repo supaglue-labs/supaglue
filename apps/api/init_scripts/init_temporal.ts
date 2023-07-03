@@ -1,4 +1,7 @@
-import { TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES_AND_TYPES } from '@supaglue/core/temporal';
+import {
+  DEPRECATED_TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES,
+  TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES_AND_TYPES,
+} from '@supaglue/core/temporal';
 import { Connection } from '@temporalio/client';
 
 const TEMPORAL_ADDRESS =
@@ -18,6 +21,16 @@ async function run() {
   const response = await connection.operatorService.listSearchAttributes({
     namespace: TEMPORAL_NAMESPACE,
   });
+
+  await connection.operatorService.removeSearchAttributes({
+    namespace: TEMPORAL_NAMESPACE,
+    searchAttributes: DEPRECATED_TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.filter(
+      (attribute) => attribute in response.customAttributes
+    ),
+  });
+
+  // eslint-disable-next-line no-console
+  console.log('Removed deprecated Search Attributes from Temporal Server');
 
   const searchAttributesAndTypesToAdd = Object.fromEntries(
     Object.entries(TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES_AND_TYPES).filter(
