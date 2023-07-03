@@ -405,7 +405,6 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
             [TEMPORAL_CONTEXT_ARGS.SYNC_CONFIG_ID]: objectSync.syncConfigId,
             [TEMPORAL_CONTEXT_ARGS.CONNECTION_ID]: objectSync.connectionId,
-            [TEMPORAL_CONTEXT_ARGS.PROVIDER_CATEGORY]: connection.category,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
           },
         },
@@ -420,7 +419,6 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_CONFIG_ID]: [objectSync.syncConfigId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_CATEGORY]: [connection.category],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
       },
     };

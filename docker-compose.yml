@@ -85,12 +85,19 @@ services:
     restart: on-failure
 
   temporal:
-    image: slamdev/temporalite:0.3.0 # TODO: we should replace this with one hosted by us later
+    image: alpine:3.18.0
     ports:
       - 7233:7233
       - 8233:8233
-    entrypoint: temporalite start -n default --ip 0.0.0.0 -f /data/temporal.db
     restart: on-failure
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        apk add --update curl
+        rm -rf /var/cache/apk/*
+        curl -sSf https://temporal.download/cli.sh | sh
+        /root/.temporalio/bin/temporal server start-dev -n default --ip 0.0.0.0 -f /data/temporal.db
     volumes:
       - temporalitedata:/data
 
@@ -118,7 +125,13 @@ services:
         condition: service_started
     volumes:
       - .env:/app/.env
-    command: sh -c 'npx prisma@4.12.0 migrate deploy && node node_modules/@supaglue/db/prisma/seed.js && node init_scripts/init_temporal.js'
+    command:
+      - sh
+      - -c
+      - |
+        npx prisma@4.12.0 migrate deploy
+        node node_modules/@supaglue/db/prisma/seed.js
+        node init_scripts/init_temporal.js
 
 volumes:
   pgdata:
