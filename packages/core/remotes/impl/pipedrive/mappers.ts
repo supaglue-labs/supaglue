@@ -3,6 +3,7 @@ import type {
   AccountCreateParams,
   Contact,
   ContactCreateParams,
+  CustomFields,
   Lead,
   LeadCreateParams,
   Opportunity,
@@ -15,8 +16,71 @@ import type { PipedriveRecord, PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate } from '../../../lib';
 import { getFullName } from '../../utils/name';
+import type { PipedriveObjectField } from './types';
 
-export const fromPipedrivePersonToContact = (person: PipedriveRecord): Contact => {
+const mapCustomFieldsFromNamesToKeys = (customFields: CustomFields, fields: PipedriveObjectField[]): CustomFields => {
+  const mappedCustomFields: CustomFields = {};
+  for (const [name, value] of Object.entries(customFields)) {
+    const field = fields.find((field) => field.name === name);
+    if (!field) {
+      throw new BadRequestError(`Field not found: ${name}`);
+    }
+
+    // Map the key
+    const { key } = field;
+
+    // Map the value if necessary
+    if (field.field_type === 'enum' || field.field_type === 'set') {
+      const option = field.options.find((option) => option.label === value);
+      if (!option) {
+        throw new BadRequestError(`Option ${value} not found for field ${name}`);
+      }
+      mappedCustomFields[key] = option.id;
+    } else {
+      mappedCustomFields[key] = value;
+    }
+  }
+  return mappedCustomFields;
+};
+
+/**
+ * Given a record and a list of fields:
+ * 1. Identify the keys that are custom field keys.
+ * 2. Rewrite the key with the name of the field.
+ * 3. For fields that are enums or sets, rewrite the value with the corresponding label.
+ *
+ */
+const rewriteCustomFieldsInRecord = (record: PipedriveRecord, fields: PipedriveObjectField[]): PipedriveRecord => {
+  const mappedRecord: PipedriveRecord = {};
+
+  for (const [key, value] of Object.entries(record)) {
+    const field = fields.find((field) => field.key === key);
+    if (!field) {
+      mappedRecord[key] = value;
+      continue;
+    }
+
+    // Map the name
+    const { name } = field;
+
+    // Map the value if necessary
+    if (field.field_type === 'enum' || field.field_type === 'set') {
+      const option = field.options.find((option) => option.id.toString() === value);
+      if (option) {
+        mappedRecord[name] = option.label;
+      } else {
+        // TODO: should we throw an error here if it's not null or undefined?
+        mappedRecord[name] = value;
+      }
+    } else {
+      mappedRecord[name] = value;
+    }
+  }
+
+  return mappedRecord;
+};
+
+export const fromPipedrivePersonToContact = (person: PipedriveRecord, fields: PipedriveObjectField[]): Contact => {
   return {
     id: person.id.toString(),
     firstName: person.first_name ?? null,
@@ -35,11 +99,11 @@ export const fromPipedrivePersonToContact = (person: PipedriveRecord): Contact =
       person.delete_time ? new Date(person.delete_time) : null,
       person.update_time ? new Date(person.update_time) : null
     ),
-    rawData: person,
+    rawData: rewriteCustomFieldsInRecord(person, fields),
   };
 };
 
-export const fromPipedriveLeadToLead = (lead: PipedriveRecord): Lead => {
+export const fromPipedriveLeadToLead = (lead: PipedriveRecord, fields: PipedriveObjectField[]): Lead => {
   return {
     id: lead.id.toString(),
     leadSource: lead.source_name ?? null,
@@ -59,13 +123,14 @@ export const fromPipedriveLeadToLead = (lead: PipedriveRecord): Lead => {
     updatedAt: lead.update_time ? new Date(lead.update_time) : null,
     isDeleted: lead.is_archived ?? false,
     lastModifiedAt: maxDate(lead.update_time ? new Date(lead.update_time) : null), // TODO: how to know when deleted?
-    rawData: lead,
+    rawData: rewriteCustomFieldsInRecord(lead, fields),
   };
 };
 
 export const fromPipedriveDealToOpportunity = (
   deal: PipedriveRecord,
-  pipelineStageMapping: PipelineStageMapping
+  pipelineStageMapping: PipelineStageMapping,
+  fields: PipedriveObjectField[]
 ): Opportunity => {
   let pipeline = deal.pipeline_id?.toString() ?? null;
   let stage = deal.stage_id?.toString() ?? null;
@@ -96,11 +161,14 @@ export const fromPipedriveDealToOpportunity = (
       deal.update_time ? new Date(deal.update_time) : null,
       deal.delete_time ? new Date(deal.delete_time) : null
     ),
-    rawData: deal,
+    rawData: rewriteCustomFieldsInRecord(deal, fields),
   };
 };
 
-export const fromPipedriveOrganizationToAccount = (organization: PipedriveRecord): Account => {
+export const fromPipedriveOrganizationToAccount = (
+  organization: PipedriveRecord,
+  fields: PipedriveObjectField[]
+): Account => {
   return {
     id: organization.id.toString(),
     name: organization.name ?? null,
@@ -120,7 +188,7 @@ export const fromPipedriveOrganizationToAccount = (organization: PipedriveRecord
       organization.update_time ? new Date(organization.update_time) : null,
       organization.delete_time ? new Date(organization.delete_time) : null
     ),
-    rawData: organization,
+    rawData: rewriteCustomFieldsInRecord(organization, fields),
   };
 };
 
@@ -177,11 +245,14 @@ export const fromPipedriveOrganizationToAddresses = (organization: PipedriveReco
   ];
 };
 
-export const toPipedrivePersonCreateParams = (params: ContactCreateParams) => {
+export const toPipedrivePersonCreateParams = (params: ContactCreateParams, fields: PipedriveObjectField[]) => {
   const name = getFullName(params.firstName, params.lastName);
   if (!name) {
     throw new BadRequestError('Either firstName or lastName must be provided');
   }
+  const mappedCustomFields = params.customFields
+    ? mapCustomFieldsFromNamesToKeys(params.customFields, fields)
+    : undefined;
   return {
     name,
     email: params.emailAddresses?.map(({ emailAddress, emailAddressType }) => ({
@@ -194,31 +265,37 @@ export const toPipedrivePersonCreateParams = (params: ContactCreateParams) => {
     })),
     org_id: params.accountId ? parseInt(params.accountId) : undefined,
     owner_id: params.ownerId ? parseInt(params.ownerId) : undefined,
-    ...params.customFields,
+    ...mappedCustomFields,
   };
 };
 
 export const toPipedrivePersonUpdateParams = toPipedrivePersonCreateParams;
 
-export const toPipedriveLeadCreateParams = (params: LeadCreateParams) => {
+export const toPipedriveLeadCreateParams = (params: LeadCreateParams, fields: PipedriveObjectField[]) => {
   if (!params.convertedAccountId && !params.convertedContactId) {
     throw new BadRequestError('Either convertedAccountId or convertedContactId must be provided');
   }
+  const mappedCustomFields = params.customFields
+    ? mapCustomFieldsFromNamesToKeys(params.customFields, fields)
+    : undefined;
   return {
     title: params.title,
     owner_id: params.ownerId ? parseInt(params.ownerId) : undefined,
     person_id: params.convertedContactId ? parseInt(params.convertedContactId) : undefined,
     organization_id: params.convertedAccountId ? parseInt(params.convertedAccountId) : undefined,
-    ...params.customFields,
+    ...mappedCustomFields,
   };
 };
 export const toPipedriveLeadUpdateParams = toPipedriveLeadCreateParams;
 
-export const toPipedriveOrganizationCreateParams = (params: AccountCreateParams) => {
+export const toPipedriveOrganizationCreateParams = (params: AccountCreateParams, fields: PipedriveObjectField[]) => {
+  const mappedCustomFields = params.customFields
+    ? mapCustomFieldsFromNamesToKeys(params.customFields, fields)
+    : undefined;
   return {
     name: params.name,
     owner_id: params.ownerId,
-    ...params.customFields,
+    ...mappedCustomFields,
   };
 };
 export const toPipedriveOrganizationUpdateParams = toPipedriveOrganizationCreateParams;
@@ -264,10 +341,14 @@ const getStageId = (
 
 export const toPipedriveDealCreateParams = (
   params: OpportunityCreateParams,
-  pipelineStageMapping: PipelineStageMapping
+  pipelineStageMapping: PipelineStageMapping,
+  fields: PipedriveObjectField[]
 ) => {
   const pipelineId = getPipelineId(params.pipeline, pipelineStageMapping);
   const stageId = getStageId(pipelineId, params.stage, pipelineStageMapping);
+  const mappedCustomFields = params.customFields
+    ? mapCustomFieldsFromNamesToKeys(params.customFields, fields)
+    : undefined;
   return {
     title: params.name,
     value: params.amount?.toString(),
@@ -275,7 +356,7 @@ export const toPipedriveDealCreateParams = (
     org_id: params.accountId ? parseInt(params.accountId) : undefined,
     pipeline_id: pipelineId ? parseInt(pipelineId) : undefined,
     stage_id: stageId ? parseInt(stageId) : undefined,
-    ...params.customFields,
+    ...mappedCustomFields,
   };
 };
 export const toPipedriveDealUpdateParams = toPipedriveDealCreateParams;
