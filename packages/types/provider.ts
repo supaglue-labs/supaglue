@@ -3,6 +3,7 @@ import type {
   OAuthConfigDecrypted,
   OAuthConfigEncrypted,
   ProviderCategory,
+  Schema,
   SchemaCreateParams,
 } from '.';
 import type { CRMProviderName } from './crm';
@@ -76,4 +77,10 @@ export type AddObjectToProviderParams = {
   enableSync?: boolean;
   schemaId?: string;
   schema?: Omit<SchemaCreateParams, 'applicationId'>;
+};
+
+export type ObjectsWithExpandedSchemasAndFieldMappings<T extends ProviderCategory> = {
+  common?: (Omit<ProviderCommonObject<T>, 'schemaId'> & { schema?: Schema })[];
+  standard?: (Omit<ProviderObject, 'schemaId'> & { schema?: Schema })[];
+  custom?: (Omit<ProviderObject, 'schemaId'> & { schema?: Schema })[];
 };

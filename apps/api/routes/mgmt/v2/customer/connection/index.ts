@@ -11,6 +11,9 @@ import type {
   GetConnectionsPathParams,
   GetConnectionsRequest,
   GetConnectionsResponse,
+  ListObjectsPathParams,
+  ListObjectsRequest,
+  ListObjectsResponse,
   ListPropertiesPathParams,
   ListPropertiesQueryParams,
   ListPropertiesRequest,
@@ -25,7 +28,8 @@ import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { connectionService, connectionAndSyncService, remoteService } = getDependencyContainer();
+const { connectionService, connectionAndSyncService, remoteService, providerService, schemaService } =
+  getDependencyContainer();
 
 export default function init(app: Router): void {
   const connectionRouter = Router({ mergeParams: true });
@@ -71,6 +75,48 @@ export default function init(app: Router): void {
               name: req.query.name,
             });
       return res.status(200).send({ properties });
+    }
+  );
+
+  connectionRouter.get(
+    '/:connection_id/objects',
+    async (
+      req: Request<ListObjectsPathParams, ListObjectsResponse, ListObjectsRequest>,
+      res: Response<ListObjectsResponse>
+    ) => {
+      const connection = await connectionService.getSafeByIdAndApplicationId(
+        req.params.connection_id,
+        req.supaglueApplication.id
+      );
+      if (connection.category !== 'crm') {
+        throw new BadRequestError('Only CRM connections are supported for this operation');
+      }
+      const { objects } = await providerService.getById(connection.providerId);
+      const schemaIds = [
+        ...(objects?.common?.flatMap((object) => object.schemaId ?? []) ?? []),
+        ...(objects?.standard?.flatMap((object) => object.schemaId ?? []) ?? []),
+        ...(objects?.custom?.flatMap((object) => object.schemaId ?? []) ?? []),
+      ];
+      const schemas = await schemaService.getByIds(schemaIds);
+      const out = {
+        common: objects?.common?.map(({ name, schemaId }) => ({
+          name,
+          schema: schemaId ? schemas.find((schema) => schema.id === schemaId) : undefined,
+          fieldMappings: connection.schemaMappingsConfig?.commonObjects?.find((mapping) => mapping.object === name)
+            ?.fieldMappings,
+        })),
+        standard: objects?.standard?.map(({ name, schemaId }) => ({
+          name,
+          schema: schemaId ? schemas.find((schema) => schema.id === schemaId) : undefined,
+          fieldMappings: connection.schemaMappingsConfig?.standardObjects?.find((mapping) => mapping.object === name)
+            ?.fieldMappings,
+        })),
+        custom: objects?.custom?.map(({ name, schemaId }) => ({
+          name,
+          schema: schemaId ? schemas.find((schema) => schema.id === schemaId) : undefined,
+        })),
+      };
+      return res.status(200).send(snakecaseKeys(out));
     }
   );
 

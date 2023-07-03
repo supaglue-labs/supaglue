@@ -163,6 +163,16 @@ export interface paths {
       };
     };
   };
+  "/customers/{customer_id}/connections/{connection_id}/objects": {
+    /** List objects */
+    get: operations["listObjects"];
+    parameters: {
+      path: {
+        customer_id: string;
+        connection_id: string;
+      };
+    };
+  };
   "/webhook": {
     /**
      * Get webhook 
@@ -287,6 +297,28 @@ export interface components {
           schema_id?: string;
         })[];
     };
+    objects_expanded: {
+      common?: ({
+          /** @example common_object_name */
+          name: string;
+          schema?: components["schemas"]["schema"];
+          field_mappings?: (components["schemas"]["field_mapping"])[];
+        })[];
+      standard?: ({
+          /** @example standard_object_name */
+          name: string;
+          schema_id?: string;
+        })[];
+      custom?: ({
+          /** @example custom_object_name */
+          name: string;
+          schema_id?: string;
+        })[];
+    };
+    field_mapping: {
+      schema_field: string;
+      mapped_field: string;
+    };
     add_object: {
       /** @example object_name */
       name: string;
@@ -320,17 +352,11 @@ export interface components {
       schema_mappings_config?: {
         common_objects?: ({
             object: string;
-            field_mappings: ({
-                schema_field: string;
-                mapped_field: string;
-              })[];
+            field_mappings: (components["schemas"]["field_mapping"])[];
           })[];
         standard_objects?: ({
             object: string;
-            field_mappings: ({
-                schema_field: string;
-                mapped_field: string;
-              })[];
+            field_mappings: (components["schemas"]["field_mapping"])[];
           })[];
       };
     };
@@ -1041,6 +1067,17 @@ export interface operations {
           "application/json": {
             properties: (string)[];
           };
+        };
+      };
+    };
+  };
+  listObjects: {
+    /** List objects */
+    responses: {
+      /** @description List of objects and their schemas and field mappings (if set) */
+      200: {
+        content: {
+          "application/json": components["schemas"]["objects_expanded"];
         };
       };
     };

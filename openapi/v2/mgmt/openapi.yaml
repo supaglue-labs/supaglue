@@ -55,6 +55,8 @@ paths:
     $ref: paths/connections@{connection_id}.yaml
   '/customers/{customer_id}/connections/{connection_id}/properties':
     $ref: paths/connections@{connection_id}@properties.yaml
+  '/customers/{customer_id}/connections/{connection_id}/objects':
+    $ref: paths/connections@{connection_id}@objects.yaml
   '/webhook':
     $ref: paths/webhook.yaml
   '/sync-runs':
@@ -99,6 +101,10 @@ components:
       $ref: ./components/schemas/objects/schema_config.yaml
     objects:
       $ref: ./components/schemas/objects/objects.yaml
+    objects_expanded:
+      $ref: ./components/schemas/objects/objects_expanded.yaml
+    field_mapping:
+      $ref: ./components/schemas/objects/field_mapping.yaml
     add_object:
       $ref: ./components/schemas/add_object.yaml
     connection:
