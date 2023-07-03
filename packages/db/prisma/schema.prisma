@@ -124,20 +124,21 @@ model Connection {
 }
 
 model ObjectSync {
-  id            String          @id @default(uuid())
+  id             String          @id @default(uuid())
   // common, standard, custom
-  objectType    String          @map("object_type")
-  object        String
-  state         Json
-  strategy      Json
-  connectionId  String          @map("connection_id")
-  connection    Connection      @relation(fields: [connectionId], references: [id])
-  paused        Boolean         @default(false)
-  syncConfigId  String          @map("sync_config_id")
-  syncConfig    SyncConfig      @relation(fields: [syncConfigId], references: [id])
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
-  runs          ObjectSyncRun[]
+  objectType     String          @map("object_type")
+  object         String
+  state          Json
+  strategy       Json
+  connectionId   String          @map("connection_id")
+  connection     Connection      @relation(fields: [connectionId], references: [id])
+  paused         Boolean         @default(false)
+  syncConfigId   String          @map("sync_config_id")
+  syncConfig     SyncConfig      @relation(fields: [syncConfigId], references: [id])
+  argsForNextRun Json?           @map("args_for_next_run")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  runs           ObjectSyncRun[]
 
   @@unique([connectionId, object])
   @@map("object_syncs")
