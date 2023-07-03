@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.12.1",
+    "version": "0.12.2",
     "title": "Supaglue Management API",
     "contact": {
       "name": "Supaglue",
