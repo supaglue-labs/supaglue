@@ -28,7 +28,7 @@ export default function SchemaListPanel() {
     {
       field: 'name',
       headerName: 'Name',
-      width: 275,
+      width: 125,
       renderCell: (params) => {
         return (
           <Link
@@ -53,8 +53,8 @@ export default function SchemaListPanel() {
       },
     },
     {
-      field: 'providers',
-      headerName: 'Providers',
+      field: 'objects',
+      headerName: 'Objects',
       width: 300,
       sortable: false,
       renderCell: (params) => {

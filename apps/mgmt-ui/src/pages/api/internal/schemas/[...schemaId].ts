@@ -6,7 +6,7 @@ import { API_HOST } from '../..';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSchemasResponse | null>) {
   switch (req.method) {
     case 'GET': {
-      const result = await fetch(`${API_HOST}/internal/sync_configs/${req.query.schemaId}`, {
+      const result = await fetch(`${API_HOST}/internal/schemas/${req.query.schemaId}`, {
         method: 'GET',
         headers: getApplicationIdScopedHeaders(req),
       });
@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return res.status(200).json(r);
     }
     case 'DELETE': {
-      const result = await fetch(`${API_HOST}/internal/sync_configs/${req.query.schemaId}`, {
+      const result = await fetch(`${API_HOST}/internal/schemas/${req.query.schemaId}`, {
         method: 'DELETE',
         headers: getApplicationIdScopedHeaders(req),
       });

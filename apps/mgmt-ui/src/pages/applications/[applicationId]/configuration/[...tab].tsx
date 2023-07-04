@@ -100,6 +100,12 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
                 }}
               />
               <Tab
+                label="Schemas"
+                onClick={async (e) => {
+                  await router.push(`/applications/${activeApplicationId}/configuration/schemas`);
+                }}
+              />
+              <Tab
                 label="Webhook"
                 onClick={async (e) => {
                   await router.push(`/applications/${activeApplicationId}/configuration/webhook`);

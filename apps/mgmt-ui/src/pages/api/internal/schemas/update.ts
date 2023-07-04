@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<UpdateSchemaResponse | null>) {
-  const result = await fetch(`${API_HOST}/internal/sync_configs/${req.body.id}`, {
+  const result = await fetch(`${API_HOST}/internal/schemas/${req.body.id}`, {
     method: 'PUT',
     headers: getApplicationIdScopedHeaders(req),
     body: JSON.stringify(req.body),

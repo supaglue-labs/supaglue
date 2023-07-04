@@ -1,5 +1,6 @@
 import { TabPanel } from '@/components/TabPanel';
 import { useRouter } from 'next/router';
+import { NewSchemaPanel, SchemaDetailsPanel } from './SchemaDetailsPanel';
 import SchemasListPanel from './SchemaListPanel';
 
 export default function SchemaTabPanelContainer() {
@@ -13,8 +14,8 @@ export default function SchemaTabPanelContainer() {
   return (
     <TabPanel value={0} index={0} className="w-full">
       {isListPage && <SchemasListPanel />}
-      {/* {isNewPage && <NewSchemaPanel />}
-      {isDetailPage && <SchemaDetailsPanel schemaId={tab[1]} />} */}
+      {isNewPage && <NewSchemaPanel />}
+      {isDetailPage && <SchemaDetailsPanel schemaId={tab[1]} />}
     </TabPanel>
   );
 }
