@@ -4,11 +4,11 @@ import { IconButton } from '@mui/material';
 import { useState } from 'react';
 
 export type DeleteSchemaProps = {
-  schemaId: string;
+  name: string;
   onDelete: () => void;
 };
 
-export function DeleteSchema({ schemaId, onDelete }: DeleteSchemaProps) {
+export function DeleteSchema({ name, onDelete }: DeleteSchemaProps) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -29,7 +29,7 @@ export function DeleteSchema({ schemaId, onDelete }: DeleteSchemaProps) {
         handleClose={handleClose}
         onDelete={onDelete}
         title="Delete Schema"
-        resourceName={`Schema ${schemaId}`}
+        resourceName={`Schema ${name}`}
       />
     </>
   );

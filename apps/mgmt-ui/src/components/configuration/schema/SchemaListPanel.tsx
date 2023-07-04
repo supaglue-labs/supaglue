@@ -84,7 +84,7 @@ export default function SchemaListPanel() {
       renderCell: (params) => {
         return (
           <DeleteSchema
-            schemaId={params.row.id}
+            name={params.row.name}
             onDelete={async () => {
               const response = await deleteSchema(applicationId, params.row.id);
               if (!response.ok) {
