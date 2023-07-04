@@ -1,12 +1,12 @@
 get:
   operationId: getSyncRuns
   tags:
-    - Sync Runs
+    - SyncRuns
   security:
     - ApiKeyAuth: []
-  summary: Get Sync Run
+  summary: Get SyncRuns
   description: >-
-    Get a list of Sync Run objects.
+    Get a list of SyncRun objects.
   parameters:
     - name: cursor
       in: query
@@ -46,7 +46,7 @@ get:
       description: The object to filter by
   responses:
     '200':
-      description: Sync Run
+      description: SyncRun
       content:
         application/json:
           schema:
@@ -57,7 +57,7 @@ get:
                   results:
                     type: array
                     items:
-                      $ref: ../components/schemas/sync_run.yaml
+                      $ref: ../components/schemas/objects/sync_run.yaml
           examples:
             Example:
               value:

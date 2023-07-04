@@ -8,13 +8,15 @@ import type {
   GetSyncRunsResponse,
 } from '@supaglue/schemas/v2/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
-import type { Request, Response, Router } from 'express';
+import { Router, type Request, type Response } from 'express';
 
 const { objectSyncRunService } = getDependencyContainer();
 
 export default function init(app: Router) {
-  app.get(
-    '/sync-runs',
+  const syncRunRouter = Router();
+
+  syncRunRouter.get(
+    '/',
     async (
       req: Request<GetSyncRunsPathParams, GetSyncRunsResponse, GetSyncRunsRequest, GetSyncRunsQueryParams>,
       res: Response<GetSyncRunsResponse>
@@ -49,4 +51,6 @@ export default function init(app: Router) {
       return res.status(200).send({ next, previous, results: snakeCaseResults, total_count: totalCount });
     }
   );
+
+  app.use('/sync-runs', syncRunRouter);
 }

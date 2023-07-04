@@ -1,0 +1,24 @@
+type: object
+properties:
+  id:
+    type: string
+  object_type:
+    type: string
+    enum:
+      - common
+      - standard
+      - custom
+  object:
+    type: string
+  connection_id:
+    type: string
+    example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
+  sync_config_id:
+    type: string
+    example: 3217ea51-11c8-43c9-9547-6f197e02e5e5
+required:
+  - id
+  - object_type
+  - object
+  - connection_id
+  - sync_config_id

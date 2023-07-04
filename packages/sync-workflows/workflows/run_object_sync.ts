@@ -12,14 +12,13 @@ const { syncRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   },
 });
 
-const { getObjectSync, updateObjectSyncState, logObjectSyncStart, logObjectSyncFinish } = proxyActivities<
-  ReturnType<typeof createActivities>
->({
-  startToCloseTimeout: '10 second',
-  retry: {
-    maximumAttempts: 3,
-  },
-});
+const { getObjectSync, updateObjectSyncState, clearSyncArgsForNextRun, logObjectSyncStart, logObjectSyncFinish } =
+  proxyActivities<ReturnType<typeof createActivities>>({
+    startToCloseTimeout: '10 second',
+    retry: {
+      maximumAttempts: 3,
+    },
+  });
 
 const { maybeSendSyncFinishWebhook } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '6 minute',
@@ -59,6 +58,7 @@ export async function runObjectSync({ objectSyncId, connectionId, category }: Ru
       objectSync.type === 'full then incremental'
         ? await doFullThenIncrementalSync(objectSync)
         : await doFullOnlySync(objectSync);
+    await clearSyncArgsForNextRun({ objectSyncId });
   } catch (err: any) {
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
 
@@ -195,6 +195,11 @@ async function doFullThenIncrementalSync(objectSync: FullThenIncrementalObjectSy
     });
 
     return numRecordsSynced;
+  }
+
+  // Short-circuit normal state transitions if we're forcing a full refresh sync
+  if (objectSync.argsForNextRun?.performFullRefresh) {
+    return await doFullStage();
   }
 
   // Sync state transitions

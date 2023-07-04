@@ -184,10 +184,26 @@ export interface paths {
     /** Delete webhook */
     delete: operations["deleteWebhook"];
   };
+  "/syncs": {
+    /**
+     * Get Syncs 
+     * @description Get a list of Sync objects.
+     */
+    get: operations["getSyncs"];
+  };
+  "/syncs/{sync_id}/_trigger": {
+    /** Trigger sync */
+    post: operations["triggerSync"];
+    parameters: {
+      path: {
+        sync_id: string;
+      };
+    };
+  };
   "/sync-runs": {
     /**
-     * Get Sync Run 
-     * @description Get a list of Sync Run objects.
+     * Get SyncRuns 
+     * @description Get a list of SyncRun objects.
      */
     get: operations["getSyncRuns"];
   };
@@ -202,6 +218,14 @@ export interface webhooks {
 
 export interface components {
   schemas: {
+    pagination: {
+      /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+      next?: string | null;
+      /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+      previous?: string | null;
+      /** @example 100 */
+      total_count?: number;
+    };
     customer: {
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
@@ -479,6 +503,40 @@ export interface components {
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
     provider_name_engagement: "outreach";
+    sync: {
+      id: string;
+      /** @enum {string} */
+      object_type: "common" | "standard" | "custom";
+      object: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
+      sync_config_id: string;
+    };
+    sync_run: {
+      error_message: string | null;
+      /** @example 2023-02-22T19:55:17.559Z */
+      start_timestamp: string;
+      /** @example 2023-02-22T20:55:17.559Z */
+      end_timestamp: string | null;
+      /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
+      application_id: string;
+      /** @example my-customer-1 */
+      customer_id: string;
+      /** @example hubspot */
+      provider_name: string;
+      /** @enum {string} */
+      category: "crm";
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @enum {string} */
+      status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
+      /** @example 100 */
+      num_records_synced: number | null;
+      /** @enum {string} */
+      object_type: "common" | "standard" | "custom";
+      object: string;
+    };
     create_update_customer: {
       /** @example your-customers-unique-application-id */
       customer_id: string;
@@ -554,30 +612,6 @@ export interface components {
       headers?: {
         [key: string]: unknown | undefined;
       };
-    };
-    sync_run: {
-      error_message: string | null;
-      /** @example 2023-02-22T19:55:17.559Z */
-      start_timestamp: string;
-      /** @example 2023-02-22T20:55:17.559Z */
-      end_timestamp: string | null;
-      /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
-      application_id: string;
-      /** @example my-customer-1 */
-      customer_id: string;
-      /** @example hubspot */
-      provider_name: string;
-      /** @enum {string} */
-      category: "crm";
-      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
-      connection_id: string;
-      /** @enum {string} */
-      status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
-      /** @example 100 */
-      num_records_synced: number | null;
-      /** @enum {string} */
-      object_type: "common" | "standard" | "custom";
-      object: string;
     };
     "webhook-payload": OneOf<[{
       /** @enum {unknown} */
@@ -1119,10 +1153,10 @@ export interface operations {
       200: never;
     };
   };
-  getSyncRuns: {
+  getSyncs: {
     /**
-     * Get Sync Run 
-     * @description Get a list of Sync Run objects.
+     * Get Syncs 
+     * @description Get a list of Sync objects.
      */
     parameters?: {
         /** @description The pagination cursor value */
@@ -1141,17 +1175,61 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Sync Run */
+      /** @description Sync */
       200: {
         content: {
-          "application/json": ({
-            /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
-            next?: string | null;
-            /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
-            previous?: string | null;
-            /** @example 100 */
-            total_count?: number;
-          }) & {
+          "application/json": components["schemas"]["pagination"] & {
+            results?: (components["schemas"]["sync"])[];
+          };
+        };
+      };
+    };
+  };
+  triggerSync: {
+    /** Trigger sync */
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @example true */
+          perform_full_refresh?: boolean;
+        };
+      };
+    };
+    responses: {
+      /** @description Sync triggered */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync"];
+        };
+      };
+    };
+  };
+  getSyncRuns: {
+    /**
+     * Get SyncRuns 
+     * @description Get a list of SyncRun objects.
+     */
+    parameters?: {
+        /** @description The pagination cursor value */
+        /** @description Number of results to return per page */
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
+        /** @description The object type to filter by */
+        /** @description The object to filter by */
+      query?: {
+        cursor?: string;
+        page_size?: string;
+        customer_id?: string;
+        provider_name?: string;
+        object_type?: string;
+        object?: string;
+      };
+    };
+    responses: {
+      /** @description SyncRun */
+      200: {
+        content: {
+          "application/json": components["schemas"]["pagination"] & {
             results?: (components["schemas"]["sync_run"])[];
           };
         };
