@@ -83,44 +83,44 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
             <Tabs value={value} textColor="inherit">
               <Tab
                 label="Providers"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/providers`);
                 }}
               />
               <Tab
                 label="Destinations"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/destinations`);
                 }}
               />
               <Tab
                 label="Sync Configs"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/sync_configs`);
                 }}
               />
               <Tab
                 label="Schemas"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/schemas`);
                 }}
               />
               <Tab
                 label="Webhook"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/webhook`);
                 }}
               />
               <Tab
                 label="API Key"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/api_keys`);
                 }}
               />
               {svixDashboardUrl ? (
                 <Tab
                   label="Realtime Events"
-                  onClick={async (e) => {
+                  onClick={async () => {
                     await router.push(`/applications/${activeApplicationId}/configuration/realtime_events`);
                   }}
                 />

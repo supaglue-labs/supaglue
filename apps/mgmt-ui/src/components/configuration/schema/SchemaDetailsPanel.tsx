@@ -59,7 +59,6 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
   const isFormValid = name && fields.length > 0;
 
   const schema = schemas.find((s) => s.id === schemaId);
-  console.log(`fields: `, fields);
 
   useEffect(() => {
     setFields(schema?.config.fields.map((field) => field.name) ?? []);
