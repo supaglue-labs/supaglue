@@ -7,7 +7,6 @@ import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { toGetSchemasResponse, useSchemas } from '@/hooks/useSchemas';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import type { IconButtonProps } from '@mui/material';
 import { Autocomplete, Breadcrumbs, Button, Chip, Collapse, Grid, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import type { Schema, SchemaCreateParams } from '@supaglue/types';
@@ -181,7 +180,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
                 <Button variant="text" color="inherit" onClick={handleExpandClick}>
                   <Stack direction="row" className="items-center gap-2">
                     <Typography variant="subtitle1">Advanced Field Settings</Typography>
-                    <ExpandIcon expanded={expanded}></ExpandIcon>
+                    {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                   </Stack>
                 </Button>
               </Stack>
@@ -265,11 +264,3 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
     </div>
   );
 }
-
-interface ExpandIconProps extends IconButtonProps {
-  expanded: boolean;
-}
-
-const ExpandIcon = ({ expanded }: ExpandIconProps) => {
-  return expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />;
-};
