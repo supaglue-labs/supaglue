@@ -188,8 +188,10 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
               }}
             />
             <Stack direction="column" className="gap-2">
-              <Stack direction="row" className="gap-2 items-center">
-                <Typography variant="subtitle1">Advanced Field Settings</Typography>
+              <Stack direction="row" className="items-center">
+                <Button variant="text" color="inherit" onClick={handleExpandClick}>
+                  <Typography variant="subtitle1">Advanced Field Settings</Typography>
+                </Button>
                 <ExpandButton
                   expanded={expanded}
                   onClick={handleExpandClick}
