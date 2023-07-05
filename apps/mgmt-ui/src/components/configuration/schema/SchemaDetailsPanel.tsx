@@ -8,18 +8,7 @@ import { toGetSchemasResponse, useSchemas } from '@/hooks/useSchemas';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { IconButtonProps } from '@mui/material';
-import {
-  Autocomplete,
-  Breadcrumbs,
-  Button,
-  Chip,
-  Collapse,
-  Grid,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Autocomplete, Breadcrumbs, Button, Chip, Collapse, Grid, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import type { Schema, SchemaCreateParams } from '@supaglue/types';
 import Link from 'next/link';
@@ -190,19 +179,14 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
             <Stack direction="column" className="gap-2">
               <Stack direction="row" className="items-center">
                 <Button variant="text" color="inherit" onClick={handleExpandClick}>
-                  <Typography variant="subtitle1">Advanced Field Settings</Typography>
+                  <Stack direction="row" className="items-center gap-2">
+                    <Typography variant="subtitle1">Advanced Field Settings</Typography>
+                    <ExpandIcon expanded={expanded}></ExpandIcon>
+                  </Stack>
                 </Button>
-                <ExpandButton
-                  expanded={expanded}
-                  onClick={handleExpandClick}
-                  aria-expanded={expanded}
-                  aria-label="show more"
-                >
-                  <ExpandMoreIcon />
-                </ExpandButton>
               </Stack>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <Stack direction="column" className="gap-2">
+                <Stack direction="column" className="gap-2 pt-2">
                   {fields.map((field) => {
                     return (
                       // <Stack direction="row" className="pl-4 gap-4 items-center">
@@ -282,11 +266,10 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
   );
 }
 
-interface ExpandButtonProps extends IconButtonProps {
+interface ExpandIconProps extends IconButtonProps {
   expanded: boolean;
 }
 
-const ExpandButton = (props: ExpandButtonProps) => {
-  const { expanded, ...other } = props;
-  return <IconButton {...other}>{expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}</IconButton>;
+const ExpandIcon = ({ expanded }: ExpandIconProps) => {
+  return expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />;
 };
