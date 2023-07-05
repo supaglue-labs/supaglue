@@ -3,6 +3,7 @@ import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
+import { fromObjectSyncModel } from '@supaglue/core/mappers/object_sync';
 import type { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
 import type { ConnectionService } from '@supaglue/core/services/connection_service';
 import type { Prisma, PrismaClient } from '@supaglue/db';
@@ -12,6 +13,7 @@ import {
   PROCESS_SYNC_CHANGES_SCHEDULE_ID,
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
+import { getRunObjectSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_object_sync';
 import type { ProviderName } from '@supaglue/types';
 import type {
   ConnectionCreateParamsAny,
@@ -19,8 +21,9 @@ import type {
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
+import type { ObjectSync } from '@supaglue/types/object_sync';
 import type { Client } from '@temporalio/client';
-import { ScheduleAlreadyRunning } from '@temporalio/client';
+import { ScheduleAlreadyRunning, ScheduleOverlapPolicy } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
 
 export class ConnectionAndSyncService {
@@ -45,6 +48,45 @@ export class ConnectionAndSyncService {
     this.#syncConfigService = syncConfigService;
     this.#applicationService = applicationService;
     this.#connectionService = connectionService;
+  }
+
+  public async triggerSync(
+    applicationId: string,
+    objectSyncId: string,
+    performFullRefresh: boolean
+  ): Promise<ObjectSync> {
+    const sync = await this.#prisma.objectSync.findFirst({
+      where: {
+        id: objectSyncId,
+        connection: {
+          provider: {
+            applicationId,
+          },
+        },
+      },
+    });
+    if (!sync) {
+      throw new NotFoundError(`Could not find sync ${objectSyncId} with application id ${applicationId}`);
+    }
+
+    // Record whether next run should do full refresh or not
+    const newSync = await this.#prisma.objectSync.update({
+      where: {
+        id: objectSyncId,
+      },
+      data: {
+        argsForNextRun: {
+          performFullRefresh,
+        },
+      },
+    });
+
+    // Trigger a run in Temporal
+    const handle = this.#temporalClient.schedule.getHandle(getRunObjectSyncScheduleId(objectSyncId));
+    // TODO: is this the right policy? should it be configurable?
+    await handle.trigger(ScheduleOverlapPolicy.CANCEL_OTHER);
+
+    return fromObjectSyncModel(newSync);
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {

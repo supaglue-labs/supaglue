@@ -1,3 +1,5 @@
+import type { PaginationInternalParams } from './common';
+
 export type ObjectType = 'common' | 'standard' | 'custom';
 
 type BaseObjectSync = {
@@ -7,6 +9,9 @@ type BaseObjectSync = {
   connectionId: string;
   syncConfigId: string;
   paused: boolean;
+  argsForNextRun?: {
+    performFullRefresh: boolean;
+  };
 };
 
 export type FullThenIncrementalObjectSync = BaseObjectSync & {
@@ -46,3 +51,18 @@ export type FullThenIncrementalObjectSyncState =
   | FullThenIncrementalObjectSyncStateLivePhase;
 
 export type ObjectSyncState = FullThenIncrementalObjectSyncState | FullOnlyObjectSyncState;
+
+export type ObjectSyncFilter = {
+  applicationId: string;
+  externalCustomerId?: string;
+  providerName?: string;
+} & (
+  | {
+      objectType: ObjectType;
+      object: string;
+      paginationParams: PaginationInternalParams;
+    }
+  | {
+      paginationParams: PaginationInternalParams;
+    }
+);

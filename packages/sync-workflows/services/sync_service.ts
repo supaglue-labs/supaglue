@@ -1,37 +1,19 @@
 import { logger } from '@supaglue/core/lib';
 import { fromSyncConfigModel } from '@supaglue/core/mappers';
+import { fromObjectSyncModel } from '@supaglue/core/mappers/object_sync';
 import type { ConnectionService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
-import type { ObjectSync as ObjectSyncModel, Prisma, PrismaClient } from '@supaglue/db';
-import { CONNECTIONS_TABLE, OBJECT_SYNCS_TABLE, OBJECT_SYNC_CHANGES_TABLE } from '@supaglue/db';
+import type { PrismaClient } from '@supaglue/db';
+import { CONNECTIONS_TABLE, OBJECT_SYNCS_TABLE, OBJECT_SYNC_CHANGES_TABLE, Prisma } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import type { ConnectionSafeAny } from '@supaglue/types';
-import type { ObjectSync, ObjectSyncState, ObjectSyncType, ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectSync, ObjectSyncState } from '@supaglue/types/object_sync';
 import type { Client, IntervalSpec, ScheduleDescription, ScheduleOptionsAction } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
 import type { ApplicationService } from '.';
 import { getRunObjectSyncScheduleId, getRunObjectSyncWorkflowId, runObjectSync } from '../workflows/run_object_sync';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-
-function fromObjectSyncModel(model: ObjectSyncModel): ObjectSync {
-  // `strategy` looks like { type: 'full then incremental', ...otherProps }
-
-  const { type, ...otherStrategyProps } = model.strategy as { type: ObjectSyncType } & Record<string, unknown>;
-
-  // TODO: don't do type assertion
-  return {
-    id: model.id,
-    connectionId: model.connectionId,
-    objectType: model.objectType as ObjectType,
-    object: model.object,
-    type,
-    syncConfigId: model.syncConfigId,
-    ...otherStrategyProps,
-    state: model.state as ObjectSyncState,
-    paused: model.paused,
-  } as ObjectSync;
-}
 
 export class SyncService {
   #prisma: PrismaClient;
@@ -74,6 +56,17 @@ export class SyncService {
       },
     });
     return fromObjectSyncModel(model);
+  }
+
+  public async clearArgsForNextRun(id: string): Promise<void> {
+    await this.#prisma.objectSync.update({
+      where: {
+        id,
+      },
+      data: {
+        argsForNextRun: Prisma.DbNull,
+      },
+    });
   }
 
   public async processSyncChanges(): Promise<void> {

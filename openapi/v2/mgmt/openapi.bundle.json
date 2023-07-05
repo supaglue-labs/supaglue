@@ -1832,19 +1832,19 @@
         }
       }
     },
-    "/sync-runs": {
+    "/syncs": {
       "get": {
-        "operationId": "getSyncRuns",
+        "operationId": "getSyncs",
         "tags": [
-          "Sync Runs"
+          "Syncs"
         ],
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
-        "summary": "Get Sync Run",
-        "description": "Get a list of Sync Run objects.",
+        "summary": "Get Syncs",
+        "description": "Get a list of Sync objects.",
         "parameters": [
           {
             "name": "cursor",
@@ -1903,29 +1903,165 @@
         ],
         "responses": {
           "200": {
-            "description": "Sync Run",
+            "description": "Sync",
             "content": {
               "application/json": {
                 "schema": {
                   "allOf": [
                     {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
                       "type": "object",
                       "properties": {
-                        "next": {
-                          "type": "string",
-                          "nullable": true,
-                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
-                        },
-                        "previous": {
-                          "type": "string",
-                          "nullable": true,
-                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
-                        },
-                        "total_count": {
-                          "type": "number",
-                          "example": 100
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/sync"
+                          }
                         }
                       }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/syncs/{sync_id}/_trigger": {
+      "post": {
+        "operationId": "triggerSync",
+        "summary": "Trigger sync",
+        "tags": [
+          "Syncs"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "perform_full_refresh": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sync triggered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "sync_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/sync-runs": {
+      "get": {
+        "operationId": "getSyncRuns",
+        "tags": [
+          "SyncRuns"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "Get SyncRuns",
+        "description": "Get a list of SyncRun objects.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "my-customer-1"
+            },
+            "description": "The customer ID that uniquely identifies the customer in your application"
+          },
+          {
+            "name": "provider_name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "salesforce"
+            },
+            "description": "The provider name"
+          },
+          {
+            "name": "object_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "common"
+            },
+            "description": "The object type to filter by"
+          },
+          {
+            "name": "object",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The object to filter by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SyncRun",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
                     },
                     {
                       "type": "object",
@@ -2011,8 +2147,8 @@
       "description": "A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule."
     },
     {
-      "name": "Sync Runs",
-      "description": "A `Sync Run` is a single execution of a Sync at a point in time."
+      "name": "SyncRuns",
+      "description": "A `SyncRun` is a single execution of a Sync at a point in time."
     },
     {
       "name": "Webhooks",
@@ -2029,6 +2165,25 @@
       }
     },
     "schemas": {
+      "pagination": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+          },
+          "total_count": {
+            "type": "number",
+            "example": 100
+          }
+        }
+      },
       "customer": {
         "type": "object",
         "properties": {
@@ -2842,6 +2997,118 @@
           "outreach"
         ]
       },
+      "sync": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "object": {
+            "type": "string"
+          },
+          "connection_id": {
+            "type": "string",
+            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+          },
+          "sync_config_id": {
+            "type": "string",
+            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+          }
+        },
+        "required": [
+          "id",
+          "object_type",
+          "object",
+          "connection_id",
+          "sync_config_id"
+        ]
+      },
+      "sync_run": {
+        "type": "object",
+        "properties": {
+          "error_message": {
+            "type": "string",
+            "nullable": true
+          },
+          "start_timestamp": {
+            "type": "string",
+            "example": "2023-02-22T19:55:17.559Z"
+          },
+          "end_timestamp": {
+            "type": "string",
+            "nullable": true,
+            "example": "2023-02-22T20:55:17.559Z"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "provider_name": {
+            "type": "string",
+            "example": "hubspot"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "crm"
+            ]
+          },
+          "connection_id": {
+            "type": "string",
+            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUCCESS",
+              "IN_PROGRESS",
+              "FAILURE"
+            ]
+          },
+          "num_records_synced": {
+            "type": "number",
+            "nullable": true,
+            "example": 100
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "object": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_timestamp",
+          "end_timestamp",
+          "application_id",
+          "customer_id",
+          "status",
+          "error_message",
+          "provider_name",
+          "category",
+          "connection_id",
+          "num_records_synced",
+          "object_type",
+          "object"
+        ]
+      },
       "create_update_customer": {
         "type": "object",
         "properties": {
@@ -3139,84 +3406,6 @@
           "notify_on_sync_error",
           "notify_on_connection_success",
           "notify_on_connection_error"
-        ]
-      },
-      "sync_run": {
-        "type": "object",
-        "properties": {
-          "error_message": {
-            "type": "string",
-            "nullable": true
-          },
-          "start_timestamp": {
-            "type": "string",
-            "example": "2023-02-22T19:55:17.559Z"
-          },
-          "end_timestamp": {
-            "type": "string",
-            "nullable": true,
-            "example": "2023-02-22T20:55:17.559Z"
-          },
-          "application_id": {
-            "type": "string",
-            "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
-          },
-          "customer_id": {
-            "type": "string",
-            "example": "my-customer-1"
-          },
-          "provider_name": {
-            "type": "string",
-            "example": "hubspot"
-          },
-          "category": {
-            "type": "string",
-            "enum": [
-              "crm"
-            ]
-          },
-          "connection_id": {
-            "type": "string",
-            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "SUCCESS",
-              "IN_PROGRESS",
-              "FAILURE"
-            ]
-          },
-          "num_records_synced": {
-            "type": "number",
-            "nullable": true,
-            "example": 100
-          },
-          "object_type": {
-            "type": "string",
-            "enum": [
-              "common",
-              "standard",
-              "custom"
-            ]
-          },
-          "object": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "start_timestamp",
-          "end_timestamp",
-          "application_id",
-          "customer_id",
-          "status",
-          "error_message",
-          "provider_name",
-          "category",
-          "connection_id",
-          "num_records_synced",
-          "object_type",
-          "object"
         ]
       },
       "webhook-payload": {
