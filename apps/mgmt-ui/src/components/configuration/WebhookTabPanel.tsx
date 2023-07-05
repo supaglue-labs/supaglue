@@ -3,9 +3,10 @@
 import { createOrUpdateWebhook, deleteWebhook } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplication } from '@/hooks/useActiveApplication';
-import { Box, Button, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import type { WebhookConfig } from '@supaglue/types';
 import { useEffect, useState } from 'react';
+import { SwitchWithLabel } from '../SwitchWithLabel';
 import { DeleteWebhook } from './DeleteWebhook';
 
 const defaultWebhook: WebhookConfig = {
@@ -142,21 +143,5 @@ export default function WebhookTabPanel() {
         </Stack>
       </Stack>
     </Box>
-  );
-}
-
-type SwitchWithLabelProps = {
-  label: string;
-  isLoading: boolean;
-  checked: boolean;
-  onToggle: (checked: boolean) => void;
-};
-
-function SwitchWithLabel({ label, isLoading, checked, onToggle }: SwitchWithLabelProps) {
-  return (
-    <Stack direction="row" className="gap-2 items-center">
-      <Switch disabled={isLoading} checked={checked} onChange={(_, checked) => onToggle(checked)} />
-      <Typography>{label}</Typography>
-    </Stack>
   );
 }

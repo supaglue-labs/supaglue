@@ -2,6 +2,7 @@ import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
 import CDCWebhookTabPanel from '@/components/configuration/CDCWebhookTabPanel';
 import DestinationTabPanelContainer from '@/components/configuration/destination/DestinationTabPanelContainer';
 import ProviderTabPanelContainer from '@/components/configuration/provider/ProviderTabPanelContainer';
+import SchemaTabPanelContainer from '@/components/configuration/schema/SchemaTabPanelContainer';
 import SyncConfigTabPanelContainer from '@/components/configuration/syncConfig/SyncConfigTabPanelContainer';
 import WebhookTabPanel from '@/components/configuration/WebhookTabPanel';
 import { TabPanel } from '@/components/TabPanel';
@@ -29,6 +30,10 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
   {
     label: 'Sync Configs',
     value: 'sync_configs',
+  },
+  {
+    label: 'Schemas',
+    value: 'schemas',
   },
   {
     label: 'Webhook',
@@ -78,38 +83,44 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
             <Tabs value={value} textColor="inherit">
               <Tab
                 label="Providers"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/providers`);
                 }}
               />
               <Tab
                 label="Destinations"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/destinations`);
                 }}
               />
               <Tab
                 label="Sync Configs"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/sync_configs`);
                 }}
               />
               <Tab
+                label="Schemas"
+                onClick={async () => {
+                  await router.push(`/applications/${activeApplicationId}/configuration/schemas`);
+                }}
+              />
+              <Tab
                 label="Webhook"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/webhook`);
                 }}
               />
               <Tab
                 label="API Key"
-                onClick={async (e) => {
+                onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/api_keys`);
                 }}
               />
               {svixDashboardUrl ? (
                 <Tab
                   label="Realtime Events"
-                  onClick={async (e) => {
+                  onClick={async () => {
                     await router.push(`/applications/${activeApplicationId}/configuration/realtime_events`);
                   }}
                 />
@@ -130,13 +141,16 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
             <SyncConfigTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={3} className="w-full">
-            <WebhookTabPanel />
+            <SchemaTabPanelContainer />
           </TabPanel>
           <TabPanel value={value} index={4} className="w-full">
+            <WebhookTabPanel />
+          </TabPanel>
+          <TabPanel value={value} index={5} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
           {svixDashboardUrl ? (
-            <TabPanel value={value} index={5} className="w-full">
+            <TabPanel value={value} index={6} className="w-full">
               <CDCWebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
             </TabPanel>
           ) : null}
