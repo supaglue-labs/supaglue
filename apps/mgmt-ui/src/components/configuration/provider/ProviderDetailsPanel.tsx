@@ -54,6 +54,8 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   const [customObjects, setCustomObjects] = useState<ProviderObject[]>([]);
   const router = useRouter();
 
+  const supportsObjectToSchema = ['salesforce', 'hubspot', 'pipedrive'].includes(providerName);
+
   const { providers: existingProviders = [], mutate } = useProviders();
 
   const provider = existingProviders.find((existingProvider) => existingProvider.name === providerName);
@@ -210,38 +212,40 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
             helperText="Comma separated values (without spaces)."
           />
         </Stack>
-        <Stack className="gap-2">
-          <Typography variant="subtitle1">Object to Schema Mapping</Typography>
-          <SchemaToObjectMapping
-            isLoading={isLoading || isLoadingSchemas}
-            label="Common Objects"
-            helperText={`Objects that Supaglue has unified across all ${category} providers.`}
-            objects={commonObjects}
-            setObjects={setCommonObjects}
-            objectOptions={
-              (category === 'crm' ? CRM_COMMON_OBJECT_TYPES : ENGAGEMENT_COMMON_OBJECT_TYPES) as unknown as string[]
-            }
-            schemaOptions={schemas ?? []}
-          />
-          <SchemaToObjectMapping
-            isLoading={isLoading || isLoadingSchemas}
-            label="Standard Objects"
-            helperText={`Standard objects in ${providerName}. (Note: names are case-sensitive.)`}
-            objects={standardObjects}
-            setObjects={setStandardObjects}
-            objectOptions={getStandardObjectOptions(providerName)}
-            schemaOptions={schemas ?? []}
-          />
-          <SchemaToObjectMapping
-            isLoading={isLoading || isLoadingSchemas}
-            label="Custom Objects"
-            helperText={`Custom objects in ${providerName}. (Note: names are case-sensitive.)`}
-            objects={customObjects}
-            setObjects={setCustomObjects}
-            objectOptions={[]}
-            schemaOptions={schemas ?? []}
-          />
-        </Stack>
+        {supportsObjectToSchema && (
+          <Stack className="gap-2">
+            <Typography variant="subtitle1">Object to Schema Mapping</Typography>
+            <SchemaToObjectMapping
+              isLoading={isLoading || isLoadingSchemas}
+              label="Common Objects"
+              helperText={`Objects that Supaglue has unified across all ${category} providers.`}
+              objects={commonObjects}
+              setObjects={setCommonObjects}
+              objectOptions={
+                (category === 'crm' ? CRM_COMMON_OBJECT_TYPES : ENGAGEMENT_COMMON_OBJECT_TYPES) as unknown as string[]
+              }
+              schemaOptions={schemas ?? []}
+            />
+            <SchemaToObjectMapping
+              isLoading={isLoading || isLoadingSchemas}
+              label="Standard Objects"
+              helperText={`Standard objects in ${providerName}. (Note: names are case-sensitive.)`}
+              objects={standardObjects}
+              setObjects={setStandardObjects}
+              objectOptions={getStandardObjectOptions(providerName)}
+              schemaOptions={schemas ?? []}
+            />
+            <SchemaToObjectMapping
+              isLoading={isLoading || isLoadingSchemas}
+              label="Custom Objects"
+              helperText={`Custom objects in ${providerName}. (Note: names are case-sensitive.)`}
+              objects={customObjects}
+              setObjects={setCustomObjects}
+              objectOptions={[]}
+              schemaOptions={schemas ?? []}
+            />
+          </Stack>
+        )}
 
         <Stack direction="row" className="gap-2 justify-between">
           <Button
