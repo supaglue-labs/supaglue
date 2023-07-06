@@ -4,7 +4,7 @@ description: ''
 
 # Field mapping
 
-Sometimes, your customers may store data in non-standard fields (e.g. custom fields). You can optionally specify a `schema` object in the sync configuration so that each of your customers can map their specific source schema to your product's data model:
+While one of your customers can be storing their annual revenue in `revenue`, another customer could be storing it in `annual_revenue`. If you want your application to only need to reference the same name for both fields, you can optionally specify a `schema` object in the sync configuration:
 
 ```json
 ...
@@ -29,12 +29,23 @@ Sometimes, your customers may store data in non-standard fields (e.g. custom fie
 ...
 ```
 
+Each of your customers can then map their specific source data model to your product's schema.
+
 **Example field mapping UI**:
 ![field_mapping_ui](/img/field-mapping-ui.png 'salesforce field mapping ui')
 
-In this example, you want to map your customer's `Description` field to `description`, and you also want to map one of your customer's standard field `primary_address` and custom field to `revenue`. Through the [Update Schema endpoint](/api/v2/mgmt/update-schema), each of your customers can then map the appropriate revenue field to your `revenue` field and address to `primary_address`. At runtime, Supaglue will apply each customer's mapping and land the appropriate data into the `revenue` and `primary_address` column in your destination.
+In this example, you want to map:
 
-The `allow_additional_field_mappings` flag is a way for individual customers to provide optional supplemental data not explicitly required by your schema, but that may be useful for your product. For example, extra attributes for filtering or features for ML models.
+- your customer's `Description` field to `description`,
+- your customer's standard field `primary_address` to `primary_address`, and
+- your customer's custom field `revenue` to `revenue`.
+
+Through the [Update Connection endpoint](/api/v2/mgmt/update-connection), by setting the `schema_mappings_config` key, each of your customers can then map the appropriate revenue field to your `revenue` field and address to `primary_address`. At runtime, Supaglue will:
+
+- apply each customer's mapping as it lands data into the `revenue` and `primary_address` columns in your destination, and
+- apply each customer's mapping as you call Supaglue's APIs to create and update records.
+
+The `allow_additional_field_mappings` flag is a way for individual customers to provide optional supplemental data not explicitly required by your schema but that may be useful for your product. For example, extra attributes for filtering or features for ML models.
 
 You will also need to update the referenced objects using the [Update Provider endpoint](/api/v2/mgmt/update-provider) in the Provider.
 
