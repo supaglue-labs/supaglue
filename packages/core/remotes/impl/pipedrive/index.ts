@@ -1,8 +1,10 @@
 import type {
+  CommonObjectDef,
   ConnectionUnsafe,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
   Account,
@@ -58,6 +60,28 @@ const DEFAULT_LIST_PARAMS = {
   limit: PIPEDRIVE_RECORD_LIMIT,
   sort: 'id',
 };
+
+const PIPEDRIVE_USER_FIELDS = [
+  'id',
+  'name',
+  'email',
+  'active_flag',
+  'created',
+  'modified',
+  'default_currency',
+  'locale',
+  'lang',
+  'phone',
+  'activated',
+  'last_login',
+  'has_created_company',
+  'access',
+  'timezone_name',
+  'timezone_offset',
+  'role_id',
+  'icon_url',
+  'is_you',
+] as const;
 
 type PipedriveObjectSupportingCustomFields = 'person' | 'lead' | 'deal' | 'organization';
 
@@ -468,23 +492,59 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  async #getCustomFieldsForObject(object: PipedriveObjectSupportingCustomFields): Promise<PipedriveObjectField[]> {
-    function getFieldsPrefix(): string {
-      switch (object) {
-        case 'person':
-        case 'organization':
-        case 'deal':
-          return object;
-        case 'lead':
-          return 'deal';
-      }
+  getFieldsPrefix(objectName: string): string {
+    if (objectName === 'lead') {
+      return 'deal';
     }
+    return objectName;
+  }
 
+  public override async listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+    switch (object.name) {
+      case 'contact':
+        return await this.listPropertiesForRawObjectName('person');
+      case 'lead':
+        return await this.listPropertiesForRawObjectName('lead');
+      case 'opportunity':
+        return await this.listPropertiesForRawObjectName('deal');
+      case 'account':
+        return await this.listPropertiesForRawObjectName('organization');
+      case 'user':
+        return PIPEDRIVE_USER_FIELDS as unknown as string[];
+      default:
+        throw new Error(`Common object ${object} not supported`);
+    }
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
+    return await this.listPropertiesForRawObjectName(object.name);
+  }
+
+  public async listPropertiesForRawObjectName(objectName: string): Promise<string[]> {
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      // TODO: Handle pagination. We're assuming that by not passing in a limit param, we get all the fields.
+      // This may be an incorrect assumption
+      const response = await axios.get<PipedriveObjectFieldsResponse>(
+        `${this.#credentials.instanceUrl}/api/v1/${this.getFieldsPrefix(
+          objectName
+        )}Fields:(key,name,edit_flag,field_type,options)`,
+        {
+          headers: this.#headers,
+        }
+      );
+      return response.data.data.map(({ name }) => name);
+    });
+  }
+
+  async #getCustomFieldsForObject(object: PipedriveObjectSupportingCustomFields): Promise<PipedriveObjectField[]> {
     await this.maybeRefreshAccessToken();
     // TODO: Handle pagination. We're assuming that by not passing in a limit param, we get all the fields.
     // This may be an incorrect assumption
     const response = await axios.get<PipedriveObjectFieldsResponse>(
-      `${this.#credentials.instanceUrl}/api/v1/${getFieldsPrefix()}Fields:(key,name,edit_flag,field_type,options)`,
+      `${this.#credentials.instanceUrl}/api/v1/${this.getFieldsPrefix(
+        object
+      )}Fields:(key,name,edit_flag,field_type,options)`,
       {
         headers: this.#headers,
       }
