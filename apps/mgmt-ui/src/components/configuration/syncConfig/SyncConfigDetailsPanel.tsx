@@ -7,19 +7,13 @@ import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
+import { getStandardObjectOptions } from '@/utils/provider';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type {
-  CommonObjectConfig,
-  CommonObjectType,
-  Provider,
-  SyncConfig,
-  SyncConfigCreateParams,
-} from '@supaglue/types';
+import type { CommonObjectConfig, CommonObjectType, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
 import type { ObjectSyncType } from '@supaglue/types/object_sync';
-import { HUBSPOT_STANDARD_OBJECT_TYPES, SALESFORCE_OBJECTS } from '@supaglue/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -159,7 +153,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
   const supportsCustomObjects = ['hubspot', 'salesforce'];
 
-  const standardObjectsOptions = getStandardObjectOptions(selectedProvider);
+  const standardObjectsOptions = getStandardObjectOptions(selectedProvider?.name);
 
   return (
     <div className="flex flex-col gap-4">
@@ -364,16 +358,3 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     </div>
   );
 }
-
-const getStandardObjectOptions = (provider: Provider | undefined): string[] => {
-  switch (provider?.name) {
-    case 'hubspot': {
-      return HUBSPOT_STANDARD_OBJECT_TYPES as unknown as string[];
-    }
-    case 'salesforce': {
-      return SALESFORCE_OBJECTS as unknown as string[];
-    }
-    default:
-      return [];
-  }
-};
