@@ -37,8 +37,8 @@ Each of your customers can then map their specific source data model to your pro
 In this example, you want to map:
 
 - your customer's `Description` field to `description`,
-- your customer's standard field `primary_address` to `primary_address`, and
-- your customer's custom field `revenue` to `revenue`.
+- your customer's standard field `Address` to `primary_address`, and
+- your customer's custom field `Revenue__c` to `revenue`.
 
 Through the [Update Connection endpoint](/api/v2/mgmt/update-connection), by setting the `schema_mappings_config` key, each of your customers can then map the appropriate revenue field to your `revenue` field and address to `primary_address`. At runtime, Supaglue will:
 
