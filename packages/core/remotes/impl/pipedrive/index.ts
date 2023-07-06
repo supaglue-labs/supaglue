@@ -533,7 +533,8 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           headers: this.#headers,
         }
       );
-      return response.data.data.map(({ name }) => name);
+      // Note: For custom fields, we reference using the label.
+      return response.data.data.map(({ key, name, edit_flag }) => (edit_flag ? name : key));
     });
   }
 
