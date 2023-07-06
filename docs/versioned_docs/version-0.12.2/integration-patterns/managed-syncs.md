@@ -134,6 +134,8 @@ The above sync configuration defines a managed sync that does the following:
 
 ## Destination schema
 
+In the destination, Supaglue treats common objects differently from provider-specific standard and custom objects.
+
 ### Common objects
 
 Supaglue syncs common objects across multiple providers and transforms them into a category-specific (e.g. CRM) normalized schema. There are three types of columns:
