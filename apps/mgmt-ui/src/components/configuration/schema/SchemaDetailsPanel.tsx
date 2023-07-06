@@ -61,7 +61,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
     return <Spinner />;
   }
 
-  const formTitle = schema ? 'Edit Sync Config' : 'New Sync Config';
+  const formTitle = schema ? 'Edit Schema' : 'New Schema';
   const isNew = !schema?.id;
 
   const createOrUpdateSchema = async (): Promise<Schema | undefined> => {
@@ -84,7 +84,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
         name,
         config: {
           allowAdditionalFieldMappings,
-          fields: fields.map((field) => ({ name: field, mappedName: field })),
+          fields: fields.map((field) => ({ name: field, mappedName: mappedFields[field] })),
         },
       };
       const response = await updateSchema(activeApplicationId, newSchema);
@@ -119,7 +119,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
           Home
         </Link>
         <Link color="inherit" href={`/applications/${activeApplicationId}/configuration/sync_configs`}>
-          <Typography color="text.primary">Sync Configs</Typography>
+          <Typography color="text.primary">Schemas</Typography>
         </Link>
         <Typography color="text.primary">Details</Typography>
       </Breadcrumbs>
@@ -244,7 +244,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
                     ...schemas.filter((schema) => schema.id !== newSchema.id),
                     newSchema,
                   ]);
-                  addNotification({ message: 'Successfully updated Sync Config', severity: 'success' });
+                  addNotification({ message: 'Successfully updated schema', severity: 'success' });
                   await mutate(latestSchemas, {
                     optimisticData: latestSchemas,
                     revalidate: false,
