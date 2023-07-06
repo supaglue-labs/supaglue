@@ -759,25 +759,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  // const account = await this.#client.retrieve('Account', id);
-  //   return { ...fromSalesforceAccountToAccount(account), rawData: toMappedProperties(account, fieldMappingConfig) };
-  // }
-
-  // public async createAccount(params: AccountCreateParams): Promise<string> {
-  //   const response = await this.#client.create('Account', toSalesforceAccountCreateParams(params));
-  //   if (!response.success) {
-  //     throw new Error('Failed to create Salesforce account');
-  //   }
-  //   return response.id;
-  // }
-
-  // public async updateAccount(params: AccountUpdateParams): Promise<string> {
-  //   const response = await this.#client.update('Account', toSalesforceAccountUpdateParams(params));
-  //   if (!response.success) {
-  //     throw new Error('Failed to update Salesforce account');
-  //   }
-  //   return response.id;
-
   public async getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
     const record = await this.#client.retrieve(objectId, id);
 
