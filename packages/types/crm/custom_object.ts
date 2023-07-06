@@ -5,6 +5,7 @@ type BaseCustomObject = {
     singular: string;
     plural: string;
   };
+  primaryFieldKeyName: string;
   fields: CustomObjectField[];
   // TODO: timestamps?
 };

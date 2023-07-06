@@ -618,6 +618,8 @@ export interface components {
         /** @example Tickets */
         plural: string;
       };
+      /** @example ticket_id */
+      primary_field_key_name: string;
       fields: (components["schemas"]["custom_object_field"])[];
     };
     custom_object_record: {

@@ -28,6 +28,16 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
+import type {
+  CustomObject,
+  CustomObjectCreateParams,
+  CustomObjectUpdateParams,
+} from '@supaglue/types/crm/custom_object';
+import type {
+  CustomObjectRecord,
+  CustomObjectRecordCreateParams,
+  CustomObjectRecordUpdateParams,
+} from '@supaglue/types/crm/custom_object_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
@@ -52,6 +62,7 @@ import {
   fromSalesforceOpportunityToOpportunity,
   fromSalesforceUserToUser,
   getMapperForCommonObjectType,
+  toCustomObject,
   toSalesforceAccountCreateParams,
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
@@ -445,6 +456,367 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     // TODO(735): We should have a periodic workflow for refreshing tokens for all connections
     await this.#refreshAccessToken();
     return await super.sendPassthroughRequest(request);
+  }
+
+  public override async getCustomObject(id: string): Promise<CustomObject> {
+    if (!id.endsWith('__c')) {
+      // Salesforce doesn't actually enforce this, and will just append __c.
+      // However, we want to enforce this to avoid confusion when using
+      // the custom object name in other places.
+      throw new Error('Custom object id must end with __c');
+    }
+
+    const metadata = await this.#client.metadata.read('CustomObject', id);
+    return toCustomObject(metadata);
+  }
+
+  public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
+    if (!params.name.endsWith('__c')) {
+      // Salesforce doesn't actually enforce this, and will just append __c.
+      // However, we want to enforce this to avoid confusion when using
+      // the custom object name in other places.
+      throw new Error('Custom object name must end with __c');
+    }
+
+    if (!params.fields.length) {
+      throw new Error('Cannot create custom object with no fields');
+    }
+
+    const primaryField = params.fields.find((field) => field.keyName === params.primaryFieldKeyName);
+
+    if (!primaryField) {
+      throw new BadRequestError(`Could not find primary field with key name ${params.primaryFieldKeyName}`);
+    }
+
+    if (primaryField.fieldType !== 'string') {
+      throw new BadRequestError(
+        `Primary field must be of type string, but was ${primaryField.fieldType} with key name ${params.primaryFieldKeyName}`
+      );
+    }
+
+    if (!primaryField.isRequired) {
+      throw new BadRequestError(
+        `Primary field must be required, but was not with key name ${params.primaryFieldKeyName}`
+      );
+    }
+
+    if (primaryField.keyName !== 'Name') {
+      throw new BadRequestError(
+        `Primary field for salesforce must have key name 'Name', but was ${primaryField.keyName}`
+      );
+    }
+
+    const nonPrimaryFields = params.fields.filter((field) => field.keyName !== params.primaryFieldKeyName);
+
+    if (nonPrimaryFields.some((field) => !field.keyName.endsWith('__c'))) {
+      throw new BadRequestError('Custom object field key names must end with __c');
+    }
+
+    const results = await this.#client.metadata.create('CustomObject', [
+      {
+        deploymentStatus: 'Deployed',
+        sharingModel: 'ReadWrite',
+        fullName: params.name,
+        label: params.labels.singular,
+        pluralLabel: params.labels.plural,
+        nameField: {
+          label: primaryField.displayName,
+          type: 'Text',
+        },
+        fields: nonPrimaryFields.map((field) => {
+          const base = {
+            fullName: field.keyName,
+            label: field.displayName,
+            type: field.fieldType === 'string' ? 'Text' : 'Number',
+            required: field.isRequired,
+          };
+
+          if (field.fieldType === 'string') {
+            return {
+              ...base,
+              // TODO: support configurations per field type
+              length: 255,
+            };
+          } else {
+            return {
+              ...base,
+              // TODO: support configurations per field type
+              precision: field.fieldType === 'number' ? 18 : undefined,
+              scale: field.fieldType === 'number' ? 0 : undefined,
+            };
+          }
+        }),
+      },
+    ]);
+
+    if (results.some((result) => !result.success)) {
+      // TODO: creating the object and the fields is not an atomic operation.
+      // If it fails halfway, we should return some message to the user educating them
+      // to call the PUT endpoint next instead
+      throw new Error(`Failed to create custom object: ${JSON.stringify(results, null, 2)}`);
+    }
+
+    // TODO: is this accurate?
+    return params.name;
+  }
+
+  public override async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
+    // Validate stuff
+
+    if (!params.name.endsWith('__c')) {
+      // Salesforce doesn't actually enforce this, and will just append __c.
+      // However, we want to enforce this to avoid confusion when using
+      // the custom object name in other places.
+      throw new Error('Custom object name must end with __c');
+    }
+
+    if (!params.fields.length) {
+      throw new Error('Cannot create custom object with no fields');
+    }
+
+    const primaryField = params.fields.find((field) => field.keyName === params.primaryFieldKeyName);
+
+    if (!primaryField) {
+      throw new BadRequestError(`Could not find primary field with key name ${params.primaryFieldKeyName}`);
+    }
+
+    if (primaryField.fieldType !== 'string') {
+      throw new BadRequestError(
+        `Primary field must be of type string, but was ${primaryField.fieldType} with key name ${params.primaryFieldKeyName}`
+      );
+    }
+
+    if (!primaryField.isRequired) {
+      throw new BadRequestError(
+        `Primary field must be required, but was not with key name ${params.primaryFieldKeyName}`
+      );
+    }
+
+    if (primaryField.keyName !== 'Name') {
+      throw new BadRequestError(
+        `Primary field for salesforce must have key name 'Name', but was ${primaryField.keyName}`
+      );
+    }
+
+    const nonPrimaryFields = params.fields.filter((field) => field.keyName !== params.primaryFieldKeyName);
+
+    if (nonPrimaryFields.some((field) => !field.keyName.endsWith('__c'))) {
+      throw new BadRequestError('Custom object field key names must end with __c');
+    }
+
+    // Check against existing object
+    const existingObject = await this.getCustomObject(params.name);
+    const existingObjectNonPrimaryFields = existingObject.fields.filter(
+      (field) => field.keyName !== existingObject.primaryFieldKeyName
+    );
+
+    // Calculate which fields got added, updated, or deleted
+    const addedFields = nonPrimaryFields.filter(
+      (field) => !existingObjectNonPrimaryFields.some((existingField) => existingField.keyName === field.keyName)
+    );
+    const updatedFields = nonPrimaryFields.filter((field) =>
+      existingObjectNonPrimaryFields.some(
+        (existingField) =>
+          existingField.keyName === field.keyName &&
+          (existingField.displayName !== field.displayName ||
+            existingField.fieldType !== field.fieldType ||
+            existingField.isRequired !== field.isRequired)
+      )
+    );
+    const deletedFields = existingObjectNonPrimaryFields.filter(
+      (existingField) => !nonPrimaryFields.some((field) => field.keyName === existingField.keyName)
+    );
+
+    // Update object and existing fields
+    const updateObjectResults = await this.#client.metadata.update('CustomObject', [
+      {
+        deploymentStatus: 'Deployed',
+        sharingModel: 'ReadWrite',
+        fullName: params.name,
+        label: params.labels.singular,
+        pluralLabel: params.labels.plural,
+        nameField: {
+          label: primaryField.displayName,
+          type: 'Text',
+        },
+        fields: updatedFields.map((field) => {
+          const base = {
+            fullName: field.keyName,
+            label: field.displayName,
+            type: field.fieldType === 'string' ? 'Text' : 'Number',
+            required: field.isRequired,
+          };
+
+          if (field.fieldType === 'string') {
+            return {
+              ...base,
+              // TODO: support configurations per field type
+              length: 255,
+            };
+          } else {
+            return {
+              ...base,
+              // TODO: support configurations per field type
+              precision: field.fieldType === 'number' ? 18 : undefined,
+              scale: field.fieldType === 'number' ? 0 : undefined,
+            };
+          }
+        }),
+      },
+    ]);
+    if (updateObjectResults.some((result) => !result.success)) {
+      throw new Error(`Failed to update custom object: ${JSON.stringify(updateObjectResults, null, 2)}`);
+    }
+
+    // Add new fields
+    if (addedFields.length) {
+      // We're not using metadata.create('CustomField') because it doesn't automatically
+      // make the field visible/accessible to all the profiles, which would require another
+      // call. If we don't make that second permissions-related call, we won't be able to use
+      // the field.
+      // TODO: find out a better way of doing this
+      const results = await this.#client.metadata.create('CustomObject', [
+        {
+          deploymentStatus: 'Deployed',
+          sharingModel: 'ReadWrite',
+          fullName: params.name,
+          label: params.labels.singular,
+          pluralLabel: params.labels.plural,
+          nameField: {
+            label: primaryField.displayName,
+            type: 'Text',
+          },
+          fields: addedFields.map((field) => {
+            const base = {
+              fullName: field.keyName,
+              label: field.displayName,
+              type: field.fieldType === 'string' ? 'Text' : 'Number',
+              required: field.isRequired,
+            };
+
+            if (field.fieldType === 'string') {
+              return {
+                ...base,
+                // TODO: support configurations per field type
+                length: 255,
+              };
+            } else {
+              return {
+                ...base,
+                // TODO: support configurations per field type
+                precision: field.fieldType === 'number' ? 18 : undefined,
+                scale: field.fieldType === 'number' ? 0 : undefined,
+              };
+            }
+          }),
+        },
+      ]);
+      // Check the results. If there are errors but they don't have to do with the fields
+      // we're adding, ignore them.
+      // Sample results:
+      // [
+      //   {
+      //     "errors": [
+      //       {
+      //         "fields": [
+      //           "DeveloperName"
+      //         ],
+      //         "message": "That object name is already in use.",
+      //         "statusCode": "DUPLICATE_DEVELOPER_NAME",
+      //         "extendedErrorDetails": []
+      //       }
+      //     ],
+      //     "fullName": "cups__c",
+      //     "success": false
+      //   },
+      //   {
+      //     "fullName": "cups__c.field7__c",
+      //     "success": true,
+      //     "errors": []
+      //   }
+      // ]
+      const fullyQualifiedAddedFieldNames = addedFields.map((field) => `${params.name}.${field.keyName}`);
+      for (const result of results) {
+        if (result.success) {
+          continue;
+        }
+
+        if (fullyQualifiedAddedFieldNames.includes(result.fullName)) {
+          throw new Error(`Failed to create custom fields: ${JSON.stringify(results, null, 2)}`);
+        }
+      }
+    }
+
+    // Delete fields
+    if (deletedFields.length) {
+      const deleteFieldResults = await this.#client.metadata.delete(
+        'CustomField',
+        deletedFields.map((field) => `${params.name}.${field.keyName}`)
+      );
+      if (deleteFieldResults.some((result) => !result.success)) {
+        throw new Error(`Failed to delete custom fields: ${JSON.stringify(deleteFieldResults, null, 2)}`);
+      }
+    }
+  }
+
+  // const account = await this.#client.retrieve('Account', id);
+  //   return { ...fromSalesforceAccountToAccount(account), rawData: toMappedProperties(account, fieldMappingConfig) };
+  // }
+
+  // public async createAccount(params: AccountCreateParams): Promise<string> {
+  //   const response = await this.#client.create('Account', toSalesforceAccountCreateParams(params));
+  //   if (!response.success) {
+  //     throw new Error('Failed to create Salesforce account');
+  //   }
+  //   return response.id;
+  // }
+
+  // public async updateAccount(params: AccountUpdateParams): Promise<string> {
+  //   const response = await this.#client.update('Account', toSalesforceAccountUpdateParams(params));
+  //   if (!response.success) {
+  //     throw new Error('Failed to update Salesforce account');
+  //   }
+  //   return response.id;
+
+  public async getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
+    const record = await this.#client.retrieve(objectId, id);
+
+    if (!record.Id) {
+      throw new NotFoundError(`Unexpectedly record was not returned with ${record.Id}`);
+    }
+
+    // Get the properties to fetch
+    // TODO: should we be returning other properties too?
+    const customObject = await this.getCustomObject(objectId);
+    const fieldsToFetch = customObject.fields.map((field) => field.keyName);
+
+    return {
+      id: record.Id,
+      objectId,
+      fields: Object.fromEntries(Object.entries(record).filter(([key]) => fieldsToFetch.includes(key))),
+    };
+  }
+
+  public async createCustomObjectRecord({ objectId, fields }: CustomObjectRecordCreateParams): Promise<string> {
+    const result = await this.#client.create(objectId, fields);
+    if (!result.success) {
+      throw new Error(
+        `Failed to create Salesforce custom object ${objectId} record: ${JSON.stringify(result.errors, null, 2)}`
+      );
+    }
+    return result.id;
+  }
+
+  public async updateCustomObjectRecord({ objectId, id, fields }: CustomObjectRecordUpdateParams): Promise<void> {
+    const result = await this.#client.update(objectId, {
+      Id: id,
+      ...fields,
+    });
+    if (!result.success) {
+      throw new Error(
+        `Failed to update Salesforce custom object ${objectId} record: ${JSON.stringify(result.errors, null, 2)}`
+      );
+    }
   }
 
   async #refreshAccessToken(): Promise<void> {
