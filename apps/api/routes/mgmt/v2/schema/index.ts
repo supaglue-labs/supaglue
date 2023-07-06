@@ -81,7 +81,8 @@ export default function init(app: Router): void {
       req: Request<DeleteSchemaPathParams, DeleteSchemaResponse, DeleteSchemaRequest>,
       res: Response<DeleteSchemaResponse>
     ) => {
-      throw new Error('Schema deletion is not yet implemented');
+      await schemaService.delete(req.params.schema_id, req.supaglueApplication.id);
+      return res.status(204).send();
     }
   );
 
