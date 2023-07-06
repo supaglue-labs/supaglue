@@ -220,7 +220,10 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
               label="Allow additional field mappings?"
               isLoading={isLoading}
               checked={allowAdditionalFieldMappings}
-              onToggle={setAllowAdditionalFieldMappings}
+              onToggle={(toggled) => {
+                setAllowAdditionalFieldMappings(toggled);
+                setIsDirty(true);
+              }}
             />
           </Stack>
           <Stack direction="row" className="gap-2 justify-between">
