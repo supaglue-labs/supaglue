@@ -79,19 +79,14 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const sgUserService = new SgUserService();
   const providerService = new ProviderService(prisma);
   const syncConfigService = new SyncConfigService(prisma);
-  const connectionService = new ConnectionService(prisma, providerService);
+  const schemaService = new SchemaService(prisma);
+  const connectionService = new ConnectionService(prisma, providerService, schemaService);
   const customerService = new CustomerService(prisma);
   const remoteService = new RemoteService(connectionService, providerService);
   const webhookService = new WebhookService({ prisma });
   const destinationService = new DestinationService(prisma);
-  const schemaService = new SchemaService(prisma);
 
-  const crmCommonObjectService = new CrmCommonObjectService(
-    remoteService,
-    destinationService,
-    providerService,
-    schemaService
-  );
+  const crmCommonObjectService = new CrmCommonObjectService(remoteService, destinationService, connectionService);
   const engagementCommonObjectService = new EngagementCommonObjectService(remoteService, destinationService);
 
   const crmCustomObjectService = new CrmCustomObjectService(remoteService);

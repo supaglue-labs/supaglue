@@ -1,16 +1,8 @@
 import type { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
-import { createFieldMappingConfig } from '@supaglue/core/lib/schema';
 import { getCategoryForProvider } from '@supaglue/core/remotes';
-import type {
-  ConnectionService,
-  ProviderService,
-  RemoteService,
-  SchemaService,
-  SyncConfigService,
-} from '@supaglue/core/services';
+import type { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
-import type { CRMProvider } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import type { ObjectType } from '@supaglue/types/object_sync';
@@ -43,9 +35,7 @@ export function createSyncRecords(
   destinationService: DestinationService,
   syncService: SyncService,
   syncConfigService: SyncConfigService,
-  applicationService: ApplicationService,
-  schemaService: SchemaService,
-  providerService: ProviderService
+  applicationService: ApplicationService
 ) {
   return async function syncRecords({
     objectSyncId,
@@ -66,13 +56,11 @@ export function createSyncRecords(
             switch (category) {
               case 'crm': {
                 const client = await remoteService.getCrmRemoteClient(connectionId);
-                const provider = await providerService.getById<CRMProvider>(connection.providerId);
-                const schemaId = provider.objects?.common?.find((o) => o.name === object)?.schemaId;
-                const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
-                const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
-                  (o) => o.object === object
-                )?.fieldMappings;
-                const fieldMappingConfig = createFieldMappingConfig(schema?.config, customerFieldMapping);
+                const fieldMappingConfig = await connectionService.getFieldMappingConfig(
+                  connectionId,
+                  'common',
+                  object
+                );
 
                 const readable = await client.listCommonObjectRecords(
                   object as CRMCommonObjectType,
@@ -106,15 +94,7 @@ export function createSyncRecords(
         case 'standard':
           {
             const client = await remoteService.getRemoteClient(connectionId);
-            const provider = await providerService.getById(connection.providerId);
-
-            // Find schema / field mapping information
-            const schemaId = provider.objects?.standard?.find((o) => o.name === object)?.schemaId;
-            const schema = schemaId ? await schemaService.getById(schemaId) : undefined;
-            const customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
-              (o) => o.object === object
-            )?.fieldMappings;
-            const fieldMappingConfig = createFieldMappingConfig(schema?.config, customerFieldMapping);
+            const fieldMappingConfig = await connectionService.getFieldMappingConfig(connectionId, 'standard', object);
             const stream = await client.listStandardObjectRecords(object, fieldMappingConfig, updatedAfter, heartbeat);
             return await writer.writeObjectRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
           }

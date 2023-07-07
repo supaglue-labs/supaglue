@@ -27,6 +27,7 @@ import Card from '@mui/material/Card';
 import type { Provider, ProviderCategory, ProviderCreateParams, ProviderName, ProviderObject } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
+import { PROVIDERS_THAT_SUPPORT_SCHEMAS } from '@supaglue/utils';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { DeleteProviderButton } from './DeleteProviderButton';
@@ -53,6 +54,8 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   const [standardObjects, setStandardObjects] = useState<ProviderObject[]>([]);
   const [customObjects, setCustomObjects] = useState<ProviderObject[]>([]);
   const router = useRouter();
+
+  const supportsObjectToSchema = (PROVIDERS_THAT_SUPPORT_SCHEMAS as unknown as ProviderName[]).includes(providerName);
 
   const { providers: existingProviders = [], mutate } = useProviders();
 
@@ -210,38 +213,40 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
             helperText="Comma separated values (without spaces)."
           />
         </Stack>
-        <Stack className="gap-2">
-          <Typography variant="subtitle1">Object to Schema Mapping</Typography>
-          <SchemaToObjectMapping
-            isLoading={isLoading || isLoadingSchemas}
-            label="Common Objects"
-            helperText={`Objects that Supaglue has unified across all ${category} providers.`}
-            objects={commonObjects}
-            setObjects={setCommonObjects}
-            objectOptions={
-              (category === 'crm' ? CRM_COMMON_OBJECT_TYPES : ENGAGEMENT_COMMON_OBJECT_TYPES) as unknown as string[]
-            }
-            schemaOptions={schemas ?? []}
-          />
-          <SchemaToObjectMapping
-            isLoading={isLoading || isLoadingSchemas}
-            label="Standard Objects"
-            helperText={`Standard objects in ${providerName}. (Note: names are case-sensitive.)`}
-            objects={standardObjects}
-            setObjects={setStandardObjects}
-            objectOptions={getStandardObjectOptions(providerName)}
-            schemaOptions={schemas ?? []}
-          />
-          <SchemaToObjectMapping
-            isLoading={isLoading || isLoadingSchemas}
-            label="Custom Objects"
-            helperText={`Custom objects in ${providerName}. (Note: names are case-sensitive.)`}
-            objects={customObjects}
-            setObjects={setCustomObjects}
-            objectOptions={[]}
-            schemaOptions={schemas ?? []}
-          />
-        </Stack>
+        {supportsObjectToSchema && (
+          <Stack className="gap-2">
+            <Typography variant="subtitle1">Object to Schema Mapping</Typography>
+            <SchemaToObjectMapping
+              isLoading={isLoading || isLoadingSchemas}
+              label="Common Objects"
+              helperText={`Objects that Supaglue has unified across all ${category} providers.`}
+              objects={commonObjects}
+              setObjects={setCommonObjects}
+              objectOptions={
+                (category === 'crm' ? CRM_COMMON_OBJECT_TYPES : ENGAGEMENT_COMMON_OBJECT_TYPES) as unknown as string[]
+              }
+              schemaOptions={schemas ?? []}
+            />
+            <SchemaToObjectMapping
+              isLoading={isLoading || isLoadingSchemas}
+              label="Standard Objects"
+              helperText={`Standard objects in ${providerName}. (Note: names are case-sensitive.)`}
+              objects={standardObjects}
+              setObjects={setStandardObjects}
+              objectOptions={getStandardObjectOptions(providerName)}
+              schemaOptions={schemas ?? []}
+            />
+            <SchemaToObjectMapping
+              isLoading={isLoading || isLoadingSchemas}
+              label="Custom Objects"
+              helperText={`Custom objects in ${providerName}. (Note: names are case-sensitive.)`}
+              objects={customObjects}
+              setObjects={setCustomObjects}
+              objectOptions={[]}
+              schemaOptions={schemas ?? []}
+            />
+          </Stack>
+        )}
 
         <Stack direction="row" className="gap-2 justify-between">
           <Button

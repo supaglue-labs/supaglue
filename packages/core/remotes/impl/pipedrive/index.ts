@@ -1,8 +1,10 @@
 import type {
+  CommonObjectDef,
   ConnectionUnsafe,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
   Account,
@@ -58,6 +60,28 @@ const DEFAULT_LIST_PARAMS = {
   limit: PIPEDRIVE_RECORD_LIMIT,
   sort: 'id',
 };
+
+const PIPEDRIVE_USER_FIELDS = [
+  'id',
+  'name',
+  'email',
+  'active_flag',
+  'created',
+  'modified',
+  'default_currency',
+  'locale',
+  'lang',
+  'phone',
+  'activated',
+  'last_login',
+  'has_created_company',
+  'access',
+  'timezone_name',
+  'timezone_offset',
+  'role_id',
+  'icon_url',
+  'is_you',
+] as const;
 
 type PipedriveObjectSupportingCustomFields = 'person' | 'lead' | 'deal' | 'organization';
 
@@ -153,15 +177,15 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.listContacts(updatedAfter);
+        return await this.listContacts(fieldMappingConfig, updatedAfter);
       case 'lead':
-        return await this.listLeads(updatedAfter);
+        return await this.listLeads(fieldMappingConfig, updatedAfter);
       case 'opportunity':
-        return await this.listOpportunities(updatedAfter);
+        return await this.listOpportunities(fieldMappingConfig, updatedAfter);
       case 'account':
-        return await this.listAccounts(updatedAfter);
+        return await this.listAccounts(fieldMappingConfig, updatedAfter);
       case 'user':
-        return await this.listUsers(updatedAfter);
+        return await this.listUsers(fieldMappingConfig, updatedAfter);
       default:
         return Readable.from([]);
     }
@@ -194,12 +218,20 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     };
   }
 
-  private async listContacts(updatedAfter?: Date): Promise<Readable> {
+  private async listContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/persons`,
       updatedAfter
     );
     const fields = await this.#getCustomFieldsForObject('person');
+    const mapper = (
+      result: PipedriveRecord,
+      fields: PipedriveObjectField[],
+      fieldMappingConfig: FieldMappingConfig
+    ): Contact => {
+      const contact = fromPipedrivePersonToContact(result, fields);
+      return { ...contact, rawData: toMappedProperties(contact.rawData, fieldMappingConfig) };
+    };
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -207,7 +239,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedrivePersonToContact(result, fields),
+              record: mapper(result, fields, fieldMappingConfig),
               emittedAt,
             })) ?? []
           );
@@ -217,12 +249,20 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listLeads(updatedAfter?: Date): Promise<Readable> {
+  private async listLeads(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/leads`,
       updatedAfter
     );
     const fields = await this.#getCustomFieldsForObject('lead');
+    const mapper = (
+      result: PipedriveRecord,
+      fields: PipedriveObjectField[],
+      fieldMappingConfig: FieldMappingConfig
+    ): Lead => {
+      const lead = fromPipedriveLeadToLead(result, fields);
+      return { ...lead, rawData: toMappedProperties(lead.rawData, fieldMappingConfig) };
+    };
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -230,7 +270,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedriveLeadToLead(result, fields),
+              record: mapper(result, fields, fieldMappingConfig),
               emittedAt,
             })) ?? []
           );
@@ -271,13 +311,22 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return pipelineStageMapping;
   }
 
-  private async listOpportunities(updatedAfter?: Date): Promise<Readable> {
+  private async listOpportunities(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/deals`,
       updatedAfter
     );
     const fields = await this.#getCustomFieldsForObject('deal');
+    const mapper = (
+      result: PipedriveRecord,
+      pipelineStageMapping: PipelineStageMapping,
+      fields: PipedriveObjectField[],
+      fieldMappingConfig: FieldMappingConfig
+    ): Opportunity => {
+      const opportunity = fromPipedriveDealToOpportunity(result, pipelineStageMapping, fields);
+      return { ...opportunity, rawData: toMappedProperties(opportunity.rawData, fieldMappingConfig) };
+    };
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -285,7 +334,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((record) => ({
-              record: fromPipedriveDealToOpportunity(record, pipelineStageMapping, fields),
+              record: mapper(record, pipelineStageMapping, fields, fieldMappingConfig),
               emittedAt,
             })) ?? []
           );
@@ -295,12 +344,20 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listAccounts(updatedAfter?: Date): Promise<Readable> {
+  private async listAccounts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/organizations`,
       updatedAfter
     );
     const fields = await this.#getCustomFieldsForObject('organization');
+    const mapper = (
+      result: PipedriveRecord,
+      fields: PipedriveObjectField[],
+      fieldMappingConfig: FieldMappingConfig
+    ): Account => {
+      const account = fromPipedriveOrganizationToAccount(result, fields);
+      return { ...account, rawData: toMappedProperties(account.rawData, fieldMappingConfig) };
+    };
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -308,7 +365,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedriveOrganizationToAccount(result, fields),
+              record: mapper(result, fields, fieldMappingConfig),
               emittedAt,
             })) ?? []
           );
@@ -318,11 +375,15 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listUsers(updatedAfter?: Date): Promise<Readable> {
+  private async listUsers(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/users`,
       updatedAfter
     );
+    const mapper = (result: PipedriveRecord, fieldMappingConfig: FieldMappingConfig): User => {
+      const user = fromPipedriveUserToUser(result);
+      return { ...user, rawData: toMappedProperties(user.rawData, fieldMappingConfig) };
+    };
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -330,7 +391,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data?.map((result) => ({
-              record: fromPipedriveUserToUser(result),
+              record: mapper(result, fieldMappingConfig),
               emittedAt,
             })) ?? []
           );
@@ -347,63 +408,68 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.getContact(id);
+        return await this.getContact(id, fieldMappingConfig);
       case 'lead':
-        return await this.getLead(id);
+        return await this.getLead(id, fieldMappingConfig);
       case 'opportunity':
-        return await this.getOpportunity(id);
+        return await this.getOpportunity(id, fieldMappingConfig);
       case 'account':
-        return await this.getAccount(id);
+        return await this.getAccount(id, fieldMappingConfig);
       case 'user':
-        return await this.getUser(id);
+        return await this.getUser(id, fieldMappingConfig);
       default:
         throw new Error(`Common object ${commonObjectType} not supported`);
     }
   }
 
-  async getContact(id: string): Promise<Contact> {
+  async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     await this.maybeRefreshAccessToken();
     const fields = await this.#getCustomFieldsForObject('person');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/persons/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedrivePersonToContact(response.data.data, fields);
+    const contact = fromPipedrivePersonToContact(response.data.data, fields);
+    return { ...contact, rawData: toMappedProperties(contact.rawData, fieldMappingConfig) };
   }
 
-  async getLead(id: string): Promise<Lead> {
+  async getLead(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Lead> {
     await this.maybeRefreshAccessToken();
     const fields = await this.#getCustomFieldsForObject('lead');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/leads/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedriveLeadToLead(response.data.data, fields);
+    const lead = fromPipedriveLeadToLead(response.data.data, fields);
+    return { ...lead, rawData: toMappedProperties(lead.rawData, fieldMappingConfig) };
   }
 
-  async getOpportunity(id: string): Promise<Opportunity> {
+  async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
     const fields = await this.#getCustomFieldsForObject('deal');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/deals/${id}`, {
       headers: this.#headers,
     });
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    return fromPipedriveDealToOpportunity(response.data.data, pipelineStageMapping, fields);
+    const opportunity = fromPipedriveDealToOpportunity(response.data.data, pipelineStageMapping, fields);
+    return { ...opportunity, rawData: toMappedProperties(opportunity.rawData, fieldMappingConfig) };
   }
 
-  async getAccount(id: string): Promise<Account> {
+  async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
     await this.maybeRefreshAccessToken();
     const fields = await this.#getCustomFieldsForObject('organization');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/organizations/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedriveOrganizationToAccount(response.data.data, fields);
+    const account = fromPipedriveOrganizationToAccount(response.data.data, fields);
+    return { ...account, rawData: toMappedProperties(account.rawData, fieldMappingConfig) };
   }
 
-  async getUser(id: string): Promise<User> {
+  async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/users/${id}`, {
       headers: this.#headers,
     });
-    return fromPipedriveUserToUser(response.data.data);
+    const user = fromPipedriveUserToUser(response.data.data);
+    return { ...user, rawData: toMappedProperties(user.rawData, fieldMappingConfig) };
   }
 
   public override async createCommonObjectRecord<T extends CRMCommonObjectType>(
@@ -426,23 +492,60 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  async #getCustomFieldsForObject(object: PipedriveObjectSupportingCustomFields): Promise<PipedriveObjectField[]> {
-    function getFieldsPrefix(): string {
-      switch (object) {
-        case 'person':
-        case 'organization':
-        case 'deal':
-          return object;
-        case 'lead':
-          return 'deal';
-      }
+  getFieldsPrefix(objectName: string): string {
+    if (objectName === 'lead') {
+      return 'deal';
     }
+    return objectName;
+  }
 
+  public override async listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+    switch (object.name) {
+      case 'contact':
+        return await this.listPropertiesForRawObjectName('person');
+      case 'lead':
+        return await this.listPropertiesForRawObjectName('lead');
+      case 'opportunity':
+        return await this.listPropertiesForRawObjectName('deal');
+      case 'account':
+        return await this.listPropertiesForRawObjectName('organization');
+      case 'user':
+        return PIPEDRIVE_USER_FIELDS as unknown as string[];
+      default:
+        throw new Error(`Common object ${object} not supported`);
+    }
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
+    return await this.listPropertiesForRawObjectName(object.name);
+  }
+
+  public async listPropertiesForRawObjectName(objectName: string): Promise<string[]> {
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      // TODO: Handle pagination. We're assuming that by not passing in a limit param, we get all the fields.
+      // This may be an incorrect assumption
+      const response = await axios.get<PipedriveObjectFieldsResponse>(
+        `${this.#credentials.instanceUrl}/api/v1/${this.getFieldsPrefix(
+          objectName
+        )}Fields:(key,name,edit_flag,field_type,options)`,
+        {
+          headers: this.#headers,
+        }
+      );
+      // Note: For custom fields, we reference using the label.
+      return response.data.data.map(({ key, name, edit_flag }) => (edit_flag ? name : key));
+    });
+  }
+
+  async #getCustomFieldsForObject(object: PipedriveObjectSupportingCustomFields): Promise<PipedriveObjectField[]> {
     await this.maybeRefreshAccessToken();
     // TODO: Handle pagination. We're assuming that by not passing in a limit param, we get all the fields.
     // This may be an incorrect assumption
     const response = await axios.get<PipedriveObjectFieldsResponse>(
-      `${this.#credentials.instanceUrl}/api/v1/${getFieldsPrefix()}Fields:(key,name,edit_flag,field_type,options)`,
+      `${this.#credentials.instanceUrl}/api/v1/${this.getFieldsPrefix(
+        object
+      )}Fields:(key,name,edit_flag,field_type,options)`,
       {
         headers: this.#headers,
       }
@@ -648,4 +751,17 @@ function filterForUpdatedAfter<
       return updatedAfter < new Date(record.updated_time);
     }),
   };
+}
+
+function toMappedProperties(
+  properties: Record<string, any>,
+  fieldMappingConfig: FieldMappingConfig
+): Record<string, any> {
+  if (fieldMappingConfig.type === 'inherit_all_fields') {
+    return properties;
+  }
+
+  return Object.fromEntries(
+    fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
+  );
 }
