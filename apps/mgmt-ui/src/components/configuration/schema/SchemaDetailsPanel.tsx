@@ -5,9 +5,7 @@ import { SwitchWithLabel } from '@/components/SwitchWithLabel';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { toGetSchemasResponse, useSchemas } from '@/hooks/useSchemas';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Autocomplete, Breadcrumbs, Button, Chip, Collapse, Grid, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Breadcrumbs, Button, Chip, Grid, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import type { Schema, SchemaCreateParams } from '@supaglue/types';
 import Link from 'next/link';
@@ -36,11 +34,6 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
   const [mappedFields, setMappedFields] = useState<Record<string, string>>({});
   const [allowAdditionalFieldMappings, setAllowAdditionalFieldMappings] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [expanded, setExpanded] = useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
 
   const router = useRouter();
 
@@ -61,7 +54,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
     return <Spinner />;
   }
 
-  const formTitle = schema ? 'Edit Sync Config' : 'New Sync Config';
+  const formTitle = schema ? 'Edit Schema' : 'New Schema';
   const isNew = !schema?.id;
 
   const createOrUpdateSchema = async (): Promise<Schema | undefined> => {
@@ -84,7 +77,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
         name,
         config: {
           allowAdditionalFieldMappings,
-          fields: fields.map((field) => ({ name: field, mappedName: field })),
+          fields: fields.map((field) => ({ name: field, mappedName: mappedFields[field] })),
         },
       };
       const response = await updateSchema(activeApplicationId, newSchema);
@@ -119,7 +112,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
           Home
         </Link>
         <Link color="inherit" href={`/applications/${activeApplicationId}/configuration/sync_configs`}>
-          <Typography color="text.primary">Sync Configs</Typography>
+          <Typography color="text.primary">Schemas</Typography>
         </Link>
         <Typography color="text.primary">Details</Typography>
       </Breadcrumbs>
@@ -176,43 +169,30 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
               }}
             />
             <Stack direction="column" className="gap-2">
-              <Stack direction="row" className="items-center">
-                <Button variant="text" color="inherit" onClick={handleExpandClick}>
-                  <Stack direction="row" className="items-center gap-2">
-                    <Typography variant="subtitle1">Advanced Field Settings</Typography>
-                    {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                  </Stack>
-                </Button>
-              </Stack>
-              <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <Stack direction="column" className="gap-2 pt-2">
-                  {fields.map((field) => {
-                    return (
-                      // <Stack direction="row" className="pl-4 gap-4 items-center">
-                      <Grid key={field} container spacing={4} className="pl-4">
-                        <Grid item xs={1}>
-                          <Typography variant="subtitle1">{field}</Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                          <TextField
-                            value={mappedFields[field] ?? ''}
-                            size="small"
-                            label="Mapped Field"
-                            variant="outlined"
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                              if (!event.target.value) {
-                                return;
-                              }
-                              setMappedFields({ ...mappedFields, [field]: event.target.value });
-                              setIsDirty(true);
-                            }}
-                          />
-                        </Grid>
+              <Typography variant="subtitle1">Advanced Field Settings</Typography>
+              <Stack direction="column" className="gap-2 pt-2">
+                {fields.map((field) => {
+                  return (
+                    <Grid key={field} container spacing={4} className="pl-4">
+                      <Grid item xs={1}>
+                        <Typography variant="subtitle1">{field}</Typography>
                       </Grid>
-                    );
-                  })}
-                </Stack>
-              </Collapse>
+                      <Grid item xs={2}>
+                        <TextField
+                          value={mappedFields[field] ?? ''}
+                          size="small"
+                          label="Mapped Field"
+                          variant="outlined"
+                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setMappedFields({ ...mappedFields, [field]: event.target.value ?? '' });
+                            setIsDirty(true);
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                  );
+                })}
+              </Stack>
             </Stack>
           </Stack>
           <Stack className="gap-2">
@@ -220,7 +200,10 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
               label="Allow additional field mappings?"
               isLoading={isLoading}
               checked={allowAdditionalFieldMappings}
-              onToggle={setAllowAdditionalFieldMappings}
+              onToggle={(toggled) => {
+                setAllowAdditionalFieldMappings(toggled);
+                setIsDirty(true);
+              }}
             />
           </Stack>
           <Stack direction="row" className="gap-2 justify-between">
@@ -244,7 +227,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
                     ...schemas.filter((schema) => schema.id !== newSchema.id),
                     newSchema,
                   ]);
-                  addNotification({ message: 'Successfully updated Sync Config', severity: 'success' });
+                  addNotification({ message: 'Successfully updated schema', severity: 'success' });
                   await mutate(latestSchemas, {
                     optimisticData: latestSchemas,
                     revalidate: false,
