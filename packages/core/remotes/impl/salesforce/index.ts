@@ -28,6 +28,8 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
+import type { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
+import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import type {
   CustomObject,
   CustomObjectCreateParams,
@@ -56,6 +58,7 @@ import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import {
+  fromObjectToSalesforceObject,
   fromSalesforceAccountToAccount,
   fromSalesforceContactToContact,
   fromSalesforceLeadToLead,
@@ -611,16 +614,17 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // Check against existing object
     const existingObject = await this.getCustomObject(params.name);
-    const existingObjectNonPrimaryFields = existingObject.fields.filter(
+    const existingObjectNonPrimaryAndLookupFields = existingObject.fields.filter(
       (field) => field.keyName !== existingObject.primaryFieldKeyName
     );
 
     // Calculate which fields got added, updated, or deleted
     const addedFields = nonPrimaryFields.filter(
-      (field) => !existingObjectNonPrimaryFields.some((existingField) => existingField.keyName === field.keyName)
+      (field) =>
+        !existingObjectNonPrimaryAndLookupFields.some((existingField) => existingField.keyName === field.keyName)
     );
     const updatedFields = nonPrimaryFields.filter((field) =>
-      existingObjectNonPrimaryFields.some(
+      existingObjectNonPrimaryAndLookupFields.some(
         (existingField) =>
           existingField.keyName === field.keyName &&
           (existingField.displayName !== field.displayName ||
@@ -628,7 +632,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
             existingField.isRequired !== field.isRequired)
       )
     );
-    const deletedFields = existingObjectNonPrimaryFields.filter(
+    const deletedFields = existingObjectNonPrimaryAndLookupFields.filter(
       (existingField) => !nonPrimaryFields.some((field) => field.keyName === existingField.keyName)
     );
 
@@ -822,6 +826,170 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         `Failed to update Salesforce custom object ${objectId} record: ${JSON.stringify(result.errors, null, 2)}`
       );
     }
+  }
+
+  public async getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]> {
+    // TODO: support other types of objects as source
+    if (sourceObject.originType !== 'custom') {
+      throw new BadRequestError(`Only custom objects are supported as source objects for Salesforce`);
+    }
+
+    // id should look like `MyCustomObject__c`
+    // Get the lookup fields for this object
+    // Filter for the lookup fields that target the target object
+    const metadata = await this.#client.metadata.read('CustomObject', sourceObject.id);
+    const salesforceTargetObject = fromObjectToSalesforceObject(targetObject);
+    const associationTypeFields = metadata.fields.filter(
+      (field) => field.type === 'Lookup' && field.referenceTo === salesforceTargetObject
+    );
+
+    return associationTypeFields.map((field) => ({
+      id: `${metadata.fullName}.${field.fullName}`,
+      sourceObject,
+      targetObject,
+      displayName: field.label ?? '',
+      cardinality: 'UNKNOWN',
+    }));
+  }
+
+  public async createAssociationType(params: AssociationTypeCreateParams): Promise<void> {
+    // TODO: support other types of objects as source
+    if (params.sourceObject.originType !== 'custom') {
+      throw new BadRequestError(`Only custom objects are supported as source objects for Salesforce`);
+    }
+
+    if (params.cardinality !== 'ONE_TO_MANY') {
+      throw new BadRequestError('Only ONE_TO_MANY cardinality is supported in Salesforce');
+    }
+
+    // Look up source custom object to figure out a relationship name
+    // TODO: we should find a better way to do this
+    const sourceCustomObjectMetadata = await this.#client.metadata.read('CustomObject', params.sourceObject.id);
+
+    // If the relationship field doesn't already exist, create it
+    const existingField = sourceCustomObjectMetadata.fields?.find((field) => field.fullName === params.keyName);
+    const salesforceTargetObject = fromObjectToSalesforceObject(params.targetObject);
+
+    if (existingField) {
+      const result = await this.#client.metadata.update('CustomField', {
+        fullName: `${params.sourceObject.id}.${params.keyName}`,
+        label: params.displayName,
+        // The custom field name you provided Related Opportunity on object Opportunity can
+        // only contain alphanumeric characters, must begin with a letter, cannot end
+        // with an underscore or contain two consecutive underscore characters, and
+        // must be unique across all Opportunity fields
+        // TODO: allow developer to specify name?
+        relationshipName: sourceCustomObjectMetadata.pluralLabel?.replace(/\s/g, '') ?? 'relationshipName',
+        type: 'Lookup',
+        required: false,
+        referenceTo: salesforceTargetObject,
+      });
+
+      if (!result.success) {
+        throw new Error(
+          `Failed to update custom field for association type: ${JSON.stringify(result.errors, null, 2)}`
+        );
+      }
+    } else {
+      // TODO: make this idempotent so we can apply permissions if this succeeds but the next one fails
+      const result = await this.#client.metadata.create('CustomField', {
+        fullName: `${params.sourceObject.id}.${params.keyName}`,
+        label: params.displayName,
+        // The custom field name you provided Related Opportunity on object Opportunity can
+        // only contain alphanumeric characters, must begin with a letter, cannot end
+        // with an underscore or contain two consecutive underscore characters, and
+        // must be unique across all Opportunity fields
+        // TODO: allow developer to specify name?
+        relationshipName: sourceCustomObjectMetadata.pluralLabel?.replace(/\s/g, '') ?? 'relationshipName',
+        type: 'Lookup',
+        required: false,
+        referenceTo: salesforceTargetObject,
+      });
+
+      if (!result.success) {
+        throw new Error(
+          `Failed to create custom field for association type: ${JSON.stringify(result.errors, null, 2)}`
+        );
+      }
+    }
+
+    const { userInfo } = this.#client;
+    if (!userInfo) {
+      throw new Error('Could not get info of current user');
+    }
+
+    // Get the user record
+    const user = await this.#client.retrieve('User', userInfo.id, {
+      fields: ['ProfileId'],
+    });
+
+    // Get the first permission set
+    // TODO: Is this the right thing to do? How do we know the first one is the best one?
+    const result = await this.#client.query(`SELECT Id FROM PermissionSet WHERE ProfileId='${user.ProfileId}' LIMIT 1`);
+    if (!result.records.length) {
+      throw new Error(`Could not find permission set for profile ${user.ProfileId}`);
+    }
+
+    const permissionSetId = result.records[0].Id;
+
+    // Figure out which fields already have permissions
+    const { records: existingFieldPermissions } = await this.#client.query(
+      `SELECT Id,Field FROM FieldPermissions WHERE SobjectType='${params.sourceObject.id}' AND ParentId='${permissionSetId}' AND Field='${params.sourceObject.id}.${params.keyName}'`
+    );
+    if (existingFieldPermissions.length) {
+      // Update permission
+      const existingFieldPermission = existingFieldPermissions[0];
+      const result = await this.#client.update('FieldPermissions', {
+        Id: existingFieldPermission.Id as string,
+        ParentId: permissionSetId,
+        SobjectType: params.sourceObject.id,
+        Field: `${params.sourceObject.id}.${params.keyName}`,
+        PermissionsEdit: true,
+        PermissionsRead: true,
+      });
+      if (!result.success) {
+        throw new Error(
+          `Failed to update field permission for association type: ${JSON.stringify(result.errors, null, 2)}`
+        );
+      }
+    } else {
+      // Create permission
+      const result = await this.#client.create('FieldPermissions', {
+        ParentId: permissionSetId,
+        SobjectType: params.sourceObject.id,
+        Field: `${params.sourceObject.id}.${params.keyName}`,
+        PermissionsEdit: true,
+        PermissionsRead: true,
+      });
+      if (!result.success) {
+        throw new Error(
+          `Failed to create field permission for association type: ${JSON.stringify(result.errors, null, 2)}`
+        );
+      }
+    }
+  }
+
+  public async createAssociation(params: AssociationCreateParams): Promise<Association> {
+    if (params.sourceRecord.object.originType !== 'custom') {
+      throw new BadRequestError(`Only custom objects are supported as source objects for Salesforce`);
+    }
+
+    // keyName looks like `MyCustomObject__c.MyLookupField__c`. We should validate and then pull out the second part after the '.'
+    const keyNameParts = params.associationTypeId.split('.');
+    if (keyNameParts.length !== 2) {
+      throw new BadRequestError(`Invalid association type id ${params.associationTypeId}`);
+    }
+    const keyName = keyNameParts[1];
+
+    const result = await this.#client.update(params.sourceRecord.object.id, {
+      Id: params.sourceRecord.id,
+      [keyName]: params.targetRecord.id,
+    });
+    if (!result.success) {
+      throw new Error(`Failed to create Salesforce association: ${JSON.stringify(result.errors, null, 2)}`);
+    }
+
+    return params;
   }
 
   async #refreshAccessToken(): Promise<void> {

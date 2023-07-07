@@ -2866,8 +2866,9 @@
       "object_type": {
         "type": "string",
         "enum": [
-          "CUSTOM_OBJECT",
-          "COMMON_OBJECT"
+          "common",
+          "standard",
+          "custom"
         ]
       },
       "association_type_cardinality": {

@@ -1,4 +1,5 @@
 type: string
 enum:
-  - CUSTOM_OBJECT
-  - COMMON_OBJECT
+  - common
+  - standard
+  - custom
