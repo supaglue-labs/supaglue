@@ -5,21 +5,27 @@ import type {
   ConnectionUnsafe,
   ConnectionUnsafeAny,
   ConnectionUpdateParams,
+  CRMProvider,
   ProviderName,
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
-import type { ProviderService } from '.';
-import { NotFoundError } from '../errors';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { ObjectType } from '@supaglue/types/object_sync';
+import type { ProviderService, SchemaService } from '.';
+import { BadRequestError, NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
+import { createFieldMappingConfig } from '../lib/schema';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
 
 export class ConnectionService {
   #prisma: PrismaClient;
   #providerService: ProviderService;
+  #schemaService: SchemaService;
 
-  constructor(prisma: PrismaClient, providerService: ProviderService) {
+  constructor(prisma: PrismaClient, providerService: ProviderService, schemaService: SchemaService) {
     this.#prisma = prisma;
     this.#providerService = providerService;
+    this.#schemaService = schemaService;
   }
 
   public async getUnsafeById<T extends ProviderName>(id: string): Promise<ConnectionUnsafe<T>> {
@@ -197,5 +203,23 @@ export class ConnectionService {
     });
 
     return fromConnectionModelToConnectionSafe(updatedConnection);
+  }
+
+  public async getFieldMappingConfig(
+    connectionId: string,
+    objectType: ObjectType,
+    objectName: string
+  ): Promise<FieldMappingConfig> {
+    const connection = await this.getSafeById(connectionId);
+    if (connection.category !== 'crm') {
+      throw new BadRequestError(`Field mappings are only supported for the CRM vertical`);
+    }
+    const provider = await this.#providerService.getById<CRMProvider>(connection.providerId);
+    const schemaId = provider.objects?.[objectType]?.find((o) => o.name === objectName)?.schemaId;
+    const schema = schemaId ? await this.#schemaService.getById(schemaId) : undefined;
+    const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
+      (o) => o.object === objectName
+    )?.fieldMappings;
+    return createFieldMappingConfig(schema?.config, customerFieldMapping);
   }
 }
