@@ -475,11 +475,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       // Salesforce doesn't actually enforce this, and will just append __c.
       // However, we want to enforce this to avoid confusion when using
       // the custom object name in other places.
-      throw new Error('Custom object name must end with __c');
+      throw new BadRequestError('Custom object name must end with __c');
     }
 
     if (!params.fields.length) {
-      throw new Error('Cannot create custom object with no fields');
+      throw new BadRequestError('Cannot create custom object with no fields');
     }
 
     const primaryField = params.fields.find((field) => field.keyName === params.primaryFieldKeyName);
@@ -537,14 +537,14 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
               // TODO: support configurations per field type
               length: 255,
             };
-          } else {
-            return {
-              ...base,
-              // TODO: support configurations per field type
-              precision: field.fieldType === 'number' ? 18 : undefined,
-              scale: field.fieldType === 'number' ? 0 : undefined,
-            };
           }
+
+          return {
+            ...base,
+            // TODO: support configurations per field type
+            precision: field.fieldType === 'number' ? 18 : undefined,
+            scale: field.fieldType === 'number' ? 0 : undefined,
+          };
         }),
       },
     ]);
@@ -567,11 +567,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       // Salesforce doesn't actually enforce this, and will just append __c.
       // However, we want to enforce this to avoid confusion when using
       // the custom object name in other places.
-      throw new Error('Custom object name must end with __c');
+      throw new BadRequestError('Custom object name must end with __c');
     }
 
     if (!params.fields.length) {
-      throw new Error('Cannot create custom object with no fields');
+      throw new BadRequestError('Cannot create custom object with no fields');
     }
 
     const primaryField = params.fields.find((field) => field.keyName === params.primaryFieldKeyName);
@@ -670,81 +670,100 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // Add new fields
     if (addedFields.length) {
-      // We're not using metadata.create('CustomField') because it doesn't automatically
-      // make the field visible/accessible to all the profiles, which would require another
-      // call. If we don't make that second permissions-related call, we won't be able to use
-      // the field.
-      // TODO: find out a better way of doing this
-      const results = await this.#client.metadata.create('CustomObject', [
-        {
-          deploymentStatus: 'Deployed',
-          sharingModel: 'ReadWrite',
-          fullName: params.name,
-          label: params.labels.singular,
-          pluralLabel: params.labels.plural,
-          nameField: {
-            label: primaryField.displayName,
-            type: 'Text',
-          },
-          fields: addedFields.map((field) => {
-            const base = {
-              fullName: field.keyName,
-              label: field.displayName,
-              type: field.fieldType === 'string' ? 'Text' : 'Number',
-              required: field.isRequired,
+      const addCustomFieldsResults = await this.#client.metadata.create(
+        'CustomField',
+        addedFields.map((field) => {
+          const base = {
+            fullName: `${params.name}.${field.keyName}`,
+            label: field.displayName,
+            type: field.fieldType === 'string' ? 'Text' : 'Number',
+            required: field.isRequired,
+          };
+
+          if (field.fieldType === 'string') {
+            return {
+              ...base,
+              // TODO: support configurations per field type
+              length: 255,
             };
+          } else {
+            return {
+              ...base,
+              // TODO: support configurations per field type
+              precision: field.fieldType === 'number' ? 18 : undefined,
+              scale: field.fieldType === 'number' ? 0 : undefined,
+            };
+          }
+        })
+      );
 
-            if (field.fieldType === 'string') {
-              return {
-                ...base,
-                // TODO: support configurations per field type
-                length: 255,
-              };
-            } else {
-              return {
-                ...base,
-                // TODO: support configurations per field type
-                precision: field.fieldType === 'number' ? 18 : undefined,
-                scale: field.fieldType === 'number' ? 0 : undefined,
-              };
-            }
-          }),
-        },
-      ]);
-      // Check the results. If there are errors but they don't have to do with the fields
-      // we're adding, ignore them.
-      // Sample results:
-      // [
-      //   {
-      //     "errors": [
-      //       {
-      //         "fields": [
-      //           "DeveloperName"
-      //         ],
-      //         "message": "That object name is already in use.",
-      //         "statusCode": "DUPLICATE_DEVELOPER_NAME",
-      //         "extendedErrorDetails": []
-      //       }
-      //     ],
-      //     "fullName": "cups__c",
-      //     "success": false
-      //   },
-      //   {
-      //     "fullName": "cups__c.field7__c",
-      //     "success": true,
-      //     "errors": []
-      //   }
-      // ]
-      const fullyQualifiedAddedFieldNames = addedFields.map((field) => `${params.name}.${field.keyName}`);
-      for (const result of results) {
-        if (result.success) {
-          continue;
-        }
-
-        if (fullyQualifiedAddedFieldNames.includes(result.fullName)) {
-          throw new Error(`Failed to create custom fields: ${JSON.stringify(results, null, 2)}`);
-        }
+      if (addCustomFieldsResults.some((result) => !result.success)) {
+        throw new Error(`Failed to add custom fields: ${JSON.stringify(addCustomFieldsResults, null, 2)}`);
       }
+    }
+
+    // After custom fields are created, they're not automatically visible. We need to
+    // set the field-level security to Visible for profiles.
+    // Instead of updating all profiles, we'll just update it for the profile for the user
+    // in this connection.
+    //
+    // We're doing this all the time, even if there were no detected added fields, since
+    // the previous call to this endpoint could have failed after creating fields but before
+    // adding permissions, and we want the second call to this endpoint to fix that.
+    //
+    // TODO: do we want to make it visible for all profiles?
+    const { userInfo } = this.#client;
+    if (!userInfo) {
+      throw new Error('Could not get info of current user');
+    }
+
+    // Get the user record
+    const user = await this.#client.retrieve('User', userInfo.id, {
+      fields: ['ProfileId'],
+    });
+
+    // Get the first permission set
+    // TODO: Is this the right thing to do? How do we know the first one is the best one?
+    const result = await this.#client.query(`SELECT Id FROM PermissionSet WHERE ProfileId='${user.ProfileId}' LIMIT 1`);
+    if (!result.records.length) {
+      throw new Error(`Could not find permission set for profile ${user.ProfileId}`);
+    }
+
+    const permissionSetId = result.records[0].Id;
+
+    // Figure out which fields already have permissions
+    // TODO: Paginate
+    const { records: existingFieldPermissions } = await this.#client.query(
+      `SELECT Field FROM FieldPermissions WHERE SobjectType='${params.name}' AND ParentId='${permissionSetId}'`
+    );
+    const existingFieldPermissionFieldNames = existingFieldPermissions.map((fieldPermission) => fieldPermission.Field);
+    const fieldsToAddPermissionsFor = nonPrimaryFields.filter(
+      (field) => !existingFieldPermissionFieldNames.includes(`${params.name}.${field.keyName}`)
+    );
+
+    const { compositeResponse } = await this.#client.requestPost<{ compositeResponse: { httpStatusCode: number }[] }>(
+      '/services/data/v57.0/composite',
+      {
+        // We're doing this for all fields, not just the added ones, in case the previous
+        // call to this endpoint succeeded creating additional fields but failed to
+        // add permissions for them.
+        compositeRequest: fieldsToAddPermissionsFor.map((field) => ({
+          referenceId: field.keyName,
+          method: 'POST',
+          url: '/services/data/v57.0/sobjects/FieldPermissions/',
+          body: {
+            ParentId: permissionSetId,
+            SobjectType: params.name,
+            Field: `${params.name}.${field.keyName}`,
+            PermissionsEdit: true,
+            PermissionsRead: true,
+          },
+        })),
+      }
+    );
+    // if not 2xx
+    if (compositeResponse.some((response) => response.httpStatusCode < 200 || response.httpStatusCode >= 300)) {
+      throw new Error(`Failed to add field permissions: ${JSON.stringify(compositeResponse, null, 2)}`);
     }
 
     // Delete fields

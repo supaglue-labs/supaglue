@@ -444,6 +444,10 @@ const toSalesforceEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<
 };
 
 export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): CustomObject => {
+  if (!salesforceCustomObject.fullName) {
+    throw new Error(`unexpectedly, custom object missing fullName; custom object may not exist`);
+  }
+
   if (!salesforceCustomObject.nameField || !salesforceCustomObject.nameField.label) {
     throw new Error(`unexpectedly, custom object missing nameField`);
   }
@@ -452,10 +456,6 @@ export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): 
   // value through
   if (salesforceCustomObject.nameField.type !== 'Text') {
     throw new Error(`unexpectedly, custom object not of type Text`);
-  }
-
-  if (!salesforceCustomObject.fullName) {
-    throw new Error(`unexpectedly, custom object missing fullName`);
   }
 
   if (!salesforceCustomObject.label) {
