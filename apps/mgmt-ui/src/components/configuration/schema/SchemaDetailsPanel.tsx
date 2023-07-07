@@ -34,11 +34,6 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
   const [mappedFields, setMappedFields] = useState<Record<string, string>>({});
   const [allowAdditionalFieldMappings, setAllowAdditionalFieldMappings] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
-  const [expanded, setExpanded] = useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
 
   const router = useRouter();
 
@@ -189,10 +184,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
                           label="Mapped Field"
                           variant="outlined"
                           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            if (!event.target.value) {
-                              return;
-                            }
-                            setMappedFields({ ...mappedFields, [field]: event.target.value });
+                            setMappedFields({ ...mappedFields, [field]: event.target.value ?? '' });
                             setIsDirty(true);
                           }}
                         />
