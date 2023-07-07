@@ -1,7 +1,7 @@
 get:
   operationId: getAssociationTypes
   tags:
-    - Leads
+    - AssociationTypes
   security:
     - ApiKeyAuth: []
   summary: List associationTypes
