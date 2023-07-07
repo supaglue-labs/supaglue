@@ -550,10 +550,15 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     ]);
 
     if (results.some((result) => !result.success)) {
-      // TODO: creating the object and the fields is not an atomic operation.
-      // If it fails halfway, we should return some message to the user educating them
-      // to call the PUT endpoint next instead
-      throw new Error(`Failed to create custom object: ${JSON.stringify(results, null, 2)}`);
+      throw new Error(
+        `Failed to create custom object. Since creating a custom object with custom fields is not an atomic operation in Salesforce, you should use the custom object name ${
+          params.name
+        } as the 'id' parameter in the Custom Object GET endpoint to check if it was already partially created. If so, use the PUT endpoint to update the existing object. Raw error message from Salesforce: ${JSON.stringify(
+          results,
+          null,
+          2
+        )}`
+      );
     }
 
     // TODO: is this accurate?
