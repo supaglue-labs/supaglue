@@ -60,6 +60,8 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
   const providerCardInfo = providerCardsInfo.find((providerCardInfo) => providerCardInfo.providerName === providerName);
 
+  console.log(`objects: `, commonObjects);
+
   useEffect(() => {
     setFriendlyProviderId(provider?.id ?? '--');
 
@@ -339,7 +341,8 @@ const SchemaToObjectMapping = ({
           <AddIcon />
         </IconButton>
       </Stack>
-      <Stack direction="column" className="gap-2 pl-2">
+      {/* Set key to force re-render on deletions */}
+      <Stack key={objects.length} direction="column" className="gap-2 pl-2">
         {objects.map((object, index) => {
           return (
             <Stack key={index} direction="row" className="gap-2 items-top">
