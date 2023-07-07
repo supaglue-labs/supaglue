@@ -27,6 +27,7 @@ import Card from '@mui/material/Card';
 import type { Provider, ProviderCategory, ProviderCreateParams, ProviderName, ProviderObject } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
+import { PROVIDERS_THAT_SUPPORT_SCHEMAS } from '@supaglue/utils';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { DeleteProviderButton } from './DeleteProviderButton';
@@ -54,7 +55,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   const [customObjects, setCustomObjects] = useState<ProviderObject[]>([]);
   const router = useRouter();
 
-  const supportsObjectToSchema = ['salesforce', 'hubspot', 'pipedrive'].includes(providerName);
+  const supportsObjectToSchema = (PROVIDERS_THAT_SUPPORT_SCHEMAS as unknown as ProviderName[]).includes(providerName);
 
   const { providers: existingProviders = [], mutate } = useProviders();
 

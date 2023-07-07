@@ -1169,3 +1169,5 @@ export const SALESFORCE_OBJECTS = [
   'WorkTypeHistory',
   'WorkTypeShare',
 ] as const;
+
+export const PROVIDERS_THAT_SUPPORT_SCHEMAS = ['salesforce', 'hubspot', 'pipedrive'] as const;
