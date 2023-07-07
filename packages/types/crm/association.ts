@@ -9,6 +9,11 @@ type BaseAssociation = {
 export type Association = BaseAssociation;
 export type AssociationCreateParams = BaseAssociation;
 
+export type ListAssociationsParams = {
+  sourceRecord: AssociatedRecord;
+  targetObject: SGObject;
+};
+
 type AssociatedRecord = {
   id: string;
   object: SGObject;

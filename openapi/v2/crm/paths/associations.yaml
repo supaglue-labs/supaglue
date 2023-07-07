@@ -1,3 +1,50 @@
+get:
+  operationId: getAssociations
+  tags:
+    - Associations
+  security:
+    - ApiKeyAuth: []
+  summary: List associations
+  description: >-
+    Get a list of associations
+  parameters:
+    - name: source_record_id
+      in: query
+      schema:
+        type: string
+      required: true
+    - name: source_object_id
+      in: query
+      schema:
+        type: string
+      required: true
+    - name: source_object_type
+      in: query
+      schema:
+        $ref: ../components/schemas/objects/object_type.yaml
+      required: true
+    - name: target_object_id
+      in: query
+      schema:
+        type: string
+      required: true
+    - name: target_object_type
+      in: query
+      schema:
+        $ref: ../components/schemas/objects/object_type.yaml
+      required: true
+  responses:
+    '200':
+      description: Associations
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              results:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/association.yaml
 put:
   operationId: createAssociation
   summary: Create association
@@ -31,10 +78,4 @@ put:
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
-  - name: association_type_id
-    in: path
-    required: true
-    schema:
-      type: string
-      example: 0258cbc6-6020-430a-848e-aafacbadf4a1
       

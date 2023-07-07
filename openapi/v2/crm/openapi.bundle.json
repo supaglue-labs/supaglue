@@ -1491,7 +1491,82 @@
         }
       ]
     },
-    "/association-types/{association_type_id}/associations": {
+    "/associations": {
+      "get": {
+        "operationId": "getAssociations",
+        "tags": [
+          "Associations"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List associations",
+        "description": "Get a list of associations",
+        "parameters": [
+          {
+            "name": "source_record_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "source_object_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "source_object_type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/object_type"
+            },
+            "required": true
+          },
+          {
+            "name": "target_object_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "target_object_type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/object_type"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Associations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/association"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "operationId": "createAssociation",
         "summary": "Create association",
@@ -1547,15 +1622,6 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
-        },
-        {
-          "name": "association_type_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4a1"
-          }
         }
       ]
     }
@@ -2887,6 +2953,9 @@
       "create_update_association": {
         "type": "object",
         "properties": {
+          "association_type_id": {
+            "type": "string"
+          },
           "source_record": {
             "$ref": "#/components/schemas/record"
           },
@@ -2895,6 +2964,7 @@
           }
         },
         "required": [
+          "association_type_id",
           "source_record",
           "target_record"
         ]

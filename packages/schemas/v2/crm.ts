@@ -183,8 +183,13 @@ export type CreateAssociationTypeRequest =
 export type CreateAssociationTypeResponse =
   operations['createAssociationType']['responses'][keyof operations['createAssociationType']['responses']]['content']['application/json'];
 
-export type CreateAssociationPathParams =
-  paths[`/association-types/{association_type_id}/associations`]['parameters']['path'];
+export type GetAssociationsPathParams = never;
+export type GetAssociationsQueryParams = Required<Required<operations['getAssociations']>['parameters']>['query'];
+export type GetAssociationsRequest = never;
+export type GetAssociationsResponse =
+  operations['getAssociations']['responses'][keyof operations['getAssociations']['responses']]['content']['application/json'];
+
+export type CreateAssociationPathParams = never;
 // TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
 // export type CreateAssociationQueryParams = Required<operations['createAssociation']>['parameters']['query'];
 export type CreateAssociationQueryParams = any;

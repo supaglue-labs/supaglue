@@ -28,7 +28,7 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import type { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
+import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/crm/association';
 import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import type {
   CustomObject,
@@ -966,6 +966,40 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         );
       }
     }
+  }
+
+  public async listAssociations(params: ListAssociationsParams): Promise<Association[]> {
+    if (params.sourceRecord.object.originType !== 'custom') {
+      throw new BadRequestError(`Only custom objects are supported as source objects for Salesforce`);
+    }
+
+    // Use the metadata API to find out if there are fields that are lookups to the target object
+    const metadata = await this.#client.metadata.read('CustomObject', params.sourceRecord.object.id);
+    const salesforceTargetObject = fromObjectToSalesforceObject(params.targetObject);
+    const associationTypeFields = metadata.fields.filter(
+      (field) => field.type === 'Lookup' && field.referenceTo === salesforceTargetObject
+    );
+
+    const record = await this.#client.retrieve(params.sourceRecord.object.id, params.sourceRecord.id);
+
+    // Iterate over fields and find the ones that refer to the target object
+    return associationTypeFields.map((field) => {
+      if (!field.fullName) {
+        throw new Error(`Unexpectedly could not find full name for field ${field}`);
+      }
+      const targetRecordId = record[field.fullName];
+      if (!targetRecordId) {
+        throw new Error(`Unexpectedly could not find target record id for field ${field.fullName}`);
+      }
+      return {
+        associationTypeId: `${params.sourceRecord.object.id}.${field.fullName}`,
+        sourceRecord: params.sourceRecord,
+        targetRecord: {
+          id: targetRecordId,
+          object: params.targetObject,
+        },
+      };
+    });
   }
 
   public async createAssociation(params: AssociationCreateParams): Promise<Association> {
