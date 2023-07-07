@@ -60,8 +60,6 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
   const providerCardInfo = providerCardsInfo.find((providerCardInfo) => providerCardInfo.providerName === providerName);
 
-  console.log(`objects: `, commonObjects);
-
   useEffect(() => {
     setFriendlyProviderId(provider?.id ?? '--');
 
