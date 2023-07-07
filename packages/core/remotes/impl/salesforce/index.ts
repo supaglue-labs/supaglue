@@ -891,7 +891,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         );
       }
     } else {
-      // TODO: make this idempotent so we can apply permissions if this succeeds but the next one fails
       const result = await this.#client.metadata.create('CustomField', {
         fullName: `${params.sourceObject.id}.${params.keyName}`,
         label: params.displayName,
