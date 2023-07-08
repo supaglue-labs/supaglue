@@ -15,27 +15,39 @@ allOf:
       - application_id
       - name
   - oneOf:
-    - type: object
-      title: s3
-      properties:
-        type:
-          type: string
-          enum:
-            - s3
-        config:
-          $ref: ./s3_config.yaml
-      required:
-        - type
-        - config
-    - type: object
-      title: postgres
-      properties:
-        type:
-          type: string
-          enum:
-            - postgres
-        config:
-          $ref: ./postgres_config.yaml
-      required:
-        - type
-        - config
+      - type: object
+        title: s3
+        properties:
+          type:
+            type: string
+            enum:
+              - s3
+          config:
+            $ref: ./s3_config.yaml
+        required:
+          - type
+          - config
+      - type: object
+        title: postgres
+        properties:
+          type:
+            type: string
+            enum:
+              - postgres
+          config:
+            $ref: ./postgres_config.yaml
+        required:
+          - type
+          - config
+      - type: object
+        title: bigquery
+        properties:
+          type:
+            type: string
+            enum:
+              - bigquery
+          config:
+            $ref: ./bigquery_config.yaml
+        required:
+          - type
+          - config

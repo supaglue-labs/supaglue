@@ -1,5 +1,6 @@
 import { ListBucketsCommand, S3Client } from '@aws-sdk/client-s3';
 import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
+import { BigQuery } from '@google-cloud/bigquery';
 import type { PrismaClient } from '@supaglue/db';
 import type {
   Destination,
@@ -8,8 +9,10 @@ import type {
   DestinationTestResult,
   DestinationUpdateParams,
 } from '@supaglue/types';
+import { snakecaseKeys } from '@supaglue/utils';
 import { Client } from 'pg';
 import type { DestinationWriter } from '../destination_writers/base';
+import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
 import { BadRequestError } from '../errors';
@@ -137,6 +140,28 @@ export class DestinationService {
           }
         }
         break;
+      case 'bigquery':
+        {
+          try {
+            const bigQueryClient = new BigQuery({
+              ...params.config,
+              credentials: snakecaseKeys(params.config.credentials),
+              autoRetry: false,
+            });
+            const [datasets] = await bigQueryClient.getDatasets();
+
+            // if we can't find params.config.dataset in the list of datasets, it doesn't exist
+            const datasetExists = datasets.some((dataset) => dataset?.id === params.config.dataset);
+            if (!datasetExists) {
+              message = 'dataset does not exist';
+            } else {
+              success = true;
+            }
+          } catch (err: any) {
+            ({ message } = err);
+          }
+        }
+        break;
       default:
         throw new BadRequestError(`unknown destination type`);
     }
@@ -169,6 +194,8 @@ export class DestinationService {
         return new S3DestinationWriter(destination);
       case 'postgres':
         return new PostgresDestinationWriter(destination);
+      case 'bigquery':
+        return new BigQueryDestinationWriter(destination);
     }
   }
 
@@ -182,6 +209,8 @@ export class DestinationService {
         return new S3DestinationWriter(destination);
       case 'postgres':
         return new PostgresDestinationWriter(destination);
+      case 'bigquery':
+        return new BigQueryDestinationWriter(destination);
     }
   }
 }

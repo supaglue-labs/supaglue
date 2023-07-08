@@ -101,6 +101,8 @@ components:
       $ref: ./components/schemas/objects/s3_config.yaml
     postgres_config:
       $ref: ./components/schemas/objects/postgres_config.yaml
+    bigquery_config:
+      $ref: ./components/schemas/objects/bigquery_config.yaml
     schema:
       $ref: ./components/schemas/objects/schema.yaml
     schema_config:

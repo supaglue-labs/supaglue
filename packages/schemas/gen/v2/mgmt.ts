@@ -264,6 +264,10 @@ export interface components {
       /** @enum {string} */
       type: "postgres";
       config: components["schemas"]["postgres_config"];
+    }, {
+      /** @enum {string} */
+      type: "bigquery";
+      config: components["schemas"]["bigquery_config"];
     }]>;
     s3_config: {
       /** @example us-west-2 */
@@ -286,6 +290,18 @@ export interface components {
       user: string;
       /** @example password */
       password: string;
+    };
+    bigquery_config: {
+      /** @example my-project */
+      project_id: string;
+      /** @example my-dataset */
+      dataset: string;
+      credentials: {
+        /** @example supaglue@supaglue-382017.iam.gserviceaccount.com */
+        client_email: string;
+        /** @example -----BEGIN PRIVATE KEY-----\nMII... */
+        private_key: string;
+      };
     };
     schema: {
       /** @example 649b1e49-2722-46a3-a7e7-10caae78a43f */
@@ -589,6 +605,10 @@ export interface components {
       /** @enum {string} */
       type: "postgres";
       config: components["schemas"]["postgres_config"];
+    }, {
+      /** @enum {string} */
+      type: "bigquery";
+      config: components["schemas"]["bigquery_config"];
     }]>;
     create_update_sync_config: {
       /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
