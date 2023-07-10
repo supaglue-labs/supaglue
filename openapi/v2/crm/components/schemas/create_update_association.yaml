@@ -1,9 +1,12 @@
 type: object
 properties:
+  association_type_id:
+    type: string
   source_record:
     $ref: ./objects/record.yaml
   target_record:
     $ref: ./objects/record.yaml
 required:
+  - association_type_id
   - source_record
   - target_record

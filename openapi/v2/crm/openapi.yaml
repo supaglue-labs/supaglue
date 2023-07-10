@@ -55,7 +55,7 @@ paths:
     $ref: paths/custom-object-records@{record_id}.yaml
   '/association-types':
     $ref: paths/association-types.yaml
-  '/association-types/{association_type_id}/associations':
+  '/associations':
     $ref: paths/associations.yaml
 tags:
   - name: Accounts

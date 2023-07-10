@@ -1,6 +1,6 @@
 import type { CommonObjectDef, StandardOrCustomObjectDef } from '@supaglue/types';
 import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
-import type { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
+import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/crm/association';
 import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import type {
   CustomObject,
@@ -52,6 +52,7 @@ export interface CrmRemoteClient extends RemoteClient {
   getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]>;
   createAssociationType(params: AssociationTypeCreateParams): Promise<void>;
 
+  listAssociations(params: ListAssociationsParams): Promise<Association[]>;
   createAssociation(params: AssociationCreateParams): Promise<Association>;
 }
 
@@ -139,6 +140,9 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
+  public async listAssociations(params: ListAssociationsParams): Promise<Association[]> {
+    throw new Error('Not implemented');
+  }
   public async createAssociation(params: AssociationCreateParams): Promise<Association> {
     throw new Error('Not implemented');
   }

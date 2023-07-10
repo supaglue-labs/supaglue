@@ -133,14 +133,15 @@ export interface paths {
     post: operations["createAssociationType"];
     
   };
-  "/association-types/{association_type_id}/associations": {
+  "/associations": {
+    /**
+     * List associations 
+     * @description Get a list of associations
+     */
+    get: operations["getAssociations"];
     /** Create association */
     put: operations["createAssociation"];
-    parameters: {
-      path: {
-        association_type_id: string;
-      };
-    };
+    
   };
 }
 
@@ -677,12 +678,13 @@ export interface components {
       origin_type: components["schemas"]["object_type"];
     };
     /** @enum {string} */
-    object_type: "CUSTOM_OBJECT" | "COMMON_OBJECT";
+    object_type: "common" | "standard" | "custom";
     /** @enum {string} */
     association_type_cardinality: "ONE_TO_MANY";
     /** @enum {string} */
     association_type_cardinality_or_unknown: "ONE_TO_MANY" | "UNKNOWN";
     create_update_association: {
+      association_type_id: string;
       source_record: components["schemas"]["record"];
       target_record: components["schemas"]["record"];
     };
@@ -1218,6 +1220,31 @@ export interface operations {
               id: string;
             };
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getAssociations: {
+    /**
+     * List associations 
+     * @description Get a list of associations
+     */
+    parameters: {
+      query: {
+        source_record_id: string;
+        source_object_id: string;
+        source_object_type: components["schemas"]["object_type"];
+        target_object_id: string;
+        target_object_type: components["schemas"]["object_type"];
+      };
+    };
+    responses: {
+      /** @description Associations */
+      200: {
+        content: {
+          "application/json": {
+            results?: (components["schemas"]["association"])[];
           };
         };
       };

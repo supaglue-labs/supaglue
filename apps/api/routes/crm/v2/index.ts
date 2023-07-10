@@ -1,6 +1,7 @@
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
 import accounts from './account';
+import associations from './association';
 import associationTypes from './association_type';
 import contacts from './contact';
 import customObjects from './custom_object';
@@ -22,6 +23,7 @@ export default function init(app: Router): void {
 
   customObjects(v2Router);
   associationTypes(v2Router);
+  associations(v2Router);
 
   passthrough(v2Router);
 

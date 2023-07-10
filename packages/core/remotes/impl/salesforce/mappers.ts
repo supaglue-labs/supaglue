@@ -16,9 +16,31 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
+import type { SGObject } from '@supaglue/types/crm/association_type';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { CustomObject } from '@supaglue/types/crm/custom_object';
 import type { CustomObject as SalesforceCustomObject } from 'jsforce/lib/api/metadata';
+
+export const fromObjectToSalesforceObject = (object: SGObject): string => {
+  switch (object.originType) {
+    case 'standard':
+    case 'custom':
+      return object.id;
+    case 'common':
+      switch (object.id) {
+        case 'account':
+          return 'Account';
+        case 'contact':
+          return 'Contact';
+        case 'opportunity':
+          return 'Opportunity';
+        case 'lead':
+          return 'Lead';
+        default:
+          throw new Error(`Unknown common object: ${object.id}`);
+      }
+  }
+};
 
 export function getMapperForCommonObjectType<T extends CRMCommonObjectType>(
   commonObjectType: T
@@ -482,7 +504,7 @@ export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): 
         fieldType: 'string',
         isRequired: true,
       },
-      ...salesforceCustomObject.fields.map((field) => {
+      ...salesforceCustomObject.fields.flatMap((field) => {
         if (!field.fullName) {
           throw new Error(`unexpectedly, custom object field missing fullName`);
         }
@@ -492,6 +514,13 @@ export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): 
         }
 
         // TODO: maybe introduce an 'unknown' value for enum
+
+        // If the field is lookup, we deal with that in the Association Types / Associations API instead
+        // TODO: Should we support it here too?
+        if (field.type === 'Lookup') {
+          return [];
+        }
+
         if (field.type !== 'Text' && field.type !== 'Number') {
           throw new Error(`unexpectedly, custom object field ${field.fullName} has unsupported type ${field.type}`);
         }

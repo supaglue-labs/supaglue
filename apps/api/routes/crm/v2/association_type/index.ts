@@ -13,7 +13,6 @@ import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
-import association from './association';
 
 const { crmAssociationService } = getDependencyContainer();
 
@@ -64,9 +63,4 @@ export default function init(app: Router): void {
   );
 
   app.use('/association-types', associationTypeRouter);
-
-  const perAssociationTypeRouter = Router({ mergeParams: true });
-
-  association(perAssociationTypeRouter);
-  associationTypeRouter.use('/:association_type_id', perAssociationTypeRouter);
 }
