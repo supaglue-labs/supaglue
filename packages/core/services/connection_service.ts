@@ -308,9 +308,18 @@ export class ConnectionService {
     const provider = await this.#providerService.getById<CRMProvider>(connection.providerId);
     const schemaId = provider.objects?.[objectType]?.find((o) => o.name === objectName)?.schemaId;
     const schema = schemaId ? await this.#schemaService.getById(schemaId) : undefined;
-    const customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
-      (o) => o.object === objectName
-    )?.fieldMappings;
+    let customerFieldMapping: SchemaMappingsConfigObjectFieldMapping[] | undefined = undefined;
+    if (objectType === 'common') {
+      customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
+        (o) => o.object === objectName
+      )?.fieldMappings;
+    } else if (objectType === 'standard') {
+      customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
+        (o) => o.object === objectName
+      )?.fieldMappings;
+    } else {
+      throw new BadRequestError("Field mappings aren't supported for custom objects");
+    }
     return createFieldMappingConfig(schema?.config, customerFieldMapping);
   }
 }
