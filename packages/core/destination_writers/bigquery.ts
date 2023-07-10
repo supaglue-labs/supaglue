@@ -164,7 +164,8 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
 
     // Copy from deduped temp table
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [IN PROGRESS]');
-    // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
+    // IMPORTANT: we need to use `QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY last_modified_at DESC) = 1)`
+    // because we may have multiple records with the same id
     // For example, hubspot will return the same record twice when querying for `archived: true` if
     // the record was archived, restored, and archived again.
     // TODO: This may have performance implications. We should look into this later.
@@ -315,7 +316,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
 
     // Copy from deduped temp table
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [IN PROGRESS]');
-    // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
+    // IMPORTANT: we need to use `QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY last_modified_at DESC) = 1)`
+    // because we may have multiple records with the same id
     // For example, hubspot will return the same record twice when querying for `archived: true` if
     // the record was archived, restored, and archived again.
     // TODO: This may have performance implications. We should look into this later.
