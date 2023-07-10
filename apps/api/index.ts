@@ -101,6 +101,7 @@ app.use(
       'req.headers.cookie',
       'req.headers["x-api-key"]',
       'err.config.headers.Authorization', // axios errors
+      'context.passthroughRequest.body',
     ],
     genReqId: () => uuidv4(),
     quietReqLogger: true, // only log the reqId from req.log.*, not the whole request
