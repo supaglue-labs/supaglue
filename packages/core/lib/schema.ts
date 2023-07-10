@@ -20,13 +20,17 @@ export function createFieldMappingConfig(
     }
   }
 
-  // Check that all fields in schema have a mapped field
-  for (const unmappedSchemaField of unmappedSchemaFields) {
-    const mappedField = customerFieldMappings?.find((field) => field.schemaField === unmappedSchemaField.name);
-    if (!mappedField) {
-      throw new Error(`No mapped field found for schema field ${unmappedSchemaField.name}`);
-    }
-  }
+  // If there are any unmapped schema fields, let's treat it as optional for now.
+  // Later, we will want to allow the developer to specify 'isRequired' for a field, and we should
+  // throw an error on that.
+
+  // // Check that all fields in schema have a mapped field
+  // for (const unmappedSchemaField of unmappedSchemaFields.filter((field) => field.isRequired)) {
+  //   const mappedField = customerFieldMappings?.find((field) => field.schemaField === unmappedSchemaField.name);
+  //   if (!mappedField) {
+  //     throw new Error(`No mapped field found for schema field ${unmappedSchemaField.name}`);
+  //   }
+  // }
 
   // Iterate over customer field mappings. Any fields that are not in the schema are only
   // allowed if allowAdditionalFieldMappings is true.
