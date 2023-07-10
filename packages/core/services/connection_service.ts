@@ -6,7 +6,13 @@ import type {
   ConnectionUnsafeAny,
   ConnectionUpdateParams,
   CRMProvider,
+  FieldMappingInfo,
+  ObjectFieldMappingInfo,
+  ObjectFieldMappingUpdateParams,
   ProviderName,
+  Schema,
+  SchemaMappingsConfigForObject,
+  SchemaMappingsConfigObjectFieldMapping,
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
@@ -176,6 +182,91 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connection);
   }
 
+  private validateObjectFieldMappingUpdateParams(params: ObjectFieldMappingUpdateParams, schema: Schema): void {
+    const schemaMappingRequiredFields = schema.config.fields
+      .filter(({ mappedName }) => !mappedName)
+      .map(({ name }) => name);
+    for (const requiredField of schemaMappingRequiredFields) {
+      if (!params.fieldMappings.find(({ schemaField }) => schemaField === requiredField)) {
+        throw new BadRequestError(`Field ${requiredField} is required to be set by the schema`);
+      }
+    }
+    for (const fieldMapping of params.fieldMappings) {
+      const field = schema.config.fields.find(({ name }) => name === fieldMapping.schemaField);
+      if (!field && !schema.config.allowAdditionalFieldMappings) {
+        throw new BadRequestError(`Field ${fieldMapping.schemaField} not found in schema ${schema.id}`);
+      }
+      if (field?.mappedName && fieldMapping.mappedField) {
+        throw new BadRequestError(
+          `Field ${fieldMapping.schemaField} is already mapped to ${field.mappedName} by the schema`
+        );
+      }
+    }
+  }
+
+  public async updateObjectFieldMapping(
+    connection: ConnectionSafeAny,
+    params: ObjectFieldMappingUpdateParams
+  ): Promise<ObjectFieldMappingInfo> {
+    const schema = await this.getSchema(connection, params.name, params.type);
+    if (!schema) {
+      throw new BadRequestError(
+        `Schema not found for object ${params.name}. Field mappings can only be set for objects with schemas attached`
+      );
+    }
+
+    const objectMapping: SchemaMappingsConfigForObject = {
+      object: params.name,
+      fieldMappings: params.fieldMappings,
+    };
+
+    // Validate
+    this.validateObjectFieldMappingUpdateParams(params, schema);
+
+    const { id, schemaMappingsConfig } = connection;
+    const newSchemaMappingsConfig = {
+      ...schemaMappingsConfig,
+    };
+    if (params.type === 'common') {
+      newSchemaMappingsConfig.commonObjects = [...(newSchemaMappingsConfig.commonObjects ?? []), objectMapping];
+    } else if (params.type === 'standard') {
+      newSchemaMappingsConfig.standardObjects = [...(newSchemaMappingsConfig.standardObjects ?? []), objectMapping];
+    } else {
+      throw new BadRequestError(`Object mappings not supported for custom objects`);
+    }
+    await this.#prisma.connection.update({
+      where: {
+        id,
+      },
+      data: {
+        schemaMappingsConfig: newSchemaMappingsConfig,
+      },
+    });
+    return {
+      objectName: params.name,
+      objectType: params.type,
+      schemaId: schema.id,
+      allowAdditionalFieldMappings: schema.config.allowAdditionalFieldMappings,
+      fields: getFieldMappingInfo(schema, params.fieldMappings),
+    };
+  }
+
+  private async getSchema(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    objectType: ObjectType
+  ): Promise<Schema | undefined> {
+    const { objects } = await this.#providerService.getById(connection.providerId);
+    if (!objects) {
+      return;
+    }
+    const schemaId = objects[objectType]?.find((object) => object.name === objectName)?.schemaId;
+    if (!schemaId) {
+      return;
+    }
+    return await this.#schemaService.getById(schemaId);
+  }
+
   public async updateConnectionWithNewAccessToken(
     connectionId: string,
     accessToken: string,
@@ -223,3 +314,30 @@ export class ConnectionService {
     return createFieldMappingConfig(schema?.config, customerFieldMapping);
   }
 }
+
+export const getFieldMappingInfo = (
+  schema: Schema,
+  fieldMappings?: SchemaMappingsConfigObjectFieldMapping[]
+): FieldMappingInfo[] => {
+  const out: FieldMappingInfo[] = schema.config.fields.map((field) => ({
+    name: field.name,
+    isAddedByCustomer: false,
+    schemaMappedName: field.mappedName,
+  }));
+
+  fieldMappings?.forEach((fieldMapping) => {
+    const field = out.find((field) => field.name === fieldMapping.schemaField);
+    if (field && !field.schemaMappedName && fieldMapping.mappedField) {
+      field.customerMappedName = fieldMapping.mappedField;
+    }
+    if (!field) {
+      out.push({
+        name: fieldMapping.schemaField,
+        isAddedByCustomer: true,
+        customerMappedName: fieldMapping.mappedField,
+      });
+    }
+  });
+
+  return out;
+};

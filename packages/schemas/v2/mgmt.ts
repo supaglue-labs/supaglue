@@ -141,13 +141,6 @@ export type GetConnectionRequest = never;
 export type GetConnectionResponse =
   operations['getConnection']['responses'][keyof operations['getConnection']['responses']]['content']['application/json'];
 
-export type UpdateConnectionPathParams =
-  paths[`/customers/{customer_id}/connections/{connection_id}`]['parameters']['path'];
-export type UpdateConnectionRequest =
-  operations['updateConnection']['requestBody'][keyof operations['updateConnection']['requestBody']]['application/json'];
-export type UpdateConnectionResponse =
-  operations['updateConnection']['responses'][keyof operations['updateConnection']['responses']]['content']['application/json'];
-
 export type DeleteConnectionPathParams =
   paths[`/customers/{customer_id}/connections/{connection_id}`]['parameters']['path'];
 export type DeleteConnectionRequest = never;
@@ -164,6 +157,12 @@ export type ListFieldMappingsPathParams = never;
 export type ListFieldMappingsRequest = never;
 export type ListFieldMappingsResponse =
   operations['listFieldMappings']['responses'][keyof operations['listFieldMappings']['responses']]['content']['application/json'];
+
+export type UpdateObjectFieldMappingsPathParams = never;
+export type UpdateObjectFieldMappingsRequest =
+  operations['updateObjectFieldMappings']['requestBody']['content']['application/json'];
+export type UpdateObjectFieldMappingsResponse =
+  operations['updateObjectFieldMappings']['responses'][keyof operations['updateObjectFieldMappings']['responses']]['content']['application/json'];
 
 export type CreateWebhookPathParams = never;
 export type CreateWebhookRequest = operations['createWebhook']['requestBody']['content']['application/json'];

@@ -7,11 +7,7 @@ import type {
   GetConnectionPathParams,
   GetConnectionRequest,
   GetConnectionResponse,
-  UpdateConnectionPathParams,
-  UpdateConnectionRequest,
-  UpdateConnectionResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
@@ -40,17 +36,6 @@ export default function init(app: Router): void {
         req.params.connection_id,
         req.supaglueApplication.id
       );
-      return res.status(200).send(snakecaseKeys(connection));
-    }
-  );
-
-  connectionRouter.patch(
-    '/:connection_id',
-    async (
-      req: Request<UpdateConnectionPathParams, UpdateConnectionResponse, UpdateConnectionRequest>,
-      res: Response<UpdateConnectionResponse>
-    ) => {
-      const connection = await connectionService.updateConnection(req.params.connection_id, camelcaseKeys(req.body));
       return res.status(200).send(snakecaseKeys(connection));
     }
   );

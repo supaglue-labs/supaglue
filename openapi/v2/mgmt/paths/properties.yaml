@@ -2,7 +2,7 @@ get:
   operationId: listProperties
   summary: List properties
   tags:
-    - Field Mappings
+    - Properties
   security:
     - ApiKeyAuth: []
   parameters:
