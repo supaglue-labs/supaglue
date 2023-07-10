@@ -50,7 +50,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     { providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonObjectType: T,
-    object: CommonObjectTypeMapForCategory<P>['object']
+    record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
     const { schema } = this.#destination.config;
     const table = getCommonObjectTableName(category, commonObjectType);
@@ -79,7 +79,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         _supaglue_provider_name: providerName,
         _supaglue_customer_id: customerId,
         _supaglue_emitted_at: new Date(),
-        ...mapper(object),
+        ...mapper(record),
       };
 
       const columnsStr = columns.join(',');
