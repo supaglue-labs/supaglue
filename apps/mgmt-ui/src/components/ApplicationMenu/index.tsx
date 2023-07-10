@@ -154,7 +154,7 @@ function Application({
 
   return (
     <>
-      <MenuItem component={NextLink} href={`/applications/${id}`} sx={{ paddingRight: 0 }}>
+      <MenuItem onClick={handleClose} component={NextLink} href={`/applications/${id}`} sx={{ paddingRight: 0 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
           <Typography>{name}</Typography>
           <IconButton onClick={handleNestedMenuOpen}>
