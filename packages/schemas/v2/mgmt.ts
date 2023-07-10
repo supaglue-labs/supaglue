@@ -154,18 +154,16 @@ export type DeleteConnectionRequest = never;
 export type DeleteConnectionResponse =
   operations['deleteConnection']['responses'][keyof operations['deleteConnection']['responses']]['content']['application/json'];
 
-export type ListPropertiesPathParams =
-  paths[`/customers/{customer_id}/connections/{connection_id}/properties`]['parameters']['path'];
+export type ListPropertiesPathParams = never;
 export type ListPropertiesRequest = never;
 export type ListPropertiesQueryParams = Required<operations['listProperties']>['parameters']['query'];
 export type ListPropertiesResponse =
   operations['listProperties']['responses'][keyof operations['listProperties']['responses']]['content']['application/json'];
 
-export type ListObjectsPathParams =
-  paths[`/customers/{customer_id}/connections/{connection_id}/objects`]['parameters']['path'];
-export type ListObjectsRequest = never;
-export type ListObjectsResponse =
-  operations['listObjects']['responses'][keyof operations['listObjects']['responses']]['content']['application/json'];
+export type ListFieldMappingsPathParams = never;
+export type ListFieldMappingsRequest = never;
+export type ListFieldMappingsResponse =
+  operations['listFieldMappings']['responses'][keyof operations['listFieldMappings']['responses']]['content']['application/json'];
 
 export type CreateWebhookPathParams = never;
 export type CreateWebhookRequest = operations['createWebhook']['requestBody']['content']['application/json'];

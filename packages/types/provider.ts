@@ -8,6 +8,7 @@ import type {
 } from '.';
 import type { CRMProviderName } from './crm';
 import type { EngagementProviderName } from './engagement';
+import type { ObjectType } from './object_sync';
 
 type BaseProvider = {
   id: string;
@@ -73,7 +74,7 @@ export type ProviderConfigMapperArgs = {
 
 export type AddObjectToProviderParams = {
   name: string;
-  type: 'common' | 'standard' | 'custom';
+  type: ObjectType;
   enableSync?: boolean;
   schemaId?: string;
   schema?: Omit<SchemaCreateParams, 'applicationId'>;

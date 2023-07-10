@@ -2,7 +2,7 @@ get:
   operationId: listProperties
   summary: List properties
   tags:
-    - Connections
+    - Field Mappings
   security:
     - ApiKeyAuth: []
   parameters:
@@ -36,15 +36,5 @@ get:
             required:
               - properties
 parameters:
-  - name: customer_id
-    in: path
-    required: true
-    schema:
-      type: string
-      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
-  - name: connection_id
-    in: path
-    required: true
-    schema:
-      type: string
-      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

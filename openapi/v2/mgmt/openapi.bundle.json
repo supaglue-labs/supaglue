@@ -381,6 +381,113 @@
         }
       ]
     },
+    "/field_mappings": {
+      "get": {
+        "operationId": "listFieldMappings",
+        "summary": "List field mappings",
+        "tags": [
+          "Field Mappings"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of objects and their field mappings (if set)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/object_field_mapping_info"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/field_mappings/properties": {
+      "get": {
+        "operationId": "listProperties",
+        "summary": "List properties",
+        "tags": [
+          "Field Mappings"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The name of the object for which you want to list properties."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "properties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "properties"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/schemas": {
       "get": {
         "operationId": "getSchemas",
@@ -1613,134 +1720,6 @@
         }
       ]
     },
-    "/customers/{customer_id}/connections/{connection_id}/properties": {
-      "get": {
-        "operationId": "listProperties",
-        "summary": "List properties",
-        "tags": [
-          "Connections"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "common",
-                "standard",
-                "custom"
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "The name of the object for which you want to list properties."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of properties",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "properties": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "required": [
-                    "properties"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "name": "customer_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
-        },
-        {
-          "name": "connection_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
-        }
-      ]
-    },
-    "/customers/{customer_id}/connections/{connection_id}/objects": {
-      "get": {
-        "operationId": "listObjects",
-        "summary": "List objects",
-        "tags": [
-          "Connections"
-        ],
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "List of objects and their schemas and field mappings (if set)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/objects_expanded"
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "name": "customer_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
-        },
-        {
-          "name": "connection_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
-        }
-      ]
-    },
     "/webhook": {
       "get": {
         "operationId": "getWebhook",
@@ -2137,6 +2116,10 @@
     {
       "name": "Schemas",
       "description": "A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API."
+    },
+    {
+      "name": "Field Mappings",
+      "description": "A `Field Mapping` is a mapping between a Schema field and the field in the Provider."
     },
     {
       "name": "SyncConfigs",
@@ -2555,70 +2538,87 @@
           }
         }
       },
-      "objects_expanded": {
+      "object_field_mapping_info": {
         "type": "object",
         "properties": {
-          "common": {
+          "object_name": {
+            "type": "string",
+            "example": "contact"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "allow_additional_field_mappings": {
+            "type": "boolean",
+            "example": true
+          },
+          "schema_id": {
+            "type": "string",
+            "example": "51797e8d-f081-496d-99ec-5e41b467df4b"
+          },
+          "fields": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "common_object_name"
-                },
-                "schema": {
-                  "$ref": "#/components/schemas/schema"
-                },
-                "field_mappings": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/field_mapping"
+              "$ref": "#/components/schemas/field_mapping_info"
+            }
+          }
+        },
+        "required": [
+          "object_name",
+          "object_type",
+          "allow_additional_field_mappings",
+          "schema_id",
+          "fields"
+        ]
+      },
+      "field_mapping_info": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the field as set in the schema",
+                "example": "email"
+              },
+              "is_added_by_customer": {
+                "type": "boolean",
+                "description": "Whether the field was added by the customer (only applicable if the schema has allow_additional_field_mappings set to true)"
+              }
+            },
+            "required": [
+              "name",
+              "is_added_by_customer"
+            ]
+          },
+          {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "schema_mapped_name": {
+                    "type": "string",
+                    "description": "The mapped named of the field as set in the schema by the developer. If set, the customer cannot override."
                   }
                 }
               },
-              "required": [
-                "name"
-              ]
-            }
-          },
-          "standard": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "standard_object_name"
-                },
-                "schema_id": {
-                  "type": "string"
+              {
+                "type": "object",
+                "properties": {
+                  "customer_mapped_name": {
+                    "type": "string",
+                    "description": "The mapped name of the field as set by the customer"
+                  }
                 }
-              },
-              "required": [
-                "name"
-              ]
-            }
-          },
-          "custom": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "custom_object_name"
-                },
-                "schema_id": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "name"
-              ]
-            }
+              }
+            ]
           }
-        }
+        ]
       },
       "field_mapping": {
         "type": "object",
@@ -3639,6 +3639,26 @@
           "example": "salesforce"
         },
         "description": "The provider name"
+      },
+      "x-provider-name": {
+        "name": "x-provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
+      },
+      "x-customer-id": {
+        "name": "x-customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "my-customer-1"
+        },
+        "description": "The customer ID that uniquely identifies the customer in your application",
+        "required": true
       }
     }
   },

@@ -1,5 +1,4 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError } from '@supaglue/core/errors';
 import { getCustomerIdPk } from '@supaglue/core/lib';
 import type {
   DeleteConnectionPathParams,
@@ -11,25 +10,16 @@ import type {
   GetConnectionsPathParams,
   GetConnectionsRequest,
   GetConnectionsResponse,
-  ListObjectsPathParams,
-  ListObjectsRequest,
-  ListObjectsResponse,
-  ListPropertiesPathParams,
-  ListPropertiesQueryParams,
-  ListPropertiesRequest,
-  ListPropertiesResponse,
   UpdateConnectionPathParams,
   UpdateConnectionRequest,
   UpdateConnectionResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { connectionService, connectionAndSyncService, remoteService, providerService, schemaService } =
-  getDependencyContainer();
+const { connectionService, connectionAndSyncService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const connectionRouter = Router({ mergeParams: true });
@@ -43,80 +33,6 @@ export default function init(app: Router): void {
       const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
       const connections = await connectionService.listSafe(req.supaglueApplication.id, customerId);
       return res.status(200).send(connections.map(snakecaseKeys));
-    }
-  );
-
-  connectionRouter.get(
-    '/:connection_id/properties',
-    async (
-      req: Request<ListPropertiesPathParams, ListPropertiesResponse, ListPropertiesRequest, ListPropertiesQueryParams>,
-      res: Response<ListPropertiesResponse>
-    ) => {
-      const connection = await connectionService.getSafeByIdAndApplicationId(
-        req.params.connection_id,
-        req.supaglueApplication.id
-      );
-      if (connection.category !== 'crm') {
-        throw new BadRequestError('Only CRM connections are supported for this operation');
-      }
-      const client = await remoteService.getCrmRemoteClient(req.params.connection_id);
-      const { type, name } = req.query;
-      if (type === 'common' && !(CRM_COMMON_OBJECT_TYPES as unknown as string[]).includes(name)) {
-        throw new BadRequestError(`${name} is not a valid common object type for the ${connection.category} category}`);
-      }
-      const properties =
-        req.query.type === 'common'
-          ? await client.listCommonProperties({
-              type: 'common',
-              name: req.query.name,
-            })
-          : await client.listProperties({
-              type: req.query.type,
-              name: req.query.name,
-            });
-      return res.status(200).send({ properties });
-    }
-  );
-
-  connectionRouter.get(
-    '/:connection_id/objects',
-    async (
-      req: Request<ListObjectsPathParams, ListObjectsResponse, ListObjectsRequest>,
-      res: Response<ListObjectsResponse>
-    ) => {
-      const connection = await connectionService.getSafeByIdAndApplicationId(
-        req.params.connection_id,
-        req.supaglueApplication.id
-      );
-      if (connection.category !== 'crm') {
-        throw new BadRequestError('Only CRM connections are supported for this operation');
-      }
-      const { objects } = await providerService.getById(connection.providerId);
-      const schemaIds = [
-        ...(objects?.common?.flatMap((object) => object.schemaId ?? []) ?? []),
-        ...(objects?.standard?.flatMap((object) => object.schemaId ?? []) ?? []),
-        ...(objects?.custom?.flatMap((object) => object.schemaId ?? []) ?? []),
-      ];
-      const schemas = await schemaService.getByIds(schemaIds);
-      const out = {
-        common: objects?.common?.map(({ name, schemaId }) => ({
-          name,
-          schema: schemaId ? schemas.find((schema) => schema.id === schemaId) : undefined,
-          fieldMappings: connection.schemaMappingsConfig?.commonObjects?.find((mapping) => mapping.object === name)
-            ?.fieldMappings,
-        })),
-        standard: objects?.standard?.map(({ name, schemaId }) => ({
-          name,
-          schema: schemaId ? schemas.find((schema) => schema.id === schemaId) : undefined,
-          fieldMappings: connection.schemaMappingsConfig?.standardObjects?.find((mapping) => mapping.object === name)
-            ?.fieldMappings,
-        })),
-        custom: objects?.custom?.map(({ name, schemaId }) => ({
-          name,
-          schema: schemaId ? schemas.find((schema) => schema.id === schemaId) : undefined,
-        })),
-      };
-      return res.status(200).send(snakecaseKeys(out));
     }
   );
 
