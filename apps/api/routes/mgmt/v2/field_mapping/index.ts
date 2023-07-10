@@ -84,8 +84,7 @@ const getObjectFieldMappingInfo = (
   type: ObjectType,
   schemaMappingsConfigForObject?: SchemaMappingsConfigForObject[]
 ): ObjectFieldMappingInfo[] => {
-  const out: ObjectFieldMappingInfo[] = [];
-  providerObjects.flatMap((object) => {
+  return providerObjects.flatMap((object) => {
     const schema = schemas.find((schema) => schema.id === object.schemaId);
     if (!schema) {
       return [];
@@ -101,5 +100,4 @@ const getObjectFieldMappingInfo = (
       fields: getFieldMappingInfo(schema, fieldMappings),
     };
   });
-  return out;
 };
