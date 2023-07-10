@@ -55,9 +55,14 @@ export interface paths {
     get: operations["listFieldMappings"];
     
   };
-  "/field_mappings/properties": {
+  "/properties": {
     /** List properties */
     get: operations["listProperties"];
+    
+  };
+  "/field_mappings/_update_object": {
+    /** Update object field mappings */
+    put: operations["updateObjectFieldMappings"];
     
   };
   "/schemas": {
@@ -154,8 +159,6 @@ export interface paths {
     get: operations["getConnection"];
     /** Delete connection */
     delete: operations["deleteConnection"];
-    /** Update connection */
-    patch: operations["updateConnection"];
     parameters: {
       path: {
         customer_id: string;
@@ -353,6 +356,13 @@ export interface components {
       /** @description The mapped name of the field as set by the customer */
       customer_mapped_name?: string;
     });
+    update_object_field_mapping: {
+      /** @example contact */
+      name: string;
+      /** @enum {string} */
+      type: "common" | "standard" | "custom";
+      field_mappings: (components["schemas"]["field_mapping"])[];
+    };
     field_mapping: {
       schema_field: string;
       mapped_field: string;
@@ -835,6 +845,22 @@ export interface operations {
       };
     };
   };
+  updateObjectFieldMappings: {
+    /** Update object field mappings */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["update_object_field_mapping"];
+      };
+    };
+    responses: {
+      /** @description List of objects and their field mappings (if set) */
+      200: {
+        content: {
+          "application/json": components["schemas"]["object_field_mapping_info"];
+        };
+      };
+    };
+  };
   getSchemas: {
     /**
      * List schemas 
@@ -1103,39 +1129,6 @@ export interface operations {
     responses: {
       /** @description Connection */
       204: never;
-    };
-  };
-  updateConnection: {
-    /** Update connection */
-    requestBody: {
-      content: {
-        "application/json": {
-          schema_mappings_config?: {
-            common_objects?: ({
-                object: string;
-                field_mappings: ({
-                    schema_field: string;
-                    mapped_field: string;
-                  })[];
-              })[];
-            standard_objects?: ({
-                object: string;
-                field_mappings: ({
-                    schema_field: string;
-                    mapped_field: string;
-                  })[];
-              })[];
-          } | null;
-        };
-      };
-    };
-    responses: {
-      /** @description Connection */
-      200: {
-        content: {
-          "application/json": components["schemas"]["connection"];
-        };
-      };
     };
   };
   getWebhook: {

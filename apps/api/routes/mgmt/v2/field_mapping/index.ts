@@ -1,33 +1,22 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { connectionHeaderMiddleware } from '@/middleware/connection';
 import { BadRequestError } from '@supaglue/core/errors';
+import { getFieldMappingInfo } from '@supaglue/core/services';
 import type {
-  GetDestinationPathParams,
-  GetDestinationRequest,
-  GetDestinationResponse,
   ListFieldMappingsPathParams,
   ListFieldMappingsRequest,
   ListFieldMappingsResponse,
-  ListPropertiesPathParams,
-  ListPropertiesQueryParams,
-  ListPropertiesRequest,
-  ListPropertiesResponse,
+  UpdateObjectFieldMappingsPathParams,
+  UpdateObjectFieldMappingsRequest,
+  UpdateObjectFieldMappingsResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import type {
-  FieldMappingInfo,
-  ObjectFieldMappingInfo,
-  ProviderObject,
-  Schema,
-  SchemaMappingsConfigForObject,
-  SchemaMappingsConfigObjectFieldMapping,
-} from '@supaglue/types';
-import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
+import type { ObjectFieldMappingInfo, ProviderObject, Schema, SchemaMappingsConfigForObject } from '@supaglue/types';
 import type { ObjectType } from '@supaglue/types/object_sync';
-import { snakecaseKeys } from '@supaglue/utils';
+import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { providerService, remoteService, schemaService } = getDependencyContainer();
+const { connectionService, providerService, remoteService, schemaService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const fieldMappingsRouter = Router({ mergeParams: true });
@@ -68,75 +57,26 @@ export default function init(app: Router): void {
     }
   );
 
-  fieldMappingsRouter.get(
-    '/properties',
+  fieldMappingsRouter.put(
+    '/_update_object',
     async (
-      req: Request<ListPropertiesPathParams, ListPropertiesResponse, ListPropertiesRequest, ListPropertiesQueryParams>,
-      res: Response<ListPropertiesResponse>
+      req: Request<
+        UpdateObjectFieldMappingsPathParams,
+        UpdateObjectFieldMappingsResponse,
+        UpdateObjectFieldMappingsRequest
+      >,
+      res: Response<UpdateObjectFieldMappingsResponse>
     ) => {
       if (req.customerConnection.category !== 'crm') {
         throw new BadRequestError('Only CRM connections are supported for this operation');
       }
-      const client = await remoteService.getCrmRemoteClient(req.customerConnection.id);
-      const { type, name } = req.query;
-      if (type === 'common' && !(CRM_COMMON_OBJECT_TYPES as unknown as string[]).includes(name)) {
-        throw new BadRequestError(
-          `${name} is not a valid common object type for the ${req.customerConnection.category} category}`
-        );
-      }
-      const properties =
-        req.query.type === 'common'
-          ? await client.listCommonProperties({
-              type: 'common',
-              name: req.query.name,
-            })
-          : await client.listProperties({
-              type: req.query.type,
-              name: req.query.name,
-            });
-      return res.status(200).send({ properties });
-    }
-  );
-
-  fieldMappingsRouter.put(
-    '/_update_object',
-    async (
-      req: Request<GetDestinationPathParams, GetDestinationResponse, GetDestinationRequest>,
-      res: Response<GetDestinationResponse>
-    ) => {
-      throw new Error('Not implemented');
+      const info = await connectionService.updateObjectFieldMapping(req.customerConnection, camelcaseKeys(req.body));
+      return res.status(200).send(snakecaseKeys(info));
     }
   );
 
   app.use('/field_mappings', fieldMappingsRouter);
 }
-
-const getFieldMappingInfo = (
-  schema: Schema,
-  fieldMappings?: SchemaMappingsConfigObjectFieldMapping[]
-): FieldMappingInfo[] => {
-  const out: FieldMappingInfo[] = schema.config.fields.map((field) => ({
-    name: field.name,
-    isAddedByCustomer: false,
-    schemaMappedName: field.mappedName,
-  }));
-
-  fieldMappings?.forEach((fieldMapping) => {
-    const field = out.find((field) => field.name === fieldMapping.schemaField);
-    if (field && !field.schemaMappedName && fieldMapping.mappedField) {
-      field.customerMappedName = fieldMapping.mappedField;
-    }
-    if (!field) {
-      out.push({
-        name: fieldMapping.schemaField,
-        isAddedByCustomer: true,
-        customerMappedName: fieldMapping.mappedField,
-      });
-    }
-  });
-
-  return out;
-};
 
 const getObjectFieldMappingInfo = (
   providerObjects: ProviderObject[],

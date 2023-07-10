@@ -1,4 +1,4 @@
-import type { CategoryOfProviderName, ProviderName } from '.';
+import type { CategoryOfProviderName, ProviderName, SchemaMappingsConfig } from '.';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
@@ -36,22 +36,6 @@ export type ConnectionCreateParams<T extends ProviderName> = {
   credentials: ConnectionCredentialsDecrypted<T>;
   schemaMappingsConfig?: SchemaMappingsConfig;
   instanceUrl: string;
-};
-
-export type SchemaMappingsConfig = {
-  // TODO: Support custom objects.
-  commonObjects?: SchemaMappingsConfigForObject[];
-  standardObjects?: SchemaMappingsConfigForObject[];
-};
-
-export type SchemaMappingsConfigForObject = {
-  object: string;
-  fieldMappings: SchemaMappingsConfigObjectFieldMapping[];
-};
-
-export type SchemaMappingsConfigObjectFieldMapping = {
-  schemaField: string; // my_first_column
-  mappedField: string; // blah_1
 };
 
 export type ConnectionCreateParamsAny = ConnectionCreateParams<ProviderName>;

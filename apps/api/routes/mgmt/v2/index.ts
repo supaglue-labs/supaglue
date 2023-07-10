@@ -3,6 +3,8 @@ import { openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
 import customer from './customer';
 import destination from './destination';
+import fieldMapping from './field_mapping';
+import property from './property';
 import provider from './provider';
 import schema from './schema';
 import sync from './sync';
@@ -24,6 +26,8 @@ export default function init(app: Router): void {
   syncConfig(v2Router);
   sync(v2Router);
   syncRun(v2Router);
+  fieldMapping(v2Router);
+  property(v2Router);
 
   app.use('/v2', v2Router);
 }

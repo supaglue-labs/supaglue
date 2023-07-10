@@ -14,3 +14,25 @@ export type ObjectFieldMappingInfo = {
   allowAdditionalFieldMappings: boolean;
   fields: FieldMappingInfo[];
 };
+
+export type ObjectFieldMappingUpdateParams = {
+  name: string;
+  type: ObjectType;
+  fieldMappings: SchemaMappingsConfigObjectFieldMapping[];
+};
+
+export type SchemaMappingsConfig = {
+  // TODO: Support custom objects.
+  commonObjects?: SchemaMappingsConfigForObject[];
+  standardObjects?: SchemaMappingsConfigForObject[];
+};
+
+export type SchemaMappingsConfigForObject = {
+  object: string;
+  fieldMappings: SchemaMappingsConfigObjectFieldMapping[];
+};
+
+export type SchemaMappingsConfigObjectFieldMapping = {
+  schemaField: string; // my_first_column
+  mappedField: string; // blah_1
+};

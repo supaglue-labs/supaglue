@@ -37,8 +37,10 @@ paths:
     $ref: paths/destinations@{destination_id}.yaml
   '/field_mappings':
     $ref: paths/field_mappings.yaml
-  '/field_mappings/properties':
-    $ref: paths/field_mappings@properties.yaml
+  '/properties':
+    $ref: paths/properties.yaml
+  '/field_mappings/_update_object':
+    $ref: paths/field_mappings@_update_object.yaml
   '/schemas':
     $ref: paths/schemas.yaml
   '/schemas/{schema_id}':
@@ -74,6 +76,8 @@ tags:
     description: A `Destination` is a place where to which data can be written.
   - name: Providers
     description: A `Provider` is a CRM or other system that we can connect to.
+  - name: Properties
+    description: A `Property` is a field in a Provider's object.
   - name: Schemas
     description: A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API.
   - name: Field Mappings
@@ -115,6 +119,8 @@ components:
       $ref: ./components/schemas/objects/object_field_mapping_info.yaml
     field_mapping_info:
       $ref: ./components/schemas/objects/field_mapping_info.yaml
+    update_object_field_mapping:
+      $ref: ./components/schemas/update_object_field_mapping.yaml
     field_mapping:
       $ref: ./components/schemas/objects/field_mapping.yaml
     add_object:
