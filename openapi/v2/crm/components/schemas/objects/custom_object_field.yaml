@@ -6,6 +6,7 @@ properties:
   key_name:
     type: string
     example: ticket_id
+    description: In Salesforce, this must end with `__c`.
   is_required:
     type: boolean
     example: false

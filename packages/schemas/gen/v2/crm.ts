@@ -608,7 +608,10 @@ export interface components {
       fields: (components["schemas"]["custom_object_field"])[];
     };
     create_update_custom_object: {
-      /** @example ticket */
+      /**
+       * @description In Salesforce, this must end with `__c`. 
+       * @example ticket
+       */
       name: string;
       /** @example Ticket object */
       description: string | null;
@@ -642,7 +645,10 @@ export interface components {
     custom_object_field: {
       /** @example Ticket ID */
       display_name: string;
-      /** @example ticket_id */
+      /**
+       * @description In Salesforce, this must end with `__c`. 
+       * @example ticket_id
+       */
       key_name: string;
       /** @example false */
       is_required: boolean;

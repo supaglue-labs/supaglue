@@ -3,6 +3,7 @@ properties:
   name:
     type: string
     example: ticket
+    description: In Salesforce, this must end with `__c`.
   description:
     type: string
     nullable: true

@@ -2683,7 +2683,8 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "ticket"
+            "example": "ticket",
+            "description": "In Salesforce, this must end with `__c`."
           },
           "description": {
             "type": "string",
@@ -2770,7 +2771,8 @@
           },
           "key_name": {
             "type": "string",
-            "example": "ticket_id"
+            "example": "ticket_id",
+            "description": "In Salesforce, this must end with `__c`."
           },
           "is_required": {
             "type": "boolean",
