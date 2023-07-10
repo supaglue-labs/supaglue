@@ -124,8 +124,14 @@ export class ObjectSyncRunService {
       where: {
         objectSync: {
           connectionId: { in: connectionIds },
-          objectType: 'objectType' in args ? args.objectType : undefined,
-          object: 'object' in args ? args.object : undefined,
+          objectType: {
+            equals: 'objectType' in args ? args.objectType : undefined,
+            mode: 'insensitive',
+          },
+          object: {
+            equals: 'object' in args ? args.object : undefined,
+            mode: 'insensitive',
+          },
         },
       },
       include: {
