@@ -50,6 +50,16 @@ export interface paths {
       };
     };
   };
+  "/field_mappings": {
+    /** List field mappings */
+    get: operations["listFieldMappings"];
+    
+  };
+  "/field_mappings/properties": {
+    /** List properties */
+    get: operations["listProperties"];
+    
+  };
   "/schemas": {
     /**
      * List schemas 
@@ -146,26 +156,6 @@ export interface paths {
     delete: operations["deleteConnection"];
     /** Update connection */
     patch: operations["updateConnection"];
-    parameters: {
-      path: {
-        customer_id: string;
-        connection_id: string;
-      };
-    };
-  };
-  "/customers/{customer_id}/connections/{connection_id}/properties": {
-    /** List properties */
-    get: operations["listProperties"];
-    parameters: {
-      path: {
-        customer_id: string;
-        connection_id: string;
-      };
-    };
-  };
-  "/customers/{customer_id}/connections/{connection_id}/objects": {
-    /** List objects */
-    get: operations["listObjects"];
     parameters: {
       path: {
         customer_id: string;
@@ -321,24 +311,32 @@ export interface components {
           schema_id?: string;
         })[];
     };
-    objects_expanded: {
-      common?: ({
-          /** @example common_object_name */
-          name: string;
-          schema?: components["schemas"]["schema"];
-          field_mappings?: (components["schemas"]["field_mapping"])[];
-        })[];
-      standard?: ({
-          /** @example standard_object_name */
-          name: string;
-          schema_id?: string;
-        })[];
-      custom?: ({
-          /** @example custom_object_name */
-          name: string;
-          schema_id?: string;
-        })[];
+    object_field_mapping_info: {
+      /** @example contact */
+      object_name: string;
+      /** @enum {string} */
+      object_type: "common" | "standard" | "custom";
+      /** @example true */
+      allow_additional_field_mappings: boolean;
+      /** @example 51797e8d-f081-496d-99ec-5e41b467df4b */
+      schema_id: string;
+      fields: (components["schemas"]["field_mapping_info"])[];
     };
+    field_mapping_info: {
+      /**
+       * @description The name of the field as set in the schema 
+       * @example email
+       */
+      name: string;
+      /** @description Whether the field was added by the customer (only applicable if the schema has allow_additional_field_mappings set to true) */
+      is_added_by_customer: boolean;
+    } & ({
+      /** @description The mapped named of the field as set in the schema by the developer. If set, the customer cannot override. */
+      schema_mapped_name?: string;
+    } | {
+      /** @description The mapped name of the field as set by the customer */
+      customer_mapped_name?: string;
+    });
     field_mapping: {
       schema_field: string;
       mapped_field: string;
@@ -664,6 +662,10 @@ export interface components {
     customer_id: string;
     /** @description The provider name */
     provider_name: string;
+    /** @description The provider name */
+    "x-provider-name": string;
+    /** @description The customer ID that uniquely identifies the customer in your application */
+    "x-customer-id": string;
   };
   requestBodies: never;
   headers: never;
@@ -779,6 +781,36 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["destination"];
+        };
+      };
+    };
+  };
+  listFieldMappings: {
+    /** List field mappings */
+    responses: {
+      /** @description List of objects and their field mappings (if set) */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["object_field_mapping_info"])[];
+        };
+      };
+    };
+  };
+  listProperties: {
+    /** List properties */
+    parameters: {
+      query: {
+        type: "common" | "standard" | "custom";
+        name: string;
+      };
+    };
+    responses: {
+      /** @description List of properties */
+      200: {
+        content: {
+          "application/json": {
+            properties: (string)[];
+          };
         };
       };
     };
@@ -1082,36 +1114,6 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["connection"];
-        };
-      };
-    };
-  };
-  listProperties: {
-    /** List properties */
-    parameters: {
-      query: {
-        type: "common" | "standard" | "custom";
-        name: string;
-      };
-    };
-    responses: {
-      /** @description List of properties */
-      200: {
-        content: {
-          "application/json": {
-            properties: (string)[];
-          };
-        };
-      };
-    };
-  };
-  listObjects: {
-    /** List objects */
-    responses: {
-      /** @description List of objects and their schemas and field mappings (if set) */
-      200: {
-        content: {
-          "application/json": components["schemas"]["objects_expanded"];
         };
       };
     };

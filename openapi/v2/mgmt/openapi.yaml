@@ -35,6 +35,10 @@ paths:
     $ref: paths/destinations.yaml
   '/destinations/{destination_id}':
     $ref: paths/destinations@{destination_id}.yaml
+  '/field_mappings':
+    $ref: paths/field_mappings.yaml
+  '/field_mappings/properties':
+    $ref: paths/field_mappings@properties.yaml
   '/schemas':
     $ref: paths/schemas.yaml
   '/schemas/{schema_id}':
@@ -53,10 +57,6 @@ paths:
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/{connection_id}':
     $ref: paths/connections@{connection_id}.yaml
-  '/customers/{customer_id}/connections/{connection_id}/properties':
-    $ref: paths/connections@{connection_id}@properties.yaml
-  '/customers/{customer_id}/connections/{connection_id}/objects':
-    $ref: paths/connections@{connection_id}@objects.yaml
   '/webhook':
     $ref: paths/webhook.yaml
   '/syncs':
@@ -76,6 +76,8 @@ tags:
     description: A `Provider` is a CRM or other system that we can connect to.
   - name: Schemas
     description: A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API.
+  - name: Field Mappings
+    description: A `Field Mapping` is a mapping between a Schema field and the field in the Provider.
   - name: SyncConfigs
     description: A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule.
   - name: Syncs
@@ -107,8 +109,10 @@ components:
       $ref: ./components/schemas/objects/schema_config.yaml
     objects:
       $ref: ./components/schemas/objects/objects.yaml
-    objects_expanded:
-      $ref: ./components/schemas/objects/objects_expanded.yaml
+    object_field_mapping_info:
+      $ref: ./components/schemas/objects/object_field_mapping_info.yaml
+    field_mapping_info:
+      $ref: ./components/schemas/objects/field_mapping_info.yaml
     field_mapping:
       $ref: ./components/schemas/objects/field_mapping.yaml
     add_object:
@@ -162,6 +166,10 @@ components:
       $ref: ../../common/components/parameters/query/customer_id.yaml
     provider_name:
       $ref: ../../common/components/parameters/query/provider_name.yaml
+    x-provider-name:
+      $ref: ../../common/components/parameters/header/x-provider-name.yaml
+    x-customer-id:
+      $ref: ../../common/components/parameters/header/x-customer-id.yaml
 webhooks:
   webhook:
     $ref: ./webhooks/webhook.yaml

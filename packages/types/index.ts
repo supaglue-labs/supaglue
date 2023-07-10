@@ -9,6 +9,7 @@ export * as crm from './crm';
 export * from './customer';
 export * from './destination';
 export * as engagement from './engagement';
+export * from './field_mapping_info';
 export * from './oauth';
 export * from './passthrough';
 export * from './provider';
