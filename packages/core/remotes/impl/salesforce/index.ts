@@ -50,6 +50,7 @@ import {
   ForbiddenError,
   NotFoundError,
   NotModifiedError,
+  ServiceUnavailableError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -1315,22 +1316,24 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'MALFORMED_ID':
       case 'INVALID_EMAIL_ADDRESS':
       case 'ERROR_HTTP_400':
-        return new BadRequestError(error.message);
+        return new BadRequestError(error.message, error);
       case 'INVALID_ID_FIELD':
       case 'INVALID_LOCATOR':
       case 'ERROR_HTTP_404':
       case 'NOT_FOUND':
-        return new NotFoundError(error.message);
+        return new NotFoundError(error.message, error);
       case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
       case 'INSUFFICIENT_ACCESS':
       case 'ERROR_HTTP_403':
       case 'API_DISABLED_FOR_ORG':
-        return new ForbiddenError(error.message);
+        return new ForbiddenError(error.message, error);
       case 'ERROR_HTTP_401':
-        return new UnauthorizedError(error.message);
+        return new UnauthorizedError(error.message, error);
       case 'NOT_MODIFIED':
       case 'ERROR_HTTP_304':
-        return new NotModifiedError(error.message);
+        return new NotModifiedError(error.message, error);
+      case 'ERROR_HTTP_503':
+        return new ServiceUnavailableError('Salesforce API is temporarily unavailable', error);
       default:
         return error;
     }

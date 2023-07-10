@@ -23,6 +23,14 @@ export class InternalServerError extends HTTPError {
   }
 }
 
+export class ServiceUnavailableError extends HTTPError {
+  code = 503;
+  problemType = 'SERVICE_UNAVAILABLE_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
 export class NotFoundError extends HTTPError {
   code = 404;
   problemType = 'NOT_FOUND_ERROR';
@@ -66,7 +74,6 @@ export class ConflictError extends HTTPError {
 export class UnprocessableEntityError extends HTTPError {
   code = 422;
   problemType = 'UNPROCESSABLE_ENTITY_ERROR';
-
   constructor(message: string, cause?: Error) {
     super(message, cause);
   }
