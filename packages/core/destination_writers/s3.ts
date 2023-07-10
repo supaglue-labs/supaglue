@@ -37,7 +37,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonObjectType: T,
-    object: CommonObjectTypeMapForCategory<P>['object']
+    record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
     // Do nothing
     return;

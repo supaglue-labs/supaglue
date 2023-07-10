@@ -21,7 +21,7 @@ export interface DestinationWriter {
   upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonObjectType: T,
-    object: CommonObjectTypeMapForCategory<P>['object']
+    record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void>;
 
   writeCommonObjectRecords(
@@ -49,7 +49,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
   abstract upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonObjectType: T,
-    object: CommonObjectTypeMapForCategory<P>['object']
+    record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void>;
 
   /**
