@@ -1496,6 +1496,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       id: response.objectTypeId,
       name: response.name,
       description: null,
+      primaryFieldKeyName: response.primaryDisplayProperty ?? '',
       labels: {
         singular: response.labels.singular ?? '',
         plural: response.labels.plural ?? '',
@@ -1512,15 +1513,34 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
+    // TODO: Some of this general validation should be moved out of the provider-specific code
     if (!params.fields.length) {
       throw new Error('Cannot create custom object with no fields');
+    }
+
+    const primaryField = params.fields.find((field) => field.keyName === params.primaryFieldKeyName);
+
+    if (!primaryField) {
+      throw new BadRequestError(`Could not find primary field with key name ${params.primaryFieldKeyName}`);
+    }
+
+    if (primaryField.fieldType !== 'string') {
+      throw new BadRequestError(
+        `Primary field must be of type string, but was ${primaryField.fieldType} with key name ${params.primaryFieldKeyName}`
+      );
+    }
+
+    if (!primaryField.isRequired) {
+      throw new BadRequestError(
+        `Primary field must be required, but was not with key name ${params.primaryFieldKeyName}`
+      );
     }
 
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.create({
       name: params.name,
       labels: params.labels,
-      primaryDisplayProperty: params.fields[0].keyName, // this is a hack
+      primaryDisplayProperty: params.primaryFieldKeyName,
       properties: params.fields.map((field) => ({
         name: field.keyName,
         label: field.displayName,
@@ -1539,15 +1559,15 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
 
     // Only update fields that have changed; for example, if you pass in the same
-    // labels as the existing class, hubspot will throw an error.
-    const existingClass = await this.getCustomObject(params.id);
+    // labels as the existing object, hubspot will throw an error.
+    const existingObject = await this.getCustomObject(params.id);
 
     const labels =
-      params.labels.singular === existingClass.labels.singular && params.labels.plural === existingClass.labels.plural
+      params.labels.singular === existingObject.labels.singular && params.labels.plural === existingObject.labels.plural
         ? undefined
         : params.labels;
 
-    // Update the main class
+    // Update the main object
     await this.#client.crm.schemas.coreApi.update(params.id, {
       // ignoring name because you can't update that in hubspot
       labels,
@@ -1555,13 +1575,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
 
     // Figure out which fields to create/update/delete
-    const fieldNamesToDelete = existingClass.fields
+    const fieldNamesToDelete = existingObject.fields
       .map((field) => field.keyName)
       .filter((keyName) => {
         return !params.fields.map((field) => field.keyName).includes(keyName);
       });
     const fieldsToUpdate = params.fields.filter((field) => {
-      const existingField = existingClass.fields.find((f) => f.keyName === field.keyName);
+      const existingField = existingObject.fields.find((f) => f.keyName === field.keyName);
       if (!existingField) {
         return false;
       }
@@ -1573,7 +1593,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       );
     });
     const fieldsToCreate = params.fields.filter(
-      (field) => !existingClass.fields.map((f) => f.keyName).includes(field.keyName)
+      (field) => !existingObject.fields.map((f) => f.keyName).includes(field.keyName)
     );
 
     // Delete fields
@@ -1613,6 +1633,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
 
     // Get the properties to fetch
+    // TODO: should we be returning other properties too?
     const customObject = await this.getCustomObject(objectId);
     const fieldsToFetch = customObject.fields.map((field) => field.keyName);
     const response = await this.#client.crm.objects.basicApi.getById(objectId, id, fieldsToFetch);

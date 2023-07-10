@@ -2683,7 +2683,8 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "ticket"
+            "example": "ticket",
+            "description": "In Salesforce, this must end with `__c`."
           },
           "description": {
             "type": "string",
@@ -2707,6 +2708,11 @@
               "plural"
             ]
           },
+          "primary_field_key_name": {
+            "type": "string",
+            "description": "The key name of the \"primary\" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the \"Name\" field.",
+            "example": "ticket_id"
+          },
           "fields": {
             "type": "array",
             "items": {
@@ -2718,6 +2724,7 @@
           "name",
           "description",
           "labels",
+          "primary_field_key_name",
           "fields"
         ]
       },
@@ -2764,7 +2771,8 @@
           },
           "key_name": {
             "type": "string",
-            "example": "ticket_id"
+            "example": "ticket_id",
+            "description": "In Salesforce, this must end with `__c`."
           },
           "is_required": {
             "type": "boolean",
@@ -2775,7 +2783,8 @@
             "enum": [
               "string",
               "number"
-            ]
+            ],
+            "description": "In Salesforce, when this is set to 'string', the max length will be set to 255 by default. In Salesforce, when it is set to 'number', the precision and scale will be set to 18 and 0, respectively."
           }
         },
         "required": [

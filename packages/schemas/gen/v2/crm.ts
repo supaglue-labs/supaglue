@@ -608,7 +608,10 @@ export interface components {
       fields: (components["schemas"]["custom_object_field"])[];
     };
     create_update_custom_object: {
-      /** @example ticket */
+      /**
+       * @description In Salesforce, this must end with `__c`. 
+       * @example ticket
+       */
       name: string;
       /** @example Ticket object */
       description: string | null;
@@ -618,6 +621,11 @@ export interface components {
         /** @example Tickets */
         plural: string;
       };
+      /**
+       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
+       * @example ticket_id
+       */
+      primary_field_key_name: string;
       fields: (components["schemas"]["custom_object_field"])[];
     };
     custom_object_record: {
@@ -637,11 +645,17 @@ export interface components {
     custom_object_field: {
       /** @example Ticket ID */
       display_name: string;
-      /** @example ticket_id */
+      /**
+       * @description In Salesforce, this must end with `__c`. 
+       * @example ticket_id
+       */
       key_name: string;
       /** @example false */
       is_required: boolean;
-      /** @enum {string} */
+      /**
+       * @description In Salesforce, when this is set to 'string', the max length will be set to 255 by default. In Salesforce, when it is set to 'number', the precision and scale will be set to 18 and 0, respectively. 
+       * @enum {string}
+       */
       field_type: "string" | "number";
     };
     association_type: {
