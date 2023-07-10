@@ -133,14 +133,15 @@ export interface paths {
     post: operations["createAssociationType"];
     
   };
-  "/association-types/{association_type_id}/associations": {
+  "/associations": {
+    /**
+     * List associations 
+     * @description Get a list of associations
+     */
+    get: operations["getAssociations"];
     /** Create association */
     put: operations["createAssociation"];
-    parameters: {
-      path: {
-        association_type_id: string;
-      };
-    };
+    
   };
 }
 
@@ -608,7 +609,10 @@ export interface components {
       fields: (components["schemas"]["custom_object_field"])[];
     };
     create_update_custom_object: {
-      /** @example ticket */
+      /**
+       * @description In Salesforce, this must end with `__c`. 
+       * @example ticket
+       */
       name: string;
       /** @example Ticket object */
       description: string | null;
@@ -618,6 +622,11 @@ export interface components {
         /** @example Tickets */
         plural: string;
       };
+      /**
+       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
+       * @example ticket_id
+       */
+      primary_field_key_name: string;
       fields: (components["schemas"]["custom_object_field"])[];
     };
     custom_object_record: {
@@ -637,11 +646,17 @@ export interface components {
     custom_object_field: {
       /** @example Ticket ID */
       display_name: string;
-      /** @example ticket_id */
+      /**
+       * @description In Salesforce, this must end with `__c`. 
+       * @example ticket_id
+       */
       key_name: string;
       /** @example false */
       is_required: boolean;
-      /** @enum {string} */
+      /**
+       * @description In Salesforce, when this is set to 'string', the max length will be set to 255 by default. In Salesforce, when it is set to 'number', the precision and scale will be set to 18 and 0, respectively. 
+       * @enum {string}
+       */
       field_type: "string" | "number";
     };
     association_type: {
@@ -663,12 +678,13 @@ export interface components {
       origin_type: components["schemas"]["object_type"];
     };
     /** @enum {string} */
-    object_type: "CUSTOM_OBJECT" | "COMMON_OBJECT";
+    object_type: "common" | "standard" | "custom";
     /** @enum {string} */
     association_type_cardinality: "ONE_TO_MANY";
     /** @enum {string} */
     association_type_cardinality_or_unknown: "ONE_TO_MANY" | "UNKNOWN";
     create_update_association: {
+      association_type_id: string;
       source_record: components["schemas"]["record"];
       target_record: components["schemas"]["record"];
     };
@@ -1204,6 +1220,31 @@ export interface operations {
               id: string;
             };
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  getAssociations: {
+    /**
+     * List associations 
+     * @description Get a list of associations
+     */
+    parameters: {
+      query: {
+        source_record_id: string;
+        source_object_id: string;
+        source_object_type: components["schemas"]["object_type"];
+        target_object_id: string;
+        target_object_type: components["schemas"]["object_type"];
+      };
+    };
+    responses: {
+      /** @description Associations */
+      200: {
+        content: {
+          "application/json": {
+            results?: (components["schemas"]["association"])[];
           };
         };
       };

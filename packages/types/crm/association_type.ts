@@ -3,7 +3,7 @@
  */
 export type SGObject = {
   id: string;
-  originType: 'CUSTOM_OBJECT' | 'COMMON_OBJECT';
+  originType: 'common' | 'standard' | 'custom';
 };
 
 export type AssociationTypeCardinality = 'ONE_TO_MANY';

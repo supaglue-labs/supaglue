@@ -20,19 +20,21 @@ import { maxDate, removeUndefinedValues } from '../../../lib';
 import { getFullName } from '../../utils/name';
 
 export const fromObjectToHubspotObjectType = (object: SGObject): string => {
-  if (object.originType === 'CUSTOM_OBJECT') {
-    return object.id;
-  }
-
-  switch (object.id) {
-    case 'account':
-      return 'company';
-    case 'contact':
-      return 'contact';
-    case 'opportunity':
-      return 'deal';
-    default:
-      throw new Error(`Unknown COMMON_OBJECT object: ${object.id}`);
+  switch (object.originType) {
+    case 'standard':
+    case 'custom':
+      return object.id;
+    case 'common':
+      switch (object.id) {
+        case 'account':
+          return 'company';
+        case 'contact':
+          return 'contact';
+        case 'opportunity':
+          return 'deal';
+        default:
+          throw new Error(`Unknown common object: ${object.id}`);
+      }
   }
 };
 

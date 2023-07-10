@@ -1491,7 +1491,82 @@
         }
       ]
     },
-    "/association-types/{association_type_id}/associations": {
+    "/associations": {
+      "get": {
+        "operationId": "getAssociations",
+        "tags": [
+          "Associations"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List associations",
+        "description": "Get a list of associations",
+        "parameters": [
+          {
+            "name": "source_record_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "source_object_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "source_object_type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/object_type"
+            },
+            "required": true
+          },
+          {
+            "name": "target_object_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "target_object_type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/object_type"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Associations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/association"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "operationId": "createAssociation",
         "summary": "Create association",
@@ -1547,15 +1622,6 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
-        },
-        {
-          "name": "association_type_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4a1"
-          }
         }
       ]
     }
@@ -2683,7 +2749,8 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "ticket"
+            "example": "ticket",
+            "description": "In Salesforce, this must end with `__c`."
           },
           "description": {
             "type": "string",
@@ -2707,6 +2774,11 @@
               "plural"
             ]
           },
+          "primary_field_key_name": {
+            "type": "string",
+            "description": "The key name of the \"primary\" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the \"Name\" field.",
+            "example": "ticket_id"
+          },
           "fields": {
             "type": "array",
             "items": {
@@ -2718,6 +2790,7 @@
           "name",
           "description",
           "labels",
+          "primary_field_key_name",
           "fields"
         ]
       },
@@ -2764,7 +2837,8 @@
           },
           "key_name": {
             "type": "string",
-            "example": "ticket_id"
+            "example": "ticket_id",
+            "description": "In Salesforce, this must end with `__c`."
           },
           "is_required": {
             "type": "boolean",
@@ -2775,7 +2849,8 @@
             "enum": [
               "string",
               "number"
-            ]
+            ],
+            "description": "In Salesforce, when this is set to 'string', the max length will be set to 255 by default. In Salesforce, when it is set to 'number', the precision and scale will be set to 18 and 0, respectively."
           }
         },
         "required": [
@@ -2857,8 +2932,9 @@
       "object_type": {
         "type": "string",
         "enum": [
-          "CUSTOM_OBJECT",
-          "COMMON_OBJECT"
+          "common",
+          "standard",
+          "custom"
         ]
       },
       "association_type_cardinality": {
@@ -2877,6 +2953,9 @@
       "create_update_association": {
         "type": "object",
         "properties": {
+          "association_type_id": {
+            "type": "string"
+          },
           "source_record": {
             "$ref": "#/components/schemas/record"
           },
@@ -2885,6 +2964,7 @@
           }
         },
         "required": [
+          "association_type_id",
           "source_record",
           "target_record"
         ]

@@ -16,7 +16,31 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
+import type { SGObject } from '@supaglue/types/crm/association_type';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
+import type { CustomObject } from '@supaglue/types/crm/custom_object';
+import type { CustomObject as SalesforceCustomObject } from 'jsforce/lib/api/metadata';
+
+export const fromObjectToSalesforceObject = (object: SGObject): string => {
+  switch (object.originType) {
+    case 'standard':
+    case 'custom':
+      return object.id;
+    case 'common':
+      switch (object.id) {
+        case 'account':
+          return 'Account';
+        case 'contact':
+          return 'Contact';
+        case 'opportunity':
+          return 'Opportunity';
+        case 'lead':
+          return 'Lead';
+        default:
+          throw new Error(`Unknown common object: ${object.id}`);
+      }
+  }
+};
 
 export function getMapperForCommonObjectType<T extends CRMCommonObjectType>(
   commonObjectType: T
@@ -438,5 +462,80 @@ const toSalesforceEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<
   const primary = emailAddresses.find(({ emailAddressType }) => emailAddressType === 'primary');
   return {
     Email: primary?.emailAddress ?? '',
+  };
+};
+
+export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): CustomObject => {
+  if (!salesforceCustomObject.fullName) {
+    throw new Error(`unexpectedly, custom object missing fullName; custom object may not exist`);
+  }
+
+  if (!salesforceCustomObject.nameField || !salesforceCustomObject.nameField.label) {
+    throw new Error(`unexpectedly, custom object missing nameField`);
+  }
+
+  // TODO: We should map things to "unknown" if we don't know, or pass the original
+  // value through
+  if (salesforceCustomObject.nameField.type !== 'Text') {
+    throw new Error(`unexpectedly, custom object not of type Text`);
+  }
+
+  if (!salesforceCustomObject.label) {
+    throw new Error(`unexpectedly, custom object missing label`);
+  }
+
+  if (!salesforceCustomObject.pluralLabel) {
+    throw new Error(`unexpectedly, custom object missing pluralLabel`);
+  }
+
+  return {
+    id: salesforceCustomObject.fullName,
+    name: salesforceCustomObject.fullName,
+    description: typeof salesforceCustomObject.description === 'string' ? salesforceCustomObject.description : null,
+    labels: {
+      singular: salesforceCustomObject.label,
+      plural: salesforceCustomObject.pluralLabel,
+    },
+    primaryFieldKeyName: 'Name',
+    fields: [
+      {
+        keyName: 'Name',
+        displayName: salesforceCustomObject.nameField.label,
+        fieldType: 'string',
+        isRequired: true,
+      },
+      ...salesforceCustomObject.fields.flatMap((field) => {
+        if (!field.fullName) {
+          throw new Error(`unexpectedly, custom object field missing fullName`);
+        }
+
+        if (!field.label) {
+          throw new Error(`unexpectedly, custom object field ${field.fullName} missing label`);
+        }
+
+        // TODO: maybe introduce an 'unknown' value for enum
+
+        // If the field is lookup, we deal with that in the Association Types / Associations API instead
+        // TODO: Should we support it here too?
+        if (field.type === 'Lookup') {
+          return [];
+        }
+
+        if (field.type !== 'Text' && field.type !== 'Number') {
+          throw new Error(`unexpectedly, custom object field ${field.fullName} has unsupported type ${field.type}`);
+        }
+
+        if (field.required === null || field.required === undefined) {
+          throw new Error(`unexpectedly, custom object field ${field.fullName} is missing required property`);
+        }
+
+        return {
+          keyName: field.fullName,
+          displayName: field.label,
+          fieldType: field.type === 'Text' ? ('string' as const) : ('number' as const),
+          isRequired: field.required,
+        };
+      }),
+    ],
   };
 };
