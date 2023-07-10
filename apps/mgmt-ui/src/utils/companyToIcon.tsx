@@ -6,6 +6,7 @@ import OutreachIcon from '@/assets/connector_icons/outreach.png';
 import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
 import ZendeskSellIcon from '@/assets/connector_icons/zendesk_sell.png';
+import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
 import S3Icon from '@/assets/destination_icons/s3.png';
 import Image from 'next/image';
@@ -15,6 +16,7 @@ export default function getIcon(name: string, size = 25): ReactNode {
   const companyToIconMap: Record<string, ReactNode> = {
     s3: <Image key={name} alt={name} src={S3Icon} width={size} height={size} />,
     postgres: <Image key={name} alt={name} src={PostgresIcon} width={size} height={size} />,
+    bigquery: <Image key={name} alt={name} src={BigQueryIcon} width={size} height={size} />,
     salesforce: <Image key={name} alt={name} src={SalesforceIcon} width={size} height={size} />,
     hubspot: <Image key={name} alt={name} src={HubspotIcon} width={size} height={size} />,
     copper: <Image key={name} alt={name} src={CopperIcon} width={size} height={size} />,

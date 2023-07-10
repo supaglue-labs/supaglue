@@ -53,15 +53,44 @@ export type PostgresConfig = {
   password: string;
 };
 
-export type Destination = S3Destination | PostgresDestination;
-export type DestinationCreateParams = S3DestinationCreateParams | PostgresDestinationCreateParams;
+export type BigQueryDestination = BaseDestination & {
+  type: 'bigquery';
+  config: BigQueryConfig;
+};
+export type BigQueryDestinationCreateParams = BaseDestinationCreateParams & {
+  type: 'bigquery';
+  config: BigQueryConfig;
+};
+export type BigQueryDestinationUpdateParams = BaseDestinationUpdateParams & {
+  type: 'bigquery';
+  config: BigQueryConfig;
+};
+
+export type BigQueryConfig = {
+  projectId: string;
+  dataset: string;
+  credentials: {
+    clientEmail: string;
+    // TODO (670): encrypt
+    privateKey: string;
+  };
+};
+
+export type Destination = S3Destination | PostgresDestination | BigQueryDestination;
+export type DestinationCreateParams =
+  | S3DestinationCreateParams
+  | PostgresDestinationCreateParams
+  | BigQueryDestinationCreateParams;
 export type DestinationTestParams = DestinationCreateParams & {
   id?: string;
 };
-export type DestinationUpdateParams = S3DestinationUpdateParams | PostgresDestinationUpdateParams;
+export type DestinationUpdateParams =
+  | S3DestinationUpdateParams
+  | PostgresDestinationUpdateParams
+  | BigQueryDestinationUpdateParams;
 
 export type DestinationTestResult = { success: boolean; message: string | null };
 
-export type DestinationConfig = S3Config | PostgresConfig;
+export type DestinationConfig = S3Config | PostgresConfig | BigQueryConfig;
 
-export type DestinationType = 's3' | 'postgres';
+export type DestinationType = 's3' | 'postgres' | 'bigquery';

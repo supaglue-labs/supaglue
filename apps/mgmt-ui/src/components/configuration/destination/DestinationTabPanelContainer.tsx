@@ -1,3 +1,4 @@
+import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
 import S3Icon from '@/assets/destination_icons/s3.png';
 import { TabPanel } from '@/components/TabPanel';
@@ -13,7 +14,7 @@ const ICON_SIZE = 35;
 export type DestinationCardInfo = {
   icon?: React.ReactNode;
   name: string;
-  type: 's3' | 'postgres';
+  type: 's3' | 'postgres' | 'bigquery';
   description: string;
 };
 
@@ -31,7 +32,18 @@ export const postgresDestinationCardInfo: DestinationCardInfo = {
   description: 'Configure your Postgres destination.',
 };
 
-export const destinationCardsInfo: DestinationCardInfo[] = [s3DestinationCardInfo, postgresDestinationCardInfo];
+export const bigQueryDestinationCardInfo: DestinationCardInfo = {
+  icon: <Image alt="bigquery" src={BigQueryIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  name: 'BigQuery',
+  type: 'bigquery',
+  description: 'Configure your BigQuery destination.',
+};
+
+export const destinationCardsInfo: DestinationCardInfo[] = [
+  s3DestinationCardInfo,
+  postgresDestinationCardInfo,
+  bigQueryDestinationCardInfo,
+];
 
 export default function DestinationTabPanelContainer() {
   const router = useRouter();

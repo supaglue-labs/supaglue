@@ -2319,6 +2319,25 @@
                   "type",
                   "config"
                 ]
+              },
+              {
+                "type": "object",
+                "title": "bigquery",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "bigquery"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/bigquery_config"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
+                ]
               }
             ]
           }
@@ -2384,6 +2403,41 @@
           "schema",
           "user",
           "password"
+        ]
+      },
+      "bigquery_config": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my-dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+              },
+              "private_key": {
+                "type": "string",
+                "example": "-----BEGIN PRIVATE KEY-----\\nMII..."
+              }
+            },
+            "required": [
+              "client_email",
+              "private_key"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
         ]
       },
       "schema": {
@@ -3324,6 +3378,25 @@
                   },
                   "config": {
                     "$ref": "#/components/schemas/postgres_config"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "title": "postgres",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "bigquery"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/bigquery_config"
                   }
                 },
                 "required": [
