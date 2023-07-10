@@ -64,9 +64,9 @@ Check out our [roadmap](https://github.com/orgs/supaglue-labs/projects/4) to get
 
 For general help using Supaglue, please refer to our [documentation](https://docs.supaglue.com). For additional help, you can use one of these channels to chat with us:
 
-- [Slack](https://join.slack.com/t/supagluecommunity/shared_invite/zt-1o2hiozzl-ZRQswNzlT5W4sXwrQnVlDg) - Discuss Supaglue with the team and other developers
-- [Github](https://github.com/supaglue-labs/supaglue) - File bug reports and make code contributions
-- [Twitter](https://twitter.com/supaglue_labs) - Get the latest news and announcements
+* [Slack](https://join.slack.com/t/supagluecommunity/shared_invite/zt-1o2hiozzl-ZRQswNzlT5W4sXwrQnVlDg) - Discuss Supaglue with the team and other developers
+* [Github](https://github.com/supaglue-labs/supaglue) - File bug reports and make code contributions
+* [Twitter](https://twitter.com/supaglue_labs) - Get the latest news and announcements
 
 ## Contributing
 
