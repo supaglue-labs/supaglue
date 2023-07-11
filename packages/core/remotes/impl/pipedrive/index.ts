@@ -642,7 +642,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   async updateLead(params: LeadUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
-    const fields = await this.#getCustomFieldsForObject('person');
+    const fields = await this.#getCustomFieldsForObject('lead');
     const response = await axios.patch<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/leads/${params.id}`,
       toPipedriveLeadUpdateParams(params, fields),
@@ -655,7 +655,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   async updateAccount(params: AccountUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
-    const fields = await this.#getCustomFieldsForObject('person');
+    const fields = await this.#getCustomFieldsForObject('organization');
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/organizations/${params.id}`,
@@ -670,7 +670,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   async updateOpportunity(params: OpportunityUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const fields = await this.#getCustomFieldsForObject('person');
+    const fields = await this.#getCustomFieldsForObject('deal');
     // Their API is a PUT, but the behavior is more akin to a PATCH.
     const response = await axios.put<{ data: PipedriveRecord }>(
       `${this.#credentials.instanceUrl}/api/v1/deals/${params.id}`,
