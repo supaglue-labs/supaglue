@@ -183,15 +183,12 @@ export interface paths {
      * @description Get a list of Sync objects.
      */
     get: operations["getSyncs"];
+    
   };
-  "/syncs/{sync_id}/_trigger": {
+  "/syncs/_trigger": {
     /** Trigger sync */
     post: operations["triggerSync"];
-    parameters: {
-      path: {
-        sync_id: string;
-      };
-    };
+    
   };
   "/sync-runs": {
     /**
@@ -1119,7 +1116,10 @@ export interface operations {
       /** @description Connection */
       200: {
         content: {
-          "application/json": components["schemas"]["connection"];
+          "application/json": components["schemas"]["connection"] & {
+            /** @example 70115e3c-2700-4112-b28f-2706e08570e6 */
+            user_id?: string;
+          };
         };
       };
     };
@@ -1176,16 +1176,12 @@ export interface operations {
     parameters?: {
         /** @description The pagination cursor value */
         /** @description Number of results to return per page */
-        /** @description The customer ID that uniquely identifies the customer in your application */
-        /** @description The provider name */
         /** @description The object type to filter by */
         /** @description The object to filter by */
       query?: {
         cursor?: string;
         page_size?: string;
-        customer_id?: string;
-        provider_name?: string;
-        object_type?: string;
+        object_type?: "common" | "standard" | "custom";
         object?: string;
       };
     };
@@ -1202,6 +1198,14 @@ export interface operations {
   };
   triggerSync: {
     /** Trigger sync */
+    parameters: {
+        /** @description The object type to filter by */
+        /** @description The object to filter by */
+      query: {
+        object_type: "common" | "standard" | "custom";
+        object: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
