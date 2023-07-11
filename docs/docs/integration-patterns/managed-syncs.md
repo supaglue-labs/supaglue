@@ -187,7 +187,7 @@ Here's an example of a destination schema associated with a managed sync for a s
 | _supaglue_is_deleted     | Boolean   |
 | _supaglue_raw_data       | json      |
 
-Supaglue adds a primary key database constraint on `{_supaglue_application_id, supaglue_customer_id, supaglue_provider_name, id}`.
+Supaglue adds a primary key database constraint on `(_supaglue_application_id, supaglue_customer_id, supaglue_provider_name, id)`.
 
 ## Query patterns
 
