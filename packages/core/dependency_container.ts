@@ -19,11 +19,14 @@ import { EngagementCommonObjectService } from './services/common_objects/engagem
 import { DestinationService } from './services/destination_service';
 import { ObjectSyncRunService } from './services/object_sync_run_service';
 import { ObjectSyncService } from './services/object_sync_service';
+import { SystemSettingsService } from './services/system_settings_service';
 import { WebhookService } from './services/webhook_service';
 
 export type CoreDependencyContainer = {
   pgPool: Pool;
   prisma: PrismaClient;
+
+  systemSettingsService: SystemSettingsService;
 
   // mgmt
   applicationService: ApplicationService;
@@ -74,6 +77,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     ssl,
   });
 
+  const systemSettingsService = new SystemSettingsService(prisma);
+
   // mgmt
   const applicationService = new ApplicationService(prisma);
   const sgUserService = new SgUserService();
@@ -98,6 +103,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   return {
     pgPool,
     prisma,
+    systemSettingsService,
     // mgmt
     applicationService,
     sgUserService,

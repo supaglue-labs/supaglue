@@ -69,17 +69,31 @@ export class SyncService {
     });
   }
 
-  public async processSyncChanges(): Promise<void> {
+  /**
+   * Keep Temporal in sync with the DB.
+   *
+   * @param full If specified, don't just consider the syncs that have change events.
+   * Instead, consider all SyncConfig + SyncConfig state in the DB and make sure
+   * Temporal is in sync with that. You may want to set this to 'true' when:
+   * - you add a new Temporal search attribute and you want to backfill for existing
+   *   schedules, or
+   * - you manually tampered with the state in Temporal (e.g. you deleted or paused a
+   *   schedule), and you want to re-sync the Temporal state with that of the DB.
+   *
+   * TODO: When `full=true`, we currently do not attempt to delete all orphaned Temporal
+   * schedules. We should do that.
+   */
+  public async processSyncChanges(full?: boolean): Promise<void> {
     // This is broken into two parts
     // Part 1 - Process all the SyncConfigChange events and see if we need to
     //          create/update/delete any ObjectSyncs (and ObjectSyncChanges)
     // Part 2 - Process all the ObjectSyncChange events and see if we need to
     //          create/update/delete any Temporal schedules/workflows
-    await this.#processSyncConfigChanges();
-    await this.#processObjectSyncChanges();
+    await this.#processSyncConfigChanges(full);
+    await this.#processObjectSyncChanges(full);
   }
 
-  async #processSyncConfigChanges(): Promise<void> {
+  async #processSyncConfigChanges(full?: boolean): Promise<void> {
     // TODO: Page over the SyncConfigChanges in case there are too many in one iteration.
 
     // Get all the SyncConfigChange objects
@@ -91,13 +105,15 @@ export class SyncService {
     });
     const syncConfigChangeIds = syncConfigChanges.map(({ id }) => id);
     const uniqueSyncConfigIds = [...new Set(syncConfigChanges.map(({ syncConfigId }) => syncConfigId))];
-    const syncConfigModels = await this.#prisma.syncConfig.findMany({
-      where: {
-        id: {
-          in: uniqueSyncConfigIds,
-        },
-      },
-    });
+    const syncConfigModels = full
+      ? await this.#prisma.syncConfig.findMany()
+      : await this.#prisma.syncConfig.findMany({
+          where: {
+            id: {
+              in: uniqueSyncConfigIds,
+            },
+          },
+        });
 
     // Insert / delete ObjectSyncs
     for (const syncConfigModel of syncConfigModels) {
@@ -217,7 +233,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
     });
   }
 
-  async #processObjectSyncChanges(): Promise<void> {
+  async #processObjectSyncChanges(full?: boolean): Promise<void> {
     // TODO: Page over the ObjectSyncChanges in case there are too many in one iteration.
 
     // Get all the ObjectSyncChange objects
@@ -226,13 +242,15 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
     const uniqueObjectSyncIds = [
       ...new Set([...objectSyncChanges.map((objectSyncChange) => objectSyncChange.objectSyncId)]),
     ];
-    const objectSyncs = await this.#prisma.objectSync.findMany({
-      where: {
-        id: {
-          in: uniqueObjectSyncIds,
-        },
-      },
-    });
+    const objectSyncs = full
+      ? await this.#prisma.objectSync.findMany()
+      : await this.#prisma.objectSync.findMany({
+          where: {
+            id: {
+              in: uniqueObjectSyncIds,
+            },
+          },
+        });
 
     const connectionIds = objectSyncs.map(({ connectionId }) => connectionId);
     const connections = await this.#connectionService.getSafeByIds(connectionIds);
@@ -244,13 +262,15 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
     const objectSyncIdsToDelete = uniqueObjectSyncIds.filter(
       (objectSyncId) => !objectSyncs.some((objectSync) => objectSync.id === objectSyncId)
     );
-    const objectSyncsToUpsert = uniqueObjectSyncIds.flatMap((objectSyncId) => {
-      if (objectSyncIdsToDelete.includes(objectSyncId)) {
-        return [];
+    const objectSyncsToUpsert = (full ? objectSyncs.map((sync) => sync.id) : uniqueObjectSyncIds).flatMap(
+      (objectSyncId) => {
+        if (objectSyncIdsToDelete.includes(objectSyncId)) {
+          return [];
+        }
+        const objectSync = objectSyncs.find((objectSync) => objectSync.id === objectSyncId);
+        return objectSync ? [objectSync] : [];
       }
-      const objectSync = objectSyncs.find((objectSync) => objectSync.id === objectSyncId);
-      return objectSync ? [objectSync] : [];
-    });
+    );
 
     // Delete object syncs
     await this.#deleteTemporalObjectSyncs(objectSyncIdsToDelete);

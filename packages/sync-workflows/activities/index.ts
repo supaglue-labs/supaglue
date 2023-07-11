@@ -1,6 +1,7 @@
 import type { ConnectionService, ProviderService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
+import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
 import type { ApplicationService, SyncService } from '../services';
 import { createClearSyncArgsForNextRun } from './clear_sync_args_for_next_run';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
@@ -12,6 +13,7 @@ import { createSyncRecords } from './sync_records';
 import { createUpdateObjectSyncState } from './update_object_sync_state';
 
 export const createActivities = ({
+  systemSettingsService,
   connectionService,
   remoteService,
   syncService,
@@ -21,6 +23,7 @@ export const createActivities = ({
   destinationService,
   objectSyncRunService,
 }: {
+  systemSettingsService: SystemSettingsService;
   connectionService: ConnectionService;
   remoteService: RemoteService;
   syncService: SyncService;
@@ -32,7 +35,7 @@ export const createActivities = ({
 }) => {
   return {
     getObjectSync: createGetObjectSync(syncService),
-    doProcessSyncChanges: createDoProcessSyncChanges(syncService),
+    doProcessSyncChanges: createDoProcessSyncChanges(syncService, systemSettingsService),
     updateObjectSyncState: createUpdateObjectSyncState(syncService),
     clearSyncArgsForNextRun: createClearSyncArgsForNextRun(syncService),
     syncRecords: createSyncRecords(

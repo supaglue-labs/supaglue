@@ -23,8 +23,15 @@ let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
   const coreDependencyContainer = getCoreDependencyContainer();
-  const { prisma, providerService, syncConfigService, remoteService, connectionService, applicationService } =
-    coreDependencyContainer;
+  const {
+    prisma,
+    systemSettingsService,
+    providerService,
+    syncConfigService,
+    remoteService,
+    connectionService,
+    applicationService,
+  } = coreDependencyContainer;
 
   const temporalClient = new Client({
     namespace: process.env.TEMPORAL_NAMESPACE ?? 'default',
