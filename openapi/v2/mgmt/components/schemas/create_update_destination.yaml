@@ -32,7 +32,7 @@ allOf:
           - type
           - config
       - type: object
-        title: postgres
+        title: bigquery
         properties:
           type:
             type: string

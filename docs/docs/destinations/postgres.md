@@ -29,6 +29,7 @@ Note that the postgres user will need write access to the schema/database you ch
 ![postgres-config](/img/postgres_form.png)
 
 ## Data isolation
+
 Supaglue lands tables into your Postgres. You can configure Supaglue to write to a separate physical/logical database or schema (see diagram below) by creating a user/role for Supaglue (see [Setup](./postgres.md#Setup)).
 
 ![postgres-config](/img/db-isolation.png)
@@ -61,21 +62,24 @@ Here are a few high-level best practices when working with tables that Supaglue 
 There are a few patterns (from simplest to more complex) for querying tables that Supaglue writes into your Postgres:
 
 ### Pattern #1 - Direct Query
+
 The simplest way to query data is to directly query the tables that Supaglue lands. This is well-suited for simple queries. You may optionally add indexes to help query performance.
 
 ### Pattern #2 - Logical view
-If you need to transform the data that Supaglue land, you can create Postgres views to express the transformation. This, paired with indexes on the underlying physical table, works for common use cases.
+
+If you need to transform the data that Supaglue lands, you can create Postgres views to express the transformation. This, paired with indexes on the underlying physical table, works for common use cases.
 
 ### Pattern #3 - Generated Columns
+
 If your transformations are too expensive at query time, you can use Postgres [Generated Columns](https://www.postgresql.org/docs/current/ddl-generated-columns.html) to improve query-time performance by pushing the transformation work to write time.
 
 ### Pattern #4 - Materialized Views/ETL pipeline
+
 If none of the above patterns solve your use cases, you can build your ETL pipeline transformations and optimize data for your application's read use cases. Use Supaglue's [webhook sync notifications](/api/v2/mgmt/webhooks) to trigger your pipelines.
 
 ## Schema Evolution
 
 Supaglue may evolve the destination table schemas from time to time. To evolve schemas, drop your destination tables, and Supaglue will recreate the tables with the new schemas. Please reach out to ([support@supaglue.com](mailto:support@supaglue.com)) if you need support for backward-compatible strategies.
-
 
 ## IP Whitelist
 
