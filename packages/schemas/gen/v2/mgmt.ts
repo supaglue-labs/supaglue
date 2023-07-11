@@ -1178,7 +1178,7 @@ export interface operations {
       query?: {
         cursor?: string;
         page_size?: string;
-        object_type?: string;
+        object_type?: "common" | "standard" | "custom";
         object?: string;
       };
     };
@@ -1195,12 +1195,12 @@ export interface operations {
   };
   triggerSync: {
     /** Trigger sync */
-    parameters?: {
+    parameters: {
         /** @description The object type to filter by */
         /** @description The object to filter by */
-      query?: {
-        object_type?: string;
-        object?: string;
+      query: {
+        object_type: "common" | "standard" | "custom";
+        object: string;
       };
     };
     requestBody: {

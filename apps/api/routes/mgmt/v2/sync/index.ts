@@ -62,9 +62,14 @@ export default function init(app: Router) {
       req: Request<TriggerSyncPathParams, TriggerSyncResponse, TriggerSyncRequest, TriggerSyncQueryParams>,
       res: Response<TriggerSyncResponse>
     ) => {
+      const { id } = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
+        req.customerConnection.id,
+        req.query.object_type,
+        req.query.object
+      );
       const sync = await connectionAndSyncService.triggerSync(
         req.supaglueApplication.id,
-        req.params.sync_id,
+        id,
         req.body.perform_full_refresh ?? false
       );
       return res.status(200).send({

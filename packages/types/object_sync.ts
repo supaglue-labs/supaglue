@@ -62,5 +62,5 @@ export type ObjectSyncFilter = {
     }
   | {
       paginationParams: PaginationInternalParams;
-    };
+    }
 );

@@ -1,6 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { PaginatedResult } from '@supaglue/types/common';
 import type { ObjectSync, ObjectSyncFilter, ObjectType } from '@supaglue/types/object_sync';
+import { NotFoundError } from '../errors';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromObjectSyncModel } from '../mappers/object_sync';
 
@@ -41,14 +42,25 @@ export class ObjectSyncService {
     };
   }
 
-  public async getByConnectionIdAndObjectTypeAndObject(connectionId: string, objectType: ObjectType, object: string) {
-    const model = await this.#prisma.objectSync.findFirst({
+  public async getByConnectionIdAndObjectTypeAndObject(
+    connectionId: string,
+    objectType: ObjectType,
+    object: string
+  ): Promise<ObjectSync> {
+    const model = await this.#prisma.objectSync.findUnique({
       where: {
-        connectionId,
-        objectType,
-        object,
+        connectionId_objectType_object: {
+          connectionId,
+          object,
+          objectType,
+        },
       },
     });
-    return model ? fromObjectSyncModel(model) : null;
+    if (!model) {
+      throw new NotFoundError(
+        `ObjectSync not found for connectionId: ${connectionId}, objectType: ${objectType}, object: ${object}`
+      );
+    }
+    return fromObjectSyncModel(model);
   }
 }

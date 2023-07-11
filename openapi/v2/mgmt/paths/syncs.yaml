@@ -24,7 +24,10 @@ get:
       in: query
       schema:
         type: string
-        example: common
+        enum:
+          - common
+          - standard
+          - custom
       description: The object type to filter by
     - name: object
       in: query

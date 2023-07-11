@@ -1789,7 +1789,11 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "example": "common"
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
             },
             "description": "The object type to filter by"
           },
@@ -1853,9 +1857,14 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "example": "common"
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
             },
-            "description": "The object type to filter by"
+            "description": "The object type to filter by",
+            "required": true
           },
           {
             "name": "object",
@@ -1864,7 +1873,8 @@
               "type": "string",
               "example": "contact"
             },
-            "description": "The object to filter by"
+            "description": "The object to filter by",
+            "required": true
           }
         ],
         "security": [

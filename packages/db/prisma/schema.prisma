@@ -140,7 +140,7 @@ model ObjectSync {
   updatedAt      DateTime        @updatedAt @map("updated_at")
   runs           ObjectSyncRun[]
 
-  @@unique([connectionId, object, objectType])
+  @@unique([connectionId, objectType, object])
   @@map("object_syncs")
 }
 
