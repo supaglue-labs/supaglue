@@ -20,6 +20,8 @@ export interface RemoteClient {
   listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
 
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
+
+  getUserId(): Promise<string | undefined>;
 }
 
 export abstract class AbstractRemoteClient extends EventEmitter implements RemoteClient {
@@ -54,6 +56,10 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
 
   public listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     throw new Error('Not implemented');
+  }
+
+  public async getUserId(): Promise<string | undefined> {
+    return undefined;
   }
 
   protected abstract getAuthHeadersForPassthroughRequest(): Record<string, string>;

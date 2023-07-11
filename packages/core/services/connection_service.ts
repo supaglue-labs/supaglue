@@ -77,6 +77,7 @@ export class ConnectionService {
         },
       },
     });
+
     if (!connections.length) {
       throw new NotFoundError(`Can't find connection with id: ${id}`);
     }

@@ -15,7 +15,7 @@ import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { connectionService, connectionAndSyncService } = getDependencyContainer();
+const { connectionService, connectionAndSyncService, remoteService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const connectionRouter = Router({ mergeParams: true });
@@ -42,7 +42,12 @@ export default function init(app: Router): void {
         req.params.connection_id,
         req.supaglueApplication.id
       );
-      return res.status(200).send(snakecaseKeys(connection));
+
+      // encrich with user_id, if we can.
+      const client = await remoteService.getCrmRemoteClient(req.params.connection_id);
+      const userId = await client.getUserId();
+
+      return res.status(200).send(snakecaseKeys({ ...connection, userId }));
     }
   );
 

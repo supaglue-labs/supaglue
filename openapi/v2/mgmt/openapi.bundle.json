@@ -1602,7 +1602,20 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/connection"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/connection"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "string",
+                          "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                        }
+                      }
+                    }
+                  ]
                 },
                 "examples": {
                   "Example": {
