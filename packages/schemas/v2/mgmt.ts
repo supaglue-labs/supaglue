@@ -184,7 +184,8 @@ export type GetSyncsRequest = never;
 export type GetSyncsResponse =
   operations['getSyncs']['responses'][keyof operations['getSyncs']['responses']]['content']['application/json'];
 
-export type TriggerSyncPathParams = paths['/syncs/{sync_id}/_trigger']['parameters']['path'];
+export type TriggerSyncPathParams = never;
+export type TriggerSyncQueryParams = Required<operations['triggerSync']>['parameters']['query'];
 export type TriggerSyncRequest = operations['triggerSync']['requestBody']['content']['application/json'];
 export type TriggerSyncResponse =
   operations['triggerSync']['responses'][keyof operations['triggerSync']['responses']]['content']['application/json'];

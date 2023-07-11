@@ -53,9 +53,7 @@ export type FullThenIncrementalObjectSyncState =
 export type ObjectSyncState = FullThenIncrementalObjectSyncState | FullOnlyObjectSyncState;
 
 export type ObjectSyncFilter = {
-  applicationId: string;
-  externalCustomerId?: string;
-  providerName?: string;
+  connectionId: string;
 } & (
   | {
       objectType: ObjectType;
@@ -64,5 +62,5 @@ export type ObjectSyncFilter = {
     }
   | {
       paginationParams: PaginationInternalParams;
-    }
+    };
 );

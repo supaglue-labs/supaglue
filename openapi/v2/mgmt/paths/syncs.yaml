@@ -20,18 +20,6 @@ get:
         type: string
         example: '3804695'
       description: Number of results to return per page
-    - name: customer_id
-      in: query
-      schema:
-        type: string
-        example: my-customer-1
-      description: The customer ID that uniquely identifies the customer in your application
-    - name: provider_name
-      in: query
-      schema:
-        type: string
-        example: salesforce
-      description: The provider name
     - name: object_type
       in: query
       schema:
@@ -58,3 +46,6 @@ get:
                     type: array
                     items:
                       $ref: ../components/schemas/objects/sync.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

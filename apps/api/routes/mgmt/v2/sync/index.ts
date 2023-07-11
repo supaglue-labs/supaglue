@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { connectionHeaderMiddleware } from '@/middleware/connection';
 import { BadRequestError } from '@supaglue/core/errors';
 import { toPaginationInternalParams } from '@supaglue/core/lib';
 import type {
@@ -7,6 +8,7 @@ import type {
   GetSyncsRequest,
   GetSyncsResponse,
   TriggerSyncPathParams,
+  TriggerSyncQueryParams,
   TriggerSyncRequest,
   TriggerSyncResponse,
 } from '@supaglue/schemas/v2/mgmt';
@@ -17,6 +19,7 @@ const { objectSyncService, connectionAndSyncService } = getDependencyContainer()
 
 export default function init(app: Router) {
   const syncRouter = Router();
+  syncRouter.use(connectionHeaderMiddleware);
 
   syncRouter.get(
     '/',
@@ -37,11 +40,9 @@ export default function init(app: Router) {
       }
 
       const { next, previous, results, totalCount } = await objectSyncService.list({
-        applicationId: req.supaglueApplication.id,
+        connectionId: req.customerConnection.id,
         paginationParams: toPaginationInternalParams({ page_size: req.query?.page_size, cursor: req.query?.cursor }),
         ...getObjectFilter(),
-        externalCustomerId: req.query?.customer_id,
-        providerName: req.query?.provider_name,
       });
 
       const snakeCaseResults = results.map((result) => ({
@@ -56,9 +57,9 @@ export default function init(app: Router) {
   );
 
   syncRouter.post(
-    '/:sync_id/_trigger',
+    '_trigger',
     async (
-      req: Request<TriggerSyncPathParams, TriggerSyncResponse, TriggerSyncRequest>,
+      req: Request<TriggerSyncPathParams, TriggerSyncResponse, TriggerSyncRequest, TriggerSyncQueryParams>,
       res: Response<TriggerSyncResponse>
     ) => {
       const sync = await connectionAndSyncService.triggerSync(
