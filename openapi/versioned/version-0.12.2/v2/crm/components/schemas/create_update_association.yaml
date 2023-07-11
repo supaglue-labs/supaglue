@@ -1,9 +1,0 @@
-type: object
-properties:
-  source_record:
-    $ref: ./objects/record.yaml
-  target_record:
-    $ref: ./objects/record.yaml
-required:
-  - source_record
-  - target_record
