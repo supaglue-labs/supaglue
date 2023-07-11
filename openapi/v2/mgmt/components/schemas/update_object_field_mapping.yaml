@@ -12,7 +12,14 @@ properties:
   field_mappings:
     type: array
     items:
-      $ref: ./objects/field_mapping.yaml
+      - type: object
+        properties:
+          schema_field:
+            type: string
+          mapped_field:
+            type: string
+        required:
+          - schema_field
 required:
   - name
   - type

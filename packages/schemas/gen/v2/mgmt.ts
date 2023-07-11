@@ -361,7 +361,7 @@ export interface components {
       name: string;
       /** @enum {string} */
       type: "common" | "standard" | "custom";
-      field_mappings: (components["schemas"]["field_mapping"])[];
+      field_mappings: ([[object Object]])[];
     };
     field_mapping: {
       schema_field: string;
