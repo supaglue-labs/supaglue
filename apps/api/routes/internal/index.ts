@@ -9,6 +9,7 @@ import customer from './customer';
 import destination from './destination';
 import provider from './provider';
 import schema from './schema';
+import sync from './sync';
 import syncConfig from './sync_config';
 import syncRun from './sync_run';
 import webhook from './webhook';
@@ -36,6 +37,7 @@ export default function init(app: Router): void {
   provider(internalRouter);
   schema(internalRouter);
   webhook(internalRouter);
+  sync(internalRouter);
   syncConfig(internalRouter);
   syncRun(internalRouter);
 

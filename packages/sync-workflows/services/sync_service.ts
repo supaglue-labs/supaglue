@@ -232,11 +232,6 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
           in: uniqueObjectSyncIds,
         },
       },
-      select: {
-        id: true,
-        connectionId: true,
-        syncConfigId: true,
-      },
     });
 
     const connectionIds = objectSyncs.map(({ connectionId }) => connectionId);
@@ -273,7 +268,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       }
 
       await this.upsertTemporalObjectSync(
-        objectSync.id,
+        fromObjectSyncModel(objectSync),
         connection,
         syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
       );
@@ -363,13 +358,12 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
   }
 
   async upsertTemporalObjectSync(
-    objectSyncId: string,
+    objectSync: ObjectSync,
     connection: ConnectionSafeAny,
     syncPeriodMs: number
   ): Promise<void> {
-    const objectSync = await this.getObjectSyncById(objectSyncId);
     const application = await this.#applicationService.getById(connection.applicationId);
-    const scheduleId = getRunObjectSyncScheduleId(objectSyncId);
+    const scheduleId = getRunObjectSyncScheduleId(objectSync.id);
     const interval: IntervalSpec = {
       every: syncPeriodMs,
       // so that not everybody is refreshing and hammering the DB at the same time
@@ -381,15 +375,15 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
     const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
       type: 'startWorkflow' as const,
       workflowType: runObjectSync,
-      workflowId: getRunObjectSyncWorkflowId(objectSyncId),
+      workflowId: getRunObjectSyncWorkflowId(objectSync.id),
       taskQueue: SYNC_TASK_QUEUE,
       args: [
         {
-          objectSyncId,
+          objectSyncId: objectSync.id,
           connectionId: connection.id,
           category: connection.category,
           context: {
-            [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: objectSyncId,
+            [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: objectSync.id,
             [TEMPORAL_CONTEXT_ARGS.OBJECT_TYPE]: objectSync.objectType,
             [TEMPORAL_CONTEXT_ARGS.OBJECT_NAME]: objectSync.object,
             [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
@@ -403,7 +397,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
         },
       ],
       searchAttributes: {
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [objectSyncId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [objectSync.id],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_TYPE]: [objectSync.objectType],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_NAME]: [objectSync.object],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
@@ -425,6 +419,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
         action,
         state: {
           triggerImmediately: true,
+          paused: objectSync.paused,
         },
       });
     } catch (err: unknown) {
@@ -439,6 +434,10 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
               intervals: [newInterval],
             },
             action,
+            state: {
+              ...prev.state,
+              paused: objectSync.paused,
+            },
           };
         });
 

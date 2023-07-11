@@ -1844,6 +1844,126 @@
         }
       ]
     },
+    "/syncs/_pause": {
+      "post": {
+        "operationId": "pauseSync",
+        "summary": "Pause sync",
+        "tags": [
+          "Syncs"
+        ],
+        "parameters": [
+          {
+            "name": "object_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
+            },
+            "description": "The object type to filter by",
+            "required": true
+          },
+          {
+            "name": "object",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The object to filter by",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync paused",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/syncs/_resume": {
+      "post": {
+        "operationId": "resumeSync",
+        "summary": "Resume sync",
+        "tags": [
+          "Syncs"
+        ],
+        "parameters": [
+          {
+            "name": "object_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
+            },
+            "description": "The object type to filter by",
+            "required": true
+          },
+          {
+            "name": "object",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The object to filter by",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync resumed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/syncs/_trigger": {
       "post": {
         "operationId": "triggerSync",
@@ -3064,6 +3184,9 @@
           "sync_config_id": {
             "type": "string",
             "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+          },
+          "paused": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -3071,7 +3194,8 @@
           "object_type",
           "object",
           "connection_id",
-          "sync_config_id"
+          "sync_config_id",
+          "paused"
         ]
       },
       "sync_run": {

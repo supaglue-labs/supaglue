@@ -63,6 +63,10 @@ paths:
     $ref: paths/webhook.yaml
   '/syncs':
     $ref: paths/syncs.yaml
+  '/syncs/_pause':
+    $ref: paths/syncs@_pause.yaml
+  '/syncs/_resume':
+    $ref: paths/syncs@_resume.yaml
   '/syncs/_trigger':
     $ref: paths/syncs@_trigger.yaml
   '/sync-runs':
