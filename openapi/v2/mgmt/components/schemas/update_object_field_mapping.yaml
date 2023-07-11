@@ -12,14 +12,14 @@ properties:
   field_mappings:
     type: array
     items:
-      - type: object
-        properties:
-          schema_field:
-            type: string
-          mapped_field:
-            type: string
-        required:
-          - schema_field
+      type: object
+      properties:
+        schema_field:
+          type: string
+        mapped_field:
+          type: string
+      required:
+        - schema_field
 required:
   - name
   - type

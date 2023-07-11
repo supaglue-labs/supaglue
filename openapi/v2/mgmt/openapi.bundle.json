@@ -2582,22 +2582,20 @@
           },
           "field_mappings": {
             "type": "array",
-            "items": [
-              {
-                "type": "object",
-                "properties": {
-                  "schema_field": {
-                    "type": "string"
-                  },
-                  "mapped_field": {
-                    "type": "string"
-                  }
+            "items": {
+              "type": "object",
+              "properties": {
+                "schema_field": {
+                  "type": "string"
                 },
-                "required": [
-                  "schema_field"
-                ]
-              }
-            ]
+                "mapped_field": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "schema_field"
+              ]
+            }
           }
         },
         "required": [
