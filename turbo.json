@@ -14,7 +14,8 @@
     "docs#generate": {
       "dependsOn": ["//#bundle-openapi"],
       "inputs": ["../openapi/**/openapi.bundle.json", "package.json", "*.config.js"],
-      "outputs": ["docs/docs/api/**"]
+      "outputs": ["docs/docs/api/**"],
+      "outputMode": "errors-only"
     },
     "docs#build": {
       "dependsOn": ["docs#generate"],

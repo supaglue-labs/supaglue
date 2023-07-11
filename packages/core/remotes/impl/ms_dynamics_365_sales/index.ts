@@ -261,6 +261,25 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     }
   }
 
+  public override async getUserId(): Promise<string | undefined> {
+    await this.maybeRefreshAccessToken();
+    const { accessToken } = this.#credentials;
+    const jwtTokenParts = accessToken.split('.');
+    const jwtTokenPayload = JSON.parse(Buffer.from(jwtTokenParts[1], 'base64').toString('utf-8'));
+    const activeDirectoryUserId = jwtTokenPayload.oid;
+    return await this.getUserIdForActiveDirectoryUserId(activeDirectoryUserId);
+  }
+
+  private async getUserIdForActiveDirectoryUserId(activeDirectoryUserId: string): Promise<string | undefined> {
+    await this.maybeRefreshAccessToken();
+
+    const response = await this.#odata.get('systemusers').query({
+      $filter: `azureactivedirectoryobjectid eq '${activeDirectoryUserId}'`,
+      $select: 'systemuserid,azureactivedirectoryobjectid',
+    });
+    return response[0]?.systemuserid;
+  }
+
   private async getAccount(id: string): Promise<Account> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsAccountToRemoteAccount(

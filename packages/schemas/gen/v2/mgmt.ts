@@ -1116,7 +1116,10 @@ export interface operations {
       /** @description Connection */
       200: {
         content: {
-          "application/json": components["schemas"]["connection"];
+          "application/json": components["schemas"]["connection"] & {
+            /** @example 70115e3c-2700-4112-b28f-2706e08570e6 */
+            user_id?: string;
+          };
         };
       };
     };
