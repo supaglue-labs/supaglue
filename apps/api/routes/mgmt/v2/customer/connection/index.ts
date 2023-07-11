@@ -43,7 +43,7 @@ export default function init(app: Router): void {
         req.supaglueApplication.id
       );
 
-      // encrich with user_id, if we can.
+      // enrich with user_id, if we can.
       const client = await remoteService.getCrmRemoteClient(req.params.connection_id);
       const userId = await client.getUserId();
 
