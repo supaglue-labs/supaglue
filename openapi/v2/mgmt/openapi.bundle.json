@@ -2582,7 +2582,9 @@
           },
           "field_mappings": {
             "type": "array",
-            "$ref": "#/components/schemas/field_mapping"
+            "items": {
+              "$ref": "#/components/schemas/field_mapping"
+            }
           }
         },
         "required": [

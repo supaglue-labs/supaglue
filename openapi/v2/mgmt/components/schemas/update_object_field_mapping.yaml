@@ -11,7 +11,8 @@ properties:
       - custom
   field_mappings:
     type: array
-    $ref: ./objects/field_mapping.yaml
+    items:
+      $ref: ./objects/field_mapping.yaml
 required:
   - name
   - type
