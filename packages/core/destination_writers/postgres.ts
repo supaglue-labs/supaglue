@@ -91,11 +91,11 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         // pg doesn't seem to convert objects to JSON even though the docs say it does
         // https://node-postgres.com/features/queries
         if (value !== null && value !== undefined && typeof value === 'object') {
-          return JSON.stringify(value).replace(/\\u0000/g, '');
+          return jsonStringifyWithoutNullChars(value);
         }
 
         if (typeof value === 'string') {
-          return value.replace(/\\u0000/g, '');
+          return stripNullCharsFromString(value);
         }
 
         return value;
@@ -159,9 +159,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         columns,
         cast: {
           boolean: (value: boolean) => value.toString(),
-          object: (value: object) => JSON.stringify(value).replace(/\\u0000/g, ''),
+          object: (value: object) => jsonStringifyWithoutNullChars(value),
           date: (value: Date) => value.toISOString(),
-          string: (value: string) => value.replace(/\\u0000/g, ''),
+          string: (value: string) => stripNullCharsFromString(value),
         },
         quoted: true,
       });
@@ -318,9 +318,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         columns: columnsWithLastModifiedAt,
         cast: {
           boolean: (value: boolean) => value.toString(),
-          object: (value: object) => JSON.stringify(value).replace(/\\u0000/g, ''),
+          object: (value: object) => jsonStringifyWithoutNullChars(value),
           date: (value: Date) => value.toISOString(),
-          string: (value: string) => value.replace(/\\u0000/g, ''),
+          string: (value: string) => stripNullCharsFromString(value),
         },
         quoted: true,
       });
@@ -756,3 +756,16 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_engagement_
 );`,
   },
 };
+
+function stripNullCharsFromString(str: string) {
+  return str.replace(/\0/g, '');
+}
+
+function jsonStringifyWithoutNullChars(obj: object) {
+  return JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'string') {
+      return stripNullCharsFromString(value);
+    }
+    return value;
+  });
+}
