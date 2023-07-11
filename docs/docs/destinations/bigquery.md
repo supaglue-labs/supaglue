@@ -27,6 +27,20 @@ Note that the service account will need the following roles attached:
 
 - BigQuery Data Editor
 - BigQuery Job User
+
+If these roles are too broad for your security policies, you can [create a custom role](https://cloud.google.com/iam/docs/creating-custom-roles) with the following permissions:
+
+- bigquery.datasets.get
+- bigquery.tables.create
+- bigquery.tables.delete
+- bigquery.tables.get
+- bigquery.tables.getData
+- bigquery.tables.list
+- bigquery.tables.update
+- bigquery.tables.updateData
+- bigquery.jobs.create
+
+You can also add [conditional access policies](https://cloud.google.com/bigquery/docs/control-access-to-resources-iam) to restrict access to specific datasets.
 :::
 
 ![postgres-config](/img/bigquery-form.png)
