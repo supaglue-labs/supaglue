@@ -6,4 +6,3 @@ properties:
     type: string
 required:
   - schema_field
-  - mapped_field

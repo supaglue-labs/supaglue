@@ -2582,20 +2582,7 @@
           },
           "field_mappings": {
             "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "schema_field": {
-                  "type": "string"
-                },
-                "mapped_field": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "schema_field"
-              ]
-            }
+            "$ref": "#/components/schemas/field_mapping"
           }
         },
         "required": [
@@ -2615,8 +2602,7 @@
           }
         },
         "required": [
-          "schema_field",
-          "mapped_field"
+          "schema_field"
         ]
       },
       "add_object": {

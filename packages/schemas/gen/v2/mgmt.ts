@@ -361,14 +361,11 @@ export interface components {
       name: string;
       /** @enum {string} */
       type: "common" | "standard" | "custom";
-      field_mappings: ({
-          schema_field: string;
-          mapped_field?: string;
-        })[];
+      field_mappings: components["schemas"]["field_mapping"];
     };
     field_mapping: {
       schema_field: string;
-      mapped_field: string;
+      mapped_field?: string;
     };
     add_object: {
       /** @example object_name */
