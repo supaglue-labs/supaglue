@@ -66,7 +66,7 @@ export default function init(app: Router) {
   );
 
   syncRouter.post(
-    '_trigger',
+    '/_trigger',
     async (
       req: Request<TriggerSyncPathParams, TriggerSyncResponse, TriggerSyncRequest, TriggerSyncQueryParams>,
       res: Response<TriggerSyncResponse>
@@ -89,7 +89,7 @@ export default function init(app: Router) {
   );
 
   syncRouter.post(
-    '_pause',
+    '/_pause',
     async (
       req: Request<PauseSyncPathParams, PauseSyncResponse, PauseSyncRequest, PauseSyncQueryParams>,
       res: Response<PauseSyncResponse>
@@ -112,7 +112,7 @@ export default function init(app: Router) {
   );
 
   syncRouter.post(
-    '_resume',
+    '/_resume',
     async (
       req: Request<ResumeSyncPathParams, ResumeSyncResponse, ResumeSyncRequest, ResumeSyncQueryParams>,
       res: Response<ResumeSyncResponse>
