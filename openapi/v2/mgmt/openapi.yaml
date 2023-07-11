@@ -63,8 +63,8 @@ paths:
     $ref: paths/webhook.yaml
   '/syncs':
     $ref: paths/syncs.yaml
-  '/syncs/{sync_id}/_trigger':
-    $ref: paths/syncs@{sync_id}@_trigger.yaml
+  '/syncs/_trigger':
+    $ref: paths/syncs@_trigger.yaml
   '/sync-runs':
     $ref: paths/sync_runs.yaml
 tags:

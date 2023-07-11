@@ -92,7 +92,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const crmCustomObjectService = new CrmCustomObjectService(remoteService);
   const crmAssociationService = new CrmAssociationService(remoteService);
 
-  const objectSyncService = new ObjectSyncService(prisma, connectionService);
+  const objectSyncService = new ObjectSyncService(prisma);
   const objectSyncRunService = new ObjectSyncRunService(prisma, connectionService);
 
   return {

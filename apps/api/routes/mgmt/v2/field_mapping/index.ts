@@ -16,7 +16,7 @@ import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { connectionService, providerService, remoteService, schemaService } = getDependencyContainer();
+const { connectionService, providerService, schemaService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const fieldMappingsRouter = Router({ mergeParams: true });
