@@ -17,4 +17,4 @@ Suppose that you want to store information about competitors that are relevant t
 
 1. Create a custom object called `Competitor Info`.
 1. Create a association type between `Opportunity` and `Competitor Info`.
-1. Whenever a new `Opportunity` record is created, find an existing `Competitor Info` record, or create a new one, and associate it with the `Opportunity`.
+1. Whenever a new `Opportunity` record is created, find an existing `Competitor Info` record, or create a new one, and associate it with the `Opportunity` record.
