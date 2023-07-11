@@ -137,7 +137,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   async getSequenceState(id: string): Promise<SequenceState> {
-    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequence_states/${id}`, {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequenceStates/${id}`, {
       headers: this.#headers,
     });
     return fromOutreachSequenceStateToSequenceState(response.data.data);
