@@ -50,29 +50,11 @@ export class ConnectionAndSyncService {
     this.#connectionService = connectionService;
   }
 
-  public async triggerSync(
-    applicationId: string,
-    objectSyncId: string,
-    performFullRefresh: boolean
-  ): Promise<ObjectSync> {
-    const sync = await this.#prisma.objectSync.findFirst({
-      where: {
-        id: objectSyncId,
-        connection: {
-          provider: {
-            applicationId,
-          },
-        },
-      },
-    });
-    if (!sync) {
-      throw new NotFoundError(`Could not find sync ${objectSyncId} with application id ${applicationId}`);
-    }
-
+  public async triggerSync(objectSync: ObjectSync, performFullRefresh: boolean): Promise<ObjectSync> {
     // Record whether next run should do full refresh or not
     const newSync = await this.#prisma.objectSync.update({
       where: {
-        id: objectSyncId,
+        id: objectSync.id,
       },
       data: {
         argsForNextRun: {
@@ -82,11 +64,47 @@ export class ConnectionAndSyncService {
     });
 
     // Trigger a run in Temporal
-    const handle = this.#temporalClient.schedule.getHandle(getRunObjectSyncScheduleId(objectSyncId));
+    const handle = this.#temporalClient.schedule.getHandle(getRunObjectSyncScheduleId(objectSync.id));
     // TODO: is this the right policy? should it be configurable?
     await handle.trigger(ScheduleOverlapPolicy.CANCEL_OTHER);
 
     return fromObjectSyncModel(newSync);
+  }
+
+  async #changeSyncPausedState(objectSync: ObjectSync, pausedState: boolean): Promise<ObjectSync> {
+    if (objectSync.paused === pausedState) {
+      return objectSync;
+    }
+
+    const newSync = await this.#prisma.$transaction(async (tx) => {
+      const [newSync] = await Promise.all([
+        tx.objectSync.update({
+          where: {
+            id: objectSync.id,
+          },
+          data: {
+            paused: pausedState,
+          },
+        }),
+        tx.objectSyncChange.create({
+          data: {
+            objectSyncId: objectSync.id,
+          },
+        }),
+      ]);
+
+      return newSync;
+    });
+
+    return fromObjectSyncModel(newSync);
+  }
+
+  public async pauseSync(objectSync: ObjectSync): Promise<ObjectSync> {
+    return await this.#changeSyncPausedState(objectSync, true);
+  }
+
+  public async resumeSync(objectSync: ObjectSync): Promise<ObjectSync> {
+    return await this.#changeSyncPausedState(objectSync, false);
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {

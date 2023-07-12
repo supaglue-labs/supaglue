@@ -1,0 +1,35 @@
+post:
+  operationId: resumeSync
+  summary: Resume sync
+  tags:
+    - Syncs
+  parameters:
+    - name: object_type
+      in: query
+      schema:
+        type: string
+        enum:
+          - common
+          - standard
+          - custom
+      description: The object type to filter by
+      required: true
+    - name: object
+      in: query
+      schema:
+        type: string
+        example: contact
+      description: The object to filter by
+      required: true
+  security:
+    - ApiKeyAuth: []
+  responses:
+    '200':
+      description: Sync resumed
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/sync.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

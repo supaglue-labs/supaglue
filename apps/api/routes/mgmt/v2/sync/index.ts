@@ -7,6 +7,14 @@ import type {
   GetSyncsQueryParams,
   GetSyncsRequest,
   GetSyncsResponse,
+  PauseSyncPathParams,
+  PauseSyncQueryParams,
+  PauseSyncRequest,
+  PauseSyncResponse,
+  ResumeSyncPathParams,
+  ResumeSyncQueryParams,
+  ResumeSyncRequest,
+  ResumeSyncResponse,
   TriggerSyncPathParams,
   TriggerSyncQueryParams,
   TriggerSyncRequest,
@@ -51,33 +59,77 @@ export default function init(app: Router) {
         object: result.object,
         connection_id: result.connectionId,
         sync_config_id: result.syncConfigId,
+        paused: result.paused,
       }));
       return res.status(200).send({ next, previous, results: snakeCaseResults, total_count: totalCount });
     }
   );
 
   syncRouter.post(
-    '_trigger',
+    '/_trigger',
     async (
       req: Request<TriggerSyncPathParams, TriggerSyncResponse, TriggerSyncRequest, TriggerSyncQueryParams>,
       res: Response<TriggerSyncResponse>
     ) => {
-      const { id } = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
+      const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
         req.customerConnection.id,
         req.query.object_type,
         req.query.object
       );
-      const sync = await connectionAndSyncService.triggerSync(
-        req.supaglueApplication.id,
-        id,
-        req.body.perform_full_refresh ?? false
-      );
+      const updated = await connectionAndSyncService.triggerSync(objectSync, req.body.perform_full_refresh ?? false);
       return res.status(200).send({
-        id: sync.id,
-        object_type: sync.objectType,
-        object: sync.object,
-        connection_id: sync.connectionId,
-        sync_config_id: sync.syncConfigId,
+        id: updated.id,
+        object_type: updated.objectType,
+        object: updated.object,
+        connection_id: updated.connectionId,
+        sync_config_id: updated.syncConfigId,
+        paused: updated.paused,
+      });
+    }
+  );
+
+  syncRouter.post(
+    '/_pause',
+    async (
+      req: Request<PauseSyncPathParams, PauseSyncResponse, PauseSyncRequest, PauseSyncQueryParams>,
+      res: Response<PauseSyncResponse>
+    ) => {
+      const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
+        req.customerConnection.id,
+        req.query.object_type,
+        req.query.object
+      );
+      const updated = await connectionAndSyncService.pauseSync(objectSync);
+      return res.status(200).send({
+        id: updated.id,
+        object_type: updated.objectType,
+        object: updated.object,
+        connection_id: updated.connectionId,
+        sync_config_id: updated.syncConfigId,
+        paused: updated.paused,
+      });
+    }
+  );
+
+  syncRouter.post(
+    '/_resume',
+    async (
+      req: Request<ResumeSyncPathParams, ResumeSyncResponse, ResumeSyncRequest, ResumeSyncQueryParams>,
+      res: Response<ResumeSyncResponse>
+    ) => {
+      const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
+        req.customerConnection.id,
+        req.query.object_type,
+        req.query.object
+      );
+      const updated = await connectionAndSyncService.resumeSync(objectSync);
+      return res.status(200).send({
+        id: updated.id,
+        object_type: updated.objectType,
+        object: updated.object,
+        connection_id: updated.connectionId,
+        sync_config_id: updated.syncConfigId,
+        paused: updated.paused,
       });
     }
   );

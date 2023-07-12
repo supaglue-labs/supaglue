@@ -184,6 +184,18 @@ export type GetSyncsRequest = never;
 export type GetSyncsResponse =
   operations['getSyncs']['responses'][keyof operations['getSyncs']['responses']]['content']['application/json'];
 
+export type PauseSyncPathParams = never;
+export type PauseSyncQueryParams = Required<operations['pauseSync']>['parameters']['query'];
+export type PauseSyncRequest = never;
+export type PauseSyncResponse =
+  operations['pauseSync']['responses'][keyof operations['pauseSync']['responses']]['content']['application/json'];
+
+export type ResumeSyncPathParams = never;
+export type ResumeSyncQueryParams = Required<operations['resumeSync']>['parameters']['query'];
+export type ResumeSyncRequest = never;
+export type ResumeSyncResponse =
+  operations['resumeSync']['responses'][keyof operations['resumeSync']['responses']]['content']['application/json'];
+
 export type TriggerSyncPathParams = never;
 export type TriggerSyncQueryParams = Required<operations['triggerSync']>['parameters']['query'];
 export type TriggerSyncRequest = operations['triggerSync']['requestBody']['content']['application/json'];

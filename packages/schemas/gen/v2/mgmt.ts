@@ -185,6 +185,16 @@ export interface paths {
     get: operations["getSyncs"];
     
   };
+  "/syncs/_pause": {
+    /** Pause sync */
+    post: operations["pauseSync"];
+    
+  };
+  "/syncs/_resume": {
+    /** Resume sync */
+    post: operations["resumeSync"];
+    
+  };
   "/syncs/_trigger": {
     /** Trigger sync */
     post: operations["triggerSync"];
@@ -533,6 +543,7 @@ export interface components {
       connection_id: string;
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
       sync_config_id: string;
+      paused: boolean;
     };
     sync_run: {
       error_message: string | null;
@@ -1192,6 +1203,44 @@ export interface operations {
           "application/json": components["schemas"]["pagination"] & {
             results?: (components["schemas"]["sync"])[];
           };
+        };
+      };
+    };
+  };
+  pauseSync: {
+    /** Pause sync */
+    parameters: {
+        /** @description The object type to filter by */
+        /** @description The object to filter by */
+      query: {
+        object_type: "common" | "standard" | "custom";
+        object: string;
+      };
+    };
+    responses: {
+      /** @description Sync paused */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync"];
+        };
+      };
+    };
+  };
+  resumeSync: {
+    /** Resume sync */
+    parameters: {
+        /** @description The object type to filter by */
+        /** @description The object to filter by */
+      query: {
+        object_type: "common" | "standard" | "custom";
+        object: string;
+      };
+    };
+    responses: {
+      /** @description Sync resumed */
+      200: {
+        content: {
+          "application/json": components["schemas"]["sync"];
         };
       };
     };
