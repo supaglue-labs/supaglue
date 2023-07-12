@@ -2627,7 +2627,12 @@
             "type": "number",
             "example": 100
           }
-        }
+        },
+        "required": [
+          "next",
+          "previous",
+          "total_count"
+        ]
       },
       "custom_fields": {
         "type": "object",

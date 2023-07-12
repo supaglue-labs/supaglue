@@ -1798,6 +1798,24 @@
             "description": "Number of results to return per page"
           },
           {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "my-customer-1"
+            },
+            "description": "The customer ID that uniquely identifies the customer in your application"
+          },
+          {
+            "name": "provider_name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "salesforce"
+            },
+            "description": "The provider name"
+          },
+          {
             "name": "object_type",
             "in": "query",
             "schema": {
@@ -1836,7 +1854,7 @@
                         "results": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/sync"
+                            "$ref": "#/components/schemas/sync_with_provider_and_customer"
                           }
                         }
                       }
@@ -1847,15 +1865,7 @@
             }
           }
         }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
+      }
     },
     "/syncs/_pause": {
       "post": {
@@ -1864,37 +1874,41 @@
         "tags": [
           "Syncs"
         ],
-        "parameters": [
-          {
-            "name": "object_type",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "common",
-                "standard",
-                "custom"
-              ]
-            },
-            "description": "The object type to filter by",
-            "required": true
-          },
-          {
-            "name": "object",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "contact"
-            },
-            "description": "The object to filter by",
-            "required": true
-          }
-        ],
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ],
+                    "description": "The object type to filter by"
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact",
+                    "description": "The object to filter by"
+                  }
+                },
+                "required": [
+                  "object_type",
+                  "object"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Sync paused",
@@ -1924,37 +1938,41 @@
         "tags": [
           "Syncs"
         ],
-        "parameters": [
-          {
-            "name": "object_type",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "common",
-                "standard",
-                "custom"
-              ]
-            },
-            "description": "The object type to filter by",
-            "required": true
-          },
-          {
-            "name": "object",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "contact"
-            },
-            "description": "The object to filter by",
-            "required": true
-          }
-        ],
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ],
+                    "description": "The object type to filter by"
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact",
+                    "description": "The object to filter by"
+                  }
+                },
+                "required": [
+                  "object_type",
+                  "object"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Sync resumed",
@@ -1984,32 +2002,6 @@
         "tags": [
           "Syncs"
         ],
-        "parameters": [
-          {
-            "name": "object_type",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "common",
-                "standard",
-                "custom"
-              ]
-            },
-            "description": "The object type to filter by",
-            "required": true
-          },
-          {
-            "name": "object",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "contact"
-            },
-            "description": "The object to filter by",
-            "required": true
-          }
-        ],
         "security": [
           {
             "ApiKeyAuth": []
@@ -2022,11 +2014,29 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ],
+                    "description": "The object type to filter by"
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact",
+                    "description": "The object to filter by"
+                  },
                   "perform_full_refresh": {
                     "type": "boolean",
                     "example": true
                   }
-                }
+                },
+                "required": [
+                  "object_type",
+                  "object"
+                ]
               }
             }
           }
@@ -2259,7 +2269,12 @@
             "type": "number",
             "example": 100
           }
-        }
+        },
+        "required": [
+          "next",
+          "previous",
+          "total_count"
+        ]
       },
       "customer": {
         "type": "object",
@@ -3208,6 +3223,30 @@
           "connection_id",
           "sync_config_id",
           "paused"
+        ]
+      },
+      "sync_with_provider_and_customer": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sync"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              }
+            },
+            "required": [
+              "provider_name",
+              "customer_id"
+            ]
+          }
         ]
       },
       "sync_run": {

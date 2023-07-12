@@ -1,5 +1,5 @@
-import SyncRunsTable from '@/components/logs/SyncRunsTable';
-import { useSyncRuns } from '@/hooks/useSyncRuns';
+import SyncsTable from '@/components/logs/SyncsTable';
+import { useSyncs } from '@/hooks/useSyncs';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { Box } from '@mui/material';
@@ -10,7 +10,7 @@ export { getServerSideProps };
 
 export default function Home() {
   const [currentCursor, setCurrentCursor] = useState<string | undefined>(undefined);
-  const { syncRuns, isLoading } = useSyncRuns(currentCursor);
+  const { syncs, isLoading, mutate } = useSyncs(currentCursor);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -18,14 +18,14 @@ export default function Home() {
   };
 
   const handleNextPage = () => {
-    if (syncRuns?.next) {
-      setCurrentCursor(syncRuns.next);
+    if (syncs?.next) {
+      setCurrentCursor(syncs.next);
     }
   };
 
   const handlePreviousPage = () => {
-    if (syncRuns?.previous) {
-      setCurrentCursor(syncRuns.previous);
+    if (syncs?.previous) {
+      setCurrentCursor(syncs.previous);
     }
   };
 
@@ -39,14 +39,15 @@ export default function Home() {
       </Head>
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Header title="Sync Runs" onDrawerToggle={handleDrawerToggle} />
+        <Header title="Syncs" onDrawerToggle={handleDrawerToggle} />
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-          <SyncRunsTable
+          <SyncsTable
             handleNextPage={handleNextPage}
             handlePreviousPage={handlePreviousPage}
-            rowCount={syncRuns?.totalCount ?? 0}
-            data={syncRuns?.results ?? []}
+            rowCount={syncs?.totalCount ?? 0}
+            data={syncs?.results ?? []}
             isLoading={isLoading}
+            mutate={mutate}
           />
         </Box>
       </Box>

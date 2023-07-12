@@ -1,16 +1,23 @@
-export const fetcher = <T>(input: RequestInfo, init: RequestInit): Promise<T> => {
-  return fetch(input, init).then<T>((res) => res.json());
+export const fetcher = async <T>(input: RequestInfo, init: RequestInit): Promise<T> => {
+  const res = await fetch(input, init);
+  const result: T = await res.json();
+  return result;
 };
 
-export const fetcherWithApplication = <T>(
-  input: { path: string; applicationId: string },
+export const fetcherWithApplication = async <T>(
+  input: { path: string; applicationId: string; transform?: (data: any) => T },
   init: RequestInit
 ): Promise<T> => {
-  const { path, applicationId } = input;
+  const { path, applicationId, transform } = input;
   const supaglueHeaders = new Headers();
 
   // TODO: data drive these headers based on the active application context
   supaglueHeaders.append('x-application-id', applicationId);
 
-  return fetch(path, { headers: supaglueHeaders, ...init }).then<T>((res) => res.json());
+  const res = await fetch(path, { headers: supaglueHeaders, ...init });
+  const result = await res.json();
+  if (transform) {
+    return transform(result);
+  }
+  return result;
 };
