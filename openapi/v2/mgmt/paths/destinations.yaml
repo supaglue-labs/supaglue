@@ -27,7 +27,6 @@ get:
                     region: us-west-2
                     bucket: my-bucket
                     access_key_id: MY_ACCESS_KEY_ID
-                    secret_access_key: MY_SECRET_ACCESS_KEY
                 - id: 92bc3460-a301-4116-8d1f-6e5f8252c2e2
                   application_id: 9b9a31bb-9fe4-4fa5-ba84-4c035a27f258
                   name: My Postgres Destination

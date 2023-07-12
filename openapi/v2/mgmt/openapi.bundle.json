@@ -216,8 +216,7 @@
                         "config": {
                           "region": "us-west-2",
                           "bucket": "my-bucket",
-                          "access_key_id": "MY_ACCESS_KEY_ID",
-                          "secret_access_key": "MY_SECRET_ACCESS_KEY"
+                          "access_key_id": "MY_ACCESS_KEY_ID"
                         }
                       },
                       {
@@ -2385,7 +2384,7 @@
                     ]
                   },
                   "config": {
-                    "$ref": "#/components/schemas/s3_config"
+                    "$ref": "#/components/schemas/s3_config_safe"
                   }
                 },
                 "required": [
@@ -2404,7 +2403,7 @@
                     ]
                   },
                   "config": {
-                    "$ref": "#/components/schemas/postgres_config"
+                    "$ref": "#/components/schemas/postgres_config_safe"
                   }
                 },
                 "required": [
@@ -2423,7 +2422,7 @@
                     ]
                   },
                   "config": {
-                    "$ref": "#/components/schemas/bigquery_config"
+                    "$ref": "#/components/schemas/bigquery_config_safe"
                   }
                 },
                 "required": [
@@ -2435,7 +2434,91 @@
           }
         ]
       },
-      "s3_config": {
+      "s3_config_safe": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "bucket": {
+            "type": "string",
+            "example": "my-test-bucket"
+          },
+          "access_key_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "region",
+          "bucket",
+          "access_key_id",
+          "secret_access_key"
+        ]
+      },
+      "postgres_config_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "https://mydb.com"
+          },
+          "port": {
+            "type": "number",
+            "example": 5432
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "public"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "database",
+          "schema",
+          "user"
+        ]
+      },
+      "bigquery_config_safe": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my-dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+              }
+            },
+            "required": [
+              "client_email"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
+        ]
+      },
+      "s3_config_unsafe": {
         "type": "object",
         "properties": {
           "region": {
@@ -2460,7 +2543,7 @@
           "secret_access_key"
         ]
       },
-      "postgres_config": {
+      "postgres_config_unsafe": {
         "type": "object",
         "properties": {
           "host": {
@@ -2497,7 +2580,7 @@
           "password"
         ]
       },
-      "bigquery_config": {
+      "bigquery_config_unsafe": {
         "type": "object",
         "properties": {
           "project_id": {
@@ -3523,7 +3606,7 @@
                     ]
                   },
                   "config": {
-                    "$ref": "#/components/schemas/s3_config"
+                    "$ref": "#/components/schemas/s3_config_unsafe"
                   }
                 },
                 "required": [
@@ -3542,7 +3625,7 @@
                     ]
                   },
                   "config": {
-                    "$ref": "#/components/schemas/postgres_config"
+                    "$ref": "#/components/schemas/postgres_config_unsafe"
                   }
                 },
                 "required": [
@@ -3561,7 +3644,7 @@
                     ]
                   },
                   "config": {
-                    "$ref": "#/components/schemas/bigquery_config"
+                    "$ref": "#/components/schemas/bigquery_config_unsafe"
                   }
                 },
                 "required": [

@@ -1,11 +1,11 @@
 import type {
   Application,
   Customer,
-  Destination,
-  DestinationCreateParams,
-  DestinationTestParams,
+  DestinationCreateParamsAny,
+  DestinationSafeAny,
+  DestinationTestParamsAny,
   DestinationTestResult,
-  DestinationUpdateParams,
+  DestinationUpdateParamsAny,
   Provider,
   ProviderCreateParams,
   Schema,
@@ -223,7 +223,7 @@ export async function deleteSchema(applicationId: string, syncConfigId: string):
   return await toClientEmptyResponse(result);
 }
 
-export async function createDestination(data: DestinationCreateParams): Promise<ClientResponse<Destination>> {
+export async function createDestination(data: DestinationCreateParamsAny): Promise<ClientResponse<DestinationSafeAny>> {
   const result = await fetch(`/api/internal/destinations/create`, {
     method: 'POST',
     headers: {
@@ -236,7 +236,7 @@ export async function createDestination(data: DestinationCreateParams): Promise<
   return await toClientResponse(result);
 }
 
-export async function testDestination(data: DestinationTestParams): Promise<ClientResponse<DestinationTestResult>> {
+export async function testDestination(data: DestinationTestParamsAny): Promise<ClientResponse<DestinationTestResult>> {
   const result = await fetch(`/api/internal/destinations/_test`, {
     method: 'POST',
     headers: {
@@ -249,7 +249,7 @@ export async function testDestination(data: DestinationTestParams): Promise<Clie
   return await toClientResponse(result);
 }
 
-export async function updateDestination(data: DestinationUpdateParams): Promise<ClientResponse<Destination>> {
+export async function updateDestination(data: DestinationUpdateParamsAny): Promise<ClientResponse<DestinationSafeAny>> {
   const result = await fetch(`/api/internal/destinations/update`, {
     method: 'PUT',
     headers: {

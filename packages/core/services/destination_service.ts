@@ -3,11 +3,12 @@ import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
 import { BigQuery } from '@google-cloud/bigquery';
 import type { PrismaClient } from '@supaglue/db';
 import type {
-  Destination,
-  DestinationCreateParams,
-  DestinationTestParams,
+  DestinationCreateParamsAny,
+  DestinationSafeAny,
+  DestinationTestParamsAny,
   DestinationTestResult,
-  DestinationUpdateParams,
+  DestinationUnsafeAny,
+  DestinationUpdateParamsAny,
 } from '@supaglue/types';
 import { snakecaseKeys } from '@supaglue/utils';
 import { Client } from 'pg';
@@ -16,7 +17,7 @@ import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
 import { BadRequestError } from '../errors';
-import { fromDestinationModel } from '../mappers/destination';
+import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
 
 export class DestinationService {
   #prisma: PrismaClient;
@@ -25,14 +26,14 @@ export class DestinationService {
     this.#prisma = prisma;
   }
 
-  public async getDestinationsByApplicationId(applicationId: string): Promise<Destination[]> {
+  public async getDestinationsSafeByApplicationId(applicationId: string): Promise<DestinationSafeAny[]> {
     const models = await this.#prisma.destination.findMany({
       where: { applicationId },
     });
-    return models.map(fromDestinationModel);
+    return models.map(fromDestinationModelToSafe);
   }
 
-  public async getDestinationByProviderId(providerId: string): Promise<Destination | null> {
+  public async getDestinationUnsafeByProviderId(providerId: string): Promise<DestinationUnsafeAny | null> {
     const model = await this.#prisma.destination.findFirst({
       where: {
         syncConfigs: {
@@ -45,17 +46,24 @@ export class DestinationService {
     if (!model) {
       return null;
     }
-    return fromDestinationModel(model);
+    return fromDestinationModelToUnsafe(model);
   }
 
-  public async getDestinationById(id: string): Promise<Destination> {
+  public async getDestinationSafeById(id: string): Promise<DestinationSafeAny> {
     const model = await this.#prisma.destination.findUniqueOrThrow({
       where: { id },
     });
-    return fromDestinationModel(model);
+    return fromDestinationModelToSafe(model);
   }
 
-  public async createDestination(params: DestinationCreateParams): Promise<Destination> {
+  public async getDestinationUnsafeById(id: string): Promise<DestinationUnsafeAny> {
+    const model = await this.#prisma.destination.findUniqueOrThrow({
+      where: { id },
+    });
+    return fromDestinationModelToUnsafe(model);
+  }
+
+  public async createDestination(params: DestinationCreateParamsAny): Promise<DestinationSafeAny> {
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
@@ -67,10 +75,10 @@ export class DestinationService {
         config: params.config,
       },
     });
-    return fromDestinationModel(model);
+    return fromDestinationModelToSafe(model);
   }
 
-  public async testDestination(params: DestinationTestParams): Promise<DestinationTestResult> {
+  public async testDestination(params: DestinationTestParamsAny): Promise<DestinationTestResult> {
     let success = false;
     let message: string | null = null;
     if (!params.id) {
@@ -103,7 +111,6 @@ export class DestinationService {
               connectionTimeout: 1500,
             }),
           });
-
           const command = new ListBucketsCommand({}); // Use listing as a proxy for appropriate credentials
           const result = await s3Client.send(command);
           s3Client.destroy();
@@ -168,7 +175,7 @@ export class DestinationService {
     return { success, message };
   }
 
-  public async updateDestination(params: DestinationUpdateParams): Promise<Destination> {
+  public async updateDestination(params: DestinationUpdateParamsAny): Promise<DestinationSafeAny> {
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
@@ -181,11 +188,11 @@ export class DestinationService {
         name: params.name,
       },
     });
-    return fromDestinationModel(model);
+    return fromDestinationModelToSafe(model);
   }
 
   public async getWriterByProviderId(providerId: string): Promise<DestinationWriter | null> {
-    const destination = await this.getDestinationByProviderId(providerId);
+    const destination = await this.getDestinationUnsafeByProviderId(providerId);
     if (!destination) {
       return null;
     }
@@ -200,7 +207,7 @@ export class DestinationService {
   }
 
   public async getWriterByDestinationId(destinationId: string): Promise<DestinationWriter | null> {
-    const destination = await this.getDestinationById(destinationId);
+    const destination = await this.getDestinationUnsafeById(destinationId);
     if (!destination) {
       return null;
     }

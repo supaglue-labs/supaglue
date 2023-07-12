@@ -2,7 +2,7 @@
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import type { Destination } from '@supaglue/types';
+import type { DestinationSafeAny } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import type { DestinationCardInfo } from './DestinationTabPanelContainer';
 
@@ -10,7 +10,7 @@ export default function DestinationCard({
   destination,
   destinationInfo,
 }: {
-  destination?: Destination;
+  destination?: DestinationSafeAny;
   destinationInfo: DestinationCardInfo;
 }) {
   const router = useRouter();

@@ -29,7 +29,7 @@ export default function init(app: Router): void {
       req: Request<GetDestinationsPathParams, GetDestinationsResponse, GetDestinationsRequest>,
       res: Response<GetDestinationsResponse>
     ) => {
-      const destinations = await destinationService.getDestinationsByApplicationId(req.supaglueApplication.id);
+      const destinations = await destinationService.getDestinationsSafeByApplicationId(req.supaglueApplication.id);
       return res.status(200).send(destinations.map(snakecaseKeys));
     }
   );
@@ -40,7 +40,7 @@ export default function init(app: Router): void {
       req: Request<GetDestinationPathParams, GetDestinationResponse, GetDestinationRequest>,
       res: Response<GetDestinationResponse>
     ) => {
-      const destination = await destinationService.getDestinationById(req.params.destination_id);
+      const destination = await destinationService.getDestinationSafeById(req.params.destination_id);
       return res.status(200).send(snakecaseKeys(destination));
     }
   );

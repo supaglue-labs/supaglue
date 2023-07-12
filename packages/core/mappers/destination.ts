@@ -1,14 +1,67 @@
 import type { Destination as DestinationModel } from '@supaglue/db';
-import type { Destination } from '@supaglue/types';
+import type { DestinationSafeAny, DestinationUnsafeAny } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils';
 
-export const fromDestinationModel = (model: DestinationModel): Destination => {
-  const config = model.config as any;
-  return {
+export const fromDestinationModelToUnsafe = (model: DestinationModel): DestinationUnsafeAny => {
+  const baseParams = {
     id: model.id,
     name: model.name,
-    type: model.type,
     applicationId: model.applicationId,
-    config: model.type === 'bigquery' ? { ...config, credentials: camelcaseKeys(config.credentials) } : config,
-  } as Destination; // TODO: better type safety?
+  };
+
+  const config = model.config as any;
+
+  switch (model.type) {
+    case 'bigquery':
+      return {
+        ...baseParams,
+        type: 'bigquery',
+        config: {
+          ...config,
+          credentials: camelcaseKeys(config.credentials),
+        },
+      };
+    case 'postgres':
+    case 's3':
+      return {
+        ...baseParams,
+        type: model.type,
+        config,
+      };
+    default:
+      throw new Error(`Unknown destination type: ${model.type}`);
+  }
+};
+
+// TODO: change this mapper to not return creds in safe path
+// when we actually encrypt credentials
+export const fromDestinationModelToSafe = (model: DestinationModel): DestinationSafeAny => {
+  const baseParams = {
+    id: model.id,
+    name: model.name,
+    applicationId: model.applicationId,
+  };
+
+  const config = model.config as any;
+
+  switch (model.type) {
+    case 'bigquery':
+      return {
+        ...baseParams,
+        type: 'bigquery',
+        config: {
+          ...config,
+          credentials: camelcaseKeys(config.credentials),
+        },
+      };
+    case 'postgres':
+    case 's3':
+      return {
+        ...baseParams,
+        type: model.type,
+        config,
+      };
+    default:
+      throw new Error(`Unknown destination type: ${model.type}`);
+  }
 };

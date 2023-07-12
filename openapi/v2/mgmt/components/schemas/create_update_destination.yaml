@@ -15,7 +15,7 @@ allOf:
             enum:
               - s3
           config:
-            $ref: ./objects/s3_config.yaml
+            $ref: ./objects/s3_config_unsafe.yaml
         required:
           - type
           - config
@@ -27,7 +27,7 @@ allOf:
             enum:
               - postgres
           config:
-            $ref: ./objects/postgres_config.yaml
+            $ref: ./objects/postgres_config_unsafe.yaml
         required:
           - type
           - config
@@ -39,7 +39,7 @@ allOf:
             enum:
               - bigquery
           config:
-            $ref: ./objects/bigquery_config.yaml
+            $ref: ./objects/bigquery_config_unsafe.yaml
         required:
           - type
           - config

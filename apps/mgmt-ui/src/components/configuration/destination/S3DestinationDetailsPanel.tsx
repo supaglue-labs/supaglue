@@ -7,7 +7,6 @@ import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { Destination } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { s3DestinationCardInfo } from './DestinationTabPanelContainer';
