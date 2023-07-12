@@ -43,7 +43,7 @@ If these roles are too broad for your security policies, you can [create a custo
 You can also add [conditional access policies](https://cloud.google.com/bigquery/docs/control-access-to-resources-iam) to restrict access to specific datasets.
 :::
 
-![postgres-config](/img/bigquery-form.png)
+![bigquery-config](/img/bigquery-form.png)
 
 ## Query patterns
 
@@ -51,7 +51,7 @@ Here are a few high-level best practices when working with tables that Supaglue 
 
 - Avoid altering the schema of the existing columns
 
-There are a few patterns (from simplest to more complex) for querying tables that Supaglue writes into your Postgres:
+There are a few patterns (from simplest to more complex) for querying tables that Supaglue writes into your BigQuery dataset:
 
 ### Pattern #1 - Direct Query
 
