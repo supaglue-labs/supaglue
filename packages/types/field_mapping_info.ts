@@ -34,5 +34,5 @@ export type SchemaMappingsConfigForObject = {
 
 export type SchemaMappingsConfigObjectFieldMapping = {
   schemaField: string; // my_first_column
-  mappedField: string; // blah_1
+  mappedField?: string; // blah_1
 };

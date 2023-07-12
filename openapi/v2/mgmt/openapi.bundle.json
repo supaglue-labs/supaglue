@@ -2633,8 +2633,7 @@
           }
         },
         "required": [
-          "schema_field",
-          "mapped_field"
+          "schema_field"
         ]
       },
       "add_object": {

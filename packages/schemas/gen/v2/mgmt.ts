@@ -362,7 +362,7 @@ export interface components {
     };
     field_mapping: {
       schema_field: string;
-      mapped_field: string;
+      mapped_field?: string;
     };
     add_object: {
       /** @example object_name */

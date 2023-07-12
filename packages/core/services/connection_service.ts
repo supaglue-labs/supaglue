@@ -189,7 +189,7 @@ export class ConnectionService {
       .map(({ name }) => name);
     for (const requiredField of schemaMappingRequiredFields) {
       if (!params.fieldMappings.find(({ schemaField }) => schemaField === requiredField)) {
-        throw new BadRequestError(`Field ${requiredField} is required to be set by the schema`);
+        throw new BadRequestError(`Field ${requiredField} is missing.`);
       }
     }
     for (const fieldMapping of params.fieldMappings) {

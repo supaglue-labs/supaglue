@@ -1,5 +1,5 @@
 import type { SchemaConfig, SchemaField, SchemaMappingsConfigObjectFieldMapping } from '@supaglue/types';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldMapping, FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 
 export function createFieldMappingConfig(
   schema?: SchemaConfig,
@@ -10,7 +10,7 @@ export function createFieldMappingConfig(
   }
 
   const unmappedSchemaFields: SchemaField[] = [];
-  const mappedSchemaFields: { name: string; mappedName: string }[] = [];
+  const mappedSchemaFields: { name: string; mappedName?: string }[] = [];
 
   for (const field of schema.fields) {
     if (field.mappedName) {
@@ -63,11 +63,13 @@ export function createFieldMappingConfig(
   return {
     type: 'defined',
     fieldMappings: [
-      ...mappedSchemaFields.map((field) => ({
-        schemaField: field.name,
-        mappedField: field.mappedName,
-      })),
-      ...(customerFieldMappings ?? []),
+      ...mappedSchemaFields
+        .filter(({ mappedName }) => !!mappedName)
+        .map((field) => ({
+          schemaField: field.name,
+          mappedField: field.mappedName as string,
+        })),
+      ...((customerFieldMappings?.filter(({ mappedField }) => !!mappedField) ?? []) as FieldMapping[]),
     ],
   };
 }
