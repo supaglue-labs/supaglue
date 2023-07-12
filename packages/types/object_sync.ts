@@ -27,6 +27,12 @@ export type FullOnlyObjectSync = BaseObjectSync & {
 export type ObjectSyncType = 'full then incremental' | 'full only';
 export type ObjectSync = FullThenIncrementalObjectSync | FullOnlyObjectSync;
 
+export type ObjectSyncDTO = ObjectSync & {
+  // External Id
+  customerId: string;
+  providerName: string;
+};
+
 export type FullOnlyObjectSyncStateCreatedPhase = {
   phase: 'created';
 };
@@ -53,7 +59,9 @@ export type FullThenIncrementalObjectSyncState =
 export type ObjectSyncState = FullThenIncrementalObjectSyncState | FullOnlyObjectSyncState;
 
 export type ObjectSyncFilter = {
-  connectionId: string;
+  applicationId: string;
+  externalCustomerId?: string;
+  providerName?: string;
 } & (
   | {
       objectType: ObjectType;

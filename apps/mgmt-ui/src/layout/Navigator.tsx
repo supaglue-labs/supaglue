@@ -68,6 +68,12 @@ export default function Navigator(props: DrawerProps) {
           active: false,
         },
         {
+          id: 'Syncs',
+          to: `/applications/${applicationId}/syncs`,
+          icon: <FindInPage />,
+          active: false,
+        },
+        {
           id: 'Sync Runs',
           to: `/applications/${applicationId}/sync_runs`,
           icon: <FindInPage />,

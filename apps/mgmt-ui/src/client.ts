@@ -336,3 +336,74 @@ export async function deleteConnection(
   });
   return await toClientEmptyResponse(result);
 }
+
+export async function pauseSync(
+  applicationId: string,
+  customerId: string,
+  providerName: string,
+  objectType: string,
+  object: string
+): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/syncs/_pause`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+      'x-customer-id': customerId,
+      'x-provider-name': providerName,
+    },
+    body: JSON.stringify({
+      object_type: objectType,
+      object,
+    }),
+  });
+  return await toClientEmptyResponse(result);
+}
+
+export async function resumeSync(
+  applicationId: string,
+  customerId: string,
+  providerName: string,
+  objectType: string,
+  object: string
+): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/syncs/_resume`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+      'x-customer-id': customerId,
+      'x-provider-name': providerName,
+    },
+    body: JSON.stringify({
+      object_type: objectType,
+      object,
+    }),
+  });
+  return await toClientEmptyResponse(result);
+}
+
+export async function triggerSync(
+  applicationId: string,
+  customerId: string,
+  providerName: string,
+  objectType: string,
+  object: string,
+  performFullRefresh?: boolean
+): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/syncs/_trigger`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+      'x-customer-id': customerId,
+      'x-provider-name': providerName,
+    },
+    body: JSON.stringify({
+      object_type: objectType,
+      object,
+      perform_full_refresh: performFullRefresh,
+    }),
+  });
+  return await toClientEmptyResponse(result);
+}

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { fetcherWithApplication } from '.';
 
-export function useSWRWithApplication<T>(path: string) {
+export function useSWRWithApplication<T>(path: string, transform?: (data: any) => T) {
   const router = useRouter();
   const { applicationId } = router.query;
 
@@ -10,6 +10,7 @@ export function useSWRWithApplication<T>(path: string) {
     {
       path,
       applicationId,
+      transform,
     },
     fetcherWithApplication<T>,
     {

@@ -183,7 +183,6 @@ export interface paths {
      * @description Get a list of Sync objects.
      */
     get: operations["getSyncs"];
-    
   };
   "/syncs/_pause": {
     /** Pause sync */
@@ -220,11 +219,11 @@ export interface components {
   schemas: {
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
-      next?: string | null;
+      next: string | null;
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
-      previous?: string | null;
+      previous: string | null;
       /** @example 100 */
-      total_count?: number;
+      total_count: number;
     };
     customer: {
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
@@ -544,6 +543,12 @@ export interface components {
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
       sync_config_id: string;
       paused: boolean;
+    };
+    sync_with_provider_and_customer: components["schemas"]["sync"] & {
+      /** @example hubspot */
+      provider_name: string;
+      /** @example my-customer-1 */
+      customer_id: string;
     };
     sync_run: {
       error_message: string | null;
@@ -1187,11 +1192,15 @@ export interface operations {
     parameters?: {
         /** @description The pagination cursor value */
         /** @description Number of results to return per page */
+        /** @description The customer ID that uniquely identifies the customer in your application */
+        /** @description The provider name */
         /** @description The object type to filter by */
         /** @description The object to filter by */
       query?: {
         cursor?: string;
         page_size?: string;
+        customer_id?: string;
+        provider_name?: string;
         object_type?: "common" | "standard" | "custom";
         object?: string;
       };
@@ -1201,7 +1210,7 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["pagination"] & {
-            results?: (components["schemas"]["sync"])[];
+            results?: (components["schemas"]["sync_with_provider_and_customer"])[];
           };
         };
       };
@@ -1209,12 +1218,20 @@ export interface operations {
   };
   pauseSync: {
     /** Pause sync */
-    parameters: {
-        /** @description The object type to filter by */
-        /** @description The object to filter by */
-      query: {
-        object_type: "common" | "standard" | "custom";
-        object: string;
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description The object type to filter by 
+           * @enum {string}
+           */
+          object_type: "common" | "standard" | "custom";
+          /**
+           * @description The object to filter by 
+           * @example contact
+           */
+          object: string;
+        };
       };
     };
     responses: {
@@ -1228,12 +1245,20 @@ export interface operations {
   };
   resumeSync: {
     /** Resume sync */
-    parameters: {
-        /** @description The object type to filter by */
-        /** @description The object to filter by */
-      query: {
-        object_type: "common" | "standard" | "custom";
-        object: string;
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description The object type to filter by 
+           * @enum {string}
+           */
+          object_type: "common" | "standard" | "custom";
+          /**
+           * @description The object to filter by 
+           * @example contact
+           */
+          object: string;
+        };
       };
     };
     responses: {
@@ -1247,17 +1272,19 @@ export interface operations {
   };
   triggerSync: {
     /** Trigger sync */
-    parameters: {
-        /** @description The object type to filter by */
-        /** @description The object to filter by */
-      query: {
-        object_type: "common" | "standard" | "custom";
-        object: string;
-      };
-    };
     requestBody: {
       content: {
         "application/json": {
+          /**
+           * @description The object type to filter by 
+           * @enum {string}
+           */
+          object_type: "common" | "standard" | "custom";
+          /**
+           * @description The object to filter by 
+           * @example contact
+           */
+          object: string;
           /** @example true */
           perform_full_refresh?: boolean;
         };

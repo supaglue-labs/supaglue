@@ -27,7 +27,8 @@ const { objectSyncService, connectionAndSyncService } = getDependencyContainer()
 
 export default function init(app: Router) {
   const syncRouter = Router();
-  syncRouter.use(connectionHeaderMiddleware);
+  const syncRouterWithConnectionMiddleware = Router();
+  syncRouterWithConnectionMiddleware.use(connectionHeaderMiddleware);
 
   syncRouter.get(
     '/',
@@ -48,9 +49,11 @@ export default function init(app: Router) {
       }
 
       const { next, previous, results, totalCount } = await objectSyncService.list({
-        connectionId: req.customerConnection.id,
+        applicationId: req.supaglueApplication.id,
         paginationParams: toPaginationInternalParams({ page_size: req.query?.page_size, cursor: req.query?.cursor }),
         ...getObjectFilter(),
+        externalCustomerId: req.query?.customer_id,
+        providerName: req.query?.provider_name,
       });
 
       const snakeCaseResults = results.map((result) => ({
@@ -58,6 +61,8 @@ export default function init(app: Router) {
         object_type: result.objectType,
         object: result.object,
         connection_id: result.connectionId,
+        provider_name: result.providerName,
+        customer_id: result.customerId,
         sync_config_id: result.syncConfigId,
         paused: result.paused,
       }));
@@ -65,7 +70,7 @@ export default function init(app: Router) {
     }
   );
 
-  syncRouter.post(
+  syncRouterWithConnectionMiddleware.post(
     '/_trigger',
     async (
       req: Request<TriggerSyncPathParams, TriggerSyncResponse, TriggerSyncRequest, TriggerSyncQueryParams>,
@@ -73,8 +78,8 @@ export default function init(app: Router) {
     ) => {
       const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
         req.customerConnection.id,
-        req.query.object_type,
-        req.query.object
+        req.body.object_type,
+        req.body.object
       );
       const updated = await connectionAndSyncService.triggerSync(objectSync, req.body.perform_full_refresh ?? false);
       return res.status(200).send({
@@ -88,7 +93,7 @@ export default function init(app: Router) {
     }
   );
 
-  syncRouter.post(
+  syncRouterWithConnectionMiddleware.post(
     '/_pause',
     async (
       req: Request<PauseSyncPathParams, PauseSyncResponse, PauseSyncRequest, PauseSyncQueryParams>,
@@ -96,8 +101,8 @@ export default function init(app: Router) {
     ) => {
       const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
         req.customerConnection.id,
-        req.query.object_type,
-        req.query.object
+        req.body.object_type,
+        req.body.object
       );
       const updated = await connectionAndSyncService.pauseSync(objectSync);
       return res.status(200).send({
@@ -111,7 +116,7 @@ export default function init(app: Router) {
     }
   );
 
-  syncRouter.post(
+  syncRouterWithConnectionMiddleware.post(
     '/_resume',
     async (
       req: Request<ResumeSyncPathParams, ResumeSyncResponse, ResumeSyncRequest, ResumeSyncQueryParams>,
@@ -119,8 +124,8 @@ export default function init(app: Router) {
     ) => {
       const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
         req.customerConnection.id,
-        req.query.object_type,
-        req.query.object
+        req.body.object_type,
+        req.body.object
       );
       const updated = await connectionAndSyncService.resumeSync(objectSync);
       return res.status(200).send({
@@ -135,4 +140,5 @@ export default function init(app: Router) {
   );
 
   app.use('/syncs', syncRouter);
+  app.use('/syncs', syncRouterWithConnectionMiddleware);
 }

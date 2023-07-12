@@ -1132,7 +1132,12 @@
             "type": "number",
             "example": 100
           }
-        }
+        },
+        "required": [
+          "next",
+          "previous",
+          "total_count"
+        ]
       },
       "address": {
         "type": "object",

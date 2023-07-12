@@ -149,6 +149,8 @@ components:
       $ref: ./components/schemas/objects/provider_name_engagement.yaml
     sync:
       $ref: ./components/schemas/objects/sync.yaml
+    sync_with_provider_and_customer:
+      $ref: ./components/schemas/objects/sync_with_provider_and_customer.yaml
     sync_run:
       $ref: ./components/schemas/objects/sync_run.yaml
     create_update_customer:
