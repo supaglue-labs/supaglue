@@ -1,4 +1,4 @@
-import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
+import { NotFoundError } from '@supaglue/core/errors';
 import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
@@ -51,9 +51,6 @@ export class ConnectionAndSyncService {
   }
 
   public async triggerSync(objectSync: ObjectSync, performFullRefresh: boolean): Promise<ObjectSync> {
-    if (objectSync.paused) {
-      throw new BadRequestError(`Cannot trigger sync ${objectSync.id} because it is paused. Please resume it first.`);
-    }
     // Record whether next run should do full refresh or not
     const newSync = await this.#prisma.objectSync.update({
       where: {
@@ -74,8 +71,8 @@ export class ConnectionAndSyncService {
     return fromObjectSyncModel(newSync);
   }
 
-  async #changeSyncPausedState(objectSync: ObjectSync, pauseState: boolean): Promise<ObjectSync> {
-    if (objectSync.paused === pauseState) {
+  async #changeSyncPausedState(objectSync: ObjectSync, pausedState: boolean): Promise<ObjectSync> {
+    if (objectSync.paused === pausedState) {
       return objectSync;
     }
 
@@ -86,7 +83,7 @@ export class ConnectionAndSyncService {
             id: objectSync.id,
           },
           data: {
-            paused: pauseState,
+            paused: pausedState,
           },
         }),
         tx.objectSyncChange.create({
