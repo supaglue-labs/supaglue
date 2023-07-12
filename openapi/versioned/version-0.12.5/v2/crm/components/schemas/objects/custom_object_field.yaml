@@ -1,0 +1,23 @@
+type: object
+properties:
+  display_name:
+    type: string
+    example: Ticket ID
+  key_name:
+    type: string
+    example: ticket_id
+    description: In Salesforce, this must end with `__c`.
+  is_required:
+    type: boolean
+    example: false
+  field_type:
+    type: string
+    enum:
+      - string
+      - number
+    description: In Salesforce, when this is set to 'string', the max length will be set to 255 by default. In Salesforce, when it is set to 'number', the precision and scale will be set to 18 and 0, respectively.
+required:
+  - display_name
+  - key_name
+  - is_required
+  - field_type
