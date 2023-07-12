@@ -11,7 +11,14 @@ export function createDoProcessSyncChanges(syncService: SyncService, systemSetti
   return async function doProcessSyncChanges(args: DoProcessSyncChangesArgs): Promise<DoProcessSyncChangesResult> {
     const { processSyncChangesFull } = await systemSettingsService.getSystemSettings();
     await syncService.processSyncChanges(processSyncChangesFull);
-    await systemSettingsService.setProcessSyncChangesFull(false);
+
+    // Only reset the flag if it was true to begin with.
+    // Because the manual trigger has an OverlapPolicy of BUFFER_ONE, if there
+    // is already a run occurring, that existing run could reset this flag to false
+    // even though it executed `syncService.processSyncChanges` with `full` set to true.
+    if (processSyncChangesFull) {
+      await systemSettingsService.setProcessSyncChangesFull(false);
+    }
     return {};
   };
 }

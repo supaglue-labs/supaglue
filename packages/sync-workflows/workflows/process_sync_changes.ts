@@ -3,7 +3,7 @@ import { proxyActivities } from '@temporalio/workflow';
 import type { createActivities } from '../activities/index';
 
 const { doProcessSyncChanges } = proxyActivities<ReturnType<typeof createActivities>>({
-  startToCloseTimeout: '2 minutes',
+  startToCloseTimeout: '5 minutes',
 });
 
 export const PROCESS_SYNC_CHANGES_SCHEDULE_ID = 'periodically-process-sync-changes';
