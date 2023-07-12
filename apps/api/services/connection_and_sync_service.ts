@@ -329,7 +329,7 @@ export class ConnectionAndSyncService {
 
   async #triggerProcessSyncChangesTemporalSchedule(): Promise<void> {
     const handle = this.#temporalClient.schedule.getHandle(PROCESS_SYNC_CHANGES_SCHEDULE_ID);
-    await handle.trigger();
+    await handle.trigger(ScheduleOverlapPolicy.BUFFER_ONE);
   }
 
   public async upsertProcessSyncChangesTemporalSchedule(): Promise<void> {

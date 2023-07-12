@@ -8,6 +8,7 @@ import type {
 } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
+import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
 import type { PrismaClient } from '@supaglue/db';
 import { ApplicationService, SyncService } from '@supaglue/sync-workflows/services';
 import { Client, Connection } from '@temporalio/client';
@@ -15,6 +16,7 @@ import fs from 'fs';
 
 type DependencyContainer = {
   prisma: PrismaClient;
+  systemSettingsService: SystemSettingsService;
   temporalClient: Client;
   connectionService: ConnectionService;
   remoteService: RemoteService;
@@ -31,8 +33,15 @@ type DependencyContainer = {
 let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
-  const { prisma, connectionService, remoteService, providerService, syncConfigService, schemaService } =
-    getCoreDependencyContainer();
+  const {
+    prisma,
+    systemSettingsService,
+    connectionService,
+    remoteService,
+    providerService,
+    syncConfigService,
+    schemaService,
+  } = getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
     process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
@@ -63,6 +72,7 @@ function createDependencyContainer(): DependencyContainer {
 
   return {
     prisma,
+    systemSettingsService,
     temporalClient,
     applicationService,
     connectionService,

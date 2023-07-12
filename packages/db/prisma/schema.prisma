@@ -10,6 +10,13 @@ datasource db {
   url      = env("SUPAGLUE_DATABASE_URL")
 }
 
+model SystemSettings {
+  id                     String  @id @default("1")
+  processSyncChangesFull Boolean? @map("process_sync_changes_full")
+
+  @@map("system_settings")
+}
+
 model Application {
   id           String        @id @default(uuid())
   name         String
