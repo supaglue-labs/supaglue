@@ -22,7 +22,7 @@ Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 
 Note: When listing the custom objects you'd like to sync, omit the `__c` suffix.
 
-Supported common object types:
+Supported common objects:
 
 - Account
 - Contact
@@ -30,7 +30,7 @@ Supported common object types:
 - Opportunity
 - User
 
-Supported standard object types: use singular Pascal casing when specifying [Salesforce Standard Objects](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm).
+Supported standard objects: use singular Pascal casing when specifying [Salesforce Standard Objects](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm).
 
 ## Provider setup
 

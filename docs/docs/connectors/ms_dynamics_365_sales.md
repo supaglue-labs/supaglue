@@ -20,7 +20,7 @@ Supaglue interfaces with the Microsoft Dynamics 365 V9 API.
 | Action API                               | Yes       |
 | Real-time events                         | No        |
 
-Supported common object types:
+Supported common objects:
 
 - Account
 - Contact

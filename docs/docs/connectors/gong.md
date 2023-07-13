@@ -19,4 +19,4 @@ Supaglue interfaces with the Gong V2 API.
 | Action API                       | No        |
 | Real-time events                 | No        |
 
-Supported standard object types: `call`, `detailedCall`, `callTranscript`.
+Supported standard objects: `call`, `detailedCall`, `callTranscript`.

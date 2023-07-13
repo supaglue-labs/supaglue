@@ -17,7 +17,7 @@ description: ''
 | Action API                 | Yes       |
 | Real-time events           | No        |
 
-Supported common object types:
+Supported common objects:
 
 - Users
 - Accounts

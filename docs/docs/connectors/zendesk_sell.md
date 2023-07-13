@@ -17,7 +17,7 @@ description: ''
 | Action API                 | No        |
 | Real-time events           | No        |
 
-Supported common object types:
+Supported common objects:
 
 - Lead
 - Deal

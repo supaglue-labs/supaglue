@@ -19,7 +19,7 @@ Supaglue uses the Outreach v2 API.
 | Action API (common objects)    | Yes       |
 | Real-time events               | No        |
 
-Supported common object types:
+Supported common objects:
 
 - Users
 - Accounts
