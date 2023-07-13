@@ -2,8 +2,7 @@ import type { ConnectionUnsafe, NormalizedRawRecord, Provider } from '@supaglue/
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { Readable } from 'stream';
-import { retryWhenAxiosRateLimited } from '../../../lib';
-import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib/constants';
+import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
@@ -63,25 +62,33 @@ class GongClient extends AbstractEngagementRemoteClient {
 
   private async maybeRefreshAccessToken(): Promise<void> {
     if (!this.#config.expiresAt || Date.parse(this.#config.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS) {
-      const {
-        data: { access_token, expires_in },
-      } = await axios.post<{ access_token: string; expires_in: number }>(
+      const { data } = await axios.post<{ access_token: string; refresh_token: string; expires_in: number }>(
         `${authConfig.tokenHost}${authConfig.tokenPath}`,
-        {
-          grant_type: 'refresh_token',
-          refresh_token: this.#config.refreshToken,
-        },
+        null,
         {
           headers: {
-            Authorization: `Basic ${Buffer.from(`${this.#config.clientId}:${this.#config.clientSecret}`).toString()}`,
+            Authorization: `Basic ${Buffer.from(`${this.#config.clientId}:${this.#config.clientSecret}`).toString(
+              'base64'
+            )}`,
+          },
+          params: {
+            grant_type: 'refresh_token',
+            refresh_token: this.#config.refreshToken,
           },
         }
       );
 
+      const { access_token, refresh_token, expires_in } = data;
+
       const newExpiresAt = new Date(Date.now() + expires_in * 1000).toISOString();
       this.#config.accessToken = access_token;
+      this.#config.refreshToken = refresh_token;
       this.#config.expiresAt = newExpiresAt;
-      this.emit('token_refreshed', access_token, newExpiresAt);
+      this.emit('token_refreshed', {
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        expiresAt: newExpiresAt,
+      });
     }
   }
 

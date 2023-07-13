@@ -89,12 +89,23 @@ export class RemoteService {
   }
 
   #persistRefreshedToken(connectionId: string, client: RemoteClient) {
-    client.on('token_refreshed', (accessToken: string, expiresAt: string | null) => {
-      this.#connectionService
-        .updateConnectionWithNewAccessToken(connectionId, accessToken, expiresAt)
-        .catch((err: unknown) => {
-          logger.error({ err, connectionId }, `Failed to persist refreshed token`);
-        });
-    });
+    client.on(
+      'token_refreshed',
+      ({
+        accessToken,
+        refreshToken,
+        expiresAt,
+      }: {
+        accessToken: string;
+        refreshToken?: string;
+        expiresAt: string | null;
+      }) => {
+        this.#connectionService
+          .updateConnectionWithNewTokens(connectionId, accessToken, refreshToken, expiresAt)
+          .catch((err: unknown) => {
+            logger.error({ err, connectionId }, `Failed to persist refreshed token`);
+          });
+      }
+    );
   }
 }

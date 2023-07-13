@@ -338,11 +338,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         this.#config.refreshToken
       );
       const newAccessToken = token.accessToken;
+      const newRefreshToken = token.refreshToken;
       const newExpiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
+
       this.#config.accessToken = newAccessToken;
+      this.#config.refreshToken = newRefreshToken;
       this.#config.expiresAt = newExpiresAt;
+
       this.#client.setAccessToken(newAccessToken);
-      this.emit('token_refreshed', newAccessToken, newExpiresAt);
+      this.emit('token_refreshed', {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        expiresAt: newExpiresAt,
+      });
     }
   }
 

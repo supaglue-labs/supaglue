@@ -5,7 +5,7 @@ import { EventEmitter } from 'events';
 import type { Readable } from 'stream';
 
 interface RemoteClientEvents {
-  token_refreshed: (accessToken: string, expiresAt: string | null) => void;
+  token_refreshed: (args: { accessToken: string; refreshToken?: string; expiresAt: string | null }) => void;
 }
 
 export interface RemoteClient {

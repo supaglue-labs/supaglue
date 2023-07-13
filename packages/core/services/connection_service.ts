@@ -267,9 +267,10 @@ export class ConnectionService {
     return await this.#schemaService.getById(schemaId);
   }
 
-  public async updateConnectionWithNewAccessToken(
+  public async updateConnectionWithNewTokens(
     connectionId: string,
     accessToken: string,
+    refreshToken: string | undefined,
     expiresAt: string | null
   ): Promise<ConnectionSafeAny> {
     // TODO: Not atomic.
@@ -281,6 +282,7 @@ export class ConnectionService {
     const newCredentials: ConnectionCredentialsDecryptedAny = {
       ...(oldCredentialsUnsafe as ConnectionCredentialsDecryptedAny),
       accessToken,
+      refreshToken: refreshToken ?? oldCredentialsUnsafe.refreshToken,
       expiresAt,
     };
 
