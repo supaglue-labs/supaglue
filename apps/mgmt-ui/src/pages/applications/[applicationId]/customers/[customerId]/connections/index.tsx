@@ -40,6 +40,14 @@ export default function Home() {
     },
     { field: 'customerId', headerName: 'Customer ID', width: 180 },
     {
+      field: 'instanceUrl',
+      headerName: 'Instance',
+      width: 180,
+      renderCell: (params) => {
+        return <span className="whitespace-normal">{params.row.instanceUrl}</span>;
+      },
+    },
+    {
       field: 'delete',
       headerName: 'Delete',
       width: 100,

@@ -9,8 +9,7 @@ import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs
 import getIcon from '@/utils/companyToIcon';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
-import { Breadcrumbs, IconButton, Stack, Typography } from '@mui/material';
+import { Breadcrumbs, Button, Stack, Typography } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { SyncConfig } from '@supaglue/types';
@@ -92,8 +91,22 @@ export default function SyncConfigListPanel() {
         );
       },
     },
-    { field: 'frequency', headerName: 'Frequency', width: 100 },
-    { field: 'objects', headerName: 'Objects', width: 250 },
+    {
+      field: 'frequency',
+      headerName: 'Frequency',
+      width: 100,
+      renderCell: (params) => {
+        return <span className="whitespace-normal">{params.row.frequency}</span>;
+      },
+    },
+    {
+      field: 'objects',
+      headerName: 'Objects',
+      width: 250,
+      renderCell: (params) => {
+        return <span className="whitespace-normal">{params.row.objects}</span>;
+      },
+    },
     {
       field: '_',
       headerName: 'Admin',
@@ -141,7 +154,7 @@ export default function SyncConfigListPanel() {
             <div>
               {syncConfigs.length} Sync {syncConfigs.length === 1 ? 'Config' : 'Configs'}
             </div>
-            <IconButton className="p-1" size="small">
+            <div className="p-1">
               <Link
                 href={`/applications/${applicationId}/configuration/sync_configs/new`}
                 className="flex flex-row gap-2 items-center w-full h-full"
@@ -150,9 +163,11 @@ export default function SyncConfigListPanel() {
                   color: 'rgba(0, 0, 0, 0.54)',
                 }}
               >
-                <AddIcon />
+                <Button color="primary" variant="outlined" size="small">
+                  Add
+                </Button>
               </Link>
-            </IconButton>
+            </div>
           </Stack>
         }
       />

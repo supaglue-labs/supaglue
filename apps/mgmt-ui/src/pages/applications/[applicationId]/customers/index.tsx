@@ -63,9 +63,30 @@ export default function Home() {
   };
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 300 },
-    { field: 'name', headerName: 'Name', width: 250 },
-    { field: 'email', headerName: 'Email', width: 250 },
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 300,
+      renderCell: (params) => {
+        return <span className="whitespace-normal">{params.row.id}</span>;
+      },
+    },
+    {
+      field: 'name',
+      headerName: 'Name',
+      width: 250,
+      renderCell: (params) => {
+        return <span className="whitespace-normal">{params.row.name}</span>;
+      },
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      width: 250,
+      renderCell: (params) => {
+        return <span className="whitespace-normal">{params.row.email}</span>;
+      },
+    },
     {
       field: 'connections',
       headerName: 'Connections',

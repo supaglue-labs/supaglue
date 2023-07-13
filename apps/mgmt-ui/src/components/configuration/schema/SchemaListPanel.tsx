@@ -6,8 +6,7 @@ import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSchemasResponse, useSchemas } from '@/hooks/useSchemas';
 import { PeopleAltOutlined } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
-import { Breadcrumbs, IconButton, Stack, Typography } from '@mui/material';
+import { Breadcrumbs, Button, Stack, Typography } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { Provider } from '@supaglue/types';
@@ -28,12 +27,12 @@ export default function SchemaListPanel() {
     {
       field: 'name',
       headerName: 'Name',
-      width: 125,
+      width: 200,
       renderCell: (params) => {
         return (
           <Link
             href={`/applications/${applicationId}/configuration/schemas/${params.row.id}`}
-            className="flex flex-row gap-2 items-center w-full h-full"
+            className="flex flex-row gap-2 items-center w-full h-full whitespace-normal break-all"
             style={{
               textDecoration: 'none',
             }}
@@ -49,7 +48,7 @@ export default function SchemaListPanel() {
       width: 300,
       sortable: false,
       renderCell: (params) => {
-        return getFieldsListAsString(params.row.fields);
+        return <span className="whitespace-normal break-all">{getFieldsListAsString(params.row.fields)}</span>;
       },
     },
     {
@@ -66,7 +65,7 @@ export default function SchemaListPanel() {
                 return (
                   <Link
                     href={`/applications/${applicationId}/configuration/providers/${provider.category}/${provider.name}`}
-                    className="flex flex-row gap-2 items-center w-full h-full"
+                    className="flex flex-row gap-2 items-center w-full h-full whitespace-normal"
                   >
                     {object}
                   </Link>
@@ -122,7 +121,7 @@ export default function SchemaListPanel() {
             <div>
               {schemas.length} {schemas.length === 1 ? 'Schema' : 'Schemas'}
             </div>
-            <IconButton className="p-1" size="small">
+            <div className="p-1">
               <Link
                 href={`/applications/${applicationId}/configuration/schemas/new`}
                 className="flex flex-row gap-2 items-center w-full h-full"
@@ -131,9 +130,11 @@ export default function SchemaListPanel() {
                   color: 'rgba(0, 0, 0, 0.54)',
                 }}
               >
-                <AddIcon />
+                <Button color="primary" variant="outlined" size="small">
+                  Add
+                </Button>
               </Link>
-            </IconButton>
+            </div>
           </Stack>
         }
       />
