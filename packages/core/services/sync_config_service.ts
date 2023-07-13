@@ -114,14 +114,25 @@ export class SyncConfigService {
   // Only used for backfill
   public async upsert(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     validateSyncConfigParams(syncConfig);
-    const upsertedSyncConfig = await this.#prisma.syncConfig.upsert({
-      where: {
-        providerId: syncConfig.providerId,
-      },
-      create: toSyncConfigModel(syncConfig),
-      update: toSyncConfigModel(syncConfig),
+
+    const upsertedSyncConfigModel = await this.#prisma.$transaction(async (tx) => {
+      const upsertedSyncConfigModel = await tx.syncConfig.upsert({
+        where: {
+          providerId: syncConfig.providerId,
+        },
+        create: toSyncConfigModel(syncConfig),
+        update: toSyncConfigModel(syncConfig),
+      });
+
+      await tx.syncConfigChange.create({
+        data: {
+          syncConfigId: upsertedSyncConfigModel.id,
+        },
+      });
+
+      return upsertedSyncConfigModel;
     });
-    return fromSyncConfigModel(upsertedSyncConfig);
+    return fromSyncConfigModel(upsertedSyncConfigModel);
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
@@ -133,9 +144,16 @@ export class SyncConfigService {
     if (objectSyncs.length) {
       throw new BadRequestError('Cannot delete sync config with active connections');
     }
-    await this.#prisma.syncConfig.deleteMany({
-      where: { id, applicationId },
-    });
+    await this.#prisma.$transaction([
+      this.#prisma.syncConfig.deleteMany({
+        where: { id, applicationId },
+      }),
+      this.#prisma.syncConfigChange.create({
+        data: {
+          syncConfigId: id,
+        },
+      }),
+    ]);
   }
 }
 

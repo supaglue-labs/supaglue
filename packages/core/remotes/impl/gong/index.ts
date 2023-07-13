@@ -131,7 +131,12 @@ class GongClient extends AbstractEngagementRemoteClient {
             id: transcript.callId,
             rawData: transcript,
             isDeleted: false,
-            lastModifiedAt: new Date(0), // we don't know the last modified at time
+            // we don't know the last modified at time
+            // TODO: figure out some way to address this.
+            // Otherwise, we're just going to be constantly doing full refresh for transcripts.
+            // Maybe there is some way to get the max last modified at time for the 'calls' sync
+            // and use that?
+            lastModifiedAt: new Date(0),
             emittedAt,
           }),
           modifiedAfter
