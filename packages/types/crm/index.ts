@@ -6,7 +6,7 @@ import type {
   RemoteUserTypes,
 } from '.';
 
-export const SUPPORTED_CRM_CONNECTIONS = [
+export const SUPPORTED_CRM_PROVIDERS = [
   'salesforce',
   'hubspot',
   'pipedrive',
@@ -16,7 +16,7 @@ export const SUPPORTED_CRM_CONNECTIONS = [
   'capsule',
 ] as const;
 
-export type CRMProviderName = (typeof SUPPORTED_CRM_CONNECTIONS)[number];
+export type CRMProviderName = (typeof SUPPORTED_CRM_PROVIDERS)[number];
 export type CRMProviderCategory = 'crm';
 
 export const CRM_COMMON_OBJECT_TYPES = ['account', 'contact', 'lead', 'opportunity', 'user'] as const;

@@ -1,6 +1,7 @@
 import type { ConnectionUnsafe, Provider, ProviderCategory, ProviderName } from '@supaglue/types';
 import type { AbstractRemoteClient, ConnectorAuthConfig, RemoteClient } from './base';
 import * as capsule from './impl/capsule';
+import * as gong from './impl/gong';
 import * as hubspot from './impl/hubspot';
 import * as ms_dynamics_365_sales from './impl/ms_dynamics_365_sales';
 import * as outreach from './impl/outreach';
@@ -26,6 +27,7 @@ const connectorConfigMap: {
   capsule,
   zoho_crm,
   outreach,
+  gong,
 };
 
 // `authConfig` to be used in simple-oauth2
@@ -82,6 +84,7 @@ export function getCategoryForProvider(providerName: ProviderName): ProviderCate
     case 'zoho_crm':
       return 'crm';
     case 'outreach':
+    case 'gong':
       return 'engagement';
   }
 }
