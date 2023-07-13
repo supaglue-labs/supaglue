@@ -4,9 +4,9 @@ import { BadRequestError } from '@supaglue/core/errors';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes';
 import type { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, Provider, ProviderName } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
-import { SUPPORTED_CRM_CONNECTIONS } from '@supaglue/types/crm';
+import { SUPPORTED_CRM_PROVIDERS } from '@supaglue/types/crm';
 import type { EngagementProviderName } from '@supaglue/types/engagement';
-import { SUPPORTED_ENGAGEMENT_CONNECTIONS } from '@supaglue/types/engagement';
+import { SUPPORTED_ENGAGEMENT_PROVIDERS } from '@supaglue/types/engagement';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 import type { AuthorizationMethod } from 'simple-oauth2';
@@ -149,8 +149,8 @@ export default function init(app: Router): void {
 
       if (
         !providerName ||
-        (!SUPPORTED_CRM_CONNECTIONS.includes(providerName as CRMProviderName) &&
-          !SUPPORTED_ENGAGEMENT_CONNECTIONS.includes(providerName as EngagementProviderName))
+        (!SUPPORTED_CRM_PROVIDERS.includes(providerName as CRMProviderName) &&
+          !SUPPORTED_ENGAGEMENT_PROVIDERS.includes(providerName as EngagementProviderName))
       ) {
         throw new Error('No providerName or supported providerName on state object');
       }
@@ -188,11 +188,23 @@ export default function init(app: Router): void {
       // TODO: implement code_verifier/code_challenge when we implement sessions
       const additionalAuthParams: Record<string, string> = {};
 
-      const tokenWrapper = await client.getToken({
-        code,
-        redirect_uri: REDIRECT_URI,
-        ...additionalAuthParams,
-      });
+      // TODO: We should move all the logic that is conditional on providerName
+      // to their respective files
+      const tokenWrapper = await client.getToken(
+        {
+          code,
+          redirect_uri: REDIRECT_URI,
+          ...additionalAuthParams,
+        },
+        {
+          headers:
+            providerName === 'gong'
+              ? {
+                  Authorization: `Basic ${Buffer.from(`${oauthClientId}:${oauthClientSecret}`).toString('base64')}`,
+                }
+              : undefined,
+        }
+      );
 
       let instanceUrl = (tokenWrapper.token['instance_url'] as string) ?? '';
 
@@ -216,6 +228,10 @@ export default function init(app: Router): void {
 
         // the instance url is the scope without the .default
         instanceUrl = defaultScope.replace('.default', '');
+      }
+
+      if (providerName === 'gong') {
+        instanceUrl = tokenWrapper.token['api_base_url_for_customer'] as string;
       }
 
       const basePayload = {

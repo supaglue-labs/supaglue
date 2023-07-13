@@ -1,3 +1,4 @@
+import GongIcon from '@/assets/connector_icons/gong.webp';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
 import MsDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';
 import OutreachIcon from '@/assets/connector_icons/outreach.png';
@@ -45,6 +46,13 @@ export const providerCardsInfo: ProviderCardInfo[] = [
     description: 'Configure your Pipedrive provider.',
   },
   {
+    icon: <Image alt="ms_dynamics_365_sales" src={MsDynamics365SalesIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+    name: 'Microsoft Dynamics 365 Sales',
+    providerName: 'ms_dynamics_365_sales',
+    category: 'crm',
+    description: 'Configure your MS Dynamics 365 Sales provider.',
+  },
+  {
     icon: <Image alt="outreach" src={OutreachIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'Outreach',
     providerName: 'outreach',
@@ -52,11 +60,11 @@ export const providerCardsInfo: ProviderCardInfo[] = [
     description: 'Configure your Outreach provider.',
   },
   {
-    icon: <Image alt="ms_dynamics_365_sales" src={MsDynamics365SalesIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Microsoft Dynamics 365 Sales',
-    providerName: 'ms_dynamics_365_sales',
-    category: 'crm',
-    description: 'Configure your MS Dynamics 365 Sales provider.',
+    icon: <Image alt="gong" src={GongIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+    name: 'Gong',
+    providerName: 'gong',
+    category: 'engagement',
+    description: 'Configure your Gong provider.',
   },
 ];
 

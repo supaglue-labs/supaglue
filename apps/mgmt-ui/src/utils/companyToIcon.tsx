@@ -1,5 +1,6 @@
 import ActiveCampaignIcon from '@/assets/connector_icons/activecampaign.png';
 import CopperIcon from '@/assets/connector_icons/copper.png';
+import GongIcon from '@/assets/connector_icons/gong.webp';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
 import MicrosoftDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';
 import OutreachIcon from '@/assets/connector_icons/outreach.png';
@@ -27,6 +28,7 @@ export default function getIcon(name: string, size = 25): ReactNode {
     pipedrive: <Image key={name} alt={name} src={PipedriveIcon} width={size} height={size} />,
     zendesk_sell: <Image key={name} alt={name} src={ZendeskSellIcon} width={size} height={size} />,
     outreach: <Image key={name} alt={name} src={OutreachIcon} width={size} height={size} />,
+    gong: <Image key={name} alt={name} src={GongIcon} width={size} height={size} />,
   };
 
   return companyToIconMap[name];
