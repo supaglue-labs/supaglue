@@ -5,7 +5,6 @@ import type {
   ConnectionUnsafe,
   ConnectionUnsafeAny,
   ConnectionUpdateParams,
-  CRMProvider,
   FieldMappingInfo,
   ObjectFieldMappingInfo,
   ObjectFieldMappingUpdateParams,
@@ -303,10 +302,7 @@ export class ConnectionService {
     objectName: string
   ): Promise<FieldMappingConfig> {
     const connection = await this.getSafeById(connectionId);
-    if (connection.category !== 'crm') {
-      throw new BadRequestError(`Field mappings are only supported for the CRM vertical`);
-    }
-    const provider = await this.#providerService.getById<CRMProvider>(connection.providerId);
+    const provider = await this.#providerService.getById(connection.providerId);
     const schemaId = provider.objects?.[objectType]?.find((o) => o.name === objectName)?.schemaId;
     const schema = schemaId ? await this.#schemaService.getById(schemaId) : undefined;
     let customerFieldMapping: SchemaMappingsConfigObjectFieldMapping[] | undefined = undefined;

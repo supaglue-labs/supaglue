@@ -70,10 +70,21 @@ export class SyncConfigService {
   public async create(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     validateSyncConfigParams(syncConfig);
     // TODO:(SUP1-350): Backfill sync schedules for connections
-    const createdSyncConfig = await this.#prisma.syncConfig.create({
-      data: toSyncConfigModel(syncConfig),
+    const createdSyncConfigModel = await this.#prisma.$transaction(async (tx) => {
+      const createdSyncConfigModel = await tx.syncConfig.create({
+        data: toSyncConfigModel(syncConfig),
+      });
+
+      await tx.syncConfigChange.create({
+        data: {
+          syncConfigId: createdSyncConfigModel.id,
+        },
+      });
+
+      return createdSyncConfigModel;
     });
-    return fromSyncConfigModel(createdSyncConfig);
+
+    return fromSyncConfigModel(createdSyncConfigModel);
   }
 
   public async update(id: string, applicationId: string, params: SyncConfigUpdateParams): Promise<SyncConfig> {
