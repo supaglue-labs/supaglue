@@ -116,7 +116,7 @@ class GongClient extends AbstractEngagementRemoteClient {
           modifiedAfter
         );
       }
-      case 'callDetail': {
+      case 'detailedCall': {
         return await this.#getPaginatorByPost<'calls', GongDetailedCall>(
           'v2/calls/extensive',
           'calls',
