@@ -1,5 +1,4 @@
-import AddIcon from '@mui/icons-material/Add';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useState } from 'react';
 
 export type NewCustomerProps = {
@@ -24,9 +23,9 @@ export function NewCustomer({ onCreate }: NewCustomerProps) {
 
   return (
     <>
-      <IconButton className="p-1" onClick={handleClickOpen} size="small">
-        <AddIcon />
-      </IconButton>
+      <Button variant="outlined" color="primary" className="p-1" onClick={handleClickOpen} size="small">
+        Add
+      </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>New Customer</DialogTitle>
         <DialogContent>
