@@ -77,7 +77,7 @@ const { connectionService, providerService, webhookService, applicationService }
       // TODO we should fix this in the connection service
       const { access_token: accessToken, instance_url: instanceUrl } = await conn.oauth2.refreshToken(refreshToken);
       // expiresAt is not returned from the refresh token response
-      await connectionService.updateConnectionWithNewAccessToken(connectionId, accessToken, /* expiresAt */ null);
+      await connectionService.updateConnectionWithNewTokens(connectionId, accessToken, undefined, /* expiresAt */ null);
 
       // get the latest recorded replayId, if any
       const encodedReplayId = await webhookService.getReplayId(connectionId, eventType);
