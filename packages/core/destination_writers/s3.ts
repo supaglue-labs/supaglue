@@ -4,10 +4,10 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  DestinationUnsafe,
   NormalizedRawRecord,
   ProviderCategory,
   ProviderName,
-  S3Destination,
 } from '@supaglue/types';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
@@ -19,10 +19,10 @@ import { getSnakecasedKeysMapper } from './util';
 const CHUNK_SIZE = 1000;
 
 export class S3DestinationWriter extends BaseDestinationWriter {
-  readonly #destination: S3Destination;
+  readonly #destination: DestinationUnsafe<'s3'>;
   #client: S3Client;
 
-  public constructor(destination: S3Destination) {
+  public constructor(destination: DestinationUnsafe<'s3'>) {
     super();
     this.#destination = destination;
     this.#client = new S3Client({

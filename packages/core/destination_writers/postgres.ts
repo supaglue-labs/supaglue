@@ -3,8 +3,8 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  DestinationUnsafe,
   NormalizedRawRecord,
-  PostgresDestination,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -35,9 +35,9 @@ import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
-  readonly #destination: PostgresDestination;
+  readonly #destination: DestinationUnsafe<'postgres'>;
 
-  public constructor(destination: PostgresDestination) {
+  public constructor(destination: DestinationUnsafe<'postgres'>) {
     super();
     this.#destination = destination;
   }
@@ -172,7 +172,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       let tempTableRowCount = 0;
       let maxLastModifiedAt: Date | null = null;
 
-      childLogger.info('Importing common object objects into temp table [IN PROGRESS]');
+      childLogger.info('Importing common object records into temp table [IN PROGRESS]');
       await pipeline(
         inputStream,
         new Transform({
@@ -205,7 +205,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         stringifier,
         stream
       );
-      childLogger.info('Importing common object objects into temp table [COMPLETED]');
+      childLogger.info('Importing common object records into temp table [COMPLETED]');
 
       // Dedupe the temp table
       // Since all common objects have `lastModifiedAt`, we can sort by that to avoid dupes.

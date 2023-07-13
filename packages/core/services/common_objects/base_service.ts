@@ -50,13 +50,13 @@ export abstract class CommonObjectBaseService {
       // so that we can resume in the case of failure during the COPY stage.
       logger.info(
         { connectionId, customerId, table },
-        'Creating temp table for importing common object objects [IN PROGRESS]'
+        'Creating temp table for Importing common object records [IN PROGRESS]'
       );
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING DEFAULTS)`);
       await client.query(`CREATE INDEX IF NOT EXISTS ${tempTable}_remote_id_idx ON ${tempTable} (remote_id)`);
       logger.info(
         { connectionId, customerId, table },
-        'Creating temp table for importing common object objects [COMPLETED]'
+        'Creating temp table for Importing common object records [COMPLETED]'
       );
 
       const columns = ['id', ...columnsWithoutId];
@@ -79,7 +79,7 @@ export abstract class CommonObjectBaseService {
       let tempTableRowCount = 0;
       let maxLastModifiedAt: Date | null = null;
 
-      logger.info({ connectionId, customerId, table }, 'Importing common object objects into temp table [IN PROGRESS]');
+      logger.info({ connectionId, customerId, table }, 'Importing common object records into temp table [IN PROGRESS]');
       await pipeline(
         remoteCommonObjectReadable,
         new Transform({
@@ -107,7 +107,7 @@ export abstract class CommonObjectBaseService {
         stringifier,
         stream
       );
-      logger.info({ connectionId, customerId, table }, 'Importing common object objects into temp table [COMPLETED]');
+      logger.info({ connectionId, customerId, table }, 'Importing common object records into temp table [COMPLETED]');
 
       // Copy from temp table
       logger.info(
