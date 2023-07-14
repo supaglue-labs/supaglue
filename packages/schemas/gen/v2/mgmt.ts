@@ -4,7 +4,7 @@
  */
 
 
-/** Type helpers */
+/** OneOf type helpers */
 type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
 type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
@@ -53,17 +53,32 @@ export interface paths {
   "/field_mappings": {
     /** List field mappings */
     get: operations["listFieldMappings"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/properties": {
     /** List properties */
     get: operations["listProperties"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/field_mappings/_update_object": {
     /** Update object field mappings */
     put: operations["updateObjectFieldMappings"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/schemas": {
     /**
@@ -187,17 +202,32 @@ export interface paths {
   "/syncs/_pause": {
     /** Pause sync */
     post: operations["pauseSync"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/syncs/_resume": {
     /** Resume sync */
     post: operations["resumeSync"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/syncs/_trigger": {
     /** Trigger sync */
     post: operations["triggerSync"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/sync-runs": {
     /**
@@ -248,25 +278,46 @@ export interface components {
       config: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
     };
-    destination: {
+    destination: OneOf<[{
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       application_id: string;
       /** @example My Destination */
       name: string;
-    } & OneOf<[{
       /** @enum {string} */
       type: "s3";
       config: components["schemas"]["s3_config"];
     }, {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      /** @example My Destination */
+      name: string;
       /** @enum {string} */
       type: "postgres";
       config: components["schemas"]["postgres_config"];
     }, {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      /** @example My Destination */
+      name: string;
       /** @enum {string} */
       type: "bigquery";
       config: components["schemas"]["bigquery_config"];
+    }, {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      /** @example My Destination */
+      name: string;
+      /** @enum {string} */
+      type: "mongodb";
+      config: components["schemas"]["mongodb_config"];
     }]>;
     s3_config: {
       /** @example us-west-2 */
@@ -277,7 +328,7 @@ export interface components {
       secret_access_key: string;
     };
     postgres_config: {
-      /** @example https://mydb.com */
+      /** @example database.company.com */
       host: string;
       /** @example 5432 */
       port: number;
@@ -301,6 +352,16 @@ export interface components {
         /** @example -----BEGIN PRIVATE KEY-----\nMII... */
         private_key: string;
       };
+    };
+    mongodb_config: {
+      /** @example mongodb.company.com */
+      host: string;
+      /** @example my_database */
+      database: string;
+      /** @example myuser */
+      user: string;
+      /** @example password */
+      password: string;
     };
     schema: {
       /** @example 649b1e49-2722-46a3-a7e7-10caae78a43f */
@@ -615,21 +676,30 @@ export interface components {
       name: string;
       config: components["schemas"]["schema_config"];
     };
-    create_update_destination: {
+    create_update_destination: OneOf<[{
       /** @example My Destination */
       name: string;
-    } & OneOf<[{
       /** @enum {string} */
       type: "s3";
       config: components["schemas"]["s3_config"];
     }, {
+      /** @example My Destination */
+      name: string;
       /** @enum {string} */
       type: "postgres";
       config: components["schemas"]["postgres_config"];
     }, {
+      /** @example My Destination */
+      name: string;
       /** @enum {string} */
       type: "bigquery";
       config: components["schemas"]["bigquery_config"];
+    }, {
+      /** @example My Destination */
+      name: string;
+      /** @enum {string} */
+      type: "mongodb";
+      config: components["schemas"]["mongodb_config"];
     }]>;
     create_update_sync_config: {
       /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
@@ -651,7 +721,7 @@ export interface components {
       notify_on_connection_success: boolean;
       notify_on_connection_error: boolean;
       headers?: {
-        [key: string]: unknown | undefined;
+        [key: string]: unknown;
       };
     };
     "webhook-payload": OneOf<[{
@@ -698,13 +768,13 @@ export interface components {
   responses: never;
   parameters: {
     /** @description The pagination cursor value */
-    cursor: string;
+    cursor?: string;
     /** @description Number of results to return per page */
-    page_size: string;
+    page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
-    customer_id: string;
+    customer_id?: string;
     /** @description The provider name */
-    provider_name: string;
+    provider_name?: string;
     /** @description The provider name */
     "x-provider-name": string;
     /** @description The customer ID that uniquely identifies the customer in your application */
@@ -719,11 +789,11 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  /**
+   * List customers 
+   * @description Get a list of customers
+   */
   getCustomers: {
-    /**
-     * List customers 
-     * @description Get a list of customers
-     */
     responses: {
       /** @description Customers */
       200: {
@@ -733,8 +803,8 @@ export interface operations {
       };
     };
   };
+  /** Upsert customer */
   upsertCustomer: {
-    /** Upsert customer */
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_customer"];
@@ -749,8 +819,13 @@ export interface operations {
       };
     };
   };
+  /** Get customer */
   getCustomer: {
-    /** Get customer */
+    parameters: {
+      path: {
+        customer_id: string;
+      };
+    };
     responses: {
       /** @description Customer */
       200: {
@@ -760,8 +835,13 @@ export interface operations {
       };
     };
   };
+  /** Delete customer */
   deleteCustomer: {
-    /** Delete customer */
+    parameters: {
+      path: {
+        customer_id: string;
+      };
+    };
     responses: {
       /** @description Customer */
       200: {
@@ -771,11 +851,11 @@ export interface operations {
       };
     };
   };
+  /**
+   * List destinations 
+   * @description Get a list of destinations
+   */
   getDestinations: {
-    /**
-     * List destinations 
-     * @description Get a list of destinations
-     */
     responses: {
       /** @description Destinations */
       200: {
@@ -785,8 +865,8 @@ export interface operations {
       };
     };
   };
+  /** Create destination */
   createDestination: {
-    /** Create destination */
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_destination"];
@@ -801,8 +881,13 @@ export interface operations {
       };
     };
   };
+  /** Get destination */
   getDestination: {
-    /** Get destination */
+    parameters: {
+      path: {
+        destination_id: string;
+      };
+    };
     responses: {
       /** @description Destination */
       200: {
@@ -812,8 +897,13 @@ export interface operations {
       };
     };
   };
+  /** Update destination */
   updateDestination: {
-    /** Update destination */
+    parameters: {
+      path: {
+        destination_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_destination"];
@@ -828,8 +918,14 @@ export interface operations {
       };
     };
   };
+  /** List field mappings */
   listFieldMappings: {
-    /** List field mappings */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     responses: {
       /** @description List of objects and their field mappings (if set) */
       200: {
@@ -839,12 +935,16 @@ export interface operations {
       };
     };
   };
+  /** List properties */
   listProperties: {
-    /** List properties */
     parameters: {
       query: {
         type: "common" | "standard" | "custom";
         name: string;
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -858,8 +958,14 @@ export interface operations {
       };
     };
   };
+  /** Update object field mappings */
   updateObjectFieldMappings: {
-    /** Update object field mappings */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["update_object_field_mapping"];
@@ -874,11 +980,11 @@ export interface operations {
       };
     };
   };
+  /**
+   * List schemas 
+   * @description Get a list of schemas
+   */
   getSchemas: {
-    /**
-     * List schemas 
-     * @description Get a list of schemas
-     */
     responses: {
       /** @description Schemas */
       200: {
@@ -888,8 +994,8 @@ export interface operations {
       };
     };
   };
+  /** Create schema */
   createSchema: {
-    /** Create schema */
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_schema"];
@@ -904,8 +1010,13 @@ export interface operations {
       };
     };
   };
+  /** Get schema */
   getSchema: {
-    /** Get schema */
+    parameters: {
+      path: {
+        schema_id: string;
+      };
+    };
     responses: {
       /** @description Schema */
       200: {
@@ -915,8 +1026,13 @@ export interface operations {
       };
     };
   };
+  /** Update schema */
   updateSchema: {
-    /** Update schema */
+    parameters: {
+      path: {
+        schema_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_schema"];
@@ -931,8 +1047,13 @@ export interface operations {
       };
     };
   };
+  /** Delete schema */
   deleteSchema: {
-    /** Delete schema */
+    parameters: {
+      path: {
+        schema_id: string;
+      };
+    };
     responses: {
       /** @description Schema */
       204: {
@@ -942,11 +1063,11 @@ export interface operations {
       };
     };
   };
+  /**
+   * List providers 
+   * @description Get a list of providers
+   */
   getProviders: {
-    /**
-     * List providers 
-     * @description Get a list of providers
-     */
     responses: {
       /** @description Providers */
       200: {
@@ -956,8 +1077,8 @@ export interface operations {
       };
     };
   };
+  /** Create provider */
   createProvider: {
-    /** Create provider */
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_provider"];
@@ -972,8 +1093,13 @@ export interface operations {
       };
     };
   };
+  /** Get provider */
   getProvider: {
-    /** Get provider */
+    parameters: {
+      path: {
+        provider_id: string;
+      };
+    };
     responses: {
       /** @description Provider */
       200: {
@@ -983,8 +1109,13 @@ export interface operations {
       };
     };
   };
+  /** Update provider */
   updateProvider: {
-    /** Update provider */
+    parameters: {
+      path: {
+        provider_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["update_provider"];
@@ -999,8 +1130,13 @@ export interface operations {
       };
     };
   };
+  /** Delete provider */
   deleteProvider: {
-    /** Delete provider */
+    parameters: {
+      path: {
+        provider_id: string;
+      };
+    };
     responses: {
       /** @description Provider */
       200: {
@@ -1010,8 +1146,13 @@ export interface operations {
       };
     };
   };
+  /** Add object to provider */
   addObject: {
-    /** Add object to provider */
+    parameters: {
+      path: {
+        provider_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["add_object"];
@@ -1026,11 +1167,11 @@ export interface operations {
       };
     };
   };
+  /**
+   * List Sync Configs 
+   * @description Get a list of Sync Configs
+   */
   getSyncConfigs: {
-    /**
-     * List Sync Configs 
-     * @description Get a list of Sync Configs
-     */
     responses: {
       /** @description SyncConfigs */
       200: {
@@ -1040,8 +1181,8 @@ export interface operations {
       };
     };
   };
+  /** Create Sync Config */
   createSyncConfig: {
-    /** Create Sync Config */
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_sync_config"];
@@ -1056,8 +1197,13 @@ export interface operations {
       };
     };
   };
+  /** Get Sync Config */
   getSyncConfig: {
-    /** Get Sync Config */
+    parameters: {
+      path: {
+        sync_config_id: string;
+      };
+    };
     responses: {
       /** @description SyncConfig */
       200: {
@@ -1067,8 +1213,13 @@ export interface operations {
       };
     };
   };
+  /** Update Sync Config */
   updateSyncConfig: {
-    /** Update Sync Config */
+    parameters: {
+      path: {
+        sync_config_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_sync_config"];
@@ -1083,8 +1234,13 @@ export interface operations {
       };
     };
   };
+  /** Delete Sync Config */
   deleteSyncConfig: {
-    /** Delete Sync Config */
+    parameters: {
+      path: {
+        sync_config_id: string;
+      };
+    };
     responses: {
       /** @description SyncConfig */
       200: {
@@ -1094,11 +1250,16 @@ export interface operations {
       };
     };
   };
+  /**
+   * List connections 
+   * @description Get a list of connections
+   */
   getConnections: {
-    /**
-     * List connections 
-     * @description Get a list of connections
-     */
+    parameters: {
+      path: {
+        customer_id: string;
+      };
+    };
     responses: {
       /** @description Connections */
       200: {
@@ -1108,12 +1269,17 @@ export interface operations {
       };
     };
   };
+  /** Create connection */
   createConnection: {
-    /** Create connection */
+    parameters: {
+      path: {
+        customer_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
-          [key: string]: unknown | undefined;
+          [key: string]: unknown;
         };
       };
     };
@@ -1126,8 +1292,14 @@ export interface operations {
       };
     };
   };
+  /** Get connection */
   getConnection: {
-    /** Get connection */
+    parameters: {
+      path: {
+        customer_id: string;
+        connection_id: string;
+      };
+    };
     responses: {
       /** @description Connection */
       200: {
@@ -1140,18 +1312,24 @@ export interface operations {
       };
     };
   };
+  /** Delete connection */
   deleteConnection: {
-    /** Delete connection */
+    parameters: {
+      path: {
+        customer_id: string;
+        connection_id: string;
+      };
+    };
     responses: {
       /** @description Connection */
       204: never;
     };
   };
+  /**
+   * Get webhook 
+   * @description Get webhook details
+   */
   getWebhook: {
-    /**
-     * Get webhook 
-     * @description Get webhook details
-     */
     responses: {
       /** @description Applications */
       200: {
@@ -1161,8 +1339,8 @@ export interface operations {
       };
     };
   };
+  /** Create webhook */
   createWebhook: {
-    /** Create webhook */
     requestBody: {
       content: {
         "application/json": components["schemas"]["webhook"];
@@ -1177,31 +1355,31 @@ export interface operations {
       };
     };
   };
+  /** Delete webhook */
   deleteWebhook: {
-    /** Delete webhook */
     responses: {
       /** @description Webhook deleted */
       200: never;
     };
   };
+  /**
+   * Get Syncs 
+   * @description Get a list of Sync objects.
+   */
   getSyncs: {
-    /**
-     * Get Syncs 
-     * @description Get a list of Sync objects.
-     */
-    parameters?: {
-        /** @description The pagination cursor value */
-        /** @description Number of results to return per page */
-        /** @description The customer ID that uniquely identifies the customer in your application */
-        /** @description The provider name */
-        /** @description The object type to filter by */
-        /** @description The object to filter by */
+    parameters: {
       query?: {
+        /** @description The pagination cursor value */
         cursor?: string;
+        /** @description Number of results to return per page */
         page_size?: string;
+        /** @description The customer ID that uniquely identifies the customer in your application */
         customer_id?: string;
+        /** @description The provider name */
         provider_name?: string;
+        /** @description The object type to filter by */
         object_type?: "common" | "standard" | "custom";
+        /** @description The object to filter by */
         object?: string;
       };
     };
@@ -1216,8 +1394,14 @@ export interface operations {
       };
     };
   };
+  /** Pause sync */
   pauseSync: {
-    /** Pause sync */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -1243,8 +1427,14 @@ export interface operations {
       };
     };
   };
+  /** Resume sync */
   resumeSync: {
-    /** Resume sync */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -1270,8 +1460,14 @@ export interface operations {
       };
     };
   };
+  /** Trigger sync */
   triggerSync: {
-    /** Trigger sync */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -1299,24 +1495,24 @@ export interface operations {
       };
     };
   };
+  /**
+   * Get SyncRuns 
+   * @description Get a list of SyncRun objects.
+   */
   getSyncRuns: {
-    /**
-     * Get SyncRuns 
-     * @description Get a list of SyncRun objects.
-     */
-    parameters?: {
-        /** @description The pagination cursor value */
-        /** @description Number of results to return per page */
-        /** @description The customer ID that uniquely identifies the customer in your application */
-        /** @description The provider name */
-        /** @description The object type to filter by */
-        /** @description The object to filter by */
+    parameters: {
       query?: {
+        /** @description The pagination cursor value */
         cursor?: string;
+        /** @description Number of results to return per page */
         page_size?: string;
+        /** @description The customer ID that uniquely identifies the customer in your application */
         customer_id?: string;
+        /** @description The provider name */
         provider_name?: string;
+        /** @description The object type to filter by */
         object_type?: string;
+        /** @description The object to filter by */
         object?: string;
       };
     };
@@ -1331,8 +1527,8 @@ export interface operations {
       };
     };
   };
+  /** Webhook */
   webhook: {
-    /** Webhook */
     requestBody?: {
       content: {
         "application/json": components["schemas"]["webhook-payload"];

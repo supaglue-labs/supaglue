@@ -172,7 +172,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       let tempTableRowCount = 0;
       let maxLastModifiedAt: Date | null = null;
 
-      childLogger.info('Importing common object objects into temp table [IN PROGRESS]');
+      childLogger.info('Importing common object records into temp table [IN PROGRESS]');
       await pipeline(
         inputStream,
         new Transform({
@@ -205,7 +205,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         stringifier,
         stream
       );
-      childLogger.info('Importing common object objects into temp table [COMPLETED]');
+      childLogger.info('Importing common object records into temp table [COMPLETED]');
 
       // Dedupe the temp table
       // Since all common objects have `lastModifiedAt`, we can sort by that to avoid dupes.
@@ -537,7 +537,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_account
   "raw_data" JSONB
 
   -- Duplicates can exist for accounts (e.g. Hubspot)
-  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
     contact: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_contacts' : `${schema}.crm_contacts`} (
@@ -562,7 +562,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_contact
   "raw_data" JSONB
 
   -- Duplicates can exist for contacts (e.g. Hubspot)
-  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
     lead: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_leads' : `${schema}.crm_leads`} (
@@ -590,7 +590,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_leads' 
   "raw_data" JSONB
 
   -- Duplicates can exist for leads (e.g. Hubspot)
-  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
     opportunity: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
@@ -618,7 +618,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "raw_data" JSONB
 
   -- Duplicates can exist for opportunities (e.g. Hubspot)
-  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
     user: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' : `${schema}.crm_users`} (
@@ -637,7 +637,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' 
   "raw_data" JSONB
 
   -- Duplicates can exist for users (e.g. Hubspot)
-  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'} 
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
   },
   engagement: {

@@ -1,5 +1,6 @@
-allOf:
+oneOf:
   - type: object
+    title: s3
     properties:
       id:
         type: string
@@ -10,44 +11,87 @@ allOf:
       name:
         type: string
         example: My Destination
+      type:
+        type: string
+        enum:
+          - s3
+      config:
+        $ref: ./s3_config.yaml
     required:
       - id
       - application_id
       - name
-  - oneOf:
-      - type: object
-        title: s3
-        properties:
-          type:
-            type: string
-            enum:
-              - s3
-          config:
-            $ref: ./s3_config.yaml
-        required:
-          - type
-          - config
-      - type: object
-        title: postgres
-        properties:
-          type:
-            type: string
-            enum:
-              - postgres
-          config:
-            $ref: ./postgres_config.yaml
-        required:
-          - type
-          - config
-      - type: object
-        title: bigquery
-        properties:
-          type:
-            type: string
-            enum:
-              - bigquery
-          config:
-            $ref: ./bigquery_config.yaml
-        required:
-          - type
-          - config
+      - type
+      - config
+  - type: object
+    title: postgres
+    properties:
+      id:
+        type: string
+        example: e888cedf-e9d0-42c5-9485-2d72984faef2
+      application_id:
+        type: string
+        example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+      name:
+        type: string
+        example: My Destination
+      type:
+        type: string
+        enum:
+          - postgres
+      config:
+        $ref: ./postgres_config.yaml
+    required:
+      - id
+      - application_id
+      - name
+      - type
+      - config
+  - type: object
+    title: bigquery
+    properties:
+      id:
+        type: string
+        example: e888cedf-e9d0-42c5-9485-2d72984faef2
+      application_id:
+        type: string
+        example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+      name:
+        type: string
+        example: My Destination
+      type:
+        type: string
+        enum:
+          - bigquery
+      config:
+        $ref: ./bigquery_config.yaml
+    required:
+      - id
+      - application_id
+      - name
+      - type
+      - config
+  - type: object
+    title: mongodb
+    properties:
+      id:
+        type: string
+        example: e888cedf-e9d0-42c5-9485-2d72984faef2
+      application_id:
+        type: string
+        example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+      name:
+        type: string
+        example: My Destination
+      type:
+        type: string
+        enum:
+          - mongodb
+      config:
+        $ref: ./mongodb_config.yaml
+    required:
+      - id
+      - application_id
+      - name
+      - type
+      - config

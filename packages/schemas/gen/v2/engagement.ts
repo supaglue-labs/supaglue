@@ -11,12 +11,22 @@ export interface paths {
      * @description Send request directly to a provider
      */
     post: operations["sendPassthroughRequest"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/contacts": {
     /** Create contact */
     post: operations["createContact"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/contacts/{contact_id}": {
     /** Get contact */
@@ -24,6 +34,10 @@ export interface paths {
     /** Update contact */
     patch: operations["updateContact"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         contact_id: string;
       };
@@ -33,6 +47,10 @@ export interface paths {
     /** Get user */
     get: operations["getUser"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         user_id: string;
       };
@@ -42,6 +60,10 @@ export interface paths {
     /** Get mailbox */
     get: operations["getMailbox"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         mailbox_id: string;
       };
@@ -51,6 +73,10 @@ export interface paths {
     /** Get sequence */
     get: operations["getSequence"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         sequence_id: string;
       };
@@ -59,12 +85,21 @@ export interface paths {
   "/sequence_states": {
     /** Create sequence state */
     post: operations["createSequenceState"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/sequence_states/{sequence_state_id}": {
     /** Get sequence state */
     get: operations["getSequenceState"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         sequence_state_id: string;
       };
@@ -125,7 +160,7 @@ export interface components {
        */
       last_modified_at: Date;
       raw_data?: {
-        [key: string]: unknown | undefined;
+        [key: string]: unknown;
       };
     };
     create_contact: {
@@ -311,7 +346,7 @@ export interface components {
       })[];
     /** @description Custom properties to be inserted that are not covered by the common object. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {
-      [key: string]: unknown | undefined;
+      [key: string]: unknown;
     };
     created_record: {
       id: string;
@@ -400,21 +435,21 @@ export interface components {
   responses: never;
   parameters: {
     /** @description Whether to include data that was deleted in providers. */
-    include_deleted_data: boolean;
+    include_deleted_data?: boolean;
     /** @description Whether to include raw data fetched from the 3rd party provider. */
-    include_raw_data: boolean;
+    include_raw_data?: boolean;
     /** @description If provided, will only return objects created after this datetime */
-    created_after: Date;
+    created_after?: Date;
     /** @description If provided, will only return objects created before this datetime */
-    created_before: Date;
+    created_before?: Date;
     /** @description If provided, will only return objects modified after this datetime */
-    modified_after: Date;
+    modified_after?: Date;
     /** @description If provided, will only return objects modified before this datetime */
-    modified_before: Date;
+    modified_before?: Date;
     /** @description The pagination cursor value */
-    cursor: string;
+    cursor?: string;
     /** @description Number of results to return per page */
-    page_size: string;
+    page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
     /** @description The provider name */
@@ -429,11 +464,17 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  /**
+   * Send passthrough request 
+   * @description Send request directly to a provider
+   */
   sendPassthroughRequest: {
-    /**
-     * Send passthrough request 
-     * @description Send request directly to a provider
-     */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -477,18 +518,24 @@ export interface operations {
               [key: string]: string | undefined;
             };
             /** @description The body from the downstream */
-            body?: string | number | number | boolean | (({
-                [key: string]: unknown | undefined;
-              })[]) | ({
-              [key: string]: unknown | undefined;
-            });
+            body?: string | number | boolean | ({
+                [key: string]: unknown;
+              })[] | {
+              [key: string]: unknown;
+            };
           };
         };
       };
     };
   };
+  /** Create contact */
   createContact: {
-    /** Create contact */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         /**
@@ -540,8 +587,20 @@ export interface operations {
       };
     };
   };
+  /** Get contact */
   getContact: {
-    /** Get contact */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        contact_id: string;
+      };
+    };
     responses: {
       /** @description Contact */
       200: {
@@ -551,8 +610,17 @@ export interface operations {
       };
     };
   };
+  /** Update contact */
   updateContact: {
-    /** Update contact */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        contact_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -573,8 +641,20 @@ export interface operations {
       };
     };
   };
+  /** Get user */
   getUser: {
-    /** Get user */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        user_id: string;
+      };
+    };
     responses: {
       /** @description User */
       200: {
@@ -584,8 +664,20 @@ export interface operations {
       };
     };
   };
+  /** Get mailbox */
   getMailbox: {
-    /** Get mailbox */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        mailbox_id: string;
+      };
+    };
     responses: {
       /** @description Mailbox */
       200: {
@@ -595,8 +687,20 @@ export interface operations {
       };
     };
   };
+  /** Get sequence */
   getSequence: {
-    /** Get sequence */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        sequence_id: string;
+      };
+    };
     responses: {
       /** @description Sequence */
       200: {
@@ -606,8 +710,14 @@ export interface operations {
       };
     };
   };
+  /** Create sequence state */
   createSequenceState: {
-    /** Create sequence state */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         /**
@@ -642,8 +752,20 @@ export interface operations {
       };
     };
   };
+  /** Get sequence state */
   getSequenceState: {
-    /** Get sequence state */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        sequence_state_id: string;
+      };
+    };
     responses: {
       /** @description Sequence State */
       200: {
