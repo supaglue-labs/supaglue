@@ -1030,7 +1030,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     // TODO: Shouldn't be relying on `jsforce` to do this.
     const token = await this.#client.oauth2.refreshToken(this.#refreshToken);
     this.#accessToken = token.access_token;
-    this.emit('token_refreshed', token.access_token, null);
+    this.emit('token_refreshed', {
+      accessToken: token.access_token,
+      expiresAt: null,
+    });
   }
 
   async #fetchImpl(path: string, init: RequestInit, timeout = FETCH_TIMEOUT) {

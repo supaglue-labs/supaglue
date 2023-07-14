@@ -96,15 +96,21 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       const newToken = await token.refresh();
 
       const newAccessToken = newToken.token.access_token as string;
+      const newRefreshToken = newToken.token.refresh_token as string;
       const newExpiresAt = (newToken.token.expires_at as Date).toISOString();
 
       this.#credentials.accessToken = newAccessToken;
+      this.#credentials.refreshToken = newRefreshToken;
       this.#credentials.expiresAt = newExpiresAt;
 
       this.#headers.Authorization = `Bearer ${newAccessToken}`;
       this.#odata = o(this.baseUrl, { headers: this.#headers, referrer: undefined });
 
-      this.emit('token_refreshed', newAccessToken, newExpiresAt);
+      this.emit('token_refreshed', {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        expiresAt: newExpiresAt,
+      });
     }
   }
 

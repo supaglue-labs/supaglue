@@ -168,20 +168,29 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       !this.#credentials.expiresAt ||
       Date.parse(this.#credentials.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS
     ) {
-      const response = await axios.post<{ access_token: string; expires_in: number }>(`${this.#baseURL}/oauth/token`, {
-        client_id: this.#credentials.clientId,
-        client_secret: this.#credentials.clientSecret,
-        grant_type: 'refresh_token',
-        refresh_token: this.#credentials.refreshToken,
-      });
+      const response = await axios.post<{ refresh_token: string; access_token: string; expires_in: number }>(
+        `${this.#baseURL}/oauth/token`,
+        {
+          client_id: this.#credentials.clientId,
+          client_secret: this.#credentials.clientSecret,
+          grant_type: 'refresh_token',
+          refresh_token: this.#credentials.refreshToken,
+        }
+      );
 
       const newAccessToken = response.data.access_token;
+      const newRefreshToken = response.data.refresh_token;
       const newExpiresAt = new Date(Date.now() + response.data.expires_in * 1000).toISOString();
 
       this.#credentials.accessToken = newAccessToken;
+      this.#credentials.refreshToken = newRefreshToken;
       this.#credentials.expiresAt = newExpiresAt;
 
-      this.emit('token_refreshed', newAccessToken, newExpiresAt);
+      this.emit('token_refreshed', {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        expiresAt: newExpiresAt,
+      });
     }
   }
 
