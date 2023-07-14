@@ -9,10 +9,21 @@ type BaseDestination = BaseDestinationCreateParams & {
 };
 type BaseDestinationUpdateParams = BaseDestination;
 
+export type DestinationConfigUnsafeAny =
+  | DestinationConfigUnsafe<'s3'>
+  | DestinationConfigUnsafe<'postgres'>
+  | DestinationConfigUnsafe<'bigquery'>;
+
 export type DestinationConfigUnsafe<T extends DestinationType> = {
-  s3: S3ConfigSafeOnly & S3ConfigUnsafeOnly;
-  postgres: PostgresConfigSafeOnly & PostgresConfigUnsafeOnly;
-  bigquery: BigQueryConfigSafeOnly & BigQueryConfigUnsafeOnly;
+  s3: S3ConfigUnsafe;
+  postgres: PostgresConfigUnsafe;
+  bigquery: BigQueryConfigUnsafe;
+}[T];
+
+export type DestinationConfigAtLeastSafe<T extends DestinationType> = {
+  s3: S3ConfigAtLeastSafe;
+  postgres: PostgresConfigAtLeastSafe;
+  bigquery: BigQueryConfigAtLeastSafe;
 }[T];
 
 export type DestinationConfigSafe<T extends DestinationType> = {
@@ -28,7 +39,7 @@ export type DestinationCreateParams<T extends DestinationType> = BaseDestination
 
 export type DestinationUpdateParams<T extends DestinationType> = BaseDestinationUpdateParams & {
   type: T;
-  config: DestinationConfigUnsafe<T>;
+  config: DestinationConfigAtLeastSafe<T>;
 };
 
 export type DestinationUnsafe<T extends DestinationType> = BaseDestination & {
@@ -41,6 +52,9 @@ export type DestinationSafe<T extends DestinationType> = BaseDestination & {
   config: DestinationConfigSafe<T>;
 };
 
+export type S3ConfigUnsafe = S3ConfigSafeOnly & S3ConfigUnsafeOnly;
+export type S3ConfigAtLeastSafe = S3ConfigSafeOnly & Partial<S3ConfigUnsafeOnly>;
+
 export type S3ConfigSafeOnly = {
   region: string; // us-west-2
   bucket: string;
@@ -51,6 +65,9 @@ export type S3ConfigSafeOnly = {
 export type S3ConfigUnsafeOnly = {
   secretAccessKey: string;
 };
+
+export type PostgresConfigUnsafe = PostgresConfigSafeOnly & PostgresConfigUnsafeOnly;
+export type PostgresConfigAtLeastSafe = PostgresConfigSafeOnly & Partial<PostgresConfigUnsafeOnly>;
 
 export type PostgresConfigSafeOnly = {
   host: string;
@@ -64,6 +81,9 @@ export type PostgresConfigSafeOnly = {
 export type PostgresConfigUnsafeOnly = {
   password: string;
 };
+
+export type BigQueryConfigUnsafe = BigQueryConfigSafeOnly & BigQueryConfigUnsafeOnly;
+export type BigQueryConfigAtLeastSafe = BigQueryConfigSafeOnly & Partial<BigQueryConfigUnsafeOnly>;
 
 export type BigQueryConfigSafeOnly = {
   projectId: string;
@@ -94,9 +114,11 @@ export type DestinationUpdateParamsAny =
   | DestinationUpdateParams<'postgres'>
   | DestinationUpdateParams<'bigquery'>;
 
-export type DestinationTestParams<T extends DestinationType> = DestinationCreateParams<T> & {
-  id?: string;
-};
+export type DestinationTestParams<T extends DestinationType> =
+  | DestinationCreateParams<T>
+  | ({
+      id: string;
+    } & DestinationUpdateParams<T>);
 
 export type DestinationTestParamsAny =
   | DestinationTestParams<'s3'>

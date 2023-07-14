@@ -3,14 +3,15 @@ import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
 import { BigQuery } from '@google-cloud/bigquery';
 import type { PrismaClient } from '@supaglue/db';
 import type {
+  DestinationConfigUnsafeAny,
   DestinationCreateParamsAny,
   DestinationSafeAny,
   DestinationTestParamsAny,
   DestinationTestResult,
+  DestinationUnsafe,
   DestinationUnsafeAny,
   DestinationUpdateParamsAny,
 } from '@supaglue/types';
-import { snakecaseKeys } from '@supaglue/utils';
 import { Client } from 'pg';
 import type { DestinationWriter } from '../destination_writers/base';
 import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
@@ -81,7 +82,8 @@ export class DestinationService {
   public async testDestination(params: DestinationTestParamsAny): Promise<DestinationTestResult> {
     let success = false;
     let message: string | null = null;
-    if (!params.id) {
+
+    if (!('id' in params)) {
       const nameAlreadyExists = await this.#prisma.destination.findUnique({
         where: {
           applicationId_name: {
@@ -98,13 +100,20 @@ export class DestinationService {
       }
     }
 
+    // TODO: Refactor this code to be cleaner to merge in credentials
+
+    const existingDestination = 'id' in params ? await this.getDestinationUnsafeById(params.id) : null;
+
     switch (params.type) {
       case 's3':
         try {
           const s3Client = new S3Client({
             credentials: {
               accessKeyId: params.config.accessKeyId,
-              secretAccessKey: params.config.secretAccessKey,
+              secretAccessKey:
+                params.config.secretAccessKey ??
+                (existingDestination as DestinationUnsafe<'s3'> | null)?.config.secretAccessKey ??
+                '', // TODO: shouldn't do empty string
             },
             region: params.config.region,
             requestHandler: new NodeHttpHandler({
@@ -126,6 +135,9 @@ export class DestinationService {
           try {
             const pgClient = new Client({
               ...params.config,
+              password:
+                params.config.password ??
+                (existingDestination as DestinationUnsafe<'postgres'> | null)?.config.password,
               connectionTimeoutMillis: 1500,
               statement_timeout: 1500,
             });
@@ -152,7 +164,13 @@ export class DestinationService {
           try {
             const bigQueryClient = new BigQuery({
               ...params.config,
-              credentials: snakecaseKeys(params.config.credentials),
+              credentials: {
+                client_email: params.config.credentials.clientEmail,
+                private_key:
+                  params.config.credentials.privateKey ??
+                  (existingDestination as DestinationUnsafe<'bigquery'> | null)?.config.credentials.privateKey ??
+                  '', // TODO: shouldn't do empty string
+              },
               autoRetry: false,
             });
             const [datasets] = await bigQueryClient.getDatasets();
@@ -179,6 +197,7 @@ export class DestinationService {
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
+    const existingDestination = await this.getDestinationUnsafeById(params.id);
     const model = await this.#prisma.destination.update({
       where: { id: params.id },
       data: {
@@ -220,4 +239,11 @@ export class DestinationService {
         return new BigQueryDestinationWriter(destination);
     }
   }
+}
+
+function mergeDestinationConfig(
+  existingConfig: DestinationConfigUnsafeAny,
+  params: DestinationUpdateParamsAny
+): DestinationConfigUnsafeAny {
+  // TODO: merge them
 }

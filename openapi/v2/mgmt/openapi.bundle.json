@@ -258,7 +258,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_destination"
+                "$ref": "#/components/schemas/create_destination"
               }
             }
           }
@@ -332,7 +332,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_destination"
+                "$ref": "#/components/schemas/update_destination"
               }
             }
           }
@@ -2452,8 +2452,7 @@
         "required": [
           "region",
           "bucket",
-          "access_key_id",
-          "secret_access_key"
+          "access_key_id"
         ]
       },
       "postgres_config_safe": {
@@ -2505,6 +2504,100 @@
               "client_email": {
                 "type": "string",
                 "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+              }
+            },
+            "required": [
+              "client_email"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
+        ]
+      },
+      "s3_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "bucket": {
+            "type": "string",
+            "example": "my-test-bucket"
+          },
+          "access_key_id": {
+            "type": "string"
+          },
+          "secret_access_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "region",
+          "bucket",
+          "access_key_id"
+        ]
+      },
+      "postgres_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "https://mydb.com"
+          },
+          "port": {
+            "type": "number",
+            "example": 5432
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "public"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "database",
+          "schema",
+          "user"
+        ]
+      },
+      "bigquery_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my-dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+              },
+              "private_key": {
+                "type": "string",
+                "example": "-----BEGIN PRIVATE KEY-----\\nMII..."
               }
             },
             "required": [
@@ -3579,7 +3672,7 @@
           "config"
         ]
       },
-      "create_update_destination": {
+      "create_destination": {
         "allOf": [
           {
             "type": "object",
@@ -3645,6 +3738,83 @@
                   },
                   "config": {
                     "$ref": "#/components/schemas/bigquery_config_unsafe"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "update_destination": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "title": "s3",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "s3"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/s3_config_at_least_safe"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "title": "postgres",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "postgres"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/postgres_config_at_least_safe"
+                  }
+                },
+                "required": [
+                  "type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "title": "bigquery",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "bigquery"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/bigquery_config_at_least_safe"
                   }
                 },
                 "required": [

@@ -51,7 +51,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_update_destination.yaml
+          $ref: ../components/schemas/create_destination.yaml
   responses:
     '201':
       description: Destination created

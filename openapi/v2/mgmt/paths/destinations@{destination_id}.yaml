@@ -37,7 +37,7 @@ put:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_update_destination.yaml
+          $ref: ../components/schemas/update_destination.yaml
   responses:
     200:
       description: Destination

@@ -297,6 +297,40 @@ export interface components {
         client_email: string;
       };
     };
+    s3_config_at_least_safe: {
+      /** @example us-west-2 */
+      region: string;
+      /** @example my-test-bucket */
+      bucket: string;
+      access_key_id: string;
+      secret_access_key?: string;
+    };
+    postgres_config_at_least_safe: {
+      /** @example https://mydb.com */
+      host: string;
+      /** @example 5432 */
+      port: number;
+      /** @example my_database */
+      database: string;
+      /** @example public */
+      schema: string;
+      /** @example myuser */
+      user: string;
+      /** @example password */
+      password?: string;
+    };
+    bigquery_config_at_least_safe: {
+      /** @example my-project */
+      project_id: string;
+      /** @example my-dataset */
+      dataset: string;
+      credentials: {
+        /** @example supaglue@supaglue-382017.iam.gserviceaccount.com */
+        client_email: string;
+        /** @example -----BEGIN PRIVATE KEY-----\nMII... */
+        private_key?: string;
+      };
+    };
     s3_config_unsafe: {
       /** @example us-west-2 */
       region: string;
@@ -644,7 +678,7 @@ export interface components {
       name: string;
       config: components["schemas"]["schema_config"];
     };
-    create_update_destination: {
+    create_destination: {
       /** @example My Destination */
       name: string;
     } & OneOf<[{
@@ -659,6 +693,22 @@ export interface components {
       /** @enum {string} */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_unsafe"];
+    }]>;
+    update_destination: {
+      /** @example My Destination */
+      name: string;
+    } & OneOf<[{
+      /** @enum {string} */
+      type: "s3";
+      config: components["schemas"]["s3_config_at_least_safe"];
+    }, {
+      /** @enum {string} */
+      type: "postgres";
+      config: components["schemas"]["postgres_config_at_least_safe"];
+    }, {
+      /** @enum {string} */
+      type: "bigquery";
+      config: components["schemas"]["bigquery_config_at_least_safe"];
     }]>;
     create_update_sync_config: {
       /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
@@ -818,7 +868,7 @@ export interface operations {
     /** Create destination */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_destination"];
+        "application/json": components["schemas"]["create_destination"];
       };
     };
     responses: {
@@ -845,7 +895,7 @@ export interface operations {
     /** Update destination */
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_destination"];
+        "application/json": components["schemas"]["update_destination"];
       };
     };
     responses: {
