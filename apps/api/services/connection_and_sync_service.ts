@@ -66,7 +66,7 @@ export class ConnectionAndSyncService {
     // Trigger a run in Temporal
     const handle = this.#temporalClient.schedule.getHandle(getRunObjectSyncScheduleId(objectSync.id));
     // TODO: is this the right policy? should it be configurable?
-    await handle.trigger(ScheduleOverlapPolicy.BUFFER_ONE);
+    await handle.trigger(ScheduleOverlapPolicy.SKIP);
 
     return fromObjectSyncModel(newSync);
   }
