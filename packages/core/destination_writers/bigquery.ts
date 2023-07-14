@@ -125,7 +125,7 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
     let tempTableRowCount = 0;
     let maxLastModifiedAt: Date | null = null;
 
-    childLogger.info({ tempTable }, 'Importing common object objects into temp table [IN PROGRESS]');
+    childLogger.info({ tempTable }, 'Importing common object records into temp table [IN PROGRESS]');
     await pipeline(
       inputStream,
       new Transform({
@@ -158,7 +158,7 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
       stringifier,
       stream
     );
-    childLogger.info({ tempTable }, 'Importing common object objects into temp table [COMPLETED]');
+    childLogger.info({ tempTable }, 'Importing common object records into temp table [COMPLETED]');
 
     heartbeat();
 

@@ -114,7 +114,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     let rowCount = 0;
     let maxLastModifiedAt: Date | null = null;
 
-    childLogger.info({ collectionName }, 'Importing common object objects into collection [IN PROGRESS]');
+    childLogger.info({ collectionName }, 'Importing common object records into collection [IN PROGRESS]');
     await pipeline(
       inputStream,
       new Transform({
@@ -147,7 +147,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       }),
       stream
     );
-    childLogger.info({ collectionName }, 'Importing common object objects into collection [COMPLETED]');
+    childLogger.info({ collectionName }, 'Importing common object records into collection [COMPLETED]');
 
     childLogger.info(
       { collectionName, providerName, customerId, commonObjectType, maxLastModifiedAt, rowCount },
