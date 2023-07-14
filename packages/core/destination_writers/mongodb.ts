@@ -105,7 +105,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     // Output
     const stream = streamToMongoDBCollection(collection, client, heartbeat);
     stream.on('error', (error) => {
-      childLogger.error({ error }, 'Error writing to MongoDB');
+      childLogger.error(error, 'Error writing to MongoDB');
     });
 
     const mapper = getSnakecasedKeysMapper(category, commonObjectType);
@@ -186,7 +186,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     // Output
     const stream = streamToMongoDBCollection(collection, client, heartbeat);
     stream.on('error', (error) => {
-      childLogger.error({ error }, 'Error writing to MongoDB');
+      childLogger.error(error, 'Error writing to MongoDB');
     });
 
     // Keep track of stuff
