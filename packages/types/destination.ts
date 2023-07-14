@@ -76,21 +76,44 @@ export type BigQueryConfig = {
   };
 };
 
-export type Destination = S3Destination | PostgresDestination | BigQueryDestination;
+export type MongoDBDestination = BaseDestination & {
+  type: 'mongodb';
+  config: MongoDBConfig;
+};
+export type MongoDBDestinationCreateParams = BaseDestinationCreateParams & {
+  type: 'mongodb';
+  config: MongoDBConfig;
+};
+export type MongoDBDestinationUpdateParams = BaseDestinationUpdateParams & {
+  type: 'mongodb';
+  config: MongoDBConfig;
+};
+
+export type MongoDBConfig = {
+  host: string;
+  database: string;
+  user: string;
+  // TODO (670): encrypt
+  password: string;
+};
+
+export type Destination = S3Destination | PostgresDestination | BigQueryDestination | MongoDBDestination;
 export type DestinationCreateParams =
   | S3DestinationCreateParams
   | PostgresDestinationCreateParams
-  | BigQueryDestinationCreateParams;
+  | BigQueryDestinationCreateParams
+  | MongoDBDestinationCreateParams;
 export type DestinationTestParams = DestinationCreateParams & {
   id?: string;
 };
 export type DestinationUpdateParams =
   | S3DestinationUpdateParams
   | PostgresDestinationUpdateParams
-  | BigQueryDestinationUpdateParams;
+  | BigQueryDestinationUpdateParams
+  | MongoDBDestinationUpdateParams;
 
 export type DestinationTestResult = { success: boolean; message: string | null };
 
-export type DestinationConfig = S3Config | PostgresConfig | BigQueryConfig;
+export type DestinationConfig = S3Config | PostgresConfig | BigQueryConfig | MongoDBConfig;
 
-export type DestinationType = 's3' | 'postgres' | 'bigquery';
+export type DestinationType = Destination['type'];

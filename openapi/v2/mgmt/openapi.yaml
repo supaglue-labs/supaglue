@@ -113,6 +113,8 @@ components:
       $ref: ./components/schemas/objects/postgres_config.yaml
     bigquery_config:
       $ref: ./components/schemas/objects/bigquery_config.yaml
+    mongodb_config:
+      $ref: ./components/schemas/objects/mongodb_config.yaml
     schema:
       $ref: ./components/schemas/objects/schema.yaml
     schema_config:
