@@ -328,7 +328,7 @@ export interface components {
         /** @example supaglue@supaglue-382017.iam.gserviceaccount.com */
         client_email: string;
         /** @example -----BEGIN PRIVATE KEY-----\nMII... */
-        private_key?: string;
+        private_key: string;
       };
     };
     s3_config_unsafe: {

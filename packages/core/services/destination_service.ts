@@ -197,13 +197,15 @@ export class DestinationService {
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
+
     const existingDestination = await this.getDestinationUnsafeById(params.id);
+    const mergedConfig = mergeDestinationConfig(existingDestination, params);
     const model = await this.#prisma.destination.update({
       where: { id: params.id },
       data: {
         applicationId: params.applicationId,
         type: params.type,
-        config: params.config,
+        config: mergedConfig,
         name: params.name,
       },
     });
@@ -242,8 +244,36 @@ export class DestinationService {
 }
 
 function mergeDestinationConfig(
-  existingConfig: DestinationConfigUnsafeAny,
+  existingDestination: DestinationUnsafeAny,
   params: DestinationUpdateParamsAny
 ): DestinationConfigUnsafeAny {
-  // TODO: merge them
+  switch (existingDestination.type) {
+    case 's3':
+      if (params.type !== 's3') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        secretAccessKey: params.config.secretAccessKey ?? existingDestination.config.secretAccessKey,
+      };
+    case 'postgres':
+      if (params.type !== 'postgres') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        password: params.config.password ?? existingDestination.config.password,
+      };
+    case 'bigquery':
+      if (params.type !== 'bigquery') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        credentials: {
+          ...params.config.credentials,
+          privateKey: params.config.credentials.privateKey ?? existingDestination.config.credentials.privateKey,
+        },
+      };
+  }
 }

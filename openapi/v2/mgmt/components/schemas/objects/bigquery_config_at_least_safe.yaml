@@ -17,6 +17,7 @@ properties:
         example: -----BEGIN PRIVATE KEY-----\nMII...
     required:
       - client_email
+      - private_key # right now the FE requires this to be passed in even on updates
 required:
   - project_id
   - dataset

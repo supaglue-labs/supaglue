@@ -2601,7 +2601,8 @@
               }
             },
             "required": [
-              "client_email"
+              "client_email",
+              "private_key"
             ]
           }
         },
