@@ -2348,9 +2348,10 @@
         ]
       },
       "destination": {
-        "allOf": [
+        "oneOf": [
           {
             "type": "object",
+            "title": "s3",
             "properties": {
               "id": {
                 "type": "string",
@@ -2363,73 +2364,125 @@
               "name": {
                 "type": "string",
                 "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "s3"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/s3_config_safe"
               }
             },
             "required": [
               "id",
               "application_id",
-              "name"
+              "name",
+              "type",
+              "config"
             ]
           },
           {
-            "oneOf": [
-              {
-                "type": "object",
-                "title": "s3",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "s3"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/s3_config_safe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
+            "type": "object",
+            "title": "postgres",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
                 ]
               },
-              {
-                "type": "object",
-                "title": "postgres",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "postgres"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/postgres_config_safe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
-                ]
-              },
-              {
-                "type": "object",
-                "title": "bigquery",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "bigquery"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/bigquery_config_safe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
-                ]
+              "config": {
+                "$ref": "#/components/schemas/postgres_config_safe"
               }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_safe"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mongodb",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "mongodb"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/mongodb_config_safe"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config"
             ]
           }
         ]
@@ -2515,6 +2568,28 @@
           "project_id",
           "dataset",
           "credentials"
+        ]
+      },
+      "mongodb_config_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "mongodb.company.com"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          }
+        },
+        "required": [
+          "host",
+          "database",
+          "user"
         ]
       },
       "s3_config_at_least_safe": {
@@ -2612,6 +2687,32 @@
           "credentials"
         ]
       },
+      "mongodb_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "mongodb.company.com"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "host",
+          "database",
+          "user"
+        ]
+      },
       "s3_config_unsafe": {
         "type": "object",
         "properties": {
@@ -2642,7 +2743,7 @@
         "properties": {
           "host": {
             "type": "string",
-            "example": "https://mydb.com"
+            "example": "database.company.com"
           },
           "port": {
             "type": "number",
@@ -2707,6 +2808,33 @@
           "project_id",
           "dataset",
           "credentials"
+        ]
+      },
+      "mongodb_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "mongodb.company.com"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "host",
+          "database",
+          "user",
+          "password"
         ]
       },
       "schema": {
@@ -3674,155 +3802,201 @@
         ]
       },
       "create_destination": {
-        "allOf": [
+        "oneOf": [
           {
             "type": "object",
+            "title": "s3",
             "properties": {
               "name": {
                 "type": "string",
                 "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "s3"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/s3_config_unsafe"
               }
             },
             "required": [
-              "name"
+              "name",
+              "type",
+              "config"
             ]
           },
           {
-            "oneOf": [
-              {
-                "type": "object",
-                "title": "s3",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "s3"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/s3_config_unsafe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
+            "type": "object",
+            "title": "postgres",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
                 ]
               },
-              {
-                "type": "object",
-                "title": "postgres",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "postgres"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/postgres_config_unsafe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
-                ]
-              },
-              {
-                "type": "object",
-                "title": "bigquery",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "bigquery"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/bigquery_config_unsafe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
-                ]
+              "config": {
+                "$ref": "#/components/schemas/postgres_config_unsafe"
               }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mongodb",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "mongodb"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/mongodb_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
             ]
           }
         ]
       },
       "update_destination": {
-        "allOf": [
+        "oneOf": [
           {
             "type": "object",
+            "title": "s3",
             "properties": {
               "name": {
                 "type": "string",
                 "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "s3"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/s3_config_at_least_safe"
               }
             },
             "required": [
-              "name"
+              "name",
+              "type",
+              "config"
             ]
           },
           {
-            "oneOf": [
-              {
-                "type": "object",
-                "title": "s3",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "s3"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/s3_config_at_least_safe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
+            "type": "object",
+            "title": "postgres",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
                 ]
               },
-              {
-                "type": "object",
-                "title": "postgres",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "postgres"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/postgres_config_at_least_safe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
-                ]
-              },
-              {
-                "type": "object",
-                "title": "bigquery",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "bigquery"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/bigquery_config_at_least_safe"
-                  }
-                },
-                "required": [
-                  "type",
-                  "config"
-                ]
+              "config": {
+                "$ref": "#/components/schemas/postgres_config_at_least_safe"
               }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_at_least_safe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mongodb",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "mongodb"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/mongodb_config_at_least_safe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
             ]
           }
         ]

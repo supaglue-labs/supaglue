@@ -1,4 +1,5 @@
 import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
+import MongoDBIcon from '@/assets/destination_icons/mongodb.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
 import S3Icon from '@/assets/destination_icons/s3.png';
 import { TabPanel } from '@/components/TabPanel';
@@ -14,7 +15,7 @@ const ICON_SIZE = 35;
 export type DestinationCardInfo = {
   icon?: React.ReactNode;
   name: string;
-  type: 's3' | 'postgres' | 'bigquery';
+  type: 's3' | 'postgres' | 'bigquery' | 'mongodb';
   description: string;
 };
 
@@ -39,10 +40,18 @@ export const bigQueryDestinationCardInfo: DestinationCardInfo = {
   description: 'Configure your BigQuery destination.',
 };
 
+export const mongoDBDestinationCardInfo: DestinationCardInfo = {
+  icon: <Image alt="mongodb" src={MongoDBIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  name: 'MongoDB',
+  type: 'mongodb',
+  description: 'Configure your MongoDB destination.',
+};
+
 export const destinationCardsInfo: DestinationCardInfo[] = [
   s3DestinationCardInfo,
   postgresDestinationCardInfo,
   bigQueryDestinationCardInfo,
+  mongoDBDestinationCardInfo,
 ];
 
 export default function DestinationTabPanelContainer() {

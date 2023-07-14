@@ -1,4 +1,4 @@
-export type DestinationType = 's3' | 'postgres' | 'bigquery';
+export type DestinationType = 's3' | 'postgres' | 'bigquery' | 'mongodb';
 
 type BaseDestinationCreateParams = {
   applicationId: string;
@@ -12,24 +12,28 @@ type BaseDestinationUpdateParams = BaseDestination;
 export type DestinationConfigUnsafeAny =
   | DestinationConfigUnsafe<'s3'>
   | DestinationConfigUnsafe<'postgres'>
-  | DestinationConfigUnsafe<'bigquery'>;
+  | DestinationConfigUnsafe<'bigquery'>
+  | DestinationConfigUnsafe<'mongodb'>;
 
 export type DestinationConfigUnsafe<T extends DestinationType> = {
   s3: S3ConfigUnsafe;
   postgres: PostgresConfigUnsafe;
   bigquery: BigQueryConfigUnsafe;
+  mongodb: MongoDBConfigUnsafe;
 }[T];
 
 export type DestinationConfigAtLeastSafe<T extends DestinationType> = {
   s3: S3ConfigAtLeastSafe;
   postgres: PostgresConfigAtLeastSafe;
   bigquery: BigQueryConfigAtLeastSafe;
+  mongodb: MongoDBConfigAtLeastSafe;
 }[T];
 
 export type DestinationConfigSafe<T extends DestinationType> = {
   s3: S3ConfigSafeOnly;
   postgres: PostgresConfigSafeOnly;
   bigquery: BigQueryConfigSafeOnly;
+  mongodb: MongoDBConfigSafeOnly;
 }[T];
 
 export type DestinationCreateParams<T extends DestinationType> = BaseDestinationCreateParams & {
@@ -100,19 +104,40 @@ export type BigQueryConfigUnsafeOnly = {
   };
 };
 
+export type MongoDBConfigUnsafe = MongoDBConfigSafeOnly & MongoDBConfigUnsafeOnly;
+export type MongoDBConfigAtLeastSafe = MongoDBConfigSafeOnly & Partial<MongoDBConfigUnsafeOnly>;
+
+export type MongoDBConfigSafeOnly = {
+  host: string;
+  database: string;
+  user: string;
+};
+
+// TODO (670): encrypt
+export type MongoDBConfigUnsafeOnly = {
+  password: string;
+};
+
 export type DestinationUnsafeAny =
   | DestinationUnsafe<'s3'>
   | DestinationUnsafe<'postgres'>
-  | DestinationUnsafe<'bigquery'>;
-export type DestinationSafeAny = DestinationSafe<'s3'> | DestinationSafe<'postgres'> | DestinationSafe<'bigquery'>;
+  | DestinationUnsafe<'bigquery'>
+  | DestinationUnsafe<'mongodb'>;
+export type DestinationSafeAny =
+  | DestinationSafe<'s3'>
+  | DestinationSafe<'postgres'>
+  | DestinationSafe<'bigquery'>
+  | DestinationSafe<'mongodb'>;
 export type DestinationCreateParamsAny =
   | DestinationCreateParams<'s3'>
   | DestinationCreateParams<'postgres'>
-  | DestinationCreateParams<'bigquery'>;
+  | DestinationCreateParams<'bigquery'>
+  | DestinationCreateParams<'mongodb'>;
 export type DestinationUpdateParamsAny =
   | DestinationUpdateParams<'s3'>
   | DestinationUpdateParams<'postgres'>
-  | DestinationUpdateParams<'bigquery'>;
+  | DestinationUpdateParams<'bigquery'>
+  | DestinationUpdateParams<'mongodb'>;
 
 export type DestinationTestParams<T extends DestinationType> =
   | DestinationCreateParams<T>
@@ -123,6 +148,7 @@ export type DestinationTestParams<T extends DestinationType> =
 export type DestinationTestParamsAny =
   | DestinationTestParams<'s3'>
   | DestinationTestParams<'postgres'>
-  | DestinationTestParams<'bigquery'>;
+  | DestinationTestParams<'bigquery'>
+  | DestinationTestParams<'mongodb'>;
 
 export type DestinationTestResult = { success: boolean; message: string | null };

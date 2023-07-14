@@ -12,13 +12,19 @@ import type {
   DestinationUnsafeAny,
   DestinationUpdateParamsAny,
 } from '@supaglue/types';
+import fs from 'fs';
+import { MongoClient, ServerApiVersion } from 'mongodb';
+import path from 'path';
 import { Client } from 'pg';
 import type { DestinationWriter } from '../destination_writers/base';
 import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
+import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
 import { BadRequestError } from '../errors';
 import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
+
+const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 
 export class DestinationService {
   #prisma: PrismaClient;
@@ -187,6 +193,31 @@ export class DestinationService {
           }
         }
         break;
+      case 'mongodb':
+        {
+          const { config } = params;
+          const password =
+            config.password ?? (existingDestination as DestinationUnsafe<'mongodb'> | null)?.config.password ?? ''; // TODO: shouldn't do empty string
+          const uri = `mongodb+srv://${config.user}:${encodeURIComponent(password)}@${config.host}`;
+          // TODO also support non-Atlas MongoDB connections, multiple hosts, X.509 auth, etc.
+          const mongoClient = new MongoClient(uri, {
+            appName: `supaglue-${version}`,
+            serverApi: {
+              version: ServerApiVersion.v1,
+              strict: true,
+              deprecationErrors: true,
+            },
+          });
+          try {
+            await mongoClient.db('admin').command({ ping: 1 });
+            success = true;
+          } catch (err: any) {
+            ({ message } = err);
+          } finally {
+            await mongoClient.close();
+          }
+        }
+        break;
       default:
         throw new BadRequestError(`unknown destination type`);
     }
@@ -217,14 +248,8 @@ export class DestinationService {
     if (!destination) {
       return null;
     }
-    switch (destination.type) {
-      case 's3':
-        return new S3DestinationWriter(destination);
-      case 'postgres':
-        return new PostgresDestinationWriter(destination);
-      case 'bigquery':
-        return new BigQueryDestinationWriter(destination);
-    }
+
+    return this.getWriterByDestination(destination);
   }
 
   public async getWriterByDestinationId(destinationId: string): Promise<DestinationWriter | null> {
@@ -232,6 +257,11 @@ export class DestinationService {
     if (!destination) {
       return null;
     }
+
+    return this.getWriterByDestination(destination);
+  }
+
+  private getWriterByDestination(destination: DestinationUnsafeAny): DestinationWriter | null {
     switch (destination.type) {
       case 's3':
         return new S3DestinationWriter(destination);
@@ -239,6 +269,10 @@ export class DestinationService {
         return new PostgresDestinationWriter(destination);
       case 'bigquery':
         return new BigQueryDestinationWriter(destination);
+      case 'mongodb':
+        return new MongoDBDestinationWriter(destination);
+      default:
+        return null;
     }
   }
 }
@@ -274,6 +308,14 @@ function mergeDestinationConfig(
           ...params.config.credentials,
           privateKey: params.config.credentials.privateKey ?? existingDestination.config.credentials.privateKey,
         },
+      };
+    case 'mongodb':
+      if (params.type !== 'mongodb') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        password: params.config.password ?? existingDestination.config.password,
       };
   }
 }

@@ -50,13 +50,13 @@ export abstract class CommonObjectBaseService {
       // so that we can resume in the case of failure during the COPY stage.
       logger.info(
         { connectionId, customerId, table },
-        'Creating temp table for Importing common object records [IN PROGRESS]'
+        'Creating temp table for importing common object records [IN PROGRESS]'
       );
       await client.query(`CREATE TEMP TABLE IF NOT EXISTS ${tempTable} (LIKE ${table} INCLUDING DEFAULTS)`);
       await client.query(`CREATE INDEX IF NOT EXISTS ${tempTable}_remote_id_idx ON ${tempTable} (remote_id)`);
       logger.info(
         { connectionId, customerId, table },
-        'Creating temp table for Importing common object records [COMPLETED]'
+        'Creating temp table for importing common object records [COMPLETED]'
       );
 
       const columns = ['id', ...columnsWithoutId];
