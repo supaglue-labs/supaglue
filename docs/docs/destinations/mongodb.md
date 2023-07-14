@@ -30,9 +30,22 @@ Supaglue currently only supports username/password authentication, not X.509.
 Note that the MongoDB user will need write access to the database you choose.
 :::
 
+### Creating a MongoDB Atlas user
+
+1. In the MongoDB Atlas interface, navigate to the "Database Access" tab.
+1. Click "Add New Database User".
+1. Make sure the Authenication Method is set to "Password".
+1. Enter a username and password.
+1. In the "Specific Privileges" section, click "Add Specific Privilege".
+1. Select the role "readWrite" and specify the database you want to sync to. Leave "Collection" blank as we create collections for you in this database.
+1. Click "Add User".
+
+### Configuring the MongoDB destination
+
 1. Go to Configuration -> Destinations.
-2. Click the Configure button on the MongoDB card.
-3. Enter your MongoDB credentials.
+1. Click the Configure button on the MongoDB card.
+1. Enter your MongoDB credentials.
+1. Click Test, then Save.
 
 
 ![mongodb-config](/img/mongodb_form.png)
