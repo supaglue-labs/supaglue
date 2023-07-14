@@ -22,11 +22,6 @@ export const ExistingPasswordTextField = (props: ExistingPasswordTextFieldProps)
   const [isEditing, setIsEditing] = useState(false);
   const [newPassword, setNewPassword] = useState<string>('');
 
-  // return Textfield with "Edit" button which will enable editing of the password.
-  // The password will be masked with asterisks until the user clicks "Edit", at which time
-  // we will clear the text box and allow entering a new password.
-  // If the user then clicks 'cancel' instead of 'done' we will revert to the original "password" of asterisks.
-
   return (
     <Stack direction="row" className="gap-2">
       <TextField
