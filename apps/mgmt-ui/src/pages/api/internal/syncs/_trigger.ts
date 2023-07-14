@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       'x-customer-id': req.headers['x-customer-id'] as string,
       'x-provider-name': req.headers['x-provider-name'] as string,
     },
-    body: req.body,
+    body: JSON.stringify(req.body),
   });
 
   const r = await result.json();

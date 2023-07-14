@@ -1,6 +1,7 @@
-import { pauseSync, resumeSync } from '@/client';
+import { pauseSync, resumeSync, triggerSync } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import { Button } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
@@ -96,6 +97,36 @@ export default function SyncsTable(props: SyncsTableProps) {
               }
             }}
           />
+        );
+      },
+    },
+    {
+      field: '_',
+      headerName: 'Actions',
+      width: 120,
+      sortable: false,
+      renderCell: (params) => {
+        // button to trigger sync run
+        return (
+          <Button
+            variant="contained"
+            onClick={async () => {
+              const response = await triggerSync(
+                applicationId,
+                params.row.customerId,
+                params.row.providerName,
+                params.row.objectType,
+                params.row.object
+              );
+              if (!response.ok) {
+                addNotification({ message: response.errorMessage, severity: 'error' });
+                return;
+              }
+              addNotification({ message: 'Sync triggered', severity: 'success' });
+            }}
+          >
+            Trigger
+          </Button>
         );
       },
     },
