@@ -19,7 +19,7 @@ Supaglue uses the Marketo REST API.
 | Action API                 | Yes       |
 | Real-time events           | No        |
 
-Supported common object types:
+Supported common objects:
 
 - Actions
 - Automations

@@ -20,14 +20,14 @@ Supaglue interfaces with the HubSpot V3 API.
 | Action API (common, custom objects)              | Yes       |
 | Real-time events                                 | No        |
 
-Supported common object types:
+Supported common objects:
 
 - Company
 - Contact
 - Deal
 - User
 
-Supported standard object types: `company`, `contact`, `deal`, `line_item`, `product`, `ticket`, `quote`, `call`, `communication`, `email`, `meeting`, `note`, `postal_mail`, `task`.
+Supported standard objects: `company`, `contact`, `deal`, `line_item`, `product`, `ticket`, `quote`, `call`, `communication`, `email`, `meeting`, `note`, `postal_mail`, `task`.
 
 For custom objects, you should use their internal names when configuring the `SyncConfig`. See [HubSpot's documentation](https://knowledge.hubspot.com/crm-setup/create-custom-objects) for more information. If you created the custom object through Supaglue's API, the internal name is equivalent to the `name` field.
 

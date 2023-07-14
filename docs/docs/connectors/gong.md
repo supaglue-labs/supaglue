@@ -11,12 +11,17 @@ description: ''
 
 Supaglue interfaces with the Gong V2 API.
 
-| Feature                    | Available |
-| -------------------------- | --------- |
-| Auth                       | No        |
-| Managed syncs              | No        |
-| Point reads                | No        |
-| Action API                 | No        |
-| Real-time events           | No        |
+| Feature                            | Available |
+| ---------------------------------- | --------- |
+| Auth                               | Yes       |
+| Managed syncs (standard objects)   | Yes       |
+| Managed syncs: incremental deletes | No        |
+| Point reads                        | No        |
+| Action API                         | No        |
+| Real-time events                   | No        |
 
-Supported common object types: -
+Supported standard objects:
+
+- `call`
+- `detailedCall`
+- `callTranscript`: this will do a full refresh on each sync

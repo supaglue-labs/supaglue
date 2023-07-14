@@ -19,7 +19,7 @@ Supaglue interfaces with the Pipedrive V1 API.
 | Action API (common objects)    | Yes       |
 | Real-time events               | No        |
 
-Supported common object types:
+Supported common objects:
 
 - Account
 - Contact
