@@ -183,11 +183,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 if (value === providerId) {
                   return;
                 }
-                const provider = providers.find((p) => p.id === value);
                 setProviderId(value);
-                setCommonObjects(
-                  provider?.category === 'crm' ? [...CRM_COMMON_OBJECT_TYPES] : [...ENGAGEMENT_COMMON_OBJECT_TYPES]
-                );
                 setStandardObjects([]);
                 setCustomObjects([]);
               }}
@@ -233,7 +229,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   key={providerId}
                   multiple
                   id="common-objects"
-                  options={CRM_COMMON_OBJECT_TYPES}
+                  options={provider.category === 'crm' ? CRM_COMMON_OBJECT_TYPES : ENGAGEMENT_COMMON_OBJECT_TYPES}
                   defaultValue={commonObjects}
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (
