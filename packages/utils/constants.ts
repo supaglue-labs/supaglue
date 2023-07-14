@@ -1170,4 +1170,6 @@ export const SALESFORCE_OBJECTS = [
   'WorkTypeShare',
 ] as const;
 
+export const GONG_STANDARD_OBJECTS = ['call', 'detailedCall', 'callTranscript'] as const;
+
 export const PROVIDERS_THAT_SUPPORT_SCHEMAS = ['salesforce', 'hubspot', 'pipedrive'] as const;
