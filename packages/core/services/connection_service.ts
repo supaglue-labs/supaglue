@@ -216,7 +216,7 @@ export class ConnectionService {
       );
     }
 
-    const objectMapping: SchemaMappingsConfigForObject = {
+    const newObjectMapping: SchemaMappingsConfigForObject = {
       object: params.name,
       fieldMappings: params.fieldMappings,
     };
@@ -229,9 +229,15 @@ export class ConnectionService {
       ...schemaMappingsConfig,
     };
     if (params.type === 'common') {
-      newSchemaMappingsConfig.commonObjects = [...(newSchemaMappingsConfig.commonObjects ?? []), objectMapping];
+      newSchemaMappingsConfig.commonObjects = addSchemaMappingsConfigForObject(
+        newSchemaMappingsConfig.commonObjects ?? [],
+        newObjectMapping
+      );
     } else if (params.type === 'standard') {
-      newSchemaMappingsConfig.standardObjects = [...(newSchemaMappingsConfig.standardObjects ?? []), objectMapping];
+      newSchemaMappingsConfig.standardObjects = addSchemaMappingsConfigForObject(
+        newSchemaMappingsConfig.standardObjects ?? [],
+        newObjectMapping
+      );
     } else {
       throw new BadRequestError(`Object mappings not supported for custom objects`);
     }
@@ -351,3 +357,18 @@ export const getFieldMappingInfo = (
 
   return out;
 };
+
+function addSchemaMappingsConfigForObject(
+  existingConfigs: SchemaMappingsConfigForObject[],
+  newConfig: SchemaMappingsConfigForObject
+) {
+  const doesObjectExist = existingConfigs.some((existingConfig) => existingConfig.object === newConfig.object);
+
+  if (doesObjectExist) {
+    return existingConfigs.map((existingConfig) =>
+      existingConfig.object === newConfig.object ? newConfig : existingConfig
+    );
+  }
+
+  return [...existingConfigs, newConfig];
+}
