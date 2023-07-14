@@ -2607,7 +2607,6 @@
         },
         "required": [
           "host",
-          "port",
           "database",
           "user",
           "password"
