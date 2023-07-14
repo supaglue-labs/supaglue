@@ -43,5 +43,16 @@
     "**/yarn.lock": true,
     "**/openapi.bundle.json": true,
     "**/gen/**": true
-  }
+  },
+  "grammarly.selectors": [
+    {
+      "language": "markdown",
+      "scheme": "file",
+      "pattern": "docs/docs/tutorials/build-field-mappings.md"
+    },
+    {
+      "language": "markdown",
+      "scheme": "file"
+    }
+  ]
 }
