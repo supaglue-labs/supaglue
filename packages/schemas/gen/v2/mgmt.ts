@@ -287,7 +287,7 @@ export interface components {
       name: string;
       /** @enum {string} */
       type: "s3";
-      config: components["schemas"]["s3_config"];
+      config: components["schemas"]["s3_config_safe"];
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -297,7 +297,7 @@ export interface components {
       name: string;
       /** @enum {string} */
       type: "postgres";
-      config: components["schemas"]["postgres_config"];
+      config: components["schemas"]["postgres_config_safe"];
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -307,7 +307,7 @@ export interface components {
       name: string;
       /** @enum {string} */
       type: "bigquery";
-      config: components["schemas"]["bigquery_config"];
+      config: components["schemas"]["bigquery_config_safe"];
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -317,9 +317,90 @@ export interface components {
       name: string;
       /** @enum {string} */
       type: "mongodb";
-      config: components["schemas"]["mongodb_config"];
+      config: components["schemas"]["mongodb_config_safe"];
     }]>;
-    s3_config: {
+    s3_config_safe: {
+      /** @example us-west-2 */
+      region: string;
+      /** @example my-test-bucket */
+      bucket: string;
+      access_key_id: string;
+    };
+    postgres_config_safe: {
+      /** @example https://mydb.com */
+      host: string;
+      /** @example 5432 */
+      port: number;
+      /** @example my_database */
+      database: string;
+      /** @example public */
+      schema: string;
+      /** @example myuser */
+      user: string;
+    };
+    bigquery_config_safe: {
+      /** @example my-project */
+      project_id: string;
+      /** @example my-dataset */
+      dataset: string;
+      credentials: {
+        /** @example supaglue@supaglue-382017.iam.gserviceaccount.com */
+        client_email: string;
+      };
+    };
+    mongodb_config_safe: {
+      /** @example mongodb.company.com */
+      host: string;
+      /** @example my_database */
+      database: string;
+      /** @example myuser */
+      user: string;
+    };
+    s3_config_at_least_safe: {
+      /** @example us-west-2 */
+      region: string;
+      /** @example my-test-bucket */
+      bucket: string;
+      access_key_id: string;
+      secret_access_key?: string;
+    };
+    postgres_config_at_least_safe: {
+      /** @example https://mydb.com */
+      host: string;
+      /** @example 5432 */
+      port: number;
+      /** @example my_database */
+      database: string;
+      /** @example public */
+      schema: string;
+      /** @example myuser */
+      user: string;
+      /** @example password */
+      password?: string;
+    };
+    bigquery_config_at_least_safe: {
+      /** @example my-project */
+      project_id: string;
+      /** @example my-dataset */
+      dataset: string;
+      credentials: {
+        /** @example supaglue@supaglue-382017.iam.gserviceaccount.com */
+        client_email: string;
+        /** @example -----BEGIN PRIVATE KEY-----\nMII... */
+        private_key: string;
+      };
+    };
+    mongodb_config_at_least_safe: {
+      /** @example mongodb.company.com */
+      host: string;
+      /** @example my_database */
+      database: string;
+      /** @example myuser */
+      user: string;
+      /** @example password */
+      password?: string;
+    };
+    s3_config_unsafe: {
       /** @example us-west-2 */
       region: string;
       /** @example my-test-bucket */
@@ -327,7 +408,7 @@ export interface components {
       access_key_id: string;
       secret_access_key: string;
     };
-    postgres_config: {
+    postgres_config_unsafe: {
       /** @example database.company.com */
       host: string;
       /** @example 5432 */
@@ -341,7 +422,7 @@ export interface components {
       /** @example password */
       password: string;
     };
-    bigquery_config: {
+    bigquery_config_unsafe: {
       /** @example my-project */
       project_id: string;
       /** @example my-dataset */
@@ -353,7 +434,7 @@ export interface components {
         private_key: string;
       };
     };
-    mongodb_config: {
+    mongodb_config_unsafe: {
       /** @example mongodb.company.com */
       host: string;
       /** @example my_database */
@@ -676,30 +757,55 @@ export interface components {
       name: string;
       config: components["schemas"]["schema_config"];
     };
-    create_update_destination: OneOf<[{
+    create_destination: OneOf<[{
       /** @example My Destination */
       name: string;
       /** @enum {string} */
       type: "s3";
-      config: components["schemas"]["s3_config"];
+      config: components["schemas"]["s3_config_unsafe"];
     }, {
       /** @example My Destination */
       name: string;
       /** @enum {string} */
       type: "postgres";
-      config: components["schemas"]["postgres_config"];
+      config: components["schemas"]["postgres_config_unsafe"];
     }, {
       /** @example My Destination */
       name: string;
       /** @enum {string} */
       type: "bigquery";
-      config: components["schemas"]["bigquery_config"];
+      config: components["schemas"]["bigquery_config_unsafe"];
     }, {
       /** @example My Destination */
       name: string;
       /** @enum {string} */
       type: "mongodb";
-      config: components["schemas"]["mongodb_config"];
+      config: components["schemas"]["mongodb_config_unsafe"];
+    }]>;
+    update_destination: OneOf<[{
+      /** @example My Destination */
+      name: string;
+      /** @enum {string} */
+      type: "s3";
+      config: components["schemas"]["s3_config_at_least_safe"];
+    }, {
+      /** @example My Destination */
+      name: string;
+      /** @enum {string} */
+      type: "postgres";
+      config: components["schemas"]["postgres_config_at_least_safe"];
+    }, {
+      /** @example My Destination */
+      name: string;
+      /** @enum {string} */
+      type: "bigquery";
+      config: components["schemas"]["bigquery_config_at_least_safe"];
+    }, {
+      /** @example My Destination */
+      name: string;
+      /** @enum {string} */
+      type: "mongodb";
+      config: components["schemas"]["mongodb_config_at_least_safe"];
     }]>;
     create_update_sync_config: {
       /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
@@ -869,7 +975,7 @@ export interface operations {
   createDestination: {
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_destination"];
+        "application/json": components["schemas"]["create_destination"];
       };
     };
     responses: {
@@ -906,7 +1012,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_destination"];
+        "application/json": components["schemas"]["update_destination"];
       };
     };
     responses: {

@@ -1,12 +1,12 @@
 import Spinner from '@/components/Spinner';
 import { Grid } from '@mui/material';
-import type { Destination } from '@supaglue/types';
+import type { DestinationSafeAny } from '@supaglue/types';
 import DestinationCard from './DestinationCard';
 import type { DestinationCardInfo } from './DestinationTabPanelContainer';
 
 export type DestinationsListPanelProps = {
   destinationCardsInfo: DestinationCardInfo[];
-  existingDestinations: Destination[];
+  existingDestinations: DestinationSafeAny[];
   isLoading: boolean;
 };
 
@@ -21,7 +21,7 @@ export default function DestinationsListPanel(props: DestinationsListPanelProps)
     <Grid container spacing={2}>
       {destinationCardsInfo.map((info) => {
         const existingDestination = existingDestinations.find(
-          (destination: Destination) => info.type === destination.type
+          (destination: DestinationSafeAny) => info.type === destination.type
         );
 
         return (

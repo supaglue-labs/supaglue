@@ -3,7 +3,7 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
-  MongoDBDestination,
+  DestinationUnsafe,
   NormalizedRawRecord,
   ProviderCategory,
   ProviderName,
@@ -26,9 +26,9 @@ const BATCH_SIZE = 1000;
 const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 
 export class MongoDBDestinationWriter extends BaseDestinationWriter {
-  readonly #destination: MongoDBDestination;
+  readonly #destination: DestinationUnsafe<'mongodb'>;
 
-  public constructor(destination: MongoDBDestination) {
+  public constructor(destination: DestinationUnsafe<'mongodb'>) {
     super();
     this.#destination = destination;
   }

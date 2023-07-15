@@ -7,10 +7,12 @@ import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { Destination } from '@supaglue/types';
+import type { DestinationSafeAny } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { mongoDBDestinationCardInfo } from './DestinationTabPanelContainer';
+import type { KnownOrUnknownValue } from './ExistingPasswordTextField';
+import { ExistingPasswordTextField } from './ExistingPasswordTextField';
 
 export type MongoDBDestinationDetailsPanelProps = {
   isLoading: boolean;
@@ -28,7 +30,7 @@ export default function MongoDBDestinationDetailsPanel({ isLoading }: MongoDBDes
   const [database, setDatabase] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [user, setUser] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [password, setPassword] = useState<KnownOrUnknownValue>({ type: 'known', value: '' });
   const [isTestSuccessful, setIsTestSuccessful] = useState<boolean>(false);
   const [isTesting, setIsTesting] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -52,10 +54,10 @@ export default function MongoDBDestinationDetailsPanel({ isLoading }: MongoDBDes
     setName(destination.name);
     setDatabase(destination.config.database);
     setUser(destination.config.user);
-    setPassword(destination.config.password);
+    setPassword({ type: 'unknown' });
   }, [destination?.id]);
 
-  const createOrUpdateDestination = async (): Promise<Destination | undefined> => {
+  const createOrUpdateDestination = async (): Promise<DestinationSafeAny | undefined> => {
     if (destination) {
       const response = await updateDestination({
         ...destination,
@@ -65,7 +67,7 @@ export default function MongoDBDestinationDetailsPanel({ isLoading }: MongoDBDes
           host,
           database,
           user,
-          password,
+          password: password.type === 'known' ? password.value : undefined,
         },
       });
       if (!response.ok) {
@@ -82,7 +84,7 @@ export default function MongoDBDestinationDetailsPanel({ isLoading }: MongoDBDes
         host,
         database,
         user,
-        password,
+        password: password.type === 'known' ? password.value : '', // TODO: shouldn't allow empty string
       },
     });
     if (!response.ok) {
@@ -137,9 +139,9 @@ export default function MongoDBDestinationDetailsPanel({ isLoading }: MongoDBDes
               host,
               database,
               user,
-              password,
+              password: password.type === 'known' ? password.value : undefined,
             },
-          });
+          } as any); // TODO: fix typing
           setIsTesting(false);
           if (!response.ok) {
             addNotification({ message: response.errorMessage, severity: 'error' });
@@ -242,16 +244,16 @@ export default function MongoDBDestinationDetailsPanel({ isLoading }: MongoDBDes
               setIsTestSuccessful(false);
             }}
           />
-          <TextField
+          <ExistingPasswordTextField
             required={true}
-            error={!isNew && password === ''}
+            error={!isNew && password.type === 'known' && password.value === ''}
             value={password}
             size="small"
             label="Password"
             variant="outlined"
             type="password"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setPassword(event.target.value);
+            onChange={(value: KnownOrUnknownValue) => {
+              setPassword(value);
               setIsDirty(true);
               setIsTestSuccessful(false);
             }}

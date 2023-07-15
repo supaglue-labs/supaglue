@@ -8,7 +8,7 @@ import getIcon from '@/utils/companyToIcon';
 import { FileUploadOutlined } from '@mui/icons-material';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { Destination } from '@supaglue/types';
+import type { DestinationSafeAny } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { bigQueryDestinationCardInfo } from './DestinationTabPanelContainer';
@@ -72,7 +72,7 @@ export default function BigQDestinationDetailsPanel({ isLoading }: BigQueryDesti
     fileReader.readAsText(file);
   };
 
-  const createOrUpdateDestination = async (): Promise<Destination | undefined> => {
+  const createOrUpdateDestination = async (): Promise<DestinationSafeAny | undefined> => {
     if (destination) {
       const response = await updateDestination({
         ...destination,

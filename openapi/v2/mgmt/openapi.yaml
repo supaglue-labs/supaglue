@@ -107,14 +107,30 @@ components:
       $ref: ./components/schemas/objects/provider.yaml
     destination:
       $ref: ./components/schemas/objects/destination.yaml
-    s3_config:
-      $ref: ./components/schemas/objects/s3_config.yaml
-    postgres_config:
-      $ref: ./components/schemas/objects/postgres_config.yaml
-    bigquery_config:
-      $ref: ./components/schemas/objects/bigquery_config.yaml
-    mongodb_config:
-      $ref: ./components/schemas/objects/mongodb_config.yaml
+    s3_config_safe:
+      $ref: ./components/schemas/objects/s3_config_safe.yaml
+    postgres_config_safe:
+      $ref: ./components/schemas/objects/postgres_config_safe.yaml
+    bigquery_config_safe:
+      $ref: ./components/schemas/objects/bigquery_config_safe.yaml
+    mongodb_config_safe:
+      $ref: ./components/schemas/objects/mongodb_config_safe.yaml
+    s3_config_at_least_safe:
+      $ref: ./components/schemas/objects/s3_config_at_least_safe.yaml
+    postgres_config_at_least_safe:
+      $ref: ./components/schemas/objects/postgres_config_at_least_safe.yaml
+    bigquery_config_at_least_safe:
+      $ref: ./components/schemas/objects/bigquery_config_at_least_safe.yaml
+    mongodb_config_at_least_safe:
+      $ref: ./components/schemas/objects/mongodb_config_at_least_safe.yaml
+    s3_config_unsafe:
+      $ref: ./components/schemas/objects/s3_config_unsafe.yaml
+    postgres_config_unsafe:
+      $ref: ./components/schemas/objects/postgres_config_unsafe.yaml
+    bigquery_config_unsafe:
+      $ref: ./components/schemas/objects/bigquery_config_unsafe.yaml
+    mongodb_config_unsafe:
+      $ref: ./components/schemas/objects/mongodb_config_unsafe.yaml
     schema:
       $ref: ./components/schemas/objects/schema.yaml
     schema_config:
@@ -163,8 +179,10 @@ components:
       $ref: ./components/schemas/update_provider.yaml
     create_update_schema:
       $ref: ./components/schemas/create_update_schema.yaml
-    create_update_destination:
-      $ref: ./components/schemas/create_update_destination.yaml
+    create_destination:
+      $ref: ./components/schemas/create_destination.yaml
+    update_destination:
+      $ref: ./components/schemas/update_destination.yaml
     create_update_sync_config:
       $ref: ./components/schemas/create_update_sync_config.yaml
     list_properties:

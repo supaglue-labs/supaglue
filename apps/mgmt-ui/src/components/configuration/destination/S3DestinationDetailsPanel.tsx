@@ -7,10 +7,11 @@ import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { Destination } from '@supaglue/types';
+import type { DestinationSafeAny } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { s3DestinationCardInfo } from './DestinationTabPanelContainer';
+import { ExistingPasswordTextField, type KnownOrUnknownValue } from './ExistingPasswordTextField';
 
 export type S3DestinationDetailsPanelProps = {
   isLoading: boolean;
@@ -28,7 +29,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
   const [region, setRegion] = useState<string>('');
   const [bucket, setBucket] = useState<string>('');
   const [accessKeyId, setAccessKeyId] = useState<string>('');
-  const [secretAccessKey, setSecretAccessKey] = useState<string>('');
+  const [secretAccessKey, setSecretAccessKey] = useState<KnownOrUnknownValue>({ type: 'known', value: '' });
   const [isTesting, setIsTesting] = useState<boolean>(false);
   const [isTestSuccessful, setIsTestSuccessful] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -52,10 +53,10 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
     setName(destination?.name);
     setBucket(destination?.config?.bucket);
     setAccessKeyId(destination?.config?.accessKeyId);
-    setSecretAccessKey(destination?.config?.secretAccessKey);
+    setSecretAccessKey({ type: 'unknown' });
   }, [destination?.id]);
 
-  const createOrUpdateDestination = async (): Promise<Destination | undefined> => {
+  const createOrUpdateDestination = async (): Promise<DestinationSafeAny | undefined> => {
     if (destination) {
       const response = await updateDestination({
         ...destination,
@@ -65,7 +66,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           region,
           bucket,
           accessKeyId,
-          secretAccessKey,
+          secretAccessKey: secretAccessKey.type === 'known' ? secretAccessKey.value : undefined,
         },
       });
       if (!response.ok) {
@@ -82,7 +83,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
         region,
         bucket,
         accessKeyId,
-        secretAccessKey,
+        secretAccessKey: secretAccessKey.type === 'known' ? secretAccessKey.value : '', // TODO: shouldn't allow empty string
       },
     });
     if (!response.ok) {
@@ -137,9 +138,9 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
               region,
               bucket,
               accessKeyId,
-              secretAccessKey,
+              secretAccessKey: secretAccessKey.type === 'known' ? secretAccessKey.value : undefined,
             },
-          });
+          } as any); // TODO: fix typing
           setIsTesting(false);
           if (!response.ok) {
             addNotification({ message: response.errorMessage, severity: 'error' });
@@ -208,16 +209,16 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
               setIsTestSuccessful(false);
             }}
           />
-          <TextField
+          <ExistingPasswordTextField
             required={true}
-            error={!isNew && secretAccessKey === ''}
+            error={!isNew && secretAccessKey.type === 'known' && secretAccessKey.value === ''}
             value={secretAccessKey}
             size="small"
             label="Secret Access Key"
             variant="outlined"
             type="password"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setSecretAccessKey(event.target.value);
+            onChange={(value: KnownOrUnknownValue) => {
+              setSecretAccessKey(value);
               setIsDirty(true);
               setIsTestSuccessful(false);
             }}

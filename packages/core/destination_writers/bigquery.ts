@@ -2,11 +2,11 @@ import type { TableSchema } from '@google-cloud/bigquery';
 import { BigQuery } from '@google-cloud/bigquery';
 import { ApiError } from '@google-cloud/common';
 import type {
-  BigQueryDestination,
   CommonObjectType,
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  DestinationUnsafe,
   NormalizedRawRecord,
   ProviderCategory,
   ProviderName,
@@ -36,9 +36,9 @@ import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 export class BigQueryDestinationWriter extends BaseDestinationWriter {
-  readonly #destination: BigQueryDestination;
+  readonly #destination: DestinationUnsafe<'bigquery'>;
 
-  public constructor(destination: BigQueryDestination) {
+  public constructor(destination: DestinationUnsafe<'bigquery'>) {
     super();
     this.#destination = destination;
   }

@@ -3,8 +3,8 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  DestinationUnsafe,
   NormalizedRawRecord,
-  PostgresDestination,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -35,9 +35,9 @@ import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
-  readonly #destination: PostgresDestination;
+  readonly #destination: DestinationUnsafe<'postgres'>;
 
-  public constructor(destination: PostgresDestination) {
+  public constructor(destination: DestinationUnsafe<'postgres'>) {
     super();
     this.#destination = destination;
   }

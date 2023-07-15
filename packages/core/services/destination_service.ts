@@ -3,13 +3,15 @@ import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
 import { BigQuery } from '@google-cloud/bigquery';
 import type { PrismaClient } from '@supaglue/db';
 import type {
-  Destination,
-  DestinationCreateParams,
-  DestinationTestParams,
+  DestinationConfigUnsafeAny,
+  DestinationCreateParamsAny,
+  DestinationSafeAny,
+  DestinationTestParamsAny,
   DestinationTestResult,
-  DestinationUpdateParams,
+  DestinationUnsafe,
+  DestinationUnsafeAny,
+  DestinationUpdateParamsAny,
 } from '@supaglue/types';
-import { snakecaseKeys } from '@supaglue/utils';
 import fs from 'fs';
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import path from 'path';
@@ -20,7 +22,7 @@ import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
 import { BadRequestError } from '../errors';
-import { fromDestinationModel } from '../mappers/destination';
+import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
 
 const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 
@@ -31,14 +33,14 @@ export class DestinationService {
     this.#prisma = prisma;
   }
 
-  public async getDestinationsByApplicationId(applicationId: string): Promise<Destination[]> {
+  public async getDestinationsSafeByApplicationId(applicationId: string): Promise<DestinationSafeAny[]> {
     const models = await this.#prisma.destination.findMany({
       where: { applicationId },
     });
-    return models.map(fromDestinationModel);
+    return models.map(fromDestinationModelToSafe);
   }
 
-  public async getDestinationByProviderId(providerId: string): Promise<Destination | null> {
+  public async getDestinationUnsafeByProviderId(providerId: string): Promise<DestinationUnsafeAny | null> {
     const model = await this.#prisma.destination.findFirst({
       where: {
         syncConfigs: {
@@ -51,17 +53,24 @@ export class DestinationService {
     if (!model) {
       return null;
     }
-    return fromDestinationModel(model);
+    return fromDestinationModelToUnsafe(model);
   }
 
-  public async getDestinationById(id: string): Promise<Destination> {
+  public async getDestinationSafeById(id: string): Promise<DestinationSafeAny> {
     const model = await this.#prisma.destination.findUniqueOrThrow({
       where: { id },
     });
-    return fromDestinationModel(model);
+    return fromDestinationModelToSafe(model);
   }
 
-  public async createDestination(params: DestinationCreateParams): Promise<Destination> {
+  public async getDestinationUnsafeById(id: string): Promise<DestinationUnsafeAny> {
+    const model = await this.#prisma.destination.findUniqueOrThrow({
+      where: { id },
+    });
+    return fromDestinationModelToUnsafe(model);
+  }
+
+  public async createDestination(params: DestinationCreateParamsAny): Promise<DestinationSafeAny> {
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
@@ -73,13 +82,14 @@ export class DestinationService {
         config: params.config,
       },
     });
-    return fromDestinationModel(model);
+    return fromDestinationModelToSafe(model);
   }
 
-  public async testDestination(params: DestinationTestParams): Promise<DestinationTestResult> {
+  public async testDestination(params: DestinationTestParamsAny): Promise<DestinationTestResult> {
     let success = false;
     let message: string | null = null;
-    if (!params.id) {
+
+    if (!('id' in params)) {
       const nameAlreadyExists = await this.#prisma.destination.findUnique({
         where: {
           applicationId_name: {
@@ -96,20 +106,26 @@ export class DestinationService {
       }
     }
 
+    // TODO: Refactor this code to be cleaner to merge in credentials
+
+    const existingDestination = 'id' in params ? await this.getDestinationUnsafeById(params.id) : null;
+
     switch (params.type) {
       case 's3':
         try {
           const s3Client = new S3Client({
             credentials: {
               accessKeyId: params.config.accessKeyId,
-              secretAccessKey: params.config.secretAccessKey,
+              secretAccessKey:
+                params.config.secretAccessKey ??
+                (existingDestination as DestinationUnsafe<'s3'> | null)?.config.secretAccessKey ??
+                '', // TODO: shouldn't do empty string
             },
             region: params.config.region,
             requestHandler: new NodeHttpHandler({
               connectionTimeout: 1500,
             }),
           });
-
           const command = new ListBucketsCommand({}); // Use listing as a proxy for appropriate credentials
           const result = await s3Client.send(command);
           s3Client.destroy();
@@ -125,6 +141,9 @@ export class DestinationService {
           try {
             const pgClient = new Client({
               ...params.config,
+              password:
+                params.config.password ??
+                (existingDestination as DestinationUnsafe<'postgres'> | null)?.config.password,
               connectionTimeoutMillis: 1500,
               statement_timeout: 1500,
             });
@@ -151,7 +170,13 @@ export class DestinationService {
           try {
             const bigQueryClient = new BigQuery({
               ...params.config,
-              credentials: snakecaseKeys(params.config.credentials),
+              credentials: {
+                client_email: params.config.credentials.clientEmail,
+                private_key:
+                  params.config.credentials.privateKey ??
+                  (existingDestination as DestinationUnsafe<'bigquery'> | null)?.config.credentials.privateKey ??
+                  '', // TODO: shouldn't do empty string
+              },
               autoRetry: false,
             });
             const [datasets] = await bigQueryClient.getDatasets();
@@ -171,7 +196,9 @@ export class DestinationService {
       case 'mongodb':
         {
           const { config } = params;
-          const uri = `mongodb+srv://${config.user}:${encodeURIComponent(config.password)}@${config.host}`;
+          const password =
+            config.password ?? (existingDestination as DestinationUnsafe<'mongodb'> | null)?.config.password ?? ''; // TODO: shouldn't do empty string
+          const uri = `mongodb+srv://${config.user}:${encodeURIComponent(password)}@${config.host}`;
           // TODO also support non-Atlas MongoDB connections, multiple hosts, X.509 auth, etc.
           const mongoClient = new MongoClient(uri, {
             appName: `supaglue-${version}`,
@@ -197,24 +224,27 @@ export class DestinationService {
     return { success, message };
   }
 
-  public async updateDestination(params: DestinationUpdateParams): Promise<Destination> {
+  public async updateDestination(params: DestinationUpdateParamsAny): Promise<DestinationSafeAny> {
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
+
+    const existingDestination = await this.getDestinationUnsafeById(params.id);
+    const mergedConfig = mergeDestinationConfig(existingDestination, params);
     const model = await this.#prisma.destination.update({
       where: { id: params.id },
       data: {
         applicationId: params.applicationId,
         type: params.type,
-        config: params.config,
+        config: mergedConfig,
         name: params.name,
       },
     });
-    return fromDestinationModel(model);
+    return fromDestinationModelToSafe(model);
   }
 
   public async getWriterByProviderId(providerId: string): Promise<DestinationWriter | null> {
-    const destination = await this.getDestinationByProviderId(providerId);
+    const destination = await this.getDestinationUnsafeByProviderId(providerId);
     if (!destination) {
       return null;
     }
@@ -223,7 +253,7 @@ export class DestinationService {
   }
 
   public async getWriterByDestinationId(destinationId: string): Promise<DestinationWriter | null> {
-    const destination = await this.getDestinationById(destinationId);
+    const destination = await this.getDestinationUnsafeById(destinationId);
     if (!destination) {
       return null;
     }
@@ -231,7 +261,7 @@ export class DestinationService {
     return this.getWriterByDestination(destination);
   }
 
-  private getWriterByDestination(destination: Destination): DestinationWriter | null {
+  private getWriterByDestination(destination: DestinationUnsafeAny): DestinationWriter | null {
     switch (destination.type) {
       case 's3':
         return new S3DestinationWriter(destination);
@@ -244,5 +274,48 @@ export class DestinationService {
       default:
         return null;
     }
+  }
+}
+
+function mergeDestinationConfig(
+  existingDestination: DestinationUnsafeAny,
+  params: DestinationUpdateParamsAny
+): DestinationConfigUnsafeAny {
+  switch (existingDestination.type) {
+    case 's3':
+      if (params.type !== 's3') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        secretAccessKey: params.config.secretAccessKey ?? existingDestination.config.secretAccessKey,
+      };
+    case 'postgres':
+      if (params.type !== 'postgres') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        password: params.config.password ?? existingDestination.config.password,
+      };
+    case 'bigquery':
+      if (params.type !== 'bigquery') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        credentials: {
+          ...params.config.credentials,
+          privateKey: params.config.credentials.privateKey ?? existingDestination.config.credentials.privateKey,
+        },
+      };
+    case 'mongodb':
+      if (params.type !== 'mongodb') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        password: params.config.password ?? existingDestination.config.password,
+      };
   }
 }

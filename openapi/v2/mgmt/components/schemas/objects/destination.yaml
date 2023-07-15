@@ -16,7 +16,7 @@ oneOf:
         enum:
           - s3
       config:
-        $ref: ./s3_config.yaml
+        $ref: ./s3_config_safe.yaml
     required:
       - id
       - application_id
@@ -40,7 +40,7 @@ oneOf:
         enum:
           - postgres
       config:
-        $ref: ./postgres_config.yaml
+        $ref: ./postgres_config_safe.yaml
     required:
       - id
       - application_id
@@ -64,7 +64,7 @@ oneOf:
         enum:
           - bigquery
       config:
-        $ref: ./bigquery_config.yaml
+        $ref: ./bigquery_config_safe.yaml
     required:
       - id
       - application_id
@@ -88,7 +88,7 @@ oneOf:
         enum:
           - mongodb
       config:
-        $ref: ./mongodb_config.yaml
+        $ref: ./mongodb_config_safe.yaml
     required:
       - id
       - application_id

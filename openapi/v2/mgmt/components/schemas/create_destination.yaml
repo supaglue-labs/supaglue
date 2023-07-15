@@ -10,7 +10,7 @@ oneOf:
         enum:
           - s3
       config:
-        $ref: ./objects/s3_config.yaml
+        $ref: ./objects/s3_config_unsafe.yaml
     required:
       - name
       - type
@@ -26,7 +26,7 @@ oneOf:
         enum:
           - postgres
       config:
-        $ref: ./objects/postgres_config.yaml
+        $ref: ./objects/postgres_config_unsafe.yaml
     required:
       - name
       - type
@@ -42,7 +42,7 @@ oneOf:
         enum:
           - bigquery
       config:
-        $ref: ./objects/bigquery_config.yaml
+        $ref: ./objects/bigquery_config_unsafe.yaml
     required:
       - name
       - type
@@ -58,7 +58,7 @@ oneOf:
         enum:
           - mongodb
       config:
-        $ref: ./objects/mongodb_config.yaml
+        $ref: ./objects/mongodb_config_unsafe.yaml
     required:
       - name
       - type
