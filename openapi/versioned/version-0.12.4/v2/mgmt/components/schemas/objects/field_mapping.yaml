@@ -1,9 +1,0 @@
-type: object
-properties:
-  schema_field:
-    type: string
-  mapped_field:
-    type: string
-required:
-  - schema_field
-  - mapped_field
