@@ -8,7 +8,12 @@ export interface paths {
   "/accounts": {
     /** Create account */
     post: operations["createAccount"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/accounts/{account_id}": {
     /** Get account */
@@ -16,6 +21,10 @@ export interface paths {
     /** Update account */
     patch: operations["updateAccount"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         account_id: string;
       };
@@ -24,7 +33,12 @@ export interface paths {
   "/contacts": {
     /** Create contact */
     post: operations["createContact"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/contacts/{contact_id}": {
     /** Get contact */
@@ -32,6 +46,10 @@ export interface paths {
     /** Update contact */
     patch: operations["updateContact"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         contact_id: string;
       };
@@ -40,7 +58,12 @@ export interface paths {
   "/leads": {
     /** Create lead */
     post: operations["createLead"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/leads/{lead_id}": {
     /** Get lead */
@@ -48,6 +71,10 @@ export interface paths {
     /** Update lead */
     patch: operations["updateLead"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         lead_id: string;
       };
@@ -56,7 +83,12 @@ export interface paths {
   "/opportunities": {
     /** Create opportunity */
     post: operations["createOpportunity"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/opportunities/{opportunity_id}": {
     /** Get opportunity */
@@ -64,6 +96,10 @@ export interface paths {
     /** Update opportunity */
     patch: operations["updateOpportunity"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         opportunity_id: string;
       };
@@ -73,6 +109,10 @@ export interface paths {
     /** Get user */
     get: operations["getUser"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         user_id: string;
       };
@@ -84,12 +124,22 @@ export interface paths {
      * @description Send request directly to a provider
      */
     post: operations["sendPassthroughRequest"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/custom-objects": {
     /** Create customObject */
     post: operations["createCustomObject"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/custom-objects/{custom_object_id}": {
     /** Get customObject */
@@ -97,6 +147,10 @@ export interface paths {
     /** Update customObject */
     put: operations["updateCustomObject"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         custom_object_id: string;
       };
@@ -106,6 +160,10 @@ export interface paths {
     /** Create customObjectRecord */
     post: operations["createCustomObjectRecord"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         custom_object_id: string;
       };
@@ -117,6 +175,10 @@ export interface paths {
     /** Update customObjectRecord */
     patch: operations["updateCustomObjectRecord"];
     parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
       path: {
         custom_object_id: string;
         record_id: string;
@@ -131,7 +193,12 @@ export interface paths {
     get: operations["getAssociationTypes"];
     /** Create associationType */
     post: operations["createAssociationType"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
   "/associations": {
     /**
@@ -141,7 +208,12 @@ export interface paths {
     get: operations["getAssociations"];
     /** Create association */
     put: operations["createAssociation"];
-    
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
   };
 }
 
@@ -249,7 +321,7 @@ export interface components {
        */
       last_modified_at: Date;
       raw_data?: {
-        [key: string]: unknown | undefined;
+        [key: string]: unknown;
       };
     };
     create_update_contact: {
@@ -578,7 +650,7 @@ export interface components {
     };
     /** @description Custom properties to be inserted that are not covered by the common object. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {
-      [key: string]: unknown | undefined;
+      [key: string]: unknown;
     };
     equals_filter: {
       /** @enum {string} */
@@ -635,12 +707,12 @@ export interface components {
       /** @example 42579f73-8524-4570-9b67-ecbd702c6b15 */
       object_id: string;
       fields: {
-        [key: string]: unknown | undefined;
+        [key: string]: unknown;
       };
     };
     create_update_custom_object_record: {
       fields: {
-        [key: string]: unknown | undefined;
+        [key: string]: unknown;
       };
     };
     custom_object_field: {
@@ -707,21 +779,21 @@ export interface components {
   responses: never;
   parameters: {
     /** @description Whether to include data that was deleted in providers. */
-    include_deleted_data: boolean;
+    include_deleted_data?: boolean;
     /** @description Whether to include raw data fetched from the 3rd party provider. */
-    include_raw_data: boolean;
+    include_raw_data?: boolean;
     /** @description If provided, will only return objects created after this datetime */
-    created_after: Date;
+    created_after?: Date;
     /** @description If provided, will only return objects created before this datetime */
-    created_before: Date;
+    created_before?: Date;
     /** @description If provided, will only return objects modified after this datetime */
-    modified_after: Date;
+    modified_after?: Date;
     /** @description If provided, will only return objects modified before this datetime */
-    modified_before: Date;
+    modified_before?: Date;
     /** @description The pagination cursor value */
-    cursor: string;
+    cursor?: string;
     /** @description Number of results to return per page */
-    page_size: string;
+    page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
     /** @description The provider name */
@@ -736,8 +808,14 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  /** Create account */
   createAccount: {
-    /** Create account */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -759,8 +837,20 @@ export interface operations {
       };
     };
   };
+  /** Get account */
   getAccount: {
-    /** Get account */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        account_id: string;
+      };
+    };
     responses: {
       /** @description Account */
       200: {
@@ -770,8 +860,17 @@ export interface operations {
       };
     };
   };
+  /** Update account */
   updateAccount: {
-    /** Update account */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        account_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -792,8 +891,14 @@ export interface operations {
       };
     };
   };
+  /** Create contact */
   createContact: {
-    /** Create contact */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         /**
@@ -825,8 +930,20 @@ export interface operations {
       };
     };
   };
+  /** Get contact */
   getContact: {
-    /** Get contact */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        contact_id: string;
+      };
+    };
     responses: {
       /** @description Contact */
       200: {
@@ -836,8 +953,17 @@ export interface operations {
       };
     };
   };
+  /** Update contact */
   updateContact: {
-    /** Update contact */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        contact_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -858,8 +984,14 @@ export interface operations {
       };
     };
   };
+  /** Create lead */
   createLead: {
-    /** Create lead */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         /**
@@ -892,8 +1024,20 @@ export interface operations {
       };
     };
   };
+  /** Get lead */
   getLead: {
-    /** Get lead */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        lead_id: string;
+      };
+    };
     responses: {
       /** @description Lead */
       200: {
@@ -903,8 +1047,17 @@ export interface operations {
       };
     };
   };
+  /** Update lead */
   updateLead: {
-    /** Update lead */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        lead_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -925,8 +1078,14 @@ export interface operations {
       };
     };
   };
+  /** Create opportunity */
   createOpportunity: {
-    /** Create opportunity */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         /**
@@ -960,8 +1119,20 @@ export interface operations {
       };
     };
   };
+  /** Get opportunity */
   getOpportunity: {
-    /** Get opportunity */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        opportunity_id: string;
+      };
+    };
     responses: {
       /** @description Opportunity */
       200: {
@@ -971,8 +1142,17 @@ export interface operations {
       };
     };
   };
+  /** Update opportunity */
   updateOpportunity: {
-    /** Update opportunity */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        opportunity_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -993,8 +1173,20 @@ export interface operations {
       };
     };
   };
+  /** Get user */
   getUser: {
-    /** Get user */
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        user_id: string;
+      };
+    };
     responses: {
       /** @description User */
       200: {
@@ -1004,11 +1196,17 @@ export interface operations {
       };
     };
   };
+  /**
+   * Send passthrough request 
+   * @description Send request directly to a provider
+   */
   sendPassthroughRequest: {
-    /**
-     * Send passthrough request 
-     * @description Send request directly to a provider
-     */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -1052,18 +1250,24 @@ export interface operations {
               [key: string]: string | undefined;
             };
             /** @description The body from the downstream */
-            body?: string | number | number | boolean | (({
-                [key: string]: unknown | undefined;
-              })[]) | ({
-              [key: string]: unknown | undefined;
-            });
+            body?: string | number | boolean | ({
+                [key: string]: unknown;
+              })[] | {
+              [key: string]: unknown;
+            };
           };
         };
       };
     };
   };
+  /** Create customObject */
   createCustomObject: {
-    /** Create customObject */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -1087,8 +1291,17 @@ export interface operations {
       };
     };
   };
+  /** Get customObject */
   getCustomObject: {
-    /** Get customObject */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        custom_object_id: string;
+      };
+    };
     responses: {
       /** @description CustomObject */
       200: {
@@ -1098,8 +1311,17 @@ export interface operations {
       };
     };
   };
+  /** Update customObject */
   updateCustomObject: {
-    /** Update customObject */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        custom_object_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -1120,8 +1342,17 @@ export interface operations {
       };
     };
   };
+  /** Create customObjectRecord */
   createCustomObjectRecord: {
-    /** Create customObjectRecord */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        custom_object_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -1145,8 +1376,18 @@ export interface operations {
       };
     };
   };
+  /** Get customObjectRecord */
   getCustomObjectRecord: {
-    /** Get customObjectRecord */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        custom_object_id: string;
+        record_id: string;
+      };
+    };
     responses: {
       /** @description CustomObject */
       200: {
@@ -1156,8 +1397,18 @@ export interface operations {
       };
     };
   };
+  /** Update customObjectRecord */
   updateCustomObjectRecord: {
-    /** Update customObjectRecord */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        custom_object_id: string;
+        record_id: string;
+      };
+    };
     requestBody: {
       content: {
         "application/json": {
@@ -1178,17 +1429,21 @@ export interface operations {
       };
     };
   };
+  /**
+   * List associationTypes 
+   * @description Get a list of associationTypes
+   */
   getAssociationTypes: {
-    /**
-     * List associationTypes 
-     * @description Get a list of associationTypes
-     */
     parameters: {
       query: {
         source_object_id: string;
         source_object_type: components["schemas"]["object_type"];
         target_object_id: string;
         target_object_type: components["schemas"]["object_type"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -1202,8 +1457,14 @@ export interface operations {
       };
     };
   };
+  /** Create associationType */
   createAssociationType: {
-    /** Create associationType */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_association_type"];
@@ -1225,11 +1486,11 @@ export interface operations {
       };
     };
   };
+  /**
+   * List associations 
+   * @description Get a list of associations
+   */
   getAssociations: {
-    /**
-     * List associations 
-     * @description Get a list of associations
-     */
     parameters: {
       query: {
         source_record_id: string;
@@ -1237,6 +1498,10 @@ export interface operations {
         source_object_type: components["schemas"]["object_type"];
         target_object_id: string;
         target_object_type: components["schemas"]["object_type"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -1250,8 +1515,14 @@ export interface operations {
       };
     };
   };
+  /** Create association */
   createAssociation: {
-    /** Create association */
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
     requestBody: {
       content: {
         "application/json": components["schemas"]["create_update_association"];
