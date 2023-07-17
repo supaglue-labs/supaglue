@@ -44,5 +44,16 @@
     "**/openapi.bundle.json": true,
     "**/gen/**": true
   },
-  "githubPullRequests.ignoredPullRequestBranches": ["main"]
+  "githubPullRequests.ignoredPullRequestBranches": ["main"],
+  "grammarly.selectors": [
+    {
+      "language": "markdown",
+      "scheme": "file",
+      "pattern": "docs/docs/tutorials/build-field-mappings.md"
+    },
+    {
+      "language": "markdown",
+      "scheme": "file"
+    }
+  ]
 }
