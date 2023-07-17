@@ -10,6 +10,7 @@ import type {
   ProviderUpdateParams,
   SyncConfig,
 } from '@supaglue/types';
+import type { ObjectType } from '@supaglue/types/object_sync';
 import { BadRequestError, NotFoundError } from '../errors';
 import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
 
@@ -72,6 +73,10 @@ export class ProviderService {
   }
 
   public async create<T extends Provider = Provider>(provider: ProviderCreateParams): Promise<T> {
+    if (provider.objects) {
+      validateObjects(provider.objects);
+    }
+
     const createdProvider = await this.#prisma.provider.create({
       data: await toProviderModel(provider),
     });
@@ -95,7 +100,7 @@ export class ProviderService {
         });
         schemaId = schema.id;
       }
-      const objects = provider.objects || {};
+      const objects = provider.objects ?? {};
       const model = await prisma.provider.update({
         where: { id: providerId },
         data: {
@@ -129,6 +134,10 @@ export class ProviderService {
   }
 
   public async update(id: string, applicationId: string, provider: ProviderUpdateParams): Promise<Provider> {
+    if (provider.objects) {
+      validateObjects(provider.objects);
+    }
+
     const updatedProvider = await this.#prisma.provider.update({
       where: { id },
       data: await toProviderModel({
@@ -140,6 +149,10 @@ export class ProviderService {
   }
 
   public async upsert(provider: ProviderCreateParams): Promise<Provider> {
+    if (provider.objects) {
+      validateObjects(provider.objects);
+    }
+
     const upsertedProvider = await this.#prisma.provider.upsert({
       where: {
         applicationId_name: {
@@ -176,34 +189,40 @@ export class ProviderService {
 const addObjectToProviderObjects = <T extends ProviderCategory>(
   objects: ProviderObjects<T>,
   name: string,
-  type: string,
+  type: ObjectType,
   schemaId?: string
 ): ProviderObjects<T> => {
-  switch (type) {
-    case 'common':
-      if (objects.common?.find((object) => object.name === name)) {
-        throw new BadRequestError(`Common object with name: ${name} already exists in provider`);
-      }
-      return {
-        ...objects,
-        common: [...(objects.common ?? []), { name: name as CommonObjectForCategory<T>, schemaId }],
-      };
-    case 'standard':
-      if (objects.standard?.find((object) => object.name === name)) {
-        throw new BadRequestError(`Standard object with name: ${name} already exists in provider`);
-      }
-      return { ...objects, standard: [...(objects.standard ?? []), { name, schemaId }] };
-    case 'custom':
-      if (objects.custom?.find((object) => object.name === name)) {
-        throw new BadRequestError(`Custom object with name: ${name} already exists in provider`);
-      }
-      return { ...objects, custom: [...(objects.custom ?? []), { name, schemaId }] };
-    default:
-      throw new BadRequestError(`Invalid type: ${type}`);
+  function helper() {
+    switch (type) {
+      case 'common':
+        if (objects.common?.find((object) => object.name === name)) {
+          throw new BadRequestError(`Common object with name: ${name} already exists in provider`);
+        }
+        return {
+          ...objects,
+          common: [...(objects.common ?? []), { name: name as CommonObjectForCategory<T>, schemaId }],
+        };
+      case 'standard':
+        if (objects.standard?.find((object) => object.name === name)) {
+          throw new BadRequestError(`Standard object with name: ${name} already exists in provider`);
+        }
+        return { ...objects, standard: [...(objects.standard ?? []), { name, schemaId }] };
+      case 'custom':
+        if (objects.custom?.find((object) => object.name === name)) {
+          throw new BadRequestError(`Custom object with name: ${name} already exists in provider`);
+        }
+        return { ...objects, custom: [...(objects.custom ?? []), { name, schemaId }] };
+      default:
+        throw new BadRequestError(`Invalid type: ${type}`);
+    }
   }
+
+  const ret = helper();
+  validateObjects(ret);
+  return ret;
 };
 
-const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: string): SyncConfig => {
+const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: ObjectType): SyncConfig => {
   switch (type) {
     case 'common':
       if (syncConfig.config.commonObjects?.find((object) => object.object === name)) {
@@ -242,3 +261,44 @@ const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: st
       throw new BadRequestError(`Invalid type: ${type}`);
   }
 };
+
+function validateObjects({ common, standard, custom }: ProviderObjects<ProviderCategory>): void {
+  // 1. Disallow multiple objects for the same provider to be mapped to the same schema
+  // 2. Disallow multiple mappings for objects to schema for the same object name
+
+  if (common) {
+    const commonSchemaIds = common.map((object) => object.schemaId);
+    if (commonSchemaIds.length !== new Set(commonSchemaIds).size) {
+      throw new BadRequestError('Multiple common objects are mapped to the same schema for the same provider');
+    }
+
+    const commonObjectNames = common.map((object) => object.name);
+    if (commonObjectNames.length !== new Set(commonObjectNames).size) {
+      throw new BadRequestError('Multiple entries for mapping an object to a schema');
+    }
+  }
+
+  if (standard) {
+    const standardSchemaIds = standard.map((object) => object.schemaId);
+    if (standardSchemaIds.length !== new Set(standardSchemaIds).size) {
+      throw new BadRequestError('Multiple standard objects are mapped to the same schema for the same provider');
+    }
+
+    const standardObjectNames = standard.map((object) => object.name);
+    if (standardObjectNames.length !== new Set(standardObjectNames).size) {
+      throw new BadRequestError('Multiple entries for mapping an object to a schema');
+    }
+  }
+
+  if (custom) {
+    const customSchemaIds = custom.map((object) => object.schemaId);
+    if (customSchemaIds.length !== new Set(customSchemaIds).size) {
+      throw new BadRequestError('Multiple custom objects are mapped to the same schema for the same provider');
+    }
+
+    const customObjectNames = custom.map((object) => object.name);
+    if (customObjectNames.length !== new Set(customObjectNames).size) {
+      throw new BadRequestError('Multiple entries for mapping an object to a schema');
+    }
+  }
+}
