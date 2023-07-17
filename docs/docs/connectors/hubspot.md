@@ -39,11 +39,11 @@ import TabItem from '@theme/TabItem';
 
 To connect to your customers' HubSpot instances, you'll need to update the redirect URL to point to Supaglue and fetch the API access credentials in your [HubSpot developer account](https://developers.hubspot.com).
 
-### Add Redirect URL to your HubSpot app.
+### Add Redirect URL to your HubSpot app
 
 Supaglue provides a redirect URL to send information to your app. To add the redirect URL to your HubSpot app:
 
-1. Login to your HubSpot developer account: https://app.hubspot.com/developer
+1. Log in to your HubSpot developer account: <https://app.hubspot.com/developer>
 1. Navigate to your Public Application under "Apps" and go to the "Auth" tab.
 
     <BrowserWindow url="app.hubspot.com/developer/12345678/application/123456">
@@ -99,6 +99,4 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
 ### Fetch HubSpot Public App credentials
 
-1. Copy the Consumer Key, Consumer Secret, and scopes (comma-separated), and paste them into the HubSpot configuration form in the management portal.
-
-1. Copy the "Client ID" and "Client secret" values into the Supaglue Management Portal.
+Copy the Client ID, Client secret, and scopes (comma-separated), and paste them into the HubSpot configuration form in the management portal.
