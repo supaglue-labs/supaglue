@@ -44,6 +44,7 @@ import {
   toDynamicsLeadUpdateParams,
   toDynamicsOpportunityCreateParams,
   toDynamicsOpportunityUpdateParams,
+  toMappedProperties,
 } from './mappers';
 
 const MAX_PAGE_SIZE = 1000;
@@ -150,7 +151,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           return Readable.from(
             response.value.map((result: any) => ({
               id: result[idkey],
-              rawData: result,
+              rawData: toMappedProperties(result, fieldMappingConfig),
               isDeleted: false,
               lastModifiedAt: new Date(result.modifiedon),
               emittedAt,
@@ -170,15 +171,15 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'account':
-        return await this.listAccounts(updatedAfter, heartbeat);
+        return await this.listAccounts(fieldMappingConfig, updatedAfter, heartbeat);
       case 'contact':
-        return await this.listContacts(updatedAfter, heartbeat);
+        return await this.listContacts(fieldMappingConfig, updatedAfter, heartbeat);
       case 'lead':
-        return await this.listLeads(updatedAfter, heartbeat);
+        return await this.listLeads(fieldMappingConfig, updatedAfter, heartbeat);
       case 'opportunity':
-        return await this.listOpportunities(updatedAfter, heartbeat);
+        return await this.listOpportunities(fieldMappingConfig, updatedAfter, heartbeat);
       case 'user':
-        return await this.listUsers(updatedAfter, heartbeat);
+        return await this.listUsers(fieldMappingConfig, updatedAfter, heartbeat);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -191,15 +192,15 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'account':
-        return this.getAccount(id);
+        return this.getAccount(id, fieldMappingConfig);
       case 'contact':
-        return this.getContact(id);
+        return this.getContact(id, fieldMappingConfig);
       case 'lead':
-        return this.getLead(id);
+        return this.getLead(id, fieldMappingConfig);
       case 'opportunity':
-        return this.getOpportunity(id);
+        return this.getOpportunity(id, fieldMappingConfig);
       case 'user':
-        return await this.getUser(id);
+        return await this.getUser(id, fieldMappingConfig);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -286,36 +287,43 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     return response[0]?.systemuserid;
   }
 
-  private async getAccount(id: string): Promise<Account> {
+  private async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsAccountToRemoteAccount(
-      (await this.#odata.get('accounts').query({ $filter: `accountid eq '${id}'` }))[0]
+      (await this.#odata.get('accounts').query({ $filter: `accountid eq '${id}'` }))[0],
+      fieldMappingConfig
     );
   }
 
-  private async getContact(id: string): Promise<Contact> {
+  private async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsContactToRemoteContact(
-      (await this.#odata.get('contacts').query({ $filter: `contactid eq '${id}'` }))[0]
+      (await this.#odata.get('contacts').query({ $filter: `contactid eq '${id}'` }))[0],
+      fieldMappingConfig
     );
   }
 
-  private async getLead(id: string): Promise<Lead> {
+  private async getLead(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Lead> {
     await this.maybeRefreshAccessToken();
-    return fromDynamicsLeadToRemoteLead((await this.#odata.get('leads').query({ $filter: `leadid eq '${id}'` }))[0]);
+    return fromDynamicsLeadToRemoteLead(
+      (await this.#odata.get('leads').query({ $filter: `leadid eq '${id}'` }))[0],
+      fieldMappingConfig
+    );
   }
 
-  private async getOpportunity(id: string): Promise<Opportunity> {
+  private async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsOpportunityToRemoteOpportunity(
-      (await this.#odata.get('opportunities').query({ $filter: `opportunityid eq '${id}'` }))[0]
+      (await this.#odata.get('opportunities').query({ $filter: `opportunityid eq '${id}'` }))[0],
+      fieldMappingConfig
     );
   }
 
-  private async getUser(id: string): Promise<User> {
+  private async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsUserToRemoteUser(
-      (await this.#odata.get('systemusers').query({ $filter: `systemuserid eq '${id}'` }))[0]
+      (await this.#odata.get('systemusers').query({ $filter: `systemuserid eq '${id}'` }))[0],
+      fieldMappingConfig
     );
   }
 
@@ -346,14 +354,21 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     };
   }
 
-  private async listAccounts(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  private async listAccounts(
+    fieldMappingConfig: FieldMappingConfig,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity('accounts', updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.value.map((result: any) => ({ record: fromDynamicsAccountToRemoteAccount(result), emittedAt }))
+            response.value.map((result: any) => ({
+              record: fromDynamicsAccountToRemoteAccount(result, fieldMappingConfig),
+              emittedAt,
+            }))
           );
         },
         getNextCursorFromPage: (response) => response['@odata.nextLink'],
@@ -361,14 +376,21 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listContacts(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  private async listContacts(
+    fieldMappingConfig: FieldMappingConfig,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity('contacts', updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.value.map((result: any) => ({ record: fromDynamicsContactToRemoteContact(result), emittedAt }))
+            response.value.map((result: any) => ({
+              record: fromDynamicsContactToRemoteContact(result, fieldMappingConfig),
+              emittedAt,
+            }))
           );
         },
         getNextCursorFromPage: (response) => response['@odata.nextLink'],
@@ -376,7 +398,11 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listOpportunities(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  private async listOpportunities(
+    fieldMappingConfig: FieldMappingConfig,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity(
@@ -389,7 +415,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.value.map((result: any) => ({
-              record: fromDynamicsOpportunityToRemoteOpportunity(result),
+              record: fromDynamicsOpportunityToRemoteOpportunity(result, fieldMappingConfig),
               emittedAt,
             }))
           );
@@ -399,7 +425,11 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listLeads(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  private async listLeads(
+    fieldMappingConfig: FieldMappingConfig,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity('leads', updatedAfter, undefined, heartbeat),
@@ -407,7 +437,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.value.map((result: any) => ({
-              record: fromDynamicsLeadToRemoteLead(result),
+              record: fromDynamicsLeadToRemoteLead(result, fieldMappingConfig),
               emittedAt,
             }))
           );
@@ -417,14 +447,21 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listUsers(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  private async listUsers(
+    fieldMappingConfig: FieldMappingConfig,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity('systemusers', updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.value.map((result: any) => ({ record: fromDynamicsUserToRemoteUser(result), emittedAt }))
+            response.value.map((result: any) => ({
+              record: fromDynamicsUserToRemoteUser(result, fieldMappingConfig),
+              emittedAt,
+            }))
           );
         },
         getNextCursorFromPage: (response) => response['@odata.nextLink'],

@@ -43,5 +43,6 @@
     "**/yarn.lock": true,
     "**/openapi.bundle.json": true,
     "**/gen/**": true
-  }
+  },
+  "githubPullRequests.ignoredPullRequestBranches": ["main"]
 }
