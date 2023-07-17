@@ -14,6 +14,7 @@ import type {
   User,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 
 const industryCodeToName = {
   1: 'Accounting',
@@ -86,7 +87,10 @@ type DynamicsAccount = {
   modifiedon: string;
 };
 
-export const fromDynamicsAccountToRemoteAccount = (dynamicsAccount: DynamicsAccount): Account => {
+export const fromDynamicsAccountToRemoteAccount = (
+  dynamicsAccount: DynamicsAccount,
+  fieldMappingConfig: FieldMappingConfig
+): Account => {
   const addresses: Address[] = [];
 
   if (
@@ -183,7 +187,7 @@ export const fromDynamicsAccountToRemoteAccount = (dynamicsAccount: DynamicsAcco
     updatedAt: new Date(dynamicsAccount.modifiedon),
     lastModifiedAt: new Date(dynamicsAccount.modifiedon),
     isDeleted: false,
-    rawData: dynamicsAccount,
+    rawData: toMappedProperties(dynamicsAccount, fieldMappingConfig),
     name: dynamicsAccount.name,
     description: dynamicsAccount.description,
     ownerId: dynamicsAccount._ownerid_value,
@@ -232,7 +236,10 @@ type DynamicsContact = {
   _parentcustomerid_value: string | null;
 };
 
-export const fromDynamicsContactToRemoteContact = (dynamicsContact: DynamicsContact): Contact => {
+export const fromDynamicsContactToRemoteContact = (
+  dynamicsContact: DynamicsContact,
+  fieldMappingConfig: FieldMappingConfig
+): Contact => {
   const addresses: Address[] = [];
 
   if (
@@ -352,7 +359,7 @@ export const fromDynamicsContactToRemoteContact = (dynamicsContact: DynamicsCont
     updatedAt: new Date(dynamicsContact.modifiedon),
     lastModifiedAt: new Date(dynamicsContact.modifiedon),
     isDeleted: false,
-    rawData: dynamicsContact,
+    rawData: toMappedProperties(dynamicsContact, fieldMappingConfig),
   };
 };
 
@@ -375,7 +382,10 @@ type DynamicsOpportunity = {
   'opportunity_leadtoopportunitysalesprocess@odata.nextLink': string;
 };
 
-export const fromDynamicsOpportunityToRemoteOpportunity = (dynamicsOpportunity: DynamicsOpportunity): Opportunity => {
+export const fromDynamicsOpportunityToRemoteOpportunity = (
+  dynamicsOpportunity: DynamicsOpportunity,
+  fieldMappingConfig: FieldMappingConfig
+): Opportunity => {
   const {
     opportunity_leadtoopportunitysalesprocess,
     ['opportunity_leadtoopportunitysalesprocess@odata.nextLink']: _,
@@ -419,7 +429,7 @@ export const fromDynamicsOpportunityToRemoteOpportunity = (dynamicsOpportunity: 
     updatedAt: new Date(dynamicsOpportunity.modifiedon),
     isDeleted: false,
     lastModifiedAt: new Date(dynamicsOpportunity.modifiedon),
-    rawData,
+    rawData: toMappedProperties(rawData, fieldMappingConfig),
   };
 };
 
@@ -462,7 +472,10 @@ type DynamicsLead = {
   _contactid_value: string | null;
 };
 
-export const fromDynamicsLeadToRemoteLead = (dynamicsLead: DynamicsLead): Lead => {
+export const fromDynamicsLeadToRemoteLead = (
+  dynamicsLead: DynamicsLead,
+  fieldMappingConfig: FieldMappingConfig
+): Lead => {
   const leadSource = null;
 
   const addresses: Address[] = [];
@@ -586,7 +599,7 @@ export const fromDynamicsLeadToRemoteLead = (dynamicsLead: DynamicsLead): Lead =
     updatedAt: new Date(dynamicsLead.modifiedon),
     isDeleted: false,
     lastModifiedAt: new Date(dynamicsLead.modifiedon),
-    rawData: dynamicsLead,
+    rawData: toMappedProperties(dynamicsLead, fieldMappingConfig),
   };
 };
 
@@ -601,7 +614,10 @@ type DynamicsUser = {
   isdisabled: boolean;
 };
 
-export const fromDynamicsUserToRemoteUser = (dynamicsUser: DynamicsUser): User => {
+export const fromDynamicsUserToRemoteUser = (
+  dynamicsUser: DynamicsUser,
+  fieldMappingConfig: FieldMappingConfig
+): User => {
   return {
     id: dynamicsUser.systemuserid,
     name: dynamicsUser.fullname,
@@ -613,7 +629,7 @@ export const fromDynamicsUserToRemoteUser = (dynamicsUser: DynamicsUser): User =
       : new Date(dynamicsUser.createdon),
     updatedAt: new Date(dynamicsUser.modifiedon),
     lastModifiedAt: new Date(dynamicsUser.modifiedon),
-    rawData: dynamicsUser,
+    rawData: toMappedProperties(dynamicsUser, fieldMappingConfig),
   };
 };
 
@@ -791,3 +807,16 @@ const toDynamicsPhoneNumbers = (phoneNumbers: PhoneNumber[] | undefined): Record
     };
   }, {});
 };
+
+export function toMappedProperties(
+  properties: Record<string, any>,
+  fieldMappingConfig: FieldMappingConfig
+): Record<string, any> {
+  if (fieldMappingConfig.type === 'inherit_all_fields') {
+    return properties;
+  }
+
+  return Object.fromEntries(
+    fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
+  );
+}
