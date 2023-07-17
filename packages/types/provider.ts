@@ -14,16 +14,26 @@ type BaseProvider = {
   id: string;
   applicationId: string;
   authType: 'oauth2';
-  config: ProviderConfigDecrypted;
+  config: ProviderOauthConfigDecrypted;
 };
 
-export type CRMProvider = BaseProvider & {
+type BaseOauthProvider = BaseProvider & {
+  authType: 'oauth2';
+  config: ProviderOauthConfigDecrypted;
+};
+
+type BaseApiKeyProvider = BaseProvider & {
+  authType: 'api_key';
+};
+
+export type CRMProvider = BaseOauthProvider & {
   category: 'crm';
   name: CRMProviderName;
   objects?: ProviderObjects<'crm'>;
 };
 
-export type EngagementProvider = BaseProvider & {
+// TODO: Template based on provider name
+export type EngagementProvider = (BaseOauthProvider | BaseApiKeyProvider) & {
   category: 'engagement';
   name: EngagementProviderName;
   objects?: ProviderObjects<'engagement'>;
@@ -45,13 +55,13 @@ export type ProviderObject = {
   schemaId?: string;
 };
 
-export type ProviderConfigDecrypted = {
+export type ProviderOauthConfigDecrypted = {
   providerAppId: string;
   oauth: OAuthConfigDecrypted;
   useManagedOauth?: boolean;
 };
 
-export type ProviderConfigEncrypted = {
+export type ProviderOauthConfigEncrypted = {
   providerAppId: string;
   oauth: OAuthConfigEncrypted;
   useManagedOauth?: boolean;

@@ -2,11 +2,11 @@ import type { Prisma, Provider as ProviderModel } from '@supaglue/db';
 import type {
   Provider,
   ProviderCategory,
-  ProviderConfigDecrypted,
-  ProviderConfigEncrypted,
   ProviderConfigMapperArgs,
   ProviderCreateParams,
   ProviderName,
+  ProviderOauthConfigDecrypted,
+  ProviderOauthConfigEncrypted,
 } from '@supaglue/types';
 import { decryptFromString, encryptAsString } from '../lib/crypt';
 import { managedOAuthConfigs } from './lib/managed_oauth_configs';
@@ -55,11 +55,11 @@ export async function fromProviderModel<T extends Provider = Provider>({
 const fromProviderConfigModel = async (
   config: Prisma.JsonValue,
   args: ProviderConfigMapperArgs
-): Promise<ProviderConfigDecrypted> => {
+): Promise<ProviderOauthConfigDecrypted> => {
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new Error('Provider config is missing');
   }
-  const providerConfig = config as unknown as ProviderConfigEncrypted;
+  const providerConfig = config as unknown as ProviderOauthConfigEncrypted;
   const { managedOauthConfig } = args;
 
   const mappedProviderConfig = {

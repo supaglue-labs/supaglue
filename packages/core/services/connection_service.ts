@@ -284,13 +284,17 @@ export class ConnectionService {
     const connection = await this.#prisma.connection.findUniqueOrThrow({
       where: { id: connectionId },
     });
+    if (connection.providerName === 'apollo') {
+      throw new BadRequestError(`${connection.providerName} does not support oauth connections`);
+    }
+
     const oldCredentialsUnsafe = JSON.parse(await decrypt(connection.credentials));
     const newCredentials: ConnectionCredentialsDecryptedAny = {
       ...(oldCredentialsUnsafe as ConnectionCredentialsDecryptedAny),
       accessToken,
       refreshToken: refreshToken ?? oldCredentialsUnsafe.refreshToken,
       expiresAt,
-    };
+    } as ConnectionCredentialsDecryptedAny;
 
     const updatedConnection = await this.#prisma.connection.update({
       where: {

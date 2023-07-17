@@ -1,4 +1,4 @@
-import { NotFoundError } from '@supaglue/core/errors';
+import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
 import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
@@ -14,9 +14,11 @@ import {
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
 import { getRunObjectSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_object_sync';
-import type { ProviderName } from '@supaglue/types';
+import type { ProviderCategory, ProviderName } from '@supaglue/types';
 import type {
+  ConnectionCreateParams,
   ConnectionCreateParamsAny,
+  ConnectionSafeAny,
   ConnectionStatus,
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
@@ -147,6 +149,35 @@ export class ConnectionAndSyncService {
     });
 
     return fromConnectionModelToConnectionUnsafe<ProviderName>(connection);
+  }
+
+  public async createFromApiKey(
+    applicationId: string,
+    customerId: string,
+    category: ProviderCategory,
+    providerName: ProviderName,
+    apiKey: string
+  ): Promise<ConnectionSafeAny> {
+    if (providerName !== 'apollo') {
+      throw new BadRequestError(`Operation not supported for ${providerName}`);
+    }
+    if (category !== 'engagement') {
+      throw new BadRequestError(`Operation not supported for ${category}`);
+    }
+    const provider = await this.#providerService.getByNameAndApplicationId(providerName, applicationId);
+    const params: ConnectionCreateParams<'apollo'> = {
+      applicationId,
+      providerName,
+      providerId: provider.id,
+      category,
+      customerId,
+      credentials: {
+        type: 'api_key',
+        apiKey,
+      },
+      instanceUrl: '',
+    };
+    return await this.create(params);
   }
 
   public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {

@@ -12,6 +12,7 @@ properties:
     type: string
     enum:
       - oauth2
+      - api_key
   name:
     $ref: ./provider_name.yaml
   config:

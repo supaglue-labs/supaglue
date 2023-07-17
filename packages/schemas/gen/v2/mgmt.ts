@@ -273,7 +273,7 @@ export interface components {
       application_id: string;
       category: components["schemas"]["category"];
       /** @enum {string} */
-      auth_type: "oauth2";
+      auth_type: "oauth2" | "api_key";
       name: components["schemas"]["provider_name"];
       config: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
@@ -670,7 +670,7 @@ export interface components {
       };
     };
     /** @enum {string} */
-    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong";
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo";
     /** @enum {string} */
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
@@ -724,12 +724,15 @@ export interface components {
       /** @example contact@mycompany.com */
       email: string;
     };
-    create_provider: {
+    create_provider: OneOf<[{
       /** @enum {string} */
       auth_type: "oauth2";
       config: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
-    } & OneOf<[{
+    }, {
+      /** @enum {string} */
+      auth_type: "api_key";
+    }]> & OneOf<[{
       /** @enum {string} */
       category: "crm";
       name: components["schemas"]["provider_name_crm"];
@@ -1385,6 +1388,15 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
+          /** @enum {string} */
+          provider_name: "apollo";
+          /** @enum {string} */
+          category: "engagement";
+          /**
+           * @description API key for the connected customer. 
+           * @example 123456
+           */
+          api_key: string;
           [key: string]: unknown;
         };
       };

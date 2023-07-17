@@ -2,14 +2,21 @@ import type { CategoryOfProviderName, ProviderName, SchemaMappingsConfig } from 
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
-type BaseConnectionCredentialsDecrypted = {
+type BaseApiKeyConnectionCredentialsDecrypted = {
+  type: 'api_key';
+  apiKey: string;
+};
+
+type BaseOauthConnectionCredentialsDecrypted = {
   type: 'oauth2';
   accessToken: string;
   refreshToken: string;
   expiresAt: string | null; // null means unknown expiry time
 };
 
-export type ConnectionCredentialsDecrypted<T extends ProviderName> = BaseConnectionCredentialsDecrypted &
+export type ConnectionCredentialsDecrypted<T extends ProviderName> = (T extends 'apollo'
+  ? BaseApiKeyConnectionCredentialsDecrypted
+  : BaseOauthConnectionCredentialsDecrypted) &
   (T extends 'salesforce'
     ? {
         instanceUrl: string;

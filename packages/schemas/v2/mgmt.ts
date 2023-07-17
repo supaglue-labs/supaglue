@@ -135,6 +135,12 @@ export type GetConnectionsRequest = never;
 export type GetConnectionsResponse =
   operations['getConnections']['responses'][keyof operations['getConnections']['responses']]['content']['application/json'];
 
+export type CreateConnectionPathParams = paths['/customers/{customer_id}/connections']['parameters']['path'];
+export type CreateConnectionQueryParams = never;
+export type CreateConnectionRequest = operations['createConnection']['requestBody']['content']['application/json'];
+export type CreateConnectionResponse =
+  operations['createConnection']['responses'][keyof operations['createConnection']['responses']]['content']['application/json'];
+
 export type GetConnectionPathParams =
   paths[`/customers/{customer_id}/connections/{connection_id}`]['parameters']['path'];
 export type GetConnectionRequest = never;

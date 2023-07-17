@@ -72,6 +72,9 @@ export class ProviderService {
   }
 
   public async create<T extends Provider = Provider>(provider: ProviderCreateParams): Promise<T> {
+    if (provider.name !== 'apollo' && !provider.config.oauth) {
+      throw new BadRequestError(`OAuth config is required for provider: ${provider.name}`);
+    }
     const createdProvider = await this.#prisma.provider.create({
       data: await toProviderModel(provider),
     });
@@ -129,6 +132,9 @@ export class ProviderService {
   }
 
   public async update(id: string, applicationId: string, provider: ProviderUpdateParams): Promise<Provider> {
+    if (provider.name !== 'apollo' && !provider.config.oauth) {
+      throw new BadRequestError(`OAuth config is required for provider: ${provider.name}`);
+    }
     const updatedProvider = await this.#prisma.provider.update({
       where: { id },
       data: await toProviderModel({
@@ -140,6 +146,9 @@ export class ProviderService {
   }
 
   public async upsert(provider: ProviderCreateParams): Promise<Provider> {
+    if (provider.name !== 'apollo' && !provider.config.oauth) {
+      throw new BadRequestError(`OAuth config is required for provider: ${provider.name}`);
+    }
     const upsertedProvider = await this.#prisma.provider.upsert({
       where: {
         applicationId_name: {
