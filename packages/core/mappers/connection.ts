@@ -7,7 +7,6 @@ import type {
   ProviderName,
   SchemaMappingsConfig,
 } from '@supaglue/types';
-import type { CRMProviderName } from '@supaglue/types/crm';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 
@@ -55,7 +54,7 @@ export function fromConnectionModelToConnectionSafe({
     providerId: providerId ?? undefined,
     category: category as 'crm',
     status: status as ConnectionStatus,
-    providerName: providerName as CRMProviderName,
+    providerName: providerName as ProviderName,
     schemaMappingsConfig: schemaMappingsConfig as SchemaMappingsConfig | undefined,
     instanceUrl,
   };

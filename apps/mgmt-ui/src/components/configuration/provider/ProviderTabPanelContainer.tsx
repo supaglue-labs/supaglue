@@ -1,4 +1,4 @@
-import ApolloIcon from '@/assets/connector_icons/apollo.png';
+import ApolloIcon from '@/assets/connector_icons/apollo.webp';
 import GongIcon from '@/assets/connector_icons/gong.webp';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
 import MsDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';

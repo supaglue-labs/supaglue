@@ -7,14 +7,11 @@ import type {
   SchemaCreateParams,
 } from '.';
 import type { CRMProviderName } from './crm';
-import type { EngagementProviderName } from './engagement';
 import type { ObjectType } from './object_sync';
 
 type BaseProvider = {
   id: string;
   applicationId: string;
-  authType: 'oauth2';
-  config: ProviderOauthConfigDecrypted;
 };
 
 type BaseOauthProvider = BaseProvider & {
@@ -32,12 +29,22 @@ export type CRMProvider = BaseOauthProvider & {
   objects?: ProviderObjects<'crm'>;
 };
 
-// TODO: Template based on provider name
-export type EngagementProvider = (BaseOauthProvider | BaseApiKeyProvider) & {
+export type EngagementOauthProvider = BaseOauthProvider & {
   category: 'engagement';
-  name: EngagementProviderName;
+  name: 'outreach' | 'gong';
   objects?: ProviderObjects<'engagement'>;
 };
+
+export type EngagementApiKeyProvider = BaseApiKeyProvider & {
+  category: 'engagement';
+  name: 'apollo';
+  objects?: ProviderObjects<'engagement'>;
+};
+
+// TODO: Template based on provider name
+export type EngagementProvider = EngagementOauthProvider | EngagementApiKeyProvider;
+
+export type OauthProvider = CRMProvider | EngagementOauthProvider;
 
 export type ProviderObjects<T extends ProviderCategory> = {
   common?: ProviderCommonObject<T>[];

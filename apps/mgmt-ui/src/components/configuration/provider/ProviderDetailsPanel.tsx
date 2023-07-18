@@ -24,7 +24,14 @@ import {
   Typography,
 } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { Provider, ProviderCategory, ProviderCreateParams, ProviderName, ProviderObject } from '@supaglue/types';
+import type {
+  OauthProvider,
+  Provider,
+  ProviderCategory,
+  ProviderCreateParams,
+  ProviderName,
+  ProviderObject,
+} from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
 import { PROVIDERS_THAT_SUPPORT_SCHEMAS } from '@supaglue/utils';
@@ -41,6 +48,7 @@ export type ProviderDetailsPanelProps = {
 
 export default function ProviderDetailsPanel({ providerName, category, isLoading }: ProviderDetailsPanelProps) {
   const shouldAllowManagedOauth = ['salesforce', 'hubspot'].includes(providerName);
+  const isOauth = category === 'crm' || providerName !== 'apollo';
   const activeApplicationId = useActiveApplicationId();
   const { schemas, isLoading: isLoadingSchemas } = useSchemas();
   const { addNotification } = useNotification();
@@ -65,15 +73,17 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
   useEffect(() => {
     setFriendlyProviderId(provider?.id ?? '--');
+    if (provider?.category === 'crm' || provider?.name !== 'apollo') {
+      setClientId(provider?.config?.oauth?.credentials?.oauthClientId ?? '');
 
-    setClientId(provider?.config?.oauth?.credentials?.oauthClientId ?? '');
+      setClientSecret(provider?.config?.oauth?.credentials?.oauthClientSecret ?? '');
 
-    setClientSecret(provider?.config?.oauth?.credentials?.oauthClientSecret ?? '');
+      setOauthScopes(provider?.config?.oauth?.oauthScopes?.join(',') ?? '');
+      setUseManagedOauth(
+        provider?.id ? Boolean(provider?.config?.useManagedOauth) && shouldAllowManagedOauth : shouldAllowManagedOauth
+      );
+    }
 
-    setOauthScopes(provider?.config?.oauth?.oauthScopes?.join(',') ?? '');
-    setUseManagedOauth(
-      provider?.id ? Boolean(provider?.config?.useManagedOauth) && shouldAllowManagedOauth : shouldAllowManagedOauth
-    );
     setCommonObjects(provider?.objects?.common ?? []);
     setStandardObjects(provider?.objects?.standard ?? []);
     setCustomObjects(provider?.objects?.custom ?? []);
@@ -83,18 +93,20 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     if (provider) {
       const newProvider = {
         ...provider,
-        config: {
-          ...provider.config,
-          providerAppId: '', // TODO: add input field for this
-          oauth: {
-            ...provider.config?.oauth,
-            credentials: {
-              oauthClientId: clientId,
-              oauthClientSecret: clientSecret,
-            },
-            oauthScopes: oauthScopes.split(','),
-          },
-        },
+        config: isOauth
+          ? {
+              ...(provider as OauthProvider).config,
+              providerAppId: '', // TODO: add input field for this
+              oauth: {
+                ...(provider as OauthProvider).config.oauth,
+                credentials: {
+                  oauthClientId: clientId,
+                  oauthClientSecret: clientSecret,
+                },
+                oauthScopes: oauthScopes.split(','),
+              },
+            }
+          : undefined,
         objects: {
           common: commonObjects,
           standard: standardObjects,
@@ -110,20 +122,22 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     }
     const response = await createRemoteProvider(activeApplicationId, {
       applicationId: activeApplicationId,
-      authType: 'oauth2',
+      authType: isOauth ? 'oauth2' : 'api_key',
       category,
       name: providerName as ProviderName,
-      config: {
-        providerAppId: '', // TODO: add input field for this
-        useManagedOauth,
-        oauth: {
-          credentials: {
-            oauthClientId: clientId,
-            oauthClientSecret: clientSecret,
-          },
-          oauthScopes: oauthScopes.split(','),
-        },
-      },
+      config: isOauth
+        ? {
+            providerAppId: '', // TODO: add input field for this
+            useManagedOauth,
+            oauth: {
+              credentials: {
+                oauthClientId: clientId,
+                oauthClientSecret: clientSecret,
+              },
+              oauthScopes: oauthScopes.split(','),
+            },
+          }
+        : undefined,
       objects: {
         common: commonObjects,
         standard: standardObjects,
@@ -178,41 +192,43 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
             </FormHelperText>
           </Box>
         )}
-        <Stack className="gap-2">
-          <Typography variant="subtitle1">Credentials</Typography>
-          <TextField
-            disabled={useManagedOauth}
-            value={clientId}
-            size="small"
-            label="Client ID"
-            variant="outlined"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setClientId(event.target.value);
-            }}
-          />
-          <TextField
-            disabled={useManagedOauth}
-            value={clientSecret}
-            size="small"
-            label="Client Secret"
-            variant="outlined"
-            type="password"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setClientSecret(event.target.value);
-            }}
-          />
-          <TextField
-            disabled={useManagedOauth || providerName === 'ms_dynamics_365_sales'}
-            value={oauthScopes}
-            size="small"
-            label="OAuth2 scopes"
-            variant="outlined"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setOauthScopes(event.target.value);
-            }}
-            helperText="Comma separated values (without spaces)."
-          />
-        </Stack>
+        {isOauth && (
+          <Stack className="gap-2">
+            <Typography variant="subtitle1">Credentials</Typography>
+            <TextField
+              disabled={useManagedOauth}
+              value={clientId}
+              size="small"
+              label="Client ID"
+              variant="outlined"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setClientId(event.target.value);
+              }}
+            />
+            <TextField
+              disabled={useManagedOauth}
+              value={clientSecret}
+              size="small"
+              label="Client Secret"
+              variant="outlined"
+              type="password"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setClientSecret(event.target.value);
+              }}
+            />
+            <TextField
+              disabled={useManagedOauth || providerName === 'ms_dynamics_365_sales'}
+              value={oauthScopes}
+              size="small"
+              label="OAuth2 scopes"
+              variant="outlined"
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setOauthScopes(event.target.value);
+              }}
+              helperText="Comma separated values (without spaces)."
+            />
+          </Stack>
+        )}
         {supportsObjectToSchema && (
           <Stack className="gap-2">
             <Typography variant="subtitle1">Object to Schema Mapping</Typography>

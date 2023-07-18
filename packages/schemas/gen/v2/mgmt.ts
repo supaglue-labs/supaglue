@@ -275,7 +275,7 @@ export interface components {
       /** @enum {string} */
       auth_type: "oauth2" | "api_key";
       name: components["schemas"]["provider_name"];
-      config: components["schemas"]["create_provider_config"];
+      config?: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
     };
     destination: OneOf<[{

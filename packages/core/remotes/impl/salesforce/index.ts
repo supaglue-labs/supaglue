@@ -5,6 +5,7 @@
 import type {
   CommonObjectDef,
   ConnectionUnsafe,
+  CRMProvider,
   NormalizedRawRecord,
   Provider,
   SendPassthroughRequestRequest,
@@ -1348,8 +1349,8 @@ export function newClient(connection: ConnectionUnsafe<'salesforce'>, provider: 
     instanceUrl: connection.credentials.instanceUrl,
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
-    clientId: provider.config.oauth.credentials.oauthClientId,
-    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
+    clientId: (provider as CRMProvider).config.oauth.credentials.oauthClientId,
+    clientSecret: (provider as CRMProvider).config.oauth.credentials.oauthClientSecret,
     loginUrl: connection.credentials.loginUrl,
   });
 }

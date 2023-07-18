@@ -41,10 +41,9 @@ export default function init(app: Router): void {
       req: Request<CreateConnectionPathParams, CreateConnectionResponse, CreateConnectionRequest>,
       res: Response<CreateConnectionResponse>
     ) => {
-      const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
       const connection = await connectionAndSyncService.createFromApiKey(
         req.supaglueApplication.id,
-        customerId,
+        req.params.customer_id,
         req.body.category,
         req.body.provider_name,
         req.body.api_key

@@ -2,7 +2,7 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import type { ConnectionUnsafe, Provider } from '@supaglue/types';
+import type { ConnectionUnsafe, CRMProvider, Provider } from '@supaglue/types';
 import type {
   Account,
   Contact,
@@ -460,8 +460,8 @@ export function newClient(
   return new MsDynamics365Sales({
     ...connection.credentials,
     instanceUrl: connection.instanceUrl,
-    clientId: provider.config.oauth.credentials.oauthClientId,
-    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
+    clientId: (provider as CRMProvider).config.oauth.credentials.oauthClientId,
+    clientSecret: (provider as CRMProvider).config.oauth.credentials.oauthClientSecret,
   });
 }
 

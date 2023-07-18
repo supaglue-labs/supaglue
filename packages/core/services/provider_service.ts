@@ -3,6 +3,7 @@ import type {
   AddObjectToProviderParams,
   CommonObjectForCategory,
   CommonObjectType,
+  OauthProvider,
   Provider,
   ProviderCategory,
   ProviderCreateParams,
@@ -71,10 +72,20 @@ export class ProviderService {
     return Promise.all(providers.map((provider) => fromProviderModel(provider)));
   }
 
-  public async create<T extends Provider = Provider>(provider: ProviderCreateParams): Promise<T> {
-    if (provider.name !== 'apollo' && !provider.config.oauth) {
+  public validateProvider(provider: ProviderUpdateParams): void {
+    if (provider.name !== 'apollo' && !(provider as OauthProvider).config?.oauth) {
       throw new BadRequestError(`OAuth config is required for provider: ${provider.name}`);
     }
+    if (provider.name === 'apollo' && provider.authType !== 'api_key') {
+      throw new BadRequestError(`Provider: ${provider.name} must be of type: api_key`);
+    }
+    if (provider.name !== 'apollo' && provider.authType !== 'oauth2') {
+      throw new BadRequestError(`Provider: ${provider.name} must be of type: oauth2`);
+    }
+  }
+
+  public async create<T extends Provider = Provider>(provider: ProviderCreateParams): Promise<T> {
+    this.validateProvider(provider);
     const createdProvider = await this.#prisma.provider.create({
       data: await toProviderModel(provider),
     });
@@ -132,9 +143,7 @@ export class ProviderService {
   }
 
   public async update(id: string, applicationId: string, provider: ProviderUpdateParams): Promise<Provider> {
-    if (provider.name !== 'apollo' && !provider.config.oauth) {
-      throw new BadRequestError(`OAuth config is required for provider: ${provider.name}`);
-    }
+    this.validateProvider(provider);
     const updatedProvider = await this.#prisma.provider.update({
       where: { id },
       data: await toProviderModel({
@@ -146,9 +155,7 @@ export class ProviderService {
   }
 
   public async upsert(provider: ProviderCreateParams): Promise<Provider> {
-    if (provider.name !== 'apollo' && !provider.config.oauth) {
-      throw new BadRequestError(`OAuth config is required for provider: ${provider.name}`);
-    }
+    this.validateProvider(provider);
     const upsertedProvider = await this.#prisma.provider.upsert({
       where: {
         applicationId_name: {

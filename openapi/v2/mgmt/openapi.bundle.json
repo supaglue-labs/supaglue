@@ -2333,7 +2333,6 @@
         ]
       },
       "provider": {
-        "type": "object",
         "properties": {
           "id": {
             "type": "string",
@@ -2368,8 +2367,7 @@
           "application_id",
           "category",
           "auth_type",
-          "name",
-          "config"
+          "name"
         ]
       },
       "destination": {

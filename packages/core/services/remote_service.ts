@@ -1,4 +1,4 @@
-import type { ConnectionUnsafe } from '@supaglue/types';
+import type { ConnectionUnsafe, OauthProvider } from '@supaglue/types';
 import type { ProviderService } from '.';
 import { InternalServerError } from '../errors';
 import { logger } from '../lib';
@@ -54,8 +54,8 @@ export class RemoteService {
       );
     }
 
-    if (!provider.config) {
-      throw new Error('provider must have config');
+    if (provider.authType === 'oauth2' && !(provider as OauthProvider).config.oauth) {
+      throw new Error('Oauth provider must have config');
     }
 
     const client = getEngagementRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
@@ -79,8 +79,8 @@ export class RemoteService {
       );
     }
 
-    if (!provider.config) {
-      throw new Error('provider must have config');
+    if (provider.authType === 'oauth2' && !(provider as OauthProvider).config.oauth) {
+      throw new Error('Oauth provider must have config');
     }
 
     const client = getRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);

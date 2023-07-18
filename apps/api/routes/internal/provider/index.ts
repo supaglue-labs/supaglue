@@ -38,7 +38,9 @@ export default function init(app: Router): void {
       res: Response<GetProvidersResponse>
     ) => {
       const providers = await providerService.list(req.supaglueApplication.id);
-      return res.status(200).send(providers.map((provider) => snakecaseKeys(hideManagedOauthConfig(provider))));
+      return res
+        .status(200)
+        .send(providers.map((provider) => snakecaseKeys(hideManagedOauthConfig(provider))) as GetProvidersResponse);
     }
   );
 
@@ -52,7 +54,7 @@ export default function init(app: Router): void {
         applicationId: req.supaglueApplication.id,
         ...camelcaseKeys(req.body),
       } as ProviderCreateParams);
-      return res.status(201).send(snakecaseKeys(hideManagedOauthConfig(provider)));
+      return res.status(201).send(snakecaseKeys(hideManagedOauthConfig(provider)) as CreateProviderResponse);
     }
   );
 
@@ -65,7 +67,7 @@ export default function init(app: Router): void {
       const provider = await providerService.addObject(req.params.provider_id, req.supaglueApplication.id, {
         ...camelcaseKeys(req.body),
       });
-      return res.status(201).send(snakecaseKeys(hideManagedOauthConfig(provider)));
+      return res.status(201).send(snakecaseKeys(hideManagedOauthConfig(provider)) as AddObjectResponse);
     }
   );
 
@@ -79,7 +81,7 @@ export default function init(app: Router): void {
         req.params.provider_id,
         req.supaglueApplication.id
       );
-      return res.status(200).send(snakecaseKeys(hideManagedOauthConfig(provider)));
+      return res.status(200).send(snakecaseKeys(hideManagedOauthConfig(provider)) as GetProviderResponse);
     }
   );
 
@@ -92,7 +94,7 @@ export default function init(app: Router): void {
       const provider = await providerService.update(req.params.provider_id, req.supaglueApplication.id, {
         ...camelcaseKeys(req.body),
       } as ProviderUpdateParams);
-      return res.status(200).send(snakecaseKeys(hideManagedOauthConfig(provider)));
+      return res.status(200).send(snakecaseKeys(hideManagedOauthConfig(provider)) as UpdateProviderResponse);
     }
   );
 

@@ -2,7 +2,14 @@ import { getDependencyContainer } from '@/dependency_container';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError } from '@supaglue/core/errors';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes';
-import type { ConnectionCreateParamsAny, ConnectionUpsertParamsAny, Provider, ProviderName } from '@supaglue/types';
+import type {
+  ConnectionCreateParamsAny,
+  ConnectionUpsertParamsAny,
+  CRMProvider,
+  EngagementOauthProvider,
+  OauthProvider,
+  ProviderName,
+} from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
 import { SUPPORTED_CRM_PROVIDERS } from '@supaglue/types/crm';
 import type { EngagementProviderName } from '@supaglue/types/engagement';
@@ -47,10 +54,16 @@ export default function init(app: Router): void {
         throw new BadRequestError('Missing returnUrl');
       }
 
-      let provider: Provider | null = null;
+      if (providerName === 'apollo') {
+        throw new BadRequestError('Oauth is not supported for Apollo');
+      }
+
+      let provider: OauthProvider | null = null;
 
       try {
-        provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
+        provider = (await providerService.getByNameAndApplicationId(providerName, applicationId)) as
+          | CRMProvider
+          | EngagementOauthProvider;
       } catch (err) {
         throw new BadRequestError(`Can't find provider with name: ${providerName}.`);
       }
@@ -164,6 +177,10 @@ export default function init(app: Router): void {
       }
 
       const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
+
+      if (provider.authType !== 'oauth2') {
+        throw new Error(`Oauth not supported for provider ${provider.name}`);
+      }
 
       const { oauthClientId, oauthClientSecret } = provider.config.oauth.credentials;
 

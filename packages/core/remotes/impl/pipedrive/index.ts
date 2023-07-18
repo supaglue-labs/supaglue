@@ -1,6 +1,7 @@
 import type {
   CommonObjectDef,
   ConnectionUnsafe,
+  CRMProvider,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -723,8 +724,8 @@ export function newClient(connection: ConnectionUnsafe<'pipedrive'>, provider: P
   return new PipedriveClient({
     ...connection.credentials,
     instanceUrl: connection.instanceUrl,
-    clientId: provider.config.oauth.credentials.oauthClientId,
-    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
+    clientId: (provider as CRMProvider).config.oauth.credentials.oauthClientId,
+    clientSecret: (provider as CRMProvider).config.oauth.credentials.oauthClientSecret,
   });
 }
 
