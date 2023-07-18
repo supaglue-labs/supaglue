@@ -246,6 +246,7 @@ export function newClient(connection: ConnectionUnsafe<'apollo'>, provider: Prov
   return new ApolloClient(connection.credentials.apiKey);
 }
 
+// Apollo only supports API Key based connections.
 export const authConfig: ConnectorAuthConfig = {
   tokenHost: '',
   tokenPath: '',
