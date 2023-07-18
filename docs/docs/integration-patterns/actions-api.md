@@ -13,16 +13,16 @@ The Actions API lets you perform common operations on your customers' SaaS tools
 ## How it works
 
 1. You call Supaglue’s Actions API with a request payload.
-2. Supaglue applies mappings and updates the data in Salesforce (or other remote provider). You can use Supaglue’s default unified mappings or your own.
+2. Supaglue applies mappings and updates the data in Salesforce (or another remote provider). You can use Supaglue’s default unified mappings or your own.
 3. Optional: Supaglue updates your application DB for the corresponding record, before returning a 200 response (see cache invalidation).
 
 ![actions_api_diagram](/img/actions-api-diagram.png 'actions API diagram')
 
 ## Unified API
 
-Supaglue unifies action API endpoints, so that you can communicate with multiple providers within a single category with a single interface.
+Supaglue unifies action API endpoints so that you can communicate with multiple providers within a single category with a single interface.
 
-For example, you can update an Salesforce Account record and HubSpot Company record with the same API endpoint and schema, just by changing a header:
+For example, you can update a Salesforce Account record and HubSpot Company record with the same API endpoint and schema just by changing a header:
 
 <Tabs>
 
@@ -66,21 +66,19 @@ curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
 
 </Tabs>
 
-
 :::info
 
 Besides unifying the API endpoints, the actions API also applies the Supaglue common schema, which normalizes the request and response schemas across different providers in the same category. See [Common schema](../platform/common-schema) to learn more.
 
 :::
 
-
 ## Cache invalidation
 
-If you have configured a destination for managed syncs, Supaglue will immediately reflect any newly created records or updated records in your destination.
+If you have configured a destination for managed syncs, Supaglue will immediately reflect any newly created or updated records in your destination.
 
 For example, if you have updated an Account record in Salesforce, Supaglue will update the corresponding Account record in your Postgres database.
 
-Cache invalidation helps maintain data consistency between your customers' CRM and your destination database.
+Cache invalidation helps maintain data consistency between your customers' CRM and destination database.
 
 :::info
 This feature is only supported for some destinations, not all.
@@ -88,8 +86,9 @@ This feature is only supported for some destinations, not all.
 :::
 
 ## Field mappings
-[Field mappings](../platform/field-mapping) can be used in the Actions API to reverse-map fields from your system to your customer's fields if you opted to use field mappings for Managed Syncs.
+
+[Field mappings](../platform/field-mappings) can be used in the Actions API to reverse-map fields from your system to your customer's fields if you opted to use field mappings for Managed Syncs.
 
 ## Pass-through API
 
-For any action not directly supported by Supaglue's API, you can use our pass-through API. This lets you make any API call directly against the remote provider. See our [API reference](../api/introduction) for more details.
+You can use our [Passthrough API](../platform/passthrough) for any action not directly supported by Supaglue's API. See our [API reference](../api/introduction) for more details.

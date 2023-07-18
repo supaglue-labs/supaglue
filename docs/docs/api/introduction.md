@@ -7,18 +7,20 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Introduction
 
-Supaglue supports three APIs. The Management API is used to create customers, connections, and configure managed syncs. The Actions API consists of two unified APIs, one for CRM connectors and one for sales engagement connectors.
+Supaglue supports three APIs. The Management API creates customers, connections, and configure managed syncs. The Actions API consists of two unified APIs, one for CRM connectors and one for sales engagement connectors.
 
-## APIs
+## Management API
 
-- [Management API V2](v2/mgmt/supaglue-management-api) can be used to manage customer integrations and connections.
-- Actions API
-    - [CRM API V2](v2/crm/supaglue-crm-api) can be used to read and write data from and to third-party CRM providers.
-    - [Engagement API V2](v2/engagement/supaglue-engagement-api) (Beta) can be used to read and write data from and to third-party engagement providers.
+- You can use the [Management API V2](v2/mgmt/supaglue-management-api) to manage customer integrations.
+
+## Actions API
+
+- You can use the [CRM API V2](v2/crm/supaglue-crm-api) to read and write data from and to third-party CRM providers.
+- You can use the [Engagement API V2](v2/engagement/supaglue-engagement-api) (beta) to read and write data from and to third-party engagement providers.
 
 ## API authentication
 
-All requests to the Supaglue API must be authenticated via an API key. API keys can be generated in the Management Portal on the Configuration -> API Key page.
+Your requests to the Supaglue API must contain an API key. You can generate an API key in the Management Portal on the Configuration -> API Key page.
 
 <BrowserWindow url="https://app.supaglue.io/applications/1dad4014-c295-422b-b384-1379396defd1/configuration/api_keys">
 
@@ -37,6 +39,6 @@ When you regenerate an API key, the previous key is invalidated.
 Pass in the API key in requests to the Supaglue API as a header:
 
 ```curl
-curl http://api.supaglue.io/crm/v2/contacts \ 
+curl http://api.supaglue.io/crm/v2/contacts \
    -H 'x-api-key: ...'
 ```
