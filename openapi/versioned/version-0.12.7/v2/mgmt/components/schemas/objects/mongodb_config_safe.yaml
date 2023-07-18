@@ -1,0 +1,15 @@
+type: object
+properties:
+  host:
+    type: string
+    example: mongodb.company.com
+  database:
+    type: string
+    example: my_database
+  user:
+    type: string
+    example: myuser
+required:
+  - host
+  - database
+  - user

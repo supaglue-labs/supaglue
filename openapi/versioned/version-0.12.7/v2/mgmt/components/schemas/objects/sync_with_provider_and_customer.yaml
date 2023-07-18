@@ -1,0 +1,13 @@
+allOf:
+  - $ref: ./sync.yaml
+  - type: object
+    properties:
+      provider_name:
+        type: string
+        example: hubspot
+      customer_id:
+        type: string
+        example: my-customer-1
+    required:
+      - provider_name
+      - customer_id
