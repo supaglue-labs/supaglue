@@ -148,8 +148,8 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
 
   const selectedProvider = providers.find((p) => p.id === providerId);
   const selectedDestination = destinations?.find((d) => d.id === destinationId);
-  const supportsStandardDestinations = ['postgres', 'bigquery'];
-  const supportsCustomDestinations = ['postgres', 'bigquery'];
+  const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb'];
+  const supportsCustomDestinations = ['postgres', 'bigquery', 'mongodb'];
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong'];
   const supportsCustomObjects = ['hubspot', 'salesforce'];
 
