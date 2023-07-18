@@ -44,6 +44,7 @@
     "**/openapi.bundle.json": true,
     "**/gen/**": true
   },
+  "githubPullRequests.ignoredPullRequestBranches": ["main"],
   "grammarly.selectors": [
     {
       "language": "markdown",

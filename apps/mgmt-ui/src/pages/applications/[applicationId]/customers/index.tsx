@@ -7,12 +7,15 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useCustomers } from '@/hooks/useCustomers';
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
+import { useProviders } from '@/hooks/useProviders';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
 import LinkIcon from '@mui/icons-material/Link';
 import { Box, Breadcrumbs, Grid, IconButton, Stack, Typography } from '@mui/material';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { ConnectionSafeAny } from '@supaglue/types';
@@ -52,7 +55,7 @@ export default function Home() {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleEmebedLinkClick = async (params: GridRenderCellParams) => {
+  const handleEmbedLinkClick = async (params: GridRenderCellParams) => {
     addNotification({ message: 'Copied to clipboard', severity: 'success' });
 
     await navigator.clipboard.writeText(
@@ -108,11 +111,7 @@ export default function Home() {
       headerName: 'Embed Link',
       width: 100,
       renderCell: (params) => {
-        return (
-          <IconButton onClick={() => handleEmebedLinkClick(params)}>
-            <LinkIcon />
-          </IconButton>
-        );
+        return <EmbedLinkMenu customerId={params.id as string} />;
       },
     },
     {
@@ -207,6 +206,64 @@ export default function Home() {
           )}
         </Box>
       </Box>
+    </>
+  );
+}
+
+function EmbedLinkMenu({ customerId }: { customerId: string }) {
+  const { nextLambdaEnv } = useNextLambdaEnv();
+  const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
+  const router = useRouter();
+  const returnUrl = `${origin}${router.asPath}`;
+  const { addNotification } = useNotification();
+  const applicationId = useActiveApplicationId();
+
+  const { providers = [] } = useProviders();
+
+  const handleEmbedLinkClick = async (providerName: string) => {
+    addNotification({ message: 'Copied to clipboard', severity: 'success' });
+    await navigator.clipboard.writeText(
+      `${nextLambdaEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+        customerId
+      )}&returnUrl=${returnUrl}&providerName=${providerName}`
+    );
+  };
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <IconButton onClick={handleClick}>
+        <LinkIcon />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        {providers.map(({ name: providerName }) => (
+          <MenuItem
+            key={providerName}
+            onClick={async () => {
+              await handleEmbedLinkClick(providerName);
+              handleClose();
+            }}
+          >
+            {providerName}
+          </MenuItem>
+        ))}
+      </Menu>
     </>
   );
 }

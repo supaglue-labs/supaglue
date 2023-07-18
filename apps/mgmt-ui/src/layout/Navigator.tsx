@@ -96,7 +96,7 @@ export default function Navigator(props: DrawerProps) {
       children: [
         {
           id: 'API Explorer',
-          to: 'https://docs.supaglue.com/api',
+          to: 'https://docs.supaglue.com/api/introduction',
           icon: <Biotech />,
           active: false,
         },

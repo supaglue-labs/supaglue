@@ -22,9 +22,7 @@ Supaglue uses the Outreach v2 API.
 Supported common objects:
 
 - Users
-- Accounts
 - Contacts
-- Emails
 - Sequences
 - Sequence States
 - Mailboxes
