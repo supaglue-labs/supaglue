@@ -96,7 +96,7 @@ const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, strin
   company: 'companies',
   contact: 'contacts',
   deal: 'deals',
-  line_item: 'line_items',
+  line_item: 'line items',
   product: 'products',
   ticket: 'tickets',
   quote: 'quotes',
@@ -105,7 +105,7 @@ const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, strin
   email: 'emails',
   meeting: 'meetings',
   note: 'notes',
-  postal_mail: 'postal_mails',
+  postal_mail: 'postal mails',
   task: 'tasks',
 };
 
