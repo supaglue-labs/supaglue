@@ -15,6 +15,7 @@ import type { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwne
 import type {
   CommonObjectDef,
   ConnectionUnsafe,
+  CRMProvider,
   NormalizedRawRecord,
   Provider,
   SendPassthroughRequestRequest,
@@ -1751,8 +1752,8 @@ export function newClient(connection: ConnectionUnsafe<'hubspot'>, provider: Pro
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
     expiresAt: connection.credentials.expiresAt,
-    clientId: provider.config.oauth.credentials.oauthClientId,
-    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
+    clientId: (provider as CRMProvider).config.oauth.credentials.oauthClientId,
+    clientSecret: (provider as CRMProvider).config.oauth.credentials.oauthClientSecret,
   });
 }
 

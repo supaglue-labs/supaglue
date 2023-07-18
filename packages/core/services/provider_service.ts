@@ -3,6 +3,7 @@ import type {
   AddObjectToProviderParams,
   CommonObjectForCategory,
   CommonObjectType,
+  OauthProvider,
   Provider,
   ProviderCategory,
   ProviderCreateParams,
@@ -70,6 +71,18 @@ export class ProviderService {
   public async list(applicationId: string): Promise<Provider[]> {
     const providers = await this.#prisma.provider.findMany({ where: { applicationId } });
     return Promise.all(providers.map((provider) => fromProviderModel(provider)));
+  }
+
+  public validateProvider(provider: ProviderUpdateParams): void {
+    if (provider.name !== 'apollo' && !(provider as OauthProvider).config?.oauth) {
+      throw new BadRequestError(`OAuth config is required for provider: ${provider.name}`);
+    }
+    if (provider.name === 'apollo' && provider.authType !== 'api_key') {
+      throw new BadRequestError(`Provider: ${provider.name} must be of type: api_key`);
+    }
+    if (provider.name !== 'apollo' && provider.authType !== 'oauth2') {
+      throw new BadRequestError(`Provider: ${provider.name} must be of type: oauth2`);
+    }
   }
 
   public async create<T extends Provider = Provider>(provider: ProviderCreateParams): Promise<T> {

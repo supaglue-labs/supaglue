@@ -1,6 +1,7 @@
 import type { ConnectionUnsafe, EngagementProvider } from '@supaglue/types';
 import type { EngagementProviderName } from '@supaglue/types/engagement';
 import type { ConnectorAuthConfig } from '../../base';
+import * as apollo from '../../impl/apollo';
 import * as gong from '../../impl/gong';
 import * as outreach from '../../impl/outreach';
 import type { AbstractEngagementRemoteClient, EngagementRemoteClient } from './base';
@@ -14,6 +15,7 @@ export const engagementConnectorConfigMap: {
   [K in EngagementProviderName]: EngagementConnectorConfig<K>;
 } = {
   outreach,
+  apollo,
   gong,
 };
 

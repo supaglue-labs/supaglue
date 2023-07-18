@@ -1,4 +1,5 @@
 import ActiveCampaignIcon from '@/assets/connector_icons/activecampaign.png';
+import ApolloIcon from '@/assets/connector_icons/apollo.webp';
 import CopperIcon from '@/assets/connector_icons/copper.png';
 import GongIcon from '@/assets/connector_icons/gong.webp';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
@@ -31,6 +32,7 @@ export default function getIcon(name: string, size = 25): ReactNode {
     zendesk_sell: <Image key={name} alt={name} src={ZendeskSellIcon} width={size} height={size} />,
     outreach: <Image key={name} alt={name} src={OutreachIcon} width={size} height={size} />,
     gong: <Image key={name} alt={name} src={GongIcon} width={size} height={size} />,
+    apollo: <Image key={name} alt={name} src={ApolloIcon} width={size} height={size} />,
   };
 
   return companyToIconMap[name];

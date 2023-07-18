@@ -1,17 +1,21 @@
 import type { Prisma, Provider as ProviderModel } from '@supaglue/db';
 import type {
+  CRMProviderCreateParams,
   Provider,
   ProviderCategory,
-  ProviderConfigDecrypted,
-  ProviderConfigEncrypted,
   ProviderConfigMapperArgs,
   ProviderCreateParams,
   ProviderName,
+  ProviderOauthConfigDecrypted,
+  ProviderOauthConfigEncrypted,
 } from '@supaglue/types';
 import { decryptFromString, encryptAsString } from '../lib/crypt';
 import { managedOAuthConfigs } from './lib/managed_oauth_configs';
 
 export const hideManagedOauthConfig = (providerConfig: Provider): Provider => {
+  if (providerConfig.authType !== 'oauth2') {
+    return providerConfig;
+  }
   return {
     ...providerConfig,
     config: {
@@ -34,6 +38,7 @@ export const hideManagedOauthConfig = (providerConfig: Provider): Provider => {
 export async function fromProviderModel<T extends Provider = Provider>({
   id,
   applicationId,
+  authType,
   category,
   name,
   config,
@@ -43,11 +48,14 @@ export async function fromProviderModel<T extends Provider = Provider>({
     id,
     applicationId,
     category: category as ProviderCategory,
-    authType: 'oauth2',
+    authType,
     name: name as ProviderName,
-    config: await fromProviderConfigModel(config, {
-      managedOauthConfig: managedOAuthConfigs[name],
-    }),
+    config:
+      authType === 'oauth2'
+        ? await fromProviderConfigModel(config, {
+            managedOauthConfig: managedOAuthConfigs[name],
+          })
+        : undefined,
     objects: objects ?? undefined,
   } as T;
 }
@@ -55,11 +63,11 @@ export async function fromProviderModel<T extends Provider = Provider>({
 const fromProviderConfigModel = async (
   config: Prisma.JsonValue,
   args: ProviderConfigMapperArgs
-): Promise<ProviderConfigDecrypted> => {
+): Promise<ProviderOauthConfigDecrypted> => {
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new Error('Provider config is missing');
   }
-  const providerConfig = config as unknown as ProviderConfigEncrypted;
+  const providerConfig = config as unknown as ProviderOauthConfigEncrypted;
   const { managedOauthConfig } = args;
 
   const mappedProviderConfig = {
@@ -77,14 +85,19 @@ const fromProviderConfigModel = async (
   return mappedProviderConfig;
 };
 
-export const toProviderModel = async ({
-  applicationId,
-  category,
-  authType,
-  name,
-  config,
-  objects,
-}: ProviderCreateParams) => {
+export const toProviderModel = async (params: ProviderCreateParams) => {
+  const { applicationId, category, authType, name, objects } = params;
+  if (category === 'engagement' && authType === 'api_key') {
+    return {
+      applicationId,
+      category,
+      authType,
+      name,
+      config: {},
+      objects,
+    };
+  }
+  const { config } = params as CRMProviderCreateParams;
   return {
     applicationId,
     category,

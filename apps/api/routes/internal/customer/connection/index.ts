@@ -1,6 +1,9 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { getCustomerIdPk } from '@supaglue/core/lib';
 import type {
+  CreateConnectionPathParams,
+  CreateConnectionRequest,
+  CreateConnectionResponse,
   DeleteConnectionPathParams,
   DeleteConnectionRequest,
   DeleteConnectionResponse,
@@ -25,6 +28,24 @@ export default function init(app: Router): void {
       : await connectionService.listSafe(req.supaglueApplication.id, customerId);
     return res.status(200).send(connections.map(snakecaseKeys));
   });
+
+  connectionRouter.post(
+    '/',
+    async (
+      req: Request<CreateConnectionPathParams, CreateConnectionResponse, CreateConnectionRequest>,
+      res: Response<CreateConnectionResponse>
+    ) => {
+      const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
+      const connection = await connectionAndSyncService.createFromApiKey(
+        req.supaglueApplication.id,
+        customerId,
+        req.body.category,
+        req.body.provider_name,
+        req.body.api_key
+      );
+      return res.status(200).send(snakecaseKeys(connection));
+    }
+  );
 
   connectionRouter.get(
     '/:connection_id',

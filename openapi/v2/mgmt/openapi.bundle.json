@@ -1552,8 +1552,32 @@
           "content": {
             "application/json": {
               "schema": {
+                "additionalProperties": true,
                 "type": "object",
-                "additionalProperties": true
+                "properties": {
+                  "provider_name": {
+                    "type": "string",
+                    "enum": [
+                      "apollo"
+                    ]
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "engagement"
+                    ]
+                  },
+                  "api_key": {
+                    "type": "string",
+                    "description": "API key for the connected customer.",
+                    "example": 123456
+                  }
+                },
+                "required": [
+                  "provider_name",
+                  "category",
+                  "api_key"
+                ]
               }
             }
           }
@@ -2309,7 +2333,6 @@
         ]
       },
       "provider": {
-        "type": "object",
         "properties": {
           "id": {
             "type": "string",
@@ -2325,7 +2348,8 @@
           "auth_type": {
             "type": "string",
             "enum": [
-              "oauth2"
+              "oauth2",
+              "api_key"
             ]
           },
           "name": {
@@ -2343,8 +2367,7 @@
           "application_id",
           "category",
           "auth_type",
-          "name",
-          "config"
+          "name"
         ]
       },
       "destination": {
@@ -3472,7 +3495,8 @@
           "zoho_crm",
           "capsule",
           "outreach",
-          "gong"
+          "gong",
+          "apollo"
         ]
       },
       "provider_name_crm": {
@@ -3658,24 +3682,42 @@
       "create_provider": {
         "allOf": [
           {
-            "type": "object",
-            "properties": {
-              "auth_type": {
-                "type": "string",
-                "enum": [
-                  "oauth2"
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "auth_type": {
+                    "type": "string",
+                    "enum": [
+                      "oauth2"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/create_provider_config"
+                  },
+                  "objects": {
+                    "$ref": "#/components/schemas/objects"
+                  }
+                },
+                "required": [
+                  "auth_type",
+                  "config"
                 ]
               },
-              "config": {
-                "$ref": "#/components/schemas/create_provider_config"
-              },
-              "objects": {
-                "$ref": "#/components/schemas/objects"
+              {
+                "type": "object",
+                "properties": {
+                  "auth_type": {
+                    "type": "string",
+                    "enum": [
+                      "api_key"
+                    ]
+                  }
+                },
+                "required": [
+                  "auth_type"
+                ]
               }
-            },
-            "required": [
-              "auth_type",
-              "config"
             ]
           },
           {

@@ -1,4 +1,4 @@
-import type { ConnectionUnsafe, NormalizedRawRecord, Provider } from '@supaglue/types';
+import type { ConnectionUnsafe, EngagementOauthProvider, NormalizedRawRecord, Provider } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -246,8 +246,8 @@ export function newClient(connection: ConnectionUnsafe<'gong'>, provider: Provid
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,
     expiresAt: connection.credentials.expiresAt,
-    clientId: provider.config.oauth.credentials.oauthClientId,
-    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
+    clientId: (provider as EngagementOauthProvider).config.oauth.credentials.oauthClientId,
+    clientSecret: (provider as EngagementOauthProvider).config.oauth.credentials.oauthClientSecret,
   });
 }
 

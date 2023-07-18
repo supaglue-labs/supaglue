@@ -1,5 +1,6 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
 import { logger } from '@supaglue/core/lib/logger';
+import type { CRMProvider } from '@supaglue/types';
 import type { CDCWebhookPayload } from '@supaglue/types/cdc';
 import * as jsforce from 'jsforce';
 import { createClient } from './client';
@@ -27,7 +28,7 @@ const { connectionService, providerService, webhookService, applicationService }
       id: connectionId,
     } = connection;
 
-    const provider = await providerService.getById(connection.providerId);
+    const provider = (await providerService.getById(connection.providerId)) as CRMProvider;
 
     let conn: jsforce.Connection;
     try {

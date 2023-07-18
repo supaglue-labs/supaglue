@@ -1,5 +1,6 @@
 import type {
   ConnectionUnsafe,
+  EngagementOauthProvider,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -419,8 +420,8 @@ class OutreachClient extends AbstractEngagementRemoteClient {
 export function newClient(connection: ConnectionUnsafe<'outreach'>, provider: Provider): OutreachClient {
   return new OutreachClient({
     ...connection.credentials,
-    clientId: provider.config.oauth.credentials.oauthClientId,
-    clientSecret: provider.config.oauth.credentials.oauthClientSecret,
+    clientId: (provider as EngagementOauthProvider).config.oauth.credentials.oauthClientId,
+    clientSecret: (provider as EngagementOauthProvider).config.oauth.credentials.oauthClientSecret,
   });
 }
 
