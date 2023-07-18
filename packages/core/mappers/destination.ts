@@ -3,6 +3,7 @@ import type {
   BigQueryConfigUnsafe,
   DestinationSafeAny,
   DestinationUnsafeAny,
+  MongoDBConfigUnsafe,
   PostgresConfigUnsafe,
   S3ConfigUnsafe,
 } from '@supaglue/types';
@@ -31,6 +32,7 @@ export const fromDestinationModelToUnsafe = (model: DestinationModel): Destinati
       };
     case 'postgres':
     case 's3':
+    case 'mongodb':
       return {
         ...baseParams,
         type: model.type,
@@ -86,6 +88,18 @@ export const fromDestinationModelToSafe = (model: DestinationModel): Destination
           region: config.region,
           bucket: config.bucket,
           accessKeyId: config.accessKeyId,
+        },
+      };
+    }
+    case 'mongodb': {
+      const config = model.config as MongoDBConfigUnsafe;
+      return {
+        ...baseParams,
+        type: 'mongodb',
+        config: {
+          host: config.host,
+          database: config.database,
+          user: config.user,
         },
       };
     }

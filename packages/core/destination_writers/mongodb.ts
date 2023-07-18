@@ -69,7 +69,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
 
     await collection.replaceOne(
       {
-        _id: mappedRecord.id,
+        id: mappedRecord.id,
         _supaglue_application_id: mappedRecord._supaglue_application_id,
         _supaglue_provider_name: mappedRecord._supaglue_provider_name,
         _supaglue_customer_id: mappedRecord._supaglue_customer_id,
@@ -97,7 +97,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
         _supaglue_application_id: 1,
         _supaglue_customer_id: 1,
         _supaglue_provider_name: 1,
-        _id: 1,
+        id: 1,
       },
       { unique: true }
     );
@@ -127,7 +127,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_provider_name: providerName,
               _supaglue_customer_id: customerId,
               _supaglue_emitted_at: emittedAt,
-              _id: record.id,
+              id: record.id,
               ...mapper(record),
             };
 
@@ -207,7 +207,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_emitted_at: record.emittedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
-              _id: record.id,
+              id: record.id,
             };
 
             ++rowCount;
@@ -279,7 +279,7 @@ function streamToMongoDBCollection(collection: Collection, client: MongoClient, 
       documents.map((document) => ({
         replaceOne: {
           filter: {
-            _id: document.id,
+            id: document.id ?? document._id,
             _supaglue_application_id: document._supaglue_application_id,
             _supaglue_provider_name: document._supaglue_provider_name,
             _supaglue_customer_id: document._supaglue_customer_id,
