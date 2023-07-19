@@ -18,6 +18,9 @@ export type SyncConfigData = {
   commonObjects?: CommonObjectConfig[];
   standardObjects?: StandardObjectConfig[];
   customObjects?: CustomObjectConfig[];
+  entities?: {
+    entityId: string;
+  }[];
 };
 
 export type SyncStrategyConfig = {

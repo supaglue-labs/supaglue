@@ -158,7 +158,7 @@ export class SyncConfigService {
 }
 
 const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
-  // Check that there are no duplicates
+  // Check that there are no duplicates among objects
   const commonObjects = params.config.commonObjects?.map((object) => object.object) ?? [];
   const allObjects = [
     ...(params.config.standardObjects?.map((object) => object.object) ?? []),
@@ -173,5 +173,13 @@ const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpd
   }
   if (allObjectDuplicates.length > 0) {
     throw new BadRequestError(`Duplicate standard/custom objects found: ${allObjectDuplicates.join(', ')}`);
+  }
+
+  // check that there are no duplicates among entities
+  const entityIds = params.config.entities?.map((entity) => entity.entityId) ?? [];
+  const entityDuplicates = entityIds.filter((entityId, index) => entityIds.indexOf(entityId) !== index);
+
+  if (entityDuplicates.length > 0) {
+    throw new BadRequestError(`Duplicate entities found: ${entityDuplicates.join(', ')}`);
   }
 };

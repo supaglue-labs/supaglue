@@ -7,11 +7,14 @@ import type {
   SchemaCreateParams,
 } from '.';
 import type { CRMProviderName } from './crm';
+import type { EntityMapping } from './entity_mapping';
+import type { FieldMapping } from './field_mapping_config';
 import type { ObjectType } from './object_sync';
 
 type BaseProvider = {
   id: string;
   applicationId: string;
+  entityMappings?: EntityMapping[];
 };
 
 type BaseOauthProvider = BaseProvider & {
@@ -101,4 +104,14 @@ export type ObjectsWithExpandedSchemasAndFieldMappings<T extends ProviderCategor
   common?: (Omit<ProviderCommonObject<T>, 'schemaId'> & { schema?: Schema })[];
   standard?: (Omit<ProviderObject, 'schemaId'> & { schema?: Schema })[];
   custom?: (Omit<ProviderObject, 'schemaId'> & { schema?: Schema })[];
+};
+
+export type AddEntityMappingToProviderParams = {
+  entityId: string;
+  enableSync?: boolean;
+  object: {
+    type: 'standard' | 'custom';
+    name: string;
+  };
+  fieldMappings: FieldMapping[];
 };
