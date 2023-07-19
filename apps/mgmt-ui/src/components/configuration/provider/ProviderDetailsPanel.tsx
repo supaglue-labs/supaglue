@@ -318,7 +318,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
                 setIsSaving(false);
               }}
             >
-              Save
+              {providerName === 'apollo' ? 'Enable' : 'Save'}
             </Button>
           </Stack>
         </Stack>
