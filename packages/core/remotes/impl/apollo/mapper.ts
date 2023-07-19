@@ -1,4 +1,16 @@
-import type { Contact, Mailbox, Sequence, SequenceState, User } from '@supaglue/types/engagement';
+import type {
+  Address,
+  Contact,
+  ContactCreateParams,
+  ContactUpdateParams,
+  Mailbox,
+  PhoneNumber,
+  PhoneNumberType,
+  Sequence,
+  SequenceState,
+  SequenceStateCreateParams,
+  User,
+} from '@supaglue/types/engagement';
 
 export const fromApolloContactToContact = (record: Record<string, any>): Contact => {
   return {
@@ -20,12 +32,7 @@ export const fromApolloContactToContact = (record: Record<string, any>): Contact
         emailAddressType: null,
       },
     ],
-    phoneNumbers: [
-      {
-        phoneNumber: record.sanitized_phone ?? null,
-        phoneNumberType: null,
-      },
-    ],
+    phoneNumbers: fromApolloPhonesToPhoneNumbers(record.phone_numbers ?? []),
     ownerId: record.owner_id ?? null,
     openCount: 0,
     clickCount: 0,
@@ -37,6 +44,29 @@ export const fromApolloContactToContact = (record: Record<string, any>): Contact
     isDeleted: false,
     rawData: record,
   };
+};
+
+const fromApolloPhonesToPhoneNumbers = (phoneNumbers: Record<string, any>[]): PhoneNumber[] => {
+  return phoneNumbers.map((phone) => ({
+    phoneNumber: phone.sanitized_number,
+    phoneNumberType: fromApolloPhoneTypeToPhoneType(phone.type),
+  }));
+};
+
+const fromApolloPhoneTypeToPhoneType = (phoneType: string | undefined): PhoneNumberType | null => {
+  switch (phoneType) {
+    case 'home':
+      return 'home';
+    case 'mobile':
+      return 'mobile';
+    case 'work':
+    case 'work_hq':
+      return 'work';
+    case 'other':
+      return 'other';
+    default:
+      return null;
+  }
 };
 
 export const fromApolloUserToUser = (record: Record<string, any>): User => {
@@ -105,4 +135,41 @@ export const fromApolloContactToSequenceStates = (record: Record<string, any>): 
     isDeleted: false,
     rawData: status,
   }));
+};
+
+export const toApolloContactCreateParams = (params: ContactCreateParams): Record<string, any> => {
+  return {
+    first_name: params.firstName,
+    last_name: params.lastName,
+    title: params.jobTitle,
+    email: params.emailAddresses?.[0]?.emailAddress,
+    present_raw_address: params.address ? getRawAddressString(params.address) : undefined,
+    ...params.customFields,
+  };
+};
+export const toApolloContactUpdateParams = (params: ContactUpdateParams): Record<string, any> => {
+  return {
+    first_name: params.firstName,
+    last_name: params.lastName,
+    title: params.jobTitle,
+    email: params.emailAddresses?.[0]?.emailAddress,
+    present_raw_address: params.address ? getRawAddressString(params.address) : undefined,
+    corporate_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'work')?.phoneNumber,
+    home_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'home')?.phoneNumber,
+    mobile_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber,
+    other_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'other')?.phoneNumber,
+    ...params.customFields,
+  };
+};
+
+const getRawAddressString = (params: Address): string => {
+  return [params.street1, params.city, params.state, params.postalCode, params.country].filter((v) => !!v).join(', ');
+};
+
+export const toApolloSequenceStateCreateParams = (params: SequenceStateCreateParams): Record<string, any> => {
+  return {
+    contact_ids: [params.contactId],
+    emailer_campaign_id: params.sequenceId,
+    send_email_from_email_account_id: params.mailboxId,
+  };
 };
