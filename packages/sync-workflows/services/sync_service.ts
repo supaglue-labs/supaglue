@@ -442,7 +442,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
         },
         action,
         state: {
-          triggerImmediately: true,
+          triggerImmediately: !objectSync.paused,
           paused: objectSync.paused,
         },
       });
