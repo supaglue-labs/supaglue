@@ -1,24 +1,18 @@
-allOf:
-  - type: object
-    properties:
-      name:
-        type: string
-        description: The name of the field as set in the schema
-        example: email
-      is_added_by_customer:
-        type: boolean
-        description: Whether the field was added by the customer (only applicable if the schema has allow_additional_field_mappings set to true)
-    required:
-      - name
-      - is_added_by_customer
-  - anyOf:
-    - type: object
-      properties:
-        schema_mapped_name:
-          type: string
-          description: The mapped named of the field as set in the schema by the developer. If set, the customer cannot override.
-    - type: object
-      properties:
-        customer_mapped_name:
-          type: string
-          description: The mapped name of the field as set by the customer
+type: object
+properties:
+  name:
+    type: string
+    description: The name of the field as set in the schema
+    example: email
+  is_added_by_customer:
+    type: boolean
+    description: Whether the field was added by the customer (only applicable if the schema has allow_additional_field_mappings set to true)
+  schema_mapped_name:
+    type: string
+    description: The mapped named of the field as set in the schema by the developer. If set, the customer cannot override.
+  customer_mapped_name:
+    type: string
+    description: The mapped name of the field as set by the customer.
+required:
+  - name
+  - is_added_by_customer
