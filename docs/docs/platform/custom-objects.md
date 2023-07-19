@@ -1,37 +1,73 @@
 ---
 description: ''
+sidebar_position: 2
 ---
+
+import BrowserWindow from '@site/src/components/BrowserWindow';
 
 # Custom objects
 
-Supaglue provides all the tools you need to manage custom objects in your customers' SaaS tools:
+Custom Objects are objects that are not pre-defined by third-party Providers. You or your customers may create them.
 
-- ability to manage custom objects and associations
-- ability to sync objects and associations from SaaS tools into the data store of your choice
+For example, `ContactDailyMetric` and `ContactMonthlyMetric` are the only contact metric Standard Objects in Salesforce, but your customer may have defined a third Custom Object, `ContactBiannualMetric`.
 
-## Managing custom objects and associations
+## Managed Syncs
 
-Managing custom objects and associations in various SaaS tools is difficult. For example, while HubSpot manages associations with a separate Associations API, Salesforce just allows you to set them directly on the record.
+Sync Custom Objects to your Destination using Managed Syncs.
 
-Managing these different workflows is time-consuming and error-prone as you support more and more SaaS tools.
+### Configuration
 
-Supaglue's Custom Objects API is a unified API that allows you to:
+Use the **Configuration --> Sync Configs** page in the Management Portal to specify the Custom Objects you wish to sync to your Destination.
 
-- create custom objects,
-- create custom object records,
-- create association types between objects, and
-- create associations between records.
+<BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/providers/crm/salesforce">
 
-## Example
+![image](/img/custom-object-sync-config.png)
 
-Suppose that you want to store information about competitors that are relevant to a particular Salesforce Opportunity. You could use Supaglue's Custom Objects API to do the following:
+</BrowserWindow>
 
-1. Create a custom object called `Competitor Info`.
-1. Create a association type between `Opportunity` and `Competitor Info`.
-1. Whenever a new `Opportunity` record is created, find an existing `Competitor Info` record, or create a new one, and associate it with the `Opportunity` record.
+The screenshot above shows a Sync Config that specifies `ContactBiannualMetric` and `BattleCard` Custom Objects. Supaglue will sync these Custom Objects.
 
-## Syncing objects and associations
+The casing of Custom Objects is provider-specific.
 
-Any records and associations that you create via Supaglue's Custom Objects API, as well as any records created in the SaaS tool, can be synced into the data store of your choice.
+### Data schema
 
-Refer to our [docs on syncing standard and custom objects](../integration-patterns/managed-syncs#standard-and-custom-objects) for more information.
+Supaglue will land the data in your Destination with the following schema:
+
+```
+postgres=> \d "salesforce_BattleCard"
+                             Table "public.salesforce_BattleCard"
+          Column          |              Type              | Collation | Nullable | Default
+--------------------------+--------------------------------+-----------+----------+---------
+ _supaglue_application_id | text                           |           | not null |
+ _supaglue_provider_name  | text                           |           | not null |
+ _supaglue_customer_id    | text                           |           | not null |
+ _supaglue_emitted_at     | timestamp(3) without time zone |           | not null |
+ _supaglue_is_deleted     | boolean                        |           | not null |
+ _supaglue_raw_data       | jsonb                          |           | not null |
+ id                       | text                           |           | not null |
+Indexes:
+    "salesforce_BattleCard_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+```
+
+## Actions API
+
+Supaglue's unified Custom Objects Actions API allows you to:
+
+- Create custom objects
+- Create custom object records
+- Create association types between objects
+- Create associations between records
+
+### Example
+
+Suppose you want to store information about competitors relevant to a particular Salesforce Opportunity. You could use Supaglue's Custom Objects API to do the following:
+
+1. Create a custom object called `CompetitorInfo`.
+1. Create an association type between `Opportunity` and `CompetitorInfo`.
+1. When you create a new `Opportunity` record, find an existing `CompetitorInfo` record (or create a new one) and associate it with the `Opportunity` record.
+
+## Schemas & Field Mappings
+
+:::info
+Under construction
+:::
