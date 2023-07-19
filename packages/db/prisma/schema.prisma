@@ -11,7 +11,7 @@ datasource db {
 }
 
 model SystemSettings {
-  id                     String  @id @default("1")
+  id                     String   @id @default("1")
   processSyncChangesFull Boolean? @map("process_sync_changes_full")
 
   @@map("system_settings")
@@ -29,6 +29,7 @@ model Application {
   destinations Destination[]
   providers    Provider[]
   schemas      Schema[]
+  Entity       Entity[]
 
   @@unique([orgId, name])
   @@map("applications")
@@ -93,6 +94,7 @@ model SyncConfig {
   createdAt     DateTime     @default(now()) @map("created_at")
   updatedAt     DateTime     @updatedAt @map("updated_at")
   objectSyncs   ObjectSync[]
+  EntitySync    EntitySync[]
 
   // TODO: Eventually allow multiple destinations
   @@unique([providerId])
@@ -125,6 +127,7 @@ model Connection {
   providerId           String       @map("provider_id")
   schemaMappingsConfig Json?        @map("schema_mappings_config")
   objectSyncs          ObjectSync[]
+  entitySyncs          EntitySync[]
 
   @@unique([customerId, providerId])
   @@map("connections")
@@ -173,6 +176,48 @@ model ObjectSyncRun {
   @@map("object_sync_runs")
 }
 
+model EntitySync {
+  id             String          @id @default(uuid())
+  entityId       String          @map("entity_id")
+  entity         Entity          @relation(fields: [entityId], references: [id])
+  state          Json
+  strategy       Json
+  connectionId   String          @map("connection_id")
+  connection     Connection      @relation(fields: [connectionId], references: [id])
+  paused         Boolean         @default(false)
+  syncConfigId   String          @map("sync_config_id")
+  syncConfig     SyncConfig      @relation(fields: [syncConfigId], references: [id])
+  argsForNextRun Json?           @map("args_for_next_run")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  runs           EntitySyncRun[]
+
+  @@unique([connectionId, entityId])
+  @@map("entity_syncs")
+}
+
+model EntitySyncChange {
+  id           String   @id @default(uuid())
+  entitySyncId String   @map("entity_sync_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("entity_sync_changes")
+}
+
+model EntitySyncRun {
+  id               String     @id @default(uuid())
+  entitySyncId     String     @map("entity_sync_id")
+  entitySync       EntitySync @relation(fields: [entitySyncId], references: [id], onDelete: Cascade)
+  // SUCCESS | ERROR | IN_PROGRESS
+  status           String
+  errorMessage     String?    @map("error_message")
+  startTimestamp   DateTime   @map("start_timestamp")
+  endTimestamp     DateTime?  @map("end_timestamp")
+  numRecordsSynced Int?       @map("num_records_synced")
+
+  @@map("entity_sync_runs")
+}
+
 model ReplayId {
   connectionId String     @map("connection_id")
   connection   Connection @relation(fields: [connectionId], references: [id])
@@ -196,4 +241,18 @@ model Schema {
 
   @@unique([applicationId, name])
   @@map("schemas")
+}
+
+model Entity {
+  id            String       @id @default(uuid())
+  name          String
+  applicationId String       @map("application_id")
+  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  config        Json
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  entitySyncs   EntitySync[]
+
+  @@unique([applicationId, name])
+  @@map("entities")
 }
