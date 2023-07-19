@@ -497,9 +497,9 @@ export interface components {
       name: string;
       /** @description Whether the field was added by the customer (only applicable if the schema has allow_additional_field_mappings set to true) */
       is_added_by_customer: boolean;
-      /** @description The mapped named of the field as set in the schema by the developer. If set, the customer cannot override. */
+      /** @description The mapped named of the field as set in the schema by the developer. If set, the customer cannot override. Only one of `schema_mapped_name` or `customer_mapped_name` should be set. */
       schema_mapped_name?: string;
-      /** @description The mapped name of the field as set by the customer. */
+      /** @description The mapped name of the field as set by the customer. Only one of `schema_mapped_name` or `customer_mapped_name` should be set. */
       customer_mapped_name?: string;
     };
     update_object_field_mapping: {
