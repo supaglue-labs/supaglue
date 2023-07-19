@@ -66,18 +66,19 @@ model Customer {
 }
 
 model Provider {
-  id            String       @id @default(uuid())
-  applicationId String       @map("application_id")
-  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  authType      String       @map("auth_type") // [oauth2]
-  category      String
-  name          String
-  config        Json // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
-  objects       Json?
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime     @updatedAt @map("updated_at")
-  connections   Connection[]
-  syncConfig    SyncConfig?
+  id             String       @id @default(uuid())
+  applicationId  String       @map("application_id")
+  application    Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  authType       String       @map("auth_type") // [oauth2]
+  category       String
+  name           String
+  config         Json // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
+  objects        Json?
+  entityMappings Json?
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  connections    Connection[]
+  syncConfig     SyncConfig?
 
   @@unique([applicationId, name])
   @@map("providers")
