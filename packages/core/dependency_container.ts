@@ -17,6 +17,7 @@ import { CrmCommonObjectService } from './services/common_objects/crm/common_obj
 import { CrmCustomObjectService } from './services/common_objects/crm/custom_object_service';
 import { EngagementCommonObjectService } from './services/common_objects/engagement/common_object_service';
 import { DestinationService } from './services/destination_service';
+import { EntityService } from './services/entity_service';
 import { ObjectSyncRunService } from './services/object_sync_run_service';
 import { ObjectSyncService } from './services/object_sync_service';
 import { SystemSettingsService } from './services/system_settings_service';
@@ -41,6 +42,7 @@ export type CoreDependencyContainer = {
   schemaService: SchemaService;
   objectSyncService: ObjectSyncService;
   objectSyncRunService: ObjectSyncRunService;
+  entityService: EntityService;
 
   crmCommonObjectService: CrmCommonObjectService;
   engagementCommonObjectService: EngagementCommonObjectService;
@@ -85,6 +87,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const providerService = new ProviderService(prisma);
   const syncConfigService = new SyncConfigService(prisma);
   const schemaService = new SchemaService(prisma);
+  const entityService = new EntityService(prisma);
   const connectionService = new ConnectionService(prisma, providerService, schemaService);
   const customerService = new CustomerService(prisma);
   const remoteService = new RemoteService(connectionService, providerService);
@@ -115,6 +118,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     webhookService,
     destinationService,
     schemaService,
+    entityService,
     crmCommonObjectService,
     engagementCommonObjectService,
     crmCustomObjectService,

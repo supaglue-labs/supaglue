@@ -3,6 +3,7 @@ import { openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
 import customer from './customer';
 import destination from './destination';
+import entity from './entity';
 import fieldMapping from './field_mapping';
 import property from './property';
 import provider from './provider';
@@ -28,6 +29,7 @@ export default function init(app: Router): void {
   syncRun(v2Router);
   fieldMapping(v2Router);
   property(v2Router);
+  entity(v2Router);
 
   app.use('/v2', v2Router);
 }

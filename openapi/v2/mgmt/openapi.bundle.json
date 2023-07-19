@@ -565,12 +565,10 @@
                         "config": {
                           "fields": [
                             {
-                              "name": "field1",
-                              "mappedName": "fieldA"
+                              "name": "field1"
                             },
                             {
-                              "name": "field2",
-                              "mappedName": "fieldB"
+                              "name": "field2"
                             }
                           ],
                           "allow_additional_field_mappings": false
@@ -582,12 +580,10 @@
                         "config": {
                           "fields": [
                             {
-                              "name": "field1",
-                              "mappedName": "fieldA"
+                              "name": "field1"
                             },
                             {
-                              "name": "field2",
-                              "mappedName": "fieldB"
+                              "name": "field2"
                             }
                           ],
                           "allow_additional_field_mappings": false
@@ -787,6 +783,263 @@
           "schema": {
             "type": "string",
             "example": "a821d59d-8b4c-4ad9-aeec-1292d2e28701"
+          }
+        }
+      ]
+    },
+    "/entities": {
+      "get": {
+        "operationId": "getEntities",
+        "tags": [
+          "Entities"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "List entities",
+        "description": "Get a list of entities",
+        "responses": {
+          "200": {
+            "description": "Entities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/entity"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "649b1e49-2722-46a3-a7e7-10caae78a440",
+                        "name": "my-entity",
+                        "config": {
+                          "fields": [
+                            {
+                              "name": "field1",
+                              "mappedName": "fieldA"
+                            },
+                            {
+                              "name": "field2",
+                              "mappedName": "fieldB"
+                            }
+                          ],
+                          "allow_additional_field_mappings": false
+                        }
+                      },
+                      {
+                        "id": "84b84f5b-cfa0-4ef5-ab41-6362f8cdd415",
+                        "name": "my-entity2",
+                        "config": {
+                          "fields": [
+                            {
+                              "name": "field1",
+                              "mappedName": "fieldA"
+                            },
+                            {
+                              "name": "field2",
+                              "mappedName": "fieldB"
+                            }
+                          ],
+                          "allow_additional_field_mappings": false
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createEntity",
+        "summary": "Create entity",
+        "tags": [
+          "Entities"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_entity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entity created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/entity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entities/{entity_id}": {
+      "get": {
+        "operationId": "getEntity",
+        "summary": "Get entity",
+        "tags": [
+          "Entities"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/entity"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "0218d76c-b2e1-4c34-ac7d-22b8df065005",
+                      "name": "my-entity",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateEntity",
+        "summary": "Update entity",
+        "tags": [
+          "Entities"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_entity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/entity"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "959fd65f-850a-4c53-bc06-9f46facd4445",
+                      "name": "my-entity",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteEntity",
+        "summary": "Delete entity",
+        "tags": [
+          "Entities"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/entity"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "b2b0e394-541c-4e5b-b6b5-9eefd412bf8e",
+                      "name": "my-entity",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1"
+                          },
+                          {
+                            "name": "field2"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "entity_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "a821d59d-8b4c-4ad9-aeec-1292d2e28702"
           }
         }
       ]
@@ -2245,6 +2498,10 @@
       "description": "A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API."
     },
     {
+      "name": "Entities",
+      "description": "An `Entity` is a unified representation of Provider objects that can be synced to a Destination or manipulated by the Actions API."
+    },
+    {
       "name": "Field Mappings",
       "description": "A `Field Mapping` is a mapping between a Schema field and the field in the Provider."
     },
@@ -2898,6 +3155,58 @@
                   "type": "string"
                 },
                 "mapped_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "allow_additional_field_mappings": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fields",
+          "allow_additional_field_mappings"
+        ]
+      },
+      "entity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "649b1e49-2722-46a3-a7e7-10caae78a43f"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "name": {
+            "type": "string",
+            "example": "my-entity"
+          },
+          "config": {
+            "$ref": "#/components/schemas/entity_config"
+          }
+        },
+        "required": [
+          "id",
+          "application_id",
+          "name",
+          "config"
+        ]
+      },
+      "entity_config": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
                   "type": "string"
                 }
               },
@@ -3822,6 +4131,22 @@
           },
           "config": {
             "$ref": "#/components/schemas/schema_config"
+          }
+        },
+        "required": [
+          "name",
+          "config"
+        ]
+      },
+      "create_update_entity": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "my-entity"
+          },
+          "config": {
+            "$ref": "#/components/schemas/entity_config"
           }
         },
         "required": [

@@ -102,6 +102,28 @@ export interface paths {
       };
     };
   };
+  "/entities": {
+    /**
+     * List entities 
+     * @description Get a list of entities
+     */
+    get: operations["getEntities"];
+    /** Create entity */
+    post: operations["createEntity"];
+  };
+  "/entities/{entity_id}": {
+    /** Get entity */
+    get: operations["getEntity"];
+    /** Update entity */
+    put: operations["updateEntity"];
+    /** Delete entity */
+    delete: operations["deleteEntity"];
+    parameters: {
+      path: {
+        entity_id: string;
+      };
+    };
+  };
   "/providers": {
     /**
      * List providers 
@@ -460,6 +482,21 @@ export interface components {
         })[];
       allow_additional_field_mappings: boolean;
     };
+    entity: {
+      /** @example 649b1e49-2722-46a3-a7e7-10caae78a43f */
+      id: string;
+      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+      application_id: string;
+      /** @example my-entity */
+      name: string;
+      config: components["schemas"]["entity_config"];
+    };
+    entity_config: {
+      fields: ({
+          name: string;
+        })[];
+      allow_additional_field_mappings: boolean;
+    };
     objects: {
       common?: ({
           /** @example common_object_name */
@@ -762,6 +799,11 @@ export interface components {
       /** @example my-schema */
       name: string;
       config: components["schemas"]["schema_config"];
+    };
+    create_update_entity: {
+      /** @example my-entity */
+      name: string;
+      config: components["schemas"]["entity_config"];
     };
     create_destination: OneOf<[{
       /** @example My Destination */
@@ -1171,6 +1213,89 @@ export interface operations {
       204: {
         content: {
           "application/json": components["schemas"]["schema"];
+        };
+      };
+    };
+  };
+  /**
+   * List entities 
+   * @description Get a list of entities
+   */
+  getEntities: {
+    responses: {
+      /** @description Entities */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["entity"])[];
+        };
+      };
+    };
+  };
+  /** Create entity */
+  createEntity: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_entity"];
+      };
+    };
+    responses: {
+      /** @description Entity created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["entity"];
+        };
+      };
+    };
+  };
+  /** Get entity */
+  getEntity: {
+    parameters: {
+      path: {
+        entity_id: string;
+      };
+    };
+    responses: {
+      /** @description Entity */
+      200: {
+        content: {
+          "application/json": components["schemas"]["entity"];
+        };
+      };
+    };
+  };
+  /** Update entity */
+  updateEntity: {
+    parameters: {
+      path: {
+        entity_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_entity"];
+      };
+    };
+    responses: {
+      /** @description Entity */
+      200: {
+        content: {
+          "application/json": components["schemas"]["entity"];
+        };
+      };
+    };
+  };
+  /** Delete entity */
+  deleteEntity: {
+    parameters: {
+      path: {
+        entity_id: string;
+      };
+    };
+    responses: {
+      /** @description Entity */
+      204: {
+        content: {
+          "application/json": components["schemas"]["entity"];
         };
       };
     };
