@@ -213,3 +213,30 @@ export type GetSyncRunsQueryParams = Required<operations['getSyncRuns']>['parame
 export type GetSyncRunsRequest = never;
 export type GetSyncRunsResponse =
   operations['getSyncRuns']['responses'][keyof operations['getSyncRuns']['responses']]['content']['application/json'];
+
+export type GetEntitiesPathParams = never;
+export type GetEntitiesQueryParams = never;
+export type GetEntitiesRequest = never;
+export type GetEntitiesResponse =
+  operations['getEntities']['responses'][keyof operations['getEntities']['responses']]['content']['application/json'];
+
+export type CreateEntityPathParams = never;
+export type CreateEntityRequest = operations['createEntity']['requestBody']['content']['application/json'];
+export type CreateEntityResponse =
+  operations['createEntity']['responses'][keyof operations['createEntity']['responses']]['content']['application/json'];
+
+export type GetEntityPathParams = paths[`/entities/{entity_id}`]['parameters']['path'];
+export type GetEntityRequest = never;
+export type GetEntityResponse =
+  operations['getEntity']['responses'][keyof operations['getEntity']['responses']]['content']['application/json'];
+
+export type UpdateEntityPathParams = paths[`/entities/{entity_id}`]['parameters']['path'];
+export type UpdateEntityRequest =
+  operations['updateEntity']['requestBody'][keyof operations['updateEntity']['requestBody']]['application/json'];
+export type UpdateEntityResponse =
+  operations['updateEntity']['responses'][keyof operations['updateEntity']['responses']]['content']['application/json'];
+
+export type DeleteEntityPathParams = paths[`/entities/{entity_id}`]['parameters']['path'];
+export type DeleteEntityRequest = never;
+export type DeleteEntityResponse =
+  operations['deleteEntity']['responses'][keyof operations['deleteEntity']['responses']]['content']['application/json'];

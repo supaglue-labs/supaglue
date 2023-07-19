@@ -60,7 +60,7 @@ export class SchemaService {
 
   public async create(schema: SchemaCreateParams): Promise<Schema> {
     const createdSchema = await this.#prisma.schema.create({
-      data: await toSchemaModel(schema),
+      data: toSchemaModel(schema),
     });
     return fromSchemaModel(createdSchema);
   }
@@ -68,7 +68,7 @@ export class SchemaService {
   public async update(id: string, applicationId: string, schema: SchemaUpdateParams): Promise<Schema> {
     const updatedSchema = await this.#prisma.schema.update({
       where: { id },
-      data: await toSchemaModel({ ...schema, applicationId }),
+      data: toSchemaModel({ ...schema, applicationId }),
     });
     return fromSchemaModel(updatedSchema);
   }
@@ -81,8 +81,8 @@ export class SchemaService {
           name: schema.name,
         },
       },
-      create: await toSchemaModel(schema),
-      update: await toSchemaModel(schema),
+      create: toSchemaModel(schema),
+      update: toSchemaModel(schema),
     });
     return fromSchemaModel(upsertedSchema);
   }

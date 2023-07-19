@@ -12,6 +12,7 @@ import type {
   SyncConfig,
   WebhookConfig,
 } from '@supaglue/types';
+import type { Entity } from '@supaglue/types/entity';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
 export type ClientErrorResponse = {
@@ -214,6 +215,43 @@ export async function updateSchema(applicationId: string, data: Schema): Promise
 
 export async function deleteSchema(applicationId: string, syncConfigId: string): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/schemas/${syncConfigId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+  });
+  return await toClientEmptyResponse(result);
+}
+
+export async function createEntity(applicationId: string, data: Omit<Entity, 'id'>): Promise<ClientResponse<Entity>> {
+  const result = await fetch(`/api/internal/entities/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  return await toClientResponse(result);
+}
+
+export async function updateEntity(applicationId: string, data: Entity): Promise<ClientResponse<Entity>> {
+  const result = await fetch(`/api/internal/entities/update`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  return await toClientResponse(result);
+}
+
+export async function deleteEntity(applicationId: string, syncConfigId: string): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/entities/${syncConfigId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

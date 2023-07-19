@@ -45,6 +45,10 @@ paths:
     $ref: paths/schemas.yaml
   '/schemas/{schema_id}':
     $ref: paths/schemas@{schema_id}.yaml
+  '/entities':
+    $ref: paths/entities.yaml
+  '/entities/{entity_id}':
+    $ref: paths/entities@{entity_id}.yaml
   '/providers':
     $ref: paths/providers.yaml
   '/providers/{provider_id}':
@@ -84,6 +88,8 @@ tags:
     description: A `Property` is a field in a Provider's object.
   - name: Schemas
     description: A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API.
+  - name: Entities
+    description: An `Entity` is a unified representation of Provider objects that can be synced to a Destination or manipulated by the Actions API.
   - name: Field Mappings
     description: A `Field Mapping` is a mapping between a Schema field and the field in the Provider.
   - name: SyncConfigs
@@ -135,6 +141,10 @@ components:
       $ref: ./components/schemas/objects/schema.yaml
     schema_config:
       $ref: ./components/schemas/objects/schema_config.yaml
+    entity:
+      $ref: ./components/schemas/objects/entity.yaml
+    entity_config:
+      $ref: ./components/schemas/objects/entity_config.yaml
     objects:
       $ref: ./components/schemas/objects/objects.yaml
     object_field_mapping_info:
@@ -179,6 +189,8 @@ components:
       $ref: ./components/schemas/update_provider.yaml
     create_update_schema:
       $ref: ./components/schemas/create_update_schema.yaml
+    create_update_entity:
+      $ref: ./components/schemas/create_update_entity.yaml
     create_destination:
       $ref: ./components/schemas/create_destination.yaml
     update_destination:
