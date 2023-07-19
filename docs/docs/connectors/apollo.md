@@ -12,12 +12,13 @@ description: ''
 | Feature                    | Available |
 | -------------------------- | --------- |
 | Auth                       | Yes*      |
-| Managed syncs              | Yes       |
+| Managed syncs              | Yes**     |
 | Point reads                | Yes       |
 | Action API                 | Yes       |
 | Real-time events           | No        |
 
 *Note: Apollo does not support Oauth connections, so only API Key based connections are supported.
+**Note: Only full (non-incremental) syncs are supported.
 
 Supported common objects:
 
