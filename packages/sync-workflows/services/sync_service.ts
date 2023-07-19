@@ -118,6 +118,7 @@ export class SyncService {
     // Insert / delete ObjectSyncs
     for (const syncConfigModel of syncConfigModels) {
       const syncConfig = fromSyncConfigModel(syncConfigModel);
+      const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
       const relevantConnections = await this.#connectionService.getSafeByProviderId(syncConfig.providerId);
 
       const objectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
@@ -129,6 +130,7 @@ export class SyncService {
               object: commonObject.object,
               connectionId: connection.id,
               syncConfigId: syncConfig.id,
+              paused: !autoStart,
               strategy: {
                 type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
               },
@@ -146,6 +148,7 @@ export class SyncService {
               object: standardObject.object,
               connectionId: connection.id,
               syncConfigId: syncConfig.id,
+              paused: !autoStart,
               strategy: {
                 type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
               },
@@ -163,6 +166,7 @@ export class SyncService {
               object: customObject.object,
               connectionId: connection.id,
               syncConfigId: syncConfig.id,
+              paused: !autoStart,
               strategy: {
                 type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
               },
