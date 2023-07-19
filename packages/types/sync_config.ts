@@ -23,6 +23,8 @@ export type SyncConfigData = {
 export type SyncStrategyConfig = {
   periodMs: number;
   strategy: ObjectSyncType;
+  // default: true
+  autoStartOnConnection?: boolean;
 };
 
 export type CommonObjectConfig = {

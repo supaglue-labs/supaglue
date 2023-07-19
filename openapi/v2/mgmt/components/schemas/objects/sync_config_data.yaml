@@ -12,6 +12,11 @@ properties:
         enum:
           - full then incremental
           - full only
+      auto_start_on_connection:
+        type: boolean
+        description: |
+          If true, the sync will start automatically when the connection is created.
+          Default: true
     required:
       - period_ms
       - strategy

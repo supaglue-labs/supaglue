@@ -583,6 +583,11 @@ export interface components {
         period_ms: number;
         /** @enum {string} */
         strategy: "full then incremental" | "full only";
+        /**
+         * @description If true, the sync will start automatically when the connection is created.
+         * Default: true
+         */
+        auto_start_on_connection?: boolean;
       };
       common_objects?: ({
           /** @example contacts */
