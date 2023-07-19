@@ -1,29 +1,60 @@
 ---
 description: ''
+sidebar_position: 6
 ---
 
 # Common schema
 
-Supaglue applies a common schema to normalize core objects and fields across providers within a single category. This common schema abstracts away dealing with provider-specific schemas:
+Supaglue applies a common schema to normalize [Standard Objects](standard-objects) and fields across providers within a single category. These are known as **Common Objects**.
 
-- When defining a managed sync, the `common_objects` key in the sync configuration lets you specify which objects you'd like to fetch in normalized format into the same destination table.
-- Common schema fields are also used in both request and response signatures in the actions API. Supaglue applies the common object mappings against each provider when sending requests and returning responses.
+### Common objects
 
-## Common object mappings
+Supaglue syncs common objects across multiple providers and transforms them into a category-specific (e.g. CRM) normalized schema. There are three types of columns:
+
+- **Supaglue metadata fields**: these specify the application, customer, provider, and timestamps associated with the managed sync.
+- **Common object fields**: the normalized fields associated with the synced object and the connector category.
+- **Raw data**: the raw source data is returned in a JSON blob.
+
+Here's an example of a destination schema associated with a managed sync for a CRM Contact object:
+
+| Field Name                | Data Type |
+| ------------------------- | --------- |
+| \_supaglue_application_id | String    |
+| \_supaglue_customer_id    | String    |
+| \_supaglue_provider_name  | String    |
+| \_supaglue_emitted_at     | Timestamp |
+| \_supaglue_is_deleted     | Boolean   |
+| account_id                | String    |
+| addresses                 | json      |
+| created_at                | Timestamp |
+| email_addresses           | json      |
+| first_name                | String    |
+| id                        | String    |
+| is_deleted                | Boolean   |
+| last_activity_at          | Timestamp |
+| last_modified_at          | Timestamp |
+| last_name                 | String    |
+| lifecycle_stage           | String    |
+| owner_id                  | String    |
+| phone_numbers             | json      |
+| raw_data                  | json      |
+| updated_at                | Timestamp |
+
+Supaglue supports the following Common Objects:
 
 ### Users
 
-| Supaglue Common Object      | Salesforce Field   | HubSpot Field                  |
-| --------------------------- | ------------------ | ------------------------------ |
-| `remoteId`                  | `Id`               | `id`                           |
-| `name`                      | `Name`             | `(firstName, lastName)`        |
-| `email`                     | `Email`            | `email`                        |
-| `isActive`                  | `IsActive`         | `!archived`                    |
-| `remoteCreatedAt`           | `CreatedDate`      | `createdAt`                    |
-| `remoteUpdatedAt`           | `LastModifiedDate` | `updatedAt`                    |
-| `remoteWasDeleted`          | `IsDeleted`        | `!!archived`                   |
-| `remoteDeletedAt`           |                    | `null`                         |
-| `detectedOrRemoteDeletedAt` |                    | `archived ? new Date() : null` |
+| Supaglue Common Schema Field | Salesforce Field   | HubSpot Field                  |
+| ---------------------------- | ------------------ | ------------------------------ |
+| `remoteId`                   | `Id`               | `id`                           |
+| `name`                       | `Name`             | `(firstName, lastName)`        |
+| `email`                      | `Email`            | `email`                        |
+| `isActive`                   | `IsActive`         | `!archived`                    |
+| `remoteCreatedAt`            | `CreatedDate`      | `createdAt`                    |
+| `remoteUpdatedAt`            | `LastModifiedDate` | `updatedAt`                    |
+| `remoteWasDeleted`           | `IsDeleted`        | `!!archived`                   |
+| `remoteDeletedAt`            |                    | `null`                         |
+| `detectedOrRemoteDeletedAt`  |                    | `archived ? new Date() : null` |
 
 ### Leads
 
@@ -98,16 +129,16 @@ Supaglue applies a common schema to normalize core objects and fields across pro
 
 ### Opportunities
 
-| Supaglue Common Object | Salesforce Field   | HubSpot Field        |
-| ---------------------- | ------------------ | -------------------- |
-| `remoteId`             | `Id`               | `id`                 |
-| `remoteOwnerId`        | `OwnerId`          | `hubspot_owner_id`   |
-| `name`                 | `Name`             | `dealname`           |
-| `description`          | `Description`      | `description`        |
-| `stage`                | `StageName`        | `dealstage`          |
-| `closeDate`            | `CloseDate`        | `closedate`          |
-| `amount`               | `Amount`           | `amount`             |
-| `remoteAccountId`      | `AccountId`        | (from associations)  |
-| `lastActivityAt`       | `LastActivityDate` | `notes_last_updated` |
-| `remoteCreatedAt`      | `CreatedDate`      | `createdAt`          |
-| `remoteUpdatedAt`      | `SystemModstamp`   | `updatedAt`          |
+| Supaglue Common Schema Field | Salesforce Field   | HubSpot Field        |
+| ---------------------------- | ------------------ | -------------------- |
+| `remoteId`                   | `Id`               | `id`                 |
+| `remoteOwnerId`              | `OwnerId`          | `hubspot_owner_id`   |
+| `name`                       | `Name`             | `dealname`           |
+| `description`                | `Description`      | `description`        |
+| `stage`                      | `StageName`        | `dealstage`          |
+| `closeDate`                  | `CloseDate`        | `closedate`          |
+| `amount`                     | `Amount`           | `amount`             |
+| `remoteAccountId`            | `AccountId`        | (from associations)  |
+| `lastActivityAt`             | `LastActivityDate` | `notes_last_updated` |
+| `remoteCreatedAt`            | `CreatedDate`      | `createdAt`          |
+| `remoteUpdatedAt`            | `SystemModstamp`   | `updatedAt`          |
