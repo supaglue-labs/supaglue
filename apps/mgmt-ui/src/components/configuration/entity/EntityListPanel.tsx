@@ -163,20 +163,22 @@ function getFieldsListAsString(fields: string[]): string {
 }
 
 function getObjectNamesUsingEntity(provider: Provider, entityId: string): string[] {
-  if (!provider.objects) {
-    return [];
-  }
-  const out: string[] = [];
-  out.push(
-    ...((provider.objects.common as unknown as { name: string; entityId?: string }[] | undefined)
-      ?.filter((object) => object.entityId === entityId)
-      .map((object) => object.name) ?? [])
-  );
-  out.push(
-    ...(provider.objects.standard?.filter((object) => object.entityId === entityId).map((object) => object.name) ?? [])
-  );
-  out.push(
-    ...(provider.objects.custom?.filter((object) => object.entityId === entityId).map((object) => object.name) ?? [])
-  );
-  return out;
+  // TODO: implement this when we support mapping Entity to objects
+  return [];
+  // if (!provider.objects) {
+  //   return [];
+  // }
+  // const out: string[] = [];
+  // out.push(
+  //   ...((provider.objects.common as unknown as { name: string; entityId?: string }[] | undefined)
+  //     ?.filter((object) => object.entityId === entityId)
+  //     .map((object) => object.name) ?? [])
+  // );
+  // out.push(
+  //   ...(provider.objects.standard?.filter((object) => object.entityId === entityId).map((object) => object.name) ?? [])
+  // );
+  // out.push(
+  //   ...(provider.objects.custom?.filter((object) => object.entityId === entityId).map((object) => object.name) ?? [])
+  // );
+  // return out;
 }
