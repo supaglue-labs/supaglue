@@ -2,6 +2,7 @@
 import { createSyncConfig, updateSyncConfig } from '@/client';
 import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
+import { SwitchWithLabel } from '@/components/SwitchWithLabel';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
@@ -53,6 +54,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
   const [customObjects, setCustomObjects] = useState<string[]>([]);
+  const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
   const router = useRouter();
 
   const isFormValid = destinationId && providerId && isSyncPeriodSecsValid(syncPeriodSecs);
@@ -67,6 +69,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
         ? syncConfig?.config?.defaultConfig?.periodMs / 1000
         : ONE_HOUR_SECONDS
     );
+    setAutoStartOnConnection(syncConfig?.config?.defaultConfig?.autoStartOnConnection ?? true);
     setStrategy(syncConfig?.config?.defaultConfig?.strategy ?? 'full then incremental');
     setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
     setStandardObjects(syncConfig?.config?.standardObjects?.map((o) => o.object) ?? []);
@@ -105,6 +108,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
             ...syncConfig.config.defaultConfig,
             periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
             strategy,
+            autoStartOnConnection,
           },
           commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
           standardObjects: standardObjects.map((object) => ({ object })),
@@ -132,6 +136,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
         defaultConfig: {
           periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
           strategy,
+          autoStartOnConnection,
         },
         commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
         standardObjects: standardObjects.map((object) => ({ object })),
@@ -218,6 +223,14 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 }
                 setSyncPeriodSecs(value);
               }}
+            />
+          </Stack>
+          <Stack className="gap-2">
+            <SwitchWithLabel
+              label="Start Sync on Connection"
+              isLoading={isLoading}
+              checked={autoStartOnConnection}
+              onToggle={setAutoStartOnConnection}
             />
           </Stack>
           {provider && (

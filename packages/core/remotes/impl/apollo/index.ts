@@ -4,6 +4,15 @@ import type {
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
+import type {
+  Contact,
+  ContactCreateParams,
+  ContactUpdateParams,
+  EngagementCommonObjectType,
+  EngagementCommonObjectTypeMap,
+  Sequence,
+  SequenceStateCreateParams,
+} from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
 import { retryWhenAxiosRateLimited } from '../../../lib';
@@ -16,6 +25,9 @@ import {
   fromApolloEmailAccountsToMailbox,
   fromApolloSequenceToSequence,
   fromApolloUserToUser,
+  toApolloContactCreateParams,
+  toApolloContactUpdateParams,
+  toApolloSequenceStateCreateParams,
 } from './mapper';
 
 type ApolloPagination = {
@@ -71,6 +83,44 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       return await super.sendPassthroughRequest({ ...request, body: JSON.stringify(bodyJson) });
     }
     throw new Error(`Method ${request.method} not supported for the Apollo passthrough API`);
+  }
+
+  public override async getCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    id: string
+  ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.getContact(id);
+      case 'sequence':
+        return await this.getSequence(id);
+      case 'user':
+      case 'mailbox':
+      case 'sequence_state':
+        throw new Error(`Get operation not supported for common object ${commonObjectType}`);
+      default:
+        throw new Error(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async getContact(id: string): Promise<Contact> {
+    const response = await axios.get<{ contact: Record<string, any> }>(`${this.#baseURL}/v1/contacts/${id}`, {
+      headers: this.#headers,
+      params: {
+        api_key: this.#apiKey,
+      },
+    });
+    return fromApolloContactToContact(response.data.contact);
+  }
+
+  async getSequence(id: string): Promise<Sequence> {
+    const response = await axios.get<{ emailer_campaign: Record<string, any> }>(`${this.#baseURL}/v1/sequences/${id}`, {
+      headers: this.#headers,
+      params: {
+        api_key: this.#apiKey,
+      },
+    });
+    return fromApolloSequenceToSequence(response.data.emailer_campaign);
   }
 
   async #getContactPage(page = 1, updatedAfter?: Date): Promise<ApolloPaginatedContacts> {
@@ -239,6 +289,73 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       default:
         throw new Error(`Common object type ${commonObjectType} not supported for the Apollo API`);
     }
+  }
+
+  async createContact(params: ContactCreateParams): Promise<string> {
+    const response = await axios.post<{ contact: Record<string, any> }>(
+      `${this.#baseURL}/v1/contacts`,
+      { ...toApolloContactCreateParams(params), api_key: this.#apiKey },
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.contact.id.toString();
+  }
+
+  async createSequenceState(params: SequenceStateCreateParams): Promise<string> {
+    const response = await axios.post<{ contacts: Record<string, any>[]; emailer_campaign: Record<string, any> }>(
+      `${this.#baseURL}/v1/emailer_campaigns/${params.sequenceId}/add_contact_ids`,
+      { ...toApolloSequenceStateCreateParams(params), api_key: this.#apiKey },
+      {
+        headers: this.#headers,
+      }
+    );
+    const campaignStatus = response.data.contacts[0].contact_campaign_statuses.find(
+      (status: Record<string, any>) =>
+        status.send_email_from_email_account_id === params.mailboxId && status.emailer_campaign_id === params.sequenceId
+    );
+    return campaignStatus.id.toString();
+  }
+
+  public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['createParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'sequence_state':
+        return await this.createSequenceState(params as SequenceStateCreateParams);
+      case 'contact':
+        return await this.createContact(params as ContactCreateParams);
+      case 'sequence':
+      case 'mailbox':
+      case 'user':
+        throw new Error(`Create operation not supported for ${commonObjectType} object`);
+      default:
+        throw new Error(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['updateParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.updateContact(params as ContactUpdateParams);
+      default:
+        throw new Error(`Update not supported for common object ${commonObjectType}`);
+    }
+  }
+
+  async updateContact(params: ContactUpdateParams): Promise<string> {
+    const response = await axios.put<{ contact: Record<string, any> }>(
+      `${this.#baseURL}/v1/contacts/${params.id}`,
+      { ...toApolloContactUpdateParams(params), api_key: this.#apiKey },
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.contact.id;
   }
 }
 

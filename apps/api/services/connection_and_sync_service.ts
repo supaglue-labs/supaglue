@@ -209,6 +209,8 @@ export class ConnectionAndSyncService {
           // New syncs
           const objectSyncIds: string[] = [];
 
+          const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
+
           if (syncConfig.config.commonObjects?.length) {
             const commonObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
             for (const commonObject of syncConfig.config.commonObjects) {
@@ -219,6 +221,7 @@ export class ConnectionAndSyncService {
                 objectType: 'common',
                 object: commonObject.object,
                 connectionId,
+                paused: !autoStart,
                 syncConfigId: syncConfig.id,
                 strategy: {
                   type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
@@ -243,6 +246,7 @@ export class ConnectionAndSyncService {
                 objectType: 'standard',
                 object: standardObject.object,
                 connectionId,
+                paused: !autoStart,
                 syncConfigId: syncConfig.id,
                 strategy: {
                   type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
@@ -267,6 +271,7 @@ export class ConnectionAndSyncService {
                 objectType: 'custom',
                 object: customObject.object,
                 connectionId,
+                paused: !autoStart,
                 syncConfigId: syncConfig.id,
                 strategy: {
                   type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
