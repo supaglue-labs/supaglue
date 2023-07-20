@@ -1,16 +1,26 @@
 import { logger } from '@supaglue/core/lib';
 import { fromSyncConfigModel } from '@supaglue/core/mappers';
+import { fromEntitySyncModel } from '@supaglue/core/mappers/entity_sync';
 import { fromObjectSyncModel } from '@supaglue/core/mappers/object_sync';
 import type { ConnectionService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import type { PrismaClient } from '@supaglue/db';
-import { CONNECTIONS_TABLE, OBJECT_SYNCS_TABLE, OBJECT_SYNC_CHANGES_TABLE, Prisma } from '@supaglue/db';
+import {
+  CONNECTIONS_TABLE,
+  ENTITY_SYNCS_TABLE,
+  ENTITY_SYNC_CHANGES_TABLE,
+  OBJECT_SYNCS_TABLE,
+  OBJECT_SYNC_CHANGES_TABLE,
+  Prisma,
+} from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import type { ConnectionSafeAny } from '@supaglue/types';
+import type { EntitySync, EntitySyncState } from '@supaglue/types/entity_sync';
 import type { ObjectSync, ObjectSyncState } from '@supaglue/types/object_sync';
 import type { Client, IntervalSpec, ScheduleDescription, ScheduleOptionsAction } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
 import type { ApplicationService } from '.';
+import { getRunEntitySyncScheduleId, getRunEntitySyncWorkflowId, runEntitySync } from '../workflows/run_entity_sync';
 import { getRunObjectSyncScheduleId, getRunObjectSyncWorkflowId, runObjectSync } from '../workflows/run_object_sync';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
@@ -45,6 +55,15 @@ export class SyncService {
     return fromObjectSyncModel(model);
   }
 
+  public async getEntitySyncById(id: string): Promise<EntitySync> {
+    const model = await this.#prisma.entitySync.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+    return fromEntitySyncModel(model);
+  }
+
   public async updateObjectSyncState(id: string, state: ObjectSyncState): Promise<ObjectSync> {
     // TODO: We should be doing type-checking
     const model = await this.#prisma.objectSync.update({
@@ -58,8 +77,32 @@ export class SyncService {
     return fromObjectSyncModel(model);
   }
 
-  public async clearArgsForNextRun(id: string): Promise<void> {
+  public async updateEntitySyncState(id: string, state: EntitySyncState): Promise<EntitySync> {
+    // TODO: We should be doing type-checking
+    const model = await this.#prisma.entitySync.update({
+      where: {
+        id,
+      },
+      data: {
+        state,
+      },
+    });
+    return fromEntitySyncModel(model);
+  }
+
+  public async clearArgsForNextObjectSyncRun(id: string): Promise<void> {
     await this.#prisma.objectSync.update({
+      where: {
+        id,
+      },
+      data: {
+        argsForNextRun: Prisma.DbNull,
+      },
+    });
+  }
+
+  public async clearArgsForNextEntitySyncRun(id: string): Promise<void> {
+    await this.#prisma.entitySync.update({
       where: {
         id,
       },
@@ -89,8 +132,11 @@ export class SyncService {
     //          create/update/delete any ObjectSyncs (and ObjectSyncChanges)
     // Part 2 - Process all the ObjectSyncChange events and see if we need to
     //          create/update/delete any Temporal schedules/workflows
+    // Part 3 - Process all the EntitySyncChange events and see if we need to
+    //          create/update/delete any Temporal schedules/workflows
     await this.#processSyncConfigChanges(full);
     await this.#processObjectSyncChanges(full);
+    await this.#processEntitySyncChanges(full);
   }
 
   async #processSyncConfigChanges(full?: boolean): Promise<void> {
@@ -115,13 +161,15 @@ export class SyncService {
           },
         });
 
-    // Insert / delete ObjectSyncs
+    // Insert / delete ObjectSyncs and EntitySyncs
     for (const syncConfigModel of syncConfigModels) {
       const syncConfig = fromSyncConfigModel(syncConfigModel);
       const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
       const relevantConnections = await this.#connectionService.getSafeByProviderId(syncConfig.providerId);
 
       const objectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+      const entitySyncArgs: Prisma.EntitySyncCreateManyInput[] = [];
+
       for (const connection of relevantConnections) {
         if (syncConfig.config.commonObjects?.length) {
           for (const commonObject of syncConfig.config.commonObjects) {
@@ -164,6 +212,23 @@ export class SyncService {
             objectSyncArgs.push({
               objectType: 'custom',
               object: customObject.object,
+              connectionId: connection.id,
+              syncConfigId: syncConfig.id,
+              paused: !autoStart,
+              strategy: {
+                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+              },
+              state: {
+                phase: 'created',
+              },
+            });
+          }
+        }
+
+        if (syncConfig.config.entities?.length) {
+          for (const entity of syncConfig.config.entities) {
+            entitySyncArgs.push({
+              entityId: entity.entityId,
               connectionId: connection.id,
               syncConfigId: syncConfig.id,
               paused: !autoStart,
@@ -220,6 +285,42 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
                     })) ?? []),
                   ],
                 },
+              },
+            ],
+          },
+        });
+      });
+
+      await this.#prisma.$transaction(async (tx) => {
+        // Create EntitySyncs and ignore duplicates
+        if (entitySyncArgs.length) {
+          await tx.entitySync.createMany({
+            data: entitySyncArgs,
+            skipDuplicates: true,
+          });
+        }
+
+        // Create EntitySyncChanges
+        await tx.$executeRawUnsafe(`INSERT INTO ${ENTITY_SYNC_CHANGES_TABLE} (id, object_sync_id)
+SELECT gen_random_uuid(), s.id
+FROM ${ENTITY_SYNCS_TABLE} s
+JOIN ${CONNECTIONS_TABLE} c on s.connection_id = c.id
+WHERE c.provider_id = '${syncConfig.providerId}'`);
+
+        // Delete EntitySyncs
+        await tx.entitySync.deleteMany({
+          where: {
+            AND: [
+              {
+                connection: {
+                  providerId: syncConfig.providerId,
+                },
+              },
+              {
+                NOT:
+                  syncConfig.config.entities?.map((entity) => ({
+                    entityId: entity.entityId,
+                  })) ?? [],
               },
             ],
           },
@@ -303,6 +404,77 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       where: {
         id: {
           in: objectSyncChangeIds,
+        },
+      },
+    });
+  }
+
+  async #processEntitySyncChanges(full?: boolean): Promise<void> {
+    // TODO: Page over the EntitySyncChanges in case there are too many in one iteration.
+
+    // Get all the EntitySyncChange entities
+    const entitySyncChanges = await this.#prisma.entitySyncChange.findMany();
+    const entitySyncChangeIds = entitySyncChanges.map((entitySyncChange) => entitySyncChange.id);
+    const uniqueEntitySyncIds = [
+      ...new Set([...entitySyncChanges.map((entitySyncChange) => entitySyncChange.entitySyncId)]),
+    ];
+    const entitySyncs = full
+      ? await this.#prisma.entitySync.findMany()
+      : await this.#prisma.entitySync.findMany({
+          where: {
+            id: {
+              in: uniqueEntitySyncIds,
+            },
+          },
+        });
+
+    const connectionIds = entitySyncs.map(({ connectionId }) => connectionId);
+    const connections = await this.#connectionService.getSafeByIds(connectionIds);
+
+    const syncConfigIds = entitySyncs.map(({ syncConfigId }) => syncConfigId);
+    const syncConfigs = await this.#syncConfigService.getByIds(syncConfigIds);
+
+    // Classify EntitySyncChange into upserts and deletes
+    const entitySyncIdsToDelete = uniqueEntitySyncIds.filter(
+      (entitySyncId) => !entitySyncs.some((entitySync) => entitySync.id === entitySyncId)
+    );
+    const entitySyncsToUpsert = (full ? entitySyncs.map((sync) => sync.id) : uniqueEntitySyncIds).flatMap(
+      (entitySyncId) => {
+        if (entitySyncIdsToDelete.includes(entitySyncId)) {
+          return [];
+        }
+        const entitySync = entitySyncs.find((entitySync) => entitySync.id === entitySyncId);
+        return entitySync ? [entitySync] : [];
+      }
+    );
+
+    // Delete entity syncs
+    await this.#deleteTemporalEntitySyncs(entitySyncIdsToDelete);
+
+    // Upsert schedules for all the entity syncs
+    for (const entitySync of entitySyncsToUpsert) {
+      const connection = connections.find((connection) => connection.id === entitySync.connectionId);
+      if (!connection) {
+        throw new Error('Unexpected error: connection not found');
+      }
+
+      const syncConfig = syncConfigs.find((syncConfig) => syncConfig.id === entitySync.syncConfigId);
+      if (!syncConfig) {
+        throw new Error('Unexpected error: syncConfig not found');
+      }
+
+      await this.upsertTemporalEntitySync(
+        fromEntitySyncModel(entitySync),
+        connection,
+        syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
+      );
+    }
+
+    // Delete the EntitySyncChange objects
+    await this.#prisma.entitySyncChange.deleteMany({
+      where: {
+        id: {
+          in: entitySyncChangeIds,
         },
       },
     });
@@ -414,7 +586,6 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
             [TEMPORAL_CONTEXT_ARGS.APPLICATION_ENV]: application.environment,
             [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
-            [TEMPORAL_CONTEXT_ARGS.SYNC_CONFIG_ID]: objectSync.syncConfigId,
             [TEMPORAL_CONTEXT_ARGS.CONNECTION_ID]: objectSync.connectionId,
             [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
           },
@@ -428,7 +599,6 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ENV]: [application.environment],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_CONFIG_ID]: [objectSync.syncConfigId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
       },
@@ -461,6 +631,166 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
             state: {
               ...prev.state,
               paused: objectSync.paused,
+            },
+          };
+        });
+
+        return;
+      }
+
+      throw err;
+    }
+  }
+
+  async #deleteTemporalEntitySyncs(entitySyncIds: string[]): Promise<void> {
+    // TODO: When we stop using temporalite locally, we should just use
+    // advanced visibility to search by custom attributes and find the workflows to kill.
+    // When temporalite is on Temporal Server 1.20.0, it should be able to do advanced visibility
+    // in Postgres and without an external ES cluster.
+    //
+    // Right now, we can't just use `getRunSyncWorkflowId` because when the schedule
+    // starts up the workflow, it appends a timestamp suffix to the workflow ID.
+
+    // Get the entity sync schedule handles
+    const entitySyncScheduleHandles = entitySyncIds.map((entitySyncId) =>
+      this.#temporalClient.schedule.getHandle(getRunEntitySyncScheduleId(entitySyncId))
+    );
+
+    function errHandler(err: unknown) {
+      if (err instanceof ScheduleNotFoundError) {
+        logger.warn({ scheduleId: err.scheduleId }, 'Schedule not found when deleting. Ignoring for idempotency...');
+      } else if (err instanceof WorkflowNotFoundError) {
+        logger.warn({ workflowId: err.workflowId }, 'Workflow not found when deleting. Ignoring for idempotency...');
+      } else {
+        throw err;
+      }
+    }
+
+    // Pause the sync schedules
+    for (const handle of entitySyncScheduleHandles) {
+      try {
+        await handle.pause();
+      } catch (err: unknown) {
+        errHandler(err);
+      }
+    }
+
+    // Kill the associated workflows
+    const scheduleDescriptions = (
+      await Promise.all(
+        entitySyncScheduleHandles.map(async (handle) => {
+          let description: ScheduleDescription | undefined = undefined;
+
+          try {
+            description = await handle.describe();
+          } catch (err: unknown) {
+            errHandler(err);
+          }
+
+          return description;
+        })
+      )
+    ).filter<ScheduleDescription>((description): description is ScheduleDescription => !!description);
+
+    const workflowIds = scheduleDescriptions.flatMap((description) =>
+      description.info.runningActions.map((action) => action.workflow.workflowId)
+    );
+    const workflowHandles = workflowIds.map((workflowId) => this.#temporalClient.workflow.getHandle(workflowId));
+
+    for (const handle of workflowHandles) {
+      try {
+        await handle.terminate();
+      } catch (err: unknown) {
+        errHandler(err);
+      }
+    }
+
+    // Kill the sync schedules
+    for (const handle of entitySyncScheduleHandles) {
+      try {
+        await handle.delete();
+      } catch (err: unknown) {
+        errHandler(err);
+      }
+    }
+  }
+
+  async upsertTemporalEntitySync(
+    entitySync: EntitySync,
+    connection: ConnectionSafeAny,
+    syncPeriodMs: number
+  ): Promise<void> {
+    const application = await this.#applicationService.getById(connection.applicationId);
+    const scheduleId = getRunEntitySyncScheduleId(entitySync.id);
+    const interval: IntervalSpec = {
+      every: syncPeriodMs,
+      // so that not everybody is refreshing and hammering the DB at the same time
+      // we want all EntitySyncs for the same connection to have the same offset, and it should be deterministic,
+      // so that if we have EntitySyncs 1 and 2 running, and then later 3 is created (due to SyncConfig having another
+      // entity added), then 3 will have the same offset as 1 and 2
+      offset: stringToNumber(connection.id, syncPeriodMs),
+    };
+    const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
+      type: 'startWorkflow' as const,
+      workflowType: runEntitySync,
+      workflowId: getRunEntitySyncWorkflowId(entitySync.id),
+      taskQueue: SYNC_TASK_QUEUE,
+      args: [
+        {
+          entitySyncId: entitySync.id,
+          connectionId: connection.id,
+          category: connection.category,
+          context: {
+            [TEMPORAL_CONTEXT_ARGS.SYNC_ID]: entitySync.id,
+            [TEMPORAL_CONTEXT_ARGS.ENTITY_ID]: entitySync.entityId,
+            [TEMPORAL_CONTEXT_ARGS.APPLICATION_ID]: connection.applicationId,
+            [TEMPORAL_CONTEXT_ARGS.APPLICATION_ENV]: application.environment,
+            [TEMPORAL_CONTEXT_ARGS.CUSTOMER_ID]: connection.customerId,
+            [TEMPORAL_CONTEXT_ARGS.PROVIDER_ID]: connection.providerId,
+            [TEMPORAL_CONTEXT_ARGS.CONNECTION_ID]: entitySync.connectionId,
+            [TEMPORAL_CONTEXT_ARGS.PROVIDER_NAME]: connection.providerName,
+          },
+        },
+      ],
+      searchAttributes: {
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [entitySync.id],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.ENTITY_ID]: [entitySync.entityId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ENV]: [application.environment],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_ID]: [connection.providerId],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+      },
+    };
+
+    try {
+      await this.#temporalClient.schedule.create({
+        scheduleId,
+        spec: {
+          intervals: [interval],
+        },
+        action,
+        state: {
+          triggerImmediately: !entitySync.paused,
+          paused: entitySync.paused,
+        },
+      });
+    } catch (err: unknown) {
+      if (err instanceof ScheduleAlreadyRunning) {
+        const handle = this.#temporalClient.schedule.getHandle(scheduleId);
+        await handle.update((prev) => {
+          const newInterval = prev.spec.intervals?.[0]?.every === syncPeriodMs ? prev.spec.intervals[0] : interval;
+
+          return {
+            ...prev,
+            spec: {
+              intervals: [newInterval],
+            },
+            action,
+            state: {
+              ...prev.state,
+              paused: entitySync.paused,
             },
           };
         });

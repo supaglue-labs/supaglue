@@ -3,7 +3,7 @@ import type { ConnectionService, ProviderService } from '@supaglue/core/services
 import type { ObjectType } from '@supaglue/types/object_sync';
 import type { ApplicationService } from '../services';
 
-export type MaybeSendSyncFinishWebhookArgs = {
+export type MaybeSendObjectSyncFinishWebhookArgs = {
   historyId: string;
   connectionId: string;
   status: 'SYNC_SUCCESS' | 'SYNC_ERROR';
@@ -13,7 +13,7 @@ export type MaybeSendSyncFinishWebhookArgs = {
   object: string;
 };
 
-export function createMaybeSendSyncFinishWebhook({
+export function createMaybeSendObjectSyncFinishWebhook({
   connectionService,
   providerService,
   applicationService,
@@ -22,7 +22,7 @@ export function createMaybeSendSyncFinishWebhook({
   providerService: ProviderService;
   applicationService: ApplicationService;
 }) {
-  return async function maybeSendSyncFinishWebhook(args: MaybeSendSyncFinishWebhookArgs) {
+  return async function maybeSendObjectSyncFinishWebhook(args: MaybeSendObjectSyncFinishWebhookArgs) {
     const { connectionId, status } = args;
     const connection = await connectionService.getSafeById(connectionId);
     const provider = await providerService.getById(connection.providerId);

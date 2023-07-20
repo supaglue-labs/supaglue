@@ -15,4 +15,6 @@ if (schema) {
 
 export const OBJECT_SYNC_CHANGES_TABLE = `${schemaPrefix}object_sync_changes`;
 export const OBJECT_SYNCS_TABLE = `${schemaPrefix}object_syncs`;
+export const ENTITY_SYNC_CHANGES_TABLE = `${schemaPrefix}entity_sync_changes`;
+export const ENTITY_SYNCS_TABLE = `${schemaPrefix}entity_syncs`;
 export const CONNECTIONS_TABLE = `${schemaPrefix}connections`;

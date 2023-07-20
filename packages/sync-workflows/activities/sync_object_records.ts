@@ -12,7 +12,7 @@ import { pipeline, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 import type { ApplicationService, SyncService } from '../services';
 
-export type SyncRecordsArgs = {
+export type SyncObjectRecordsArgs = {
   objectSyncId: string;
   connectionId: string;
   objectType: ObjectType;
@@ -20,7 +20,7 @@ export type SyncRecordsArgs = {
   updatedAfterMs?: number;
 };
 
-export type SyncRecordsResult = {
+export type SyncObjectRecordsResult = {
   objectSyncId: string;
   connectionId: string;
   objectType: ObjectType;
@@ -29,7 +29,7 @@ export type SyncRecordsResult = {
   numRecordsSynced: number;
 };
 
-export function createSyncRecords(
+export function createSyncObjectRecords(
   connectionService: ConnectionService,
   remoteService: RemoteService,
   destinationService: DestinationService,
@@ -43,7 +43,7 @@ export function createSyncRecords(
     objectType,
     object,
     updatedAfterMs,
-  }: SyncRecordsArgs): Promise<SyncRecordsResult> {
+  }: SyncObjectRecordsArgs): Promise<SyncObjectRecordsResult> {
     const objectSync = await syncService.getObjectSyncById(objectSyncId);
     const syncConfig = await syncConfigService.getById(objectSync.syncConfigId);
     const connection = await connectionService.getSafeById(connectionId);

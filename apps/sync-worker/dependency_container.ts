@@ -1,13 +1,8 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
-import type {
-  ConnectionService,
-  ProviderService,
-  RemoteService,
-  SchemaService,
-  SyncConfigService,
-} from '@supaglue/core/services';
+import type { ConnectionService, ProviderService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
-import { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
+import type { EntitySyncRunService } from '@supaglue/core/services/entity_sync_run_service';
+import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
 import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
 import type { PrismaClient } from '@supaglue/db';
 import { ApplicationService, SyncService } from '@supaglue/sync-workflows/services';
@@ -26,7 +21,7 @@ type DependencyContainer = {
   providerService: ProviderService;
   applicationService: ApplicationService;
   destinationService: DestinationService;
-  schemaService: SchemaService;
+  entitySyncRunService: EntitySyncRunService;
 };
 
 // global
@@ -40,7 +35,8 @@ function createDependencyContainer(): DependencyContainer {
     remoteService,
     providerService,
     syncConfigService,
-    schemaService,
+    objectSyncRunService,
+    entitySyncRunService,
   } = getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
@@ -65,7 +61,6 @@ function createDependencyContainer(): DependencyContainer {
     }),
   });
 
-  const objectSyncRunService = new ObjectSyncRunService(prisma, connectionService);
   const applicationService = new ApplicationService(prisma);
   const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService, applicationService);
   const destinationService = new DestinationService(prisma);
@@ -82,7 +77,7 @@ function createDependencyContainer(): DependencyContainer {
     syncConfigService,
     providerService,
     destinationService,
-    schemaService,
+    entitySyncRunService,
   };
 }
 

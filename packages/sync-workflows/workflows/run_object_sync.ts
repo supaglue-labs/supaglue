@@ -4,7 +4,7 @@ import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@te
 import type { FullOnlyObjectSync, FullThenIncrementalObjectSync } from '@supaglue/types/object_sync';
 import type { createActivities } from '../activities/index';
 
-const { syncRecords } = proxyActivities<ReturnType<typeof createActivities>>({
+const { syncObjectRecords: syncRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '5 minute',
   retry: {
@@ -12,15 +12,22 @@ const { syncRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   },
 });
 
-const { getObjectSync, updateObjectSyncState, clearSyncArgsForNextRun, logObjectSyncStart, logObjectSyncFinish } =
-  proxyActivities<ReturnType<typeof createActivities>>({
-    startToCloseTimeout: '10 second',
-    retry: {
-      maximumAttempts: 3,
-    },
-  });
+const {
+  getObjectSync,
+  updateObjectSyncState,
+  clearObjectSyncArgsForNextRun: clearSyncArgsForNextRun,
+  logObjectSyncStart,
+  logObjectSyncFinish,
+} = proxyActivities<ReturnType<typeof createActivities>>({
+  startToCloseTimeout: '10 second',
+  retry: {
+    maximumAttempts: 3,
+  },
+});
 
-const { maybeSendSyncFinishWebhook } = proxyActivities<ReturnType<typeof createActivities>>({
+const { maybeSendObjectSyncFinishWebhook: maybeSendSyncFinishWebhook } = proxyActivities<
+  ReturnType<typeof createActivities>
+>({
   startToCloseTimeout: '6 minute',
   retry: {
     maximumAttempts: 3,

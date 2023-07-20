@@ -9,8 +9,8 @@ export type GetObjectSyncResult = {
   objectSync: ObjectSync;
 };
 
-export function createGetObjectSyncInfo(syncService: SyncService) {
-  return async function getObjectSyncInfo({ objectSyncId }: GetObjectSyncArgs): Promise<GetObjectSyncResult> {
+export function createGetObjectSync(syncService: SyncService) {
+  return async function getObjectSync({ objectSyncId }: GetObjectSyncArgs): Promise<GetObjectSyncResult> {
     const objectSync = await syncService.getObjectSyncById(objectSyncId);
     return {
       objectSync,

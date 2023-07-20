@@ -24,8 +24,14 @@ export type SyncWebhookPayload = {
   historyId: string;
   numRecordsSynced: number;
   errorMessage?: string;
-  objectType: ObjectType;
-  object: string;
-};
+} & (
+  | {
+      objectType: ObjectType;
+      object: string;
+    }
+  | {
+      entityId: string;
+    }
+);
 
 export type WebhookPayload = ConnectionWebhookPayload | SyncWebhookPayload;

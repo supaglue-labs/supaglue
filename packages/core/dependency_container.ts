@@ -18,6 +18,8 @@ import { CrmCustomObjectService } from './services/common_objects/crm/custom_obj
 import { EngagementCommonObjectService } from './services/common_objects/engagement/common_object_service';
 import { DestinationService } from './services/destination_service';
 import { EntityService } from './services/entity_service';
+import { EntitySyncRunService } from './services/entity_sync_run_service';
+import { EntitySyncService } from './services/entity_sync_service';
 import { ObjectSyncRunService } from './services/object_sync_run_service';
 import { ObjectSyncService } from './services/object_sync_service';
 import { SystemSettingsService } from './services/system_settings_service';
@@ -43,6 +45,8 @@ export type CoreDependencyContainer = {
   objectSyncService: ObjectSyncService;
   objectSyncRunService: ObjectSyncRunService;
   entityService: EntityService;
+  entitySyncService: EntitySyncService;
+  entitySyncRunService: EntitySyncRunService;
 
   crmCommonObjectService: CrmCommonObjectService;
   engagementCommonObjectService: EngagementCommonObjectService;
@@ -88,7 +92,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const syncConfigService = new SyncConfigService(prisma);
   const schemaService = new SchemaService(prisma);
   const entityService = new EntityService(prisma);
-  const connectionService = new ConnectionService(prisma, providerService, schemaService);
+  const connectionService = new ConnectionService(prisma, providerService, schemaService, entityService);
   const customerService = new CustomerService(prisma);
   const remoteService = new RemoteService(connectionService, providerService);
   const webhookService = new WebhookService({ prisma });
@@ -102,6 +106,9 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
 
   const objectSyncService = new ObjectSyncService(prisma, connectionService);
   const objectSyncRunService = new ObjectSyncRunService(prisma, connectionService);
+
+  const entitySyncService = new EntitySyncService(prisma, connectionService);
+  const entitySyncRunService = new EntitySyncRunService(prisma, connectionService);
 
   return {
     pgPool,
@@ -125,6 +132,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     crmAssociationService,
     objectSyncService,
     objectSyncRunService,
+    entitySyncService,
+    entitySyncRunService,
   };
 }
 
