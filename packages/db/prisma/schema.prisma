@@ -127,6 +127,7 @@ model Connection {
   provider             Provider     @relation(fields: [providerId], references: [id])
   providerId           String       @map("provider_id")
   schemaMappingsConfig Json?        @map("schema_mappings_config")
+  entityMappings       Json?        @map("entity_mappings")
   objectSyncs          ObjectSync[]
   entitySyncs          EntitySync[]
 
