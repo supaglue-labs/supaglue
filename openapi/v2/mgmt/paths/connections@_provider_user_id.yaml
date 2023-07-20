@@ -4,7 +4,7 @@ get:
   tags:
     - Connections
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters:
     - name: provider_name
       in: query

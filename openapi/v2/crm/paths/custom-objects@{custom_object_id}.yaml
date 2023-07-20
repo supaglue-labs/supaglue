@@ -4,7 +4,7 @@ get:
   tags:
     - CustomObjects
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   responses:
     200:
@@ -19,7 +19,7 @@ put:
   tags:
     - CustomObjects
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

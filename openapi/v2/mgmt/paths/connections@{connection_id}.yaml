@@ -4,7 +4,7 @@ get:
   tags:
     - Connections
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: Connection
@@ -35,7 +35,7 @@ delete:
   tags:
     - Connections
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     204:
       description: Connection

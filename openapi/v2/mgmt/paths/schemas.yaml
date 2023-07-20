@@ -3,7 +3,7 @@ get:
   tags:
     - Schemas
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: List schemas
   description: >-
     Get a list of schemas
@@ -39,7 +39,7 @@ post:
   tags:
     - Schemas
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

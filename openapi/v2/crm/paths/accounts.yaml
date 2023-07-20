@@ -5,7 +5,7 @@ post:
     - Accounts
   parameters: []
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   requestBody:
     required: true
     content:
@@ -16,7 +16,7 @@ post:
             record:
               $ref: ../components/schemas/create_update_account.yaml
           required:
-            - record 
+            - record
   responses:
     '201':
       description: Account created

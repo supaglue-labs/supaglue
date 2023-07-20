@@ -4,7 +4,7 @@ get:
   tags:
     - Schemas
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: Schema
@@ -61,7 +61,7 @@ delete:
   tags:
     - Schemas
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     204:
       description: Schema

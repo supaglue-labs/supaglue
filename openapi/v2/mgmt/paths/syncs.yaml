@@ -3,7 +3,7 @@ get:
   tags:
     - Syncs
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: Get Syncs
   description: >-
     Get a list of Sync objects.

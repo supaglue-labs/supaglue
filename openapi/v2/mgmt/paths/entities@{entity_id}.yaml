@@ -4,7 +4,7 @@ get:
   tags:
     - Entities
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: Entity
@@ -61,7 +61,7 @@ delete:
   tags:
     - Entities
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     204:
       description: Entity

@@ -3,7 +3,7 @@ get:
   tags:
     - Customers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: List customers
   description: >-
     Get a list of customers
@@ -33,7 +33,7 @@ put:
   tags:
     - Customers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

@@ -104,7 +104,7 @@ tags:
     description: A `Webhook` is a way for Supaglue to notify you when events have happened.
 components:
   securitySchemes:
-    ApiKeyAuth:
+    x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
     pagination:
