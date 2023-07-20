@@ -10,8 +10,7 @@ get:
       in: query
       required: true
       schema:
-        type: string
-        example: salesforce
+        $ref: ../components/schemas/objects/provider_name.yaml
   responses:
     200:
       description: UserId

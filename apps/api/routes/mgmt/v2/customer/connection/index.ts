@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
 import { getCustomerIdPk } from '@supaglue/core/lib';
 import type {
   CreateConnectionPathParams,
@@ -57,9 +58,15 @@ export default function init(app: Router): void {
       );
 
       const client = await remoteService.getCrmRemoteClient(connection.id);
-      const userId = await client.getUserId();
-
-      return res.status(200).send({ user_id: userId });
+      try {
+        const userId = await client.getUserId();
+        return res.status(200).send({ user_id: userId });
+      } catch (err) {
+        if (err instanceof NotImplementedError) {
+          throw new BadRequestError(err.message);
+        }
+        throw err;
+      }
     }
   );
 

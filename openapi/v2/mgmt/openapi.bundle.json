@@ -1878,8 +1878,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string",
-              "example": "salesforce"
+              "$ref": "#/components/schemas/provider_name"
             }
           }
         ],

@@ -1551,7 +1551,7 @@ export interface operations {
   getProviderUserId: {
     parameters: {
       query: {
-        provider_name: string;
+        provider_name: components["schemas"]["provider_name"];
       };
       path: {
         customer_id: string;
