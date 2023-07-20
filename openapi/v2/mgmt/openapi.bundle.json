@@ -1860,6 +1860,67 @@
         }
       ]
     },
+    "/customers/{customer_id}/connections/_provider_user_id": {
+      "get": {
+        "operationId": "getProviderUserId",
+        "summary": "Get provider logged in user ID",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "provider_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "salesforce"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "UserId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "string",
+                      "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                    }
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          }
+        }
+      ]
+    },
     "/customers/{customer_id}/connections/{connection_id}": {
       "get": {
         "operationId": "getConnection",

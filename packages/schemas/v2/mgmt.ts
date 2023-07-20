@@ -147,6 +147,13 @@ export type GetConnectionRequest = never;
 export type GetConnectionResponse =
   operations['getConnection']['responses'][keyof operations['getConnection']['responses']]['content']['application/json'];
 
+export type GetProviderUserIdPathParams =
+  paths[`/customers/{customer_id}/connections/_provider_user_id`]['parameters']['path'];
+export type GetProviderUserIdRequest = never;
+export type GetProviderUserIdResponse =
+  operations['getProviderUserId']['responses'][keyof operations['getProviderUserId']['responses']]['content']['application/json'];
+export type GetProvideruserIdQueryParams = operations['getProviderUserId']['parameters']['query'];
+
 export type DeleteConnectionPathParams =
   paths[`/customers/{customer_id}/connections/{connection_id}`]['parameters']['path'];
 export type DeleteConnectionRequest = never;

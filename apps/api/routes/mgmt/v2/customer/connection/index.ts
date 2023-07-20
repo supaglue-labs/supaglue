@@ -13,6 +13,10 @@ import type {
   GetConnectionsPathParams,
   GetConnectionsRequest,
   GetConnectionsResponse,
+  GetProviderUserIdPathParams,
+  GetProvideruserIdQueryParams,
+  GetProviderUserIdRequest,
+  GetProviderUserIdResponse,
 } from '@supaglue/schemas/v2/mgmt';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
@@ -32,6 +36,30 @@ export default function init(app: Router): void {
       const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
       const connections = await connectionService.listSafe(req.supaglueApplication.id, customerId);
       return res.status(200).send(connections.map(snakecaseKeys));
+    }
+  );
+
+  connectionRouter.get(
+    '/_provider_user_id',
+    async (
+      req: Request<
+        GetProviderUserIdPathParams,
+        GetProviderUserIdResponse,
+        GetProviderUserIdRequest,
+        GetProvideruserIdQueryParams
+      >,
+      res: Response<GetProviderUserIdResponse>
+    ) => {
+      const providerName = req.query.provider_name;
+      const connection = await connectionService.getSafeByProviderNameAndApplicationId(
+        providerName,
+        req.supaglueApplication.id
+      );
+
+      const client = await remoteService.getCrmRemoteClient(connection.id);
+      const userId = await client.getUserId();
+
+      return res.status(200).send({ user_id: userId });
     }
   );
 
@@ -64,6 +92,7 @@ export default function init(app: Router): void {
       );
 
       // enrich with user_id, if we can.
+      // TODO remove this after users migrate to /_provider_user_id above
       const client = await remoteService.getCrmRemoteClient(req.params.connection_id);
       const userId = await client.getUserId();
 

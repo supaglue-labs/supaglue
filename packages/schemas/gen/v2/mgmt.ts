@@ -191,6 +191,15 @@ export interface paths {
       };
     };
   };
+  "/customers/{customer_id}/connections/_provider_user_id": {
+    /** Get provider logged in user ID */
+    get: operations["getProviderUserId"];
+    parameters: {
+      path: {
+        customer_id: string;
+      };
+    };
+  };
   "/customers/{customer_id}/connections/{connection_id}": {
     /** Get connection */
     get: operations["getConnection"];
@@ -1534,6 +1543,28 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["connection"];
+        };
+      };
+    };
+  };
+  /** Get provider logged in user ID */
+  getProviderUserId: {
+    parameters: {
+      query: {
+        provider_name: string;
+      };
+      path: {
+        customer_id: string;
+      };
+    };
+    responses: {
+      /** @description UserId */
+      200: {
+        content: {
+          "application/json": {
+            /** @example 70115e3c-2700-4112-b28f-2706e08570e6 */
+            user_id?: string;
+          };
         };
       };
     };
