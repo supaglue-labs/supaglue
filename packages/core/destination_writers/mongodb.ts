@@ -199,6 +199,17 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       new Transform({
         objectMode: true,
         transform: (record: NormalizedRawRecord, encoding, callback) => {
+          // normalized fields are the same as raw fields for most providers, at least for now
+          // we really want this to only be the mapped fields
+          let normalized = record.rawData;
+          if (providerName === 'hubspot') {
+            // hubspot records have a nested properties key that we want to flatten
+            const { properties, ...rest } = record.rawData;
+            normalized = {
+              ...properties,
+              ...rest,
+            };
+          }
           try {
             const mappedRecord = {
               _supaglue_application_id: applicationId,
@@ -208,6 +219,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
               id: record.id,
+              ...normalized,
             };
 
             ++rowCount;
