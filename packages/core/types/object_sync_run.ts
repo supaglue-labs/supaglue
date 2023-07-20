@@ -1,15 +1,16 @@
-import type { Connection as ConnectionModel, ObjectSyncRun as ObjectSyncRunModel } from '@supaglue/db';
+import type { Connection as ConnectionModel, SyncRun as SyncRunModel } from '@supaglue/db';
 
-export type ObjectSyncRunModelExpanded = ObjectSyncRunModel & {
-  objectSync: {
+export type SyncRunModelExpanded = SyncRunModel & {
+  sync: {
     id: string;
     connection: ConnectionModel;
   };
 };
 
-export type ObjectSyncRunModelExpandedWithObject = ObjectSyncRunModelExpanded & {
-  objectSync: {
+export type SyncRunModelExpandedWithObjectAndEntity = SyncRunModelExpanded & {
+  sync: {
     objectType: string | null;
     object: string | null;
+    entityId: string | null;
   };
 };

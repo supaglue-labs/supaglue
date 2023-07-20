@@ -14,6 +14,7 @@ import { stringify } from 'csv-stringify';
 import type { PoolClient } from 'pg';
 import { Pool } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
+import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
@@ -30,7 +31,7 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
-import type { WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
+import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
@@ -262,15 +263,45 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 
   public override async writeObjectRecords(
-    { id: connectionId, providerName, customerId, applicationId }: ConnectionSafeAny,
+    connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteObjectRecordsResult> {
-    const childLogger = logger.child({ connectionId, providerName, customerId, object });
+    const { id: connectionId, providerName, customerId } = connection;
+    return await this.#writeRecords(
+      connection,
+      getObjectTableName(connection.providerName, object),
+      inputStream,
+      heartbeat,
+      logger.child({ connectionId, providerName, customerId, object })
+    );
+  }
 
+  public override async writeEntityRecords(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    inputStream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteEntityRecordsResult> {
+    const { id: connectionId, providerName, customerId } = connection;
+    return await this.#writeRecords(
+      connection,
+      getEntityTableName(entityName),
+      inputStream,
+      heartbeat,
+      logger.child({ connectionId, providerName, customerId, entityName })
+    );
+  }
+
+  async #writeRecords(
+    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    table: string,
+    inputStream: Readable,
+    heartbeat: () => void,
+    childLogger: pino.Logger
+  ): Promise<WriteObjectRecordsResult> {
     const { schema } = this.#destination.config;
-    const table = getObjectTableName(providerName, object);
     const qualifiedTable = `${schema}.${table}`;
     const tempTable = `temp_${table}`;
     const dedupedTempTable = `deduped_temp_${table}`;
@@ -280,11 +311,11 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await client.query(getObjectSchemaSetupSql(providerName, object, schema));
+      await client.query(getObjectOrEntitySchemaSetupSql(table, schema));
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
-      await client.query(getObjectSchemaSetupSql(providerName, object, schema, /* temp */ true));
+      await client.query(getObjectOrEntitySchemaSetupSql(table, schema, /* temp */ true));
       await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, _supaglue_last_modified_at DESC)`);
 
       // TODO: Make this type-safe
@@ -422,8 +453,13 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const getObjectTableName = (providerName: ProviderName, object: string, temp?: boolean) => {
-  return `${temp ? 'temp_' : ''}${providerName}_${object}`;
+const getObjectTableName = (providerName: ProviderName, object: string) => {
+  return `${providerName}_${object}`;
+};
+
+const getEntityTableName = (entityName: string) => {
+  const cleanEntityName = entityName.replace(/[^a-zA-Z0-9]/g, '');
+  return `entity_${cleanEntityName}`;
 };
 
 const getCommonObjectTableName = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
@@ -480,8 +516,8 @@ const columnsByCommonObjectType: {
   },
 };
 
-const getObjectSchemaSetupSql = (providerName: ProviderName, object: string, schema: string, temp?: boolean) => {
-  const tableName = getObjectTableName(providerName, object, temp);
+const getObjectOrEntitySchemaSetupSql = (baseTableName: string, schema: string, temp?: boolean) => {
+  const tableName = temp ? `temp_${baseTableName}` : baseTableName;
 
   return `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? tableName : `${schema}.${tableName}`} (

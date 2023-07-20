@@ -1,6 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
 import type {
-  AddEntityMappingToProviderParams,
   AddObjectToProviderParams,
   CommonObjectForCategory,
   CommonObjectType,
@@ -13,7 +12,7 @@ import type {
   SyncConfig,
 } from '@supaglue/types';
 import type { EntityMapping } from '@supaglue/types/entity_mapping';
-import type { ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectType } from '@supaglue/types/sync';
 import { BadRequestError, NotFoundError } from '../errors';
 import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
 
@@ -100,55 +99,6 @@ export class ProviderService {
       data: await toProviderModel(provider),
     });
     return fromProviderModel<T>(createdProvider);
-  }
-
-  public async addEntityMapping(
-    providerId: string,
-    applicationId: string,
-    params: AddEntityMappingToProviderParams
-  ): Promise<Provider> {
-    const provider = await this.getByIdAndApplicationId(providerId, applicationId);
-    const model = await this.#prisma.$transaction(async (prisma) => {
-      const { entityId } = params;
-      const newEntityMappings: EntityMapping[] = [
-        ...(provider.entityMappings ?? []),
-        {
-          entityId,
-          object: params.object,
-          fieldMappings: params.fieldMappings,
-        },
-      ];
-      validateEntityMappings(newEntityMappings);
-      const model = await prisma.provider.update({
-        where: { id: providerId },
-        data: {
-          entityMappings: newEntityMappings,
-        },
-      });
-      if (params.enableSync) {
-        const syncConfigModel = await prisma.syncConfig.findUnique({
-          where: {
-            providerId,
-          },
-        });
-        if (!syncConfigModel) {
-          throw new BadRequestError(
-            `Can't enable sync for provider with id: ${providerId} because a sync config does not exist`
-          );
-        }
-        const syncConfig = fromSyncConfigModel(syncConfigModel);
-        await prisma.syncConfig.update({
-          where: {
-            id: syncConfig.id,
-          },
-          data: {
-            ...toSyncConfigModel(upsertEntityToSyncConfig(syncConfig, params.entityId)),
-          },
-        });
-      }
-      return model;
-    });
-    return fromProviderModel(model);
   }
 
   public async addObject(

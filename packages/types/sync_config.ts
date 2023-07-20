@@ -1,5 +1,5 @@
 import type { CommonObjectType } from '.';
-import type { ObjectSyncType } from './object_sync';
+import type { SyncStrategyType } from './sync';
 
 export type SyncConfig = {
   id: string;
@@ -25,7 +25,7 @@ export type SyncConfigData = {
 
 export type SyncStrategyConfig = {
   periodMs: number;
-  strategy: ObjectSyncType;
+  strategy: SyncStrategyType;
   // default: true
   autoStartOnConnection?: boolean;
 };

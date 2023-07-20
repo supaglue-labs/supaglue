@@ -80,6 +80,31 @@ export interface paths {
       };
     };
   };
+  "/entity_mappings": {
+    /** List entity mappings */
+    get: operations["listEntityMappings"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/entity_mappings/{entity_id}": {
+    /** Upsert entity mapping */
+    put: operations["upsertEntityMapping"];
+    /** Delete entity mapping */
+    delete: operations["deleteEntityMapping"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        entity_id: string;
+      };
+    };
+  };
   "/schemas": {
     /**
      * List schemas 
@@ -140,15 +165,6 @@ export interface paths {
     put: operations["updateProvider"];
     /** Delete provider */
     delete: operations["deleteProvider"];
-    parameters: {
-      path: {
-        provider_id: string;
-      };
-    };
-  };
-  "/providers/{provider_id}/object": {
-    /** Add object to provider */
-    post: operations["addObject"];
     parameters: {
       path: {
         provider_id: string;
@@ -308,6 +324,7 @@ export interface components {
       name: components["schemas"]["provider_name"];
       config?: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
+      entity_mappings?: (components["schemas"]["entity_mapping"])[];
     };
     destination: OneOf<[{
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -599,6 +616,7 @@ export interface components {
             field_mappings: (components["schemas"]["field_mapping"])[];
           })[];
       };
+      entity_mappings?: (components["schemas"]["entity_mapping"])[];
     };
     /** @enum {string} */
     category: "crm" | "engagement";
@@ -644,6 +662,9 @@ export interface components {
       custom_objects?: ({
           /** @example contacts */
           object: string;
+        })[];
+      entities?: ({
+          entity_id: string;
         })[];
     };
     /**
@@ -927,6 +948,31 @@ export interface components {
         provider_name: "hubspot" | "salesforce";
       };
     }]>;
+    standard_or_custom_object: {
+      /** @enum {string} */
+      type: "standard" | "custom";
+      name: string;
+    };
+    entity_mapping: {
+      entity_id: string;
+      object?: components["schemas"]["standard_or_custom_object"];
+      field_mappings?: (components["schemas"]["entity_field_mapping"])[];
+    };
+    merged_entity_mapping: {
+      entity_id: string;
+      object?: components["schemas"]["standard_or_custom_object"] & ({
+        /** @enum {string} */
+        from: "developer" | "customer";
+      });
+      field_mappings?: (components["schemas"]["entity_field_mapping"] & ({
+          /** @enum {string} */
+          from: "developer" | "customer";
+        }))[];
+    };
+    entity_field_mapping: {
+      entity_field: string;
+      mapped_field: string;
+    };
   };
   responses: never;
   parameters: {
@@ -1141,6 +1187,60 @@ export interface operations {
           "application/json": components["schemas"]["object_field_mapping_info"];
         };
       };
+    };
+  };
+  /** List entity mappings */
+  listEntityMappings: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description List of entity mappings */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["merged_entity_mapping"])[];
+        };
+      };
+    };
+  };
+  /** Upsert entity mapping */
+  upsertEntityMapping: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        entity_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["entity_mapping"];
+      };
+    };
+    responses: {
+      /** @description Entity Mapping */
+      200: never;
+    };
+  };
+  /** Delete entity mapping */
+  deleteEntityMapping: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        entity_id: string;
+      };
+    };
+    responses: {
+      /** @description Entity Mapping */
+      204: never;
     };
   };
   /**
@@ -1385,27 +1485,6 @@ export interface operations {
     };
     responses: {
       /** @description Provider */
-      200: {
-        content: {
-          "application/json": components["schemas"]["provider"];
-        };
-      };
-    };
-  };
-  /** Add object to provider */
-  addObject: {
-    parameters: {
-      path: {
-        provider_id: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["add_object"];
-      };
-    };
-    responses: {
-      /** @description Add object to provider with schema. */
       200: {
         content: {
           "application/json": components["schemas"]["provider"];

@@ -1,7 +1,11 @@
 import type { Entity } from '@supaglue/types/entity';
-import type { FieldMapping, FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { EntityFieldMapping } from '@supaglue/types/entity_mapping';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 
-export function createFieldMappingConfigForEntity(entity: Entity, fieldMappings?: FieldMapping[]): FieldMappingConfig {
+export function createFieldMappingConfigForEntity(
+  entity: Entity,
+  fieldMappings?: EntityFieldMapping[]
+): FieldMappingConfig {
   const { config } = entity;
 
   // If there are any unmapped schema fields, let's treat it as optional for now.
@@ -10,7 +14,7 @@ export function createFieldMappingConfigForEntity(entity: Entity, fieldMappings?
 
   // If there are any extra fields mapped, throw an error unless allowAdditionalFieldMappings is true
   const additionalFieldMappings = fieldMappings?.filter(
-    (field) => !config.fields.find((schemaField) => schemaField.name === field.schemaField)
+    (field) => !config.fields.find((entityField) => entityField.name === field.entityField)
   );
   if (!config.allowAdditionalFieldMappings && additionalFieldMappings?.length) {
     throw new Error('Additional field mappings are not allowed');
@@ -18,6 +22,10 @@ export function createFieldMappingConfigForEntity(entity: Entity, fieldMappings?
 
   return {
     type: 'defined',
-    fieldMappings: fieldMappings ?? [],
+    fieldMappings:
+      fieldMappings?.map(({ entityField, mappedField }) => ({
+        schemaField: entityField,
+        mappedField,
+      })) ?? [],
   };
 }

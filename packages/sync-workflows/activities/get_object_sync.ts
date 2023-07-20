@@ -1,4 +1,4 @@
-import type { ObjectSync } from '@supaglue/types/object_sync';
+import type { ObjectSync } from '@supaglue/types/sync';
 import type { SyncService } from '../services/sync_service';
 
 export type GetObjectSyncArgs = {
@@ -11,7 +11,7 @@ export type GetObjectSyncResult = {
 
 export function createGetObjectSync(syncService: SyncService) {
   return async function getObjectSync({ objectSyncId }: GetObjectSyncArgs): Promise<GetObjectSyncResult> {
-    const objectSync = await syncService.getObjectSyncById(objectSyncId);
+    const objectSync = await syncService.getSyncById(objectSyncId);
     return {
       objectSync,
     };

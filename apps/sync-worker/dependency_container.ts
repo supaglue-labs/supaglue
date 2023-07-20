@@ -1,6 +1,7 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
 import type { ConnectionService, ProviderService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
+import type { EntityService } from '@supaglue/core/services/entity_service';
 import type { EntitySyncRunService } from '@supaglue/core/services/entity_sync_run_service';
 import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
 import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
@@ -22,6 +23,7 @@ type DependencyContainer = {
   applicationService: ApplicationService;
   destinationService: DestinationService;
   entitySyncRunService: EntitySyncRunService;
+  entityService: EntityService;
 };
 
 // global
@@ -37,6 +39,7 @@ function createDependencyContainer(): DependencyContainer {
     syncConfigService,
     objectSyncRunService,
     entitySyncRunService,
+    entityService,
   } = getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
@@ -78,6 +81,7 @@ function createDependencyContainer(): DependencyContainer {
     providerService,
     destinationService,
     entitySyncRunService,
+    entityService,
   };
 }
 

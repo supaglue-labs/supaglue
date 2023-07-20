@@ -23,7 +23,7 @@ import type {
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
-import type { ObjectSync } from '@supaglue/types/object_sync';
+import type { ObjectSync } from '@supaglue/types/sync';
 import type { Client } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleOverlapPolicy } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';

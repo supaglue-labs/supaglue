@@ -15,6 +15,7 @@ import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import { snakecaseKeys } from '@supaglue/utils';
 import { stringify } from 'csv-stringify';
+import type pino from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
@@ -31,7 +32,7 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
-import type { WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
+import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
@@ -201,15 +202,45 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
   }
 
   public override async writeObjectRecords(
-    { id: connectionId, providerName, customerId, applicationId }: ConnectionSafeAny,
+    connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteObjectRecordsResult> {
-    const childLogger = logger.child({ connectionId, providerName, customerId, object });
+    const { id: connectionId, providerName, customerId } = connection;
+    return await this.#writeRecords(
+      connection,
+      getObjectTableName(connection.providerName, object),
+      inputStream,
+      heartbeat,
+      logger.child({ connectionId, providerName, customerId, object })
+    );
+  }
 
+  public override async writeEntityRecords(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    inputStream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteEntityRecordsResult> {
+    const { id: connectionId, providerName, customerId } = connection;
+    return await this.#writeRecords(
+      connection,
+      getEntityTableName(entityName),
+      inputStream,
+      heartbeat,
+      logger.child({ connectionId, providerName, customerId, entityName })
+    );
+  }
+
+  async #writeRecords(
+    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    table: string,
+    inputStream: Readable,
+    heartbeat: () => void,
+    childLogger: pino.Logger
+  ): Promise<WriteObjectRecordsResult> {
     const { dataset } = this.#destination.config;
-    const table = getObjectTableName(providerName, object);
     const qualifiedTable = `${dataset}.${table}`;
     const tempTable = `_temp_${providerName}_${table}`;
     const qualifiedTempTable = `${dataset}.${tempTable}`;
@@ -337,10 +368,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
 
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [COMPLETED]');
 
-    childLogger.info(
-      { table, providerName, customerId, object, maxLastModifiedAt, tempTableRowCount },
-      'Sync completed'
-    );
+    childLogger.info({ table, maxLastModifiedAt, tempTableRowCount }, 'Sync completed');
 
     return {
       maxLastModifiedAt,
@@ -349,8 +377,13 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
   }
 }
 
-const getObjectTableName = (providerName: ProviderName, object: string, temp?: boolean) => {
-  return `${temp ? 'temp_' : ''}${providerName}_${object}`;
+const getObjectTableName = (providerName: ProviderName, object: string) => {
+  return `${providerName}_${object}`;
+};
+
+const getEntityTableName = (entityName: string) => {
+  const cleanEntityName = entityName.replace(/[^a-zA-Z0-9]/g, '');
+  return `entity_${cleanEntityName}`;
 };
 
 const getCommonObjectTableName = (category: ProviderCategory, commonObjectType: CommonObjectType) => {

@@ -1,7 +1,7 @@
 import type { ProviderCategory } from '@supaglue/types/common';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
-import type { FullOnlyObjectSync, FullThenIncrementalObjectSync } from '@supaglue/types/object_sync';
+import type { FullOnlyObjectSync, FullThenIncrementalObjectSync } from '@supaglue/types/sync';
 import type { createActivities } from '../activities/index';
 
 const { syncObjectRecords: syncRecords } = proxyActivities<ReturnType<typeof createActivities>>({

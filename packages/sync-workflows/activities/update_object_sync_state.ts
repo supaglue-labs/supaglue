@@ -1,4 +1,4 @@
-import type { ObjectSync, ObjectSyncState } from '@supaglue/types/object_sync';
+import type { ObjectSync, ObjectSyncState } from '@supaglue/types/sync';
 import type { SyncService } from '../services/sync_service';
 
 export type UpdateObjectSyncStateArgs = {
@@ -15,7 +15,7 @@ export function createUpdateObjectSyncState(syncService: SyncService) {
     objectSyncId,
     state,
   }: UpdateObjectSyncStateArgs): Promise<UpdateObjectSyncStateResult> {
-    const objectSync = await syncService.updateObjectSyncState(objectSyncId, state);
+    const objectSync = await syncService.updateSyncState(objectSyncId, state);
     return { objectSync };
   };
 }

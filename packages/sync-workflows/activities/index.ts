@@ -1,5 +1,6 @@
 import type { ConnectionService, ProviderService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
+import type { EntityService } from '@supaglue/core/services/entity_service';
 import type { EntitySyncRunService } from '@supaglue/core/services/entity_sync_run_service';
 import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
 import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
@@ -31,6 +32,7 @@ export const createActivities = ({
   destinationService,
   objectSyncRunService,
   entitySyncRunService,
+  entityService,
 }: {
   systemSettingsService: SystemSettingsService;
   connectionService: ConnectionService;
@@ -42,6 +44,7 @@ export const createActivities = ({
   destinationService: DestinationService;
   objectSyncRunService: ObjectSyncRunService;
   entitySyncRunService: EntitySyncRunService;
+  entityService: EntityService;
 }) => {
   return {
     doProcessSyncChanges: createDoProcessSyncChanges(syncService, systemSettingsService),
@@ -74,7 +77,8 @@ export const createActivities = ({
       destinationService,
       syncService,
       syncConfigService,
-      applicationService
+      applicationService,
+      entityService
     ),
     logEntitySyncStart: createLogEntitySyncStart({ entitySyncRunService }),
     logEntitySyncFinish: createLogEntitySyncFinish({ entitySyncRunService, applicationService, connectionService }),

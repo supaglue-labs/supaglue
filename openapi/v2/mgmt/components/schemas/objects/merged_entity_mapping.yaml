@@ -1,0 +1,32 @@
+type: object
+properties:
+  entity_id:
+    type: string
+  object:
+    allOf:
+      - $ref: ./standard_or_custom_object.yaml
+      - type: object
+        properties:
+          from:
+            type: string
+            enum:
+              - developer
+              - customer
+        required:
+          - from
+  field_mappings:
+    type: array
+    items:
+      allOf:
+        - $ref: ./entity_field_mapping.yaml  
+        - type: object
+          properties:
+            from:
+              type: string
+              enum:
+                - developer
+                - customer
+          required:
+            - from
+required:
+  - entity_id

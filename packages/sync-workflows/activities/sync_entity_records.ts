@@ -2,6 +2,7 @@ import type { DestinationWriter } from '@supaglue/core/destination_writers/base'
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import type { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
+import type { EntityService } from '@supaglue/core/services/entity_service';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import type { Readable } from 'stream';
 import { pipeline, Transform } from 'stream';
@@ -29,17 +30,19 @@ export function createSyncEntityRecords(
   destinationService: DestinationService,
   syncService: SyncService,
   syncConfigService: SyncConfigService,
-  applicationService: ApplicationService
+  applicationService: ApplicationService,
+  entityService: EntityService
 ) {
   return async function syncEntityRecords({
-    entitySyncId: objectSyncId,
+    entitySyncId,
     connectionId,
     entityId,
     updatedAfterMs,
   }: SyncEntityRecordsArgs): Promise<SyncEntityRecordsResult> {
-    const objectSync = await syncService.getObjectSyncById(objectSyncId);
+    const objectSync = await syncService.getEntitySyncById(entitySyncId);
     const syncConfig = await syncConfigService.getById(objectSync.syncConfigId);
     const connection = await connectionService.getSafeById(connectionId);
+    const entity = await entityService.getById(entityId);
 
     async function writeObjects(writer: DestinationWriter) {
       const client = await remoteService.getRemoteClient(connectionId);
@@ -48,32 +51,18 @@ export function createSyncEntityRecords(
         entityId
       );
       switch (object.type) {
-        case 'standard':
-          {
-            const stream = await client.listStandardObjectRecords(
-              object.name,
-              fieldMappingConfig,
-              updatedAfter,
-              heartbeat
-            );
-            // TODO: write entity records instead
-            return await writer.writeObjectRecords(
-              connection,
-              /* object */ 'foobar',
-              toHeartbeatingReadable(stream),
-              heartbeat
-            );
-          }
-          break;
-        case 'custom': {
-          const stream = await client.listCustomObjectRecords(object.name, updatedAfter, heartbeat);
-          // TODO: write entity records instead
-          return await writer.writeObjectRecords(
-            connection,
-            /* object */ 'foobar',
-            toHeartbeatingReadable(stream),
+        case 'standard': {
+          const stream = await client.listStandardObjectRecords(
+            object.name,
+            fieldMappingConfig,
+            updatedAfter,
             heartbeat
           );
+          return await writer.writeEntityRecords(connection, entity.name, toHeartbeatingReadable(stream), heartbeat);
+        }
+        case 'custom': {
+          const stream = await client.listCustomObjectRecords(object.name, updatedAfter, heartbeat);
+          return await writer.writeEntityRecords(connection, entity.name, toHeartbeatingReadable(stream), heartbeat);
         }
       }
     }
@@ -83,7 +72,7 @@ export function createSyncEntityRecords(
     logEvent({
       distinctId: distinctId ?? application.orgId,
       eventName: 'Start Sync',
-      syncId: objectSyncId,
+      syncId: entitySyncId,
       providerName: connection.providerName,
       entityId,
     });
@@ -100,13 +89,13 @@ export function createSyncEntityRecords(
     logEvent({
       distinctId: distinctId ?? application.orgId,
       eventName: 'Partially Completed Sync',
-      syncId: objectSyncId,
+      syncId: entitySyncId,
       providerName: connection.providerName,
       entityId,
     });
 
     return {
-      objectSyncId: objectSyncId,
+      objectSyncId: entitySyncId,
       connectionId,
       entityId,
       maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : null,

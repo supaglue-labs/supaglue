@@ -1,7 +1,7 @@
 import { datetimeStringFromISOString } from '@/utils/datetime';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
-import type { ObjectSyncRun } from '@supaglue/types/object_sync_run';
+import type { ObjectSyncRun } from '@supaglue/types/sync_run';
 import { useState } from 'react';
 
 const columns: GridColDef[] = [

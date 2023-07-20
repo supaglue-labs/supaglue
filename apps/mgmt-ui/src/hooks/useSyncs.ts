@@ -1,5 +1,5 @@
 import type { PaginatedResult } from '@supaglue/types';
-import type { ObjectSyncDTO } from '@supaglue/types/object_sync';
+import type { ObjectSyncDTO } from '@supaglue/types/sync';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 

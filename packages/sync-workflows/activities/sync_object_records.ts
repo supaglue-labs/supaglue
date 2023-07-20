@@ -5,7 +5,7 @@ import type { ConnectionService, RemoteService, SyncConfigService } from '@supag
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
-import type { ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectType } from '@supaglue/types/sync';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import type { Readable } from 'stream';
 import { pipeline, Transform } from 'stream';
@@ -44,7 +44,7 @@ export function createSyncObjectRecords(
     object,
     updatedAfterMs,
   }: SyncObjectRecordsArgs): Promise<SyncObjectRecordsResult> {
-    const objectSync = await syncService.getObjectSyncById(objectSyncId);
+    const objectSync = await syncService.getSyncById(objectSyncId);
     const syncConfig = await syncConfigService.getById(objectSync.syncConfigId);
     const connection = await connectionService.getSafeById(connectionId);
 

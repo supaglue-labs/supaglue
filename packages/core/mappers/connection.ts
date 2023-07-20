@@ -47,6 +47,7 @@ export function fromConnectionModelToConnectionSafe({
   providerName,
   status,
   schemaMappingsConfig,
+  entityMappings,
   instanceUrl,
 }: ConnectionModel): ConnectionSafeAny {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
@@ -59,6 +60,7 @@ export function fromConnectionModelToConnectionSafe({
     status: status as ConnectionStatus,
     providerName: providerName as ProviderName,
     schemaMappingsConfig: schemaMappingsConfig as SchemaMappingsConfig | undefined,
+    entityMappings: entityMappings as EntityMapping[] | undefined,
     instanceUrl,
   };
 }

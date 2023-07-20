@@ -6,7 +6,7 @@ import Switch from '@mui/material/Switch';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { PaginatedResult } from '@supaglue/types';
-import type { ObjectSyncDTO } from '@supaglue/types/object_sync';
+import type { ObjectSyncDTO } from '@supaglue/types/sync';
 import { useState } from 'react';
 import type { KeyedMutator } from 'swr';
 
