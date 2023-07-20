@@ -5,7 +5,8 @@ import { SwitchWithLabel } from '@/components/SwitchWithLabel';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { toGetSchemasResponse, useSchemas } from '@/hooks/useSchemas';
-import { Autocomplete, Breadcrumbs, Button, Chip, Grid, Stack, TextField, Typography } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Autocomplete, Breadcrumbs, Button, Chip, Grid, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import type { Schema, SchemaCreateParams } from '@supaglue/types';
 import Link from 'next/link';
@@ -140,7 +141,7 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
             />
           </Stack>
           <Stack className="gap-2">
-            <Typography variant="subtitle1">Fields</Typography>
+            <Typography variant="subtitle1">Schema Fields</Typography>
             <Autocomplete
               disabled={isLoading || isSaving}
               key={schema?.name}
@@ -169,25 +170,30 @@ function SchemaDetailsPanelImpl({ schemaId }: SchemaDetailsPanelImplProps) {
               }}
             />
             <Stack direction="column" className="gap-2">
-              <Typography variant="subtitle1">Advanced Field Settings</Typography>
+              <Typography variant="subtitle1">Field Mappings</Typography>
               <Stack direction="column" className="gap-2 pt-2">
                 {fields.map((field) => {
                   return (
                     <Grid key={field} container spacing={4} className="pl-4">
-                      <Grid item xs={1}>
+                      <Grid item xs={2} className="flex flex-row gap-2 items-center">
                         <Typography variant="subtitle1">{field}</Typography>
+                        <Tooltip title="Name of the schema field in your system">
+                          <InfoOutlinedIcon sx={{ color: 'rgba(0, 0, 0, 0.6);' }} />
+                        </Tooltip>
                       </Grid>
                       <Grid item xs={2}>
-                        <TextField
-                          value={mappedFields[field] ?? ''}
-                          size="small"
-                          label="Mapped Field"
-                          variant="outlined"
-                          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                            setMappedFields({ ...mappedFields, [field]: event.target.value ?? '' });
-                            setIsDirty(true);
-                          }}
-                        />
+                        <Tooltip title="Set this if you want the schema field to be mapped to this field for all customers.">
+                          <TextField
+                            value={mappedFields[field] ?? ''}
+                            size="small"
+                            label="Mapped Field"
+                            variant="outlined"
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                              setMappedFields({ ...mappedFields, [field]: event.target.value ?? '' });
+                              setIsDirty(true);
+                            }}
+                          />
+                        </Tooltip>
                       </Grid>
                     </Grid>
                   );
