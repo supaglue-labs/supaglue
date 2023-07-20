@@ -47,11 +47,11 @@ import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
 import { pipeline, Readable, Transform } from 'stream';
 import {
+  BadGatewayError,
   BadRequestError,
   ForbiddenError,
   NotFoundError,
   NotModifiedError,
-  ServiceUnavailableError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -1338,7 +1338,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'ERROR_HTTP_304':
         return new NotModifiedError(error.message, error);
       case 'ERROR_HTTP_503':
-        return new ServiceUnavailableError('Salesforce API is temporarily unavailable', error);
+        return new BadGatewayError('Salesforce API is temporarily unavailable', error);
       default:
         return error;
     }

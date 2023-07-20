@@ -20,6 +20,7 @@ import querystring from 'querystring';
 import simpleOauth2 from 'simple-oauth2';
 import { Readable } from 'stream';
 import {
+  BadGatewayError,
   BadRequestError,
   ForbiddenError,
   InternalServerError,
@@ -486,8 +487,28 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           return new InternalServerError(err.statusText);
       }
     }
+
+    if (isErrnoException(err)) {
+      switch (err.code) {
+        case 'ENOTFOUND':
+        case 'ECONNREFUSED':
+          return new BadGatewayError(`Could not connect to remote CRM: ${err.message}`);
+        default:
+          return err;
+      }
+    }
     return err;
   }
+}
+
+function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+  const err = error as any;
+  return (
+    (typeof err.errno === 'number' || typeof err.errno === 'undefined') &&
+    (typeof err.code === 'string' || typeof err.code === 'undefined') &&
+    (typeof err.path === 'string' || typeof err.path === 'undefined') &&
+    (typeof err.syscall === 'string' || typeof err.syscall === 'undefined')
+  );
 }
 
 export function newClient(

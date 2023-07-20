@@ -23,6 +23,14 @@ export class InternalServerError extends HTTPError {
   }
 }
 
+export class BadGatewayError extends HTTPError {
+  code = 502;
+  problemType = 'BAD_GATEWAY_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
 export class ServiceUnavailableError extends HTTPError {
   code = 503;
   problemType = 'SERVICE_UNAVAILABLE_ERROR';
