@@ -3,6 +3,7 @@ import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { EventEmitter } from 'events';
 import type { Readable } from 'stream';
+import { NotImplementedError } from '../errors';
 
 interface RemoteClientEvents {
   token_refreshed: (args: { accessToken: string; refreshToken?: string; expiresAt: string | null }) => void;
@@ -59,7 +60,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   }
 
   public async getUserId(): Promise<string | undefined> {
-    return undefined;
+    throw new NotImplementedError();
   }
 
   protected abstract getAuthHeadersForPassthroughRequest(): Record<string, string>;

@@ -5,6 +5,12 @@ class SGError extends Error {
   }
 }
 
+export class NotImplementedError extends SGError {
+  constructor(message?: string) {
+    super(message || 'Not implemented');
+  }
+}
+
 export class HTTPError extends SGError {
   code = 500;
   problemType = 'INTERNAL_SERVER_ERROR';
