@@ -3,7 +3,7 @@ get:
   tags:
     - SyncConfigs
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: List Sync Configs
   description: >-
     Get a list of Sync Configs
@@ -49,7 +49,7 @@ post:
   tags:
     - SyncConfigs
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

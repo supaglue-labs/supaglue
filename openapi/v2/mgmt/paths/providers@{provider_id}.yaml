@@ -4,7 +4,7 @@ get:
   tags:
     - Providers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: Provider
@@ -79,7 +79,7 @@ delete:
   tags:
     - Providers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: Provider

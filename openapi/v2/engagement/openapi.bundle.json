@@ -166,7 +166,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -261,7 +261,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -290,7 +290,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -395,7 +395,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -443,7 +443,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -491,7 +491,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -539,7 +539,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -617,7 +617,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -685,7 +685,7 @@
   ],
   "components": {
     "securitySchemes": {
-      "ApiKeyAuth": {
+      "x-api-key": {
         "type": "apiKey",
         "name": "x-api-key",
         "in": "header",

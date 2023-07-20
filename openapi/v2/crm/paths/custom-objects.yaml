@@ -5,7 +5,7 @@ post:
     - CustomObjects
   parameters: []
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   requestBody:
     required: true
     content:

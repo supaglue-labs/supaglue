@@ -57,7 +57,7 @@ tags:
     description: Passthrough operations to underlying providers.
 components:
   securitySchemes:
-    ApiKeyAuth:
+    x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
     contact:

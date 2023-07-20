@@ -3,7 +3,7 @@ get:
   tags:
     - Providers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: List providers
   description: >-
     Get a list of providers
@@ -63,7 +63,7 @@ post:
   tags:
     - Providers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

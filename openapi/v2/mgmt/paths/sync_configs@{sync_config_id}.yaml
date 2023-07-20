@@ -4,7 +4,7 @@ get:
   tags:
     - SyncConfigs
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: SyncConfig
@@ -65,11 +65,11 @@ put:
                     - object: tasks
 delete:
   operationId: deleteSyncConfig
-  summary: Delete Sync Config 
+  summary: Delete Sync Config
   tags:
     - SyncConfigs
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: SyncConfig

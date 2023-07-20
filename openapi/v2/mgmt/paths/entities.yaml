@@ -3,7 +3,7 @@ get:
   tags:
     - Entities
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: List entities
   description: >-
     Get a list of entities
@@ -43,7 +43,7 @@ post:
   tags:
     - Entities
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

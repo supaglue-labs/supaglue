@@ -4,7 +4,7 @@ get:
   tags:
     - Leads
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters:
     - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
   responses:
@@ -20,7 +20,7 @@ patch:
   tags:
     - Leads
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

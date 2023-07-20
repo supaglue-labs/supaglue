@@ -4,7 +4,7 @@ get:
   tags:
     - Properties
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters:
     - name: type
       in: query
