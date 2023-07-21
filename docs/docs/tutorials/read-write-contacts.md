@@ -5,7 +5,7 @@ description: ''
 import BrowserWindow from '@site/src/components/BrowserWindow';
 import ThemedImage from '@theme/ThemedImage';
 
-# Read and write CRM contacts in your app
+# Read and write contacts
 
 This tutorial will review how to read synced CRM contacts in your Postgres and create them in your customer's CRM.
 
