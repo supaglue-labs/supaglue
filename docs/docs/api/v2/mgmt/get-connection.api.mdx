@@ -1,34 +1,273 @@
 ---
 id: get-connection
-title: "Get connection"
-description: "Get connection"
-sidebar_label: "Get connection"
+title: 'Get connection'
+description: 'Get connection'
+sidebar_label: 'Get connection'
 hide_title: true
 hide_table_of_contents: true
-api: {"operationId":"getConnection","tags":["Connections"],"security":[{"x-api-key":[]}],"responses":{"200":{"description":"Connection","content":{"application/json":{"schema":{"allOf":[{"type":"object","properties":{"id":{"type":"string","example":"e888cedf-e9d0-42c5-9485-2d72984faef2"},"status":{"type":"string","enum":["available","added","authorized","callable"],"example":"available"},"application_id":{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"},"customer_id":{"type":"string","example":"my-customer-1"},"provider_id":{"type":"string","example":"677fcfca-cf89-4387-a189-71c885be67bc"},"provider_name":{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft"],"title":"provider_name"},"category":{"type":"string","enum":["crm","engagement"],"title":"category"},"instance_url":{"type":"string","description":"Instance URL for the connected customer.","example":"https://app.hubspot.com/contacts/123456"},"schema_mappings_config":{"type":"object","properties":{"common_objects":{"type":"array","items":{"type":"object","properties":{"object":{"type":"string"},"field_mappings":{"type":"array","items":{"type":"object","properties":{"schema_field":{"type":"string"},"mapped_field":{"type":"string"}},"required":["schema_field"],"title":"field_mapping"}}},"required":["object","field_mappings"]}},"standard_objects":{"type":"array","items":{"type":"object","properties":{"object":{"type":"string"},"field_mappings":{"type":"array","items":{"type":"object","properties":{"schema_field":{"type":"string"},"mapped_field":{"type":"string"}},"required":["schema_field"],"title":"field_mapping"}}},"required":["object","field_mappings"]}}}}},"required":["id","status","application_id","customer_id","provider_id","provider_name","category","instance_url"],"title":"connection"},{"type":"object","properties":{"user_id":{"type":"string","example":"70115e3c-2700-4112-b28f-2706e08570e6"}}}]},"examples":{"Example":{"value":{"id":"9572d08b-f19f-48cc-a992-1eb7031d3f6c","application_id":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69","customer_id":"my-customer-1","status":"available","provider_id":"9572d08b-f19f-48cc-a992-1eb7031d3f6a","provider_name":"salesforce","category":"crm","instance_url":"https://supaglue-dev-ed.develop.my.salesforce.com"}}}}}}},"description":"Get connection","parameters":[{"name":"customer_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}},{"name":"connection_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}],"method":"get","path":"/customers/{customer_id}/connections/{connection_id}","servers":[{"url":"https://api.supaglue.io/mgmt/v2","description":"Supaglue API"}],"securitySchemes":{"x-api-key":{"type":"apiKey","name":"x-api-key","in":"header","description":"API key to allow developers to access the API"}},"info":{"version":"0.12.7","title":"Supaglue Management API","contact":{"name":"Supaglue","email":"docs@supaglue.com","url":"https://supaglue.com"},"description":"#### Introduction\n\nWelcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-35306f94-8368-4412-b7f3-72715131f727?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-35306f94-8368-4412-b7f3-72715131f727%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/mgmt/v2\n```\n"},"postman":{"name":"Get connection","description":{"type":"text/plain"},"url":{"path":["customers",":customer_id","connections",":connection_id"],"host":["{{baseUrl}}"],"query":[],"variable":[{"disabled":false,"description":{"content":"(Required) ","type":"text/plain"},"type":"any","value":"","key":"customer_id"},{"disabled":false,"description":{"content":"(Required) ","type":"text/plain"},"type":"any","value":"","key":"connection_id"}]},"header":[{"key":"Accept","value":"application/json"}],"method":"GET","auth":{"type":"apikey","apikey":[{"type":"any","value":"x-api-key","key":"key"},{"type":"any","value":"<API Key>","key":"value"},{"type":"any","value":"header","key":"in"}]}}}
-sidebar_class_name: "get api-method"
+api:
+  {
+    'operationId': 'getConnection',
+    'tags': ['Connections'],
+    'security': [{ 'x-api-key': [] }],
+    'responses':
+      {
+        '200':
+          {
+            'description': 'Connection',
+            'content':
+              {
+                'application/json':
+                  {
+                    'schema':
+                      {
+                        'allOf':
+                          [
+                            {
+                              'type': 'object',
+                              'properties':
+                                {
+                                  'id': { 'type': 'string', 'example': 'e888cedf-e9d0-42c5-9485-2d72984faef2' },
+                                  'status':
+                                    {
+                                      'type': 'string',
+                                      'enum': ['available', 'added', 'authorized', 'callable'],
+                                      'example': 'available',
+                                    },
+                                  'application_id':
+                                    { 'type': 'string', 'example': 'd8ceb3ff-8b7f-4fa7-b8de-849292f6ca69' },
+                                  'customer_id': { 'type': 'string', 'example': 'my-customer-1' },
+                                  'provider_id':
+                                    { 'type': 'string', 'example': '677fcfca-cf89-4387-a189-71c885be67bc' },
+                                  'provider_name':
+                                    {
+                                      'type': 'string',
+                                      'enum':
+                                        [
+                                          'hubspot',
+                                          'salesforce',
+                                          'pipedrive',
+                                          'zendesk_sell',
+                                          'ms_dynamics_365_sales',
+                                          'zoho_crm',
+                                          'capsule',
+                                          'outreach',
+                                          'gong',
+                                          'apollo',
+                                          'salesloft',
+                                        ],
+                                      'title': 'provider_name',
+                                    },
+                                  'category': { 'type': 'string', 'enum': ['crm', 'engagement'], 'title': 'category' },
+                                  'instance_url':
+                                    {
+                                      'type': 'string',
+                                      'description': 'Instance URL for the connected customer.',
+                                      'example': 'https://app.hubspot.com/contacts/123456',
+                                    },
+                                  'schema_mappings_config':
+                                    {
+                                      'type': 'object',
+                                      'properties':
+                                        {
+                                          'common_objects':
+                                            {
+                                              'type': 'array',
+                                              'items':
+                                                {
+                                                  'type': 'object',
+                                                  'properties':
+                                                    {
+                                                      'object': { 'type': 'string' },
+                                                      'field_mappings':
+                                                        {
+                                                          'type': 'array',
+                                                          'items':
+                                                            {
+                                                              'type': 'object',
+                                                              'properties':
+                                                                {
+                                                                  'schema_field': { 'type': 'string' },
+                                                                  'mapped_field': { 'type': 'string' },
+                                                                },
+                                                              'required': ['schema_field'],
+                                                              'title': 'field_mapping',
+                                                            },
+                                                        },
+                                                    },
+                                                  'required': ['object', 'field_mappings'],
+                                                },
+                                            },
+                                          'standard_objects':
+                                            {
+                                              'type': 'array',
+                                              'items':
+                                                {
+                                                  'type': 'object',
+                                                  'properties':
+                                                    {
+                                                      'object': { 'type': 'string' },
+                                                      'field_mappings':
+                                                        {
+                                                          'type': 'array',
+                                                          'items':
+                                                            {
+                                                              'type': 'object',
+                                                              'properties':
+                                                                {
+                                                                  'schema_field': { 'type': 'string' },
+                                                                  'mapped_field': { 'type': 'string' },
+                                                                },
+                                                              'required': ['schema_field'],
+                                                              'title': 'field_mapping',
+                                                            },
+                                                        },
+                                                    },
+                                                  'required': ['object', 'field_mappings'],
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                              'required':
+                                [
+                                  'id',
+                                  'status',
+                                  'application_id',
+                                  'customer_id',
+                                  'provider_id',
+                                  'provider_name',
+                                  'category',
+                                  'instance_url',
+                                ],
+                              'title': 'connection',
+                            },
+                            {
+                              'type': 'object',
+                              'properties':
+                                { 'user_id': { 'type': 'string', 'example': '70115e3c-2700-4112-b28f-2706e08570e6' } },
+                            },
+                          ],
+                      },
+                    'examples':
+                      {
+                        'Example':
+                          {
+                            'value':
+                              {
+                                'id': '9572d08b-f19f-48cc-a992-1eb7031d3f6c',
+                                'application_id': 'd8ceb3ff-8b7f-4fa7-b8de-849292f6ca69',
+                                'customer_id': 'my-customer-1',
+                                'status': 'available',
+                                'provider_id': '9572d08b-f19f-48cc-a992-1eb7031d3f6a',
+                                'provider_name': 'salesforce',
+                                'category': 'crm',
+                                'instance_url': 'https://supaglue-dev-ed.develop.my.salesforce.com',
+                              },
+                          },
+                      },
+                  },
+              },
+          },
+      },
+    'description': 'Get connection',
+    'parameters':
+      [
+        {
+          'name': 'customer_id',
+          'in': 'path',
+          'required': true,
+          'schema': { 'type': 'string', 'example': '0258cbc6-6020-430a-848e-aafacbadf4ae' },
+        },
+        {
+          'name': 'connection_id',
+          'in': 'path',
+          'required': true,
+          'schema': { 'type': 'string', 'example': '0258cbc6-6020-430a-848e-aafacbadf4ae' },
+        },
+      ],
+    'method': 'get',
+    'path': '/customers/{customer_id}/connections/{connection_id}',
+    'servers': [{ 'url': 'https://api.supaglue.io/mgmt/v2', 'description': 'Supaglue API' }],
+    'securitySchemes':
+      {
+        'x-api-key':
+          {
+            'type': 'apiKey',
+            'name': 'x-api-key',
+            'in': 'header',
+            'description': 'API key to allow developers to access the API',
+          },
+      },
+    'info':
+      {
+        'version': '0.12.7',
+        'title': 'Supaglue Management API',
+        'contact': { 'name': 'Supaglue', 'email': 'docs@supaglue.com', 'url': 'https://supaglue.com' },
+        'description': "#### Introduction\n\nWelcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-35306f94-8368-4412-b7f3-72715131f727?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-35306f94-8368-4412-b7f3-72715131f727%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/mgmt/v2\n```\n",
+      },
+    'postman':
+      {
+        'name': 'Get connection',
+        'description': { 'type': 'text/plain' },
+        'url':
+          {
+            'path': ['customers', ':customer_id', 'connections', ':connection_id'],
+            'host': ['{{baseUrl}}'],
+            'query': [],
+            'variable':
+              [
+                {
+                  'disabled': false,
+                  'description': { 'content': '(Required) ', 'type': 'text/plain' },
+                  'type': 'any',
+                  'value': '',
+                  'key': 'customer_id',
+                },
+                {
+                  'disabled': false,
+                  'description': { 'content': '(Required) ', 'type': 'text/plain' },
+                  'type': 'any',
+                  'value': '',
+                  'key': 'connection_id',
+                },
+              ],
+          },
+        'header': [{ 'key': 'Accept', 'value': 'application/json' }],
+        'method': 'GET',
+        'auth':
+          {
+            'type': 'apikey',
+            'apikey':
+              [
+                { 'type': 'any', 'value': 'x-api-key', 'key': 'key' },
+                { 'type': 'any', 'value': '<API Key>', 'key': 'value' },
+                { 'type': 'any', 'value': 'header', 'key': 'in' },
+              ],
+          },
+      },
+  }
+sidebar_class_name: 'get api-method'
 info_path: api/v2/mgmt/supaglue-management-api
 custom_edit_url: null
 ---
 
-import ApiTabs from "@theme/ApiTabs";
-import DiscriminatorTabs from "@theme/DiscriminatorTabs";
-import MethodEndpoint from "@theme/ApiDemoPanel/MethodEndpoint";
-import SecuritySchemes from "@theme/ApiDemoPanel/SecuritySchemes";
-import MimeTabs from "@theme/MimeTabs";
-import ParamsItem from "@theme/ParamsItem";
-import ResponseSamples from "@theme/ResponseSamples";
-import SchemaItem from "@theme/SchemaItem";
-import SchemaTabs from "@theme/SchemaTabs";
-import TabItem from "@theme/TabItem";
+import ApiTabs from '@theme/ApiTabs';
+import DiscriminatorTabs from '@theme/DiscriminatorTabs';
+import MethodEndpoint from '@theme/ApiDemoPanel/MethodEndpoint';
+import SecuritySchemes from '@theme/ApiDemoPanel/SecuritySchemes';
+import MimeTabs from '@theme/MimeTabs';
+import ParamsItem from '@theme/ParamsItem';
+import ResponseSamples from '@theme/ResponseSamples';
+import SchemaItem from '@theme/SchemaItem';
+import SchemaTabs from '@theme/SchemaTabs';
+import TabItem from '@theme/TabItem';
 
-<h1 className={"openapi__heading"}>Get connection</h1>
+<h1 className={'openapi__heading'}>Get connection</h1>
 
-<MethodEndpoint method={"get"} path={"/customers/{customer_id}/connections/{connection_id}"}></MethodEndpoint>
+<MethodEndpoint method={'get'} path={'/customers/{customer_id}/connections/{connection_id}'}></MethodEndpoint>
 
-<SecuritySchemes infoPath={"api/v2/mgmt/supaglue-management-api"}></SecuritySchemes>
-
-
+<SecuritySchemes infoPath={'api/v2/mgmt/supaglue-management-api'}></SecuritySchemes>
 
 Get connection
 
@@ -39,4 +278,3 @@ Get connection
 Connection
 
 </div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"e888cedf-e9d0-42c5-9485-2d72984faef2"}}></SchemaItem><SchemaItem collapsible={false} name={"status"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`available`, `added`, `authorized`, `callable`]"} schema={{"type":"string","enum":["available","added","authorized","callable"],"example":"available"}}></SchemaItem><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"my-customer-1"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"677fcfca-cf89-4387-a189-71c885be67bc"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_name"} required={true} schemaName={"provider_name"} qualifierMessage={"**Possible values:** [`hubspot`, `salesforce`, `pipedrive`, `zendesk_sell`, `ms_dynamics_365_sales`, `zoho_crm`, `capsule`, `outreach`, `gong`, `apollo`, `salesloft`]"} schema={{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft"],"title":"provider_name"}}></SchemaItem><SchemaItem collapsible={false} name={"category"} required={true} schemaName={"category"} qualifierMessage={"**Possible values:** [`crm`, `engagement`]"} schema={{"type":"string","enum":["crm","engagement"],"title":"category"}}></SchemaItem><SchemaItem collapsible={false} name={"instance_url"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"Instance URL for the connected customer.","example":"https://app.hubspot.com/contacts/123456"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>schema_mappings_config</strong><span className={"openapi-schema__name"}> object</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>common_objects</strong><span className={"openapi-schema__name"}> object[]</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>field_mappings</strong><span className={"openapi-schema__name"}> object[]</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"schema_field"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"mapped_field"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>standard_objects</strong><span className={"openapi-schema__name"}> object[]</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>field_mappings</strong><span className={"openapi-schema__name"}> object[]</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"schema_field"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"mapped_field"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem></div></details></SchemaItem><SchemaItem collapsible={false} name={"user_id"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"70115e3c-2700-4112-b28f-2706e08570e6"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"id\": \"e888cedf-e9d0-42c5-9485-2d72984faef2\",\n  \"status\": \"available\",\n  \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n  \"customer_id\": \"my-customer-1\",\n  \"provider_id\": \"677fcfca-cf89-4387-a189-71c885be67bc\",\n  \"provider_name\": \"hubspot\",\n  \"category\": \"crm\",\n  \"instance_url\": \"https://app.hubspot.com/contacts/123456\",\n  \"schema_mappings_config\": {\n    \"common_objects\": [\n      {\n        \"object\": \"string\",\n        \"field_mappings\": [\n          {\n            \"schema_field\": \"string\",\n            \"mapped_field\": \"string\"\n          }\n        ]\n      }\n    ],\n    \"standard_objects\": [\n      {\n        \"object\": \"string\",\n        \"field_mappings\": [\n          {\n            \"schema_field\": \"string\",\n            \"mapped_field\": \"string\"\n          }\n        ]\n      }\n    ]\n  },\n  \"user_id\": \"70115e3c-2700-4112-b28f-2706e08570e6\"\n}"} language={"json"}></ResponseSamples></TabItem><TabItem label={"Example"} value={"Example"}><ResponseSamples responseExample={"{\n  \"id\": \"9572d08b-f19f-48cc-a992-1eb7031d3f6c\",\n  \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n  \"customer_id\": \"my-customer-1\",\n  \"status\": \"available\",\n  \"provider_id\": \"9572d08b-f19f-48cc-a992-1eb7031d3f6a\",\n  \"provider_name\": \"salesforce\",\n  \"category\": \"crm\",\n  \"instance_url\": \"https://supaglue-dev-ed.develop.my.salesforce.com\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
-      

@@ -1,0 +1,46 @@
+post:
+  operationId: createOpportunity
+  summary: Create opportunity
+  tags:
+    - Opportunities
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            record:
+              $ref: ../components/schemas/create_update_opportunity.yaml
+          required:
+            - record
+        example:
+          record:
+            amount: 100000
+            close_date: '2023-02-27T00:00:00Z'
+            description: Wants to use open source unified API for third-party integrations
+            name: Needs Integrations
+            stage: Closed Won
+            account_id: 109c88c0-7bf4-4cd8-afbc-b51f9432ca0b
+  responses:
+    '201':
+      description: Opportunity created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../../common/components/schemas/logs.yaml
+              record:
+                $ref: ../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml

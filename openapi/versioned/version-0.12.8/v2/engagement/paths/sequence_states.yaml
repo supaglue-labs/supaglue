@@ -1,0 +1,47 @@
+post:
+  operationId: createSequenceState
+  summary: Create sequence state
+  tags:
+    - Sequence States
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            record:
+              $ref: ../components/schemas/create_sequence_state.yaml
+          required:
+            - record
+        example:
+          record:
+            id: 355843a5-c536-4e82-b497-05160bfb7d78
+            state: active
+            mailbox_id: a7e860b5-cb8b-400b-812d-921fa526140c
+            contact_id: 6bdcebc2-f886-4de3-88ed-0b9eb420f7b1
+            sequence_id: 45e07817-fd59-4ec8-a727-066d2db27c9b
+            created_at: '2023-02-27T00:00:00Z'
+            updated_at: '2023-02-27T00:00:00Z'
+  responses:
+    '201':
+      description: Sequence state created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../../common/components/schemas/logs.yaml
+              record:
+                $ref: ../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
