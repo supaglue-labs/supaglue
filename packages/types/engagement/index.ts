@@ -4,7 +4,7 @@ import type { RemoteSequenceTypes } from './sequence';
 import type { RemoteSequenceStateTypes } from './sequence_state';
 import type { RemoteUserTypes } from './user';
 
-export const SUPPORTED_ENGAGEMENT_PROVIDERS = ['outreach', 'gong', 'apollo'] as const;
+export const SUPPORTED_ENGAGEMENT_PROVIDERS = ['outreach', 'gong', 'apollo', 'salesloft'] as const;
 
 export type EngagementProviderName = (typeof SUPPORTED_ENGAGEMENT_PROVIDERS)[number];
 export type EngagementProviderCategory = 'engagement';

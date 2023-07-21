@@ -217,7 +217,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
               }}
             />
             <TextField
-              disabled={useManagedOauth || providerName === 'ms_dynamics_365_sales'}
+              disabled={useManagedOauth || providerName === 'ms_dynamics_365_sales' || providerName === 'salesloft'}
               value={oauthScopes}
               size="small"
               label="OAuth2 scopes"

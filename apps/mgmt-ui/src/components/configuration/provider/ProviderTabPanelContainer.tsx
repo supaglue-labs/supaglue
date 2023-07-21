@@ -5,6 +5,7 @@ import MsDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sal
 import OutreachIcon from '@/assets/connector_icons/outreach.png';
 import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
+import SalesloftIcon from '@/assets/connector_icons/salesloft.webp';
 import { TabPanel } from '@/components/TabPanel';
 import { useProviders } from '@/hooks/useProviders';
 import type { ProviderCategory, ProviderName } from '@supaglue/types';
@@ -73,6 +74,13 @@ export const providerCardsInfo: ProviderCardInfo[] = [
     providerName: 'apollo',
     category: 'engagement',
     description: 'Configure your Apollo provider.',
+  },
+  {
+    icon: <Image alt="salesloft" src={SalesloftIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+    name: 'Salesloft',
+    providerName: 'salesloft',
+    category: 'engagement',
+    description: 'Configure your Salesloft provider.',
   },
 ];
 

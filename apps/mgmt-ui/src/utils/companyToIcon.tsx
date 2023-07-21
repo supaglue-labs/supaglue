@@ -7,6 +7,7 @@ import MicrosoftDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_
 import OutreachIcon from '@/assets/connector_icons/outreach.png';
 import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';
+import SalesloftIcon from '@/assets/connector_icons/salesloft.webp';
 import ZendeskSellIcon from '@/assets/connector_icons/zendesk_sell.png';
 import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
 import MongoDBIcon from '@/assets/destination_icons/mongodb.png';
@@ -33,6 +34,7 @@ export default function getIcon(name: string, size = 25): ReactNode {
     outreach: <Image key={name} alt={name} src={OutreachIcon} width={size} height={size} />,
     gong: <Image key={name} alt={name} src={GongIcon} width={size} height={size} />,
     apollo: <Image key={name} alt={name} src={ApolloIcon} width={size} height={size} />,
+    salesloft: <Image key={name} alt={name} src={SalesloftIcon} width={size} height={size} />,
   };
 
   return companyToIconMap[name];
