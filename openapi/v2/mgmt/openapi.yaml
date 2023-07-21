@@ -61,6 +61,8 @@ paths:
     $ref: paths/sync_configs@{sync_config_id}.yaml
   '/customers/{customer_id}/connections':
     $ref: paths/connections.yaml
+  '/customers/{customer_id}/connections/_provider_user_id':
+    $ref: paths/connections@_provider_user_id.yaml
   '/customers/{customer_id}/connections/{connection_id}':
     $ref: paths/connections@{connection_id}.yaml
   '/webhook':
@@ -102,7 +104,7 @@ tags:
     description: A `Webhook` is a way for Supaglue to notify you when events have happened.
 components:
   securitySchemes:
-    ApiKeyAuth:
+    x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
     pagination:

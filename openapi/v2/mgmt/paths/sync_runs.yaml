@@ -3,7 +3,7 @@ get:
   tags:
     - SyncRuns
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: Get SyncRuns
   description: >-
     Get a list of SyncRun objects.

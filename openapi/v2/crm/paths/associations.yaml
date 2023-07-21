@@ -3,7 +3,7 @@ get:
   tags:
     - Associations
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: List associations
   description: >-
     Get a list of associations
@@ -52,7 +52,7 @@ put:
     - Associations
   parameters: []
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   requestBody:
     required: true
     content:
@@ -78,4 +78,3 @@ put:
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
-      

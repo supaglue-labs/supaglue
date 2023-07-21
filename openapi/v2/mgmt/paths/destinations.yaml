@@ -3,7 +3,7 @@ get:
   tags:
     - Destinations
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: List destinations
   description: >-
     Get a list of destinations
@@ -44,7 +44,7 @@ post:
   tags:
     - Destinations
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

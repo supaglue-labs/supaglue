@@ -4,7 +4,7 @@ post:
   tags:
     - Providers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   requestBody:
     required: true
     content:
@@ -37,8 +37,8 @@ post:
                       - crm.objects.companies.write
                       - crm.objects.deals.write
                     credentials:
-                      oauth_client_id: 
-                      oauth_client_secret: 
+                      oauth_client_id:
+                      oauth_client_secret:
                 objects:
                   common:
                     - name: contact

@@ -4,7 +4,7 @@ get:
   tags:
     - Destinations
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: Destination

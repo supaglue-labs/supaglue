@@ -6,7 +6,7 @@
     "contact": {
       "name": "Supaglue"
     },
-    "description": "#### Introduction\n\nWelcome to the Supaglue Actions API (CRM) documentation. You can use this API to write to third-party providers. \n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-fa1c1bb5-8b11-475a-8e9b-d2ad988ccaf0?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-fa1c1bb5-8b11-475a-8e9b-d2ad988ccaf0%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)\n\n#### Reading data\nTo read data from third-party providers, refer to Supaglue's [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
+    "description": "#### Introduction\n\nWelcome to the Supaglue Actions API (CRM) documentation. You can use this API to write to third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-fa1c1bb5-8b11-475a-8e9b-d2ad988ccaf0?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-fa1c1bb5-8b11-475a-8e9b-d2ad988ccaf0%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)\n\n#### Reading data\nTo read data from third-party providers, refer to Supaglue's [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
   },
   "servers": [
     {
@@ -25,7 +25,7 @@
         "parameters": [],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -91,7 +91,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -162,7 +162,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -235,7 +235,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -310,7 +310,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -339,7 +339,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -423,7 +423,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -499,7 +499,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -528,7 +528,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -614,7 +614,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -691,7 +691,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -739,7 +739,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -812,7 +812,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -1003,7 +1003,7 @@
         "parameters": [],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -1077,7 +1077,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -1102,7 +1102,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -1176,7 +1176,7 @@
         "parameters": [],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -1259,7 +1259,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -1284,7 +1284,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -1365,7 +1365,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List associationTypes",
@@ -1434,7 +1434,7 @@
         "parameters": [],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -1499,7 +1499,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List associations",
@@ -1576,7 +1576,7 @@
         "parameters": [],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -1670,7 +1670,7 @@
   ],
   "components": {
     "securitySchemes": {
-      "ApiKeyAuth": {
+      "x-api-key": {
         "type": "apiKey",
         "name": "x-api-key",
         "in": "header",

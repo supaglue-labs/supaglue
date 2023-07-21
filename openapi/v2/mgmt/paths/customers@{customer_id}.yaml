@@ -4,7 +4,7 @@ get:
   tags:
     - Customers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: Customer
@@ -25,7 +25,7 @@ delete:
   tags:
     - Customers
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     200:
       description: Customer

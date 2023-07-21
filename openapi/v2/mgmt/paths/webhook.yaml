@@ -6,7 +6,7 @@ get:
   description: >-
     Get webhook details
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     '200':
       description: Applications
@@ -35,7 +35,7 @@ post:
         schema:
           $ref: ../components/schemas/objects/webhook.yaml
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     '201':
       description: Webhook created
@@ -50,7 +50,7 @@ delete:
     - Webhooks
   parameters: []
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     '200':
-      description: Webhook deleted 
+      description: Webhook deleted

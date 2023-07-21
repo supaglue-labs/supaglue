@@ -5,6 +5,12 @@ class SGError extends Error {
   }
 }
 
+export class NotImplementedError extends SGError {
+  constructor(message?: string) {
+    super(message || 'Not implemented');
+  }
+}
+
 export class HTTPError extends SGError {
   code = 500;
   problemType = 'INTERNAL_SERVER_ERROR';
@@ -18,6 +24,14 @@ export class HTTPError extends SGError {
 export class InternalServerError extends HTTPError {
   code = 500;
   problemType = 'INTERNAL_SERVER_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
+export class BadGatewayError extends HTTPError {
+  code = 502;
+  problemType = 'BAD_GATEWAY_ERROR';
   constructor(message: string, cause?: Error) {
     super(message, cause);
   }

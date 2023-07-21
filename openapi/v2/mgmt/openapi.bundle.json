@@ -25,7 +25,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List customers",
@@ -72,7 +72,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -109,7 +109,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -143,7 +143,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -189,7 +189,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List destinations",
@@ -249,7 +249,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -286,7 +286,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -389,7 +389,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -427,7 +427,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [
@@ -496,7 +496,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -540,7 +540,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List schemas",
@@ -605,7 +605,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -642,7 +642,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -738,7 +738,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -795,7 +795,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List entities",
@@ -864,7 +864,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -901,7 +901,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -997,7 +997,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -1052,7 +1052,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List providers",
@@ -1137,7 +1137,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -1174,7 +1174,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -1284,7 +1284,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -1349,7 +1349,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -1438,7 +1438,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List Sync Configs",
@@ -1521,7 +1521,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -1558,7 +1558,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -1674,7 +1674,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -1741,7 +1741,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "List connections",
@@ -1797,7 +1797,7 @@
         "parameters": [],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -1860,6 +1860,66 @@
         }
       ]
     },
+    "/customers/{customer_id}/connections/_provider_user_id": {
+      "get": {
+        "operationId": "getProviderUserId",
+        "summary": "Get provider logged in user ID",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "provider_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/provider_name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "UserId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "string",
+                      "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                    }
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          }
+        }
+      ]
+    },
     "/customers/{customer_id}/connections/{connection_id}": {
       "get": {
         "operationId": "getConnection",
@@ -1869,7 +1929,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -1920,7 +1980,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -1960,7 +2020,7 @@
         "description": "Get webhook details",
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -2006,7 +2066,7 @@
         },
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -2031,7 +2091,7 @@
         "parameters": [],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -2049,7 +2109,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "Get Syncs",
@@ -2152,7 +2212,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -2216,7 +2276,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -2280,7 +2340,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "requestBody": {
@@ -2347,7 +2407,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "summary": "Get SyncRuns",
@@ -2524,7 +2584,7 @@
   ],
   "components": {
     "securitySchemes": {
-      "ApiKeyAuth": {
+      "x-api-key": {
         "type": "apiKey",
         "name": "x-api-key",
         "in": "header",

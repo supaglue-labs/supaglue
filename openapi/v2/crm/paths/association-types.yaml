@@ -3,7 +3,7 @@ get:
   tags:
     - AssociationTypes
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   summary: List associationTypes
   description: >-
     Get a list of associationTypes
@@ -47,7 +47,7 @@ post:
     - AssociationTypes
   parameters: []
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   requestBody:
     required: true
     content:
