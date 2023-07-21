@@ -31,7 +31,7 @@ export type CRMProvider = BaseOauthProvider & {
 
 export type EngagementOauthProvider = BaseOauthProvider & {
   category: 'engagement';
-  name: 'outreach' | 'gong';
+  name: 'outreach' | 'gong' | 'salesloft';
   objects?: ProviderObjects<'engagement'>;
 };
 

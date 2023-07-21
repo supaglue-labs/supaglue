@@ -109,13 +109,13 @@ export default function init(app: Router): void {
 
       const authorizationUri = client.authorizeURL({
         redirect_uri: REDIRECT_URI,
-        scope: oauthScopes,
+        scope: provider.name === 'salesloft' ? [] : oauthScopes,
         state: JSON.stringify({
           returnUrl,
           applicationId,
           customerId,
           providerName,
-          scope: oauthScopes, // TODO: this should be in a session
+          scope: provider.name === 'salesloft' ? [] : oauthScopes, // TODO: this should be in a session
           loginUrl,
         }),
         ...additionalAuthParams,

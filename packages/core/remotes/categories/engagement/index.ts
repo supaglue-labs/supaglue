@@ -4,6 +4,7 @@ import type { ConnectorAuthConfig } from '../../base';
 import * as apollo from '../../impl/apollo';
 import * as gong from '../../impl/gong';
 import * as outreach from '../../impl/outreach';
+import * as salesloft from '../../impl/salesloft';
 import type { AbstractEngagementRemoteClient, EngagementRemoteClient } from './base';
 
 export type EngagementConnectorConfig<T extends EngagementProviderName> = {
@@ -17,6 +18,7 @@ export const engagementConnectorConfigMap: {
   outreach,
   apollo,
   gong,
+  salesloft,
 };
 
 export function getEngagementRemoteClient<T extends EngagementProviderName>(

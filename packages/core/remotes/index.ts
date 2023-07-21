@@ -8,6 +8,7 @@ import * as ms_dynamics_365_sales from './impl/ms_dynamics_365_sales';
 import * as outreach from './impl/outreach';
 import * as pipedrive from './impl/pipedrive';
 import * as salesforce from './impl/salesforce';
+import * as salesloft from './impl/salesloft';
 import * as zendesk_sell from './impl/zendesk_sell';
 import * as zoho_crm from './impl/zoho_crm';
 
@@ -30,6 +31,7 @@ const connectorConfigMap: {
   outreach,
   gong,
   apollo,
+  salesloft,
 };
 
 // `authConfig` to be used in simple-oauth2
@@ -88,6 +90,7 @@ export function getCategoryForProvider(providerName: ProviderName): ProviderCate
     case 'outreach':
     case 'gong':
     case 'apollo':
+    case 'salesloft':
       return 'engagement';
   }
 }
