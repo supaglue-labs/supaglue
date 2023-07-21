@@ -28,18 +28,20 @@ export const fromObjectSyncRunModelAndSyncWithObject = (
 ): SyncRunWithObjectOrEntity => {
   const base = fromSyncRunModelAndSync(args);
 
-  if (args.sync.objectType !== null && args.sync.object !== null) {
+  if (args.sync.type === 'object') {
     return {
       ...base,
+      type: 'object',
       objectType: args.sync.objectType as ObjectType,
       object: args.sync.object as string,
     };
   }
 
-  if (args.sync.entityId !== null) {
+  if (args.sync.type === 'entity') {
     return {
       ...base,
-      entityId: args.sync.entityId,
+      type: 'entity',
+      entityId: args.sync.entityId as string,
     };
   }
 

@@ -9,6 +9,7 @@ export type SyncRunModelExpanded = SyncRunModel & {
 
 export type SyncRunModelExpandedWithObjectAndEntity = SyncRunModelExpanded & {
   sync: {
+    type: string;
     objectType: string | null;
     object: string | null;
     entityId: string | null;

@@ -133,6 +133,7 @@ export class SyncRunService {
         sync: {
           select: {
             id: true,
+            type: true,
             objectType: true,
             object: true,
             entityId: true,

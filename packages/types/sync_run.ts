@@ -20,11 +20,13 @@ export type SyncRun = {
 };
 
 export type ObjectSyncRunWithObject = SyncRun & {
+  type: 'object';
   objectType: ObjectType;
   object: string;
 };
 
 export type EntitySyncRunWithEntity = SyncRun & {
+  type: 'entity';
   entityId: string;
 };
 
