@@ -1,6 +1,7 @@
 import { pauseSync, resumeSync, triggerSync } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import { useEntities } from '@/hooks/useEntities';
 import { Button, Stack } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import type { GridColDef } from '@mui/x-data-grid';
@@ -29,13 +30,24 @@ export default function SyncsTable(props: SyncsTableProps) {
   const applicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
 
+  const { entities = [] } = useEntities();
+
   const columns: GridColDef[] = [
     { field: 'customerId', headerName: 'Customer Id', width: 200, sortable: false },
     { field: 'providerName', headerName: 'Provider', width: 120, sortable: false },
     { field: 'type', headerName: 'Type', width: 100, sortable: false },
     { field: 'objectType', headerName: 'Object Type', width: 120, sortable: false },
     { field: 'object', headerName: 'Object', width: 120, sortable: false },
-    { field: 'entityId', headerName: 'EntityId', width: 120, sortable: false }, // TODO: should make this render Entity name instead
+    {
+      field: 'entityId',
+      headerName: 'EntityId',
+      valueGetter: (params) =>
+        params.row.entityId
+          ? entities.find((entity) => entity.id === params.row.entityId)?.name ?? params.row.entityId
+          : '',
+      width: 120,
+      sortable: false,
+    }, // TODO: should make this render Entity name instead
     {
       field: 'paused',
       headerName: 'Paused?',
