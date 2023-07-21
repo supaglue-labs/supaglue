@@ -11,6 +11,8 @@ WORKSPACE_NAME=$1
 
 WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${WORKSPACE_NAME}\") | .location")
 
+. "${WORKSPACE_PATH}/.build.config.sh"
+
 # fetch the posthog api key from 1password and pass it as an arg
 # to the docker build
 
@@ -49,7 +51,7 @@ if [ "${WORKSPACE_NAME}" == "mgmt-ui" ]; then
   trap clean_up SIGINT
 fi
 
-depot build --project 2bljgst1rr \
+depot build --project "${DEPOT_PROJECT}" \
   --platform linux/amd64,linux/arm64 \
   -f "./${WORKSPACE_PATH}/Dockerfile" \
   --tag "supaglue/${WORKSPACE_NAME}:${VERSION}" \

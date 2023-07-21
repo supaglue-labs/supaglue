@@ -33,6 +33,7 @@ jobs:
     with:
       workspace: sync-worker
       image-name: sync-worker
+      depot-project: fh1fxkkb69
     secrets:
       build-args: |
         POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }}
