@@ -1,0 +1,60 @@
+get:
+  operationId: getEntities
+  tags:
+    - Entities
+  security:
+    - x-api-key: []
+  summary: List entities
+  description: >-
+    Get a list of entities
+  responses:
+    '200':
+      description: Entities
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/entity.yaml
+          examples:
+            Example:
+              value:
+                - id: 649b1e49-2722-46a3-a7e7-10caae78a440
+                  name: my-entity
+                  config:
+                    fields:
+                      - name: field1
+                        mappedName: fieldA
+                      - name: field2
+                        mappedName: fieldB
+                    allow_additional_field_mappings: false
+                - id: 84b84f5b-cfa0-4ef5-ab41-6362f8cdd415
+                  name: my-entity2
+                  config:
+                    fields:
+                      - name: field1
+                        mappedName: fieldA
+                      - name: field2
+                        mappedName: fieldB
+                    allow_additional_field_mappings: false
+post:
+  operationId: createEntity
+  summary: Create entity
+  tags:
+    - Entities
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_update_entity.yaml
+  responses:
+    '201':
+      description: Entity created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/entity.yaml
