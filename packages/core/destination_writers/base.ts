@@ -17,6 +17,11 @@ export type WriteObjectRecordsResult = {
   numRecords: number;
 };
 
+export type WriteEntityRecordsResult = {
+  maxLastModifiedAt: Date | null;
+  numRecords: number;
+};
+
 export interface DestinationWriter {
   upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
@@ -37,6 +42,13 @@ export interface DestinationWriter {
     stream: Readable,
     heartbeat: () => void
   ): Promise<WriteObjectRecordsResult>;
+
+  writeEntityRecords(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    stream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteEntityRecordsResult>;
 }
 
 export abstract class BaseDestinationWriter implements DestinationWriter {
@@ -68,4 +80,11 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     stream: Readable,
     heartbeat: () => void
   ): Promise<WriteObjectRecordsResult>;
+
+  abstract writeEntityRecords(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    stream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteEntityRecordsResult>;
 }

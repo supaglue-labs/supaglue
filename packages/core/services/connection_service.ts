@@ -1,10 +1,9 @@
-import { Prisma, type PrismaClient } from '@supaglue/db';
+import { type PrismaClient } from '@supaglue/db';
 import type {
   ConnectionCredentialsDecryptedAny,
   ConnectionSafeAny,
   ConnectionUnsafe,
   ConnectionUnsafeAny,
-  ConnectionUpdateParams,
   FieldMappingInfo,
   ObjectFieldMappingInfo,
   ObjectFieldMappingUpdateParams,
@@ -14,23 +13,35 @@ import type {
   SchemaMappingsConfigObjectFieldMapping,
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
+import type { EntityMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import type { ObjectType } from '@supaglue/types/object_sync';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
+import type { ObjectType } from '@supaglue/types/sync';
 import type { ProviderService, SchemaService } from '.';
 import { BadRequestError, NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
+import { createFieldMappingConfigForEntity } from '../lib/entity';
 import { createFieldMappingConfig } from '../lib/schema';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
+import { mergeEntityMappings, mergeEntityMappingsList } from '../mappers/entity_mapping';
+import type { EntityService } from './entity_service';
 
 export class ConnectionService {
   #prisma: PrismaClient;
   #providerService: ProviderService;
   #schemaService: SchemaService;
+  #entityService: EntityService;
 
-  constructor(prisma: PrismaClient, providerService: ProviderService, schemaService: SchemaService) {
+  constructor(
+    prisma: PrismaClient,
+    providerService: ProviderService,
+    schemaService: SchemaService,
+    entityService: EntityService
+  ) {
     this.#prisma = prisma;
     this.#providerService = providerService;
     this.#schemaService = schemaService;
+    this.#entityService = entityService;
   }
 
   public async getUnsafeById<T extends ProviderName>(id: string): Promise<ConnectionUnsafe<T>> {
@@ -194,18 +205,6 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connection);
   }
 
-  public async updateConnection(id: string, params: ConnectionUpdateParams): Promise<ConnectionSafeAny> {
-    const connection = await this.#prisma.connection.update({
-      where: {
-        id,
-      },
-      data: {
-        schemaMappingsConfig: params.schemaMappingsConfig === null ? Prisma.DbNull : params.schemaMappingsConfig,
-      },
-    });
-    return fromConnectionModelToConnectionSafe(connection);
-  }
-
   private validateObjectFieldMappingUpdateParams(params: ObjectFieldMappingUpdateParams, schema: Schema): void {
     const schemaMappingRequiredFields = schema.config.fields
       .filter(({ mappedName }) => !mappedName)
@@ -330,6 +329,84 @@ export class ConnectionService {
     });
 
     return fromConnectionModelToConnectionSafe(updatedConnection);
+  }
+
+  public async listMergedEntityMappings(connectionId: string): Promise<MergedEntityMapping[]> {
+    const connection = await this.getSafeById(connectionId);
+    const provider = await this.#providerService.getById(connection.providerId);
+
+    const providerEntityMappings = provider.entityMappings ?? [];
+    const connectionEntityMappings = connection.entityMappings ?? [];
+
+    return mergeEntityMappingsList(providerEntityMappings, connectionEntityMappings);
+  }
+
+  public async upsertEntityMapping(
+    connectionId: string,
+    entityId: string,
+    entityMapping: EntityMapping
+  ): Promise<void> {
+    const connection = await this.getSafeById(connectionId);
+
+    // upsert entity mapping with `entityId` from `connection.entityMappings` and write back to DB
+    const entityMappings =
+      connection.entityMappings?.filter((entityMapping) => entityMapping.entityId !== entityId) ?? [];
+    entityMappings.push(entityMapping);
+    await this.#prisma.connection.update({
+      where: {
+        id: connectionId,
+      },
+      data: {
+        entityMappings,
+      },
+    });
+  }
+
+  public async deleteEntityMapping(connectionId: string, entityId: string): Promise<void> {
+    const connection = await this.getSafeById(connectionId);
+
+    // remove entity mapping with `entityId` from `connection.entityMappings` and write back to DB
+    const entityMappings = connection.entityMappings?.filter((entityMapping) => entityMapping.entityId !== entityId);
+    await this.#prisma.connection.update({
+      where: {
+        id: connectionId,
+      },
+      data: {
+        entityMappings,
+      },
+    });
+  }
+
+  public async getObjectAndFieldMappingConfigForEntity(
+    connectionId: string,
+    entityId: string
+  ): Promise<{
+    object: StandardOrCustomObject;
+    fieldMappingConfig: FieldMappingConfig;
+  }> {
+    const connection = await this.getSafeById(connectionId);
+    const provider = await this.#providerService.getById(connection.providerId);
+    const entity = await this.#entityService.getById(entityId);
+
+    const providerEntityMapping = provider.entityMappings?.find((entityMapping) => entityMapping.entityId === entityId);
+    const connectionEntityMapping = connection.entityMappings?.find(
+      (entityMapping) => entityMapping.entityId === entityId
+    );
+
+    const mergedEntityMapping = mergeEntityMappings(providerEntityMapping, connectionEntityMapping);
+
+    if (!mergedEntityMapping) {
+      throw new BadRequestError(`No entity mapping found for entity ${entityId}`);
+    }
+
+    if (!mergedEntityMapping.object) {
+      throw new BadRequestError(`No object found in entity mapping for entity ${entityId}`);
+    }
+
+    return {
+      object: mergedEntityMapping.object,
+      fieldMappingConfig: createFieldMappingConfigForEntity(entity, mergedEntityMapping.fieldMappings),
+    };
   }
 
   public async getFieldMappingConfig(

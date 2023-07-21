@@ -1,5 +1,5 @@
 import type { PaginatedResult } from '@supaglue/types';
-import type { ObjectSyncRun } from '@supaglue/types/object_sync_run';
+import type { SyncRun } from '@supaglue/types/sync_run';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
@@ -11,7 +11,7 @@ export function useSyncRuns(cursor?: string) {
   const { data, isLoading, error } = useSWRWithApplication(`/api/internal/sync-runs?${queryParams}`);
 
   return {
-    syncRuns: data ? (camelcaseKeys(data) as PaginatedResult<ObjectSyncRun>) : undefined,
+    syncRuns: data ? (camelcaseKeys(data) as PaginatedResult<SyncRun>) : undefined,
     isLoading,
     error,
   };

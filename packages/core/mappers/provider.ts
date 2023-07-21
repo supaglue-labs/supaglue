@@ -43,6 +43,7 @@ export async function fromProviderModel<T extends Provider = Provider>({
   name,
   config,
   objects,
+  entityMappings,
 }: ProviderModel): Promise<T> {
   return {
     id,
@@ -57,6 +58,7 @@ export async function fromProviderModel<T extends Provider = Provider>({
           })
         : undefined,
     objects: objects ?? undefined,
+    entityMappings: entityMappings ?? undefined,
   } as T;
 }
 
@@ -86,7 +88,7 @@ const fromProviderConfigModel = async (
 };
 
 export const toProviderModel = async (params: ProviderCreateParams) => {
-  const { applicationId, category, authType, name, objects } = params;
+  const { applicationId, category, authType, name, objects, entityMappings } = params;
   if (category === 'engagement' && authType === 'api_key') {
     return {
       applicationId,
@@ -95,6 +97,7 @@ export const toProviderModel = async (params: ProviderCreateParams) => {
       name,
       config: {},
       objects,
+      entityMappings,
     };
   }
   const { config } = params as CRMProviderCreateParams;
@@ -111,5 +114,6 @@ export const toProviderModel = async (params: ProviderCreateParams) => {
       },
     },
     objects,
+    entityMappings,
   };
 };

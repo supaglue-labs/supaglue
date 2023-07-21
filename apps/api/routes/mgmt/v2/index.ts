@@ -4,6 +4,7 @@ import { Router } from 'express';
 import customer from './customer';
 import destination from './destination';
 import entity from './entity';
+import entityMapping from './entity_mapping';
 import fieldMapping from './field_mapping';
 import property from './property';
 import provider from './provider';
@@ -30,6 +31,7 @@ export default function init(app: Router): void {
   fieldMapping(v2Router);
   property(v2Router);
   entity(v2Router);
+  entityMapping(v2Router);
 
   app.use('/v2', v2Router);
 }

@@ -1,13 +1,13 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { PaginatedResult } from '@supaglue/types/common';
-import type { ObjectSync, ObjectSyncDTO, ObjectSyncFilter, ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectType, Sync, SyncDTO, SyncFilter } from '@supaglue/types/sync';
 import type { ConnectionService } from '.';
 import { NotFoundError } from '../errors';
 import { getCustomerIdPk } from '../lib';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { fromObjectSyncModel, fromObjectSyncModelWithConnection } from '../mappers/object_sync';
+import { fromSyncModel, fromSyncModelWithConnection } from '../mappers/sync';
 
-export class ObjectSyncService {
+export class SyncService {
   #prisma: PrismaClient;
   #connectionService: ConnectionService;
 
@@ -16,35 +16,37 @@ export class ObjectSyncService {
     this.#connectionService = connectionService;
   }
 
-  public async list(args: ObjectSyncFilter): Promise<PaginatedResult<ObjectSyncDTO>> {
+  public async list(args: SyncFilter): Promise<PaginatedResult<SyncDTO>> {
     const { applicationId, paginationParams, externalCustomerId, providerName } = args;
     const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     // TODO: do this with a joined query instead
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;
-    const modelsPromise = this.#prisma.objectSync.findMany({
+    const modelsPromise = this.#prisma.sync.findMany({
       ...getPaginationParams<string>(page_size, cursor),
       where: {
         connectionId: { in: connectionIds },
         objectType: 'objectType' in args ? args.objectType : undefined,
         object: 'object' in args ? args.object : undefined,
+        entityId: 'entityId' in args ? args.entityId : undefined,
       },
       include: {
         connection: true,
       },
     });
-    const countPromise = this.#prisma.objectSync.count({
+    const countPromise = this.#prisma.sync.count({
       where: {
         connectionId: { in: connectionIds },
         objectType: 'objectType' in args ? args.objectType : undefined,
         object: 'object' in args ? args.object : undefined,
+        entityId: 'entityId' in args ? args.entityId : undefined,
       },
     });
 
     const [models, count] = await Promise.all([modelsPromise, countPromise]);
 
-    const results = models.map(fromObjectSyncModelWithConnection);
+    const results = models.map(fromSyncModelWithConnection);
 
     return {
       ...getPaginationResult<string>(page_size, cursor, results),
@@ -57,8 +59,8 @@ export class ObjectSyncService {
     connectionId: string,
     objectType: ObjectType,
     object: string
-  ): Promise<ObjectSync> {
-    const model = await this.#prisma.objectSync.findUnique({
+  ): Promise<Sync> {
+    const model = await this.#prisma.sync.findUnique({
       where: {
         connectionId_type_objectType_object: {
           connectionId,
@@ -70,9 +72,25 @@ export class ObjectSyncService {
     });
     if (!model) {
       throw new NotFoundError(
-        `ObjectSync not found for connectionId: ${connectionId}, objectType: ${objectType}, object: ${object}`
+        `Sync not found for connectionId: ${connectionId}, objectType: ${objectType}, object: ${object}`
       );
     }
-    return fromObjectSyncModel(model);
+    return fromSyncModel(model);
+  }
+
+  public async getByConnectionIdAndEntity(connectionId: string, entityId: string): Promise<Sync> {
+    const model = await this.#prisma.sync.findUnique({
+      where: {
+        connectionId_type_entityId: {
+          connectionId,
+          type: 'entity',
+          entityId,
+        },
+      },
+    });
+    if (!model) {
+      throw new NotFoundError(`Sync not found for connectionId: ${connectionId}, entityId: ${entityId}`);
+    }
+    return fromSyncModel(model);
   }
 }

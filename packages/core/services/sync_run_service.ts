@@ -1,19 +1,19 @@
-import type { ObjectSyncRunModelExpanded } from '@supaglue/core/types/object_sync_run';
+import type { SyncRunModelExpanded } from '@supaglue/core/types/sync_run';
 import type { PrismaClient } from '@supaglue/db';
 import type { PaginatedResult } from '@supaglue/types/common';
 import type {
-  ObjectSyncRun,
-  ObjectSyncRunFilter,
-  ObjectSyncRunStatus,
-  ObjectSyncRunUpsertParams,
-  ObjectSyncRunWithObject,
-} from '@supaglue/types/object_sync_run';
+  SyncRun,
+  SyncRunFilter,
+  SyncRunStatus,
+  SyncRunUpsertParams,
+  SyncRunWithObjectOrEntity,
+} from '@supaglue/types/sync_run';
 import type { ConnectionService } from '.';
 import { getCustomerIdPk } from '../lib/customer_id';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { fromObjectSyncRunModelAndSync, fromObjectSyncRunModelAndSyncWithObject } from '../mappers/object_sync_run';
+import { fromObjectSyncRunModelAndSyncWithObject, fromSyncRunModelAndSync } from '../mappers/sync_run';
 
-export class ObjectSyncRunService {
+export class SyncRunService {
   #prisma: PrismaClient;
   #connectionService: ConnectionService;
 
@@ -24,23 +24,23 @@ export class ObjectSyncRunService {
 
   async #upsert({
     id,
-    objectSyncId,
+    syncId,
     createParams,
   }: {
     id: string;
-    objectSyncId: string;
-    createParams: ObjectSyncRunUpsertParams;
-  }): Promise<ObjectSyncRun> {
-    const created: ObjectSyncRunModelExpanded = await this.#prisma.objectSyncRun.upsert({
+    syncId: string;
+    createParams: SyncRunUpsertParams;
+  }): Promise<SyncRun> {
+    const created: SyncRunModelExpanded = await this.#prisma.syncRun.upsert({
       where: { id },
       create: {
         ...createParams,
         id,
-        objectSyncId,
+        syncId,
       },
       update: {},
       include: {
-        objectSync: {
+        sync: {
           select: {
             id: true,
             connection: true,
@@ -49,21 +49,15 @@ export class ObjectSyncRunService {
       },
     });
 
-    return fromObjectSyncRunModelAndSync(created);
+    return fromSyncRunModelAndSync(created);
   }
 
-  async #update({
-    id,
-    updateParams,
-  }: {
-    id: string;
-    updateParams: Partial<ObjectSyncRunUpsertParams>;
-  }): Promise<ObjectSyncRun> {
-    const model = await this.#prisma.objectSyncRun.update({
+  async #update({ id, updateParams }: { id: string; updateParams: Partial<SyncRunUpsertParams> }): Promise<SyncRun> {
+    const model = await this.#prisma.syncRun.update({
       where: { id },
       data: updateParams,
       include: {
-        objectSync: {
+        sync: {
           select: {
             id: true,
             connection: true,
@@ -72,13 +66,13 @@ export class ObjectSyncRunService {
       },
     });
 
-    return fromObjectSyncRunModelAndSync(model);
+    return fromSyncRunModelAndSync(model);
   }
 
-  public async logStart(args: { objectSyncId: string; runId: string }): Promise<string> {
+  public async logStart(args: { syncId: string; runId: string }): Promise<string> {
     await this.#upsert({
       id: args.runId,
-      objectSyncId: args.objectSyncId,
+      syncId: args.syncId,
       createParams: {
         status: 'IN_PROGRESS' as const,
         errorMessage: null,
@@ -97,7 +91,7 @@ export class ObjectSyncRunService {
     numRecordsSynced,
   }: {
     runId: string;
-    status: ObjectSyncRunStatus;
+    status: SyncRunStatus;
     errorMessage?: string;
     numRecordsSynced: number | null;
   }): Promise<void> {
@@ -112,17 +106,17 @@ export class ObjectSyncRunService {
     });
   }
 
-  public async list(args: ObjectSyncRunFilter): Promise<PaginatedResult<ObjectSyncRunWithObject>> {
+  public async list(args: SyncRunFilter): Promise<PaginatedResult<SyncRunWithObjectOrEntity>> {
     // TODO: add prisma column
     const { applicationId, paginationParams, externalCustomerId, providerName } = args;
     const customerId = externalCustomerId ? getCustomerIdPk(applicationId, externalCustomerId) : undefined;
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;
-    const modelsPromise = this.#prisma.objectSyncRun.findMany({
+    const modelsPromise = this.#prisma.syncRun.findMany({
       ...getPaginationParams<string>(page_size, cursor),
       where: {
-        objectSync: {
+        sync: {
           connectionId: { in: connectionIds },
           objectType: {
             equals: 'objectType' in args ? args.objectType : undefined,
@@ -132,14 +126,17 @@ export class ObjectSyncRunService {
             equals: 'object' in args ? args.object : undefined,
             mode: 'insensitive',
           },
+          entityId: 'entityId' in args ? args.entityId : undefined,
         },
       },
       include: {
-        objectSync: {
+        sync: {
           select: {
             id: true,
+            type: true,
             objectType: true,
             object: true,
+            entityId: true,
             connection: true,
           },
         },
@@ -148,12 +145,13 @@ export class ObjectSyncRunService {
         startTimestamp: 'desc',
       },
     });
-    const countPromise = this.#prisma.objectSyncRun.count({
+    const countPromise = this.#prisma.syncRun.count({
       where: {
-        objectSync: {
+        sync: {
           connectionId: { in: connectionIds },
           objectType: 'objectType' in args ? args.objectType : undefined,
           object: 'object' in args ? args.object : undefined,
+          entityId: 'entityId' in args ? args.entityId : undefined,
         },
       },
     });

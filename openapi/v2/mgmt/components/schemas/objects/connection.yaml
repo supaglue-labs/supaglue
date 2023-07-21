@@ -30,6 +30,10 @@ properties:
     example: https://app.hubspot.com/contacts/123456
   schema_mappings_config:
     $ref: ./schema_mappings_config.yaml
+  entity_mappings:
+    type: array
+    items:
+      $ref: ./entity_mapping.yaml
 required:
   - id
   - status

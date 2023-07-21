@@ -1653,19 +1653,19 @@
     },
     {
       "name": "CustomObjects",
-      "description": "The `Custom Objects` Common Object is used to represent a \"custom object\" in CRMs."
+      "description": "A `Custom Object` is used to represent a \"custom object\" in CRMs."
     },
     {
       "name": "CustomObjectRecords",
-      "description": "The `Custom Object Record` Common Object is used to represent a \"custom object record\" in CRMs."
+      "description": "A `Custom Object Record` is used to represent a \"custom object record\" in CRMs."
     },
     {
       "name": "AssociationTypes",
-      "description": "The `Association Type` Common Object is used to represent an \"association type\" in CRMs."
+      "description": "An `Association Type` is used to represent an \"association type\" in CRMs."
     },
     {
       "name": "Associations",
-      "description": "The `Association` Common Object is used to represent an \"association\" in CRMs."
+      "description": "An `Association` is used to represent an \"association\" in CRMs."
     }
   ],
   "components": {

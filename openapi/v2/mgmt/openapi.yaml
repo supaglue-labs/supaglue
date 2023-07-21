@@ -41,6 +41,10 @@ paths:
     $ref: paths/properties.yaml
   '/field_mappings/_update_object':
     $ref: paths/field_mappings@_update_object.yaml
+  '/entity_mappings':
+    $ref: paths/entity_mappings.yaml
+  '/entity_mappings/{entity_id}':
+    $ref: paths/entity_mappings@{entity_id}.yaml
   '/schemas':
     $ref: paths/schemas.yaml
   '/schemas/{schema_id}':
@@ -53,8 +57,6 @@ paths:
     $ref: paths/providers.yaml
   '/providers/{provider_id}':
     $ref: paths/providers@{provider_id}.yaml
-  '/providers/{provider_id}/object':
-    $ref: paths/providers@{provider_id}@object.yaml
   '/sync_configs':
     $ref: paths/sync_configs.yaml
   '/sync_configs/{sync_config_id}':
@@ -92,6 +94,8 @@ tags:
     description: A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API.
   - name: Entities
     description: An `Entity` is a unified representation of Provider objects that can be synced to a Destination or manipulated by the Actions API.
+  - name: Entity Mappings
+    description: An `Entity Mapping` is a mapping between an Entity and an object with field mappings.
   - name: Field Mappings
     description: A `Field Mapping` is a mapping between a Schema field and the field in the Provider.
   - name: SyncConfigs
@@ -205,6 +209,14 @@ components:
       $ref: ./components/schemas/objects/webhook.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
+    standard_or_custom_object:
+      $ref: ./components/schemas/objects/standard_or_custom_object.yaml
+    entity_mapping:
+      $ref: ./components/schemas/objects/entity_mapping.yaml
+    merged_entity_mapping:
+      $ref: ./components/schemas/objects/merged_entity_mapping.yaml
+    entity_field_mapping:
+      $ref: ./components/schemas/objects/entity_field_mapping.yaml
   parameters:
     cursor:
       $ref: ../../common/components/parameters/query/cursor.yaml

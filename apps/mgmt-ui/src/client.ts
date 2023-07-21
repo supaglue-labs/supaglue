@@ -376,12 +376,21 @@ export async function deleteConnection(
 }
 
 export async function pauseSync(
-  applicationId: string,
-  customerId: string,
-  providerName: string,
-  objectType: string,
-  object: string
+  args: {
+    applicationId: string;
+    customerId: string;
+    providerName: string;
+  } & (
+    | {
+        objectType: string;
+        object: string;
+      }
+    | {
+        entityId: string;
+      }
+  )
 ): Promise<ClientEmptyResponse> {
+  const { applicationId, customerId, providerName } = args;
   const result = await fetch(`/api/internal/syncs/_pause`, {
     method: 'POST',
     headers: {
@@ -391,20 +400,30 @@ export async function pauseSync(
       'x-provider-name': providerName,
     },
     body: JSON.stringify({
-      object_type: objectType,
-      object,
+      object_type: 'objectType' in args ? args.objectType : undefined,
+      object: 'object' in args ? args.object : undefined,
+      entity_id: 'entityId' in args ? args.entityId : undefined,
     }),
   });
   return await toClientEmptyResponse(result);
 }
 
 export async function resumeSync(
-  applicationId: string,
-  customerId: string,
-  providerName: string,
-  objectType: string,
-  object: string
+  args: {
+    applicationId: string;
+    customerId: string;
+    providerName: string;
+  } & (
+    | {
+        objectType: string;
+        object: string;
+      }
+    | {
+        entityId: string;
+      }
+  )
 ): Promise<ClientEmptyResponse> {
+  const { applicationId, customerId, providerName } = args;
   const result = await fetch(`/api/internal/syncs/_resume`, {
     method: 'POST',
     headers: {
@@ -414,21 +433,31 @@ export async function resumeSync(
       'x-provider-name': providerName,
     },
     body: JSON.stringify({
-      object_type: objectType,
-      object,
+      object_type: 'objectType' in args ? args.objectType : undefined,
+      object: 'object' in args ? args.object : undefined,
+      entity_id: 'entityId' in args ? args.entityId : undefined,
     }),
   });
   return await toClientEmptyResponse(result);
 }
 
 export async function triggerSync(
-  applicationId: string,
-  customerId: string,
-  providerName: string,
-  objectType: string,
-  object: string,
-  performFullRefresh?: boolean
+  args: {
+    applicationId: string;
+    customerId: string;
+    providerName: string;
+    performFullRefresh?: boolean;
+  } & (
+    | {
+        objectType: string;
+        object: string;
+      }
+    | {
+        entityId: string;
+      }
+  )
 ): Promise<ClientEmptyResponse> {
+  const { applicationId, customerId, providerName, performFullRefresh } = args;
   const result = await fetch(`/api/internal/syncs/_trigger`, {
     method: 'POST',
     headers: {
@@ -438,8 +467,9 @@ export async function triggerSync(
       'x-provider-name': providerName,
     },
     body: JSON.stringify({
-      object_type: objectType,
-      object,
+      object_type: 'objectType' in args ? args.objectType : undefined,
+      object: 'object' in args ? args.object : undefined,
+      entity_id: 'entityId' in args ? args.entityId : undefined,
       perform_full_refresh: performFullRefresh,
     }),
   });

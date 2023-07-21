@@ -85,16 +85,16 @@ model Provider {
 }
 
 model SyncConfig {
-  id            String       @id @default(uuid())
-  applicationId String       @map("application_id")
-  providerId    String       @map("provider_id")
-  provider      Provider     @relation(fields: [providerId], references: [id])
-  destinationId String       @map("destination_id")
-  destination   Destination  @relation(fields: [destinationId], references: [id])
+  id            String      @id @default(uuid())
+  applicationId String      @map("application_id")
+  providerId    String      @map("provider_id")
+  provider      Provider    @relation(fields: [providerId], references: [id])
+  destinationId String      @map("destination_id")
+  destination   Destination @relation(fields: [destinationId], references: [id])
   config        Json
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime     @updatedAt @map("updated_at")
-  objectSyncs   ObjectSync[]
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  syncs         Sync[]
 
   // TODO: Eventually allow multiple destinations
   @@unique([providerId])
@@ -110,73 +110,73 @@ model SyncConfigChange {
 }
 
 model Connection {
-  id                   String       @id @default(uuid())
+  id                   String     @id @default(uuid())
   // CRM, HRIS, etc.
   category             String
   // Salesforce, Hubspot, etc.
-  providerName         String       @map("provider_name")
+  providerName         String     @map("provider_name")
   status               String // available | added | authorized | callable
   credentials          Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
-  customer             Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  customerId           String       @map("customer_id")
-  instanceUrl          String       @default("") @map("instance_url")
-  createdAt            DateTime     @default(now()) @map("created_at")
-  updatedAt            DateTime     @updatedAt @map("updated_at")
+  customer             Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customerId           String     @map("customer_id")
+  instanceUrl          String     @default("") @map("instance_url")
+  createdAt            DateTime   @default(now()) @map("created_at")
+  updatedAt            DateTime   @updatedAt @map("updated_at")
   replayIds            ReplayId[]
-  provider             Provider     @relation(fields: [providerId], references: [id])
-  providerId           String       @map("provider_id")
-  schemaMappingsConfig Json?        @map("schema_mappings_config")
-  entityMappings       Json?        @map("entity_mappings")
-  objectSyncs          ObjectSync[]
+  provider             Provider   @relation(fields: [providerId], references: [id])
+  providerId           String     @map("provider_id")
+  schemaMappingsConfig Json?      @map("schema_mappings_config")
+  entityMappings       Json?      @map("entity_mappings")
+  syncs                Sync[]
 
   @@unique([customerId, providerId])
   @@map("connections")
 }
 
-model ObjectSync {
-  id             String          @id @default(uuid())
-  type           String          @default("object") // object | entity
+model Sync {
+  id             String     @id @default(uuid())
+  type           String     @default("object") // object | entity
   // set `objectType` and `object` if type is `object`
-  objectType     String?         @map("object_type") // common, standard, custom
+  objectType     String?    @map("object_type") // common, standard, custom
   object         String?
   // set `entityId` if type is `entity`
-  entityId       String?         @map("entity_id")
-  entity         Entity?         @relation(fields: [entityId], references: [id])
+  entityId       String?    @map("entity_id")
+  entity         Entity?    @relation(fields: [entityId], references: [id])
   state          Json
   strategy       Json
-  connectionId   String          @map("connection_id")
-  connection     Connection      @relation(fields: [connectionId], references: [id])
-  paused         Boolean         @default(false)
-  syncConfigId   String          @map("sync_config_id")
-  syncConfig     SyncConfig      @relation(fields: [syncConfigId], references: [id])
-  argsForNextRun Json?           @map("args_for_next_run")
-  createdAt      DateTime        @default(now()) @map("created_at")
-  updatedAt      DateTime        @updatedAt @map("updated_at")
-  runs           ObjectSyncRun[]
+  connectionId   String     @map("connection_id")
+  connection     Connection @relation(fields: [connectionId], references: [id])
+  paused         Boolean    @default(false)
+  syncConfigId   String     @map("sync_config_id")
+  syncConfig     SyncConfig @relation(fields: [syncConfigId], references: [id])
+  argsForNextRun Json?      @map("args_for_next_run")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  runs           SyncRun[]
 
   @@unique([connectionId, type, objectType, object])
   @@unique([connectionId, type, entityId])
   @@map("object_syncs")
 }
 
-model ObjectSyncChange {
-  id           String   @id @default(uuid())
-  objectSyncId String   @map("object_sync_id")
-  createdAt    DateTime @default(now()) @map("created_at")
+model SyncChange {
+  id        String   @id @default(uuid())
+  syncId    String   @map("object_sync_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@map("object_sync_changes")
 }
 
-model ObjectSyncRun {
-  id               String     @id @default(uuid())
-  objectSyncId     String     @map("object_sync_id")
-  objectSync       ObjectSync @relation(fields: [objectSyncId], references: [id], onDelete: Cascade)
+model SyncRun {
+  id               String    @id @default(uuid())
+  syncId           String    @map("object_sync_id")
+  sync             Sync      @relation(fields: [syncId], references: [id], onDelete: Cascade)
   // SUCCESS | ERROR | IN_PROGRESS
   status           String
-  errorMessage     String?    @map("error_message")
-  startTimestamp   DateTime   @map("start_timestamp")
-  endTimestamp     DateTime?  @map("end_timestamp")
-  numRecordsSynced Int?       @map("num_records_synced")
+  errorMessage     String?   @map("error_message")
+  startTimestamp   DateTime  @map("start_timestamp")
+  endTimestamp     DateTime? @map("end_timestamp")
+  numRecordsSynced Int?      @map("num_records_synced")
 
   @@map("object_sync_runs")
 }
@@ -207,14 +207,14 @@ model Schema {
 }
 
 model Entity {
-  id            String       @id @default(uuid())
+  id            String      @id @default(uuid())
   name          String
-  applicationId String       @map("application_id")
-  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String      @map("application_id")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   config        Json
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime     @updatedAt @map("updated_at")
-  syncs         ObjectSync[]
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  syncs         Sync[]
 
   @@unique([applicationId, name])
   @@map("entities")

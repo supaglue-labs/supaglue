@@ -10,7 +10,7 @@ import type {
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Router, type Request, type Response } from 'express';
 
-const { objectSyncRunService } = getDependencyContainer();
+const { syncRunService } = getDependencyContainer();
 
 export default function init(app: Router) {
   const syncRunRouter = Router();
@@ -21,22 +21,31 @@ export default function init(app: Router) {
       req: Request<GetSyncRunsPathParams, GetSyncRunsResponse, GetSyncRunsRequest, GetSyncRunsQueryParams>,
       res: Response<GetSyncRunsResponse>
     ) => {
-      function getObjectFilter() {
+      function getObjectOrEntityFilter() {
         if (req.query?.object_type && req.query.object) {
           return {
             objectType: req.query.object_type,
             object: req.query.object,
           };
-        } else if (!req.query?.object_type && !req.query?.object) {
+        }
+
+        if (req.query?.entity_id) {
+          return {
+            entityId: req.query.entity_id,
+          };
+        }
+
+        if (!req.query?.object_type && !req.query?.object && !req.query?.entity_id) {
           return {};
         }
-        throw new BadRequestError('object_type and object must both be present or both be absent');
+
+        throw new BadRequestError('must filter on (object_type, object) or entity_id or neither');
       }
 
-      const { next, previous, results, totalCount } = await objectSyncRunService.list({
+      const { next, previous, results, totalCount } = await syncRunService.list({
         applicationId: req.supaglueApplication.id,
         paginationParams: toPaginationInternalParams({ page_size: req.query?.page_size, cursor: req.query?.cursor }),
-        ...getObjectFilter(),
+        ...getObjectOrEntityFilter(),
         externalCustomerId: req.query?.customer_id,
         providerName: req.query?.provider_name,
       });

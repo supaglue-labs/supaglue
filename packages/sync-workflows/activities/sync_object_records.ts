@@ -5,23 +5,23 @@ import type { ConnectionService, RemoteService, SyncConfigService } from '@supag
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
-import type { ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectType } from '@supaglue/types/sync';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import type { Readable } from 'stream';
 import { pipeline, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 import type { ApplicationService, SyncService } from '../services';
 
-export type SyncRecordsArgs = {
-  objectSyncId: string;
+export type SyncObjectRecordsArgs = {
+  syncId: string;
   connectionId: string;
   objectType: ObjectType;
   object: string;
   updatedAfterMs?: number;
 };
 
-export type SyncRecordsResult = {
-  objectSyncId: string;
+export type SyncObjectRecordsResult = {
+  syncId: string;
   connectionId: string;
   objectType: ObjectType;
   object: string;
@@ -29,7 +29,7 @@ export type SyncRecordsResult = {
   numRecordsSynced: number;
 };
 
-export function createSyncRecords(
+export function createSyncObjectRecords(
   connectionService: ConnectionService,
   remoteService: RemoteService,
   destinationService: DestinationService,
@@ -37,15 +37,15 @@ export function createSyncRecords(
   syncConfigService: SyncConfigService,
   applicationService: ApplicationService
 ) {
-  return async function syncRecords({
-    objectSyncId,
+  return async function syncObjectRecords({
+    syncId,
     connectionId,
     objectType,
     object,
     updatedAfterMs,
-  }: SyncRecordsArgs): Promise<SyncRecordsResult> {
-    const objectSync = await syncService.getObjectSyncById(objectSyncId);
-    const syncConfig = await syncConfigService.getById(objectSync.syncConfigId);
+  }: SyncObjectRecordsArgs): Promise<SyncObjectRecordsResult> {
+    const sync = await syncService.getSyncById(syncId);
+    const syncConfig = await syncConfigService.getById(sync.syncConfigId);
     const connection = await connectionService.getSafeById(connectionId);
 
     async function writeObjects(writer: DestinationWriter) {
@@ -112,7 +112,7 @@ export function createSyncRecords(
     logEvent({
       distinctId: distinctId ?? application.orgId,
       eventName: 'Start Sync',
-      syncId: objectSyncId,
+      syncId,
       providerName: connection.providerName,
       modelName: object,
     });
@@ -129,13 +129,13 @@ export function createSyncRecords(
     logEvent({
       distinctId: distinctId ?? application.orgId,
       eventName: 'Partially Completed Sync',
-      syncId: objectSyncId,
+      syncId: syncId,
       providerName: connection.providerName,
       modelName: object,
     });
 
     return {
-      objectSyncId: objectSyncId,
+      syncId: syncId,
       connectionId,
       objectType,
       object,
