@@ -37,7 +37,7 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
           : '',
       width: 120,
       sortable: false,
-    }, // TODO: should make this render Entity name instead
+    },
     { field: 'status', headerName: 'Status', width: 100, sortable: false },
     {
       field: 'startTimestamp',

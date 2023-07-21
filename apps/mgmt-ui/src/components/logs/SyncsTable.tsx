@@ -47,7 +47,7 @@ export default function SyncsTable(props: SyncsTableProps) {
           : '',
       width: 120,
       sortable: false,
-    }, // TODO: should make this render Entity name instead
+    },
     {
       field: 'paused',
       headerName: 'Paused?',
