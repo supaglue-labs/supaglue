@@ -16,7 +16,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import { Box, Breadcrumbs, Grid, IconButton, Stack, Typography } from '@mui/material';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import type { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { ConnectionSafeAny } from '@supaglue/types';
 import Head from 'next/head';
@@ -27,10 +27,6 @@ import { useState } from 'react';
 export { getServerSideProps };
 
 export default function Home() {
-  const { nextLambdaEnv } = useNextLambdaEnv();
-  const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
-  const router = useRouter();
-  const returnUrl = `${origin}${router.asPath}`;
   const { addNotification } = useNotification();
   const { customers = [], isLoading, mutate } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -53,16 +49,6 @@ export default function Home() {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-  };
-
-  const handleEmbedLinkClick = async (params: GridRenderCellParams) => {
-    addNotification({ message: 'Copied to clipboard', severity: 'success' });
-
-    await navigator.clipboard.writeText(
-      `${nextLambdaEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
-        params.id
-      )}&returnUrl=${returnUrl}&providerName={{REPLACE_ME}}`
-    );
   };
 
   const columns: GridColDef[] = [
