@@ -1,10 +1,13 @@
 import type { ProviderCategory } from '@supaglue/types/common';
 import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
 // Only import the activity types
-import type { FullOnlyObjectSync, FullThenIncrementalObjectSync } from '@supaglue/types/sync';
+import type { FullOnlySync, FullThenIncrementalSync } from '@supaglue/types/sync';
 import type { createActivities } from '../activities/index';
 
-const { syncObjectRecords: syncRecords } = proxyActivities<ReturnType<typeof createActivities>>({
+// TODO: Rename this to `runSync` when we have time. It will be a backwards incompatible change.
+// We will need to re-create all the schedules to use the new workflow name.
+
+const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '5 minute',
   retry: {
@@ -12,22 +15,16 @@ const { syncObjectRecords: syncRecords } = proxyActivities<ReturnType<typeof cre
   },
 });
 
-const {
-  getObjectSync,
-  updateObjectSyncState,
-  clearObjectSyncArgsForNextRun: clearSyncArgsForNextRun,
-  logObjectSyncStart,
-  logObjectSyncFinish,
-} = proxyActivities<ReturnType<typeof createActivities>>({
+const { getSync, updateSyncState, clearSyncArgsForNextRun, logSyncStart, logSyncFinish } = proxyActivities<
+  ReturnType<typeof createActivities>
+>({
   startToCloseTimeout: '10 second',
   retry: {
     maximumAttempts: 3,
   },
 });
 
-const { maybeSendObjectSyncFinishWebhook: maybeSendSyncFinishWebhook } = proxyActivities<
-  ReturnType<typeof createActivities>
->({
+const { maybeSendSyncFinishWebhook } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '6 minute',
   retry: {
     maximumAttempts: 3,
@@ -38,39 +35,39 @@ export const RUN_OBJECT_SYNC_PREFIX = 'run-object-sync-';
 export const getRunObjectSyncScheduleId = (objectSyncId: string): string => `${RUN_OBJECT_SYNC_PREFIX}${objectSyncId}`;
 export const getRunObjectSyncWorkflowId = (objectSyncId: string): string => `${RUN_OBJECT_SYNC_PREFIX}${objectSyncId}`;
 
+// TODO: change these params to remove 'object' prefix when we have time. It'll be backwards incompatible.
+
 export type RunObjectSyncArgs = {
-  objectSyncId: string;
+  syncId: string;
   connectionId: string;
   category: ProviderCategory;
   context: Record<string, unknown>;
 };
 
-export async function runObjectSync({ objectSyncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
-  const { objectSync } = await getObjectSync({ objectSyncId });
+export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
+  const { sync } = await getSync({ syncId });
 
   // Generate history id
   const runId = uuid4();
 
   // Record that sync has started
-  await logObjectSyncStart({
-    objectSyncId,
+  await logSyncStart({
+    syncId,
     runId,
-    objectType: objectSync.objectType,
-    object: objectSync.object,
   });
 
   let numRecordsSynced: number | undefined;
   try {
     numRecordsSynced =
-      objectSync.type === 'full then incremental'
-        ? await doFullThenIncrementalSync(objectSync)
-        : await doFullOnlySync(objectSync);
-    await clearSyncArgsForNextRun({ objectSyncId });
+      sync.strategyType === 'full then incremental'
+        ? await doFullThenIncrementalSync(sync)
+        : await doFullOnlySync(sync);
+    await clearSyncArgsForNextRun({ syncId });
   } catch (err: any) {
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
 
-    await logObjectSyncFinish({
-      objectSyncId,
+    await logSyncFinish({
+      syncId: syncId,
       connectionId,
       runId,
       status: 'FAILURE',
@@ -78,16 +75,31 @@ export async function runObjectSync({ objectSyncId, connectionId, category }: Ru
       errorStack,
       numRecordsSynced: null,
     });
-    await maybeSendSyncFinishWebhook({
-      historyId: runId,
-      status: 'SYNC_ERROR',
-      connectionId,
-      // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
-      numRecordsSynced: 0,
-      objectType: objectSync.objectType,
-      object: objectSync.object,
-      errorMessage,
-    });
+
+    if (sync.type === 'object') {
+      await maybeSendSyncFinishWebhook({
+        historyId: runId,
+        status: 'SYNC_ERROR',
+        connectionId,
+        // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
+        numRecordsSynced: 0,
+        type: 'object',
+        objectType: sync.objectType,
+        object: sync.object,
+        errorMessage,
+      });
+    } else {
+      await maybeSendSyncFinishWebhook({
+        historyId: runId,
+        status: 'SYNC_ERROR',
+        connectionId,
+        // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
+        numRecordsSynced: 0,
+        type: 'entity',
+        entityId: sync.entityId,
+        errorMessage,
+      });
+    }
 
     throw err;
   }
@@ -96,41 +108,60 @@ export async function runObjectSync({ objectSyncId, connectionId, category }: Ru
     throw ApplicationFailure.nonRetryable('Unexpectedly numRecordsSynced was not set');
   }
 
-  await logObjectSyncFinish({
-    objectSyncId,
+  await logSyncFinish({
+    syncId: syncId,
     connectionId,
     runId,
     status: 'SUCCESS',
     numRecordsSynced,
   });
-  await maybeSendSyncFinishWebhook({
-    historyId: runId,
-    status: 'SYNC_SUCCESS',
-    connectionId,
-    numRecordsSynced,
-    objectType: objectSync.objectType,
-    object: objectSync.object,
-  });
+  if (sync.type === 'object') {
+    await maybeSendSyncFinishWebhook({
+      historyId: runId,
+      status: 'SYNC_SUCCESS',
+      connectionId,
+      numRecordsSynced,
+      type: 'object',
+      objectType: sync.objectType,
+      object: sync.object,
+    });
+  } else {
+    await maybeSendSyncFinishWebhook({
+      historyId: runId,
+      status: 'SYNC_SUCCESS',
+      connectionId,
+      numRecordsSynced,
+      type: 'entity',
+      entityId: sync.entityId,
+    });
+  }
 }
 
-async function doFullOnlySync(objectSync: FullOnlyObjectSync): Promise<number> {
-  await updateObjectSyncState({
-    objectSyncId: objectSync.id,
+async function doFullOnlySync(sync: FullOnlySync): Promise<number> {
+  await updateSyncState({
+    syncId: sync.id,
     state: {
       phase: 'full',
       status: 'in progress',
     },
   });
 
-  const { numRecordsSynced } = await syncRecords({
-    objectSyncId: objectSync.id,
-    connectionId: objectSync.connectionId,
-    objectType: objectSync.objectType,
-    object: objectSync.object,
-  });
+  const { numRecordsSynced } =
+    sync.type === 'object'
+      ? await syncObjectRecords({
+          syncId: sync.id,
+          connectionId: sync.connectionId,
+          objectType: sync.objectType,
+          object: sync.object,
+        })
+      : await syncEntityRecords({
+          syncId: sync.id,
+          connectionId: sync.connectionId,
+          entityId: sync.entityId,
+        });
 
-  await updateObjectSyncState({
-    objectSyncId: objectSync.id,
+  await updateSyncState({
+    syncId: sync.id,
     state: {
       phase: 'full',
       status: 'done',
@@ -140,25 +171,32 @@ async function doFullOnlySync(objectSync: FullOnlyObjectSync): Promise<number> {
   return numRecordsSynced;
 }
 
-async function doFullThenIncrementalSync(objectSync: FullThenIncrementalObjectSync): Promise<number> {
+async function doFullThenIncrementalSync(sync: FullThenIncrementalSync): Promise<number> {
   async function doFullStage(): Promise<number> {
-    await updateObjectSyncState({
-      objectSyncId: objectSync.id,
+    await updateSyncState({
+      syncId: sync.id,
       state: {
         phase: 'full',
         status: 'in progress',
       },
     });
 
-    const { maxLastModifiedAtMs: newMaxLastModifiedAtMs, numRecordsSynced } = await syncRecords({
-      objectSyncId: objectSync.id,
-      connectionId: objectSync.connectionId,
-      objectType: objectSync.objectType,
-      object: objectSync.object,
-    });
+    const { maxLastModifiedAtMs: newMaxLastModifiedAtMs, numRecordsSynced } =
+      sync.type === 'object'
+        ? await syncObjectRecords({
+            syncId: sync.id,
+            connectionId: sync.connectionId,
+            objectType: sync.objectType,
+            object: sync.object,
+          })
+        : await syncEntityRecords({
+            syncId: sync.id,
+            connectionId: sync.connectionId,
+            entityId: sync.entityId,
+          });
 
-    await updateObjectSyncState({
-      objectSyncId: objectSync.id,
+    await updateSyncState({
+      syncId: sync.id,
       state: {
         phase: 'full',
         status: 'done',
@@ -170,30 +208,38 @@ async function doFullThenIncrementalSync(objectSync: FullThenIncrementalObjectSy
   }
 
   async function doIncrementalPhase(): Promise<number> {
-    await updateObjectSyncState({
-      objectSyncId: objectSync.id,
+    await updateSyncState({
+      syncId: sync.id,
       state: {
         phase: 'incremental',
         status: 'in progress',
-        maxLastModifiedAtMs: objectSync.state.phase === 'created' ? undefined : objectSync.state.maxLastModifiedAtMs,
+        maxLastModifiedAtMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
       },
     });
 
-    const { maxLastModifiedAtMs: returnedMaxLastModifiedAtMs, numRecordsSynced } = await syncRecords({
-      objectSyncId: objectSync.id,
-      connectionId: objectSync.connectionId,
-      objectType: objectSync.objectType,
-      object: objectSync.object,
-      updatedAfterMs: objectSync.state.phase === 'created' ? undefined : objectSync.state.maxLastModifiedAtMs,
-    });
+    const { maxLastModifiedAtMs: returnedMaxLastModifiedAtMs, numRecordsSynced } =
+      sync.type === 'object'
+        ? await syncObjectRecords({
+            syncId: sync.id,
+            connectionId: sync.connectionId,
+            objectType: sync.objectType,
+            object: sync.object,
+            updatedAfterMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
+          })
+        : await syncEntityRecords({
+            syncId: sync.id,
+            connectionId: sync.connectionId,
+            entityId: sync.entityId,
+            updatedAfterMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
+          });
 
     const newMaxLastModifiedAtMs = Math.max(
       returnedMaxLastModifiedAtMs ?? 0,
-      objectSync.state.phase === 'created' ? 0 : objectSync.state.maxLastModifiedAtMs ?? 0
+      sync.state.phase === 'created' ? 0 : sync.state.maxLastModifiedAtMs ?? 0
     );
 
-    await updateObjectSyncState({
-      objectSyncId: objectSync.id,
+    await updateSyncState({
+      syncId: sync.id,
       state: {
         phase: 'incremental',
         status: 'done',
@@ -205,16 +251,16 @@ async function doFullThenIncrementalSync(objectSync: FullThenIncrementalObjectSy
   }
 
   // Short-circuit normal state transitions if we're forcing a full refresh sync
-  if (objectSync.argsForNextRun?.performFullRefresh) {
+  if (sync.argsForNextRun?.performFullRefresh) {
     return await doFullStage();
   }
 
   // Sync state transitions
-  switch (objectSync.state.phase) {
+  switch (sync.state.phase) {
     case 'created':
       return await doFullStage();
     case 'full':
-      switch (objectSync.state.status) {
+      switch (sync.state.status) {
         case 'in progress':
           return await doFullStage();
         case 'done':

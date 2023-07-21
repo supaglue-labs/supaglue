@@ -43,6 +43,8 @@ export type FullOnlyEntitySync = BaseSync & EntitySyncArgs & FullOnlySyncArgs;
 export type SyncStrategyType = 'full then incremental' | 'full only';
 export type ObjectSync = FullThenIncrementalObjectSync | FullOnlyObjectSync;
 export type EntitySync = FullThenIncrementalEntitySync | FullOnlyEntitySync;
+export type FullThenIncrementalSync = FullThenIncrementalObjectSync | FullThenIncrementalEntitySync;
+export type FullOnlySync = FullOnlyObjectSync | FullOnlyEntitySync;
 export type Sync = ObjectSync | EntitySync;
 
 export type SyncDTO = Sync & {
@@ -89,4 +91,6 @@ export type SyncFilter = {
   | {
       entityId: string;
     }
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | {}
 );

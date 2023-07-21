@@ -747,22 +747,29 @@ export interface components {
     provider_name_engagement: "outreach";
     sync: {
       id: string;
-      /** @enum {string} */
-      object_type: "common" | "standard" | "custom";
-      object: string;
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
       sync_config_id: string;
       paused: boolean;
-    };
+    } & (OneOf<[{
+      /** @enum {string} */
+      type: "object";
+      /** @enum {string} */
+      object_type: "common" | "standard" | "custom";
+      object: string;
+    }, {
+      /** @enum {string} */
+      type: "entity";
+      entity_id: string;
+    }]>);
     sync_with_provider_and_customer: components["schemas"]["sync"] & {
       /** @example hubspot */
       provider_name: string;
       /** @example my-customer-1 */
       customer_id: string;
     };
-    sync_run: {
+    sync_run: ({
       error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
       start_timestamp: string;
@@ -782,10 +789,13 @@ export interface components {
       status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
       /** @example 100 */
       num_records_synced: number | null;
+    }) & (OneOf<[{
       /** @enum {string} */
       object_type: "common" | "standard" | "custom";
       object: string;
-    };
+    }, {
+      entity_id: string;
+    }]>);
     create_update_customer: {
       /** @example your-customers-unique-application-id */
       customer_id: string;
@@ -1737,6 +1747,8 @@ export interface operations {
         object_type?: "common" | "standard" | "custom";
         /** @description The object to filter by */
         object?: string;
+        /** @description The entity id to filter by */
+        entity_id?: string;
       };
     };
     responses: {
@@ -1760,7 +1772,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": {
+        "application/json": OneOf<[{
           /**
            * @description The object type to filter by 
            * @enum {string}
@@ -1771,7 +1783,10 @@ export interface operations {
            * @example contact
            */
           object: string;
-        };
+        }, {
+          /** @description The entity id to filter by */
+          entity_id: string;
+        }]>;
       };
     };
     responses: {
@@ -1793,7 +1808,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": {
+        "application/json": OneOf<[{
           /**
            * @description The object type to filter by 
            * @enum {string}
@@ -1804,7 +1819,10 @@ export interface operations {
            * @example contact
            */
           object: string;
-        };
+        }, {
+          /** @description The entity id to filter by */
+          entity_id: string;
+        }]>;
       };
     };
     responses: {
@@ -1826,7 +1844,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": {
+        "application/json": (OneOf<[{
           /**
            * @description The object type to filter by 
            * @enum {string}
@@ -1837,6 +1855,10 @@ export interface operations {
            * @example contact
            */
           object: string;
+        }, {
+          /** @description The entity id to filter by */
+          entity_id: string;
+        }]>) & {
           /** @example true */
           perform_full_refresh?: boolean;
         };
@@ -1866,10 +1888,11 @@ export interface operations {
         customer_id?: string;
         /** @description The provider name */
         provider_name?: string;
-        /** @description The object type to filter by */
-        object_type?: string;
+        object_type?: "common" | "standard" | "custom";
         /** @description The object to filter by */
         object?: string;
+        /** @description The entity id to filter by */
+        entity_id?: string;
       };
     };
     responses: {

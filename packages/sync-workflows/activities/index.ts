@@ -1,25 +1,18 @@
 import type { ConnectionService, ProviderService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { EntityService } from '@supaglue/core/services/entity_service';
-import type { EntitySyncRunService } from '@supaglue/core/services/entity_sync_run_service';
-import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
+import type { SyncRunService } from '@supaglue/core/services/sync_run_service';
 import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
 import type { ApplicationService, SyncService } from '../services';
-import { createClearEntitySyncArgsForNextRun } from './clear_entity_sync_args_for_next_run';
-import { createClearObjectSyncArgsForNextRun } from './clear_object_sync_args_for_next_run';
+import { createClearSyncArgsForNextRun } from './clear_sync_args_for_next_run';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
-import { createGetEntitySync } from './get_entity_sync';
-import { createGetObjectSync } from './get_object_sync';
-import { createLogEntitySyncFinish } from './log_entity_sync_finish';
-import { createLogEntitySyncStart } from './log_entity_sync_start';
-import { createLogObjectSyncFinish } from './log_object_sync_finish';
-import { createLogObjectSyncStart } from './log_object_sync_start';
-import { createMaybeSendEntitySyncFinishWebhook } from './maybe_send_entity_sync_finish_webhook';
-import { createMaybeSendObjectSyncFinishWebhook } from './maybe_send_object_sync_finish_webhook';
+import { createGetSync } from './get_sync';
+import { createLogSyncFinish } from './log_sync_finish';
+import { createLogSyncStart } from './log_sync_start';
+import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
 import { createSyncEntityRecords } from './sync_entity_records';
 import { createSyncObjectRecords } from './sync_object_records';
-import { createUpdateEntitySyncState } from './update_entity_sync_state';
-import { createUpdateObjectSyncState } from './update_object_sync_state';
+import { createUpdateSyncState } from './update_sync_state';
 
 export const createActivities = ({
   systemSettingsService,
@@ -30,8 +23,7 @@ export const createActivities = ({
   syncConfigService,
   applicationService,
   destinationService,
-  objectSyncRunService,
-  entitySyncRunService,
+  syncRunService,
   entityService,
 }: {
   systemSettingsService: SystemSettingsService;
@@ -42,16 +34,14 @@ export const createActivities = ({
   providerService: ProviderService;
   applicationService: ApplicationService;
   destinationService: DestinationService;
-  objectSyncRunService: ObjectSyncRunService;
-  entitySyncRunService: EntitySyncRunService;
+  syncRunService: SyncRunService;
   entityService: EntityService;
 }) => {
   return {
+    getSync: createGetSync(syncService),
     doProcessSyncChanges: createDoProcessSyncChanges(syncService, systemSettingsService),
-    // object activities
-    getObjectSync: createGetObjectSync(syncService),
-    updateObjectSyncState: createUpdateObjectSyncState(syncService),
-    clearObjectSyncArgsForNextRun: createClearObjectSyncArgsForNextRun(syncService),
+    updateSyncState: createUpdateSyncState(syncService),
+    clearSyncArgsForNextRun: createClearSyncArgsForNextRun(syncService),
     syncObjectRecords: createSyncObjectRecords(
       connectionService,
       remoteService,
@@ -60,17 +50,6 @@ export const createActivities = ({
       syncConfigService,
       applicationService
     ),
-    logObjectSyncStart: createLogObjectSyncStart({ objectSyncRunService }),
-    logObjectSyncFinish: createLogObjectSyncFinish({ objectSyncRunService, applicationService, connectionService }),
-    maybeSendObjectSyncFinishWebhook: createMaybeSendObjectSyncFinishWebhook({
-      connectionService,
-      providerService,
-      applicationService,
-    }),
-    // entity activities
-    getEntitySync: createGetEntitySync(syncService),
-    updateEntitySyncState: createUpdateEntitySyncState(syncService),
-    clearEntitySyncArgsForNextRun: createClearEntitySyncArgsForNextRun(syncService),
     syncEntityRecords: createSyncEntityRecords(
       connectionService,
       remoteService,
@@ -80,9 +59,13 @@ export const createActivities = ({
       applicationService,
       entityService
     ),
-    logEntitySyncStart: createLogEntitySyncStart({ entitySyncRunService }),
-    logEntitySyncFinish: createLogEntitySyncFinish({ entitySyncRunService, applicationService, connectionService }),
-    maybeSendEntitySyncFinishWebhook: createMaybeSendEntitySyncFinishWebhook({
+    logSyncStart: createLogSyncStart({ syncRunService }),
+    logSyncFinish: createLogSyncFinish({
+      syncRunService,
+      applicationService,
+      connectionService,
+    }),
+    maybeSendSyncFinishWebhook: createMaybeSendSyncFinishWebhook({
       connectionService,
       providerService,
       applicationService,

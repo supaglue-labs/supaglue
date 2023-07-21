@@ -2,21 +2,21 @@ import { logger } from '@supaglue/core/lib';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import type { ConnectionService } from '@supaglue/core/services';
-import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
-import type { ObjectSyncRunStatus } from '@supaglue/types/sync_run';
+import type { SyncRunService } from '@supaglue/core/services/sync_run_service';
+import type { SyncRunStatus } from '@supaglue/types/sync_run';
 import type { ApplicationService } from '../services';
 
-export function createLogObjectSyncFinish({
-  objectSyncRunService,
+export function createLogSyncFinish({
+  syncRunService,
   connectionService,
   applicationService,
 }: {
-  objectSyncRunService: ObjectSyncRunService;
+  syncRunService: SyncRunService;
   connectionService: ConnectionService;
   applicationService: ApplicationService;
 }) {
-  return async function logObjectSyncFinish({
-    objectSyncId,
+  return async function logSyncFinish({
+    syncId,
     connectionId,
     runId,
     status,
@@ -24,15 +24,15 @@ export function createLogObjectSyncFinish({
     errorStack,
     numRecordsSynced,
   }: {
-    objectSyncId: string;
+    syncId: string;
     connectionId: string;
     runId: string;
-    status: ObjectSyncRunStatus;
+    status: SyncRunStatus;
     errorMessage?: string;
     errorStack?: string;
     numRecordsSynced: number | null;
   }) {
-    await objectSyncRunService.logFinish({ runId, status, errorMessage, numRecordsSynced });
+    await syncRunService.logFinish({ runId, status, errorMessage, numRecordsSynced });
 
     const connection = await connectionService.getSafeById(connectionId);
     const application = await applicationService.getById(connection.applicationId);
@@ -42,9 +42,9 @@ export function createLogObjectSyncFinish({
       error.stack = errorStack;
 
       if (application.environment === 'development') {
-        logger.warn(error, `Sync failed for objectSyncId ${objectSyncId} and connectionId ${connectionId}`);
+        logger.warn(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
       } else {
-        logger.error(error, `Sync failed for objectSyncId ${objectSyncId} and connectionId ${connectionId}`);
+        logger.error(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
       }
     }
 
@@ -54,7 +54,7 @@ export function createLogObjectSyncFinish({
       properties: {
         result: status === 'FAILURE' ? 'error' : 'success',
         params: {
-          objectSyncId,
+          syncId,
           connectionId,
           runId,
           errorMessage,

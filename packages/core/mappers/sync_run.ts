@@ -1,7 +1,7 @@
 import type { ObjectType } from '@supaglue/types/sync';
 import type { SyncRun, SyncRunStatus, SyncRunWithObjectOrEntity } from '@supaglue/types/sync_run';
 import { parseCustomerIdPk } from '../lib/customer_id';
-import type { SyncRunModelExpanded, SyncRunModelExpandedWithObjectAndEntity } from '../types/object_sync_run';
+import type { SyncRunModelExpanded, SyncRunModelExpandedWithObjectAndEntity } from '../types/sync_run';
 
 export const fromSyncRunModelAndSync = (args: SyncRunModelExpanded): SyncRun => {
   const { id, status, errorMessage, startTimestamp, endTimestamp, sync, numRecordsSynced } = args;

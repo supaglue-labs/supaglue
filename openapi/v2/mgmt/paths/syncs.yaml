@@ -47,6 +47,11 @@ get:
         type: string
         example: contact
       description: The object to filter by
+    - name: entity_id
+      in: query
+      schema:
+        type: string
+      description: The entity id to filter by
   responses:
     '200':
       description: Sync

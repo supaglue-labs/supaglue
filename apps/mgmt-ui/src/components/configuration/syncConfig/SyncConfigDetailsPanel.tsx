@@ -15,7 +15,7 @@ import Card from '@mui/material/Card';
 import type { CommonObjectConfig, CommonObjectType, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
-import type { ObjectSyncType } from '@supaglue/types/sync';
+import type { SyncStrategyType } from '@supaglue/types/sync';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -52,7 +52,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [providerId, setProviderId] = useState<string | undefined>();
   const [destinationId, setDestinationId] = useState<string | undefined>();
-  const [strategy, setStrategy] = useState<ObjectSyncType>('full then incremental');
+  const [strategy, setStrategy] = useState<SyncStrategyType>('full then incremental');
   const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
   const [customObjects, setCustomObjects] = useState<string[]>([]);

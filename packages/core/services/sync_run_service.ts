@@ -1,4 +1,4 @@
-import type { SyncRunModelExpanded } from '@supaglue/core/types/object_sync_run';
+import type { SyncRunModelExpanded } from '@supaglue/core/types/sync_run';
 import type { PrismaClient } from '@supaglue/db';
 import type { PaginatedResult } from '@supaglue/types/common';
 import type {
@@ -13,7 +13,7 @@ import { getCustomerIdPk } from '../lib/customer_id';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
 import { fromObjectSyncRunModelAndSyncWithObject, fromSyncRunModelAndSync } from '../mappers/sync_run';
 
-export class ObjectSyncRunService {
+export class SyncRunService {
   #prisma: PrismaClient;
   #connectionService: ConnectionService;
 

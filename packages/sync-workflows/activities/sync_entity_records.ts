@@ -10,14 +10,14 @@ import { logEvent } from '../lib/analytics';
 import type { ApplicationService, SyncService } from '../services';
 
 export type SyncEntityRecordsArgs = {
-  entitySyncId: string;
+  syncId: string;
   connectionId: string;
   entityId: string;
   updatedAfterMs?: number;
 };
 
 export type SyncEntityRecordsResult = {
-  objectSyncId: string;
+  syncId: string;
   connectionId: string;
   entityId: string;
   maxLastModifiedAtMs: number | null;
@@ -34,13 +34,13 @@ export function createSyncEntityRecords(
   entityService: EntityService
 ) {
   return async function syncEntityRecords({
-    entitySyncId,
+    syncId,
     connectionId,
     entityId,
     updatedAfterMs,
   }: SyncEntityRecordsArgs): Promise<SyncEntityRecordsResult> {
-    const objectSync = await syncService.getEntitySyncById(entitySyncId);
-    const syncConfig = await syncConfigService.getById(objectSync.syncConfigId);
+    const sync = await syncService.getSyncById(syncId);
+    const syncConfig = await syncConfigService.getById(sync.syncConfigId);
     const connection = await connectionService.getSafeById(connectionId);
     const entity = await entityService.getById(entityId);
 
@@ -72,7 +72,7 @@ export function createSyncEntityRecords(
     logEvent({
       distinctId: distinctId ?? application.orgId,
       eventName: 'Start Sync',
-      syncId: entitySyncId,
+      syncId: syncId,
       providerName: connection.providerName,
       entityId,
     });
@@ -89,13 +89,13 @@ export function createSyncEntityRecords(
     logEvent({
       distinctId: distinctId ?? application.orgId,
       eventName: 'Partially Completed Sync',
-      syncId: entitySyncId,
+      syncId: syncId,
       providerName: connection.providerName,
       entityId,
     });
 
     return {
-      objectSyncId: entitySyncId,
+      syncId: syncId,
       connectionId,
       entityId,
       maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : null,

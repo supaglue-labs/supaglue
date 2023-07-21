@@ -6,17 +6,17 @@ import Switch from '@mui/material/Switch';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { PaginatedResult } from '@supaglue/types';
-import type { ObjectSyncDTO } from '@supaglue/types/sync';
+import type { SyncDTO } from '@supaglue/types/sync';
 import { useState } from 'react';
 import type { KeyedMutator } from 'swr';
 
 export type SyncsTableProps = {
   isLoading: boolean;
   rowCount: number;
-  data: ObjectSyncDTO[];
+  data: SyncDTO[];
   handleNextPage: () => void;
   handlePreviousPage: () => void;
-  mutate: KeyedMutator<PaginatedResult<ObjectSyncDTO>>;
+  mutate: KeyedMutator<PaginatedResult<SyncDTO>>;
 };
 
 export default function SyncsTable(props: SyncsTableProps) {
@@ -32,8 +32,10 @@ export default function SyncsTable(props: SyncsTableProps) {
   const columns: GridColDef[] = [
     { field: 'customerId', headerName: 'Customer Id', width: 200, sortable: false },
     { field: 'providerName', headerName: 'Provider', width: 120, sortable: false },
+    { field: 'type', headerName: 'Type', width: 100, sortable: false },
     { field: 'objectType', headerName: 'Object Type', width: 120, sortable: false },
     { field: 'object', headerName: 'Object', width: 120, sortable: false },
+    { field: 'entityId', headerName: 'EntityId', width: 120, sortable: false }, // TODO: should make this render Entity name instead
     {
       field: 'paused',
       headerName: 'Paused?',
@@ -45,13 +47,20 @@ export default function SyncsTable(props: SyncsTableProps) {
             checked={params.row.paused}
             onChange={async (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
               if (checked) {
-                const response = await pauseSync(
-                  applicationId,
-                  params.row.customerId,
-                  params.row.providerName,
-                  params.row.objectType,
-                  params.row.object
-                );
+                const response = params.row.objectType
+                  ? await pauseSync({
+                      applicationId,
+                      customerId: params.row.customerId,
+                      providerName: params.row.providerName,
+                      objectType: params.row.objectType,
+                      object: params.row.object,
+                    })
+                  : await pauseSync({
+                      applicationId,
+                      customerId: params.row.customerId,
+                      providerName: params.row.providerName,
+                      entityId: params.row.entityId,
+                    });
                 if (!response.ok) {
                   addNotification({ message: response.errorMessage, severity: 'error' });
                   return;
@@ -70,13 +79,20 @@ export default function SyncsTable(props: SyncsTableProps) {
                   false
                 );
               } else {
-                const response = await resumeSync(
-                  applicationId,
-                  params.row.customerId,
-                  params.row.providerName,
-                  params.row.objectType,
-                  params.row.object
-                );
+                const response = params.row.objectType
+                  ? await resumeSync({
+                      applicationId,
+                      customerId: params.row.customerId,
+                      providerName: params.row.providerName,
+                      objectType: params.row.objectType,
+                      object: params.row.object,
+                    })
+                  : await resumeSync({
+                      applicationId,
+                      customerId: params.row.customerId,
+                      providerName: params.row.providerName,
+                      entityId: params.row.entityId,
+                    });
                 if (!response.ok) {
                   addNotification({ message: response.errorMessage, severity: 'error' });
                   return;
@@ -113,13 +129,20 @@ export default function SyncsTable(props: SyncsTableProps) {
               variant="contained"
               size="small"
               onClick={async () => {
-                const response = await triggerSync(
-                  applicationId,
-                  params.row.customerId,
-                  params.row.providerName,
-                  params.row.objectType,
-                  params.row.object
-                );
+                const response = params.row.objectType
+                  ? await triggerSync({
+                      applicationId,
+                      customerId: params.row.customerId,
+                      providerName: params.row.providerName,
+                      objectType: params.row.objectType,
+                      object: params.row.object,
+                    })
+                  : await triggerSync({
+                      applicationId,
+                      customerId: params.row.customerId,
+                      providerName: params.row.providerName,
+                      entityId: params.row.entityId,
+                    });
                 if (!response.ok) {
                   addNotification({ message: response.errorMessage, severity: 'error' });
                   return;
@@ -133,14 +156,22 @@ export default function SyncsTable(props: SyncsTableProps) {
               variant="contained"
               size="small"
               onClick={async () => {
-                const response = await triggerSync(
-                  applicationId,
-                  params.row.customerId,
-                  params.row.providerName,
-                  params.row.objectType,
-                  params.row.object,
-                  /* performFullRefresh */ true
-                );
+                const response = params.row.objectType
+                  ? await triggerSync({
+                      applicationId,
+                      customerId: params.row.customerId,
+                      providerName: params.row.providerName,
+                      objectType: params.row.objectType,
+                      object: params.row.object,
+                      performFullRefresh: true,
+                    })
+                  : await triggerSync({
+                      applicationId,
+                      customerId: params.row.customerId,
+                      providerName: params.row.providerName,
+                      entityId: params.row.entityId,
+                      performFullRefresh: true,
+                    });
                 if (!response.ok) {
                   addNotification({ message: response.errorMessage, severity: 'error' });
                   return;

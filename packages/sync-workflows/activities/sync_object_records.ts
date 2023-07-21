@@ -13,7 +13,7 @@ import { logEvent } from '../lib/analytics';
 import type { ApplicationService, SyncService } from '../services';
 
 export type SyncObjectRecordsArgs = {
-  objectSyncId: string;
+  syncId: string;
   connectionId: string;
   objectType: ObjectType;
   object: string;
@@ -21,7 +21,7 @@ export type SyncObjectRecordsArgs = {
 };
 
 export type SyncObjectRecordsResult = {
-  objectSyncId: string;
+  syncId: string;
   connectionId: string;
   objectType: ObjectType;
   object: string;
@@ -37,15 +37,15 @@ export function createSyncObjectRecords(
   syncConfigService: SyncConfigService,
   applicationService: ApplicationService
 ) {
-  return async function syncRecords({
-    objectSyncId,
+  return async function syncObjectRecords({
+    syncId,
     connectionId,
     objectType,
     object,
     updatedAfterMs,
   }: SyncObjectRecordsArgs): Promise<SyncObjectRecordsResult> {
-    const objectSync = await syncService.getSyncById(objectSyncId);
-    const syncConfig = await syncConfigService.getById(objectSync.syncConfigId);
+    const sync = await syncService.getSyncById(syncId);
+    const syncConfig = await syncConfigService.getById(sync.syncConfigId);
     const connection = await connectionService.getSafeById(connectionId);
 
     async function writeObjects(writer: DestinationWriter) {
@@ -112,7 +112,7 @@ export function createSyncObjectRecords(
     logEvent({
       distinctId: distinctId ?? application.orgId,
       eventName: 'Start Sync',
-      syncId: objectSyncId,
+      syncId,
       providerName: connection.providerName,
       modelName: object,
     });
@@ -129,13 +129,13 @@ export function createSyncObjectRecords(
     logEvent({
       distinctId: distinctId ?? application.orgId,
       eventName: 'Partially Completed Sync',
-      syncId: objectSyncId,
+      syncId: syncId,
       providerName: connection.providerName,
       modelName: object,
     });
 
     return {
-      objectSyncId: objectSyncId,
+      syncId: syncId,
       connectionId,
       objectType,
       object,

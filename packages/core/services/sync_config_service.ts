@@ -136,12 +136,12 @@ export class SyncConfigService {
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
-    const objectSyncs = await this.#prisma.objectSync.findMany({
+    const syncs = await this.#prisma.sync.findMany({
       where: {
         syncConfigId: id,
       },
     });
-    if (objectSyncs.length) {
+    if (syncs.length) {
       throw new BadRequestError('Cannot delete sync config with active connections');
     }
     await this.#prisma.$transaction([

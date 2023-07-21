@@ -11,7 +11,7 @@ import type { Sync, SyncState } from '@supaglue/types/sync';
 import type { Client, IntervalSpec, ScheduleDescription, ScheduleOptionsAction } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
 import type { ApplicationService } from '.';
-import { getRunSyncScheduleId, getRunSyncWorkflowId, runSync } from '../workflows/run_object_sync';
+import { getRunObjectSyncScheduleId, getRunObjectSyncWorkflowId, runObjectSync } from '../workflows/run_object_sync';
 
 const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 
@@ -344,7 +344,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
 
     // Get the object sync schedule handles
     const syncScheduleHandles = syncIds.map((syncId) =>
-      this.#temporalClient.schedule.getHandle(getRunSyncScheduleId(syncId))
+      this.#temporalClient.schedule.getHandle(getRunObjectSyncScheduleId(syncId))
     );
 
     function errHandler(err: unknown) {
@@ -408,7 +408,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
 
   async upsertTemporalSync(sync: Sync, connection: ConnectionSafeAny, syncPeriodMs: number): Promise<void> {
     const application = await this.#applicationService.getById(connection.applicationId);
-    const scheduleId = getRunSyncScheduleId(sync.id);
+    const scheduleId = getRunObjectSyncScheduleId(sync.id);
     const interval: IntervalSpec = {
       every: syncPeriodMs,
       // so that not everybody is refreshing and hammering the DB at the same time
@@ -417,10 +417,23 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       // object added), then 3 will have the same offset as 1 and 2
       offset: stringToNumber(connection.id, syncPeriodMs),
     };
+    const asdf = {
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [sync.id],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_TYPE]: [sync.type],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_TYPE]: 'objectType' in sync ? [sync.objectType] : [],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_NAME]: 'object' in sync ? [sync.object] : [],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.ENTITY_ID]: 'entityId' in sync ? [sync.entityId] : [],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ENV]: [application.environment],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+    };
+
     const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
       type: 'startWorkflow' as const,
-      workflowType: runSync,
-      workflowId: getRunSyncWorkflowId(sync.id),
+      workflowType: runObjectSync,
+      workflowId: getRunObjectSyncWorkflowId(sync.id),
       taskQueue: SYNC_TASK_QUEUE,
       args: [
         {
@@ -444,9 +457,9 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       searchAttributes: {
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [sync.id],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_TYPE]: [sync.type],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_TYPE]: ['objectType' in sync ? sync.objectType : ''],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_NAME]: ['object' in sync ? sync.object : ''],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.ENTITY_ID]: ['entityId' in sync ? sync.entityId : ''],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_TYPE]: 'objectType' in sync ? [sync.objectType] : [],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_NAME]: 'object' in sync ? [sync.object] : [],
+        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.ENTITY_ID]: 'entityId' in sync ? [sync.entityId] : [],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ENV]: [application.environment],
         [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],

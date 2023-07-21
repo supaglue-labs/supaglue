@@ -51,4 +51,6 @@ export type SyncRunFilter = {
   | {
       entityId: string;
     }
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | {}
 );

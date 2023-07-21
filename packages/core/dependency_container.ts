@@ -18,9 +18,7 @@ import { CrmCustomObjectService } from './services/common_objects/crm/custom_obj
 import { EngagementCommonObjectService } from './services/common_objects/engagement/common_object_service';
 import { DestinationService } from './services/destination_service';
 import { EntityService } from './services/entity_service';
-import { EntitySyncRunService } from './services/entity_sync_run_service';
-import { EntitySyncService } from './services/entity_sync_service';
-import { ObjectSyncRunService } from './services/sync_run_service';
+import { SyncRunService } from './services/sync_run_service';
 import { SyncService } from './services/sync_service';
 import { SystemSettingsService } from './services/system_settings_service';
 import { WebhookService } from './services/webhook_service';
@@ -42,11 +40,9 @@ export type CoreDependencyContainer = {
   webhookService: WebhookService;
   destinationService: DestinationService;
   schemaService: SchemaService;
-  objectSyncService: SyncService;
-  objectSyncRunService: ObjectSyncRunService;
+  syncService: SyncService;
+  syncRunService: SyncRunService;
   entityService: EntityService;
-  entitySyncService: EntitySyncService;
-  entitySyncRunService: EntitySyncRunService;
 
   crmCommonObjectService: CrmCommonObjectService;
   engagementCommonObjectService: EngagementCommonObjectService;
@@ -104,11 +100,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const crmCustomObjectService = new CrmCustomObjectService(remoteService);
   const crmAssociationService = new CrmAssociationService(remoteService);
 
-  const objectSyncService = new SyncService(prisma, connectionService);
-  const objectSyncRunService = new ObjectSyncRunService(prisma, connectionService);
-
-  const entitySyncService = new EntitySyncService(prisma, connectionService);
-  const entitySyncRunService = new EntitySyncRunService(prisma, connectionService);
+  const syncService = new SyncService(prisma, connectionService);
+  const syncRunService = new SyncRunService(prisma, connectionService);
 
   return {
     pgPool,
@@ -130,10 +123,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     engagementCommonObjectService,
     crmCustomObjectService,
     crmAssociationService,
-    objectSyncService,
-    objectSyncRunService,
-    entitySyncService,
-    entitySyncRunService,
+    syncService,
+    syncRunService,
   };
 }
 

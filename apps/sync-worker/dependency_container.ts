@@ -2,8 +2,7 @@ import { getCoreDependencyContainer } from '@supaglue/core';
 import type { ConnectionService, ProviderService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { EntityService } from '@supaglue/core/services/entity_service';
-import type { EntitySyncRunService } from '@supaglue/core/services/entity_sync_run_service';
-import type { ObjectSyncRunService } from '@supaglue/core/services/object_sync_run_service';
+import type { SyncRunService } from '@supaglue/core/services/sync_run_service';
 import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
 import type { PrismaClient } from '@supaglue/db';
 import { ApplicationService, SyncService } from '@supaglue/sync-workflows/services';
@@ -16,13 +15,12 @@ type DependencyContainer = {
   temporalClient: Client;
   connectionService: ConnectionService;
   remoteService: RemoteService;
-  syncService: SyncService;
   syncConfigService: SyncConfigService;
-  objectSyncRunService: ObjectSyncRunService;
+  syncService: SyncService;
+  syncRunService: SyncRunService;
   providerService: ProviderService;
   applicationService: ApplicationService;
   destinationService: DestinationService;
-  entitySyncRunService: EntitySyncRunService;
   entityService: EntityService;
 };
 
@@ -37,8 +35,7 @@ function createDependencyContainer(): DependencyContainer {
     remoteService,
     providerService,
     syncConfigService,
-    objectSyncRunService,
-    entitySyncRunService,
+    syncRunService,
     entityService,
   } = getCoreDependencyContainer();
 
@@ -76,11 +73,10 @@ function createDependencyContainer(): DependencyContainer {
     connectionService,
     remoteService,
     syncService,
-    objectSyncRunService,
+    syncRunService,
     syncConfigService,
     providerService,
     destinationService,
-    entitySyncRunService,
     entityService,
   };
 }

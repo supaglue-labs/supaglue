@@ -1,14 +1,16 @@
 import { datetimeStringFromISOString } from '@/utils/datetime';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
-import type { ObjectSyncRun } from '@supaglue/types/sync_run';
+import type { SyncRun } from '@supaglue/types/sync_run';
 import { useState } from 'react';
 
 const columns: GridColDef[] = [
   { field: 'customerId', headerName: 'Customer Id', width: 200, sortable: false },
   { field: 'providerName', headerName: 'Provider', width: 120, sortable: false },
+  { field: 'type', headerName: 'Type', width: 100, sortable: false },
   { field: 'objectType', headerName: 'Object Type', width: 120, sortable: false },
   { field: 'object', headerName: 'Object', width: 120, sortable: false },
+  { field: 'entityId', headerName: 'EntityId', width: 120, sortable: false }, // TODO: should make this render Entity name instead
   { field: 'status', headerName: 'Status', width: 100, sortable: false },
   {
     field: 'startTimestamp',
@@ -41,7 +43,7 @@ const columns: GridColDef[] = [
 export type SyncRunsTableProps = {
   isLoading: boolean;
   rowCount: number;
-  data: ObjectSyncRun[];
+  data: SyncRun[];
   handleNextPage: () => void;
   handlePreviousPage: () => void;
 };
