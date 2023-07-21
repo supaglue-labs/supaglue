@@ -47,7 +47,7 @@ export type ProviderDetailsPanelProps = {
 };
 
 export default function ProviderDetailsPanel({ providerName, category, isLoading }: ProviderDetailsPanelProps) {
-  const shouldAllowManagedOauth = ['salesforce', 'hubspot'].includes(providerName);
+  const shouldAllowManagedOauth = ['salesforce', 'hubspot', 'gong', 'salesloft', 'outreach'].includes(providerName);
   const isOauth = category === 'crm' || providerName !== 'apollo';
   const activeApplicationId = useActiveApplicationId();
   const { schemas, isLoading: isLoadingSchemas } = useSchemas();
