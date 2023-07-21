@@ -60,8 +60,9 @@ export class ObjectSyncService {
   ): Promise<ObjectSync> {
     const model = await this.#prisma.objectSync.findUnique({
       where: {
-        connectionId_objectType_object: {
+        connectionId_type_objectType_object: {
           connectionId,
+          type: 'object',
           object,
           objectType,
         },
