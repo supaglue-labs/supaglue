@@ -33,6 +33,7 @@ jobs:
     with:
       workspace: salesforce-pub-sub
       image-name: salesforce-pub-sub
+      depot-project: 2pvcstlrj7
     secrets:
       build-args: |
         POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }}

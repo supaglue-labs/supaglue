@@ -15,6 +15,10 @@ on:
         description: arguments to pass to docker build
         required: false
         type: string
+      depot-project:
+        description: the depot project to use for builds
+        required: true
+        type: string
     secrets:
       DOCKERHUB_USERNAME:
         description: Docker Hub username
@@ -86,7 +90,7 @@ jobs:
       - name: Build and push
         uses: depot/build-push-action@v1
         with:
-          project: 2bljgst1rr
+          project: ${{ inputs.depot-project }}
           context: .
           file: ./${{ env.directory }}/Dockerfile
           platforms: linux/amd64,linux/arm64

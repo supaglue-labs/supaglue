@@ -35,6 +35,7 @@ jobs:
     with:
       workspace: api
       image-name: api
+      depot-project: s2bgc6nj7c
     secrets:
       build-args: |
         POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }}
