@@ -12,7 +12,7 @@ Managed Syncs lets you sync data from your customers’ third-party Provider dir
 You can set up a managed sync in about 5 minutes.
 
 1. Configure the sync parameters (customers, providers, destination, sync configuration) using the [Management Portal](https://app.supaglue.io) or [Management API](../api/v2/mgmt/supaglue-management-api).
-2. Your customer connects via our [Managed Authentication](../platform/managed-auth) and optionally defines field mappings specific to their third-party Provider.
+2. Your customer connects via our [Managed Authentication](../platform/managed-auth) feature and optionally defines field mappings specific to their third-party Provider.
 3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in your Destination (e.g. Postgres).
 
 ## Configuration
@@ -68,24 +68,6 @@ The destination configuration defines where we sync to. This is usually a data s
 
 </TabItem>
 
-<TabItem value="s3-provider-config" label="S3">
-
-```json
-{
-  "id": 3,
-  "name": "my production s3",
-  "type": "s3",
-  "credentials": {
-    "access_key_id": "AKUADFSSDFS",
-    "secret_access_key": "C12389cs809c809s809s",
-    "region": "us-west-2",
-    "bucket": "my-s3-bucket"
-  }
-}
-```
-
-</TabItem>
-
 </Tabs>
 
 :::info
@@ -133,10 +115,6 @@ The above sync configuration defines a managed sync that does the following:
 - Fetch the Contact and Account objects from Salesforce, and normalize the response into a Supaglue-defined CRM schema.
 - Fetch the Opportunity object from Salesforce where the "description" and "revenue" fields can be mapped by each customer to a specific field on the Opportunity object.
 - Fetch the `MyCustomObject__c` custom object from Salesforce.
-
-## Field mappings
-
-[Field mappings](../platform/field-mappings) can be used for Managed Syncs to map fields from your customer's third-party tools to your Destinations. It will also be used to reverse-map the same fields if you make writes to their third-party tools using the Actions API.
 
 ## Destination schema
 
