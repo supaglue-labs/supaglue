@@ -9,7 +9,7 @@ export type ObjectSyncRunModelExpanded = ObjectSyncRunModel & {
 
 export type ObjectSyncRunModelExpandedWithObject = ObjectSyncRunModelExpanded & {
   objectSync: {
-    objectType: string;
-    object: string;
+    objectType: string | null;
+    object: string | null;
   };
 };

@@ -29,6 +29,6 @@ export const fromObjectSyncRunModelAndSyncWithObject = (
   return {
     ...fromObjectSyncRunModelAndSync(args),
     objectType: args.objectSync.objectType as ObjectType,
-    object: args.objectSync.object,
+    object: args.objectSync.object as string, // TODO: later, when we actually deal with entity syncs, we need to fix this
   };
 };
