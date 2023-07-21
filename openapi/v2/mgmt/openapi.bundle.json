@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.12.8",
+    "version": "0.12.9",
     "title": "Supaglue Management API",
     "contact": {
       "name": "Supaglue",
@@ -529,6 +529,103 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/entity_mappings": {
+      "get": {
+        "operationId": "listEntityMappings",
+        "summary": "List entity mappings",
+        "tags": [
+          "Entity Mappings"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of entity mappings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/merged_entity_mapping"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/entity_mappings/{entity_id}": {
+      "put": {
+        "operationId": "upsertEntityMapping",
+        "summary": "Upsert entity mapping",
+        "tags": [
+          "Entity Mappings"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/entity_mapping"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entity Mapping"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteEntityMapping",
+        "summary": "Delete entity mapping",
+        "tags": [
+          "Entity Mappings"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Entity Mapping"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "entity_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
         }
       ]
     },
@@ -1340,96 +1437,6 @@
         }
       ]
     },
-    "/providers/{provider_id}/object": {
-      "post": {
-        "operationId": "addObject",
-        "summary": "Add object to provider",
-        "tags": [
-          "Providers"
-        ],
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/add_object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Add object to provider with schema.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/provider"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "9e121531-1185-4940-8ec4-b5af222bb637",
-                      "category": "crm",
-                      "auth_type": "oauth2",
-                      "provider_name": "hubspot",
-                      "config": {
-                        "provider_app_id": "my_app_id",
-                        "oauth": {
-                          "oauth_scopes": [
-                            "crm.objects.contacts.read",
-                            "crm.objects.companies.read",
-                            "crm.objects.deals.read",
-                            "crm.objects.owners.read",
-                            "crm.objects.contacts.write",
-                            "crm.objects.companies.write",
-                            "crm.objects.deals.write"
-                          ],
-                          "credentials": {
-                            "oauth_client_id": null,
-                            "oauth_client_secret": null
-                          }
-                        }
-                      },
-                      "objects": {
-                        "common": [
-                          {
-                            "name": "contact",
-                            "schema_id": "5cf94ac7-cbd2-4e65-b866-c9a944f66f68"
-                          }
-                        ],
-                        "standard": [
-                          {
-                            "name": "company",
-                            "schema_id": "bb0ddf6e-9447-497e-b2ed-cac1402431b2"
-                          }
-                        ],
-                        "custom": []
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "name": "provider_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
-        }
-      ]
-    },
     "/sync_configs": {
       "get": {
         "operationId": "getSyncConfigs",
@@ -2172,6 +2179,14 @@
               "example": "contact"
             },
             "description": "The object to filter by"
+          },
+          {
+            "name": "entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The entity id to filter by"
           }
         ],
         "responses": {
@@ -2220,26 +2235,42 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "object_type": {
-                    "type": "string",
-                    "enum": [
-                      "common",
-                      "standard",
-                      "custom"
-                    ],
-                    "description": "The object type to filter by"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "common",
+                          "standard",
+                          "custom"
+                        ],
+                        "description": "The object type to filter by"
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "contact",
+                        "description": "The object to filter by"
+                      }
+                    },
+                    "required": [
+                      "object_type",
+                      "object"
+                    ]
                   },
-                  "object": {
-                    "type": "string",
-                    "example": "contact",
-                    "description": "The object to filter by"
+                  {
+                    "type": "object",
+                    "properties": {
+                      "entity_id": {
+                        "type": "string",
+                        "description": "The entity id to filter by"
+                      }
+                    },
+                    "required": [
+                      "entity_id"
+                    ]
                   }
-                },
-                "required": [
-                  "object_type",
-                  "object"
                 ]
               }
             }
@@ -2284,26 +2315,42 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "object_type": {
-                    "type": "string",
-                    "enum": [
-                      "common",
-                      "standard",
-                      "custom"
-                    ],
-                    "description": "The object type to filter by"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "common",
+                          "standard",
+                          "custom"
+                        ],
+                        "description": "The object type to filter by"
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "contact",
+                        "description": "The object to filter by"
+                      }
+                    },
+                    "required": [
+                      "object_type",
+                      "object"
+                    ]
                   },
-                  "object": {
-                    "type": "string",
-                    "example": "contact",
-                    "description": "The object to filter by"
+                  {
+                    "type": "object",
+                    "properties": {
+                      "entity_id": {
+                        "type": "string",
+                        "description": "The entity id to filter by"
+                      }
+                    },
+                    "required": [
+                      "entity_id"
+                    ]
                   }
-                },
-                "required": [
-                  "object_type",
-                  "object"
                 ]
               }
             }
@@ -2348,30 +2395,55 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "object_type": {
-                    "type": "string",
-                    "enum": [
-                      "common",
-                      "standard",
-                      "custom"
-                    ],
-                    "description": "The object type to filter by"
+                "allOf": [
+                  {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "object_type": {
+                            "type": "string",
+                            "enum": [
+                              "common",
+                              "standard",
+                              "custom"
+                            ],
+                            "description": "The object type to filter by"
+                          },
+                          "object": {
+                            "type": "string",
+                            "example": "contact",
+                            "description": "The object to filter by"
+                          }
+                        },
+                        "required": [
+                          "object_type",
+                          "object"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "entity_id": {
+                            "type": "string",
+                            "description": "The entity id to filter by"
+                          }
+                        },
+                        "required": [
+                          "entity_id"
+                        ]
+                      }
+                    ]
                   },
-                  "object": {
-                    "type": "string",
-                    "example": "contact",
-                    "description": "The object to filter by"
-                  },
-                  "perform_full_refresh": {
-                    "type": "boolean",
-                    "example": true
+                  {
+                    "type": "object",
+                    "properties": {
+                      "perform_full_refresh": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    }
                   }
-                },
-                "required": [
-                  "object_type",
-                  "object"
                 ]
               }
             }
@@ -2454,9 +2526,12 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "example": "common"
-            },
-            "description": "The object type to filter by"
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
+            }
           },
           {
             "name": "object",
@@ -2466,6 +2541,14 @@
               "example": "contact"
             },
             "description": "The object to filter by"
+          },
+          {
+            "name": "entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The entity id to filter by"
           }
         ],
         "responses": {
@@ -2562,6 +2645,10 @@
       "description": "An `Entity` is a unified representation of Provider objects that can be synced to a Destination or manipulated by the Actions API."
     },
     {
+      "name": "Entity Mappings",
+      "description": "An `Entity Mapping` is a mapping between an Entity and an object with field mappings."
+    },
+    {
       "name": "Field Mappings",
       "description": "A `Field Mapping` is a mapping between a Schema field and the field in the Provider."
     },
@@ -2650,6 +2737,7 @@
         ]
       },
       "provider": {
+        "type": "object",
         "properties": {
           "id": {
             "type": "string",
@@ -2677,6 +2765,12 @@
           },
           "objects": {
             "$ref": "#/components/schemas/objects"
+          },
+          "entity_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/entity_mapping"
+            }
           }
         },
         "required": [
@@ -3570,6 +3664,12 @@
                 }
               }
             }
+          },
+          "entity_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/entity_mapping"
+            }
           }
         },
         "required": [
@@ -3691,6 +3791,20 @@
               },
               "required": [
                 "object"
+              ]
+            }
+          },
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "entity_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "entity_id"
               ]
             }
           }
@@ -3874,51 +3988,126 @@
         ]
       },
       "sync": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "object_type": {
-            "type": "string",
-            "enum": [
-              "common",
-              "standard",
-              "custom"
-            ]
-          },
-          "object": {
-            "type": "string"
-          },
-          "connection_id": {
-            "type": "string",
-            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
-          },
-          "sync_config_id": {
-            "type": "string",
-            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
-          },
-          "paused": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "id",
-          "object_type",
-          "object",
-          "connection_id",
-          "sync_config_id",
-          "paused"
-        ]
-      },
-      "sync_with_provider_and_customer": {
-        "allOf": [
+        "oneOf": [
           {
-            "$ref": "#/components/schemas/sync"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "object"
+                ]
+              },
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "common",
+                  "standard",
+                  "custom"
+                ]
+              },
+              "object": {
+                "type": "string"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "object_type",
+              "object",
+              "connection_id",
+              "sync_config_id",
+              "paused"
+            ]
           },
           {
             "type": "object",
             "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity"
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "entity_id",
+              "connection_id",
+              "sync_config_id",
+              "paused"
+            ]
+          }
+        ]
+      },
+      "sync_with_provider_and_customer": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "object"
+                ]
+              },
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "common",
+                  "standard",
+                  "custom"
+                ]
+              },
+              "object": {
+                "type": "string"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean"
+              },
               "provider_name": {
                 "type": "string",
                 "example": "hubspot"
@@ -3929,6 +4118,59 @@
               }
             },
             "required": [
+              "id",
+              "type",
+              "object_type",
+              "object",
+              "connection_id",
+              "sync_config_id",
+              "paused",
+              "provider_name",
+              "customer_id"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity"
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean"
+              },
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "entity_id",
+              "connection_id",
+              "sync_config_id",
+              "paused",
               "provider_name",
               "customer_id"
             ]
@@ -3936,81 +4178,154 @@
         ]
       },
       "sync_run": {
-        "type": "object",
-        "properties": {
-          "error_message": {
-            "type": "string",
-            "nullable": true
-          },
-          "start_timestamp": {
-            "type": "string",
-            "example": "2023-02-22T19:55:17.559Z"
-          },
-          "end_timestamp": {
-            "type": "string",
-            "nullable": true,
-            "example": "2023-02-22T20:55:17.559Z"
-          },
-          "application_id": {
-            "type": "string",
-            "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
-          },
-          "customer_id": {
-            "type": "string",
-            "example": "my-customer-1"
-          },
-          "provider_name": {
-            "type": "string",
-            "example": "hubspot"
-          },
-          "category": {
-            "type": "string",
-            "enum": [
-              "crm"
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "common",
+                  "standard",
+                  "custom"
+                ]
+              },
+              "object": {
+                "type": "string"
+              },
+              "error_message": {
+                "type": "string",
+                "nullable": true
+              },
+              "start_timestamp": {
+                "type": "string",
+                "example": "2023-02-22T19:55:17.559Z"
+              },
+              "end_timestamp": {
+                "type": "string",
+                "nullable": true,
+                "example": "2023-02-22T20:55:17.559Z"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              },
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "crm"
+                ]
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "SUCCESS",
+                  "IN_PROGRESS",
+                  "FAILURE"
+                ]
+              },
+              "num_records_synced": {
+                "type": "number",
+                "nullable": true,
+                "example": 100
+              }
+            },
+            "required": [
+              "object_type",
+              "object",
+              "start_timestamp",
+              "end_timestamp",
+              "application_id",
+              "customer_id",
+              "status",
+              "error_message",
+              "provider_name",
+              "category",
+              "connection_id",
+              "num_records_synced"
             ]
           },
-          "connection_id": {
-            "type": "string",
-            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "SUCCESS",
-              "IN_PROGRESS",
-              "FAILURE"
+          {
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "type": "string"
+              },
+              "error_message": {
+                "type": "string",
+                "nullable": true
+              },
+              "start_timestamp": {
+                "type": "string",
+                "example": "2023-02-22T19:55:17.559Z"
+              },
+              "end_timestamp": {
+                "type": "string",
+                "nullable": true,
+                "example": "2023-02-22T20:55:17.559Z"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              },
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "crm"
+                ]
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "SUCCESS",
+                  "IN_PROGRESS",
+                  "FAILURE"
+                ]
+              },
+              "num_records_synced": {
+                "type": "number",
+                "nullable": true,
+                "example": 100
+              }
+            },
+            "required": [
+              "entity_id",
+              "start_timestamp",
+              "end_timestamp",
+              "application_id",
+              "customer_id",
+              "status",
+              "error_message",
+              "provider_name",
+              "category",
+              "connection_id",
+              "num_records_synced"
             ]
-          },
-          "num_records_synced": {
-            "type": "number",
-            "nullable": true,
-            "example": 100
-          },
-          "object_type": {
-            "type": "string",
-            "enum": [
-              "common",
-              "standard",
-              "custom"
-            ]
-          },
-          "object": {
-            "type": "string"
           }
-        },
-        "required": [
-          "start_timestamp",
-          "end_timestamp",
-          "application_id",
-          "customer_id",
-          "status",
-          "error_message",
-          "provider_name",
-          "category",
-          "connection_id",
-          "num_records_synced",
-          "object_type",
-          "object"
         ]
       },
       "create_update_customer": {
@@ -4607,6 +4922,119 @@
               "payload"
             ]
           }
+        ]
+      },
+      "standard_or_custom_object": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "custom"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "name"
+        ]
+      },
+      "entity_mapping": {
+        "type": "object",
+        "properties": {
+          "entity_id": {
+            "type": "string"
+          },
+          "object": {
+            "$ref": "#/components/schemas/standard_or_custom_object"
+          },
+          "field_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/entity_field_mapping"
+            }
+          }
+        },
+        "required": [
+          "entity_id"
+        ]
+      },
+      "merged_entity_mapping": {
+        "type": "object",
+        "properties": {
+          "entity_id": {
+            "type": "string"
+          },
+          "object": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/standard_or_custom_object"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "enum": [
+                      "developer",
+                      "customer"
+                    ]
+                  }
+                },
+                "required": [
+                  "from"
+                ]
+              }
+            ]
+          },
+          "field_mappings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "entity_field": {
+                  "type": "string"
+                },
+                "mapped_field": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string",
+                  "enum": [
+                    "developer",
+                    "customer"
+                  ]
+                }
+              },
+              "required": [
+                "entity_field",
+                "mapped_field",
+                "from"
+              ]
+            }
+          }
+        },
+        "required": [
+          "entity_id"
+        ]
+      },
+      "entity_field_mapping": {
+        "type": "object",
+        "properties": {
+          "entity_field": {
+            "type": "string"
+          },
+          "mapped_field": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity_field",
+          "mapped_field"
         ]
       }
     },

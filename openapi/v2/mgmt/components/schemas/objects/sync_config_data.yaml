@@ -50,6 +50,15 @@ properties:
           example: contacts
       required:
         - object
+  entities:
+    type: array
+    items:
+      type: object
+      properties:
+        entity_id:
+          type: string
+      required:
+        - entity_id
 required:
   - default_config
 example:

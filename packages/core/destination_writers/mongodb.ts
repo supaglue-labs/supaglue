@@ -14,11 +14,12 @@ import fs from 'fs';
 import type { Collection } from 'mongodb';
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import path from 'path';
+import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
 import { logger } from '../lib';
-import type { WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
+import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
@@ -161,15 +162,45 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
   }
 
   public override async writeObjectRecords(
-    { id: connectionId, providerName, customerId, applicationId }: ConnectionSafeAny,
+    connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteObjectRecordsResult> {
-    const childLogger = logger.child({ connectionId, providerName, customerId, object });
+    const { id: connectionId, providerName, customerId } = connection;
+    return await this.#writeRecords(
+      connection,
+      getObjectCollectionName(connection.providerName, object),
+      inputStream,
+      heartbeat,
+      logger.child({ connectionId, providerName, customerId, object })
+    );
+  }
 
+  public override async writeEntityRecords(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    inputStream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteEntityRecordsResult> {
+    const { id: connectionId, providerName, customerId } = connection;
+    return await this.#writeRecords(
+      connection,
+      getEntityCollectionName(entityName),
+      inputStream,
+      heartbeat,
+      logger.child({ connectionId, providerName, customerId, entityName })
+    );
+  }
+
+  async #writeRecords(
+    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    collectionName: string,
+    inputStream: Readable,
+    heartbeat: () => void,
+    childLogger: pino.Logger
+  ): Promise<WriteObjectRecordsResult> {
     const { database } = this.#destination.config;
-    const collectionName = getObjectCollectionName(providerName, object);
 
     const client = this.#getClient();
     const collection = client.db(database).collection(collectionName);
@@ -240,10 +271,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     );
     childLogger.info({ collectionName }, 'Importing raw records into collection [COMPLETED]');
 
-    childLogger.info(
-      { collectionName, providerName, customerId, object, maxLastModifiedAt, rowCount },
-      'Sync completed'
-    );
+    childLogger.info({ collectionName, maxLastModifiedAt, rowCount }, 'Sync completed');
 
     return {
       maxLastModifiedAt,
@@ -252,8 +280,13 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
   }
 }
 
-const getObjectCollectionName = (providerName: ProviderName, object: string, temp?: boolean) => {
-  return `${temp ? 'temp_' : ''}${providerName}_${object}`;
+const getObjectCollectionName = (providerName: ProviderName, object: string) => {
+  return `${providerName}_${object}`;
+};
+
+const getEntityCollectionName = (entityName: string) => {
+  const cleanEntityName = entityName.replace(/[^a-zA-Z0-9]/g, '');
+  return `entity_${cleanEntityName}`;
 };
 
 const getCommonObjectCollectionName = (category: ProviderCategory, commonObjectType: CommonObjectType) => {

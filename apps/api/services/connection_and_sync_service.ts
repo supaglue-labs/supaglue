@@ -3,7 +3,7 @@ import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
-import { fromObjectSyncModel } from '@supaglue/core/mappers/object_sync';
+import { fromSyncModel } from '@supaglue/core/mappers/sync';
 import type { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
 import type { ConnectionService } from '@supaglue/core/services/connection_service';
 import type { Prisma, PrismaClient } from '@supaglue/db';
@@ -23,7 +23,7 @@ import type {
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
-import type { ObjectSync } from '@supaglue/types/object_sync';
+import type { Sync } from '@supaglue/types/sync';
 import type { Client } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleOverlapPolicy } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -52,11 +52,11 @@ export class ConnectionAndSyncService {
     this.#connectionService = connectionService;
   }
 
-  public async triggerSync(objectSync: ObjectSync, performFullRefresh: boolean): Promise<ObjectSync> {
+  public async triggerSync(sync: Sync, performFullRefresh: boolean): Promise<Sync> {
     // Record whether next run should do full refresh or not
-    const newSync = await this.#prisma.objectSync.update({
+    const newSync = await this.#prisma.sync.update({
       where: {
-        id: objectSync.id,
+        id: sync.id,
       },
       data: {
         argsForNextRun: {
@@ -66,31 +66,31 @@ export class ConnectionAndSyncService {
     });
 
     // Trigger a run in Temporal
-    const handle = this.#temporalClient.schedule.getHandle(getRunObjectSyncScheduleId(objectSync.id));
+    const handle = this.#temporalClient.schedule.getHandle(getRunObjectSyncScheduleId(sync.id));
     // TODO: is this the right policy? should it be configurable?
     await handle.trigger(ScheduleOverlapPolicy.SKIP);
 
-    return fromObjectSyncModel(newSync);
+    return fromSyncModel(newSync);
   }
 
-  async #changeSyncPausedState(objectSync: ObjectSync, pausedState: boolean): Promise<ObjectSync> {
-    if (objectSync.paused === pausedState) {
-      return objectSync;
+  async #changeSyncPausedState(sync: Sync, pausedState: boolean): Promise<Sync> {
+    if (sync.paused === pausedState) {
+      return sync;
     }
 
     const newSync = await this.#prisma.$transaction(async (tx) => {
       const [newSync] = await Promise.all([
-        tx.objectSync.update({
+        tx.sync.update({
           where: {
-            id: objectSync.id,
+            id: sync.id,
           },
           data: {
             paused: pausedState,
           },
         }),
-        tx.objectSyncChange.create({
+        tx.syncChange.create({
           data: {
-            objectSyncId: objectSync.id,
+            syncId: sync.id,
           },
         }),
       ]);
@@ -98,15 +98,15 @@ export class ConnectionAndSyncService {
       return newSync;
     });
 
-    return fromObjectSyncModel(newSync);
+    return fromSyncModel(newSync);
   }
 
-  public async pauseSync(objectSync: ObjectSync): Promise<ObjectSync> {
-    return await this.#changeSyncPausedState(objectSync, true);
+  public async pauseSync(sync: Sync): Promise<Sync> {
+    return await this.#changeSyncPausedState(sync, true);
   }
 
-  public async resumeSync(objectSync: ObjectSync): Promise<ObjectSync> {
-    return await this.#changeSyncPausedState(objectSync, false);
+  public async resumeSync(sync: Sync): Promise<Sync> {
+    return await this.#changeSyncPausedState(sync, false);
   }
 
   public async upsert(params: ConnectionUpsertParamsAny): Promise<ConnectionUnsafeAny> {
@@ -207,17 +207,18 @@ export class ConnectionAndSyncService {
 
         if (syncConfig) {
           // New syncs
-          const objectSyncIds: string[] = [];
+          const syncIds: string[] = [];
 
           const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
 
           if (syncConfig.config.commonObjects?.length) {
-            const commonObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+            const commonObjectSyncArgs: Prisma.SyncCreateManyInput[] = [];
             for (const commonObject of syncConfig.config.commonObjects) {
               const commonObjectSyncId = uuidv4();
-              objectSyncIds.push(commonObjectSyncId);
+              syncIds.push(commonObjectSyncId);
               commonObjectSyncArgs.push({
                 id: commonObjectSyncId,
+                type: 'object',
                 objectType: 'common',
                 object: commonObject.object,
                 connectionId,
@@ -231,18 +232,19 @@ export class ConnectionAndSyncService {
                 },
               });
             }
-            await tx.objectSync.createMany({
+            await tx.sync.createMany({
               data: commonObjectSyncArgs,
             });
           }
 
           if (syncConfig.config.standardObjects?.length) {
-            const standardObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+            const standardObjectSyncArgs: Prisma.SyncCreateManyInput[] = [];
             for (const standardObject of syncConfig.config.standardObjects) {
               const standardObjectSyncId = uuidv4();
-              objectSyncIds.push(standardObjectSyncId);
+              syncIds.push(standardObjectSyncId);
               standardObjectSyncArgs.push({
                 id: standardObjectSyncId,
+                type: 'object',
                 objectType: 'standard',
                 object: standardObject.object,
                 connectionId,
@@ -256,18 +258,19 @@ export class ConnectionAndSyncService {
                 },
               });
             }
-            await tx.objectSync.createMany({
+            await tx.sync.createMany({
               data: standardObjectSyncArgs,
             });
           }
 
           if (syncConfig.config.customObjects?.length) {
-            const customObjectSyncArgs: Prisma.ObjectSyncCreateManyInput[] = [];
+            const customObjectSyncArgs: Prisma.SyncCreateManyInput[] = [];
             for (const customObject of syncConfig.config.customObjects) {
               const customObjectSyncId = uuidv4();
-              objectSyncIds.push(customObjectSyncId);
+              syncIds.push(customObjectSyncId);
               customObjectSyncArgs.push({
                 id: customObjectSyncId,
+                type: 'object',
                 objectType: 'custom',
                 object: customObject.object,
                 connectionId,
@@ -281,15 +284,40 @@ export class ConnectionAndSyncService {
                 },
               });
             }
-            await tx.objectSync.createMany({
+            await tx.sync.createMany({
               data: customObjectSyncArgs,
             });
           }
 
-          if (objectSyncIds.length) {
-            await tx.objectSyncChange.createMany({
-              data: objectSyncIds.map((objectSyncId) => ({
-                objectSyncId,
+          if (syncConfig.config.entities?.length) {
+            const entitySyncArgs: Prisma.SyncCreateManyInput[] = [];
+            for (const entity of syncConfig.config.entities) {
+              const entitySyncId = uuidv4();
+              syncIds.push(entitySyncId);
+              entitySyncArgs.push({
+                id: entitySyncId,
+                type: 'entity',
+                entityId: entity.entityId,
+                connectionId,
+                paused: !autoStart,
+                syncConfigId: syncConfig.id,
+                strategy: {
+                  type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+                },
+                state: {
+                  phase: 'created',
+                },
+              });
+            }
+            await tx.sync.createMany({
+              data: entitySyncArgs,
+            });
+          }
+
+          if (syncIds.length) {
+            await tx.syncChange.createMany({
+              data: syncIds.map((syncId) => ({
+                syncId,
               })),
             });
           }
@@ -329,7 +357,7 @@ export class ConnectionAndSyncService {
         },
       },
       include: {
-        objectSyncs: {
+        syncs: {
           select: {
             id: true,
           },
@@ -343,15 +371,15 @@ export class ConnectionAndSyncService {
 
     await this.#prisma.$transaction([
       // Delete the object syncs, if they exist
-      ...connection.objectSyncs.flatMap((objectSync) => [
-        this.#prisma.objectSync.delete({
+      ...connection.syncs.flatMap((sync) => [
+        this.#prisma.sync.delete({
           where: {
-            id: objectSync.id,
+            id: sync.id,
           },
         }),
-        this.#prisma.objectSyncChange.create({
+        this.#prisma.syncChange.create({
           data: {
-            objectSyncId: objectSync.id,
+            syncId: sync.id,
           },
         }),
       ]),

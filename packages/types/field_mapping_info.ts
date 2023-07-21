@@ -1,4 +1,4 @@
-import type { ObjectType } from './object_sync';
+import type { ObjectType } from './sync';
 
 export type FieldMappingInfo = {
   name: string;

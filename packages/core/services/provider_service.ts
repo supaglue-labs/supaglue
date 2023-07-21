@@ -11,7 +11,8 @@ import type {
   ProviderUpdateParams,
   SyncConfig,
 } from '@supaglue/types';
-import type { ObjectType } from '@supaglue/types/object_sync';
+import type { EntityMapping } from '@supaglue/types/entity_mapping';
+import type { ObjectType } from '@supaglue/types/sync';
 import { BadRequestError, NotFoundError } from '../errors';
 import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
 
@@ -90,6 +91,10 @@ export class ProviderService {
       validateObjects(provider.objects);
     }
 
+    if (provider.entityMappings) {
+      validateEntityMappings(provider.entityMappings);
+    }
+
     const createdProvider = await this.#prisma.provider.create({
       data: await toProviderModel(provider),
     });
@@ -151,6 +156,10 @@ export class ProviderService {
       validateObjects(provider.objects);
     }
 
+    if (provider.entityMappings) {
+      validateEntityMappings(provider.entityMappings);
+    }
+
     const updatedProvider = await this.#prisma.provider.update({
       where: { id },
       data: await toProviderModel({
@@ -164,6 +173,10 @@ export class ProviderService {
   public async upsert(provider: ProviderCreateParams): Promise<Provider> {
     if (provider.objects) {
       validateObjects(provider.objects);
+    }
+
+    if (provider.entityMappings) {
+      validateEntityMappings(provider.entityMappings);
     }
 
     const upsertedProvider = await this.#prisma.provider.upsert({
@@ -275,6 +288,19 @@ const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: Ob
   }
 };
 
+const upsertEntityToSyncConfig = (syncConfig: SyncConfig, entityId: string): SyncConfig => {
+  if (syncConfig.config.entities?.find((entity) => entity.entityId === entityId)) {
+    return syncConfig;
+  }
+  return {
+    ...syncConfig,
+    config: {
+      ...syncConfig.config,
+      entities: [...(syncConfig.config.entities ?? []), { entityId }],
+    },
+  };
+};
+
 function validateObjects({ common, standard, custom }: ProviderObjects<ProviderCategory>): void {
   // 1. Disallow multiple objects for the same provider to be mapped to the same schema
   // 2. Disallow multiple mappings for objects to schema for the same object name
@@ -313,5 +339,20 @@ function validateObjects({ common, standard, custom }: ProviderObjects<ProviderC
     if (customObjectNames.length !== new Set(customObjectNames).size) {
       throw new BadRequestError('Multiple entries for mapping an object to a schema');
     }
+  }
+}
+
+function validateEntityMappings(entityMappings: EntityMapping[]): void {
+  // 1. Disallow multiple entity mappings for the same provider to be mapped to the same object
+  // 2. Disallow multiple mappings for entities to object for the same entity name
+
+  const entityMappingObjects = entityMappings.map((entityMapping) => entityMapping.object);
+  if (entityMappingObjects.length !== new Set(entityMappingObjects).size) {
+    throw new BadRequestError('Multiple entities mapped to the smae object for the same provider');
+  }
+
+  const entityMappingEntityIds = entityMappings.map((entityMapping) => entityMapping.entityId);
+  if (entityMappingEntityIds.length !== new Set(entityMappingEntityIds).size) {
+    throw new BadRequestError('Multiple entries for mapping the same entity to an object');
   }
 }

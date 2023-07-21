@@ -1,0 +1,20 @@
+get:
+  operationId: listEntityMappings
+  summary: List entity mappings
+  tags:
+    - Entity Mappings
+  security:
+    - ApiKeyAuth: []
+  parameters: []
+  responses:
+    '200':
+      description: List of entity mappings
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/merged_entity_mapping.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

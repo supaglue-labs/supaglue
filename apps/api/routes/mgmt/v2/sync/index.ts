@@ -23,7 +23,7 @@ import type {
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { objectSyncService, connectionAndSyncService } = getDependencyContainer();
+const { syncService, connectionAndSyncService } = getDependencyContainer();
 
 export default function init(app: Router) {
   const syncRouter = Router();
@@ -36,36 +36,59 @@ export default function init(app: Router) {
       req: Request<GetSyncsPathParams, GetSyncsResponse, GetSyncsRequest, GetSyncsQueryParams>,
       res: Response<GetSyncsResponse>
     ) => {
-      function getObjectFilter() {
+      function getObjectOrEntityFilter() {
         if (req.query?.object_type && req.query.object) {
           return {
             objectType: req.query.object_type,
             object: req.query.object,
           };
-        } else if (!req.query?.object_type && !req.query?.object) {
+        }
+
+        if (req.query?.entity_id) {
+          return {
+            entityId: req.query.entity_id,
+          };
+        }
+
+        if (!req.query?.object_type && !req.query?.object && !req.query?.entity_id) {
           return {};
         }
-        throw new BadRequestError('object_type and object must both be present or both be absent');
+
+        throw new BadRequestError('must filter on (object_type, object) or entity_id or neither');
       }
 
-      const { next, previous, results, totalCount } = await objectSyncService.list({
+      const { next, previous, results, totalCount } = await syncService.list({
         applicationId: req.supaglueApplication.id,
         paginationParams: toPaginationInternalParams({ page_size: req.query?.page_size, cursor: req.query?.cursor }),
-        ...getObjectFilter(),
+        ...getObjectOrEntityFilter(),
         externalCustomerId: req.query?.customer_id,
         providerName: req.query?.provider_name,
       });
 
-      const snakeCaseResults = results.map((result) => ({
-        id: result.id,
-        object_type: result.objectType,
-        object: result.object,
-        connection_id: result.connectionId,
-        provider_name: result.providerName,
-        customer_id: result.customerId,
-        sync_config_id: result.syncConfigId,
-        paused: result.paused,
-      }));
+      const snakeCaseResults = results.map((result) => {
+        const base = {
+          id: result.id,
+          connection_id: result.connectionId,
+          provider_name: result.providerName,
+          customer_id: result.customerId,
+          sync_config_id: result.syncConfigId,
+          paused: result.paused,
+        };
+        if (result.type === 'object') {
+          return {
+            ...base,
+            type: 'object' as const,
+            object_type: result.objectType,
+            object: result.object,
+          };
+        }
+
+        return {
+          ...base,
+          type: 'entity' as const,
+          entity_id: result.entityId,
+        };
+      });
       return res.status(200).send({ next, previous, results: snakeCaseResults, total_count: totalCount });
     }
   );
@@ -76,19 +99,35 @@ export default function init(app: Router) {
       req: Request<TriggerSyncPathParams, TriggerSyncResponse, TriggerSyncRequest, TriggerSyncQueryParams>,
       res: Response<TriggerSyncResponse>
     ) => {
-      const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
-        req.customerConnection.id,
-        req.body.object_type,
-        req.body.object
-      );
-      const updated = await connectionAndSyncService.triggerSync(objectSync, req.body.perform_full_refresh ?? false);
-      return res.status(200).send({
+      const sync = req.body.object_type
+        ? await syncService.getByConnectionIdAndObjectTypeAndObject(
+            req.customerConnection.id,
+            req.body.object_type,
+            req.body.object
+          )
+        : await syncService.getByConnectionIdAndEntity(req.customerConnection.id, req.body.entity_id);
+
+      const updated = await connectionAndSyncService.triggerSync(sync, req.body.perform_full_refresh ?? false);
+      const baseRet = {
         id: updated.id,
-        object_type: updated.objectType,
-        object: updated.object,
         connection_id: updated.connectionId,
         sync_config_id: updated.syncConfigId,
         paused: updated.paused,
+      };
+
+      if (updated.type === 'object') {
+        return res.status(200).send({
+          ...baseRet,
+          type: 'object',
+          object_type: updated.objectType,
+          object: updated.object,
+        });
+      }
+
+      return res.status(200).send({
+        ...baseRet,
+        type: 'entity',
+        entity_id: updated.entityId,
       });
     }
   );
@@ -99,19 +138,35 @@ export default function init(app: Router) {
       req: Request<PauseSyncPathParams, PauseSyncResponse, PauseSyncRequest, PauseSyncQueryParams>,
       res: Response<PauseSyncResponse>
     ) => {
-      const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
-        req.customerConnection.id,
-        req.body.object_type,
-        req.body.object
-      );
-      const updated = await connectionAndSyncService.pauseSync(objectSync);
-      return res.status(200).send({
+      const sync = req.body.object_type
+        ? await syncService.getByConnectionIdAndObjectTypeAndObject(
+            req.customerConnection.id,
+            req.body.object_type,
+            req.body.object
+          )
+        : await syncService.getByConnectionIdAndEntity(req.customerConnection.id, req.body.entity_id);
+
+      const updated = await connectionAndSyncService.pauseSync(sync);
+      const baseRet = {
         id: updated.id,
-        object_type: updated.objectType,
-        object: updated.object,
         connection_id: updated.connectionId,
         sync_config_id: updated.syncConfigId,
         paused: updated.paused,
+      };
+
+      if (updated.type === 'object') {
+        return res.status(200).send({
+          ...baseRet,
+          type: 'object',
+          object_type: updated.objectType,
+          object: updated.object,
+        });
+      }
+
+      return res.status(200).send({
+        ...baseRet,
+        type: 'entity',
+        entity_id: updated.entityId,
       });
     }
   );
@@ -122,19 +177,35 @@ export default function init(app: Router) {
       req: Request<ResumeSyncPathParams, ResumeSyncResponse, ResumeSyncRequest, ResumeSyncQueryParams>,
       res: Response<ResumeSyncResponse>
     ) => {
-      const objectSync = await objectSyncService.getByConnectionIdAndObjectTypeAndObject(
-        req.customerConnection.id,
-        req.body.object_type,
-        req.body.object
-      );
-      const updated = await connectionAndSyncService.resumeSync(objectSync);
-      return res.status(200).send({
+      const sync = req.body.object_type
+        ? await syncService.getByConnectionIdAndObjectTypeAndObject(
+            req.customerConnection.id,
+            req.body.object_type,
+            req.body.object
+          )
+        : await syncService.getByConnectionIdAndEntity(req.customerConnection.id, req.body.entity_id);
+
+      const updated = await connectionAndSyncService.resumeSync(sync);
+      const baseRet = {
         id: updated.id,
-        object_type: updated.objectType,
-        object: updated.object,
         connection_id: updated.connectionId,
         sync_config_id: updated.syncConfigId,
         paused: updated.paused,
+      };
+
+      if (updated.type === 'object') {
+        return res.status(200).send({
+          ...baseRet,
+          type: 'object',
+          object_type: updated.objectType,
+          object: updated.object,
+        });
+      }
+
+      return res.status(200).send({
+        ...baseRet,
+        type: 'entity',
+        entity_id: updated.entityId,
       });
     }
   );

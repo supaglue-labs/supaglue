@@ -6,6 +6,7 @@ export const logEvent = ({
   eventName,
   providerName,
   modelName,
+  entityId,
   syncId,
   numRecordsSynced,
   isSuccess = true,
@@ -13,7 +14,8 @@ export const logEvent = ({
   distinctId: string;
   eventName: string;
   providerName: ProviderName;
-  modelName: string;
+  modelName?: string;
+  entityId?: string;
   syncId: string;
   numRecordsSynced?: number;
   isSuccess?: boolean;
@@ -25,6 +27,7 @@ export const logEvent = ({
       result: isSuccess ? 'success' : 'error',
       params: {
         modelName,
+        entityId,
         providerName,
         numRecordsSynced,
         syncId,

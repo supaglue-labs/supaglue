@@ -6,6 +6,7 @@ import { SwitchWithLabel } from '@/components/SwitchWithLabel';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
+import { useEntities } from '@/hooks/useEntities';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import { getStandardObjectOptions } from '@/utils/provider';
@@ -14,7 +15,7 @@ import Card from '@mui/material/Card';
 import type { CommonObjectConfig, CommonObjectType, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
-import type { ObjectSyncType } from '@supaglue/types/object_sync';
+import type { SyncStrategyType } from '@supaglue/types/sync';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -46,14 +47,16 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations, isLoading: isLoadingDestinations } = useDestinations();
+  const { entities = [], isLoading: isLoadingEntities } = useEntities();
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [providerId, setProviderId] = useState<string | undefined>();
   const [destinationId, setDestinationId] = useState<string | undefined>();
-  const [strategy, setStrategy] = useState<ObjectSyncType>('full then incremental');
+  const [strategy, setStrategy] = useState<SyncStrategyType>('full then incremental');
   const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
   const [customObjects, setCustomObjects] = useState<string[]>([]);
+  const [entityIds, setEntityIds] = useState<string[]>([]);
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
   const router = useRouter();
 
@@ -74,9 +77,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
     setStandardObjects(syncConfig?.config?.standardObjects?.map((o) => o.object) ?? []);
     setCustomObjects(syncConfig?.config?.customObjects?.map((o) => o.object) ?? []);
+    setEntityIds(syncConfig?.config?.entities?.map((entity) => entity.entityId) ?? []);
   }, [syncConfig?.id]);
 
-  if (isLoading || isLoadingProviders || isLoadingDestinations) {
+  if (isLoading || isLoadingProviders || isLoadingDestinations || isLoadingEntities) {
     return <Spinner />;
   }
 
@@ -113,6 +117,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
           commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
           standardObjects: standardObjects.map((object) => ({ object })),
           customObjects: customObjects.map((object) => ({ object })),
+          entities: entityIds.map((entityId) => ({ entityId })),
         },
       };
       const response = await updateSyncConfig(activeApplicationId, newSyncConfig);
@@ -141,6 +146,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
         commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
         standardObjects: standardObjects.map((object) => ({ object })),
         customObjects: customObjects.map((object) => ({ object })),
+        entities: entityIds.map((entityId) => ({ entityId })),
       },
     };
     const response = await createSyncConfig(activeApplicationId, newSyncConfig);
@@ -322,6 +328,34 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   )}
                   onChange={(event: any, value: string[]) => {
                     setCustomObjects(value.map((object) => object.trim()));
+                  }}
+                />
+              </Stack>
+              <Stack className="gap-2">
+                <Typography variant="subtitle1">Entities</Typography>
+                <Autocomplete
+                  size="small"
+                  key={providerId}
+                  multiple
+                  id="entities"
+                  options={entities.map((entity) => entity.id)}
+                  defaultValue={entityIds}
+                  autoSelect
+                  renderTags={(value: readonly string[], getTagProps) =>
+                    value.map((option: string, index: number) => {
+                      const entity = entities.find((e) => e.id === option);
+                      return <Chip variant="outlined" label={entity?.name ?? option} {...getTagProps({ index })} />;
+                    })
+                  }
+                  getOptionLabel={(option) => {
+                    const entity = entities.find((e) => e.id === option);
+                    return entity?.name ?? option;
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Entities" helperText={'Use "enter" to add multiple entities.'} />
+                  )}
+                  onChange={(event: any, value: string[]) => {
+                    setEntityIds(value.map((object) => object.trim()));
                   }}
                 />
               </Stack>

@@ -12,7 +12,7 @@ import type {
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import type { WriteCommonObjectRecordsResult, WriteObjectRecordsResult } from './base';
+import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
@@ -242,6 +242,15 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     }
 
     return { numRecords, maxLastModifiedAt };
+  }
+
+  public override async writeEntityRecords(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    stream: Readable,
+    heartbeat: () => void
+  ): Promise<WriteEntityRecordsResult> {
+    throw new Error('Entity sync not implemented for s3');
   }
 
   getRawRecordKeyPrefix(applicationId: string, object: string, customerId: string, providerName: ProviderName) {

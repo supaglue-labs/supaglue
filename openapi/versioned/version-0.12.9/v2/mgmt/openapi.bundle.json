@@ -1,0 +1,4697 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "0.12.9",
+    "title": "Supaglue Management API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "#### Introduction\n\nWelcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-35306f94-8368-4412-b7f3-72715131f727?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-35306f94-8368-4412-b7f3-72715131f727%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/mgmt/v2\n```\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.supaglue.io/mgmt/v2",
+      "description": "Supaglue API"
+    }
+  ],
+  "paths": {
+    "/customers": {
+      "get": {
+        "operationId": "getCustomers",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List customers",
+        "description": "Get a list of customers",
+        "responses": {
+          "200": {
+            "description": "Customers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/customer"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "customer_id": "your-customers-unique-application-id",
+                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+                        "name": "MyCompany Inc",
+                        "email": "contact@mycompany.com"
+                      },
+                      {
+                        "customer_id": "your-other-customers-unique-application-id2",
+                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+                        "name": "TheirCompany Inc",
+                        "email": "contact@theircompany.com"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "upsertCustomer",
+        "summary": "Upsert customer",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_customer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer upserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}": {
+      "get": {
+        "operationId": "getCustomer",
+        "summary": "Get customer",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+                      "name": "MyCompany Inc",
+                      "email": "contact@mycompany.com",
+                      "customer_id": "your-customers-unique-application-id"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteCustomer",
+        "summary": "Delete customer",
+        "tags": [
+          "Customers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/customer"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+                      "name": "MyCompany Inc",
+                      "email": "contact@mycompany.com",
+                      "customer_id": "your-customers-unique-application-id"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          }
+        }
+      ]
+    },
+    "/destinations": {
+      "get": {
+        "operationId": "getDestinations",
+        "tags": [
+          "Destinations"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List destinations",
+        "description": "Get a list of destinations",
+        "responses": {
+          "200": {
+            "description": "Destinations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/destination"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "0a292508-d254-4929-98d3-dc23416efff8",
+                        "application_id": "e52286c9-3038-4fa2-a2b8-3ec9759d20cb",
+                        "name": "My S3 Destination",
+                        "type": "s3",
+                        "config": {
+                          "region": "us-west-2",
+                          "bucket": "my-bucket",
+                          "access_key_id": "MY_ACCESS_KEY_ID"
+                        }
+                      },
+                      {
+                        "id": "92bc3460-a301-4116-8d1f-6e5f8252c2e2",
+                        "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
+                        "name": "My Postgres Destination",
+                        "type": "postgres",
+                        "config": {
+                          "host": "https://mydb.com",
+                          "port": 5432,
+                          "database": "my_database",
+                          "schema": "public",
+                          "user": "user",
+                          "password": "password"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createDestination",
+        "summary": "Create destination",
+        "tags": [
+          "Destinations"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_destination"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Destination created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/destination"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/destinations/{destination_id}": {
+      "get": {
+        "operationId": "getDestination",
+        "summary": "Get destination",
+        "tags": [
+          "Destinations"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Destination",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/destination"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "987e576f-73b1-47c7-bc1a-3d20e4d3cc5f",
+                      "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
+                      "name": "My Postgres Destination",
+                      "type": "postgres",
+                      "config": {
+                        "host": "https://mydb.com",
+                        "port": 5432,
+                        "database": "my_database",
+                        "schema": "public",
+                        "user": "user",
+                        "password": "password"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateDestination",
+        "summary": "Update destination",
+        "tags": [
+          "Destinations"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/update_destination"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Destination",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/destination"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "bc8583c0-74b2-4557-b9d7-ccf9415185f9",
+                      "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
+                      "name": "My Postgres Destination",
+                      "type": "postgres",
+                      "config": {
+                        "host": "https://mydb.com",
+                        "port": 5432,
+                        "database": "my_database",
+                        "schema": "public",
+                        "user": "user",
+                        "password": "password"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "destination_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/field_mappings": {
+      "get": {
+        "operationId": "listFieldMappings",
+        "summary": "List field mappings",
+        "tags": [
+          "Field Mappings"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of objects and their field mappings (if set)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/object_field_mapping_info"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/properties": {
+      "get": {
+        "operationId": "listProperties",
+        "summary": "List properties",
+        "tags": [
+          "Properties"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The name of the object for which you want to list properties."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "properties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "properties"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/field_mappings/_update_object": {
+      "put": {
+        "operationId": "updateObjectFieldMappings",
+        "summary": "Update object field mappings",
+        "tags": [
+          "Field Mappings"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/update_object_field_mapping"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of objects and their field mappings (if set)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/object_field_mapping_info"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/schemas": {
+      "get": {
+        "operationId": "getSchemas",
+        "tags": [
+          "Schemas"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List schemas",
+        "description": "Get a list of schemas",
+        "responses": {
+          "200": {
+            "description": "Schemas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/schema"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "649b1e49-2722-46a3-a7e7-10caae78a43f",
+                        "name": "my-schema",
+                        "config": {
+                          "fields": [
+                            {
+                              "name": "field1"
+                            },
+                            {
+                              "name": "field2"
+                            }
+                          ],
+                          "allow_additional_field_mappings": false
+                        }
+                      },
+                      {
+                        "id": "84b84f5b-cfa0-4ef5-ab41-6362f8cdd414",
+                        "name": "my-schema2",
+                        "config": {
+                          "fields": [
+                            {
+                              "name": "field1"
+                            },
+                            {
+                              "name": "field2"
+                            }
+                          ],
+                          "allow_additional_field_mappings": false
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createSchema",
+        "summary": "Create schema",
+        "tags": [
+          "Schemas"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_schema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Schema created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schemas/{schema_id}": {
+      "get": {
+        "operationId": "getSchema",
+        "summary": "Get schema",
+        "tags": [
+          "Schemas"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "0218d76c-b2e1-4c34-ac7d-22b8df065004",
+                      "name": "my-schema",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateSchema",
+        "summary": "Update schema",
+        "tags": [
+          "Schemas"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_schema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "959fd65f-850a-4c53-bc06-9f46facd4444",
+                      "name": "my-schema",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteSchema",
+        "summary": "Delete schema",
+        "tags": [
+          "Schemas"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Schema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schema"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "b2b0e394-541c-4e5b-b6b5-9eefd412bf8d",
+                      "name": "my-schema",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "schema_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "a821d59d-8b4c-4ad9-aeec-1292d2e28701"
+          }
+        }
+      ]
+    },
+    "/entities": {
+      "get": {
+        "operationId": "getEntities",
+        "tags": [
+          "Entities"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List entities",
+        "description": "Get a list of entities",
+        "responses": {
+          "200": {
+            "description": "Entities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/entity"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "649b1e49-2722-46a3-a7e7-10caae78a440",
+                        "name": "my-entity",
+                        "config": {
+                          "fields": [
+                            {
+                              "name": "field1",
+                              "mappedName": "fieldA"
+                            },
+                            {
+                              "name": "field2",
+                              "mappedName": "fieldB"
+                            }
+                          ],
+                          "allow_additional_field_mappings": false
+                        }
+                      },
+                      {
+                        "id": "84b84f5b-cfa0-4ef5-ab41-6362f8cdd415",
+                        "name": "my-entity2",
+                        "config": {
+                          "fields": [
+                            {
+                              "name": "field1",
+                              "mappedName": "fieldA"
+                            },
+                            {
+                              "name": "field2",
+                              "mappedName": "fieldB"
+                            }
+                          ],
+                          "allow_additional_field_mappings": false
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createEntity",
+        "summary": "Create entity",
+        "tags": [
+          "Entities"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_entity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entity created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/entity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/entities/{entity_id}": {
+      "get": {
+        "operationId": "getEntity",
+        "summary": "Get entity",
+        "tags": [
+          "Entities"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/entity"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "0218d76c-b2e1-4c34-ac7d-22b8df065005",
+                      "name": "my-entity",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateEntity",
+        "summary": "Update entity",
+        "tags": [
+          "Entities"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_entity"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/entity"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "959fd65f-850a-4c53-bc06-9f46facd4445",
+                      "name": "my-entity",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1",
+                            "mappedName": "fieldA"
+                          },
+                          {
+                            "name": "field2",
+                            "mappedName": "fieldB"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteEntity",
+        "summary": "Delete entity",
+        "tags": [
+          "Entities"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/entity"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "b2b0e394-541c-4e5b-b6b5-9eefd412bf8e",
+                      "name": "my-entity",
+                      "config": {
+                        "fields": [
+                          {
+                            "name": "field1"
+                          },
+                          {
+                            "name": "field2"
+                          }
+                        ],
+                        "allow_additional_field_mappings": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "entity_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "a821d59d-8b4c-4ad9-aeec-1292d2e28702"
+          }
+        }
+      ]
+    },
+    "/providers": {
+      "get": {
+        "operationId": "getProviders",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List providers",
+        "description": "Get a list of providers",
+        "responses": {
+          "200": {
+            "description": "Providers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/provider"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "e888cedf-e9d0-42c5-9485-2d72984faef8",
+                        "category": "crm",
+                        "auth_type": "oauth2",
+                        "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
+                        "provider_name": "hubspot",
+                        "config": {
+                          "provider_app_id": "my_app_id",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "id": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
+                        "category": "crm",
+                        "auth_type": "oauth2",
+                        "destination_id": null,
+                        "provider_name": "salesforce",
+                        "config": {
+                          "provider_app_id": "my_app_id2",
+                          "oauth": {
+                            "oauth_scopes": [
+                              "crm.objects.contacts.read",
+                              "crm.objects.companies.read",
+                              "crm.objects.deals.read",
+                              "crm.objects.owners.read",
+                              "crm.objects.contacts.write",
+                              "crm.objects.companies.write",
+                              "crm.objects.deals.write"
+                            ],
+                            "credentials": {
+                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProvider",
+        "summary": "Create provider",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_provider"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Provider created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/providers/{provider_id}": {
+      "get": {
+        "operationId": "getProvider",
+        "summary": "Get provider",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "e252792a-de72-460a-ae42-c9115fe9321d",
+                      "category": "crm",
+                      "auth_type": "oauth2",
+                      "provider_name": "hubspot",
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateProvider",
+        "summary": "Update provider",
+        "tags": [
+          "Providers"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/update_provider"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "39477a27-80fd-4b6d-b07e-256e14ee094e",
+                      "category": "crm",
+                      "auth_type": "oauth2",
+                      "provider_name": "hubspot",
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteProvider",
+        "summary": "Delete provider",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "699e93b0-a7e6-4009-af59-07ec274db394",
+                      "category": "crm",
+                      "auth_type": "oauth2",
+                      "provider_name": "hubspot",
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "provider_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/providers/{provider_id}/object": {
+      "post": {
+        "operationId": "addObject",
+        "summary": "Add object to provider",
+        "tags": [
+          "Providers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/add_object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Add object to provider with schema.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/provider"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "9e121531-1185-4940-8ec4-b5af222bb637",
+                      "category": "crm",
+                      "auth_type": "oauth2",
+                      "provider_name": "hubspot",
+                      "config": {
+                        "provider_app_id": "my_app_id",
+                        "oauth": {
+                          "oauth_scopes": [
+                            "crm.objects.contacts.read",
+                            "crm.objects.companies.read",
+                            "crm.objects.deals.read",
+                            "crm.objects.owners.read",
+                            "crm.objects.contacts.write",
+                            "crm.objects.companies.write",
+                            "crm.objects.deals.write"
+                          ],
+                          "credentials": {
+                            "oauth_client_id": null,
+                            "oauth_client_secret": null
+                          }
+                        }
+                      },
+                      "objects": {
+                        "common": [
+                          {
+                            "name": "contact",
+                            "schema_id": "5cf94ac7-cbd2-4e65-b866-c9a944f66f68"
+                          }
+                        ],
+                        "standard": [
+                          {
+                            "name": "company",
+                            "schema_id": "bb0ddf6e-9447-497e-b2ed-cac1402431b2"
+                          }
+                        ],
+                        "custom": []
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "provider_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/sync_configs": {
+      "get": {
+        "operationId": "getSyncConfigs",
+        "tags": [
+          "SyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List Sync Configs",
+        "description": "Get a list of Sync Configs",
+        "responses": {
+          "200": {
+            "description": "SyncConfigs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/sync_config"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "80fcb3be-4259-408e-a1f4-e6db7221caeb",
+                        "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
+                        "provider_id": "ebd1e697-0e4d-4c01-8622-c8c03703ef68",
+                        "config": {
+                          "default_config": {
+                            "period_ms": 60000,
+                            "strategy": "full then incremental"
+                          },
+                          "common_objects": [
+                            {
+                              "object": "contacts"
+                            },
+                            {
+                              "object": "accounts"
+                            }
+                          ],
+                          "standard_objects": [
+                            {
+                              "object": "emails"
+                            },
+                            {
+                              "object": "tasks"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "200080b0-374a-48bd-877f-d9cc5a0e3399",
+                        "destination_id": "c0e47183-ff55-4b84-9132-1e6122f763ca",
+                        "provider_id": "bdb14829-2a3f-40db-b13c-acc1b3cee216",
+                        "config": {
+                          "default_config": {
+                            "period_ms": 10000,
+                            "strategy": "full then incremental"
+                          },
+                          "common_objects": [
+                            {
+                              "object": "accounts"
+                            }
+                          ],
+                          "standard_objects": [
+                            {
+                              "object": "tasks"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createSyncConfig",
+        "summary": "Create Sync Config",
+        "tags": [
+          "SyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_sync_config"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SyncConfig created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync_config"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sync_configs/{sync_config_id}": {
+      "get": {
+        "operationId": "getSyncConfig",
+        "summary": "Get Sync Config",
+        "tags": [
+          "SyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SyncConfig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync_config"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "a91c434a-6f75-4f5f-85f9-90fd7caa168f",
+                      "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
+                      "provider_id": "ebd1e697-0e4d-4c01-8622-c8c03703ef68",
+                      "config": {
+                        "default_config": {
+                          "period_ms": 60000,
+                          "strategy": "full then incremental"
+                        },
+                        "common_objects": [
+                          {
+                            "object": "contacts"
+                          },
+                          {
+                            "object": "accounts"
+                          }
+                        ],
+                        "standard_objects": [
+                          {
+                            "object": "emails"
+                          },
+                          {
+                            "object": "tasks"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateSyncConfig",
+        "summary": "Update Sync Config",
+        "tags": [
+          "SyncConfigs"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_sync_config"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SyncConfig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync_config"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "7a34a7bb-193a-4cca-ac16-63ef739995e1",
+                      "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
+                      "provider_id": "ebd1e697-0e4d-4c01-8622-c8c03703ef68",
+                      "config": {
+                        "default_config": {
+                          "period_ms": 60000,
+                          "strategy": "full then incremental"
+                        },
+                        "common_objects": [
+                          {
+                            "object": "contacts"
+                          },
+                          {
+                            "object": "accounts"
+                          }
+                        ],
+                        "standard_objects": [
+                          {
+                            "object": "emails"
+                          },
+                          {
+                            "object": "tasks"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteSyncConfig",
+        "summary": "Delete Sync Config",
+        "tags": [
+          "SyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SyncConfig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync_config"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "ee2b63fa-edec-4875-b2f5-921d3b13ca83",
+                      "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
+                      "provider_id": "ebd1e697-0e4d-4c01-8622-c8c03703ef68",
+                      "config": {
+                        "default_config": {
+                          "period_ms": 60000,
+                          "strategy": "full then incremental"
+                        },
+                        "common_objects": [
+                          {
+                            "object": "contacts"
+                          },
+                          {
+                            "object": "accounts"
+                          }
+                        ],
+                        "standard_objects": [
+                          {
+                            "object": "emails"
+                          },
+                          {
+                            "object": "tasks"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "sync_config_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "d583ec72-55d4-4f35-9668-f6c759674cc1"
+          }
+        }
+      ]
+    },
+    "/customers/{customer_id}/connections": {
+      "get": {
+        "operationId": "getConnections",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List connections",
+        "description": "Get a list of connections",
+        "responses": {
+          "200": {
+            "description": "Connections",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/connection"
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": [
+                      {
+                        "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6b",
+                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+                        "customer_id": "my-customer-1",
+                        "status": "available",
+                        "provider_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                        "provider_name": "salesforce",
+                        "category": "crm",
+                        "instance_url": "https://mycompany-dev-ed.develop.my.salesforce.com"
+                      },
+                      {
+                        "id": "e888cedf-e9d0-42c5-9485-2d72984faef7",
+                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+                        "customer_id": "my-customer-2",
+                        "status": "available",
+                        "provider_id": "db40a684-3150-46d2-bfd2-acb341a72681",
+                        "provider_name": "hubspot",
+                        "category": "crm",
+                        "instance_url": "https://app.hubspot.com/contacts/1234567"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createConnection",
+        "summary": "Create connection",
+        "tags": [
+          "Connections"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object",
+                "properties": {
+                  "provider_name": {
+                    "type": "string",
+                    "enum": [
+                      "apollo"
+                    ]
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "engagement"
+                    ]
+                  },
+                  "api_key": {
+                    "type": "string",
+                    "description": "API key for the connected customer.",
+                    "example": 123456
+                  }
+                },
+                "required": [
+                  "provider_name",
+                  "category",
+                  "api_key"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/customers/{customer_id}/connections/_provider_user_id": {
+      "get": {
+        "operationId": "getProviderUserId",
+        "summary": "Get provider logged in user ID",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "provider_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/provider_name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "UserId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user_id": {
+                      "type": "string",
+                      "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                    }
+                  }
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          }
+        }
+      ]
+    },
+    "/customers/{customer_id}/connections/{connection_id}": {
+      "get": {
+        "operationId": "getConnection",
+        "summary": "Get connection",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/connection"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "string",
+                          "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6c",
+                      "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
+                      "customer_id": "my-customer-1",
+                      "status": "available",
+                      "provider_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
+                      "provider_name": "salesforce",
+                      "category": "crm",
+                      "instance_url": "https://supaglue-dev-ed.develop.my.salesforce.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteConnection",
+        "summary": "Delete connection",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Connection"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        },
+        {
+          "name": "connection_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/webhook": {
+      "get": {
+        "operationId": "getWebhook",
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "Get webhook",
+        "description": "Get webhook details",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Applications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/webhook"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "url": "https://api.supaglue.io",
+                      "notify_on_sync_success": true,
+                      "notify_on_sync_error": true,
+                      "notify_on_connection_success": true,
+                      "notify_on_connection_error": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createWebhook",
+        "summary": "Create webhook",
+        "tags": [
+          "Webhooks"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/webhook"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Webhook created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/webhook"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteWebhook",
+        "summary": "Delete webhook",
+        "tags": [
+          "Webhooks"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook deleted"
+          }
+        }
+      }
+    },
+    "/syncs": {
+      "get": {
+        "operationId": "getSyncs",
+        "tags": [
+          "Syncs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "Get Syncs",
+        "description": "Get a list of Sync objects.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "my-customer-1"
+            },
+            "description": "The customer ID that uniquely identifies the customer in your application"
+          },
+          {
+            "name": "provider_name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "salesforce"
+            },
+            "description": "The provider name"
+          },
+          {
+            "name": "object_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
+            },
+            "description": "The object type to filter by"
+          },
+          {
+            "name": "object",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The object to filter by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sync",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/sync_with_provider_and_customer"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/syncs/_pause": {
+      "post": {
+        "operationId": "pauseSync",
+        "summary": "Pause sync",
+        "tags": [
+          "Syncs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ],
+                    "description": "The object type to filter by"
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact",
+                    "description": "The object to filter by"
+                  }
+                },
+                "required": [
+                  "object_type",
+                  "object"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sync paused",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/syncs/_resume": {
+      "post": {
+        "operationId": "resumeSync",
+        "summary": "Resume sync",
+        "tags": [
+          "Syncs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ],
+                    "description": "The object type to filter by"
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact",
+                    "description": "The object to filter by"
+                  }
+                },
+                "required": [
+                  "object_type",
+                  "object"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sync resumed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/syncs/_trigger": {
+      "post": {
+        "operationId": "triggerSync",
+        "summary": "Trigger sync",
+        "tags": [
+          "Syncs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ],
+                    "description": "The object type to filter by"
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact",
+                    "description": "The object to filter by"
+                  },
+                  "perform_full_refresh": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                },
+                "required": [
+                  "object_type",
+                  "object"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sync triggered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sync"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/sync-runs": {
+      "get": {
+        "operationId": "getSyncRuns",
+        "tags": [
+          "SyncRuns"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "Get SyncRuns",
+        "description": "Get a list of SyncRun objects.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "my-customer-1"
+            },
+            "description": "The customer ID that uniquely identifies the customer in your application"
+          },
+          {
+            "name": "provider_name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "salesforce"
+            },
+            "description": "The provider name"
+          },
+          {
+            "name": "object_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "common"
+            },
+            "description": "The object type to filter by"
+          },
+          {
+            "name": "object",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "contact"
+            },
+            "description": "The object to filter by"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SyncRun",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/sync_run"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "next": "sjkflwbajkbbkajwbcs",
+                      "previous": null,
+                      "results": [
+                        {
+                          "object_type": "common",
+                          "object": "account",
+                          "start_timestamp": "2023-02-22T19:55:17.559Z",
+                          "status": "IN_PROGRESS",
+                          "application_id": "3217ea51-11c8-43c9-9547-6f197e02e5e4",
+                          "customer_id": "my-customer-1",
+                          "provider_name": "hubspot",
+                          "category": "crm",
+                          "connection_id": "f723e58c-3034-4056-babf-a8871ac12480"
+                        },
+                        {
+                          "object_type": "common",
+                          "object": "contact",
+                          "start_timestamp": "2023-02-22T19:50:17.559Z",
+                          "end_timestamp": "2023-02-22T20:50:17.559Z",
+                          "status": "ERROR",
+                          "error_message": "Error: Something went wrong",
+                          "application_id": "3217ea51-11c8-43c9-9547-6f197e02e5e4",
+                          "customer_id": "my-customer-1",
+                          "provider_name": "hubspot",
+                          "category": "crm",
+                          "connection_id": "f723e58c-3034-4056-babf-a8871ac12480"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Customers",
+      "description": "A `Customer` represents one of your customers."
+    },
+    {
+      "name": "Connections",
+      "description": "A `Connection` represents a Customer's connection to a Provider."
+    },
+    {
+      "name": "Destinations",
+      "description": "A `Destination` is a place where to which data can be written."
+    },
+    {
+      "name": "Providers",
+      "description": "A `Provider` is a CRM or other system that we can connect to."
+    },
+    {
+      "name": "Properties",
+      "description": "A `Property` is a field in a Provider's object."
+    },
+    {
+      "name": "Schemas",
+      "description": "A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API."
+    },
+    {
+      "name": "Entities",
+      "description": "An `Entity` is a unified representation of Provider objects that can be synced to a Destination or manipulated by the Actions API."
+    },
+    {
+      "name": "Field Mappings",
+      "description": "A `Field Mapping` is a mapping between a Schema field and the field in the Provider."
+    },
+    {
+      "name": "SyncConfigs",
+      "description": "A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule."
+    },
+    {
+      "name": "Syncs",
+      "description": "A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule."
+    },
+    {
+      "name": "SyncRuns",
+      "description": "A `SyncRun` is a single execution of a Sync at a point in time."
+    },
+    {
+      "name": "Webhooks",
+      "description": "A `Webhook` is a way for Supaglue to notify you when events have happened."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "x-api-key": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header",
+        "description": "API key to allow developers to access the API"
+      }
+    },
+    "schemas": {
+      "pagination": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+          },
+          "total_count": {
+            "type": "number",
+            "example": 100
+          }
+        },
+        "required": [
+          "next",
+          "previous",
+          "total_count"
+        ]
+      },
+      "customer": {
+        "type": "object",
+        "properties": {
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          },
+          "name": {
+            "type": "string",
+            "example": "MyCompany Inc"
+          },
+          "email": {
+            "type": "string",
+            "example": "contact@mycompany.com"
+          },
+          "connections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/connection"
+            }
+          }
+        },
+        "required": [
+          "application_id",
+          "name",
+          "email",
+          "customer_id"
+        ]
+      },
+      "provider": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+          },
+          "category": {
+            "$ref": "#/components/schemas/category"
+          },
+          "auth_type": {
+            "type": "string",
+            "enum": [
+              "oauth2",
+              "api_key"
+            ]
+          },
+          "name": {
+            "$ref": "#/components/schemas/provider_name"
+          },
+          "config": {
+            "$ref": "#/components/schemas/create_provider_config"
+          },
+          "objects": {
+            "$ref": "#/components/schemas/objects"
+          }
+        },
+        "required": [
+          "id",
+          "application_id",
+          "category",
+          "auth_type",
+          "name"
+        ]
+      },
+      "destination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "s3",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "s3"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/s3_config_safe"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "postgres",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/postgres_config_safe"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_safe"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mongodb",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "mongodb"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/mongodb_config_safe"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config"
+            ]
+          }
+        ]
+      },
+      "s3_config_safe": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "bucket": {
+            "type": "string",
+            "example": "my-test-bucket"
+          },
+          "access_key_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "region",
+          "bucket",
+          "access_key_id"
+        ]
+      },
+      "postgres_config_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "https://mydb.com"
+          },
+          "port": {
+            "type": "number",
+            "example": 5432
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "public"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "database",
+          "schema",
+          "user"
+        ]
+      },
+      "bigquery_config_safe": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my-dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+              }
+            },
+            "required": [
+              "client_email"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
+        ]
+      },
+      "mongodb_config_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "mongodb.company.com"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          }
+        },
+        "required": [
+          "host",
+          "database",
+          "user"
+        ]
+      },
+      "s3_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "bucket": {
+            "type": "string",
+            "example": "my-test-bucket"
+          },
+          "access_key_id": {
+            "type": "string"
+          },
+          "secret_access_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "region",
+          "bucket",
+          "access_key_id"
+        ]
+      },
+      "postgres_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "https://mydb.com"
+          },
+          "port": {
+            "type": "number",
+            "example": 5432
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "public"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "database",
+          "schema",
+          "user"
+        ]
+      },
+      "bigquery_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my-dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+              },
+              "private_key": {
+                "type": "string",
+                "example": "-----BEGIN PRIVATE KEY-----\\nMII..."
+              }
+            },
+            "required": [
+              "client_email",
+              "private_key"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
+        ]
+      },
+      "mongodb_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "mongodb.company.com"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "host",
+          "database",
+          "user"
+        ]
+      },
+      "s3_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "bucket": {
+            "type": "string",
+            "example": "my-test-bucket"
+          },
+          "access_key_id": {
+            "type": "string"
+          },
+          "secret_access_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "region",
+          "bucket",
+          "access_key_id",
+          "secret_access_key"
+        ]
+      },
+      "postgres_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "database.company.com"
+          },
+          "port": {
+            "type": "number",
+            "example": 5432
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "public"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "database",
+          "schema",
+          "user",
+          "password"
+        ]
+      },
+      "bigquery_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-project"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my-dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+              },
+              "private_key": {
+                "type": "string",
+                "example": "-----BEGIN PRIVATE KEY-----\\nMII..."
+              }
+            },
+            "required": [
+              "client_email",
+              "private_key"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
+        ]
+      },
+      "mongodb_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "mongodb.company.com"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "user": {
+            "type": "string",
+            "example": "myuser"
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
+          }
+        },
+        "required": [
+          "host",
+          "database",
+          "user",
+          "password"
+        ]
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "649b1e49-2722-46a3-a7e7-10caae78a43f"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "name": {
+            "type": "string",
+            "example": "my-schema"
+          },
+          "config": {
+            "$ref": "#/components/schemas/schema_config"
+          }
+        },
+        "required": [
+          "id",
+          "application_id",
+          "name",
+          "config"
+        ]
+      },
+      "schema_config": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "mapped_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "allow_additional_field_mappings": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fields",
+          "allow_additional_field_mappings"
+        ]
+      },
+      "entity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "649b1e49-2722-46a3-a7e7-10caae78a43f"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "name": {
+            "type": "string",
+            "example": "my-entity"
+          },
+          "config": {
+            "$ref": "#/components/schemas/entity_config"
+          }
+        },
+        "required": [
+          "id",
+          "application_id",
+          "name",
+          "config"
+        ]
+      },
+      "entity_config": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "allow_additional_field_mappings": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "fields",
+          "allow_additional_field_mappings"
+        ]
+      },
+      "objects": {
+        "type": "object",
+        "properties": {
+          "common": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "common_object_name"
+                },
+                "schema_id": {
+                  "type": "string",
+                  "description": "If set, will sync these mapped fields into the raw_data column in addition to the common object. If not set, will fetch all fields as is."
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "standard": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "standard_object_name"
+                },
+                "schema_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "custom": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "custom_object_name"
+                },
+                "schema_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        }
+      },
+      "object_field_mapping_info": {
+        "type": "object",
+        "properties": {
+          "object_name": {
+            "type": "string",
+            "example": "contact"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "allow_additional_field_mappings": {
+            "type": "boolean",
+            "example": true
+          },
+          "schema_id": {
+            "type": "string",
+            "example": "51797e8d-f081-496d-99ec-5e41b467df4b"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/field_mapping_info"
+            }
+          }
+        },
+        "required": [
+          "object_name",
+          "object_type",
+          "allow_additional_field_mappings",
+          "schema_id",
+          "fields"
+        ]
+      },
+      "field_mapping_info": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the field as set in the schema",
+            "example": "email"
+          },
+          "is_added_by_customer": {
+            "type": "boolean",
+            "description": "Whether the field was added by the customer (only applicable if the schema has allow_additional_field_mappings set to true)"
+          },
+          "schema_mapped_name": {
+            "type": "string",
+            "description": "The mapped named of the field as set in the schema by the developer. If set, the customer cannot override. Only one of `schema_mapped_name` or `customer_mapped_name` should be set."
+          },
+          "customer_mapped_name": {
+            "type": "string",
+            "description": "The mapped name of the field as set by the customer. Only one of `schema_mapped_name` or `customer_mapped_name` should be set."
+          }
+        },
+        "required": [
+          "name",
+          "is_added_by_customer"
+        ]
+      },
+      "update_object_field_mapping": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "contact"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "field_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/field_mapping"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "field_mappings"
+        ]
+      },
+      "field_mapping": {
+        "type": "object",
+        "properties": {
+          "schema_field": {
+            "type": "string"
+          },
+          "mapped_field": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "schema_field"
+        ]
+      },
+      "add_object": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "object_name"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "common",
+                  "standard",
+                  "custom"
+                ]
+              },
+              "enable_sync": {
+                "type": "boolean"
+              },
+              "schema_id": {
+                "type": "string"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/create_update_schema"
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ]
+          }
+        ]
+      },
+      "connection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "added",
+              "authorized",
+              "callable"
+            ],
+            "example": "available"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "provider_id": {
+            "type": "string",
+            "example": "677fcfca-cf89-4387-a189-71c885be67bc"
+          },
+          "provider_name": {
+            "$ref": "#/components/schemas/provider_name"
+          },
+          "category": {
+            "$ref": "#/components/schemas/category"
+          },
+          "instance_url": {
+            "type": "string",
+            "description": "Instance URL for the connected customer.",
+            "example": "https://app.hubspot.com/contacts/123456"
+          },
+          "schema_mappings_config": {
+            "type": "object",
+            "properties": {
+              "common_objects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string"
+                    },
+                    "field_mappings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/field_mapping"
+                      }
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "field_mappings"
+                  ]
+                }
+              },
+              "standard_objects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string"
+                    },
+                    "field_mappings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/field_mapping"
+                      }
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "field_mappings"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "application_id",
+          "customer_id",
+          "provider_id",
+          "provider_name",
+          "category",
+          "instance_url"
+        ]
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "crm",
+          "engagement"
+        ]
+      },
+      "sync_config": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "465fdcb7-26b4-4090-894c-67cab41022bb"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+          },
+          "destination_id": {
+            "type": "string",
+            "example": "6e7baa88-84dd-4dbc-902a-14522c2984eb"
+          },
+          "provider_id": {
+            "type": "string",
+            "example": "7f72ec07-e5c1-47fd-8cf5-e71dd13873af"
+          },
+          "config": {
+            "$ref": "#/components/schemas/sync_config_data"
+          }
+        },
+        "required": [
+          "id",
+          "application_id",
+          "destination_id",
+          "provider_id",
+          "config"
+        ]
+      },
+      "sync_config_data": {
+        "type": "object",
+        "properties": {
+          "default_config": {
+            "type": "object",
+            "properties": {
+              "period_ms": {
+                "type": "integer",
+                "minimum": 60000,
+                "example": 60000
+              },
+              "strategy": {
+                "type": "string",
+                "enum": [
+                  "full then incremental",
+                  "full only"
+                ]
+              },
+              "auto_start_on_connection": {
+                "type": "boolean",
+                "description": "If true, the sync will start automatically when the connection is created.\nDefault: true\n"
+              }
+            },
+            "required": [
+              "period_ms",
+              "strategy"
+            ]
+          },
+          "common_objects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "example": "contacts"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          },
+          "standard_objects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "example": "contacts"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          },
+          "custom_objects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "example": "contacts"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          }
+        },
+        "required": [
+          "default_config"
+        ],
+        "example": {
+          "default_config": {
+            "period_ms": 60000,
+            "strategy": "full then incremental"
+          }
+        }
+      },
+      "create_provider_config": {
+        "type": "object",
+        "properties": {
+          "provider_app_id": {
+            "type": "string",
+            "example": "my_app_id"
+          },
+          "use_managed_oauth": {
+            "type": "boolean",
+            "description": "True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials.",
+            "example": false
+          },
+          "oauth": {
+            "type": "object",
+            "properties": {
+              "oauth_scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "crm.objects.contacts.read"
+                }
+              },
+              "credentials": {
+                "type": "object",
+                "properties": {
+                  "oauth_client_id": {
+                    "type": "string",
+                    "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                  },
+                  "oauth_client_secret": {
+                    "type": "string",
+                    "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                  }
+                },
+                "required": [
+                  "oauth_client_id",
+                  "oauth_client_secret"
+                ]
+              }
+            },
+            "required": [
+              "oauth_scopes",
+              "credentials"
+            ]
+          }
+        },
+        "required": [
+          "provider_app_id",
+          "oauth"
+        ],
+        "example": {
+          "provider_app_id": "my_app_id",
+          "use_managed_oauth": true,
+          "oauth": {
+            "oauth_scopes": [
+              "crm.objects.contacts.read",
+              "crm.objects.companies.read",
+              "crm.objects.deals.read",
+              "crm.objects.owners.read",
+              "crm.objects.contacts.write",
+              "crm.objects.companies.write",
+              "crm.objects.deals.write"
+            ],
+            "credentials": {
+              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+            }
+          }
+        }
+      },
+      "update_provider_config": {
+        "type": "object",
+        "properties": {
+          "provider_app_id": {
+            "type": "string",
+            "example": "my_app_id"
+          },
+          "oauth": {
+            "type": "object",
+            "properties": {
+              "oauth_scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "crm.objects.contacts.read"
+                }
+              },
+              "credentials": {
+                "type": "object",
+                "properties": {
+                  "oauth_client_id": {
+                    "type": "string",
+                    "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                  },
+                  "oauth_client_secret": {
+                    "type": "string",
+                    "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                  }
+                },
+                "required": [
+                  "oauth_client_id",
+                  "oauth_client_secret"
+                ]
+              }
+            },
+            "required": [
+              "oauth_scopes",
+              "credentials"
+            ]
+          }
+        },
+        "required": [
+          "provider_app_id",
+          "oauth"
+        ],
+        "example": {
+          "provider_app_id": "my_app_id",
+          "oauth": {
+            "oauth_scopes": [
+              "crm.objects.contacts.read",
+              "crm.objects.companies.read",
+              "crm.objects.deals.read",
+              "crm.objects.owners.read",
+              "crm.objects.contacts.write",
+              "crm.objects.companies.write",
+              "crm.objects.deals.write"
+            ],
+            "credentials": {
+              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
+              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+            }
+          }
+        }
+      },
+      "provider_name": {
+        "type": "string",
+        "enum": [
+          "hubspot",
+          "salesforce",
+          "pipedrive",
+          "zendesk_sell",
+          "ms_dynamics_365_sales",
+          "zoho_crm",
+          "capsule",
+          "outreach",
+          "gong",
+          "apollo",
+          "salesloft"
+        ]
+      },
+      "provider_name_crm": {
+        "type": "string",
+        "enum": [
+          "hubspot",
+          "salesforce",
+          "pipedrive",
+          "zendesk_sell",
+          "ms_dynamics_365_sales",
+          "zoho_crm",
+          "capsule"
+        ]
+      },
+      "provider_name_engagement": {
+        "type": "string",
+        "enum": [
+          "outreach"
+        ]
+      },
+      "sync": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "object": {
+            "type": "string"
+          },
+          "connection_id": {
+            "type": "string",
+            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+          },
+          "sync_config_id": {
+            "type": "string",
+            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+          },
+          "paused": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "object_type",
+          "object",
+          "connection_id",
+          "sync_config_id",
+          "paused"
+        ]
+      },
+      "sync_with_provider_and_customer": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/sync"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              }
+            },
+            "required": [
+              "provider_name",
+              "customer_id"
+            ]
+          }
+        ]
+      },
+      "sync_run": {
+        "type": "object",
+        "properties": {
+          "error_message": {
+            "type": "string",
+            "nullable": true
+          },
+          "start_timestamp": {
+            "type": "string",
+            "example": "2023-02-22T19:55:17.559Z"
+          },
+          "end_timestamp": {
+            "type": "string",
+            "nullable": true,
+            "example": "2023-02-22T20:55:17.559Z"
+          },
+          "application_id": {
+            "type": "string",
+            "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "provider_name": {
+            "type": "string",
+            "example": "hubspot"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "crm"
+            ]
+          },
+          "connection_id": {
+            "type": "string",
+            "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SUCCESS",
+              "IN_PROGRESS",
+              "FAILURE"
+            ]
+          },
+          "num_records_synced": {
+            "type": "number",
+            "nullable": true,
+            "example": 100
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "object": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "start_timestamp",
+          "end_timestamp",
+          "application_id",
+          "customer_id",
+          "status",
+          "error_message",
+          "provider_name",
+          "category",
+          "connection_id",
+          "num_records_synced",
+          "object_type",
+          "object"
+        ]
+      },
+      "create_update_customer": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          },
+          "name": {
+            "type": "string",
+            "example": "MyCompany Inc"
+          },
+          "email": {
+            "type": "string",
+            "example": "contact@mycompany.com"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "customer_id"
+        ]
+      },
+      "create_provider": {
+        "allOf": [
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "auth_type": {
+                    "type": "string",
+                    "enum": [
+                      "oauth2"
+                    ]
+                  },
+                  "config": {
+                    "$ref": "#/components/schemas/create_provider_config"
+                  },
+                  "objects": {
+                    "$ref": "#/components/schemas/objects"
+                  }
+                },
+                "required": [
+                  "auth_type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "auth_type": {
+                    "type": "string",
+                    "enum": [
+                      "api_key"
+                    ]
+                  }
+                },
+                "required": [
+                  "auth_type"
+                ]
+              }
+            ]
+          },
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "crm"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_crm"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "engagement"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_engagement"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "update_provider": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "oauth2"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/update_provider_config"
+              },
+              "objects": {
+                "$ref": "#/components/schemas/objects"
+              }
+            },
+            "required": [
+              "auth_type",
+              "config"
+            ]
+          },
+          {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "crm"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_crm"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "engagement"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_engagement"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "create_update_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "my-schema"
+          },
+          "config": {
+            "$ref": "#/components/schemas/schema_config"
+          }
+        },
+        "required": [
+          "name",
+          "config"
+        ]
+      },
+      "create_update_entity": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "my-entity"
+          },
+          "config": {
+            "$ref": "#/components/schemas/entity_config"
+          }
+        },
+        "required": [
+          "name",
+          "config"
+        ]
+      },
+      "create_destination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "s3",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "s3"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/s3_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "postgres",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/postgres_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mongodb",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "mongodb"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/mongodb_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          }
+        ]
+      },
+      "update_destination": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "s3",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "s3"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/s3_config_at_least_safe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "postgres",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/postgres_config_at_least_safe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_at_least_safe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "mongodb",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "mongodb"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/mongodb_config_at_least_safe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          }
+        ]
+      },
+      "create_update_sync_config": {
+        "type": "object",
+        "properties": {
+          "destination_id": {
+            "type": "string",
+            "example": "6e7baa88-84dd-4dbc-902a-14522c2984eb"
+          },
+          "provider_id": {
+            "type": "string",
+            "example": "7f72ec07-e5c1-47fd-8cf5-e71dd13873af"
+          },
+          "config": {
+            "$ref": "#/components/schemas/sync_config_data"
+          }
+        },
+        "required": [
+          "destination_id",
+          "provider_id",
+          "config"
+        ]
+      },
+      "list_properties": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "common",
+              "standard",
+              "custom"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "example": "object_name"
+          }
+        },
+        "required": [
+          "type",
+          "name"
+        ]
+      },
+      "webhook": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "notify_on_sync_success": {
+            "type": "boolean"
+          },
+          "notify_on_sync_error": {
+            "type": "boolean"
+          },
+          "notify_on_connection_success": {
+            "type": "boolean"
+          },
+          "notify_on_connection_error": {
+            "type": "boolean"
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "url",
+          "notify_on_sync_success",
+          "notify_on_sync_error",
+          "notify_on_connection_success",
+          "notify_on_connection_error"
+        ]
+      },
+      "webhook-payload": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "Sync Finished Event",
+            "properties": {
+              "type": {
+                "enum": [
+                  "SYNC_SUCCESS",
+                  "SYNC_ERROR"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "connection_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "enum": [
+                      "hubspot",
+                      "salesforce"
+                    ],
+                    "example": "hubspot"
+                  },
+                  "history_id": {
+                    "type": "string",
+                    "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                  },
+                  "num_records_synced": {
+                    "type": "integer",
+                    "example": 100
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ]
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact"
+                  },
+                  "error_message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "connection_id",
+                  "customer_id",
+                  "history_id",
+                  "num_records_synced",
+                  "object_type",
+                  "object"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "payload"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "Connection Created Event",
+            "properties": {
+              "type": {
+                "enum": [
+                  "CONNECTION_SUCCESS",
+                  "CONNECTION_ERROR"
+                ]
+              },
+              "payload": {
+                "type": "object",
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "provider_id": {
+                    "type": "string",
+                    "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "crm"
+                    ]
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "enum": [
+                      "hubspot",
+                      "salesforce"
+                    ],
+                    "example": "hubspot"
+                  }
+                },
+                "required": [
+                  "customer_id",
+                  "provider_id",
+                  "category",
+                  "provider_name"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "payload"
+            ]
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+        },
+        "description": "The pagination cursor value"
+      },
+      "page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "3804695"
+        },
+        "description": "Number of results to return per page"
+      },
+      "customer_id": {
+        "name": "customer_id",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee"
+        },
+        "description": "The customer ID that uniquely identifies the customer in your application"
+      },
+      "provider_name": {
+        "name": "provider_name",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name"
+      },
+      "x-provider-name": {
+        "name": "x-provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
+      },
+      "x-customer-id": {
+        "name": "x-customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "my-customer-1"
+        },
+        "description": "The customer ID that uniquely identifies the customer in your application",
+        "required": true
+      }
+    }
+  },
+  "webhooks": {
+    "webhook": {
+      "post": {
+        "operationId": "webhook",
+        "summary": "Webhook",
+        "tags": [
+          "Webhooks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/webhook-payload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    }
+  }
+}

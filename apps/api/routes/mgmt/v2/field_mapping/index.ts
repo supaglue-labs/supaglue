@@ -11,7 +11,7 @@ import type {
   UpdateObjectFieldMappingsResponse,
 } from '@supaglue/schemas/v2/mgmt';
 import type { ObjectFieldMappingInfo, ProviderObject, Schema, SchemaMappingsConfigForObject } from '@supaglue/types';
-import type { ObjectType } from '@supaglue/types/object_sync';
+import type { ObjectType } from '@supaglue/types/sync';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

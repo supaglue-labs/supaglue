@@ -81,11 +81,6 @@ export type CreateProviderRequest = operations['createProvider']['requestBody'][
 export type CreateProviderResponse =
   operations['createProvider']['responses'][keyof operations['createProvider']['responses']]['content']['application/json'];
 
-export type AddObjectPathParams = paths[`/providers/{provider_id}/object`]['parameters']['path'];
-export type AddObjectRequest = operations['addObject']['requestBody']['content']['application/json'];
-export type AddObjectResponse =
-  operations['addObject']['responses'][keyof operations['addObject']['responses']]['content']['application/json'];
-
 export type GetProviderPathParams = paths[`/providers/{provider_id}`]['parameters']['path'];
 export type GetProviderRequest = never;
 export type GetProviderResponse =
@@ -247,3 +242,19 @@ export type DeleteEntityPathParams = paths[`/entities/{entity_id}`]['parameters'
 export type DeleteEntityRequest = never;
 export type DeleteEntityResponse =
   operations['deleteEntity']['responses'][keyof operations['deleteEntity']['responses']]['content']['application/json'];
+
+export type ListEntityMappingsPathParams = never;
+export type ListEntityMappingsQueryParams = never;
+export type ListEntityMappingsRequest = never;
+export type ListEntityMappingsResponse =
+  operations['listEntityMappings']['responses'][keyof operations['listEntityMappings']['responses']]['content']['application/json'];
+
+export type UpsertEntityMappingPathParams = paths['/entity_mappings/{entity_id}']['parameters']['path'];
+export type UpsertEntityMappingRequest =
+  operations['upsertEntityMapping']['requestBody']['content']['application/json'];
+export type UpsertEntityMappingResponse =
+  operations['upsertEntityMapping']['responses'][keyof operations['upsertEntityMapping']['responses']]['content']['application/json'];
+
+export type DeleteEntityMappingPathParams = paths['/entity_mappings/{entity_id}']['parameters']['path'];
+export type DeleteEntityMappingRequest = never;
+export type DeleteEntityMappingResponse = never;
