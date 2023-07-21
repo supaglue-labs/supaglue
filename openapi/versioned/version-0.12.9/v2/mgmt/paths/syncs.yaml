@@ -1,0 +1,63 @@
+get:
+  operationId: getSyncs
+  tags:
+    - Syncs
+  security:
+    - x-api-key: []
+  summary: Get Syncs
+  description: >-
+    Get a list of Sync objects.
+  parameters:
+    - name: cursor
+      in: query
+      schema:
+        type: string
+        example: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+      description: The pagination cursor value
+    - name: page_size
+      in: query
+      schema:
+        type: string
+        example: '3804695'
+      description: Number of results to return per page
+    - name: customer_id
+      in: query
+      schema:
+        type: string
+        example: my-customer-1
+      description: The customer ID that uniquely identifies the customer in your application
+    - name: provider_name
+      in: query
+      schema:
+        type: string
+        example: salesforce
+      description: The provider name
+    - name: object_type
+      in: query
+      schema:
+        type: string
+        enum:
+          - common
+          - standard
+          - custom
+      description: The object type to filter by
+    - name: object
+      in: query
+      schema:
+        type: string
+        example: contact
+      description: The object to filter by
+  responses:
+    '200':
+      description: Sync
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: ../../../common/components/schemas/pagination.yaml
+              - type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/objects/sync_with_provider_and_customer.yaml
